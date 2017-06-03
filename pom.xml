@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>wbif.sjx</groupId>
-    <artifactId>HighContent</artifactId>
+    <artifactId>ModularImageAnalysis</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -43,21 +43,6 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.6.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>3.16</version>
@@ -69,11 +54,6 @@
             <version>5.4.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>fiji-lib</artifactId>
-            <version>2.1.2</version>
-        </dependency>
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>ij</artifactId>
@@ -97,39 +77,21 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.quickhull3d</groupId>
-            <artifactId>quickhull3d</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bonej</groupId>
-            <artifactId>boneJ-legacy-plugins</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.11</version>
         </dependency>
 
-        <dependency>
-            <groupId>nz.ac.waikato.cms.weka</groupId>
-            <artifactId>weka-stable</artifactId>
-            <version>3.8.1</version>
-        </dependency>
-
-        <dependency>
+        <!--dependency>
             <groupId>de.biomedical-imaging.imagej</groupId>
             <artifactId>ij_ridge_detect</artifactId>
             <version>1.3.0</version>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.2.1-SNAPSHOT</version>
+            <version>1.2.3-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

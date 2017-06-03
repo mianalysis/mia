@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module;
 import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.HCParameterCollection;
-import wbif.sjx.common.Object.RandomLUT;
+import wbif.sjx.common.Object.LUTs;
 
 
 /**
@@ -46,8 +46,7 @@ public class ShowObjects extends HCModule {
         image.getImagePlus().setTitle(inputObjectName.getName());
 
         // Creating a random colour LUT and assigning it to the image (maximising intensity range to 0-255)
-        LUT randomLUT = new RandomLUT().getLUT();
-        image.getImagePlus().getProcessor().setLut(randomLUT);
+        image.getImagePlus().getProcessor().setLut(LUTs.Random(true));
         image.getImagePlus().getProcessor().setMinAndMax(0,255);
 
         // Showing the image
