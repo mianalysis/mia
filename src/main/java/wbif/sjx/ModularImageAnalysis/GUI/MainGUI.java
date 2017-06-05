@@ -319,126 +319,145 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         }
 
         // If the active module hasn't got parameters enabled, skip it
-        if (activeModule.getActiveParameters() == null) {
-            return;
-        }
+        if (activeModule.getActiveParameters() != null) {
+            Iterator<HCParameter> iterator = activeModule.getActiveParameters().getParameters().values().iterator();
+            while (iterator.hasNext()) {
+                HCParameter parameter = iterator.next();
 
-        Iterator<HCParameter> iterator = activeModule.getActiveParameters().getParameters().values().iterator();
-        while (iterator.hasNext()) {
-            HCParameter parameter = iterator.next();
+                c.gridx = 0;
+                c.anchor = GridBagConstraints.FIRST_LINE_START;
+                if (!iterator.hasNext()) c.weighty = 1;
 
-            c.gridx = 0;
-            c.anchor = GridBagConstraints.FIRST_LINE_START;
-            if (!iterator.hasNext()) c.weighty = 1;
+                JTextField parameterName = new JTextField(parameter.getName());
+                parameterName.setPreferredSize(new Dimension(330, elementHeight));
+                parameterName.setEditable(false);
+                parameterName.setBorder(null);
+                paramsPanel.add(parameterName, c);
 
-            JTextField parameterName = new JTextField(parameter.getName());
-            parameterName.setPreferredSize(new Dimension(330, elementHeight));
-            parameterName.setEditable(false);
-            parameterName.setBorder(null);
-            paramsPanel.add(parameterName, c);
+                JComponent parameterControl = null;
 
-            JComponent parameterControl = null;
+                if (parameter.getType() == HCParameter.INPUT_IMAGE) {
+                    // Getting a list of available images
+                    ArrayList<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_IMAGE,
+                            activeModule);
 
-            if (parameter.getType() == HCParameter.INPUT_IMAGE) {
-                // Getting a list of available images
-                ArrayList<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_IMAGE,
-                        activeModule);
-
-                parameterControl = new HCNameInputParameter(parameter);
-                for (HCParameter image : images) {
-                    ((HCNameInputParameter) parameterControl).addItem(image.getValue());
-
-                }
-                ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-                parameterControl.addFocusListener(this);
-                parameterControl.setName("InputParameter");
-
-            } else if (parameter.getType() == HCParameter.INPUT_OBJECTS) {
-                // Getting a list of available images
-                ArrayList<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_OBJECTS,
-                        activeModule);
-
-                parameterControl = new HCNameInputParameter(parameter);
-                for (HCParameter image : images) {
-                    ((HCNameInputParameter) parameterControl).addItem(image.getValue());
-
-                }
-                ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-                parameterControl.addFocusListener(this);
-                parameterControl.setName("InputParameter");
-
-            } else if (parameter.getType() == HCParameter.INTEGER | parameter.getType() == HCParameter.DOUBLE
-                    | parameter.getType() == HCParameter.STRING | parameter.getType() == HCParameter.OUTPUT_IMAGE
-                    | parameter.getType() == HCParameter.OUTPUT_OBJECTS) {
-
-                parameterControl = new TextParameter(parameter);
-                String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
-                ((TextParameter) parameterControl).setText(name);
-                parameterControl.addFocusListener(this);
-                parameterControl.setName("TextParameter");
-
-            } else if (parameter.getType() == HCParameter.BOOLEAN) {
-                parameterControl = new BooleanParameter(parameter);
-                ((BooleanParameter) parameterControl).setSelected(parameter.getValue());
-                ((BooleanParameter) parameterControl).addActionListener(this);
-                parameterControl.setName("BooleanParameter");
-
-            } else if (parameter.getType() == HCParameter.FILE_PATH) {
-                parameterControl = new FileParameter(parameter);
-                ((FileParameter) parameterControl).setText(FilenameUtils.getName(parameter.getValue()));
-                ((FileParameter) parameterControl).addActionListener(this);
-                parameterControl.setName("FileParameter");
-
-            } else if (parameter.getType() == HCParameter.CHOICE_ARRAY) {
-                String[] valueSource = (String[]) parameter.getValueSource();
-                parameterControl = new ChoiceArrayParameter(parameter,valueSource);
-                if (parameter.getValue() != null) {
-                    ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
-
-                }
-                ((ChoiceArrayParameter) parameterControl).addActionListener(this);
-
-                parameterControl.setName("ChoiceArrayParameter");
-
-            } else if (parameter.getType() == HCParameter.MEASUREMENT) {
-                HCMeasurementCollection measurements = modules.getMeasurements(activeModule);
-                String[] measurementChoices = measurements.getMeasurementNames((HCName) parameter.getValueSource());
-                Arrays.sort(measurementChoices);
-
-                parameterControl = new ChoiceArrayParameter(parameter,measurementChoices);
-                if (parameter.getValue() != null) {
-                    ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
-                }
-                ((ChoiceArrayParameter) parameterControl).addActionListener(this);
-                parameterControl.setName("ChoiceArrayParameter");
-
-            } else if (parameter.getType() == HCParameter.CHILD_OBJECTS) {
-                HCRelationshipCollection relationships = modules.getRelationships(activeModule);
-                HCName[] relationshipChoices = relationships.getChildNames((HCName) parameter.getValueSource());
-                parameterControl = new HCNameInputParameter(parameter);
-                if (relationshipChoices != null) {
-                    for (HCName relationship : relationshipChoices) {
-                        ((HCNameInputParameter) parameterControl).addItem(relationship);
+                    parameterControl = new HCNameInputParameter(parameter);
+                    for (HCParameter image : images) {
+                        ((HCNameInputParameter) parameterControl).addItem(image.getValue());
 
                     }
                     ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
+                    parameterControl.addFocusListener(this);
+                    parameterControl.setName("InputParameter");
+
+                } else if (parameter.getType() == HCParameter.INPUT_OBJECTS) {
+                    // Getting a list of available images
+                    ArrayList<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_OBJECTS,
+                            activeModule);
+
+                    parameterControl = new HCNameInputParameter(parameter);
+                    for (HCParameter image : images) {
+                        ((HCNameInputParameter) parameterControl).addItem(image.getValue());
+
+                    }
+                    ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
+                    parameterControl.addFocusListener(this);
+                    parameterControl.setName("InputParameter");
+
+                } else if (parameter.getType() == HCParameter.INTEGER | parameter.getType() == HCParameter.DOUBLE
+                        | parameter.getType() == HCParameter.STRING | parameter.getType() == HCParameter.OUTPUT_IMAGE
+                        | parameter.getType() == HCParameter.OUTPUT_OBJECTS) {
+
+                    parameterControl = new TextParameter(parameter);
+                    String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
+                    ((TextParameter) parameterControl).setText(name);
+                    parameterControl.addFocusListener(this);
+                    parameterControl.setName("TextParameter");
+
+                } else if (parameter.getType() == HCParameter.BOOLEAN) {
+                    parameterControl = new BooleanParameter(parameter);
+                    ((BooleanParameter) parameterControl).setSelected(parameter.getValue());
+                    ((BooleanParameter) parameterControl).addActionListener(this);
+                    parameterControl.setName("BooleanParameter");
+
+                } else if (parameter.getType() == HCParameter.FILE_PATH) {
+                    parameterControl = new FileParameter(parameter);
+                    ((FileParameter) parameterControl).setText(FilenameUtils.getName(parameter.getValue()));
+                    ((FileParameter) parameterControl).addActionListener(this);
+                    parameterControl.setName("FileParameter");
+
+                } else if (parameter.getType() == HCParameter.CHOICE_ARRAY) {
+                    String[] valueSource = (String[]) parameter.getValueSource();
+                    parameterControl = new ChoiceArrayParameter(parameter, valueSource);
+                    if (parameter.getValue() != null) {
+                        ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
+
+                    }
+                    ((ChoiceArrayParameter) parameterControl).addActionListener(this);
+
+                    parameterControl.setName("ChoiceArrayParameter");
+
+                } else if (parameter.getType() == HCParameter.MEASUREMENT) {
+                    HCMeasurementCollection measurements = modules.getMeasurements(activeModule);
+                    String[] measurementChoices = measurements.getMeasurementNames((HCName) parameter.getValueSource());
+                    Arrays.sort(measurementChoices);
+
+                    parameterControl = new ChoiceArrayParameter(parameter, measurementChoices);
+                    if (parameter.getValue() != null) {
+                        ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
+                    }
+                    ((ChoiceArrayParameter) parameterControl).addActionListener(this);
+                    parameterControl.setName("ChoiceArrayParameter");
+
+                } else if (parameter.getType() == HCParameter.CHILD_OBJECTS) {
+                    HCRelationshipCollection relationships = modules.getRelationships(activeModule);
+                    HCName[] relationshipChoices = relationships.getChildNames((HCName) parameter.getValueSource());
+                    parameterControl = new HCNameInputParameter(parameter);
+                    if (relationshipChoices != null) {
+                        for (HCName relationship : relationshipChoices) {
+                            ((HCNameInputParameter) parameterControl).addItem(relationship);
+
+                        }
+                        ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
+                    }
+                    ((HCNameInputParameter) parameterControl).addActionListener(this);
+                    parameterControl.setName("InputParameter");
+
                 }
-                ((HCNameInputParameter) parameterControl).addActionListener(this);
-                parameterControl.setName("InputParameter");
+
+                c.gridx++;
+                c.anchor = GridBagConstraints.FIRST_LINE_END;
+                if (parameterControl != null) {
+                    paramsPanel.add(parameterControl, c);
+                    parameterControl.setPreferredSize(new Dimension(330, elementHeight));
+
+                }
+
+                c.gridy++;
 
             }
-
-            c.gridx++;
-            c.anchor = GridBagConstraints.FIRST_LINE_END;
-            if (parameterControl != null) {
-                paramsPanel.add(parameterControl, c);
-                parameterControl.setPreferredSize(new Dimension(330, elementHeight));
-
-            }
-
-            c.gridy++;
-
         }
+
+        // Creating the notes/help field at the bottom of the panel
+        JTabbedPane notesHelpPane = new JTabbedPane();
+        notesHelpPane.setPreferredSize(new Dimension(686, elementHeight*3));
+
+        String help = activeModule.getHelp();
+        JTextArea helpArea = new JTextArea(help);
+        helpArea.setEditable(false);
+        notesHelpPane.addTab("Help", null, helpArea);
+
+        String notes = activeModule.getNotes();
+        JTextArea notesArea = new JTextArea(notes);
+        notesArea.setName("NotesArea");
+        notesArea.addFocusListener(this);
+        notesHelpPane.addTab("Notes", null, notesArea);
+
+        c.anchor = GridBagConstraints.LAST_LINE_START;
+        c.gridx = 0;
+        c.weighty = 1;
+        c.gridwidth = 2;
+        paramsPanel.add(notesHelpPane,c);
 
         paramsPanel.validate();
         paramsPanel.repaint();
@@ -796,6 +815,9 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
             outputFilePath = fileDialog.getFiles()[0].getAbsolutePath();
             populateAnalysisParameters();
+
+        } else if (((JComponent) object).getName().equals("NotesArea")) {
+            activeModule.setNotes(((JTextArea) object).getText());
 
         } else if (((JComponent) object).getName().equals("XMLCheck")) {
             exportXML = ((JCheckBox) object).isSelected();

@@ -17,6 +17,11 @@ public class ImageJImageLoader extends HCModule {
     }
 
     @Override
+    public String getHelp() {
+        return null;
+    }
+
+    @Override
     public void execute(HCWorkspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");

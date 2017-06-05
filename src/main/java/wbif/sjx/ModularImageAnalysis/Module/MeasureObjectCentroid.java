@@ -1,3 +1,5 @@
+// TODO: Add measurements
+
 package wbif.sjx.ModularImageAnalysis.Module;
 
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -53,6 +55,11 @@ public class MeasureObjectCentroid extends HCModule {
     public String getTitle() {
         return "Measure object centroid";
 
+    }
+
+    @Override
+    public String getHelp() {
+        return null;
     }
 
     @Override

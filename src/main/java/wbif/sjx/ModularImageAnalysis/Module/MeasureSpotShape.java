@@ -17,6 +17,11 @@ public class MeasureSpotShape extends HCModule {
     }
 
     @Override
+    public String getHelp() {
+        return null;
+    }
+
+    @Override
     public void execute(HCWorkspace workspace, boolean verbose) {
 
     }

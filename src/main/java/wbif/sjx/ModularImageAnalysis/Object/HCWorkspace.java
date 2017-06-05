@@ -56,6 +56,16 @@ public class HCWorkspace {
         }
     }
 
+    public HCImage getImage(HCName name) {
+        return images.get(name);
+
+    }
+
+    public HCObjectSet getObjectSet(HCName name) {
+        return objects.get(name);
+
+    }
+
 
     // GETTERS AND SETTERS
 

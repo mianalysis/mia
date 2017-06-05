@@ -47,6 +47,16 @@
             <artifactId>poi-ooxml</artifactId>
             <version>3.16</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+        </dependency>
+        <!--dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math4</artifactId>
+            <version>4.0-SNAPSHOT</version>
+        </dependency-->
 
         <dependency>
             <groupId>ome</groupId>
@@ -91,7 +101,7 @@
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.2.4-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

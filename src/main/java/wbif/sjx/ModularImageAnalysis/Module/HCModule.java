@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 public abstract class HCModule implements Serializable {
     public HCParameterCollection parameters = new HCParameterCollection();
+    private String notes = "";
 
 
     // CONSTRUCTOR
@@ -28,6 +29,8 @@ public abstract class HCModule implements Serializable {
     // PUBLIC METHODS
 
     public abstract String getTitle();
+
+    public abstract String getHelp();
 
     public abstract void execute(HCWorkspace workspace, boolean verbose);
 
@@ -84,4 +87,13 @@ public abstract class HCModule implements Serializable {
 
     }
 
+    public String getNotes() {
+        return notes;
+
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+
+    }
 }
