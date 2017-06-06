@@ -1,13 +1,16 @@
+// TODO: Create my own 3D filters, which don't result in 32-bit images, so I don't need to switch to 8-bit
+
 package wbif.sjx.ModularImageAnalysis.Module;
 
 import fiji.threshold.Auto_Threshold;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Filters3D;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import inra.ijpb.segment.Threshold;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.HCParameterCollection;
-
+import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 02/05/2017.
@@ -45,6 +48,10 @@ public class IdentifyPrimaryObjects extends HCModule {
         // Applying smoothing filter
         if (verbose) System.out.println("["+moduleName+"] Applying filter (radius = "+medFiltR+" px)");
         ipl.setStack(Filters3D.filter(ipl.getImageStack(), Filters3D.MEDIAN, (float) medFiltR, (float) medFiltR, (float) medFiltR));
+
+        // Converting to 8-bit object
+        IntensityMinMax.run(ipl,true);
+        IJ.run(ipl,"8-bit",null);
 
         // Applying threshold
         if (verbose) System.out.println("["+moduleName+"] Applying thresholding (multplier = "+thrMult+" x)");

@@ -2,7 +2,6 @@
 
 package wbif.sjx.ModularImageAnalysis.Module;
 import org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizer;
-import org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
@@ -37,12 +36,13 @@ public class FitGaussian2D extends HCModule {
 
     @Override
     public String getTitle() {
-        return "Spot detection";
+        return "Fit Gaussian 2D";
     }
 
     @Override
     public String getHelp() {
-        return "Gaussian spot fitting.  Can take objects as estimated locations." +
+        return "INCOMPLETE" +
+                "\n\nGaussian spot fitting.  Can take objects as estimated locations." +
                 "\n***Only works in 2D***" +
                 "\n***Only works for refinement of existing spots***";
     }

@@ -23,20 +23,27 @@ public class ParameterWindow {
 
         // Running through all the modules, adding their respective parameters
         for (HCModule module:modules) {
+            gd.addMessage(module.getTitle()+":",titleFont);
+            boolean hasComponents = false;
+
             for (Map.Entry<String,HCParameter> entry:module.getActiveParameters().getParameters().entrySet()) {
                 if (entry.getValue().isVisible()) {
                     if (entry.getValue().getType() == HCParameter.INTEGER) {
                         gd.addNumericField(entry.getKey(), (double) ((int) entry.getValue().getValue()), 1);
+                        hasComponents = true;
 
                     } else if (entry.getValue().getType() == HCParameter.DOUBLE) {
                         gd.addNumericField(entry.getKey(), entry.getValue().getValue(), 1);
+                        hasComponents = true;
 
                     } else if (entry.getValue().getType() == HCParameter.STRING) {
                         gd.addStringField(entry.getKey(), String.valueOf(entry.getValue()));
+                        hasComponents = true;
 
                     } else if (entry.getValue().getType() == HCParameter.CHOICE_ARRAY) {
                         gd.addChoice(entry.getKey(),(String[]) entry.getValue().getValueSource(),
                                 entry.getValue().getValue());
+                        hasComponents = true;
 
                     } else if (entry.getValue().getType() == HCParameter.CHOICE_MAP) {
                         HashMap<String, String> map = entry.getValue().getValue();
@@ -44,8 +51,12 @@ public class ParameterWindow {
                         for (String k:map.keySet()) {
                             gd.addStringField(k,map.get(k),1);
                         }
+
+                        hasComponents = true;
+
                     } else if (entry.getValue().getType() == HCParameter.BOOLEAN) {
                         gd.addCheckbox(entry.getKey(), entry.getValue().getValue());
+                        hasComponents = true;
 
                     } else if (entry.getValue().getType() == HCParameter.MEASUREMENT) {
                         // Getting the measurements available to this module
@@ -53,9 +64,14 @@ public class ParameterWindow {
                         String[] measurementChoices = measurements.getMeasurementNames(
                                 (HCName) entry.getValue().getValueSource());
                         gd.addChoice(entry.getKey(),measurementChoices,measurementChoices[0]);
+                        hasComponents = true;
 
                     }
                 }
+            }
+
+            if (!hasComponents) {
+                gd.remove(gd.getComponentCount()-1);
             }
         }
 

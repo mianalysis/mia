@@ -103,12 +103,19 @@ public class HCParameter implements Serializable {
         this.value = value;
         this.valueSource = valueSource;
 
+        if (type == INPUT_IMAGE | type == INPUT_OBJECTS | type == OUTPUT_IMAGE | type == OUTPUT_OBJECTS | type == OBJECT) {
+            visible = false;
+        }
     }
 
     public HCParameter(String name, int type, Object value) {
         this.type = type;
         this.name = name;
         this.value = value;
+
+        if (type == INPUT_IMAGE | type == INPUT_OBJECTS | type == OUTPUT_IMAGE | type == OUTPUT_OBJECTS | type == OBJECT) {
+            visible = false;
+        }
 
     }
 

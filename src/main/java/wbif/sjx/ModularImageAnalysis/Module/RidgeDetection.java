@@ -25,7 +25,8 @@ public class RidgeDetection extends HCModule {
 
     @Override
     public String getHelp() {
-        return null;
+        return "INCOMPLETE";
+
     }
 
     @Override

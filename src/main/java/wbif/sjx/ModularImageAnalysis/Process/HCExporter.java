@@ -193,7 +193,7 @@ public class HCExporter {
         }
     }
 
-    private Element prepareParametersXML(Document doc, HCModuleCollection modules) {
+    public static Element prepareParametersXML(Document doc, HCModuleCollection modules) {
         Element parametersElement =  doc.createElement("PARAMETERS");
 
         // Running through each parameter set (one for each module

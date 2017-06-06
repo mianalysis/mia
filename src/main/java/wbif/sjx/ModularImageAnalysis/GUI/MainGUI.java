@@ -4,15 +4,24 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI;
 
+import com.drew.lang.annotations.Nullable;
 import ij.ImageJ;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.HCAnalysis;
 import wbif.sjx.ModularImageAnalysis.Process.HCExporter;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -52,6 +61,20 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private boolean exportXLSX = false;
 
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
+//          // Example workflow for loading existing HCAnalysis protocol
+//        File input = new File("C:\\Users\\sc13967\\Google Drive\\People\\K\\Abder Kaidi\\2017-03-30 Texture analysis from 3D SIM\\RPE1_gH2AX_53BP1\\2017-06-06 Analysis2.mia");
+//        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(input));
+//
+//        HCAnalysis analysis = (GUIAnalysis) inputStream.readObject();
+//        inputStream.close();
+//
+//        HCWorkspaceCollection workspaces = new HCWorkspaceCollection();
+//        HCWorkspace workspace = workspaces.getNewWorkspace(null);
+//
+//        new ParameterWindow().updateParameters(analysis.modules);
+//
+//        analysis.execute(workspace);
+
         new ImageJ();
         new MainGUI();
 
@@ -310,7 +333,6 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         c.gridy = 0;
         c.weightx = 0;
         c.weighty = 0;
-        c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
@@ -325,11 +347,11 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
                 HCParameter parameter = iterator.next();
 
                 c.gridx = 0;
+                c.insets = new Insets(5, 5, 5, 5);
                 c.anchor = GridBagConstraints.FIRST_LINE_START;
-                if (!iterator.hasNext()) c.weighty = 1;
 
                 JTextField parameterName = new JTextField(parameter.getName());
-                parameterName.setPreferredSize(new Dimension(330, elementHeight));
+                parameterName.setPreferredSize(new Dimension(315, elementHeight));
                 parameterName.setEditable(false);
                 parameterName.setBorder(null);
                 paramsPanel.add(parameterName, c);
@@ -425,13 +447,25 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
                 }
 
+                // Adding the input component
                 c.gridx++;
+                c.weightx=1;
                 c.anchor = GridBagConstraints.FIRST_LINE_END;
                 if (parameterControl != null) {
                     paramsPanel.add(parameterControl, c);
                     parameterControl.setPreferredSize(new Dimension(330, elementHeight));
 
                 }
+
+                // Adding a checkbox to determine if the parameter should be visible to the user
+                c.gridx++;
+                c.insets = new Insets(5, 0, 5, 5);
+                c.anchor = GridBagConstraints.BASELINE_TRAILING;
+                VisibleCheck visibleCheck = new VisibleCheck(parameter);
+                visibleCheck.setSelected(parameter.isVisible());
+                visibleCheck.setName("VisibleCheck");
+                visibleCheck.addActionListener(this);
+                paramsPanel.add(visibleCheck,c);
 
                 c.gridy++;
 
@@ -456,7 +490,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         c.anchor = GridBagConstraints.LAST_LINE_START;
         c.gridx = 0;
         c.weighty = 1;
-        c.gridwidth = 2;
+        c.gridwidth = 3;
+        c.insets = new Insets(5, 5, 5, 5);
         paramsPanel.add(notesHelpPane,c);
 
         paramsPanel.validate();
@@ -589,7 +624,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         }
     }
 
-    private void saveAnalysis() throws IOException {
+    private void saveAnalysis() throws IOException, ParserConfigurationException, TransformerException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
         fileDialog.setMultipleMode(false);
         fileDialog.setVisible(true);
@@ -599,9 +634,19 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
         }
 
+        // Creating the outputStream
         ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(outputFileName));
 
+        // Adding the analysis object to the output stream
         outputStream.writeObject(analysis);
+
+        // Adding an XML formatted summary of the modules and their values
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        doc.appendChild(HCExporter.prepareParametersXML(doc,analysis.getModules()));
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
+
         outputStream.close();
 
         System.out.println("File saved ("+FilenameUtils.getName(outputFileName)+")");
@@ -688,7 +733,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     }
 
     private void reactToAction(Object object)
-            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException {
+            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException, TransformerException, ParserConfigurationException {
 
         if (((JComponent) object).getName().equals("ControlButton")) {
             if (((JButton) object).getText().equals(addModuleText)) {
@@ -816,6 +861,10 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             outputFilePath = fileDialog.getFiles()[0].getAbsolutePath();
             populateAnalysisParameters();
 
+        } else if (((JComponent) object).getName().equals("VisibleCheck")) {
+            HCParameter parameter = ((VisibleCheck) object).getParameter();
+            parameter.setVisible(((VisibleCheck) object).isSelected());
+
         } else if (((JComponent) object).getName().equals("NotesArea")) {
             activeModule.setNotes(((JTextArea) object).getText());
 
@@ -834,7 +883,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     public void actionPerformed(ActionEvent e) {
         try {
             reactToAction(e.getSource());
-        } catch (IllegalAccessException | InstantiationException | IOException | ClassNotFoundException e1) {
+        } catch (IllegalAccessException | InstantiationException | IOException | ClassNotFoundException | ParserConfigurationException | TransformerException e1) {
             e1.printStackTrace();
         }
     }
@@ -848,7 +897,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     public void focusLost(FocusEvent e) {
         try {
             reactToAction(e.getSource());
-        } catch (IllegalAccessException | InstantiationException | IOException | ClassNotFoundException e1) {
+        } catch (IllegalAccessException | InstantiationException | IOException | ClassNotFoundException | TransformerException | ParserConfigurationException e1) {
             e1.printStackTrace();
         }
     }
