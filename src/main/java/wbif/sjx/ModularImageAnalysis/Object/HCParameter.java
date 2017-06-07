@@ -92,7 +92,7 @@ public class HCParameter implements Serializable {
     private final int type;
     private Object valueSource; // Where the possible values come from (used for CHOICE_ARRAY and MEASUREMENT)
     private Object value;
-    private boolean visible = true;
+    private boolean visible = false;
 
 
     // CONSTRUCTORS
@@ -103,19 +103,12 @@ public class HCParameter implements Serializable {
         this.value = value;
         this.valueSource = valueSource;
 
-        if (type == INPUT_IMAGE | type == INPUT_OBJECTS | type == OUTPUT_IMAGE | type == OUTPUT_OBJECTS | type == OBJECT) {
-            visible = false;
-        }
     }
 
     public HCParameter(String name, int type, Object value) {
         this.type = type;
         this.name = name;
         this.value = value;
-
-        if (type == INPUT_IMAGE | type == INPUT_OBJECTS | type == OUTPUT_IMAGE | type == OUTPUT_OBJECTS | type == OBJECT) {
-            visible = false;
-        }
 
     }
 

@@ -16,6 +16,7 @@ import java.io.Serializable;
 public abstract class HCModule implements Serializable {
     public HCParameterCollection parameters = new HCParameterCollection();
     private String notes = "";
+    private boolean enabled = true;
 
 
     // CONSTRUCTOR
@@ -95,5 +96,13 @@ public abstract class HCModule implements Serializable {
     public void setNotes(String notes) {
         this.notes = notes;
 
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

@@ -4,15 +4,12 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI;
 
-import com.drew.lang.annotations.Nullable;
 import ij.ImageJ;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Process.HCAnalysis;
 import wbif.sjx.ModularImageAnalysis.Process.HCExporter;
 
 import javax.swing.*;
@@ -26,6 +23,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -50,8 +49,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private JPanel modulesPanel = new JPanel();
     private JPanel paramsPanel = new JPanel();
     private JPanel statusPanel = new JPanel();
-    JPopupMenu moduleListMenu = new JPopupMenu();
-    Thread t = null;
+    private JPopupMenu moduleListMenu = new JPopupMenu();
+    private Thread t = null;
 
     private GUIAnalysis analysis = new GUIAnalysis();
     private HCModuleCollection modules = analysis.modules;
@@ -91,9 +90,6 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - frameWidth) / 2, (screenSize.height - frameHeight) / 2);
 
-        // Populating the list containing all available modules
-        listAvailableModules();
-
         // Creating buttons to add and remove modules
         initialiseControlPanel();
         frame.add(controlPanel,c);
@@ -121,6 +117,11 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         frame.addMouseListener(this);
         frame.setVisible(true);
         frame.pack();
+
+        // Populating the list containing all available modules
+        listAvailableModules();
+        moduleListMenu.show(frame,0,0);
+        moduleListMenu.setVisible(false);
 
     }
 
@@ -239,6 +240,30 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         modulesPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         modulesPanel.setPreferredSize(new Dimension(buttonWidth + 15, frameHeight-50));
         modulesPanel.setLayout(new GridBagLayout());
+
+        // Adding analysis options button
+        GridBagConstraints c = new GridBagConstraints();
+
+        JButton analysisOptionsButton = new JButton();
+        analysisOptionsButton.setSelected(false);
+        analysisOptionsButton.addActionListener(this);
+        analysisOptionsButton.setPreferredSize(new Dimension(-1, elementHeight));
+        analysisOptionsButton.setText("Analysis options");
+        analysisOptionsButton.setName("AnalysisOptionsButton");
+
+        c.gridx = 0;
+        c.gridy++;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.insets = new Insets(5,5,5,5);
+        c.anchor = GridBagConstraints.LAST_LINE_START;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        modulesPanel.add(analysisOptionsButton, c);
+
+        modulesPanel.validate();
+        modulesPanel.repaint();
+
+
     }
 
     private void initialiseParametersPanel() {
@@ -286,11 +311,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         modulesPanel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 1;
         c.weighty = 0;
-        c.insets = new Insets(5, 5, 5, 5);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.PAGE_START;
 
@@ -298,11 +320,28 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         Iterator<HCModule> iterator = modules.iterator();
         while (iterator.hasNext()) {
             HCModule module = iterator.next();
+
+            // Adding the module enabled checkbox
+            c.gridx = 0;
+            c.gridy++;
+            c.weightx = 0;
+            c.insets = new Insets(5, 5, 5, 0);
+            c.anchor = GridBagConstraints.BASELINE;
+            ModuleEnabledCheck enabledCheck = new ModuleEnabledCheck(module);
+            enabledCheck.addActionListener(this);
+            modulesPanel.add(enabledCheck,c);
+
+            // Adding the main module button
+            c.gridx++;
+            c.weightx = 1;
+            c.insets = new Insets(5, 5, 5, 5);
+            c.anchor = GridBagConstraints.FIRST_LINE_START;
             ModuleButton button = new ModuleButton(module);
+            button.setPreferredSize(new Dimension(-1, elementHeight));
             button.setSelected(false);
             button.addActionListener(this);
             button.setName("ModuleButton");
-            c.gridy++;
+            if (!module.isEnabled()) button.setForeground(Color.GRAY);
             if (activeModule != null) {
                 if (module == activeModule) button.setSelected(true);
             }
@@ -314,11 +353,16 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         JButton analysisOptionsButton = new JButton();
         analysisOptionsButton.setSelected(false);
         analysisOptionsButton.addActionListener(this);
+        analysisOptionsButton.setPreferredSize(new Dimension(-1, elementHeight));
         analysisOptionsButton.setText("Analysis options");
         analysisOptionsButton.setName("AnalysisOptionsButton");
+        c.gridx = 0;
         c.gridy++;
+        c.weightx = 1;
         c.weighty = 1;
-        c.anchor = GridBagConstraints.PAGE_END;
+        c.gridwidth = 2;
+        c.insets = new Insets(5,5,5,5);
+        c.anchor = GridBagConstraints.LAST_LINE_START;
         modulesPanel.add(analysisOptionsButton, c);
 
         modulesPanel.validate();
@@ -462,8 +506,6 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
                 c.insets = new Insets(5, 0, 5, 5);
                 c.anchor = GridBagConstraints.BASELINE_TRAILING;
                 VisibleCheck visibleCheck = new VisibleCheck(parameter);
-                visibleCheck.setSelected(parameter.isVisible());
-                visibleCheck.setName("VisibleCheck");
                 visibleCheck.addActionListener(this);
                 paramsPanel.add(visibleCheck,c);
 
@@ -568,27 +610,43 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         Set<Class<? extends HCModule>> availableModules = reflections.getSubTypesOf(HCModule.class);
 
         // Creating new instances of these classes and adding to ArrayList
-        ArrayList<HCModule> availableModulesList = new ArrayList<>();
+        TreeMap<String,ArrayList<HCModule>> availableModulesList = new TreeMap<>();
         for (Class clazz : availableModules) {
-            availableModulesList.add((HCModule) clazz.newInstance());
+            String[] names = clazz.getPackage().getName().split("\\.");
+            String pkg = names[names.length-1];
+
+            availableModulesList.putIfAbsent(pkg,new ArrayList<>());
+            availableModulesList.get(pkg).add((HCModule) clazz.newInstance());
+
         }
 
         // Sorting the ArrayList based on module title
-        Collections.sort(availableModulesList, Comparator.comparing(HCModule::getTitle));
+        for (ArrayList<HCModule> modules:availableModulesList.values()) {
+            Collections.sort(modules, Comparator.comparing(HCModule::getTitle));
+        }
 
         // Adding the modules to the list
-        for (HCModule module : availableModulesList) {
-            PopupMenuItem menuItem = new PopupMenuItem(module);
-            menuItem.addActionListener(this);
-            menuItem.setName("ModuleName");
-            moduleListMenu.add(menuItem);
+        for (String pkgName:availableModulesList.keySet()) {
+            ArrayList<HCModule> modules = availableModulesList.get(pkgName);
+            JMenu packageMenu = new JMenu(pkgName);
+            packageMenu.setName("ModuleListPackage");
+            packageMenu.addMouseListener(this);
+
+            for (HCModule module : modules) {
+                PopupMenuItem menuItem = new PopupMenuItem(module);
+                menuItem.addActionListener(this);
+                menuItem.setName("ModuleName");
+                packageMenu.add(menuItem);
+
+            }
+
+            moduleListMenu.add(packageMenu);
 
         }
     }
 
     private void addModule() {
-        moduleListMenu.addMouseListener(this);
-        moduleListMenu.setLocation(frame.getX(), frame.getY());
+        moduleListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
         moduleListMenu.setVisible(true);
 
     }
@@ -776,20 +834,19 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             if (((PopupMenuItem) object).getModule() == null) return;
 
             // Adding it after the currently-selected module
-            HCModule module = ((PopupMenuItem) object).getModule().getClass().newInstance();
+            HCModule newModule = ((PopupMenuItem) object).getModule().getClass().newInstance();
             if (activeModule != null) {
-                for (Component component : modulesPanel.getComponents()) {
-                    if (((ModuleButton) component).getModule() == activeModule) {
-                        int pos = modules.indexOf(((ModuleButton) component).getModule()) + 1;
-                        modules.add(pos, module);
-
+                int counter = 0;
+                for (HCModule module:modules) {
+                    counter++;
+                    if (module == activeModule) {
+                        modules.add(counter,newModule);
                         break;
-
                     }
                 }
 
             } else {
-                modules.add(module);
+                modules.add(newModule);
 
             }
 
@@ -797,13 +854,18 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             populateModuleList();
 
             // Selecting the added module
-            selectModule(module);
+            selectModule(newModule);
 
         } else if (((JComponent) object).getName().equals("AnalysisOptionsButton")) {
             // Selecting the added module
             selectModule(null);
 
             populateAnalysisParameters();
+
+        } else if (((JComponent) object).getName().equals("ModuleEnabledCheck")) {
+            ((ModuleEnabledCheck) object).getModule().setEnabled(((ModuleEnabledCheck) object).isSelected());
+            populateModuleList();
+            populateModuleParameters();
 
         } else if (((JComponent) object).getName().equals("ModuleButton")) {
             selectModule(((ModuleButton) object).getModule());
@@ -915,7 +977,11 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (e.getComponent().getName().equals("ModuleListPackage")) {
+            // Adding the mouse listener to show the relevant sub-menu
+            moduleListMenu.show(frame, e.getX(), e.getY());
 
+        }
     }
 
     @Override

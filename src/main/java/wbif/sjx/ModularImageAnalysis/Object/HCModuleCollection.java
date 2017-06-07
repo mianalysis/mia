@@ -17,7 +17,7 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
                 break;
             }
 
-            module.addMeasurements(measurements);
+            if (module.isEnabled()) module.addMeasurements(measurements);
 
         }
 
@@ -74,7 +74,7 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
                 break;
             }
 
-            module.addRelationships(relationships);
+            if (module.isEnabled()) module.addRelationships(relationships);
 
         }
 

@@ -51,7 +51,7 @@ public abstract class HCAnalysis implements Serializable {
 
         // Running through modules
         for (HCModule module:modules) {
-            module.execute(workspace,verbose);
+            if (module.isEnabled()) module.execute(workspace,verbose);
 
             if (shutdown) {
                 break;

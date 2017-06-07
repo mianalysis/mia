@@ -134,6 +134,12 @@ public class HCObject {
         this.groupID = groupID;
     }
 
+    public int getNumberOfDimensions() {
+        // The number of position dimensions, plus the original 3 (XYZ)
+        return positions.size()+3;
+
+    }
+
     /**
      * Setting one of the XYZ coordinates
      *
@@ -194,16 +200,6 @@ public class HCObject {
 
     public void setCoordinates(HashMap<Integer, ArrayList<Integer>> coordinates) {
         this.coordinates = coordinates;
-
-    }
-
-    public int getExtraDimension(int dim) {
-        return positions.get(dim) == null ? -1 : positions.get(dim);
-
-    }
-
-    public void setExtraDimensions(int dim, int value) {
-        positions.put(dim, value);
 
     }
 
