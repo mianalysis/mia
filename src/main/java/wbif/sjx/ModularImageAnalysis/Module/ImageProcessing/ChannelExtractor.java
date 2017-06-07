@@ -1,7 +1,8 @@
-package wbif.sjx.ModularImageAnalysis.Module;
+package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.ImagePlus;
 import ij.plugin.SubHyperstackMaker;
+import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**

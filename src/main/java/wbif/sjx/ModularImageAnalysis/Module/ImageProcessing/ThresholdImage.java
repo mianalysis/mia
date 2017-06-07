@@ -1,12 +1,10 @@
-package wbif.sjx.ModularImageAnalysis.Module;
+package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import fiji.threshold.Auto_Threshold;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.Prefs;
 import ij.plugin.Duplicator;
-import ij.process.ImageProcessor;
-import inra.ijpb.segment.Threshold;
+import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 

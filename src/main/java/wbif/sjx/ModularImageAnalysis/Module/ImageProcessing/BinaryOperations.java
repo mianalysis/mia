@@ -1,8 +1,9 @@
-package wbif.sjx.ModularImageAnalysis.Module;
+package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -16,9 +17,10 @@ public class BinaryOperations extends HCModule {
     public static final String NUM_ITERATIONS = "Number of iterations";
 
     private static final String DILATE = "Dilate 2D";
+    private static final String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
     private static final String ERODE = "Erode 2D";
     private static final String FILL_HOLES_2D = "Fill holes 2D";
-    private static final String[] OPERATION_MODES = new String[]{DILATE,ERODE,FILL_HOLES_2D};
+    private static final String[] OPERATION_MODES = new String[]{DILATE,MANHATTAN_DISTANCE_MAP_2D,ERODE,FILL_HOLES_2D};
 
     @Override
     public String getTitle() {
@@ -83,7 +85,7 @@ public class BinaryOperations extends HCModule {
         parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(APPLY_TO_INPUT,HCParameter.BOOLEAN,true));
         parameters.addParameter(new HCParameter(OUTPUT_IMAGE,HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(OPERATION_MODE,HCParameter.CHOICE_ARRAY,FILL_HOLES_2D,OPERATION_MODES));
+        parameters.addParameter(new HCParameter(OPERATION_MODE,HCParameter.CHOICE_ARRAY,OPERATION_MODES[0],OPERATION_MODES));
         parameters.addParameter(new HCParameter(NUM_ITERATIONS,HCParameter.INTEGER,1));
 
     }

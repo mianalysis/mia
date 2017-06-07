@@ -1,6 +1,7 @@
-package wbif.sjx.ModularImageAnalysis.Module;
+package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
+import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
