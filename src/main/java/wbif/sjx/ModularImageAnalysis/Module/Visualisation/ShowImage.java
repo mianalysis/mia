@@ -27,7 +27,7 @@ public class ShowImage extends HCModule {
 
         HCName imageName = parameters.getValue(DISPLAY_IMAGE);
 
-        workspace.getImages().get(imageName).getImagePlus().show();
+        workspace.getImage(imageName).getImagePlus().show();
 
     }
 

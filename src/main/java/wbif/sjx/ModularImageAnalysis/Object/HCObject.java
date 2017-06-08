@@ -19,12 +19,12 @@ public class HCObject {
     /**
      * Unique instance ID for this object
      */
-    private int ID = 0;
+    private int ID;
 
     /**
      * ID number shared between linked objects (e.g. spots in a track)
      */
-    private int groupID = 0;
+    private int groupID = 1;
 
     /**
      * 3D coordinates of this instance of the object.

@@ -123,13 +123,6 @@ public class RunTrackMate extends HCModule {
         if (!trackmate.process()) IJ.log(trackmate.getErrorMessage());
 
         if (!(boolean) parameters.getValue(DO_TRACKING)) {
-//            TrackMate trackmate = new TrackMate(model, settings);
-//
-//            // Running TrackMate
-//            if (verbose) System.out.println("["+moduleName+"] Executing TrackMate spot detection");
-//            if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());
-//            if (!trackmate.execDetection()) IJ.log(trackmate.getErrorMessage());
-
             // Getting objects and adding them to the output objects
             if (verbose) System.out.println("["+moduleName+"] Processing detected objects");
             HCObjectSet objects = new HCObjectSet(outputObjectsName);
@@ -141,6 +134,14 @@ public class RunTrackMate extends HCModule {
                 object.addCoordinate(HCObject.X,(int) spot.getDoublePosition(0));
                 object.addCoordinate(HCObject.Y,(int) spot.getDoublePosition(1));
                 object.addCoordinate(HCObject.Z,(int) spot.getDoublePosition(2));
+
+                // Adding calibration values to the HCObject (physical distance per pixel)
+                object.addCalibration(HCObject.X,calibration.getX(1));
+                object.addCalibration(HCObject.Y,calibration.getY(1));
+                object.addCalibration(HCObject.Z,calibration.getZ(1));
+                object.addCalibration(HCObject.C,1);
+                object.addCalibration(HCObject.T,1);
+                object.setCalibratedUnits(calibration.getUnits());
 
                 HCMeasurement radiusMeasure = new HCMeasurement(HCMeasurement.RADIUS,spot.getFeature(Spot.RADIUS));
                 radiusMeasure.setSource(this);

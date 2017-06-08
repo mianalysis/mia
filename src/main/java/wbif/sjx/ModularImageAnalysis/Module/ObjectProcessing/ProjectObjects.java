@@ -68,6 +68,7 @@ public class ProjectObjects extends HCModule {
                 int i = projCoords.get(key);
                 outputObject.addCoordinate(HCObject.X,x.get(i));
                 outputObject.addCoordinate(HCObject.Y,y.get(i));
+                outputObject.addCoordinate(HCObject.Z,0);
             }
 
             // Copying additional dimensions from inputObject
@@ -79,6 +80,7 @@ public class ProjectObjects extends HCModule {
             // Inheriting calibration from parent
             outputObject.addCalibration(HCObject.X,outputObject.getParent().getCalibration(HCObject.X));
             outputObject.addCalibration(HCObject.Y,outputObject.getParent().getCalibration(HCObject.Y));
+            outputObject.addCalibration(HCObject.Z,outputObject.getParent().getCalibration(HCObject.Z));
             outputObject.setCalibratedUnits(outputObject.getParent().getCalibratedUnits());
 
             // Adding current object to object set

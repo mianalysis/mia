@@ -1,6 +1,6 @@
-// TODO: Add message panel at the top of the parameter window to write what third party libraries are being used
 // TODO: Add controls for all parameter types (hashsets, etc.)
 // TODO: Put module list and parameters in scrollable panes
+// TODO: If an assigned image/object name is no longer available, flag up the module button in red
 
 package wbif.sjx.ModularImageAnalysis.GUI;
 
@@ -23,8 +23,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -47,7 +45,9 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private Frame frame = new JFrame();
     private JPanel controlPanel = new JPanel();
     private JPanel modulesPanel = new JPanel();
+    private JScrollPane modulesScrollPane = new JScrollPane(modulesPanel);
     private JPanel paramsPanel = new JPanel();
+    private JScrollPane paramsScrollPane = new JScrollPane(paramsPanel);
     private JPanel statusPanel = new JPanel();
     private JPopupMenu moduleListMenu = new JPopupMenu();
     private Thread t = null;
@@ -60,6 +60,18 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private boolean exportXLSX = false;
 
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
+//        new ImageJ();
+//        IJ.runMacro("waitForUser");
+//
+//        ImagePlus ipl = IJ.getImage();
+//
+//
+//        short[] weights = ChamferWeights3D.CITY_BLOCK.getShortWeights();
+//        DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,false);
+//        ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
+//
+//        new ImagePlus("dist",distanceMap).show();
+
 //          // Example workflow for loading existing HCAnalysis protocol
 //        File input = new File("C:\\Users\\sc13967\\Google Drive\\People\\K\\Abder Kaidi\\2017-03-30 Texture analysis from 3D SIM\\RPE1_gH2AX_53BP1\\2017-06-06 Analysis2.mia");
 //        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(input));
@@ -97,15 +109,15 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         // Initialising the module list
         initialisingModulesPanel();
         c.gridx++;
-        frame.add(modulesPanel,c);
+        frame.add(modulesScrollPane,c);
 
         // Initialising the parameters panel
         initialiseParametersPanel();
         c.gridx++;
         c.insets = new Insets(5,5,5,5);
-        frame.add(paramsPanel,c);
+        frame.add(paramsScrollPane,c);
 
-//        // Initialising the status panel
+        //        // Initialising the status panel
 //        initialiseStatusPanel();
 //        c.gridx = 0;
 //        c.gridy++;
@@ -236,42 +248,32 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private void initialisingModulesPanel() {
         int buttonWidth = 300;
 
+        // Initialising the scroll panel
+        modulesScrollPane.setPreferredSize(new Dimension(buttonWidth + 15, frameHeight-50));
+        modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         // Initialising the panel for module buttons
-        modulesPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        modulesPanel.setPreferredSize(new Dimension(buttonWidth + 15, frameHeight-50));
         modulesPanel.setLayout(new GridBagLayout());
-
-        // Adding analysis options button
-        GridBagConstraints c = new GridBagConstraints();
-
-        JButton analysisOptionsButton = new JButton();
-        analysisOptionsButton.setSelected(false);
-        analysisOptionsButton.addActionListener(this);
-        analysisOptionsButton.setPreferredSize(new Dimension(-1, elementHeight));
-        analysisOptionsButton.setText("Analysis options");
-        analysisOptionsButton.setName("AnalysisOptionsButton");
-
-        c.gridx = 0;
-        c.gridy++;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.insets = new Insets(5,5,5,5);
-        c.anchor = GridBagConstraints.LAST_LINE_START;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        modulesPanel.add(analysisOptionsButton, c);
-
         modulesPanel.validate();
         modulesPanel.repaint();
 
+        modulesScrollPane.validate();
+        modulesScrollPane.repaint();
 
     }
 
     private void initialiseParametersPanel() {
+        // Initialising the scroll panel
+        paramsScrollPane.setPreferredSize(new Dimension(700, frameHeight-50));
+        paramsScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        paramsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        paramsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         paramsPanel.removeAll();
 
         paramsPanel.setLayout(new GridBagLayout());
-        paramsPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        paramsPanel.setPreferredSize(new Dimension(700, frameHeight-50));
 
         // Adding placeholder text
         JTextField textField = new JTextField("Select a module to edit its parameters");
@@ -282,6 +284,9 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         paramsPanel.validate();
         paramsPanel.repaint();
+
+        paramsScrollPane.validate();
+        paramsScrollPane.repaint();
 
     }
 
@@ -314,7 +319,6 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         c.gridy = 0;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.PAGE_START;
 
         // Adding module buttons
         Iterator<HCModule> iterator = modules.iterator();
@@ -326,7 +330,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             c.gridy++;
             c.weightx = 0;
             c.insets = new Insets(5, 5, 5, 0);
-            c.anchor = GridBagConstraints.BASELINE;
+            c.anchor = GridBagConstraints.BASELINE_LEADING;
             ModuleEnabledCheck enabledCheck = new ModuleEnabledCheck(module);
             enabledCheck.addActionListener(this);
             modulesPanel.add(enabledCheck,c);
@@ -349,24 +353,20 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         }
 
-        // Adding analysis options button
-        JButton analysisOptionsButton = new JButton();
-        analysisOptionsButton.setSelected(false);
-        analysisOptionsButton.addActionListener(this);
-        analysisOptionsButton.setPreferredSize(new Dimension(-1, elementHeight));
-        analysisOptionsButton.setText("Analysis options");
-        analysisOptionsButton.setName("AnalysisOptionsButton");
+        // Adding an invisible separator to prevent the checkboxes sitting in the middle of empty space
+        c.weighty = 1;
         c.gridx = 0;
         c.gridy++;
-        c.weightx = 1;
-        c.weighty = 1;
         c.gridwidth = 2;
-        c.insets = new Insets(5,5,5,5);
-        c.anchor = GridBagConstraints.LAST_LINE_START;
-        modulesPanel.add(analysisOptionsButton, c);
+        JSeparator separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0,0));
+        separator.setName("Separator");
+        modulesPanel.add(separator,c);
 
         modulesPanel.validate();
         modulesPanel.repaint();
+        modulesScrollPane.validate();
+        modulesScrollPane.repaint();
 
     }
 
@@ -377,6 +377,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         c.gridy = 0;
         c.weightx = 0;
         c.weighty = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
@@ -494,10 +495,10 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
                 // Adding the input component
                 c.gridx++;
                 c.weightx=1;
-                c.anchor = GridBagConstraints.FIRST_LINE_END;
+                c.anchor = GridBagConstraints.EAST;
                 if (parameterControl != null) {
                     paramsPanel.add(parameterControl, c);
-                    parameterControl.setPreferredSize(new Dimension(330, elementHeight));
+                    parameterControl.setPreferredSize(new Dimension(320, elementHeight));
 
                 }
 
@@ -516,7 +517,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         // Creating the notes/help field at the bottom of the panel
         JTabbedPane notesHelpPane = new JTabbedPane();
-        notesHelpPane.setPreferredSize(new Dimension(686, elementHeight*3));
+        notesHelpPane.setPreferredSize(new Dimension(-1, elementHeight*3));
 
         String help = activeModule.getHelp();
         JTextArea helpArea = new JTextArea(help);
@@ -530,6 +531,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         notesHelpPane.addTab("Notes", null, notesArea);
 
         c.anchor = GridBagConstraints.LAST_LINE_START;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.weighty = 1;
         c.gridwidth = 3;
@@ -538,6 +540,9 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         paramsPanel.validate();
         paramsPanel.repaint();
+
+        paramsScrollPane.validate();
+        paramsScrollPane.repaint();
 
     }
 
@@ -725,6 +730,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         modules = analysis.getModules();
 
         populateModuleList();
+        populateModuleParameters();
 
         System.out.println("File loaded ("+FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
 

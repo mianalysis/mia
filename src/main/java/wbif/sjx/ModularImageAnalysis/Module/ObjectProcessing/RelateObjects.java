@@ -3,8 +3,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import inra.ijpb.binary.ChamferWeights;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.binary.distmap.DistanceTransform3DShort;
+import inra.ijpb.binary.distmap.DistanceTransform3x3Short;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -23,6 +25,8 @@ public class RelateObjects extends HCModule {
     private final static String MATCHING_IDS = "Matching IDs";
     private final static String SPATIAL_OVERLAP = "Spatial overlap";
     private final static String[] RELATE_MODES = new String[]{MATCHING_IDS,SPATIAL_OVERLAP};
+
+    private final static String DIST_EDGE_PX_MEAS = "Distance from parent edge (px)";
 
     public static void linkMatchingIDs(HCObjectSet parentObjects, HCObjectSet childObjects) {
         for (HCObject parentObject:parentObjects.values()) {
@@ -47,19 +51,19 @@ public class RelateObjects extends HCModule {
             ArrayList<Integer> parentZ = parentObject.getCoordinates(HCObject.Z);
 
             // Creating a Hyperstack to hold the distance transform
-            int[][] coordinateRange = parentObject.getCoordinateRange();
-            ImagePlus ipl = IJ.createHyperStack("Objects", coordinateRange[HCObject.X][1] + 1,
-                    coordinateRange[HCObject.Y][1] + 1, 1, coordinateRange[HCObject.Z][1] + 1, 1, 16);
+            int[][] range = parentObject.getCoordinateRange();
+            ImagePlus ipl = IJ.createHyperStack("Objects", range[HCObject.X][1]-range[HCObject.X][0] + 1,
+                    range[HCObject.Y][1]-range[HCObject.Y][0] + 1, 1, range[HCObject.Z][1]-range[HCObject.Z][0], 1, 8);
 
             // Setting pixels corresponding to the parent object to 1
             for (int i=0;i<parentX.size();i++) {
-                ipl.setPosition(1,parentZ.get(i),1);
-                ipl.getProcessor().set(parentX.get(i),parentY.get(i),1);
+                ipl.setPosition(1,parentZ.get(i)-range[HCObject.Z][0],1);
+                ipl.getProcessor().set(parentX.get(i)-range[HCObject.X][0],parentY.get(i)-range[HCObject.Y][0],255);
 
             }
 
             // Creating distance map using MorphoLibJ
-            short[] weights = ChamferWeights3D.CITY_BLOCK.getShortWeights();
+            short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
             DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,false);
             ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
 
@@ -93,14 +97,24 @@ public class RelateObjects extends HCModule {
                         childObject.setParent(parentObject);
 
                         // Getting position within current parent object
-                        HCMeasurement absDistanceFromEdge = new HCMeasurement("Distance from parent edge (px)");
-                        absDistanceFromEdge.setValue(distanceMap.getVoxel(xCent,yCent,zCent));
+                        HCMeasurement absDistanceFromEdge = new HCMeasurement(DIST_EDGE_PX_MEAS);
+                        absDistanceFromEdge.setValue(distanceMap.getVoxel(xCent-range[HCObject.X][0],yCent-range[HCObject.Y][0],zCent-range[HCObject.Z][0]));
                         childObject.addMeasurement(absDistanceFromEdge);
 
                         break;
 
                     }
                 }
+            }
+        }
+
+        // Applying a blank measurement to any children missing one
+        for (HCObject childObject:childObjects.values()) {
+            if (childObject.getParent() == null) {
+                HCMeasurement absDistanceFromEdge = new HCMeasurement(DIST_EDGE_PX_MEAS);
+                absDistanceFromEdge.setValue(Double.NaN);
+                childObject.addMeasurement(absDistanceFromEdge);
+
             }
         }
     }
@@ -158,7 +172,7 @@ public class RelateObjects extends HCModule {
 
     @Override
     public void addMeasurements(HCMeasurementCollection measurements) {
-        measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS),"Distance from parent edge (px)");
+        measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS),DIST_EDGE_PX_MEAS);
 
     }
 

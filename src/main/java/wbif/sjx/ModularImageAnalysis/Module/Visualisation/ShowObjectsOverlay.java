@@ -20,6 +20,7 @@ import java.util.Random;
 public class ShowObjectsOverlay extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String SHOW_LABEL = "Show label";
     public static final String USE_GROUP_ID = "Use group ID";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT = "Measurement";
@@ -29,6 +30,7 @@ public class ShowObjectsOverlay extends HCModule {
     private static final String MEASUREMENT_VALUE = "Measurement value";
     private static final String PARENT_ID = "Parent ID";
     private static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE,PARENT_ID};
+
 
     @Override
     public String getTitle() {
@@ -46,6 +48,7 @@ public class ShowObjectsOverlay extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting parameters
+        boolean showID = parameters.getValue(SHOW_LABEL);
         boolean useGroupID = parameters.getValue(USE_GROUP_ID);
         String colourMode = parameters.getValue(COLOUR_MODE);
 
@@ -59,10 +62,13 @@ public class ShowObjectsOverlay extends HCModule {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-        ImagePlus hyperstack = HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames());
-        if (!hyperstack.isHyperStack()) new StackConverter(hyperstack).convertToRGB();
+        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
 
-        hyperstack.setOverlay(new Overlay());
+        }
+        //        if (!hyperstack.isHyperStack()) new StackConverter(hyperstack).convertToRGB();
+
+        ipl.setOverlay(new Overlay());
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat(1);
@@ -74,9 +80,9 @@ public class ShowObjectsOverlay extends HCModule {
 
         // Running through each object, adding it to the overlay along with an ID label
         for (HCObject object:inputObjects.values()) {
-
+            // Default hue value in case none is assigned
             float H = 0.2f;
-            Color colour = Color.ORANGE;
+
             switch (colourMode) {
                 case RANDOM_COLOUR:
                     // Random colours
@@ -102,7 +108,7 @@ public class ShowObjectsOverlay extends HCModule {
 
             }
 
-            colour = Color.getHSBColor(H, 1, 1);
+            Color colour = Color.getHSBColor(H, 1, 1);
 
             double xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.X),MeasureObjectCentroid.MEAN);
             double yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Y),MeasureObjectCentroid.MEAN);
@@ -115,32 +121,34 @@ public class ShowObjectsOverlay extends HCModule {
 
             // Adding circles where the object centroids are
             OvalRoi roi = new OvalRoi(xMean-2,yMean-2,4,4);
-            if (hyperstack.isHyperStack()) {
+            if (ipl.isHyperStack()) {
                 roi.setPosition(c, z, t);
             } else {
                 roi.setPosition(Math.max(Math.max(c,z),t));
             }
             roi.setStrokeColor(colour);
-            hyperstack.getOverlay().add(roi);
+            ipl.getOverlay().add(roi);
 
-            // Adding text label
-            TextRoi text;
-            if (useGroupID) {
-                text = new TextRoi(xMean, yMean, String.valueOf(object.getGroupID()));
-            } else {
-                text = new TextRoi(xMean, yMean, String.valueOf(object.getID()));
-            }
-            if (hyperstack.isHyperStack()) {
-                text.setPosition(c, z, t);
-            } else {
-                text.setPosition(Math.max(Math.max(c,z),t));
-            }
-            text.setStrokeColor(colour);
-            hyperstack.getOverlay().add(text);
+            if (showID) {
+                // Adding text label
+                TextRoi text;
+                if (useGroupID) {
+                    text = new TextRoi(xMean, yMean, String.valueOf(object.getGroupID()));
+                } else {
+                    text = new TextRoi(xMean, yMean, String.valueOf(object.getID()));
+                }
+                if (ipl.isHyperStack()) {
+                    text.setPosition(c, z, t);
+                } else {
+                    text.setPosition(Math.max(Math.max(c, z), t));
+                }
+                text.setStrokeColor(colour);
+                ipl.getOverlay().add(text);
 
+            }
         }
 
-        hyperstack.show();
+        ipl.show();
 
     }
 
@@ -148,6 +156,7 @@ public class ShowObjectsOverlay extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new HCParameter(SHOW_LABEL,HCParameter.BOOLEAN,true));
         parameters.addParameter(new HCParameter(USE_GROUP_ID,HCParameter.BOOLEAN,true));
         parameters.addParameter(new HCParameter(COLOUR_MODE,HCParameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
         parameters.addParameter(new HCParameter(MEASUREMENT,HCParameter.MEASUREMENT,null,null));
@@ -159,7 +168,12 @@ public class ShowObjectsOverlay extends HCModule {
         HCParameterCollection returnedParameters = new HCParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(USE_GROUP_ID));
+        returnedParameters.addParameter(parameters.getParameter(SHOW_LABEL));
+
+        if (parameters.getValue(SHOW_LABEL)) {
+            returnedParameters.addParameter(parameters.getParameter(USE_GROUP_ID));
+        }
+
         returnedParameters.addParameter(parameters.getParameter(COLOUR_MODE));
 
         if (parameters.getValue(COLOUR_MODE).equals(COLOUR_MODES[2])) {

@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -49,7 +50,9 @@ public class IdentifyObjects extends HCModule {
                     }
                 }
             }
+
             inputImagePlus.setPosition(1,1,1);
+
         }
 
         // Applying connected components labelling
@@ -61,6 +64,20 @@ public class IdentifyObjects extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
         HCImage tempImage = new HCImage(new HCName("Temp image"),inputImagePlus);
         HCObjectSet outputObjects = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectsName);
+
+        // Adding distance calibration to each object
+        Calibration calibration = inputImagePlus.getCalibration();
+        for (HCObject object:outputObjects.values()) {
+            object.addCalibration(HCObject.X,calibration.getX(1));
+            object.addCalibration(HCObject.Y,calibration.getY(1));
+            object.addCalibration(HCObject.Z,calibration.getZ(1));
+            object.addCalibration(HCObject.C,1);
+            object.addCalibration(HCObject.T,1);
+            object.setCalibratedUnits(calibration.getUnits());
+
+        }
+
+        if (verbose) System.out.println("["+moduleName+"] "+outputObjects.size()+" objects detected");
 
         // Adding objects to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName.getName()+") to workspace");

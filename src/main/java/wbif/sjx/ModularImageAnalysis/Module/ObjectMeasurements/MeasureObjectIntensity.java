@@ -102,6 +102,11 @@ public class MeasureObjectIntensity extends HCModule {
 
     @Override
     public void addMeasurements(HCMeasurementCollection measurements) {
+        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MEAN");
+        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_STD");
+        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MIN");
+        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MAX");
 
     }
 

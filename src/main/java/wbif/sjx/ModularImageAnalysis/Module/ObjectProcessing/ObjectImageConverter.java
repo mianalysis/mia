@@ -21,9 +21,9 @@ public class ObjectImageConverter extends HCModule {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String USE_GROUP_ID = "Use group ID";
 
-    public static final int IMAGE_TO_OBJECTS = 0;
-    public static final int OBJECTS_TO_IMAGE = 1;
-
+    private static final String IMAGE_TO_OBJECTS = "Image to objects";
+    private static final String OBJECTS_TO_IMAGE = "Objects to image";
+    private static final String[] CONVERSION_MODES = new String[]{IMAGE_TO_OBJECTS,OBJECTS_TO_IMAGE};
 
     public static HCImage convertObjectsToImage(HCObjectSet objects, HCName outputImageName, HCImage templateImage, boolean useGroupID) {
         ImagePlus ipl;
@@ -80,8 +80,8 @@ public class ObjectImageConverter extends HCModule {
 
             for (int i=0;i<x.size();i++) {
                 int zPos = z==null ? 0 : z.get(i);
-                int cPos = c==null ? -1 : c;
-                int tPos = t==null ? -1 : t;
+                int cPos = c==null ? 0 : c;
+                int tPos = t==null ? 0 : t;
 
                 ipl.setPosition(cPos+1,zPos+1,tPos+1);
                 if (useGroupID) {
@@ -110,7 +110,7 @@ public class ObjectImageConverter extends HCModule {
         int w = ipl.getWidth();
         int d = ipl.getNSlices();
 
-        for (int z=0;z<d;z++) {
+        for (int z=0;z<=d;z++) {
             ipl.setSlice(z+1);
             for (int x=0;x<w;x++) {
                 for (int y=0;y<h;y++) {
@@ -158,9 +158,9 @@ public class ObjectImageConverter extends HCModule {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
-        int conversionMode = parameters.getValue(CONVERSION_MODE);
+        String conversionMode = parameters.getValue(CONVERSION_MODE);
 
-        if (conversionMode == IMAGE_TO_OBJECTS) {
+        if (conversionMode.equals(IMAGE_TO_OBJECTS)) {
             HCName inputImageName = parameters.getValue(INPUT_IMAGE);
             HCName outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
@@ -170,7 +170,7 @@ public class ObjectImageConverter extends HCModule {
 
             workspace.addObjects(objects);
 
-        } else if (conversionMode == OBJECTS_TO_IMAGE) {
+        } else if (conversionMode.equals(OBJECTS_TO_IMAGE)) {
             HCName objectName = parameters.getValue(INPUT_OBJECTS);
             HCName templateImageName = parameters.getValue(TEMPLATE_IMAGE);
             HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -188,7 +188,7 @@ public class ObjectImageConverter extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(CONVERSION_MODE, HCParameter.INTEGER,0));
+        parameters.addParameter(new HCParameter(CONVERSION_MODE, HCParameter.CHOICE_ARRAY,CONVERSION_MODES[0],CONVERSION_MODES));
         parameters.addParameter(new HCParameter(INPUT_IMAGE, HCParameter.INPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(OUTPUT_OBJECTS, HCParameter.OUTPUT_OBJECTS,null));
         parameters.addParameter(new HCParameter(TEMPLATE_IMAGE, HCParameter.INPUT_IMAGE,null));
