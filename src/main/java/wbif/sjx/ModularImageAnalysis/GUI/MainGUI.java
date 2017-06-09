@@ -22,6 +22,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.security.Key;
 import java.util.*;
 
 /**
@@ -41,6 +42,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private int frameHeight = 750;
     private int elementHeight = 30;
 
+    private HCWorkspace testWorkspace = new HCWorkspace(1,null);
     private HCModule activeModule = null;
     private Frame frame = new JFrame();
     private JPanel controlPanel = new JPanel();
@@ -51,6 +53,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private JPanel statusPanel = new JPanel();
     private JPopupMenu moduleListMenu = new JPopupMenu();
     private Thread t = null;
+    private int lastModuleEval = -1;
 
     private GUIAnalysis analysis = new GUIAnalysis();
     private HCModuleCollection modules = analysis.modules;
@@ -80,11 +83,11 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 //        inputStream.close();
 //
 //        HCWorkspaceCollection workspaces = new HCWorkspaceCollection();
-//        HCWorkspace workspace = workspaces.getNewWorkspace(null);
+//        HCWorkspace testWorkspace = workspaces.getNewWorkspace(null);
 //
 //        new ParameterWindow().updateParameters(analysis.modules);
 //
-//        analysis.execute(workspace);
+//        analysis.execute(testWorkspace);
 
         new ImageJ();
         new MainGUI();
@@ -312,6 +315,23 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     }
 
+    private void updateEvaluationButtons() {
+        for (Component component:modulesPanel.getComponents()) {
+            if (component.getName().equals("EvalButton")) {
+                int idx = modules.indexOf(((EvalButton) component).getModule());
+
+                if (idx == lastModuleEval+1) {
+                    component.setForeground(Color.getHSBColor(0.08f,1f,1f));
+                } else if (idx <= lastModuleEval) {
+                    component.setForeground(Color.getHSBColor(0.27f,1f,0.6f));
+                } else {
+                    component.setForeground(Color.getHSBColor(0f,1f,0.6f));
+                }
+
+            }
+        }
+    }
+
     private void populateModuleList() {
         modulesPanel.removeAll();
 
@@ -322,6 +342,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         // Adding module buttons
         Iterator<HCModule> iterator = modules.iterator();
+        int count = 0;
         while (iterator.hasNext()) {
             HCModule module = iterator.next();
 
@@ -338,18 +359,28 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             // Adding the main module button
             c.gridx++;
             c.weightx = 1;
-            c.insets = new Insets(5, 5, 5, 5);
+            c.insets = new Insets(5, 5, 5, 0);
             c.anchor = GridBagConstraints.FIRST_LINE_START;
             ModuleButton button = new ModuleButton(module);
             button.setPreferredSize(new Dimension(-1, elementHeight));
-            button.setSelected(false);
             button.addActionListener(this);
-            button.setName("ModuleButton");
             if (!module.isEnabled()) button.setForeground(Color.GRAY);
             if (activeModule != null) {
                 if (module == activeModule) button.setSelected(true);
             }
             modulesPanel.add(button, c);
+
+            // Adding the state/evaluate button
+            c.gridx++;
+            c.weightx = 0;
+            c.insets = new Insets(5, 0, 5, 5);
+            c.anchor = GridBagConstraints.FIRST_LINE_END;
+            EvalButton evalButton = new EvalButton(module);
+            evalButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
+            evalButton.addActionListener(this);
+            modulesPanel.add(evalButton, c);
+
+            count++;
 
         }
 
@@ -367,6 +398,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         modulesPanel.repaint();
         modulesScrollPane.validate();
         modulesScrollPane.repaint();
+
+        updateEvaluationButtons();
 
     }
 
@@ -658,30 +691,41 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     private void removeModule() {
         if (activeModule != null) {
+            // Removing a module resets all the current evaluation
+            lastModuleEval = -1;
+            testWorkspace = new HCWorkspace(1,null);
+
             modules.remove(activeModule);
             activeModule = null;
+
             populateModuleList();
             initialiseParametersPanel();
+
         }
     }
 
     private void moveModuleUp() {
         if (activeModule != null) {
-            int pos = modules.indexOf(activeModule);
-            if (pos != 0) {
+            int idx = modules.indexOf(activeModule);
+            if (idx != 0) {
+                if (idx-1 <= lastModuleEval) lastModuleEval = idx-2;
+
                 modules.remove(activeModule);
-                modules.add(pos - 1, activeModule);
+                modules.add(idx - 1, activeModule);
                 populateModuleList();
+
             }
         }
     }
 
     private void moveModuleDown() {
         if (activeModule != null) {
-            int pos = modules.indexOf(activeModule);
-            if (pos != modules.size()) {
+            int idx = modules.indexOf(activeModule);
+            if (idx != modules.size()) {
+                if (idx <= lastModuleEval) lastModuleEval = idx-1;
+
                 modules.remove(activeModule);
-                modules.add(pos + 1, activeModule);
+                modules.add(idx + 1, activeModule);
                 populateModuleList();
             }
         }
@@ -737,7 +781,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     }
 
     private void startAnalysis() throws IOException {
-        // Initialising the workspace
+        // Initialising the testWorkspace
         HCWorkspaceCollection workspaces = new HCWorkspaceCollection();
         HCWorkspace workspace;
         if (!inputFilePath.equals("")) {
@@ -796,6 +840,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     }
 
+    private void evaluateModule(HCModule module) {
+        module.execute(testWorkspace,true);
+        populateModuleList();
+
+    }
+
     private void reactToAction(Object object)
             throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException, TransformerException, ParserConfigurationException {
 
@@ -842,14 +892,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             // Adding it after the currently-selected module
             HCModule newModule = ((PopupMenuItem) object).getModule().getClass().newInstance();
             if (activeModule != null) {
-                int counter = 0;
-                for (HCModule module:modules) {
-                    counter++;
-                    if (module == activeModule) {
-                        modules.add(counter,newModule);
-                        break;
-                    }
-                }
+                int idx = modules.indexOf(activeModule);
+                modules.add(++idx,newModule);
 
             } else {
                 modules.add(newModule);
@@ -861,6 +905,16 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
             // Selecting the added module
             selectModule(newModule);
+
+        } else if (((JComponent) object).getName().equals("EvalButton")) {
+            HCModule evalModule = ((EvalButton) object).getModule();
+            int idx = modules.indexOf(evalModule);
+            if (idx<=lastModuleEval+1) {
+                lastModuleEval = idx;
+                new Thread(() -> evaluateModule(((EvalButton) object).getModule())).start();
+
+            }
+
 
         } else if (((JComponent) object).getName().equals("AnalysisOptionsButton")) {
             // Selecting the added module
@@ -881,6 +935,10 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             parameter.setValue(((HCNameInputParameter) object).getSelectedItem());
             populateModuleParameters();
 
+            int idx = modules.indexOf(activeModule);
+            if (idx <= lastModuleEval) lastModuleEval = idx-1;
+            populateModuleList();
+
         } else if (((JComponent) object).getName().equals("TextParameter")) {
             HCParameter parameter = ((TextParameter) object).getParameter();
             String text = ((TextParameter) object).getText();
@@ -899,11 +957,19 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
             }
 
+            int idx = modules.indexOf(activeModule);
+            if (idx <= lastModuleEval) lastModuleEval = idx-1;
+            updateEvaluationButtons();
+
         } else if (((JComponent) object).getName().equals("BooleanParameter")) {
             HCParameter parameter = ((BooleanParameter) object).getParameter();
 
             parameter.setValue(((BooleanParameter) object).isSelected());
             populateModuleParameters();
+
+            int idx = modules.indexOf(activeModule);
+            if (idx <= lastModuleEval) lastModuleEval = idx-1;
+            updateEvaluationButtons();
 
         } else if (((JComponent) object).getName().equals("FileParameter")) {
             HCParameter parameter = ((FileParameter) object).getParameter();
@@ -915,11 +981,19 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             parameter.setValue(fileDialog.getFiles()[0].getAbsolutePath());
             ((FileParameter) object).setText(FilenameUtils.getName(parameter.getValue()));
 
+            int idx = modules.indexOf(activeModule);
+            if (idx <= lastModuleEval) lastModuleEval = idx-1;
+            updateEvaluationButtons();
+
         } else if (((JComponent) object).getName().equals("ChoiceArrayParameter")) {
             HCParameter parameter = ((ChoiceArrayParameter) object).getParameter();
             parameter.setValue(((ChoiceArrayParameter) object).getSelectedItem());
 
             populateModuleParameters();
+
+            int idx = modules.indexOf(activeModule);
+            if (idx <= lastModuleEval) lastModuleEval = idx-1;
+            updateEvaluationButtons();
 
         } else if (((JComponent) object).getName().equals("OutputFilePath")) {
             FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
