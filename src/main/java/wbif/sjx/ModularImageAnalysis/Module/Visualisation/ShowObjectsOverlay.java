@@ -31,49 +31,17 @@ public class ShowObjectsOverlay extends HCModule {
     private static final String PARENT_ID = "Parent ID";
     private static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE,PARENT_ID};
 
+    public static void createOverlay(ImagePlus ipl, HCObjectSet inputObjects, boolean showID, boolean useGroupID) {
+        createOverlay(ipl,inputObjects,RANDOM_COLOUR,null,showID,useGroupID);
 
-    @Override
-    public String getTitle() {
-        return "Show objects as overlay";
     }
 
-    @Override
-    public String getHelp() {
-        return null;
-    }
-
-    @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
-        // Getting parameters
-        boolean showID = parameters.getValue(SHOW_LABEL);
-        boolean useGroupID = parameters.getValue(USE_GROUP_ID);
-        String colourMode = parameters.getValue(COLOUR_MODE);
-
-        // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
-
-        // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
-
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
-            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-
-        }
-        //        if (!hyperstack.isHyperStack()) new StackConverter(hyperstack).convertToRGB();
-
+    private static void createOverlay(ImagePlus ipl, HCObjectSet inputObjects, String colourMode, String measurement, boolean showID, boolean useGroupID) {
         ipl.setOverlay(new Overlay());
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat(1);
         if (colourMode.equals(COLOUR_MODES[2])) {
-            String measurement = parameters.getValue(MEASUREMENT);
             inputObjects.values().forEach(e -> cs.addSingleMeasure(0,e.getMeasurement(measurement).getValue()));
 
         }
@@ -90,8 +58,6 @@ public class ShowObjectsOverlay extends HCModule {
                     break;
 
                 case MEASUREMENT_VALUE:
-                    String measurement = parameters.getValue(MEASUREMENT);
-
                     double value = object.getMeasurement(measurement).getValue();
                     double startH = 0;
                     double endH = 120d / 255d;
@@ -147,6 +113,45 @@ public class ShowObjectsOverlay extends HCModule {
 
             }
         }
+    }
+
+    @Override
+    public String getTitle() {
+        return "Show objects as overlay";
+    }
+
+    @Override
+    public String getHelp() {
+        return null;
+    }
+
+    @Override
+    public void execute(HCWorkspace workspace, boolean verbose) {
+        String moduleName = this.getClass().getSimpleName();
+        if (verbose) System.out.println("["+moduleName+"] Initialising");
+
+        // Getting parameters
+        boolean showID = parameters.getValue(SHOW_LABEL);
+        boolean useGroupID = parameters.getValue(USE_GROUP_ID);
+        String colourMode = parameters.getValue(COLOUR_MODE);
+
+        // Getting input objects
+        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+
+        // Getting input image
+        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        HCImage inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus ipl = inputImage.getImagePlus();
+
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+
+        }
+        //        if (!hyperstack.isHyperStack()) new StackConverter(hyperstack).convertToRGB();
+
+        createOverlay(ipl,inputObjects,colourMode,parameters.getValue(MEASUREMENT),showID,useGroupID);
 
         ipl.show();
 

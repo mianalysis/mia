@@ -7,8 +7,11 @@ import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Overlay;
 import ij.measure.Calibration;
+import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -32,6 +35,13 @@ public class RunTrackMate extends HCModule {
     public static final String DO_TRACKING = "Run tracking";
     public static final String CREATE_TRACK_OBJECTS = "Create track objects";
     public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
+    public static final String SHOW_OBJECTS = "Show objects";
+    public static final String SHOW_ID = "Show ID";
+    public static final String ID_MODE = "ID source";
+
+    private static final String USE_SPOT_ID = "Use spot ID";
+    private static final String USE_TRACK_ID = "Use track ID";
+    private static final String[] ID_MODES = new String[]{USE_SPOT_ID,USE_TRACK_ID};
 
     @Override
     public String getTitle() {
@@ -160,6 +170,28 @@ public class RunTrackMate extends HCModule {
             // Adding objects to the workspace
             if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName.getName()+") to workspace");
             workspace.addObjects(objects);
+
+            // Displaying objects (if selected)
+            if (parameters.getValue(SHOW_OBJECTS)) {
+                // Creating a duplicate of the input image
+                ipl = new Duplicator().run(ipl);
+
+                // Getting parameters
+                boolean showID = parameters.getValue(SHOW_ID);
+                boolean useGroupID = false;
+                if (parameters.getValue(DO_TRACKING)) {
+                    if (parameters.getValue(ID_MODE).equals(USE_TRACK_ID)) {
+                        useGroupID = true;
+                    }
+                }
+
+                // Creating the overlay
+                ShowObjectsOverlay.createOverlay(ipl,outputObjects,showID,useGroupID);
+
+                // Displaying the overlay
+                ipl.show();
+
+            }
 
             return;
         }
@@ -291,6 +323,28 @@ public class RunTrackMate extends HCModule {
 
         if (createSummary) workspace.addObjects(summaryObjects);
 
+        // Displaying objects (if selected)
+        if (parameters.getValue(SHOW_OBJECTS)) {
+            // Creating a duplicate of the input image
+            ipl = new Duplicator().run(ipl);
+
+            // Getting parameters
+            boolean showID = parameters.getValue(SHOW_ID);
+            boolean useGroupID = false;
+            if (parameters.getValue(DO_TRACKING)) {
+                if (parameters.getValue(ID_MODE).equals(USE_TRACK_ID)) {
+                    useGroupID = true;
+                }
+            }
+
+            // Creating the overlay
+            ShowObjectsOverlay.createOverlay(ipl,outputObjects,showID,useGroupID);
+
+            // Displaying the overlay
+            ipl.show();
+
+        }
+
         // Reapplying calibration to input image
         ipl.setCalibration(calibration);
 
@@ -314,6 +368,10 @@ public class RunTrackMate extends HCModule {
 
         parameters.addParameter(new HCParameter(CREATE_TRACK_OBJECTS,HCParameter.BOOLEAN,true));
         parameters.addParameter(new HCParameter(OUTPUT_TRACK_OBJECTS,HCParameter.OUTPUT_OBJECTS,new HCName("Tracks")));
+
+        parameters.addParameter(new HCParameter(SHOW_OBJECTS,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new HCParameter(SHOW_ID,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new HCParameter(ID_MODE,HCParameter.CHOICE_ARRAY,ID_MODES[0],ID_MODES));
 
     }
 
@@ -341,6 +399,19 @@ public class RunTrackMate extends HCModule {
 
             }
         }
+
+        returnedParameters.addParameter(parameters.getParameter(SHOW_OBJECTS));
+        if (parameters.getValue(SHOW_OBJECTS)) {
+            returnedParameters.addParameter(parameters.getParameter(SHOW_ID));
+
+            if (parameters.getValue(DO_TRACKING)) {
+                if (parameters.getValue(SHOW_ID)) {
+                    returnedParameters.addParameter(parameters.getParameter(ID_MODE));
+
+                }
+            }
+        }
+
 
         return returnedParameters;
 
