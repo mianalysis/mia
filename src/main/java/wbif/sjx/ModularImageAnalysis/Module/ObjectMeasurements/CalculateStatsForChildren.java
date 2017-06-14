@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.MathFunc.MultiCumStat;
 
 import java.util.Set;
 
@@ -51,7 +51,7 @@ public class CalculateStatsForChildren extends HCModule {
             HCObjectSet childObjects = parentObject.getChildren(childObjectsName);
             for (String measurement:exampleMeasurements) {
                 // For each measurement type, calculating the mean, standard deviation, etc. (unless the value is NaN)
-                CumStat cs = new CumStat(1);
+                MultiCumStat cs = new MultiCumStat(1);
                 for (HCObject childObject : childObjects.values()) {
                     if (childObject.getMeasurement(measurement).getValue() != Double.NaN) {
                         cs.addMeasure(childObject.getMeasurement(measurement).getValue());

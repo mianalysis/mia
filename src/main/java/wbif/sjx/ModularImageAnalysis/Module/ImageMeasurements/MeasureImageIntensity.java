@@ -4,7 +4,7 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.MathFunc.MultiCumStat;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -35,7 +35,7 @@ public class MeasureImageIntensity extends HCModule {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running measurement
-        CumStat cs = IntensityCalculator.calculate(inputImagePlus);
+        MultiCumStat cs = IntensityCalculator.calculate(inputImagePlus);
 
         // Adding measurements to image
         HCMeasurement meanIntensity = new HCMeasurement(HCMeasurement.MEAN_INTENSITY,cs.getMean()[0]);
@@ -43,7 +43,7 @@ public class MeasureImageIntensity extends HCModule {
         inputImage.addMeasurement(meanIntensity.getName(),meanIntensity);
         if (verbose) System.out.println("["+moduleName+"] Mean intensity = "+meanIntensity.getValue());
 
-        HCMeasurement stdIntensity = new HCMeasurement(HCMeasurement.STD_INTENSITY,cs.getStd(CumStat.SAMPLE)[0]);
+        HCMeasurement stdIntensity = new HCMeasurement(HCMeasurement.STD_INTENSITY,cs.getStd(MultiCumStat.SAMPLE)[0]);
         stdIntensity.setSource(this);
         inputImage.addMeasurement(stdIntensity.getName(),stdIntensity);
         if (verbose) System.out.println("["+moduleName+"] Std intensity (sample) = "+stdIntensity.getValue());

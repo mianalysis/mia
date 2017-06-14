@@ -5,7 +5,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 import ij.gui.Plot;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.MathFunc.MultiCumStat;
 
 import java.awt.*;
 
@@ -25,7 +25,7 @@ public class PlotMeasurementsScatter extends HCModule {
 
     private Color[] createColourGradient(double startH, double endH, double[] values) {
         // Getting colour range
-        CumStat cs = new CumStat(1);
+        MultiCumStat cs = new MultiCumStat(1);
         for (double value:values) cs.addMeasure(value);
         double min = cs.getMin()[0];
         double max = cs.getMax()[0];
@@ -80,13 +80,13 @@ public class PlotMeasurementsScatter extends HCModule {
 
         if (verbose) System.out.println("["+moduleName+"] Getting measurements to plot");
         int iter = 0;
-        CumStat cs = new CumStat(2);
+        MultiCumStat cs = new MultiCumStat(2);
         for (HCObject inputObject:inputObjects.values()) {
             measurementValues1[iter] = inputObject.getMeasurement(measurement1).getValue();
             measurementValues2[iter] = inputObject.getMeasurement(measurement2).getValue();
             if (useColour) measurementValues3[iter] = inputObject.getMeasurement(measurement3).getValue();
 
-            // Adding the current measurements to CumStat, so the min and max can be obtained
+            // Adding the current measurements to MultiCumStat, so the min and max can be obtained
             cs.addSingleMeasure(0,measurementValues1[iter]);
             cs.addSingleMeasure(1,measurementValues2[iter]);
 

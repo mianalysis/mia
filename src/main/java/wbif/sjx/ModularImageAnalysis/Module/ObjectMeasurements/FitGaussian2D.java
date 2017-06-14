@@ -1,10 +1,17 @@
 //TODO: Add measurement outputs
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
-import org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizer;
+import ij.ImagePlus;
+import org.apache.commons.math3.fitting.leastsquares.*;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.util.Pair;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.MathFunc.Indexer;
 
 import java.util.ArrayList;
 
@@ -25,12 +32,77 @@ public class FitGaussian2D extends HCModule {
 
     /**
      *
-     * @param inputImage
+     * @param inputImagePlus
      * @param pIn double[] containing all estimated parameters
      * @return double[] containing all fit parameters (x,y,sigma,A_0,A_BG)
      */
-    public static double[] fitGaussian(HCImage inputImage, double[] pIn) {
-        LevenbergMarquardtOptimizer lmo = new LevenbergMarquardtOptimizer();
+    public static double[] fitGaussian(ImagePlus inputImagePlus, double[] pIn) {
+//        int maxEvaluations = 1000;
+//        int maxIterations = 1000;
+//
+//        int width = inputImagePlus.getWidth();
+//        int height = inputImagePlus.getHeight();
+//
+//        // Populating the 3D vector matrix with the pixels from the ImagePlus.  We're treating intensity as a third
+//        // dimension (i.e. the image is a surface we will fit the 2D Gaussian function to).
+//        final Vector3D[] imagePoints = new Vector3D[width*height];
+//        Indexer indexer =  new Indexer(width,height);
+//
+//        for (int x=0;x<width;x++) {
+//            for (int y=0;y<height;y++) {
+//                int idx = indexer.getIndex(new int[]{x,y});
+//                imagePoints[idx] = new Vector3D(x,y,inputImagePlus.getProcessor().get(x,y));
+//
+//            }
+//        }
+//
+//        MultivariateJacobianFunction distancesToCurrentCenter = new MultivariateJacobianFunction() {
+//            public Pair<RealVector, RealMatrix> value(final RealVector p) {
+//                RealVector value = new ArrayRealVector(imagePoints.length);
+//                RealMatrix jacobian = new Array2DRowRealMatrix(imagePoints.length, 2);
+//
+//                for (int i=0;i<imagePoints.length;i++) {
+//                    Vector3D point = imagePoints[i];
+//                }
+//
+//                return new Pair<>(value, jacobian);
+//
+//            }
+//        };
+//
+//
+//        // Creating the inputs for the least squares problem
+//        MultivariateJacobianFunction distancesToCurrentCenter = new MultivariateJacobianFunction() {
+//            public Pair<RealVector, RealMatrix> value(final RealVector point) {
+//
+//                Vector2D center = new Vector2D(point.getEntry(0), point.getEntry(1));
+//
+////                RealVector value = new ArrayRealVector(observedPoints.length);
+////                RealMatrix jacobian = new Array2DRowRealMatrix(observedPoints.length, 2);
+//
+//                for (int i = 0; i < observedPoints.length; ++i) {
+//                    Vector2D o = observedPoints[i];
+//                    double modelI = Vector2D.distance(o, center);
+//                    value.setEntry(i, modelI);
+//                    // derivative with respect to p0 = x center
+//                    jacobian.setEntry(i, 0, (center.getX() - o.getX()) / modelI);
+//                    // derivative with respect to p1 = y center
+//                    jacobian.setEntry(i, 1, (center.getX() - o.getX()) / modelI);
+//                }
+//
+//                return new Pair<>(value, jacobian);
+//
+//            }
+//        };
+//        LeastSquaresProblem lsqProblem = LeastSquaresFactory.create();
+//
+//        // Creating the optimiser
+//        LeastSquaresOptimizer optimizer = new LevenbergMarquardtOptimizer().
+//                withCostRelativeTolerance(1.0e-12).
+//                withParameterRelativeTolerance(1.0e-12);
+//
+//        // Doing the fitting
+//        LeastSquaresOptimizer.Optimum optimum = optimizer.optimize(lsqProblem);
 
         return null;
 

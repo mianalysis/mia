@@ -13,7 +13,7 @@ import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.MathFunc.MultiCumStat;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -229,10 +229,10 @@ public class RunTrackMate extends HCModule {
             });
 
             // Creating an array to store the radius measurements for the summary object
-            CumStat radiusAv = null;
-            if (createSummary) radiusAv = new CumStat(1);
-            CumStat estDiaAv = null;
-            if (createSummary) estDiaAv = new CumStat(1);
+            MultiCumStat radiusAv = null;
+            if (createSummary) radiusAv = new MultiCumStat(1);
+            MultiCumStat estDiaAv = null;
+            if (createSummary) estDiaAv = new MultiCumStat(1);
 
             // Getting x,y,f and 2-channel spot intensities from TrackMate results
             for (Spot spot:spots) {

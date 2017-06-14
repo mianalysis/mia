@@ -9,7 +9,7 @@ import ij.process.StackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.MathFunc.MultiCumStat;
 
 import java.awt.*;
 import java.util.Random;
@@ -40,7 +40,7 @@ public class ShowObjectsOverlay extends HCModule {
         ipl.setOverlay(new Overlay());
 
         // Getting minimum and maximum values from measurement (if required)
-        CumStat cs = new CumStat(1);
+        MultiCumStat cs = new MultiCumStat(1);
         if (colourMode.equals(COLOUR_MODES[2])) {
             inputObjects.values().forEach(e -> cs.addSingleMeasure(0,e.getMeasurement(measurement).getValue()));
 

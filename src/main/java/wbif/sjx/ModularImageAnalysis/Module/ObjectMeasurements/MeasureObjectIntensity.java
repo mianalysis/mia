@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.MathFunc.MultiCumStat;
 
 import java.util.ArrayList;
 
@@ -43,7 +43,7 @@ public class MeasureObjectIntensity extends HCModule {
         // Measuring intensity for each object and adding the measurement to that object
         for (HCObject object:objects.values()) {
             // Initialising the cumulative statistics object to store pixel intensities
-            CumStat cs = new CumStat(1);
+            MultiCumStat cs = new MultiCumStat(1);
 
             // Getting pixel coordinates
             ArrayList<Integer> x = object.getCoordinates(HCObject.X);
@@ -52,7 +52,7 @@ public class MeasureObjectIntensity extends HCModule {
             ArrayList<Integer> z = object.getCoordinates(HCObject.Z);
             ArrayList<Integer> t = object.getCoordinates(HCObject.T);
 
-            // Running through all pixels in this object and adding the intensity to the CumStat object
+            // Running through all pixels in this object and adding the intensity to the MultiCumStat object
             for (int i=0;i<x.size();i++) {
                 int cPos = c==null ? 0 : c.get(i);
                 int zPos = z==null ? 0 : z.get(i);
@@ -68,7 +68,7 @@ public class MeasureObjectIntensity extends HCModule {
             meanIntensity.setSource(this);
             object.addMeasurement(meanIntensity);
 
-            HCMeasurement stdIntensity = new HCMeasurement(imageName.getName()+"_STD", cs.getStd(CumStat.SAMPLE)[0]);
+            HCMeasurement stdIntensity = new HCMeasurement(imageName.getName()+"_STD", cs.getStd(MultiCumStat.SAMPLE)[0]);
             stdIntensity.setSource(this);
             object.addMeasurement(stdIntensity);
 

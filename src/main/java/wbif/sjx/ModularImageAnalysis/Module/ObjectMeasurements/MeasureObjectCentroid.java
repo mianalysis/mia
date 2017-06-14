@@ -4,7 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.MathFunc.MultiCumStat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +30,7 @@ public class MeasureObjectCentroid extends HCModule {
 
     public static double calculateCentroid(ArrayList<Integer> values, String method) {
         if (method.equals(MEAN)) {
-            CumStat cs = new CumStat(1);
+            MultiCumStat cs = new MultiCumStat(1);
             for (int value:values) {
                 cs.addMeasure(value);
             }
