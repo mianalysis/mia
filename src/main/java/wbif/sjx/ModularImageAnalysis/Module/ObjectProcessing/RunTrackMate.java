@@ -1,3 +1,5 @@
+// TODO: See how TrackMate behaves with different channels.  Currently always assigns channel to "0".
+
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import fiji.plugin.trackmate.*;
@@ -144,6 +146,8 @@ public class RunTrackMate extends HCModule {
                 object.addCoordinate(HCObject.X,(int) spot.getDoublePosition(0));
                 object.addCoordinate(HCObject.Y,(int) spot.getDoublePosition(1));
                 object.addCoordinate(HCObject.Z,(int) spot.getDoublePosition(2));
+                object.addCoordinate(HCObject.C,0);
+                object.addCoordinate(HCObject.T,(int) Math.round(spot.getFeature(Spot.FRAME)));
 
                 // Adding calibration values to the HCObject (physical distance per pixel)
                 object.addCalibration(HCObject.X,calibration.getX(1));

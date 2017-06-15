@@ -71,73 +71,6 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private boolean exportXLSX = false;
 
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
-        int maxEvaluations = 1000;
-        int maxIterations = 1000;
-
-        int width = 10;
-        int height = 10;
-
-        // Populating the 3D vector matrix with the pixels from the ImagePlus.  We're treating intensity as a third
-        // dimension (i.e. the image is a surface we will fit the 2D Gaussian function to).
-        final Vector3D[] imagePoints = new Vector3D[width*height];
-        Indexer indexer =  new Indexer(width,height);
-
-        for (int x=0;x<width;x++) {
-            for (int y=0;y<height;y++) {
-                int idx = indexer.getIndex(new int[]{x,y});
-                imagePoints[idx] = new Vector3D(x,y,50);
-
-            }
-        }
-
-        // The only element of p is the height
-        MultivariateJacobianFunction model = new MultivariateJacobianFunction() {
-            public Pair<RealVector, RealMatrix> value(final RealVector point) {
-                RealVector value = new ArrayRealVector(imagePoints.length);
-                RealMatrix jacobian = new Array2DRowRealMatrix(imagePoints.length, 1);
-
-                for (int i=0;i<imagePoints.length;i++) {
-                    Vector3D currPoint = imagePoints[i];
-
-                    double dist = Math.abs(point.getEntry(0)-currPoint.getZ());
-                    value.setEntry(i, dist);
-                    jacobian.setEntry(i, 0, 1/(point.getEntry(0)-currPoint.getZ()));
-
-                }
-
-                return new Pair<>(value, jacobian);
-
-            }
-        };
-
-        // Starting point
-        RealVector start = new ArrayRealVector(new double[]{100});
-
-        // Target residual (i.e. zero)
-        double[] target = new double[imagePoints.length];
-        Arrays.fill(target,0);
-
-        LeastSquaresProblem lsqProblem = new LeastSquaresBuilder()
-                .start(start)
-                .model(model)
-                .target(target)
-                .maxEvaluations(maxEvaluations)
-                .maxIterations(maxIterations)
-                .build();
-
-        // Creating the optimiser
-        LeastSquaresOptimizer optimizer = new LevenbergMarquardtOptimizer();
-
-        // Doing the fitting
-        LeastSquaresOptimizer.Optimum optimum = optimizer.optimize(lsqProblem);
-
-        System.out.println("FOUND: "+optimum.getPoint().getEntry(0));
-
-
-
-
-
-
 //        new ImageJ();
 //        IJ.runMacro("waitForUser");
 //
@@ -164,8 +97,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 //
 //        analysis.execute(testWorkspace);
 
-//        new ImageJ();
-//        new MainGUI();
+        new ImageJ();
+        new MainGUI();
 
     }
 
