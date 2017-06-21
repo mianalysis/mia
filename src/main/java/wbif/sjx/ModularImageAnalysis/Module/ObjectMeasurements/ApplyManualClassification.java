@@ -68,7 +68,7 @@ public class ApplyManualClassification extends HCModule {
             if (parameters.getValue(REMOVE_MISSING)) {
                 for (HCObject object : inputObjects.values()) {
                     if (object.getMeasurement(HCMeasurement.CLASS) == null) {
-                        object.removeRelationships(inputObjectsName);
+                        object.removeRelationships();
                     }
                 }
                 inputObjects.entrySet().removeIf(entry -> entry.getValue().getMeasurement(HCMeasurement.CLASS) == null);
@@ -86,6 +86,9 @@ public class ApplyManualClassification extends HCModule {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

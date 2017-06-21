@@ -92,6 +92,8 @@ public class IdentifySecondaryObjects extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName.getName()+") to workspace");
         workspace.addObjects(objects2);
 
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

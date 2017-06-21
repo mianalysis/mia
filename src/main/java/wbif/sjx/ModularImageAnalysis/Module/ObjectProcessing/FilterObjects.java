@@ -10,6 +10,7 @@ public class FilterObjects extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String MEASUREMENT = "Measurement to filter on";
+    public static final String PARENT_OBJECT = "Parent object";
 
     private static final String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
     private static final String NO_PARENT = "Remove objects without parent";
@@ -45,9 +46,13 @@ public class FilterObjects extends HCModule {
                     e -> ((Double) e.getValue().getMeasurement(measurement).getValue()).equals(Double.NaN));
 
         } else if (method.equals(NO_PARENT)) {
-            inputObjects.entrySet().removeIf(e -> e.getValue().getParent() == null);
+            HCName parentObjectName = parameters.getValue(PARENT_OBJECT);
+            inputObjects.entrySet().removeIf(e -> e.getValue().getParent(parentObjectName) == null);
 
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override
@@ -55,6 +60,7 @@ public class FilterObjects extends HCModule {
         parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
         parameters.addParameter(new HCParameter(FILTER_METHOD,HCParameter.CHOICE_ARRAY,FILTER_METHODS[0],FILTER_METHODS));
         parameters.addParameter(new HCParameter(MEASUREMENT, HCParameter.MEASUREMENT,null,null));
+        parameters.addParameter(new HCParameter(PARENT_OBJECT,HCParameter.PARENT_OBJECTS,null,null));
 
     }
 
@@ -64,12 +70,19 @@ public class FilterObjects extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(FILTER_METHOD));
 
-        if (parameters.getValue(FILTER_METHOD).equals(FILTER_METHODS[0])) {
+        if (parameters.getValue(FILTER_METHOD).equals(MISSING_MEASUREMENTS)) {
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
             if (parameters.getValue(INPUT_OBJECTS) != null) {
                 parameters.updateValueRange(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
             }
+
+        } else if (parameters.getValue(FILTER_METHOD).equals(NO_PARENT)) {
+            returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT));
+
+            HCName childObjectsName = parameters.getValue(INPUT_OBJECTS);
+            parameters.updateValueRange(PARENT_OBJECT,childObjectsName);
+
         }
 
         return returnedParameters;

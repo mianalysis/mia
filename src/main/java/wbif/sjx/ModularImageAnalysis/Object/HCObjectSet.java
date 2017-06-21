@@ -16,8 +16,4 @@ public class HCObjectSet extends LinkedHashMap<Integer,HCObject> {
         return name;
     }
 
-    public void removeWithRelations(int key) {
-
-
-    }
 }

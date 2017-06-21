@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -48,11 +49,13 @@ public class ChannelExtractor extends HCModule {
         workspace.addImage(new HCImage(outputImageName,outputChannelImagePlus));
 
         // (If selected) displaying the loaded image
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
-        if (showImage) {
-            if (verbose) System.out.println("["+moduleName+"] Displaying extracted image");
-            outputChannelImagePlus.show();
+        if (parameters.getValue(SHOW_IMAGE)) {
+            new Duplicator().run(outputChannelImagePlus).show();
+
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

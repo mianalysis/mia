@@ -16,6 +16,7 @@ public class FilterImage extends HCModule {
     public static final String FILTER_MODE = "Filter mode";
     public static final String FILTER_RADIUS = "Filter radius (px)";
     public static final String CALIBRATED_UNITS = "Calibrated units";
+    public static final String SHOW_IMAGE = "Show image";
 
     private static final String MEDIAN3D = "Median 3D";
     private static final String[] FILTER_MODES = new String[]{MEDIAN3D};
@@ -66,7 +67,21 @@ public class FilterImage extends HCModule {
             HCImage outputImage = new HCImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
+            // If selected, displaying the image
+            if (parameters.getValue(SHOW_IMAGE)) {
+                new Duplicator().run(outputImage.getImagePlus()).show();
+            }
+
+        } else {
+            // If selected, displaying the image
+            if (parameters.getValue(SHOW_IMAGE)) {
+                new Duplicator().run(inputImagePlus).show();
+            }
         }
+
+
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 
@@ -78,6 +93,7 @@ public class FilterImage extends HCModule {
         parameters.addParameter(new HCParameter(FILTER_MODE,HCParameter.CHOICE_ARRAY,FILTER_MODES[0],FILTER_MODES));
         parameters.addParameter(new HCParameter(FILTER_RADIUS,HCParameter.DOUBLE,2d));
         parameters.addParameter(new HCParameter(CALIBRATED_UNITS,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,false));
 
     }
 
@@ -94,6 +110,7 @@ public class FilterImage extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(FILTER_MODE));
         returnedParameters.addParameter(parameters.getParameter(FILTER_RADIUS));
         returnedParameters.addParameter(parameters.getParameter(CALIBRATED_UNITS));
+        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

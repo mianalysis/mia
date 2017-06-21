@@ -25,10 +25,10 @@ public class PlotMeasurementsScatter extends HCModule {
 
     private Color[] createColourGradient(double startH, double endH, double[] values) {
         // Getting colour range
-        CumStat cs = new CumStat(1);
+        CumStat cs = new CumStat();
         for (double value:values) cs.addMeasure(value);
-        double min = cs.getMin()[0];
-        double max = cs.getMax()[0];
+        double min = cs.getMin();
+        double max = cs.getMax();
 
         Color[] colours = new Color[values.length];
         for (int i=0;i<colours.length;i++) {
@@ -78,17 +78,20 @@ public class PlotMeasurementsScatter extends HCModule {
         double[] measurementValues3 = null;
         if (useColour) measurementValues3 = new double[inputObjects.size()];
 
+        CumStat[] cs = new CumStat[2];
+        cs[0] = new CumStat();
+        cs[1] = new CumStat();
+
         if (verbose) System.out.println("["+moduleName+"] Getting measurements to plot");
         int iter = 0;
-        CumStat cs = new CumStat(2);
         for (HCObject inputObject:inputObjects.values()) {
             measurementValues1[iter] = inputObject.getMeasurement(measurement1).getValue();
             measurementValues2[iter] = inputObject.getMeasurement(measurement2).getValue();
             if (useColour) measurementValues3[iter] = inputObject.getMeasurement(measurement3).getValue();
 
-            // Adding the current measurements to CumStat, so the min and max can be obtained
-            cs.addSingleMeasure(0,measurementValues1[iter]);
-            cs.addSingleMeasure(1,measurementValues2[iter]);
+            // Adding the current measurements to MultiCumStat, so the min and max can be obtained
+            cs[0].addMeasure(measurementValues1[iter]);
+            cs[1].addMeasure(measurementValues2[iter]);
 
             iter++;
 
@@ -125,7 +128,7 @@ public class PlotMeasurementsScatter extends HCModule {
             }
 
             // Setting plot limits
-            plot.setLimits(cs.getMin()[0], cs.getMax()[0], cs.getMin()[1], cs.getMax()[1]);
+            plot.setLimits(cs[0].getMin(), cs[0].getMax(), cs[1].getMin(), cs[1].getMax());
 
             // Displaying the plot
             plot.show();
@@ -141,12 +144,15 @@ public class PlotMeasurementsScatter extends HCModule {
             plot.addPoints(measurementValues1,measurementValues2,0);
 
             // Setting plot limits
-            plot.setLimits(cs.getMin()[0], cs.getMax()[0], cs.getMin()[1], cs.getMax()[1]);
+            plot.setLimits(cs[0].getMin(), cs[0].getMax(), cs[1].getMin(), cs[1].getMax());
 
             // Displaying the plot
             plot.show();
 
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

@@ -76,6 +76,8 @@ public class RidgeDetection extends HCModule {
 //        HCImage outputImage = new HCImage(outputImageName,outputImagePlus);
 //        workspace.addImage(outputImage);
 
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

@@ -4,8 +4,8 @@ import ij.ImagePlus;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import ij.gui.TextRoi;
+import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import ij.process.StackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -22,59 +22,35 @@ public class ShowObjectsOverlay extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String SHOW_LABEL = "Show label";
     public static final String USE_GROUP_ID = "Use group ID";
+    public static final String POSITION_MODE = "Position mode";
+    public static final String X_POSITION_MEASUREMENT = "X-position measurement";
+    public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
+    public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT = "Measurement";
+
+    private static final String CENTROID = "Centroid";
+    private static final String POSITION_MEASUREMENTS = "Position measurements";
+    public static final String[] POSITION_MODES = new String[]{CENTROID, POSITION_MEASUREMENTS};
 
     private static final String SINGLE_COLOUR = "Single colour";
     private static final String RANDOM_COLOUR = "Random colour";
     private static final String MEASUREMENT_VALUE = "Measurement value";
-    private static final String PARENT_ID = "Parent ID";
-    private static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE,PARENT_ID};
+    private static final String GROUP_ID = "Group ID";
+    public static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE,GROUP_ID};
 
+    public static void createOverlay(ImagePlus ipl, HCObjectSet inputObjects, boolean showID, boolean useGroupID) {
+        createOverlay(ipl,inputObjects,CENTROID,null,null,null,RANDOM_COLOUR,null,showID,useGroupID);
 
-    @Override
-    public String getTitle() {
-        return "Show objects as overlay";
     }
 
-    @Override
-    public String getHelp() {
-        return null;
-    }
-
-    @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
-        // Getting parameters
-        boolean showID = parameters.getValue(SHOW_LABEL);
-        boolean useGroupID = parameters.getValue(USE_GROUP_ID);
-        String colourMode = parameters.getValue(COLOUR_MODE);
-
-        // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
-
-        // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
-
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
-            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-
-        }
-        //        if (!hyperstack.isHyperStack()) new StackConverter(hyperstack).convertToRGB();
-
+    private static void createOverlay(ImagePlus ipl, HCObjectSet inputObjects, String positionMode, String xPosMeas, String yPosMeas, String zPosMeas, String colourMode, String measurement, boolean showID, boolean useGroupID) {
         ipl.setOverlay(new Overlay());
 
         // Getting minimum and maximum values from measurement (if required)
-        CumStat cs = new CumStat(1);
+        CumStat cs = new CumStat();
         if (colourMode.equals(COLOUR_MODES[2])) {
-            String measurement = parameters.getValue(MEASUREMENT);
-            inputObjects.values().forEach(e -> cs.addSingleMeasure(0,e.getMeasurement(measurement).getValue()));
+            inputObjects.values().forEach(e -> cs.addMeasure(e.getMeasurement(measurement).getValue()));
 
         }
 
@@ -90,29 +66,36 @@ public class ShowObjectsOverlay extends HCModule {
                     break;
 
                 case MEASUREMENT_VALUE:
-                    String measurement = parameters.getValue(MEASUREMENT);
-
                     double value = object.getMeasurement(measurement).getValue();
                     double startH = 0;
                     double endH = 120d / 255d;
-                    H = (float) ((value - cs.getMin()[0]) * (endH - startH) / (cs.getMax()[0] - cs.getMin()[0]) + startH);
+                    H = (float) ((value - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
                     break;
 
-                case PARENT_ID:
-                    if (object.getParent() != null) {
-                        H = ((float) object.getParent().getID() * 1048576 % 255) / 255;
-                    } else {
-                        H = 0.2f;
-                    }
+                case GROUP_ID:
+                    H = ((float) object.getGroupID() * 1048576 % 255) / 255;
                     break;
 
             }
 
             Color colour = Color.getHSBColor(H, 1, 1);
 
-            double xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.X),MeasureObjectCentroid.MEAN);
-            double yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Y),MeasureObjectCentroid.MEAN);
-            double zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Z),MeasureObjectCentroid.MEAN);
+            double xMean; double yMean; double zMean;
+            if (positionMode.equals(CENTROID)) {
+                xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.X), MeasureObjectCentroid.MEAN);
+                yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Y), MeasureObjectCentroid.MEAN);
+                zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Z), MeasureObjectCentroid.MEAN);
+
+            } else {
+                xMean = object.getMeasurement(xPosMeas).getValue();
+                yMean = object.getMeasurement(yPosMeas).getValue();
+                zMean = object.getMeasurement(zPosMeas).getValue();
+
+                if (xMean == Double.NaN) xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.X), MeasureObjectCentroid.MEAN);
+                if (yMean == Double.NaN) yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Y), MeasureObjectCentroid.MEAN);
+                if (zMean == Double.NaN) zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Z), MeasureObjectCentroid.MEAN);
+
+            }
 
             // Getting coordinates to plot
             int c = ((int) object.getCoordinates(HCObject.C)) + 1;
@@ -120,7 +103,7 @@ public class ShowObjectsOverlay extends HCModule {
             int t = ((int) object.getCoordinates(HCObject.T)) + 1;
 
             // Adding circles where the object centroids are
-            OvalRoi roi = new OvalRoi(xMean-2,yMean-2,4,4);
+            OvalRoi roi = new OvalRoi(xMean-2+0.5,yMean-2+0.5,4,4);
             if (ipl.isHyperStack()) {
                 roi.setPosition(c, z, t);
             } else {
@@ -147,8 +130,54 @@ public class ShowObjectsOverlay extends HCModule {
 
             }
         }
+    }
+
+    @Override
+    public String getTitle() {
+        return "Show objects as overlay";
+    }
+
+    @Override
+    public String getHelp() {
+        return null;
+    }
+
+    @Override
+    public void execute(HCWorkspace workspace, boolean verbose) {
+        String moduleName = this.getClass().getSimpleName();
+        if (verbose) System.out.println("["+moduleName+"] Initialising");
+
+        // Getting parameters
+        boolean showID = parameters.getValue(SHOW_LABEL);
+        boolean useGroupID = parameters.getValue(USE_GROUP_ID);
+        String positionMode = parameters.getValue(POSITION_MODE);
+        String colourMode = parameters.getValue(COLOUR_MODE);
+
+        // Getting input objects
+        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+
+        // Getting input image
+        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        HCImage inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus ipl = inputImage.getImagePlus();
+
+        // Duplicating the image, so the original isn't altered
+        ipl = new Duplicator().run(ipl);
+
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+
+        }
+
+        createOverlay(ipl,inputObjects,positionMode,parameters.getValue(X_POSITION_MEASUREMENT),
+                parameters.getValue(Y_POSITION_MEASUREMENT),parameters.getValue(Z_POSITION_MEASUREMENT),
+                colourMode,parameters.getValue(MEASUREMENT),showID,useGroupID);
 
         ipl.show();
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 
@@ -156,8 +185,12 @@ public class ShowObjectsOverlay extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(SHOW_LABEL,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new HCParameter(SHOW_LABEL,HCParameter.BOOLEAN,false));
         parameters.addParameter(new HCParameter(USE_GROUP_ID,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new HCParameter(POSITION_MODE,HCParameter.CHOICE_ARRAY,POSITION_MODES[0],POSITION_MODES));
+        parameters.addParameter(new HCParameter(X_POSITION_MEASUREMENT,HCParameter.MEASUREMENT,null,null));
+        parameters.addParameter(new HCParameter(Y_POSITION_MEASUREMENT,HCParameter.MEASUREMENT,null,null));
+        parameters.addParameter(new HCParameter(Z_POSITION_MEASUREMENT,HCParameter.MEASUREMENT,null,null));
         parameters.addParameter(new HCParameter(COLOUR_MODE,HCParameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
         parameters.addParameter(new HCParameter(MEASUREMENT,HCParameter.MEASUREMENT,null,null));
 
@@ -174,9 +207,21 @@ public class ShowObjectsOverlay extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(USE_GROUP_ID));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(COLOUR_MODE));
+        returnedParameters.addParameter(parameters.getParameter(POSITION_MODE));
+        if (parameters.getValue(POSITION_MODE).equals(POSITION_MEASUREMENTS)) {
+            returnedParameters.addParameter(parameters.getParameter(X_POSITION_MEASUREMENT));
+            returnedParameters.addParameter(parameters.getParameter(Y_POSITION_MEASUREMENT));
+            returnedParameters.addParameter(parameters.getParameter(Z_POSITION_MEASUREMENT));
 
-        if (parameters.getValue(COLOUR_MODE).equals(COLOUR_MODES[2])) {
+            HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            parameters.updateValueRange(X_POSITION_MEASUREMENT,inputObjectsName);
+            parameters.updateValueRange(Y_POSITION_MEASUREMENT,inputObjectsName);
+            parameters.updateValueRange(Z_POSITION_MEASUREMENT,inputObjectsName);
+
+        }
+
+        returnedParameters.addParameter(parameters.getParameter(COLOUR_MODE));
+        if (parameters.getValue(COLOUR_MODE).equals(MEASUREMENT_VALUE)) {
             // Use measurement
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
 

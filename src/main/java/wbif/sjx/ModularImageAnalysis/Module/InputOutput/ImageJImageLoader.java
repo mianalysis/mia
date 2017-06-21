@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.IO;
+package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -35,6 +35,8 @@ public class ImageJImageLoader extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
         HCImage outputImage = new HCImage(outputImageName, imagePlus);
         workspace.addImage(outputImage);
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

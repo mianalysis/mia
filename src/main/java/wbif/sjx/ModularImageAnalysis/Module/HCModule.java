@@ -2,7 +2,6 @@
 // TODO: Module to plot histograms of measurements (e.g. mean intensity for objects)
 // TODO: Module to calculate size metrics of objects (can used Blob class)
 // TODO: Module to calculate radial intensity distribution of objects
-// TODO: Module to export the measurements from the current workspace (option to put file in current directory)
 
 package wbif.sjx.ModularImageAnalysis.Module;
 

@@ -102,7 +102,7 @@ public class ObjectImageConverter extends HCModule {
         ImagePlus ipl = image.getImagePlus();
 
         // Need to get coordinates and convert to a HCObject
-        HCObjectSet objects = new HCObjectSet(outputObjectsName); //Local ArrayList of objects
+        HCObjectSet outputObjects = new HCObjectSet(outputObjectsName); //Local ArrayList of objects
 
         ImageProcessor ipr = ipl.getProcessor();
 
@@ -117,11 +117,11 @@ public class ObjectImageConverter extends HCModule {
                     int ID = (int) ipr.getPixelValue(x,y); //Pixel value
 
                     if (ID != 0) {
-                        objects.computeIfAbsent(ID, k -> new HCObject(ID));
+                        outputObjects.computeIfAbsent(ID, k -> new HCObject(outputObjectsName,ID));
 
-                        objects.get(ID).addCoordinate(HCObject.X, x);
-                        objects.get(ID).addCoordinate(HCObject.Y, y);
-                        objects.get(ID).addCoordinate(HCObject.Z, z);
+                        outputObjects.get(ID).addCoordinate(HCObject.X, x);
+                        outputObjects.get(ID).addCoordinate(HCObject.Y, y);
+                        outputObjects.get(ID).addCoordinate(HCObject.Z, z);
 
                     }
                 }
@@ -130,7 +130,7 @@ public class ObjectImageConverter extends HCModule {
 
         // Adding distance calibration to each object
         Calibration calibration = ipl.getCalibration();
-        for (HCObject object:objects.values()) {
+        for (HCObject object:outputObjects.values()) {
             object.addCalibration(HCObject.X,calibration.getX(1));
             object.addCalibration(HCObject.Y,calibration.getY(1));
             object.addCalibration(HCObject.Z,calibration.getZ(1));
@@ -138,7 +138,7 @@ public class ObjectImageConverter extends HCModule {
 
         }
 
-        return objects;
+        return outputObjects;
 
     }
 
@@ -184,6 +184,9 @@ public class ObjectImageConverter extends HCModule {
             workspace.addImage(outputImage);
 
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

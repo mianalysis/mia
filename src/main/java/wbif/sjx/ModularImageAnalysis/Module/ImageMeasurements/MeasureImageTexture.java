@@ -70,6 +70,8 @@ public class MeasureImageTexture extends HCModule {
         inputImage.addMeasurement(entropyMeasurement.getName(),entropyMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Entropy = "+entropyMeasurement.getValue());
 
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

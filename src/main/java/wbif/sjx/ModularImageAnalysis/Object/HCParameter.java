@@ -83,10 +83,15 @@ public class HCParameter implements Serializable {
     public final static int CHILD_OBJECTS = 12;
 
     /**
+     * Parent object of the given child object.
+     */
+    public final static int PARENT_OBJECTS = 13;
+
+    /**
      * Miscellaneous object class parameter.  These can be anything not fitting the other categories.  These can't be
      * set using ParameterWindow.
      */
-    public final static int OBJECT = 13;
+    public final static int OBJECT = 14;
 
     private final String name;
     private final int type;

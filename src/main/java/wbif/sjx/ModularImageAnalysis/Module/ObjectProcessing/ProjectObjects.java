@@ -59,9 +59,9 @@ public class ProjectObjects extends HCModule {
             }
 
             // Creating the new HCObject and assigning the parent-child relationship
-            HCObject outputObject = new HCObject(inputObject.getID());
-            outputObject.setParent(inputObject);
-            inputObject.addChild(outputObjectsName,outputObject);
+            HCObject outputObject = new HCObject(outputObjectsName,inputObject.getID());
+            outputObject.addParent(inputObject);
+            inputObject.addChild(outputObject);
 
             // Adding coordinates to the projected object
             for (Double key : projCoords.keySet()) {
@@ -78,10 +78,10 @@ public class ProjectObjects extends HCModule {
             }
 
             // Inheriting calibration from parent
-            outputObject.addCalibration(HCObject.X,outputObject.getParent().getCalibration(HCObject.X));
-            outputObject.addCalibration(HCObject.Y,outputObject.getParent().getCalibration(HCObject.Y));
-            outputObject.addCalibration(HCObject.Z,outputObject.getParent().getCalibration(HCObject.Z));
-            outputObject.setCalibratedUnits(outputObject.getParent().getCalibratedUnits());
+            outputObject.addCalibration(HCObject.X,outputObject.getParent(inputObjectsName).getCalibration(HCObject.X));
+            outputObject.addCalibration(HCObject.Y,outputObject.getParent(inputObjectsName).getCalibration(HCObject.Y));
+            outputObject.addCalibration(HCObject.Z,outputObject.getParent(inputObjectsName).getCalibration(HCObject.Z));
+            outputObject.setCalibratedUnits(outputObject.getParent(inputObjectsName).getCalibratedUnits());
 
             // Adding current object to object set
             outputObjects.put(outputObject.getID(),outputObject);
@@ -89,6 +89,8 @@ public class ProjectObjects extends HCModule {
         }
 
         workspace.addObjects(outputObjects);
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

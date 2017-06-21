@@ -58,6 +58,8 @@ public class ShowObjects extends HCModule {
         // Showing the image
         image.getImagePlus().show();
 
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

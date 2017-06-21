@@ -35,8 +35,8 @@ public class RelateObjects extends HCModule {
             HCObject childObject = childObjects.get(ID);
 
             if (childObject != null) {
-                parentObject.addChild(childObjects.getName(),childObject);
-                childObject.setParent(parentObject);
+                parentObject.addChild(childObject);
+                childObject.addParent(parentObject);
 
             }
         }
@@ -93,8 +93,8 @@ public class RelateObjects extends HCModule {
                 // Testing if the child centroid exists in the object
                 for (int i=0;i<parentX.size();i++) {
                     if (parentX.get(i)==xCent & parentY.get(i)==yCent & parentZ.get(i)==zCent) {
-                        parentObject.addChild(childObjects.getName(),childObject);
-                        childObject.setParent(parentObject);
+                        parentObject.addChild(childObject);
+                        childObject.addParent(parentObject);
 
                         // Getting position within current parent object
                         HCMeasurement absDistanceFromEdge = new HCMeasurement(DIST_EDGE_PX_MEAS);
@@ -110,7 +110,7 @@ public class RelateObjects extends HCModule {
 
         // Applying a blank measurement to any children missing one
         for (HCObject childObject:childObjects.values()) {
-            if (childObject.getParent() == null) {
+            if (childObject.getParent(parentObjects.getName()) == null) {
                 HCMeasurement absDistanceFromEdge = new HCMeasurement(DIST_EDGE_PX_MEAS);
                 absDistanceFromEdge.setValue(Double.NaN);
                 childObject.addMeasurement(absDistanceFromEdge);
@@ -154,6 +154,8 @@ public class RelateObjects extends HCModule {
             spatialLinking(parentObjects,childObjects);
 
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 
