@@ -4,7 +4,7 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.MultiCumStat;
+import wbif.sjx.common.MathFunc.CumStat;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -35,28 +35,30 @@ public class MeasureImageIntensity extends HCModule {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running measurement
-        MultiCumStat cs = IntensityCalculator.calculate(inputImagePlus);
+        CumStat cs = IntensityCalculator.calculate(inputImagePlus);
 
         // Adding measurements to image
-        HCMeasurement meanIntensity = new HCMeasurement(HCMeasurement.MEAN_INTENSITY,cs.getMean()[0]);
+        HCMeasurement meanIntensity = new HCMeasurement(HCMeasurement.MEAN_INTENSITY,cs.getMean());
         meanIntensity.setSource(this);
         inputImage.addMeasurement(meanIntensity.getName(),meanIntensity);
         if (verbose) System.out.println("["+moduleName+"] Mean intensity = "+meanIntensity.getValue());
 
-        HCMeasurement stdIntensity = new HCMeasurement(HCMeasurement.STD_INTENSITY,cs.getStd(MultiCumStat.SAMPLE)[0]);
+        HCMeasurement stdIntensity = new HCMeasurement(HCMeasurement.STD_INTENSITY,cs.getStd(CumStat.SAMPLE));
         stdIntensity.setSource(this);
         inputImage.addMeasurement(stdIntensity.getName(),stdIntensity);
         if (verbose) System.out.println("["+moduleName+"] Std intensity (sample) = "+stdIntensity.getValue());
 
-        HCMeasurement minIntensity = new HCMeasurement(HCMeasurement.MIN_INTENSITY,cs.getMin()[0]);
+        HCMeasurement minIntensity = new HCMeasurement(HCMeasurement.MIN_INTENSITY,cs.getMin());
         minIntensity.setSource(this);
         inputImage.addMeasurement(minIntensity.getName(),minIntensity);
         if (verbose) System.out.println("["+moduleName+"] Min intensity = "+minIntensity.getValue());
 
-        HCMeasurement maxIntensity = new HCMeasurement(HCMeasurement.MAX_INTENSITY,cs.getMax()[0]);
+        HCMeasurement maxIntensity = new HCMeasurement(HCMeasurement.MAX_INTENSITY,cs.getMax());
         maxIntensity.setSource(this);
         inputImage.addMeasurement(maxIntensity.getName(),maxIntensity);
         if (verbose) System.out.println("["+moduleName+"] Max intensity = "+maxIntensity.getValue());
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

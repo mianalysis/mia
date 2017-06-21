@@ -1,25 +1,24 @@
-// TODO: Add measurements to output
-
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
- * Created by sc13967 on 26/05/2017.
+ * Created by sc13967 on 21/06/2017.
  */
-public class MeasureSpotShape extends HCModule {
-    public static final String INPUT_OBJECTS = "Input spot objects";
-
+public class MeasureKFunction extends HCModule {
+    public static final String INPUT_OBJECTS = "Input objects";
 
     @Override
     public String getTitle() {
-        return "Measure spot shape";
+        return "Measure K-function";
     }
 
     @Override
     public String getHelp() {
-        return null;
+        return "INCOMPLETE" +
+                "" +
+                "Measures Ripley's K-function for each object";
     }
 
     @Override
@@ -36,6 +35,7 @@ public class MeasureSpotShape extends HCModule {
     @Override
     public HCParameterCollection getActiveParameters() {
         return parameters;
+
     }
 
     @Override

@@ -24,9 +24,9 @@ public class GetLocalObjectRegion extends HCModule {
         // Running through each object, calculating the local texture
         for (HCObject inputObject:inputObjects.values()) {
             // Creating new object and assigning relationship to input objects
-            HCObject outputObject = new HCObject(inputObject.getID());
-            outputObject.setParent(inputObject);
-            inputObject.addChild(outputObjects.getName(),outputObject);
+            HCObject outputObject = new HCObject(outputObjectsName,inputObject.getID());
+            outputObject.addParent(inputObject);
+            inputObject.addChild(outputObject);
 
             // Getting image calibration (to deal with different xy-z dimensions)
             double xCal = inputObject.getCalibration(HCObject.X);
@@ -121,6 +121,8 @@ public class GetLocalObjectRegion extends HCModule {
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

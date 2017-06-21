@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.IO;
+package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -123,10 +123,10 @@ public class SaveObjectsToSpreadsheet extends HCModule {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
-
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

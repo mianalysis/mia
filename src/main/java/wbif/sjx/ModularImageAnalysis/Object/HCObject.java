@@ -16,6 +16,8 @@ public class HCObject {
     public static final int C = 3;
     public static final int T = 4;
 
+    private HCName name;
+
     /**
      * Unique instance ID for this object
      */
@@ -35,7 +37,7 @@ public class HCObject {
      * HashMap containing extra dimensions specifying the location of this instance
      */
     private HashMap<Integer, Integer> positions = new HashMap<>();
-    private HCObject parent = null;
+    private LinkedHashMap<HCName, HCObject> parents = new LinkedHashMap<>();
     private LinkedHashMap<HCName, HCObjectSet> children = new LinkedHashMap<>();
     private LinkedHashMap<String, HCMeasurement> measurements = new LinkedHashMap<>();
     private String calibratedUnits = "px";
@@ -48,7 +50,8 @@ public class HCObject {
 
     // CONSTRUCTORS
 
-    public HCObject(int ID) {
+    public HCObject(HCName name, int ID) {
+        this.name = name;
         this.ID = ID;
 
         // Setting default values for C and T
@@ -95,6 +98,7 @@ public class HCObject {
     }
 
     public HCMeasurement getMeasurement(String name) {
+        if (measurements.get(name) == null) return null;
         return measurements.get(name);
 
     }
@@ -116,6 +120,14 @@ public class HCObject {
     public String toString() {
         return "HCObject with " + coordinates.size() + " coordinate points";
 
+    }
+
+    public HCName getName() {
+        return name;
+    }
+
+    public void setName(HCName name) {
+        this.name = name;
     }
 
     public int getID() {
@@ -203,12 +215,26 @@ public class HCObject {
 
     }
 
-    public HCObject getParent() {
-        return parent;
+    public LinkedHashMap<HCName, HCObject> getParents() {
+        return parents;
     }
 
-    public void setParent(HCObject parent) {
-        this.parent = parent;
+    public void setParents(LinkedHashMap<HCName, HCObject> parents) {
+        this.parents = parents;
+    }
+
+    public HCObject getParent(HCName name) {
+        return parents.get(name);
+
+    }
+
+    public void addParent(HCObject parent) {
+        parents.put(parent.getName(), parent);
+    }
+
+    public void removeParent(HCName name) {
+        parents.remove(name);
+
     }
 
     public LinkedHashMap<HCName, HCObjectSet> getChildren() {
@@ -231,33 +257,37 @@ public class HCObject {
         children.remove(name);
     }
 
-    public void addChild(HCName name, HCObject childSet) {
-        children.computeIfAbsent(name, k -> new HCObjectSet(name));
-        children.get(name).put(childSet.getID(), childSet);
+    public void addChild(HCObject child) {
+        HCName childName = child.getName();
+
+        children.computeIfAbsent(childName, k -> new HCObjectSet(childName));
+        children.get(childName).put(child.getID(), child);
 
     }
 
-    public void removeChild(HCName name, HCObject child) {
-        children.get(name).values().remove(child);
+    public void removeChild(HCObject child) {
+        HCName childName = child.getName();
+        children.get(childName).values().remove(child);
 
     }
 
     /**
      * Removes itself from any other objects as a parent or child.
-     * @param name Name of this object
      */
-    public void removeRelationships(HCName name) {
+    public void removeRelationships() {
         // Removing itself as a child from its parent
-        if (parent != null) {
-            parent.removeChild(name,this);
+        if (parents != null) {
+            for (HCObject parent:parents.values()) {
+                parent.removeChild(this);
 
+            }
         }
 
         // Removing itself as a parent from any children
         if (children != null) {
             for (HCObjectSet childSet:children.values()) {
                 for (HCObject child:childSet.values()) {
-                    child.setParent(null);
+                    child.removeParent(name);
 
                 }
             }

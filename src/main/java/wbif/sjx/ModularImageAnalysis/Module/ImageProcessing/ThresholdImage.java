@@ -18,6 +18,7 @@ public class ThresholdImage extends HCModule {
     public static final String THRESHOLD_MODE = "Threshold mode";
     public static final String THRESHOLD_MULTIPLIER = "Threshold multiplier";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
+    public static final String SHOW_IMAGE = "Show image";
 
     private static final String HUANG = "Huang";
     private static final String OTSU = "Otsu";
@@ -92,13 +93,26 @@ public class ThresholdImage extends HCModule {
             inputImagePlus.setPosition(1,1,1);
         }
 
+        // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
             HCImage outputImage = new HCImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
+            // If selected, displaying the image
+            if (parameters.getValue(SHOW_IMAGE)) {
+                new Duplicator().run(outputImage.getImagePlus()).show();
+            }
+
+        } else {
+            // If selected, displaying the image
+            if (parameters.getValue(SHOW_IMAGE)) {
+                new Duplicator().run(inputImagePlus).show();
+            }
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

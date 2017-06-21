@@ -40,6 +40,9 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
         ArrayList<HCParameter> parameters = new ArrayList<>();
 
         for (HCModule module:this) {
+            // If this module isn't enabled, skip it
+            if (!module.isEnabled()) continue;
+
             // If the current module is the cutoff the loop terminates.  This prevents the system offering measurements
             // that are created after this module
             if (module == cutoffModule) {

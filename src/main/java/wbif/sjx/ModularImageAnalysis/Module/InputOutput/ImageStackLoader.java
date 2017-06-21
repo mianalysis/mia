@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.IO;
+package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -109,6 +109,8 @@ public class ImageStackLoader extends HCModule {
         ipl.setPosition(1);
 
         workspace.addImage(new HCImage(outputImageName,ipl));
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

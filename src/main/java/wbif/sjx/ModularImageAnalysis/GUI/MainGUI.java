@@ -1,19 +1,10 @@
 // TODO: Add controls for all parameter types (hashsets, etc.)
-// TODO: Put module list and parameters in scrollable panes
 // TODO: If an assigned image/object name is no longer available, flag up the module button in red
 
 package wbif.sjx.ModularImageAnalysis.GUI;
 
 import ij.ImageJ;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.math3.fitting.leastsquares.*;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-import org.apache.commons.math3.util.Pair;
 import org.reflections.Reflections;
 import org.w3c.dom.Document;
 import wbif.sjx.ModularImageAnalysis.Module.*;
@@ -104,6 +95,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     public MainGUI() throws InstantiationException, IllegalAccessException {
         frame.setLayout(new GridBagLayout());
+        frame.setTitle("Modular image analysis (version "+getClass().getPackage().getImplementationVersion()+")");
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5,5,5,0);
         c.gridx = 0;
@@ -128,7 +120,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         c.insets = new Insets(5,5,5,5);
         frame.add(paramsScrollPane,c);
 
-        //        // Initialising the status panel
+        // Initialising the status panel
 //        initialiseStatusPanel();
 //        c.gridx = 0;
 //        c.gridy++;
@@ -324,18 +316,24 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     }
 
     private void updateEvaluationButtons() {
+        int skip = 0;
         for (Component component:modulesPanel.getComponents()) {
             if (component.getName().equals("EvalButton")) {
+                if (!((EvalButton) component).getModule().isEnabled()) {
+                    skip++;
+                    component.setForeground(Color.LIGHT_GRAY);
+                    continue;
+                }
+
                 int idx = modules.indexOf(((EvalButton) component).getModule());
 
-                if (idx == lastModuleEval+1) {
+                if (idx == lastModuleEval+1+skip) {
                     component.setForeground(Color.getHSBColor(0.08f,1f,1f));
-                } else if (idx <= lastModuleEval) {
+                } else if (idx <= lastModuleEval+skip) {
                     component.setForeground(Color.getHSBColor(0.27f,1f,0.6f));
                 } else {
                     component.setForeground(Color.getHSBColor(0f,1f,0.6f));
                 }
-
             }
         }
     }
@@ -349,11 +347,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         c.fill = GridBagConstraints.HORIZONTAL;
 
         // Adding module buttons
-        Iterator<HCModule> iterator = modules.iterator();
-        int count = 0;
-        while (iterator.hasNext()) {
-            HCModule module = iterator.next();
-
+        for (HCModule module : modules) {
             // Adding the module enabled checkbox
             c.gridx = 0;
             c.gridy++;
@@ -362,7 +356,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             c.anchor = GridBagConstraints.BASELINE_LEADING;
             ModuleEnabledCheck enabledCheck = new ModuleEnabledCheck(module);
             enabledCheck.addActionListener(this);
-            modulesPanel.add(enabledCheck,c);
+            modulesPanel.add(enabledCheck, c);
 
             // Adding the main module button
             c.gridx++;
@@ -387,8 +381,6 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             evalButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
             evalButton.addActionListener(this);
             modulesPanel.add(evalButton, c);
-
-            count++;
 
         }
 
@@ -499,8 +491,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
                     parameterControl = new ChoiceArrayParameter(parameter, valueSource);
                     if (parameter.getValue() != null) {
                         ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
-
                     }
+
+                    if (parameter.getValueSource() != null) {
+                        parameter.setValue(((ChoiceArrayParameter) parameterControl).getSelectedItem());
+                    }
+
                     ((ChoiceArrayParameter) parameterControl).addActionListener(this);
 
                     parameterControl.setName("ChoiceArrayParameter");
@@ -514,12 +510,29 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
                     if (parameter.getValue() != null) {
                         ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
                     }
+                    if (parameter.getValueSource() != null) {
+                        parameter.setValue(((ChoiceArrayParameter) parameterControl).getSelectedItem());
+                    }
                     ((ChoiceArrayParameter) parameterControl).addActionListener(this);
                     parameterControl.setName("ChoiceArrayParameter");
 
                 } else if (parameter.getType() == HCParameter.CHILD_OBJECTS) {
                     HCRelationshipCollection relationships = modules.getRelationships(activeModule);
                     HCName[] relationshipChoices = relationships.getChildNames((HCName) parameter.getValueSource());
+                    parameterControl = new HCNameInputParameter(parameter);
+                    if (relationshipChoices != null) {
+                        for (HCName relationship : relationshipChoices) {
+                            ((HCNameInputParameter) parameterControl).addItem(relationship);
+
+                        }
+                        ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
+                    }
+                    ((HCNameInputParameter) parameterControl).addActionListener(this);
+                    parameterControl.setName("InputParameter");
+
+                } else if (parameter.getType() == HCParameter.PARENT_OBJECTS) {
+                    HCRelationshipCollection relationships = modules.getRelationships(activeModule);
+                    HCName[] relationshipChoices = relationships.getParentNames((HCName) parameter.getValueSource());
                     parameterControl = new HCNameInputParameter(parameter);
                     if (relationshipChoices != null) {
                         for (HCName relationship : relationshipChoices) {
@@ -784,6 +797,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         populateModuleList();
         populateModuleParameters();
 
+        lastModuleEval = -1;
+
         System.out.println("File loaded ("+FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
 
     }
@@ -801,7 +816,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         }
 
         // Running the analysis
-        analysis.execute(workspace, true);
+        if (!analysis.execute(workspace, true)) return;
 
         // Exporting XLSX
         if (exportXLSX & !outputFilePath.equals("")) {
@@ -816,6 +831,11 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             exporter.exportResults(workspaces, analysis);
 
         }
+
+        // Making the most-recently evaluated workspace available to the GUI
+        testWorkspace = workspace;
+        lastModuleEval = modules.size()-1;
+        updateEvaluationButtons();
 
     }
 
@@ -850,6 +870,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     private void evaluateModule(HCModule module) {
         module.execute(testWorkspace,true);
+        lastModuleEval = modules.indexOf(module);
         populateModuleList();
 
     }
@@ -916,13 +937,19 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         } else if (((JComponent) object).getName().equals("EvalButton")) {
             HCModule evalModule = ((EvalButton) object).getModule();
+
             int idx = modules.indexOf(evalModule);
-            if (idx<=lastModuleEval+1) {
-                lastModuleEval = idx;
-                new Thread(() -> evaluateModule(((EvalButton) object).getModule())).start();
+            int skip = 0;
+            for (HCModule module:modules) {
+                if (module==evalModule) break;
+                if (!module.isEnabled()) skip++;
 
             }
 
+            if (idx <= lastModuleEval+skip+1) {
+                new Thread(() -> evaluateModule(((EvalButton) object).getModule())).start();
+
+            }
 
         } else if (((JComponent) object).getName().equals("AnalysisOptionsButton")) {
             // Selecting the added module
@@ -931,7 +958,14 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             populateAnalysisParameters();
 
         } else if (((JComponent) object).getName().equals("ModuleEnabledCheck")) {
-            ((ModuleEnabledCheck) object).getModule().setEnabled(((ModuleEnabledCheck) object).isSelected());
+            HCModule module = ((ModuleEnabledCheck) object).getModule();
+            module.setEnabled(((ModuleEnabledCheck) object).isSelected());
+
+            int idx = modules.indexOf(module);
+            if (idx <= lastModuleEval) {
+                lastModuleEval = idx-1;
+            }
+
             populateModuleList();
             populateModuleParameters();
 

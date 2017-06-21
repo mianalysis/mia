@@ -1,25 +1,26 @@
-package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
+package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
-import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
- * Created by sc13967 on 03/05/2017.
+ * Created by sc13967 on 21/06/2017.
  */
-public class ShowImage extends HCModule {
-    public final static String DISPLAY_IMAGE = "Display image";
+public class ObjectClusterer extends HCModule {
+    public static final String INPUT_OBJECTS = "Input objects";
 
     @Override
     public String getTitle() {
-        return "Show image";
+        return "Object clustering";
 
     }
 
     @Override
     public String getHelp() {
-        return null;
+        return "INCOMPLETE" +
+                "" +
+                "Clusters objects using K-Means and/or DB-SCAN algorithms.  The group is assigned as a parent";
+
     }
 
     @Override
@@ -27,11 +28,11 @@ public class ShowImage extends HCModule {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
-        HCName imageName = parameters.getValue(DISPLAY_IMAGE);
-        ImagePlus imageToShow = workspace.getImage(imageName).getImagePlus();
-        imageToShow = new Duplicator().run(imageToShow);
+        // Getting objects to measure
+        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
-        imageToShow.show();
+        ////// CODE GOES HERE!! (This can be done using Apache Commons Math - offers K-Means, but also DB-SCAN)
 
         if (verbose) System.out.println("["+moduleName+"] Complete");
 
@@ -39,7 +40,7 @@ public class ShowImage extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(DISPLAY_IMAGE, HCParameter.INPUT_IMAGE,null));
+        parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
 
     }
 

@@ -4,7 +4,7 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.MultiCumStat;
+import wbif.sjx.common.MathFunc.CumStat;
 
 import java.util.ArrayList;
 
@@ -63,7 +63,7 @@ public class MeasureSpotIntensity extends HCModule {
 
             // Initialising the cumulative statistics object to store pixel intensities.  Unlike MeasureObjectIntensity,
             // this uses a multi-element MultiCumStat where each element corresponds to a different frame
-            MultiCumStat cs = new MultiCumStat(1);
+            CumStat cs = new CumStat();
 
             // Running through all pixels in this object and adding the intensity to the MultiCumStat object
             for (int i=0;i<x.size();i++) {
@@ -78,23 +78,26 @@ public class MeasureSpotIntensity extends HCModule {
 
             // Calculating mean, std, min and max intensity and adding to the parent (we will discard the expanded
             // objects after this module has run)
-            HCMeasurement meanIntensity = new HCMeasurement(inputImageName.getName()+"_MEAN", cs.getMean()[0]);
+            HCMeasurement meanIntensity = new HCMeasurement(inputImageName.getName()+"_MEAN", cs.getMean());
             meanIntensity.setSource(this);
-            object.getParent().addMeasurement(meanIntensity);
+            object.getParent(inputImageName).addMeasurement(meanIntensity);
 
-            HCMeasurement stdIntensity = new HCMeasurement(inputImageName.getName()+"_STD", cs.getStd(MultiCumStat.SAMPLE)[0]);
+            HCMeasurement stdIntensity = new HCMeasurement(inputImageName.getName()+"_STD", cs.getStd(CumStat.SAMPLE));
             stdIntensity.setSource(this);
-            object.getParent().addMeasurement(stdIntensity);
+            object.getParent(inputImageName).addMeasurement(stdIntensity);
 
-            HCMeasurement minIntensity = new HCMeasurement(inputImageName.getName()+"_MIN", cs.getMin()[0]);
+            HCMeasurement minIntensity = new HCMeasurement(inputImageName.getName()+"_MIN", cs.getMin());
             minIntensity.setSource(this);
-            object.getParent().addMeasurement(minIntensity);
+            object.getParent(inputImageName).addMeasurement(minIntensity);
 
-            HCMeasurement maxIntensity = new HCMeasurement(inputImageName.getName()+"_MAX", cs.getMax()[0]);
+            HCMeasurement maxIntensity = new HCMeasurement(inputImageName.getName()+"_MAX", cs.getMax());
             maxIntensity.setSource(this);
-            object.getParent().addMeasurement(maxIntensity);
+            object.getParent(inputImageName).addMeasurement(maxIntensity);
 
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override
