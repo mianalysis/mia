@@ -119,16 +119,5 @@
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.21.0-GA" level="project" />
     <orderEntry type="library" name="Maven: wbif.sjx:Common:1.2.5-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-math4:4.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-numbers-core:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-numbers-gamma:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-numbers-fraction:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-numbers-combinatorics:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-numbers-arrays:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-numbers-angle:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-rng-client-api:1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-rng-simple:1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-rng-core:1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-rng-sampling:1.1-SNAPSHOT" level="project" />
   </component>
 </module>

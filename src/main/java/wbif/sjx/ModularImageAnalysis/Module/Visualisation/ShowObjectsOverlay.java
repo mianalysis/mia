@@ -21,13 +21,16 @@ public class ShowObjectsOverlay extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String SHOW_LABEL = "Show label";
-    public static final String USE_GROUP_ID = "Use group ID";
+    public static final String LABEL_SIZE = "Label size";
+    public static final String USE_PARENT_ID = "Use parent ID";
+    public static final String PARENT_OBJECT_FOR_ID = "Parent object for ID";
     public static final String POSITION_MODE = "Position mode";
     public static final String X_POSITION_MEASUREMENT = "X-position measurement";
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT = "Measurement";
+    public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
 
     private static final String CENTROID = "Centroid";
     private static final String POSITION_MEASUREMENTS = "Position measurements";
@@ -36,15 +39,56 @@ public class ShowObjectsOverlay extends HCModule {
     private static final String SINGLE_COLOUR = "Single colour";
     private static final String RANDOM_COLOUR = "Random colour";
     private static final String MEASUREMENT_VALUE = "Measurement value";
-    private static final String GROUP_ID = "Group ID";
-    public static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE,GROUP_ID};
+    private static final String PARENT_ID = "Parent ID";
+    public static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE, PARENT_ID};
 
-    public static void createOverlay(ImagePlus ipl, HCObjectSet inputObjects, boolean showID, boolean useGroupID) {
-        createOverlay(ipl,inputObjects,CENTROID,null,null,null,RANDOM_COLOUR,null,showID,useGroupID);
-
+    @Override
+    public String getTitle() {
+        return "Show objects as overlay";
     }
 
-    private static void createOverlay(ImagePlus ipl, HCObjectSet inputObjects, String positionMode, String xPosMeas, String yPosMeas, String zPosMeas, String colourMode, String measurement, boolean showID, boolean useGroupID) {
+    @Override
+    public String getHelp() {
+        return null;
+    }
+
+    @Override
+    public void execute(HCWorkspace workspace, boolean verbose) {
+        String moduleName = this.getClass().getSimpleName();
+        if (verbose) System.out.println("["+moduleName+"] Initialising");
+
+        // Getting parameters
+        boolean showID = parameters.getValue(SHOW_LABEL);
+        int labelSize = parameters.getValue(LABEL_SIZE);
+        boolean useParentID = parameters.getValue(USE_PARENT_ID);
+        HCName parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
+        String positionMode = parameters.getValue(POSITION_MODE);
+        String colourMode = parameters.getValue(COLOUR_MODE);
+        HCName parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+        String measurement = parameters.getValue(MEASUREMENT);
+        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
+        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
+        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
+
+        // Getting input objects
+        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+
+        // Getting input image
+        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        HCImage inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus ipl = inputImage.getImagePlus();
+
+        // Duplicating the image, so the original isn't altered
+        ipl = new Duplicator().run(ipl);
+
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+
+        }
+
+
         ipl.setOverlay(new Overlay());
 
         // Getting minimum and maximum values from measurement (if required)
@@ -62,7 +106,7 @@ public class ShowObjectsOverlay extends HCModule {
             switch (colourMode) {
                 case RANDOM_COLOUR:
                     // Random colours
-                    H = new Random(object.getGroupID()*object.getGroupID()*object.getGroupID()).nextFloat();
+                    H = new Random().nextFloat();
                     break;
 
                 case MEASUREMENT_VALUE:
@@ -72,8 +116,13 @@ public class ShowObjectsOverlay extends HCModule {
                     H = (float) ((value - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
                     break;
 
-                case GROUP_ID:
-                    H = ((float) object.getGroupID() * 1048576 % 255) / 255;
+                case PARENT_ID:
+                    if (object.getParent(parentObjectsForColourName)==null) {
+                        H = 0.2f;
+                    } else {
+                        H = ((float) object.getParent(parentObjectsForColourName).getID() * 1048576 % 255) / 255;
+                    }
+
                     break;
 
             }
@@ -115,11 +164,12 @@ public class ShowObjectsOverlay extends HCModule {
             if (showID) {
                 // Adding text label
                 TextRoi text;
-                if (useGroupID) {
-                    text = new TextRoi(xMean, yMean, String.valueOf(object.getGroupID()));
+                if (useParentID) {
+                    text = new TextRoi(xMean, yMean, String.valueOf(object.getParent(parentObjectsForIDName).getID()));
                 } else {
                     text = new TextRoi(xMean, yMean, String.valueOf(object.getID()));
                 }
+                text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
                 if (ipl.isHyperStack()) {
                     text.setPosition(c, z, t);
                 } else {
@@ -130,50 +180,6 @@ public class ShowObjectsOverlay extends HCModule {
 
             }
         }
-    }
-
-    @Override
-    public String getTitle() {
-        return "Show objects as overlay";
-    }
-
-    @Override
-    public String getHelp() {
-        return null;
-    }
-
-    @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
-        // Getting parameters
-        boolean showID = parameters.getValue(SHOW_LABEL);
-        boolean useGroupID = parameters.getValue(USE_GROUP_ID);
-        String positionMode = parameters.getValue(POSITION_MODE);
-        String colourMode = parameters.getValue(COLOUR_MODE);
-
-        // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
-
-        // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
-
-        // Duplicating the image, so the original isn't altered
-        ipl = new Duplicator().run(ipl);
-
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
-            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-
-        }
-
-        createOverlay(ipl,inputObjects,positionMode,parameters.getValue(X_POSITION_MEASUREMENT),
-                parameters.getValue(Y_POSITION_MEASUREMENT),parameters.getValue(Z_POSITION_MEASUREMENT),
-                colourMode,parameters.getValue(MEASUREMENT),showID,useGroupID);
 
         ipl.show();
 
@@ -186,13 +192,16 @@ public class ShowObjectsOverlay extends HCModule {
         parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
         parameters.addParameter(new HCParameter(SHOW_LABEL,HCParameter.BOOLEAN,false));
-        parameters.addParameter(new HCParameter(USE_GROUP_ID,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new HCParameter(LABEL_SIZE,HCParameter.INTEGER,8));
+        parameters.addParameter(new HCParameter(USE_PARENT_ID,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new HCParameter(PARENT_OBJECT_FOR_ID,HCParameter.PARENT_OBJECTS,null,null));
         parameters.addParameter(new HCParameter(POSITION_MODE,HCParameter.CHOICE_ARRAY,POSITION_MODES[0],POSITION_MODES));
         parameters.addParameter(new HCParameter(X_POSITION_MEASUREMENT,HCParameter.MEASUREMENT,null,null));
         parameters.addParameter(new HCParameter(Y_POSITION_MEASUREMENT,HCParameter.MEASUREMENT,null,null));
         parameters.addParameter(new HCParameter(Z_POSITION_MEASUREMENT,HCParameter.MEASUREMENT,null,null));
         parameters.addParameter(new HCParameter(COLOUR_MODE,HCParameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
         parameters.addParameter(new HCParameter(MEASUREMENT,HCParameter.MEASUREMENT,null,null));
+        parameters.addParameter(new HCParameter(PARENT_OBJECT_FOR_COLOUR,HCParameter.PARENT_OBJECTS,null,null));
 
     }
 
@@ -204,7 +213,16 @@ public class ShowObjectsOverlay extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(SHOW_LABEL));
 
         if (parameters.getValue(SHOW_LABEL)) {
-            returnedParameters.addParameter(parameters.getParameter(USE_GROUP_ID));
+            returnedParameters.addParameter(parameters.getParameter(LABEL_SIZE));
+            returnedParameters.addParameter(parameters.getParameter(USE_PARENT_ID));
+
+            if (parameters.getValue(USE_PARENT_ID)) {
+                returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_ID));
+
+                HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                parameters.updateValueRange(PARENT_OBJECT_FOR_ID,inputObjectsName);
+
+            }
         }
 
         returnedParameters.addParameter(parameters.getParameter(POSITION_MODE));
@@ -229,6 +247,14 @@ public class ShowObjectsOverlay extends HCModule {
                 parameters.updateValueRange(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
             }
+
+        } else if (parameters.getValue(COLOUR_MODE).equals(PARENT_ID)) {
+            // Use Parent ID
+            returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+
+            HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            parameters.updateValueRange(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+
         }
 
         return returnedParameters;

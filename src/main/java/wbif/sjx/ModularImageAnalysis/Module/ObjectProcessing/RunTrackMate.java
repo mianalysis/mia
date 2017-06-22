@@ -179,8 +179,8 @@ public class RunTrackMate extends HCModule {
                     }
                 }
 
-                // Creating the overlay
-                ShowObjectsOverlay.createOverlay(ipl,outputObjects,showID,useGroupID);
+//                // Creating the overlay
+//                ShowObjectsOverlay.createOverlay(ipl,outputObjects,showID,useGroupID);
 
                 // Displaying the overlay
                 ipl.show();
@@ -201,7 +201,6 @@ public class RunTrackMate extends HCModule {
             HCObject summaryObject = null;
             if (createSummary) {
                 summaryObject = new HCObject(outputSummaryObjectsName,trackID);
-                summaryObject.setGroupID(trackID);
 
                 // Adding calibration information
                 summaryObject.addCalibration(HCObject.X,calibration.getX(1));
@@ -232,7 +231,6 @@ public class RunTrackMate extends HCModule {
             for (Spot spot:spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
                 HCObject object = new HCObject(outputObjectsName,ID++);
-                object.setGroupID(trackID);
 
                 // Getting coordinates
                 int x = (int) spot.getDoublePosition(0);
@@ -333,8 +331,8 @@ public class RunTrackMate extends HCModule {
                 }
             }
 
-            // Creating the overlay
-            ShowObjectsOverlay.createOverlay(ipl,outputObjects,showID,useGroupID);
+//            // Creating the overlay
+//            ShowObjectsOverlay.createOverlay(ipl,outputObjects,showID,useGroupID);
 
             // Displaying the overlay
             ipl.show();
@@ -433,7 +431,9 @@ public class RunTrackMate extends HCModule {
 
     @Override
     public void addRelationships(HCRelationshipCollection relationships) {
-        relationships.addRelationship(parameters.getValue(OUTPUT_TRACK_OBJECTS),parameters.getValue(OUTPUT_SPOT_OBJECTS));
+        if (parameters.getValue(CREATE_TRACK_OBJECTS)) {
+            relationships.addRelationship(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS));
 
+        }
     }
 }

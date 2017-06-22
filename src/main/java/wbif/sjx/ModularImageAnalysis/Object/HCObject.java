@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -114,6 +116,17 @@ public class HCObject {
 
         return calibration.get(dim);
 
+    }
+
+    /**
+     * Copies all calibration dimensions from another object
+     * @param object
+     */
+    public void copyCalibration(HCObject object) {
+        for (int dim:object.getCalibration().keySet()) {
+            calibration.put(dim,object.getCalibration(dim));
+
+        }
     }
 
     @Override
@@ -317,6 +330,11 @@ public class HCObject {
 
     public void setCalibratedUnits(String calibratedUnits) {
         this.calibratedUnits = calibratedUnits;
+    }
+
+    public double getCentroid(Integer dim) {
+        return MeasureObjectCentroid.calculateCentroid(getCoordinates(dim));
+
     }
 
 }

@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 26/05/2017.
@@ -67,6 +68,14 @@ public class SaveObjectsToSpreadsheet extends HCModule {
 
             HCObject object = inputObjects.values().iterator().next();
 
+            // Getting parents
+            LinkedHashMap<HCName,HCObject> parents = object.getParents();
+            for (HCName parent:parents.keySet()) {
+                Cell parentHeaderCell = objectHeaderRow.createCell(col++);
+                String name = (parent.getName()+"_ID").toUpperCase();
+                parentHeaderCell.setCellValue(name);
+            }
+
             // Adding single-valued position headers
             for (int dim : object.getPositions().keySet()) {
                 Cell positionsHeaderCell = objectHeaderRow.createCell(col++);
@@ -97,6 +106,12 @@ public class SaveObjectsToSpreadsheet extends HCModule {
 
                 Cell groupIDValueCell = objectValueRow.createCell(col++);
                 groupIDValueCell.setCellValue(inputObject.getGroupID());
+
+                parents = inputObject.getParents();
+                for (HCName parent:parents.keySet()) {
+                    Cell parentValueCell = objectValueRow.createCell(col++);
+                    parentValueCell.setCellValue(parents.get(parent).getID());
+                }
 
                 for (int dim : inputObject.getPositions().keySet()) {
                     Cell positionsValueCell = objectValueRow.createCell(col++);

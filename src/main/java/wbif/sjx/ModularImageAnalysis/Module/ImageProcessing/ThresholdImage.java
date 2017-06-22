@@ -123,6 +123,7 @@ public class ThresholdImage extends HCModule {
         parameters.addParameter(new HCParameter(THRESHOLD_MODE,HCParameter.CHOICE_ARRAY,THRESHOLD_MODES[0],THRESHOLD_MODES));
         parameters.addParameter(new HCParameter(THRESHOLD_MULTIPLIER, HCParameter.DOUBLE,1.0));
         parameters.addParameter(new HCParameter(WHITE_BACKGROUND,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,false));
 
     }
 
@@ -139,6 +140,7 @@ public class ThresholdImage extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MODE));
         returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MULTIPLIER));
         returnedParameters.addParameter(parameters.getParameter(WHITE_BACKGROUND));
+        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
