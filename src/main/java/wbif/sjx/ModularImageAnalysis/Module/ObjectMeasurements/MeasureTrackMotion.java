@@ -97,6 +97,9 @@ public class MeasureTrackMotion extends HCModule {
             }
 
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

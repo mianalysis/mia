@@ -83,6 +83,8 @@ public class IdentifyObjects extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName.getName()+") to workspace");
         workspace.addObjects(outputObjects);
 
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

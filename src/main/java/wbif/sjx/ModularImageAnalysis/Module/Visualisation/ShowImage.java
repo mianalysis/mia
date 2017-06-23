@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
+import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -26,8 +28,12 @@ public class ShowImage extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         HCName imageName = parameters.getValue(DISPLAY_IMAGE);
+        ImagePlus imageToShow = workspace.getImage(imageName).getImagePlus();
+        imageToShow = new Duplicator().run(imageToShow);
 
-        workspace.getImage(imageName).getImagePlus().show();
+        imageToShow.show();
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

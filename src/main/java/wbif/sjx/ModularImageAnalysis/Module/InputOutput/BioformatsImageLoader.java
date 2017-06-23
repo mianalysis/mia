@@ -1,6 +1,6 @@
 // TODO: Enable ability to extract multiple images from .lif files
 
-package wbif.sjx.ModularImageAnalysis.Module.IO;
+package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.ImagePlus;
 import ij.io.Opener;
@@ -68,6 +68,9 @@ public class BioformatsImageLoader extends HCModule {
             if (verbose) System.out.println("["+moduleName+"] Image ("+outputImageName.getName()+") failed to load");
 
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override

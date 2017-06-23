@@ -1,9 +1,10 @@
-package wbif.sjx.ModularImageAnalysis.Module.IO;
+package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
+import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -66,13 +67,17 @@ public class ImageFileLoader extends HCModule {
         // If the image is an RGB, converting to composite
         ipl = new CompositeImage(ipl);
 
-        // Displaying the image
-        if (parameters.getValue(SHOW_IMAGE)) ipl.show();
-
-
         // Adding image to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
         workspace.addImage(new HCImage(outputImageName,ipl));
+
+        // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
+        if (parameters.getValue(SHOW_IMAGE)) {
+            ipl = new Duplicator().run(ipl);
+            ipl.show();
+        }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

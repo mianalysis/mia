@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import ij.plugin.ZProjector;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -12,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Object.HCParameterCollection;
 public class ProjectImage extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String SHOW_IMAGE = "Show image";
 
     public HCImage projectImageInZ(HCImage inputImage, HCName outputImageName) {
         ZProjector z_projector = new ZProjector(inputImage.getImagePlus());
@@ -52,12 +54,20 @@ public class ProjectImage extends HCModule {
         // Adding projected image to workspace
         workspace.addImage(outputImage);
 
+        // If selected, displaying the image
+        if (parameters.getValue(SHOW_IMAGE)) {
+            new Duplicator().run(outputImage.getImagePlus()).show();
+        }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override
     public void initialiseParameters() {
         parameters.addParameter(new HCParameter(INPUT_IMAGE, HCParameter.INPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(OUTPUT_IMAGE, HCParameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,false));
 
     }
 

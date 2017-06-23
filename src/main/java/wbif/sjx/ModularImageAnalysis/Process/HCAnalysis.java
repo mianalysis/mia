@@ -35,8 +35,8 @@ public abstract class HCAnalysis implements Serializable {
      * @param workspace Workspace containing stores for images and objects
      * @return
      */
-    public void execute(HCWorkspace workspace) {
-        execute(workspace,false);
+    public boolean execute(HCWorkspace workspace) {
+        return execute(workspace,false);
 
     }
 
@@ -46,7 +46,7 @@ public abstract class HCAnalysis implements Serializable {
      * @param verbose Switch determining if modules should report progress to System.out
      * @return
      */
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public boolean execute(HCWorkspace workspace, boolean verbose) {
         if (verbose) System.out.println("Starting analysis");
 
         // Running through modules
@@ -54,15 +54,15 @@ public abstract class HCAnalysis implements Serializable {
             if (module.isEnabled()) module.execute(workspace,verbose);
 
             if (shutdown) {
-                break;
+                shutdown = false;
+                return false;
 
             }
         }
 
-        // Resetting the shutdown boolean
-        shutdown = false;
-
         if (verbose) System.out.println("Complete");
+
+        return true;
 
     }
 

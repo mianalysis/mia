@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
  */
 public class HCObjectSet extends LinkedHashMap<Integer,HCObject> {
     HCName name;
+    int maxID = 0;
 
     public HCObjectSet(HCName name) {
         this.name = name;
@@ -16,8 +17,13 @@ public class HCObjectSet extends LinkedHashMap<Integer,HCObject> {
         return name;
     }
 
-    public void removeWithRelations(int key) {
+    public void add(HCObject object) {
+        put(object.getID(),object);
 
+    }
 
+    public int getNextID() {
+        maxID++;
+        return maxID;
     }
 }

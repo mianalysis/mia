@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.IO;
+package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import wbif.sjx.ModularImageAnalysis.Extractor.Extractor;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -41,6 +41,8 @@ public class MetadataExtractor extends HCModule {
         metadata.setFile(workspace.getMetadata().getFile());
         foldernameExtractor.extract(metadata,metadata.getFile().getParent());
         filenameExtractor.extract(metadata,metadata.getFile().getName());
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

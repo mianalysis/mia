@@ -3,7 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 //import de.biomedical_imaging.ij.steger.Line;
 //import de.biomedical_imaging.ij.steger.LineDetector;
 //import de.biomedical_imaging.ij.steger.Lines;
-import ij.IJ;
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -75,6 +74,8 @@ public class RidgeDetection extends HCModule {
 //        if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
 //        HCImage outputImage = new HCImage(outputImageName,outputImagePlus);
 //        workspace.addImage(outputImage);
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

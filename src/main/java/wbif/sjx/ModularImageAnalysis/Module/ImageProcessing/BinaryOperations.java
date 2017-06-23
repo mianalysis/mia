@@ -15,6 +15,7 @@ public class BinaryOperations extends HCModule {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
+    public static final String SHOW_IMAGE = "Show image";
 
     private static final String DILATE = "Dilate 2D";
     private static final String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
@@ -71,13 +72,27 @@ public class BinaryOperations extends HCModule {
 
         }
 
+        // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
             if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
             HCImage outputImage = new HCImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
+            // If selected, displaying the image
+            if (parameters.getValue(SHOW_IMAGE)) {
+                new Duplicator().run(outputImage.getImagePlus()).show();
+            }
+
+        } else {
+            // If selected, displaying the image
+            if (parameters.getValue(SHOW_IMAGE)) {
+                new Duplicator().run(inputImagePlus).show();
+            }
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
     }
 
     @Override
@@ -87,6 +102,7 @@ public class BinaryOperations extends HCModule {
         parameters.addParameter(new HCParameter(OUTPUT_IMAGE,HCParameter.OUTPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(OPERATION_MODE,HCParameter.CHOICE_ARRAY,OPERATION_MODES[0],OPERATION_MODES));
         parameters.addParameter(new HCParameter(NUM_ITERATIONS,HCParameter.INTEGER,1));
+        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,false));
 
     }
 
@@ -107,6 +123,8 @@ public class BinaryOperations extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(NUM_ITERATIONS));
 
         }
+
+        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

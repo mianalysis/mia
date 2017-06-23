@@ -94,7 +94,7 @@ public class MeasureObjectTexture extends HCModule {
             HCMeasurement ASMMeasurement = new HCMeasurement(inputImageName.getName()+"_ASM",textureCalculator.getASM());
             ASMMeasurement.setSource(this);
             if (centroidMeasurement) {
-                object.getParent().addMeasurement(ASMMeasurement);
+                object.getParent(inputObjectsName).addMeasurement(ASMMeasurement);
             } else {
                 object.addMeasurement(ASMMeasurement);
             }
@@ -102,7 +102,7 @@ public class MeasureObjectTexture extends HCModule {
             HCMeasurement contrastMeasurement = new HCMeasurement(inputImageName.getName()+"_CONTRAST",textureCalculator.getContrast());
             contrastMeasurement.setSource(this);
             if (centroidMeasurement) {
-                object.getParent().addMeasurement(contrastMeasurement);
+                object.getParent(inputObjectsName).addMeasurement(contrastMeasurement);
             } else {
                 object.addMeasurement(contrastMeasurement);
             }
@@ -110,7 +110,7 @@ public class MeasureObjectTexture extends HCModule {
             HCMeasurement correlationMeasurement = new HCMeasurement(inputImageName.getName()+"_CORRELATION",textureCalculator.getCorrelation());
             correlationMeasurement.setSource(this);
             if (centroidMeasurement) {
-                object.getParent().addMeasurement(correlationMeasurement);
+                object.getParent(inputObjectsName).addMeasurement(correlationMeasurement);
             } else {
                 object.addMeasurement(correlationMeasurement);
             }
@@ -118,7 +118,7 @@ public class MeasureObjectTexture extends HCModule {
             HCMeasurement entropyMeasurement = new HCMeasurement(inputImageName.getName()+"_ENTROPY",textureCalculator.getEntropy());
             entropyMeasurement.setSource(this);
             if (centroidMeasurement) {
-                object.getParent().addMeasurement(entropyMeasurement);
+                object.getParent(inputObjectsName).addMeasurement(entropyMeasurement);
             } else {
                 object.addMeasurement(entropyMeasurement);
             }
@@ -126,6 +126,8 @@ public class MeasureObjectTexture extends HCModule {
         }
 
         if (verbose) System.out.println("["+moduleName+"] Measurements complete");
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 
