@@ -55,6 +55,7 @@ public abstract class HCAnalysis implements Serializable {
 
             if (shutdown) {
                 shutdown = false;
+                System.out.println("Shutdown successful");
                 return false;
 
             }
