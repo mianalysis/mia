@@ -5,6 +5,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -39,7 +40,7 @@ public class ImageFileLoader extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -50,6 +51,7 @@ public class ImageFileLoader extends HCModule {
 
         // If the file currently in the workspace is to be used, update the file path accordingly
         if (importMode.equals(CURRENT_FILE)) {
+            if (workspace.getMetadata().getFile() == null) throw new GenericMIAException("Load file using Analysis > Set file to analyse");
             filePath = workspace.getMetadata().getFile().getAbsolutePath();
         }
 

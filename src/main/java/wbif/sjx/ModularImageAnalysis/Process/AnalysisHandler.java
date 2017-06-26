@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Process;
 
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.Object.HCWorkspace;
 import wbif.sjx.ModularImageAnalysis.Object.HCWorkspaceCollection;
@@ -69,7 +70,7 @@ public class AnalysisHandler {
 
     }
 
-    public HCWorkspace startAnalysis(HCAnalysis analysis) throws IOException {
+    public HCWorkspace startAnalysis(HCAnalysis analysis) throws IOException, GenericMIAException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setVisible(true);

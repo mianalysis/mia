@@ -78,15 +78,15 @@ public class MeasureTrackMotion extends HCModule {
 
             } else {
                 // Adding measurements to track objects
-                HCMeasurement measurement = new HCMeasurement(HCMeasurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio());
+                HCMeasurement measurement = new HCMeasurement(HCMeasurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new HCMeasurement(HCMeasurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance());
+                measurement = new HCMeasurement(HCMeasurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new HCMeasurement(HCMeasurement.TOTAL_PATH_LENGTH, track.getTotalPathLength());
+                measurement = new HCMeasurement(HCMeasurement.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 

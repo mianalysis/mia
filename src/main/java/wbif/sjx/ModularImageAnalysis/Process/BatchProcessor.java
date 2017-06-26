@@ -2,6 +2,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.System.FileCrawler;
 
@@ -29,7 +30,7 @@ public class BatchProcessor extends FileCrawler {
 
     // PUBLIC METHODS
 
-    public HCWorkspaceCollection runAnalysisOnStructure(HCAnalysis analysis, HCExporter exporter) throws IOException {
+    public HCWorkspaceCollection runAnalysisOnStructure(HCAnalysis analysis, HCExporter exporter) throws IOException, GenericMIAException {
         int num_valid_files = getNumberOfValidFilesInStructure();
         resetIterator();
 

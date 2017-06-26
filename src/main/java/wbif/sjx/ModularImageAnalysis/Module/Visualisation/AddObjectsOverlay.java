@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
@@ -17,9 +18,12 @@ import java.util.Random;
 /**
  * Created by sc13967 on 17/05/2017.
  */
-public class ShowObjectsOverlay extends HCModule {
+public class AddObjectsOverlay extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String APPLY_TO_INPUT = "Apply to input image";
+    public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
+    public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_LABEL = "Show label";
     public static final String LABEL_SIZE = "Label size";
     public static final String USE_PARENT_ID = "Use parent ID";
@@ -44,7 +48,7 @@ public class ShowObjectsOverlay extends HCModule {
 
     @Override
     public String getTitle() {
-        return "Show objects as overlay";
+        return "Add objects as overlay";
     }
 
     @Override
@@ -58,6 +62,9 @@ public class ShowObjectsOverlay extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting parameters
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
+        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean showID = parameters.getValue(SHOW_LABEL);
         int labelSize = parameters.getValue(LABEL_SIZE);
         boolean useParentID = parameters.getValue(USE_PARENT_ID);
@@ -80,7 +87,7 @@ public class ShowObjectsOverlay extends HCModule {
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Duplicating the image, so the original isn't altered
-        ipl = new Duplicator().run(ipl);
+        if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
@@ -88,8 +95,8 @@ public class ShowObjectsOverlay extends HCModule {
 
         }
 
-
-        ipl.setOverlay(new Overlay());
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        Overlay ovl = ipl.getOverlay();
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
@@ -156,10 +163,11 @@ public class ShowObjectsOverlay extends HCModule {
             if (ipl.isHyperStack()) {
                 roi.setPosition(c, z, t);
             } else {
-                roi.setPosition(Math.max(Math.max(c,z),t));
+                int pos = Math.max(Math.max(c,z),t);
+                roi.setPosition(pos);
             }
             roi.setStrokeColor(colour);
-            ipl.getOverlay().add(roi);
+            ovl.add(roi);
 
             if (showID) {
                 // Adding text label
@@ -176,12 +184,23 @@ public class ShowObjectsOverlay extends HCModule {
                     text.setPosition(Math.max(Math.max(c, z), t));
                 }
                 text.setStrokeColor(colour);
-                ipl.getOverlay().add(text);
+                ovl.add(text);
 
             }
         }
 
-        ipl.show();
+        // If necessary, adding output image to workspace
+        if (addOutputToWorkspace) {
+            // Flattening overlay onto image for saving
+            ipl.flattenStack();
+
+            HCImage outputImage = new HCImage(outputImageName,ipl);
+            workspace.addImage(outputImage);
+        }
+
+        // Duplicating the image, then displaying it.  Duplicating prevents the image being removed from the workspace
+        // if it's closed
+        new Duplicator().run(ipl).show();
 
         if (verbose) System.out.println("["+moduleName+"] Complete");
 
@@ -191,6 +210,9 @@ public class ShowObjectsOverlay extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new HCParameter(APPLY_TO_INPUT,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new HCParameter(ADD_OUTPUT_TO_WORKSPACE,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new HCParameter(OUTPUT_IMAGE,HCParameter.OUTPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(SHOW_LABEL,HCParameter.BOOLEAN,false));
         parameters.addParameter(new HCParameter(LABEL_SIZE,HCParameter.INTEGER,8));
         parameters.addParameter(new HCParameter(USE_PARENT_ID,HCParameter.BOOLEAN,true));
@@ -210,6 +232,17 @@ public class ShowObjectsOverlay extends HCModule {
         HCParameterCollection returnedParameters = new HCParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+
+        if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
+            returnedParameters.addParameter(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
+
+            if (parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
+                returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+
+            }
+        }
+
         returnedParameters.addParameter(parameters.getParameter(SHOW_LABEL));
 
         if (parameters.getValue(SHOW_LABEL)) {

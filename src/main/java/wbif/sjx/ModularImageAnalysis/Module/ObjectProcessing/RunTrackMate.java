@@ -12,7 +12,6 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -186,6 +185,8 @@ public class RunTrackMate extends HCModule {
                 ipl.show();
 
             }
+
+            if (verbose) System.out.println("["+moduleName+"] Complete");
 
             return;
         }

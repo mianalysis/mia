@@ -3,9 +3,14 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI;
 
+import ij.IJ;
 import ij.ImageJ;
+import ij.ImagePlus;
+import ij.gui.OvalRoi;
+import ij.gui.Overlay;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
@@ -51,45 +56,26 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private JPanel basicModulesPanel = new JPanel();
     private JScrollPane basicModulesScrollPane = new JScrollPane(basicModulesPanel);
     private JPopupMenu moduleListMenu = new JPopupMenu();
-    private Thread t = null;
     private int lastModuleEval = -1;
     private boolean basicGUI = true;
 
     private GUIAnalysis analysis = new GUIAnalysis();
     private HCModuleCollection modules = analysis.modules;
-    private String inputFilePath = "";
-    private String outputFilePath = "";
-    private boolean exportXML = false;
-    private boolean exportXLSX = false;
 
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
-//        new ImageJ();
-//        IJ.runMacro("waitForUser");
+//        ImagePlus ipl = IJ.openImage("C:\\Users\\sc13967\\Desktop\\C1-RPE_gH2AX_53BP1_IR5min_001_SIR_ALX.tif");
 //
-//        ImagePlus ipl = IJ.getImage();
+////        ipl.flattenStack();
+//        Overlay ovl = new Overlay();
+//        ipl.setOverlay(ovl);
 //
-//
-//        short[] weights = ChamferWeights3D.CITY_BLOCK.getShortWeights();
-//        DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,false);
-//        ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
-//
-//        new ImagePlus("dist",distanceMap).show();
+//        OvalRoi ovr = new OvalRoi(10,10,50,50);
+//        ovr.setPosition(3);
+//        ovl.add(ovr);
+//        ipl.flattenStack();
+//        IJ.save(ipl,"C:\\Users\\sc13967\\Desktop\\testout.tif");
 
-//          // Example workflow for loading existing HCAnalysis protocol
-//        File input = new File("C:\\Users\\sc13967\\Google Drive\\People\\K\\Abder Kaidi\\2017-03-30 Texture analysis from 3D SIM\\RPE1_gH2AX_53BP1\\2017-06-06 Analysis2.mia");
-//        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(input));
-//
-//        HCAnalysis analysis = (GUIAnalysis) inputStream.readObject();
-//        inputStream.close();
-//
-//        HCWorkspaceCollection workspaces = new HCWorkspaceCollection();
-//        HCWorkspace testWorkspace = workspaces.getNewWorkspace(null);
-//
-//        new ParameterWindow().updateParameters(analysis.modules);
-//
-//        analysis.execute(testWorkspace);
-
-        new ImageJ();
+                new ImageJ();
         new MainGUI();
 
     }
@@ -108,8 +94,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
 
-        renderBasicMode();
-//        renderEditingMode();
+//        renderBasicMode();
+        renderEditingMode();
 
         // Final bits for listeners
         frame.addMouseListener(this);
@@ -553,7 +539,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
             if (idx == modules.size()-1) c.weighty = 1;
 
-            JPanel modulePanel = componentFactory.createAdvancedModuleControl(module,group,module,color,300-25);
+            JPanel modulePanel = componentFactory.createAdvancedModuleControl(module,group,activeModule,color,300-25);
             modulesPanel.add(modulePanel, c);
             c.gridy++;
 
@@ -630,68 +616,6 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         paramsScrollPane.validate();
         paramsScrollPane.repaint();
-
-    }
-
-    private void populateAnalysisParameters() {
-        paramsPanel.removeAll();
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 0;
-        c.weighty = 0;
-        c.insets = new Insets(5, 5, 5, 5);
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-
-//        // Getting analysis mode
-//        String[] analysisModes = new String[]{"Use image open in ImageJ","Load single image from file","Batch mode"};
-//        JComboBox analysisMode = new JComboBox(analysisModes);
-//        analysisMode.setName("AnalysisMode");
-//        analysisMode.addActionListener(this);
-//        paramsPanel.add(analysisMode,c);
-//
-//        // If loading from ImageJ do nothing
-//        if (analysisMode.getSelectedItem().equals("Use image open in ImageJ"));
-
-
-        // Select file export location
-        JTextField exportFileName = new JTextField("Export location");
-        exportFileName.setPreferredSize(new Dimension(200, elementHeight));
-        exportFileName.setEditable(false);
-        exportFileName.setBorder(null);
-        c.gridy++;
-        paramsPanel.add(exportFileName, c);
-
-        JButton exportFileButton = new JButton(outputFilePath);
-        exportFileButton.addActionListener(this);
-        exportFileButton.setPreferredSize(new Dimension(200, elementHeight));
-        exportFileButton.setName("OutputFilePath");
-        c.gridx++;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.FIRST_LINE_END;
-        paramsPanel.add(exportFileButton, c);
-
-        // Select export type
-        JCheckBox xmlCheck = new JCheckBox("Export XML");
-        xmlCheck.addActionListener(this);
-        xmlCheck.setSelected(exportXML);
-        xmlCheck.setName("XMLCheck");
-        c.gridx = 0;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.gridy++;
-        paramsPanel.add(xmlCheck, c);
-
-        JCheckBox xlsxCheck = new JCheckBox("Export XLSX");
-        xlsxCheck.addActionListener(this);
-        xlsxCheck.setSelected(exportXLSX);
-        xlsxCheck.setName("XLSXCheck");
-        c.gridy++;
-        c.weighty = 1;
-        paramsPanel.add(xlsxCheck, c);
-
-        paramsPanel.validate();
-        paramsPanel.repaint();
 
     }
 
@@ -819,14 +743,13 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private void removeModule() {
         if (activeModule != null) {
             // Removing a module resets all the current evaluation
-            lastModuleEval = -1;
-            testWorkspace = new HCWorkspace(1,null);
+            lastModuleEval = modules.indexOf(activeModule)-1;
 
             modules.remove(activeModule);
             activeModule = null;
 
             populateModuleList();
-            initialiseParametersPanel();
+            populateModuleParameters();
 
         }
     }
@@ -858,7 +781,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         }
     }
 
-    private void evaluateModule(HCModule module) {
+    private void evaluateModule(HCModule module) throws GenericMIAException {
         module.execute(testWorkspace,true);
         lastModuleEval = modules.indexOf(module);
 
@@ -925,10 +848,10 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             System.out.println("Set current file to \""+fileDialog.getFiles()[0].getName()+"\"");
 
         } else if (componentName.equals("StartAnalysis")) {
-            t = new Thread(() -> {
+            Thread t = new Thread(() -> {
                 try {
                     testWorkspace = new AnalysisHandler().startAnalysis(analysis);
-                    lastModuleEval = modules.size()-1;
+                    lastModuleEval = modules.size() - 1;
 
                     if (basicGUI) {
                         populateBasicModules();
@@ -939,6 +862,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (GenericMIAException e) {
+                    IJ.showMessage(e.getMessage());
                 }
             });
             t.start();
@@ -956,9 +881,11 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             HCModule newModule = ((PopupMenuItem) object).getModule().getClass().newInstance();
             if (activeModule != null) {
                 int idx = modules.indexOf(activeModule);
+                activeModule = newModule;
                 modules.add(++idx,newModule);
 
             } else {
+                activeModule = newModule;
                 modules.add(newModule);
 
             }
@@ -979,13 +906,23 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             int idx = modules.indexOf(evalModule);
 
             // If the module is ready to be evaluated
-            if (idx <= lastModuleEval) new Thread(() -> evaluateModule(evalModule)).start();
+            if (idx <= lastModuleEval) new Thread(() -> {
+                try {
+                    evaluateModule(evalModule);
+                } catch (GenericMIAException e) {
+                    IJ.showMessage(e.getMessage());
+                }
+            }).start();
 
             // If multiple modules will need to be evaluated first
             new Thread(() -> {
                 for (int i = lastModuleEval+1;i<=idx;i++) {
                     HCModule module = modules.get(i);
-                    if (module.isEnabled()) evaluateModule(module);
+                    if (module.isEnabled()) try {
+                        evaluateModule(module);
+                    } catch (GenericMIAException e) {
+                        IJ.showMessage(e.getMessage());
+                    }
 
                 }
             }).start();
@@ -1029,7 +966,6 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             HCParameter parameter = ((TextParameter) object).getParameter();
             String text = ((TextParameter) object).getText();
             HCModule module = ((TextParameter) object).getModule();
-
 
             if (parameter.getType() == HCParameter.OUTPUT_IMAGE | parameter.getType() == HCParameter.OUTPUT_OBJECTS) {
                 parameter.setValue(new HCName(text));
@@ -1105,39 +1041,18 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
                 populateModuleParameters();
             }
 
-        } else if (componentName.equals("OutputFilePath")) {
-            FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
-            fileDialog.setMultipleMode(false);
-            fileDialog.setVisible(true);
-
-            outputFilePath = fileDialog.getFiles()[0].getAbsolutePath();
-            populateAnalysisParameters();
-
-        } else if (componentName.equals("VisibleCheck")) {
-            HCParameter parameter = ((VisibleCheck) object).getParameter();
-            parameter.setVisible(((VisibleCheck) object).isSelected());
-
-        } else if (componentName.equals("NotesArea")) {
-            activeModule.setNotes(((JTextArea) object).getText());
-
-        } else if (componentName.equals("XMLCheck")) {
-            exportXML = ((JCheckBox) object).isSelected();
-            populateAnalysisParameters();
-
-        } else if (componentName.equals("XLSXCheck")) {
-            exportXLSX = ((JCheckBox) object).isSelected();
-            populateAnalysisParameters();
-
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            reactToAction(e.getSource());
-        } catch (IllegalAccessException | InstantiationException | IOException | ClassNotFoundException | ParserConfigurationException | TransformerException e1) {
-            e1.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                reactToAction(e.getSource());
+            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | ParserConfigurationException | IOException | TransformerException e1) {
+                e1.printStackTrace();
+            }
+        }).start();
     }
 
     @Override
@@ -1147,11 +1062,13 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     @Override
     public void focusLost(FocusEvent e) {
-        try {
-            reactToAction(e.getSource());
-        } catch (IllegalAccessException | InstantiationException | IOException | ClassNotFoundException | TransformerException | ParserConfigurationException e1) {
-            e1.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                reactToAction(e.getSource());
+            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | ParserConfigurationException | IOException | TransformerException e1) {
+                e1.printStackTrace();
+            }
+        }).start();
     }
 
     @Override

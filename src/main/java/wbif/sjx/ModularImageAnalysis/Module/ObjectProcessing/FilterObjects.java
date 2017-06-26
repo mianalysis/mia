@@ -79,6 +79,14 @@ public class FilterObjects extends HCModule {
                 HCObject inputObject = iterator.next();
                 HCObjectSet childObjects = inputObject.getChildren(childObjectsName);
 
+                // Removing the object if it has no children
+                if (childObjects == null) {
+                    iterator.remove();
+                    continue;
+
+                }
+
+                // Removing the object if it has too few children
                 if (childObjects.size() < minChildN) {
                     inputObject.removeRelationships();
                     iterator.remove();

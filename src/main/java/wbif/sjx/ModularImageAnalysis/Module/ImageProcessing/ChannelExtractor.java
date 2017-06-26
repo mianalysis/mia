@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.ImagePlus;
+import ij.plugin.ChannelSplitter;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -42,7 +43,9 @@ public class ChannelExtractor extends HCModule {
 
         // Getting selected channel
         if (verbose) System.out.println("["+moduleName+"] Extracting channel "+channel);
-        ImagePlus outputChannelImagePlus = SubHyperstackMaker.makeSubhyperstack(ipl,String.valueOf(channel),"1-"+ipl.getNSlices(),"1-"+ipl.getNFrames());
+//        ImagePlus outputChannelImagePlus = SubHyperstackMaker.makeSubhyperstack(ipl,String.valueOf(channel),"1-"+ipl.getNSlices(),"1-"+ipl.getNFrames());
+        ipl = new Duplicator().run(ipl);
+        ImagePlus outputChannelImagePlus = ChannelSplitter.split(ipl)[channel-1];
 
         // Adding image to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName.getName()+") to workspace");

@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -35,7 +36,7 @@ public abstract class HCAnalysis implements Serializable {
      * @param workspace Workspace containing stores for images and objects
      * @return
      */
-    public boolean execute(HCWorkspace workspace) {
+    public boolean execute(HCWorkspace workspace) throws GenericMIAException {
         return execute(workspace,false);
 
     }
@@ -46,7 +47,7 @@ public abstract class HCAnalysis implements Serializable {
      * @param verbose Switch determining if modules should report progress to System.out
      * @return
      */
-    public boolean execute(HCWorkspace workspace, boolean verbose) {
+    public boolean execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
         if (verbose) System.out.println("Starting analysis");
 
         // Running through modules

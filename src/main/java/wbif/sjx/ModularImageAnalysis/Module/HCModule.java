@@ -5,6 +5,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module;
 
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.Serializable;
@@ -32,7 +33,7 @@ public abstract class HCModule implements Serializable {
 
     public abstract String getHelp();
 
-    public abstract void execute(HCWorkspace workspace, boolean verbose);
+    public abstract void execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException;
 
     /**
      * Get a ParameterCollection of all the possible parameters this class requires (not all may be used).  This returns
@@ -82,7 +83,7 @@ public abstract class HCModule implements Serializable {
 
     // PRIVATE METHODS
 
-    void execute(HCWorkspace workspace) {
+    void execute(HCWorkspace workspace) throws GenericMIAException {
         execute(workspace,false);
 
     }
