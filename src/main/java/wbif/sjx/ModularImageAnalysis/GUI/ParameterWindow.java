@@ -26,7 +26,7 @@ public class ParameterWindow {
             gd.addMessage(module.getTitle()+":",titleFont);
             boolean hasComponents = false;
 
-            for (Map.Entry<String,HCParameter> entry:module.getActiveParameters().getParameters().entrySet()) {
+            for (Map.Entry<String,HCParameter> entry:module.getActiveParameters().entrySet()) {
                 if (entry.getValue().isVisible()) {
                     if (entry.getValue().getType() == HCParameter.INTEGER) {
                         gd.addNumericField(entry.getKey(), (double) ((int) entry.getValue().getValue()), 1);
@@ -81,7 +81,7 @@ public class ParameterWindow {
 
             // Retrieving the results
             for (HCModule module:modules) {
-                for (Map.Entry<String,HCParameter> entry:module.getActiveParameters().getParameters().entrySet()) {
+                for (Map.Entry<String,HCParameter> entry:module.getActiveParameters().entrySet()) {
                     if (entry.getValue().isVisible()) {
                         if (entry.getValue().getType() == HCParameter.INTEGER) {
                             module.getActiveParameters().getParameter(entry.getKey()).setValue(

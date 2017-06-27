@@ -1,6 +1,7 @@
+// TODO: Add option to leave overlay as objects (i.e. don't flatten)
+
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
@@ -11,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
 import java.util.Random;
@@ -35,6 +37,7 @@ public class AddObjectsOverlay extends HCModule {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT = "Measurement";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
+    public static final String SHOW_IMAGE = "Show image";
 
     private static final String CENTROID = "Centroid";
     private static final String POSITION_MEASUREMENTS = "Position measurements";
@@ -76,6 +79,7 @@ public class AddObjectsOverlay extends HCModule {
         String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
         String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
         String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
+        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Getting input objects
         HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -159,7 +163,7 @@ public class AddObjectsOverlay extends HCModule {
             int t = ((int) object.getCoordinates(HCObject.T)) + 1;
 
             // Adding circles where the object centroids are
-            OvalRoi roi = new OvalRoi(xMean-2+0.5,yMean-2+0.5,4,4);
+            OvalRoi roi = new OvalRoi(xMean,yMean,1,1);
             if (ipl.isHyperStack()) {
                 roi.setPosition(c, z, t);
             } else {
@@ -191,16 +195,13 @@ public class AddObjectsOverlay extends HCModule {
 
         // If necessary, adding output image to workspace
         if (addOutputToWorkspace) {
-            // Flattening overlay onto image for saving
-            ipl.flattenStack();
-
             HCImage outputImage = new HCImage(outputImageName,ipl);
             workspace.addImage(outputImage);
         }
 
         // Duplicating the image, then displaying it.  Duplicating prevents the image being removed from the workspace
         // if it's closed
-        new Duplicator().run(ipl).show();
+        if (showImage) new Duplicator().run(ipl).show();
 
         if (verbose) System.out.println("["+moduleName+"] Complete");
 
@@ -224,6 +225,7 @@ public class AddObjectsOverlay extends HCModule {
         parameters.addParameter(new HCParameter(COLOUR_MODE,HCParameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
         parameters.addParameter(new HCParameter(MEASUREMENT,HCParameter.MEASUREMENT,null,null));
         parameters.addParameter(new HCParameter(PARENT_OBJECT_FOR_COLOUR,HCParameter.PARENT_OBJECTS,null,null));
+        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,true));
 
     }
 
@@ -289,6 +291,8 @@ public class AddObjectsOverlay extends HCModule {
             parameters.updateValueRange(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
         }
+
+        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

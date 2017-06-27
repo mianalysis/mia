@@ -47,6 +47,7 @@ class ComponentFactory {
                     module);
 
             parameterControl = new HCNameInputParameter(module, parameter);
+            ((HCNameInputParameter) parameterControl).addItem(null);
             for (HCParameter image : images) {
                 ((HCNameInputParameter) parameterControl).addItem(image.getValue());
 
@@ -61,6 +62,7 @@ class ComponentFactory {
                     module);
 
             parameterControl = new HCNameInputParameter(module, parameter);
+            ((HCNameInputParameter) parameterControl).addItem(null);
             for (HCParameter image : images) {
                 ((HCNameInputParameter) parameterControl).addItem(image.getValue());
 

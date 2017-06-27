@@ -52,7 +52,7 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
             // Running through all parameters, adding all images to the list
             HCParameterCollection currParameters = module.getActiveParameters();
             if (currParameters != null) {
-                for (HCParameter currParameter : currParameters.getParameters().values()) {
+                for (HCParameter currParameter : currParameters.values()) {
                     if (currParameter.getType() == type) {
                         parameters.add(currParameter);
                     }

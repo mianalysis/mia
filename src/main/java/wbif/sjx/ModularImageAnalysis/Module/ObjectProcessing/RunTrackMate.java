@@ -350,7 +350,7 @@ public class RunTrackMate extends HCModule {
     @Override
     public void initialiseParameters() {
         parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter( OUTPUT_SPOT_OBJECTS,HCParameter.OUTPUT_OBJECTS,new HCName("Spots")));
+        parameters.addParameter(new HCParameter(OUTPUT_SPOT_OBJECTS,HCParameter.OUTPUT_OBJECTS,new HCName("Spots")));
 
         parameters.addParameter(new HCParameter(CALIBRATED_UNITS,HCParameter.BOOLEAN,false));
         parameters.addParameter(new HCParameter(DO_SUBPIXEL_LOCALIZATION,HCParameter.BOOLEAN,true));
@@ -409,7 +409,6 @@ public class RunTrackMate extends HCModule {
             }
         }
 
-
         return returnedParameters;
 
     }
@@ -432,7 +431,7 @@ public class RunTrackMate extends HCModule {
 
     @Override
     public void addRelationships(HCRelationshipCollection relationships) {
-        if (parameters.getValue(CREATE_TRACK_OBJECTS)) {
+        if (parameters.getValue(DO_TRACKING)) {
             relationships.addRelationship(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS));
 
         }

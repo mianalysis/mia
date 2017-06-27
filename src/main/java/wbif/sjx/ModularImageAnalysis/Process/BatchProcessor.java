@@ -13,7 +13,7 @@ import java.io.IOException;
  * Created by sc13967 on 21/10/2016.
  */
 public class BatchProcessor extends FileCrawler {
-    private boolean verbose = false;
+    private boolean verbose = true;
 
 
     // CONSTRUCTORS

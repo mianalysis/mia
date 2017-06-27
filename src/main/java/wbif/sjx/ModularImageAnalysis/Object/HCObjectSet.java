@@ -6,8 +6,8 @@ import java.util.LinkedHashMap;
  * Created by sc13967 on 12/05/2017.
  */
 public class HCObjectSet extends LinkedHashMap<Integer,HCObject> {
-    HCName name;
-    int maxID = 0;
+    private HCName name;
+    private int maxID = 0;
 
     public HCObjectSet(HCName name) {
         this.name = name;

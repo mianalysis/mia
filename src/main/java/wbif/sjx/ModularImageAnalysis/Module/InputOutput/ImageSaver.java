@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
 
@@ -16,6 +17,7 @@ public class ImageSaver extends HCModule {
     public static final String SAVE_LOCATION = "Save location";
     public static final String SAVE_FILE_PATH = "File path";
     public static final String SAVE_SUFFIX = "Add filename suffix";
+    public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
     private static final String SAVE_WITH_INPUT = "Save with input file";
     private static final String SPECIFIC_LOCATION = "Specific location";
@@ -45,6 +47,14 @@ public class ImageSaver extends HCModule {
         String saveLocation = parameters.getValue(SAVE_LOCATION);
         String filePath = parameters.getValue(SAVE_FILE_PATH);
         String suffix = parameters.getValue(SAVE_SUFFIX);
+        boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
+
+        if (flattenOverlay) {
+            // Flattening overlay onto image for saving
+            IntensityMinMax.run(inputImagePlus,true);
+            inputImagePlus.flattenStack();
+
+        }
 
         if (saveLocation.equals(SAVE_WITH_INPUT)) {
             File rootFile = workspace.getMetadata().getFile();
@@ -69,6 +79,7 @@ public class ImageSaver extends HCModule {
         parameters.addParameter(new HCParameter(SAVE_LOCATION,HCParameter.CHOICE_ARRAY,SAVE_LOCATIONS[0],SAVE_LOCATIONS));
         parameters.addParameter(new HCParameter(SAVE_FILE_PATH,HCParameter.FILE_PATH,null));
         parameters.addParameter(new HCParameter(SAVE_SUFFIX,HCParameter.STRING,""));
+        parameters.addParameter(new HCParameter(FLATTEN_OVERLAY,HCParameter.BOOLEAN,true));
 
     }
 
@@ -84,6 +95,7 @@ public class ImageSaver extends HCModule {
         }
 
         returnedParamters.addParameter(parameters.getParameter(SAVE_SUFFIX));
+        returnedParamters.addParameter(parameters.getParameter(FLATTEN_OVERLAY));
 
         return returnedParamters;
 

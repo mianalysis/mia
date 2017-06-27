@@ -6,6 +6,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
+import org.apache.commons.math3.exception.InsufficientDataException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.geometry.euclidean.twod.hull.ConvexHull2D;
 import org.apache.commons.math3.geometry.euclidean.twod.hull.MonotoneChain;
@@ -201,8 +202,9 @@ public class ObjectClusterer extends HCModule {
             outputObject.addMeasurement(measurement);
 
             // The area and perimeter of each cluster (convex hull around child centroids)
-            if (children.size() >= 3) {
+            try {
                 HashSet<Vector2D> points = new HashSet<>(children.size());
+
                 for (HCObject child : children.values()) {
                     double x = child.getCentroid(HCObject.X);
                     double y = child.getCentroid(HCObject.Y);
@@ -218,7 +220,9 @@ public class ObjectClusterer extends HCModule {
                 double perimeter = convexHull2D.createRegion().getBoundarySize();
                 outputObject.addMeasurement(new HCMeasurement(CLUSTER_PERIMETER_XY, perimeter, this));
 
-            } else {
+            } catch (InsufficientDataException e) {
+                // This exception occurs when there are fewer than 3 points or in certain point arrangements (i.e. when
+                // they all lie in a straight line)
                 outputObject.addMeasurement(new HCMeasurement(CLUSTER_AREA_XY, Double.NaN, this));
                 outputObject.addMeasurement(new HCMeasurement(CLUSTER_PERIMETER_XY, Double.NaN, this));
 

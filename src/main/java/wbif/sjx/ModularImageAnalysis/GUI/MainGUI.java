@@ -63,24 +63,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private HCModuleCollection modules = analysis.modules;
 
     public static void main(String[] args) throws IllegalAccessException, InstantiationException {
-//        ImagePlus ipl = IJ.openImage("C:\\Users\\sc13967\\Desktop\\C1-RPE_gH2AX_53BP1_IR5min_001_SIR_ALX.tif");
-//
-////        ipl.flattenStack();
-//        Overlay ovl = new Overlay();
-//        ipl.setOverlay(ovl);
-//
-//        OvalRoi ovr = new OvalRoi(10,10,50,50);
-//        ovr.setPosition(3);
-//        ovl.add(ovr);
-//        ipl.flattenStack();
-//        IJ.save(ipl,"C:\\Users\\sc13967\\Desktop\\testout.tif");
-
-                new ImageJ();
+        new ImageJ();
         new MainGUI();
 
     }
 
-    public MainGUI() throws InstantiationException, IllegalAccessException {
+    private MainGUI() throws InstantiationException, IllegalAccessException {
         componentFactory = new ComponentFactory(elementHeight,this,this);
 
         // Setting location of panel
@@ -569,7 +557,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         // If the active module hasn't got parameters enabled, skip it
         if (activeModule.getActiveParameters() != null) {
-            Iterator<HCParameter> iterator = activeModule.getActiveParameters().getParameters().values().iterator();
+            Iterator<HCParameter> iterator = activeModule.getActiveParameters().values().iterator();
             while (iterator.hasNext()) {
                 HCParameter parameter = iterator.next();
 
@@ -648,7 +636,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
             // Only displaying the module title if it has at least one visible parameter
             boolean hasVisibleParameters = false;
-            for (HCParameter parameter:module.getActiveParameters().getParameters().values()) {
+            for (HCParameter parameter:module.getActiveParameters().values()) {
                 if (parameter.isVisible()) hasVisibleParameters = true;
             }
             if (!hasVisibleParameters) continue;
@@ -659,7 +647,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             c.anchor = GridBagConstraints.FIRST_LINE_START;
             basicModulesPanel.add(titlePanel,c);
 
-            for (HCParameter parameter:module.getActiveParameters().getParameters().values()) {
+            for (HCParameter parameter:module.getActiveParameters().values()) {
                 if (parameter.isVisible()) {
                     JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, module, 500-80);
 
@@ -743,7 +731,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private void removeModule() {
         if (activeModule != null) {
             // Removing a module resets all the current evaluation
-            lastModuleEval = modules.indexOf(activeModule)-1;
+            int idx = modules.indexOf(activeModule);
+            if (idx < lastModuleEval) lastModuleEval = -1;
 
             modules.remove(activeModule);
             activeModule = null;
@@ -1040,6 +1029,10 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
                 populateModuleList();
                 populateModuleParameters();
             }
+
+        } else if (componentName.equals("VisibleCheck")) {
+            HCParameter parameter = ((VisibleCheck) object).getParameter();
+            parameter.setVisible(((VisibleCheck) object).isSelected());
 
         }
     }

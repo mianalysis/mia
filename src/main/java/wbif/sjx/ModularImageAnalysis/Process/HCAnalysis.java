@@ -50,6 +50,16 @@ public abstract class HCAnalysis implements Serializable {
     public boolean execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
         if (verbose) System.out.println("Starting analysis");
 
+        // Check that all available parameters have been set
+        for (HCModule module:modules) {
+            HCParameterCollection activeParameters = module.getActiveParameters();
+
+            for (HCParameter activeParameter:activeParameters.values()) {
+                if (activeParameter.getValue() == null) throw new GenericMIAException(
+                        "Module \""+module.getTitle()+"\" parameter \""+activeParameter.getName()+"\" not set");
+            }
+        }
+
         // Running through modules
         for (HCModule module:modules) {
             if (module.isEnabled()) module.execute(workspace,verbose);

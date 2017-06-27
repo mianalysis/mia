@@ -81,6 +81,7 @@ public class FilterObjects extends HCModule {
 
                 // Removing the object if it has no children
                 if (childObjects == null) {
+                    inputObject.removeRelationships();
                     iterator.remove();
                     continue;
 
