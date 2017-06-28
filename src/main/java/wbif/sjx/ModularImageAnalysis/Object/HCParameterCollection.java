@@ -6,56 +6,43 @@ import java.util.LinkedHashMap;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class HCParameterCollection implements Serializable {
-    private LinkedHashMap<String,HCParameter> parameters = new LinkedHashMap<>();
+public class HCParameterCollection extends LinkedHashMap<String,HCParameter> implements Serializable {
 
 
     // PUBLIC METHODS
 
     public void addParameter(HCParameter parameter) {
-        parameters.put(parameter.getName(),parameter);
+        put(parameter.getName(),parameter);
 
     }
 
     public HCParameter getParameter(String name) {
-        return parameters.get(name);
+        return get(name);
 
     }
 
     public <T> T getValue(String name) {
-        return (T) parameters.get(name).getValue();
+        return get(name).getValue();
 
     }
 
     public boolean isVisible(String name) {
-        return parameters.get(name).isVisible();
+        return get(name).isVisible();
 
     }
 
     public void updateValue(String name, Object value) {
-        parameters.get(name).setValue(value);
+        get(name).setValue(value);
 
     }
 
     public void updateVisible(String name, boolean visible) {
-        parameters.get(name).setVisible(visible);
+        get(name).setVisible(visible);
 
     }
 
     public void updateValueRange(String name, Object valueRange) {
-        parameters.get(name).setValueSource(valueRange);
+        get(name).setValueSource(valueRange);
 
     }
-
-
-    // GETTERS AND SETTERS
-
-    public LinkedHashMap<String, HCParameter> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(LinkedHashMap<String, HCParameter> parameters) {
-        this.parameters = parameters;
-    }
-
 }

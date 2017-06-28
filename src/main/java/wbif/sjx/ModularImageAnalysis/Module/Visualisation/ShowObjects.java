@@ -13,7 +13,6 @@ import wbif.sjx.common.Object.LUTs;
 public class ShowObjects extends HCModule {
     public final static String INPUT_OBJECTS = "Input objects";
     public final static String TEMPLATE_IMAGE = "Template image";
-    public final static String USE_GROUP_ID = "Use group ID";
 
     @Override
     public String getTitle() {
@@ -31,25 +30,22 @@ public class ShowObjects extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Loading objects
-        HCName inputObjectName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectName);
-
-        // Getting parameters
-        boolean useGroupID = parameters.getValue(USE_GROUP_ID);
 
         HCImage templateImage;
         if (parameters.getParameter(TEMPLATE_IMAGE) == null) {
             templateImage = null;
 
         } else {
-            HCName templateImageName = parameters.getValue(TEMPLATE_IMAGE);
+            String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
             templateImage = workspace.getImages().get(templateImageName);
 
         }
 
         // Converting objects to an image
-        HCImage image = new ObjectImageConverter().convertObjectsToImage(inputObjects,new HCName("Object image"),templateImage,useGroupID);
-        image.getImagePlus().setTitle(inputObjectName.getName());
+        HCImage image = new ObjectImageConverter().convertObjectsToImage(inputObjects,"Object image",templateImage,ObjectImageConverter.COLOUR_MODES[1],null);
+        image.getImagePlus().setTitle(inputObjectName);
 
         // Creating a random colour LUT and assigning it to the image (maximising intensity range to 0-255)
         image.getImagePlus().getProcessor().setLut(LUTs.Random(true));
@@ -66,7 +62,6 @@ public class ShowObjects extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new HCParameter(INPUT_OBJECTS, HCParameter.INPUT_OBJECTS,null));
         parameters.addParameter(new HCParameter(TEMPLATE_IMAGE, HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(USE_GROUP_ID,HCParameter.BOOLEAN,true));
 
     }
 

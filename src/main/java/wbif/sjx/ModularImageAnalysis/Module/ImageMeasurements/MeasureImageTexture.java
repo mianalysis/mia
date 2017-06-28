@@ -36,7 +36,7 @@ public class MeasureImageTexture extends HCModule {
         int zOffs = parameters.getValue(Z_OFFSET);
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 

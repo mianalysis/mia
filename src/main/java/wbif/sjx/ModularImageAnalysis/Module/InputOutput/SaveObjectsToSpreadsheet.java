@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 26/05/2017.
@@ -34,7 +35,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting file to save to
@@ -48,7 +49,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
         // Creating column headers
         if (inputObjects.values().iterator().next().getMeasurements().size() != 0) {
             // Creating relevant sheet prefixed with "IM"
-            XSSFSheet sheet = workbook.createSheet("OBJ_" + inputObjectsName.getName());
+            XSSFSheet sheet = workbook.createSheet("OBJ_" + inputObjectsName);
 
             // Adding headers to each column
             int col = 0;
@@ -66,6 +67,14 @@ public class SaveObjectsToSpreadsheet extends HCModule {
             groupIDHeaderCell.setCellValue("GROUP_ID");
 
             HCObject object = inputObjects.values().iterator().next();
+
+            // Getting parents
+            LinkedHashMap<String,HCObject> parents = object.getParents();
+            for (String parent:parents.keySet()) {
+                Cell parentHeaderCell = objectHeaderRow.createCell(col++);
+                String name = (parent+"_ID").toUpperCase();
+                parentHeaderCell.setCellValue(name);
+            }
 
             // Adding single-valued position headers
             for (int dim : object.getPositions().keySet()) {
@@ -95,8 +104,11 @@ public class SaveObjectsToSpreadsheet extends HCModule {
                 Cell objectIDValueCell = objectValueRow.createCell(col++);
                 objectIDValueCell.setCellValue(inputObject.getID());
 
-                Cell groupIDValueCell = objectValueRow.createCell(col++);
-                groupIDValueCell.setCellValue(inputObject.getGroupID());
+                parents = inputObject.getParents();
+                for (String parent:parents.keySet()) {
+                    Cell parentValueCell = objectValueRow.createCell(col++);
+                    parentValueCell.setCellValue(parents.get(parent).getID());
+                }
 
                 for (int dim : inputObject.getPositions().keySet()) {
                     Cell positionsValueCell = objectValueRow.createCell(col++);

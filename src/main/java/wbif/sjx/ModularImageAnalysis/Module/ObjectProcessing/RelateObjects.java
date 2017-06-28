@@ -136,10 +136,10 @@ public class RelateObjects extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
-        HCName parentObjectName = parameters.getValue(PARENT_OBJECTS);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS);
         HCObjectSet parentObjects = workspace.getObjects().get(parentObjectName);
 
-        HCName childObjectName = parameters.getValue(CHILD_OBJECTS);
+        String childObjectName = parameters.getValue(CHILD_OBJECTS);
         HCObjectSet childObjects = workspace.getObjects().get(childObjectName);
 
         // Getting parameters

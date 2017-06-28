@@ -5,6 +5,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -16,10 +17,15 @@ import java.io.PrintStream;
  * Created by sc13967 on 15/05/2017.
  */
 public class ImageFileLoader extends HCModule {
+    public static final String IMPORT_MODE = "Import mode";
     public static final String FILE_PATH = "File path";
-    public static final String OUTPUT_IMAGE = "Output image";
     public static final String USE_BIOFORMATS = "Use Bio-formats importer";
+    public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
+
+    private static final String CURRENT_FILE = "Current file";
+    private static final String SPECIFIC_FILE = "Specific file";
+    private static final String[] IMPORT_MODES = new String[]{CURRENT_FILE,SPECIFIC_FILE};
 
 
     @Override
@@ -34,18 +40,23 @@ public class ImageFileLoader extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
-        // Getting input file
+        // Getting parameters
+        String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        // Getting name to save
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        // If the file currently in the workspace is to be used, update the file path accordingly
+        if (importMode.equals(CURRENT_FILE)) {
+            if (workspace.getMetadata().getFile() == null) throw new GenericMIAException("Load file using Analysis > Set file to analyse");
+            filePath = workspace.getMetadata().getFile().getAbsolutePath();
+        }
 
-        // Importing the file
         ImagePlus ipl;
+        // Importing the file
         if (parameters.getValue(USE_BIOFORMATS)) {
             // Bio-formats writes lots of unwanted information to System.out.  This diverts it to a fake PrintStream
             PrintStream realStream = System.out;
@@ -83,6 +94,7 @@ public class ImageFileLoader extends HCModule {
 
     @Override
     public void initialiseParameters() {
+        parameters.addParameter(new HCParameter(IMPORT_MODE,HCParameter.CHOICE_ARRAY,IMPORT_MODES[0],IMPORT_MODES));
         parameters.addParameter(new HCParameter(FILE_PATH,HCParameter.FILE_PATH,null));
         parameters.addParameter(new HCParameter(OUTPUT_IMAGE,HCParameter.OUTPUT_IMAGE,null));
         parameters.addParameter(new HCParameter(USE_BIOFORMATS,HCParameter.BOOLEAN,true));
@@ -92,7 +104,19 @@ public class ImageFileLoader extends HCModule {
 
     @Override
     public HCParameterCollection getActiveParameters() {
-        return parameters;
+        HCParameterCollection returnedParameters = new HCParameterCollection();
+
+        returnedParameters.addParameter(parameters.getParameter(IMPORT_MODE));
+        if (parameters.getValue(IMPORT_MODE).equals(SPECIFIC_FILE)) {
+            returnedParameters.addParameter(parameters.getParameter(FILE_PATH));
+
+        }
+
+        returnedParameters.addParameter(parameters.getParameter(USE_BIOFORMATS));
+        returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+
+        return returnedParameters;
 
     }
 

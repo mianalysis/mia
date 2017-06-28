@@ -32,7 +32,8 @@ public class IdentifySecondaryObjects extends HCModule {
 
     @Override
     public String getHelp() {
-        return null;
+        return "+++INCOMPLETE+++" +
+                "\nMay not work following changes to groupID";
     }
 
     @Override
@@ -45,19 +46,19 @@ public class IdentifySecondaryObjects extends HCModule {
         String thrMeth = parameters.getValue(THRESHOLD_METHOD);
 
         // Loading images and objects into workspace
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage2 = workspace.getImages().get(inputImageName);
         ImagePlus image2 = inputImage2.getImagePlus();
 
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet objects1 = workspace.getObjects().get(inputObjectsName);
 
         // Initialising the output objects ArrayList
-        HCName outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         // Getting nuclei objects as image
         if (verbose) System.out.println("["+moduleName+"] Converting objects to image");
-        ImagePlus image1 = new ObjectImageConverter().convertObjectsToImage(objects1,new HCName("Temp image"),inputImage2,true).getImagePlus();
+        ImagePlus image1 = new ObjectImageConverter().convertObjectsToImage(objects1,"Temp image",inputImage2,ObjectImageConverter.COLOUR_MODES[3],null).getImagePlus();
 
         // Segmenting cell image
         // Filtering cell image
@@ -81,7 +82,7 @@ public class IdentifySecondaryObjects extends HCModule {
 
         // Converting the labelled cell image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
-        HCImage tempImage = new HCImage(new HCName("Temp image"),im2);
+        HCImage tempImage = new HCImage("Temp image",im2);
         HCObjectSet objects2 = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectsName);
 
         // Watershed will give one cell per nucleus and these should already have the same labelling number.
@@ -89,7 +90,7 @@ public class IdentifySecondaryObjects extends HCModule {
         RelateObjects.linkMatchingIDs(objects1,objects2);
 
         // Adding objects to workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName.getName()+") to workspace");
+        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(objects2);
 
         if (verbose) System.out.println("["+moduleName+"] Complete");

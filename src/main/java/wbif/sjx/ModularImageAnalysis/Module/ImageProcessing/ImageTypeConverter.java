@@ -38,7 +38,7 @@ public class ImageTypeConverter extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -68,7 +68,7 @@ public class ImageTypeConverter extends HCModule {
 
         // Adding output image to workspace if necessary
         if (!applyToInput) {
-            HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
             HCImage outputImage = new HCImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);

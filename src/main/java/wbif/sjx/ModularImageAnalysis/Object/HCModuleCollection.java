@@ -4,6 +4,8 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 03/05/2017.
@@ -36,8 +38,8 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
      * @param cutoffModule
      * @return
      */
-    public ArrayList<HCParameter> getParametersMatchingType(int type, HCModule cutoffModule) {
-        ArrayList<HCParameter> parameters = new ArrayList<>();
+    public LinkedHashSet<HCParameter> getParametersMatchingType(int type, HCModule cutoffModule) {
+        LinkedHashSet<HCParameter> parameters = new LinkedHashSet<>();
 
         for (HCModule module:this) {
             // If this module isn't enabled, skip it
@@ -52,7 +54,7 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
             // Running through all parameters, adding all images to the list
             HCParameterCollection currParameters = module.getActiveParameters();
             if (currParameters != null) {
-                for (HCParameter currParameter : currParameters.getParameters().values()) {
+                for (HCParameter currParameter : currParameters.values()) {
                     if (currParameter.getType() == type) {
                         parameters.add(currParameter);
                     }
@@ -64,7 +66,7 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
 
     }
 
-    public ArrayList<HCParameter> getParametersMatchingType(int type) {
+    public LinkedHashSet<HCParameter> getParametersMatchingType(int type) {
         return getParametersMatchingType(type,null);
 
     }

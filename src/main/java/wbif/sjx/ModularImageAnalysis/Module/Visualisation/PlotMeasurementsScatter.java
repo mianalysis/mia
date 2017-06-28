@@ -57,7 +57,7 @@ public class PlotMeasurementsScatter extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
@@ -176,7 +176,7 @@ public class PlotMeasurementsScatter extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(MEASUREMENT2));
 
         // Updating measurements with measurement choices from currently-selected object
-        HCName objectName = parameters.getValue(INPUT_OBJECTS);
+        String objectName = parameters.getValue(INPUT_OBJECTS);
         if (objectName != null) {
             parameters.updateValueRange(MEASUREMENT1, objectName);
             parameters.updateValueRange(MEASUREMENT2, objectName);

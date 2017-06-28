@@ -40,7 +40,7 @@ public class ThresholdImage extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -95,7 +95,7 @@ public class ThresholdImage extends HCModule {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             HCImage outputImage = new HCImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
@@ -123,6 +123,7 @@ public class ThresholdImage extends HCModule {
         parameters.addParameter(new HCParameter(THRESHOLD_MODE,HCParameter.CHOICE_ARRAY,THRESHOLD_MODES[0],THRESHOLD_MODES));
         parameters.addParameter(new HCParameter(THRESHOLD_MULTIPLIER, HCParameter.DOUBLE,1.0));
         parameters.addParameter(new HCParameter(WHITE_BACKGROUND,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,false));
 
     }
 
@@ -139,6 +140,7 @@ public class ThresholdImage extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MODE));
         returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MULTIPLIER));
         returnedParameters.addParameter(parameters.getParameter(WHITE_BACKGROUND));
+        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

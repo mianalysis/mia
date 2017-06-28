@@ -17,7 +17,7 @@ public class GetLocalObjectRegion extends HCModule {
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String CALIBRATED_RADIUS = "Calibrated radius";
 
-    public static HCObjectSet getLocalRegions(HCObjectSet inputObjects, HCName outputObjectsName, double radius, boolean calibrated) {
+    public static HCObjectSet getLocalRegions(HCObjectSet inputObjects, String outputObjectsName, double radius, boolean calibrated) {
         // Creating store for output objects
         HCObjectSet outputObjects = new HCObjectSet(outputObjectsName);
 
@@ -103,11 +103,11 @@ public class GetLocalObjectRegion extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting output objects name
-        HCName outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         // Getting parameters
         boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);

@@ -3,22 +3,20 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI;
 
+import ij.IJ;
 import ij.ImageJ;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
-import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Process.HCExporter;
-import wbif.sjx.common.MathFunc.Indexer;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -32,78 +30,180 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private static final String removeModuleText = "-";
     private static final String moveModuleUpText = "▲";
     private static final String moveModuleDownText = "▼";
-    private static final String startAnalysisText = "✓";
-    private static final String stopAnalysisText = "✕";
     private static final String saveAnalysis = "Save";
     private static final String loadAnalysis = "Load";
+    private static final String startAnalysis = "Run";
+    private static final String stopAnalysisText = "Stop";
 
     private int frameWidth = 1100;
     private int frameHeight = 750;
     private int elementHeight = 30;
 
+    private ComponentFactory componentFactory;
     private HCWorkspace testWorkspace = new HCWorkspace(1,null);
     private HCModule activeModule = null;
-    private Frame frame = new JFrame();
+    private JFrame frame = new JFrame();
+    private JMenuBar menuBar = new JMenuBar();
     private JPanel controlPanel = new JPanel();
     private JPanel modulesPanel = new JPanel();
     private JScrollPane modulesScrollPane = new JScrollPane(modulesPanel);
     private JPanel paramsPanel = new JPanel();
     private JScrollPane paramsScrollPane = new JScrollPane(paramsPanel);
     private JPanel statusPanel = new JPanel();
+    private JPanel basicControlPanel = new JPanel();
+    private JPanel basicModulesPanel = new JPanel();
+    private JScrollPane basicModulesScrollPane = new JScrollPane(basicModulesPanel);
     private JPopupMenu moduleListMenu = new JPopupMenu();
-    private Thread t = null;
     private int lastModuleEval = -1;
+    private boolean basicGUI = true;
 
     private GUIAnalysis analysis = new GUIAnalysis();
     private HCModuleCollection modules = analysis.modules;
-    private String inputFilePath = "";
-    private String outputFilePath = "";
-    private boolean exportXML = false;
-    private boolean exportXLSX = false;
 
-    public static void main(String[] args) throws IllegalAccessException, InstantiationException {
-//        new ImageJ();
-//        IJ.runMacro("waitForUser");
-//
-//        ImagePlus ipl = IJ.getImage();
-//
-//
-//        short[] weights = ChamferWeights3D.CITY_BLOCK.getShortWeights();
-//        DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,false);
-//        ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
-//
-//        new ImagePlus("dist",distanceMap).show();
-
-//          // Example workflow for loading existing HCAnalysis protocol
-//        File input = new File("C:\\Users\\sc13967\\Google Drive\\People\\K\\Abder Kaidi\\2017-03-30 Texture analysis from 3D SIM\\RPE1_gH2AX_53BP1\\2017-06-06 Analysis2.mia");
-//        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(input));
-//
-//        HCAnalysis analysis = (GUIAnalysis) inputStream.readObject();
-//        inputStream.close();
-//
-//        HCWorkspaceCollection workspaces = new HCWorkspaceCollection();
-//        HCWorkspace testWorkspace = workspaces.getNewWorkspace(null);
-//
-//        new ParameterWindow().updateParameters(analysis.modules);
-//
-//        analysis.execute(testWorkspace);
-
+    public static void main(String[] args) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
         new ImageJ();
         new MainGUI();
 
     }
 
-    public MainGUI() throws InstantiationException, IllegalAccessException {
-        frame.setLayout(new GridBagLayout());
-        frame.setTitle("Modular image analysis (version "+getClass().getPackage().getImplementationVersion()+")");
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5,5,5,0);
-        c.gridx = 0;
-        c.gridy = 0;
+    private MainGUI() throws InstantiationException, IllegalAccessException {
+        componentFactory = new ComponentFactory(elementHeight,this,this);
 
         // Setting location of panel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - frameWidth) / 2, (screenSize.height - frameHeight) / 2);
+
+        frame.setLayout(new GridBagLayout());
+        frame.setTitle("Modular image analysis (version "+getClass().getPackage().getImplementationVersion()+")");
+
+        // Creating the menu bar
+        initialiseMenuBar();
+        frame.setJMenuBar(menuBar);
+
+        renderBasicMode();
+//        renderEditingMode();
+
+        // Final bits for listeners
+        frame.addMouseListener(this);
+        frame.setVisible(true);
+
+        // Populating the list containing all available modules
+        listAvailableModules();
+        moduleListMenu.show(frame,0,0);
+        moduleListMenu.setVisible(false);
+
+    }
+
+    private void initialiseMenuBar() {
+        // Creating the file menu
+        JMenu menu = new JMenu("File");
+        menuBar.add(menu);
+
+        JMenuItem menuItem = new JMenuItem("Load pipeline");
+        menuItem.setName("LoadPipeline");
+        menuItem.addActionListener(this);
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Save pipeline");
+        menuItem.setName("SavePipeline");
+        menuItem.addActionListener(this);
+        menu.add(menuItem);
+
+        // Creating the analysis menu
+        menu = new JMenu("Analysis");
+        menuBar.add(menu);
+
+        menuItem = new JMenuItem("Set file to analyse");
+        menuItem.setName("SetFileToAnalyse");
+        menuItem.addActionListener(this);
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Run analysis");
+        menuItem.setName("StartAnalysis");
+        menuItem.addActionListener(this);
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem("Stop analysis");
+        menuItem.setName("StopAnalysis");
+        menuItem.addActionListener(this);
+        menu.add(menuItem);
+
+        // Creating the new menu
+        menu = new JMenu("View");
+        menuBar.add(menu);
+
+        ButtonGroup group = new ButtonGroup();
+        JRadioButtonMenuItem rbMenuItem = new JRadioButtonMenuItem("Basic mode");
+        rbMenuItem.setName("BasicModeView");
+        rbMenuItem.setSelected(true);
+        rbMenuItem.addActionListener(this);
+        group.add(rbMenuItem);
+        menu.add(rbMenuItem);
+
+        rbMenuItem = new JRadioButtonMenuItem("Editing mode");
+        rbMenuItem.setName("EditingModeView");
+        rbMenuItem.addActionListener(this);
+        group.add(rbMenuItem);
+        menu.add(rbMenuItem);
+
+    }
+
+    private void clearFrame() {
+        frame.remove(controlPanel);
+        frame.remove(modulesPanel);
+        frame.remove(modulesScrollPane);
+        frame.remove(statusPanel);
+        frame.remove(paramsPanel);
+        frame.remove(paramsScrollPane);
+        frame.remove(basicControlPanel);
+        frame.remove(basicModulesScrollPane);
+
+    }
+
+    private void renderBasicMode() {
+        basicGUI = true;
+
+        clearFrame();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5,5,0,5);
+        c.gridx = 0;
+        c.gridy = 0;
+
+        // Initialising the control panel
+        initialiseBasicControlPanel();
+        frame.add(basicControlPanel,c);
+
+        // Initialising the parameters panel
+        initialiseBasicModulesPanel();
+        c.gridy++;
+        frame.add(basicModulesScrollPane,c);
+
+        // Initialising the status panel
+        initialiseStatusPanel(500);
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 1;
+        c.insets = new Insets(5,5,5,5);
+        frame.add(statusPanel,c);
+
+        frame.pack();
+        frame.revalidate();
+        frame.repaint();
+
+        populateBasicModules();
+
+    }
+
+    private void renderEditingMode() throws InstantiationException, IllegalAccessException {
+        basicGUI = false;
+
+        clearFrame();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5,5,5,0);
+        c.gridx = 0;
+        c.gridy = 0;
 
         // Creating buttons to add and remove modules
         initialiseControlPanel();
@@ -121,26 +221,24 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         frame.add(paramsScrollPane,c);
 
         // Initialising the status panel
-//        initialiseStatusPanel();
-//        c.gridx = 0;
-//        c.gridy++;
-//        c.gridwidth = 3;
-//        c.insets = new Insets(0,5,5,5);
-//        frame.add(statusPanel,c);
+        initialiseStatusPanel(1090);
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 3;
+        c.insets = new Insets(0,5,5,5);
+        frame.add(statusPanel,c);
 
-        // Final bits for listeners
-        frame.addMouseListener(this);
-        frame.setVisible(true);
         frame.pack();
+        frame.revalidate();
+        frame.repaint();
 
-        // Populating the list containing all available modules
-        listAvailableModules();
-        moduleListMenu.show(frame,0,0);
-        moduleListMenu.setVisible(false);
+        populateModuleList();
+        populateModuleParameters();
 
     }
 
     private void initialiseControlPanel() {
+        controlPanel = new JPanel();
         int buttonSize = 50;
 
         controlPanel = new JPanel();
@@ -187,7 +285,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         c.gridy++;
         controlPanel.add(moveModuleUpButton, c);
 
-        // Move module up button
+        // Move module down button
         JButton moveModuleDownButton = new JButton(moveModuleDownText);
         moveModuleDownButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
         moveModuleDownButton.addActionListener(this);
@@ -204,7 +302,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         loadAnalysisButton.addActionListener(this);
         loadAnalysisButton.setFocusPainted(false);
         loadAnalysisButton.setMargin(new Insets(0,0,0,0));
-        loadAnalysisButton.setName("ControlButton");
+        loadAnalysisButton.setName("LoadPipeline");
         c.gridy++;
         c.weighty = 1;
         c.anchor = GridBagConstraints.PAGE_END;
@@ -216,19 +314,18 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         saveAnalysisButton.addActionListener(this);
         saveAnalysisButton.setFocusPainted(false);
         saveAnalysisButton.setMargin(new Insets(0,0,0,0));
-        saveAnalysisButton.setName("ControlButton");
+        saveAnalysisButton.setName("SavePipeline");
         c.gridy++;
         c.weighty = 0;
         controlPanel.add(saveAnalysisButton, c);
 
         // Start analysis button
-        JButton startAnalysisButton = new JButton(startAnalysisText);
+        JButton startAnalysisButton = new JButton(startAnalysis);
         startAnalysisButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
         startAnalysisButton.addActionListener(this);
-        startAnalysisButton.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,16));
-        startAnalysisButton.setMargin(new Insets(0,0,0,0));
         startAnalysisButton.setFocusPainted(false);
-        startAnalysisButton.setName("ControlButton");
+        startAnalysisButton.setMargin(new Insets(0,0,0,0));
+        startAnalysisButton.setName("StartAnalysis");
         c.gridy++;
         controlPanel.add(startAnalysisButton, c);
 
@@ -236,10 +333,9 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         JButton stopAnalysisButton = new JButton(stopAnalysisText);
         stopAnalysisButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
         stopAnalysisButton.addActionListener(this);
-        stopAnalysisButton.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,16));
         stopAnalysisButton.setMargin(new Insets(0,0,0,0));
         stopAnalysisButton.setFocusPainted(false);
-        stopAnalysisButton.setName("ControlButton");
+        stopAnalysisButton.setName("StopAnalysis");
         c.gridy++;
         controlPanel.add(stopAnalysisButton, c);
 
@@ -249,12 +345,13 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     }
 
     private void initialisingModulesPanel() {
+        modulesScrollPane = new JScrollPane(modulesPanel);
         int buttonWidth = 300;
 
         // Initialising the scroll panel
         modulesScrollPane.setPreferredSize(new Dimension(buttonWidth + 15, frameHeight-50));
         modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         // Initialising the panel for module buttons
@@ -268,10 +365,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     }
 
     private void initialiseParametersPanel() {
+        paramsScrollPane = new JScrollPane(paramsPanel);
+
         // Initialising the scroll panel
         paramsScrollPane.setPreferredSize(new Dimension(700, frameHeight-50));
         paramsScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        paramsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        paramsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         paramsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         paramsPanel.removeAll();
@@ -293,8 +392,9 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     }
 
-    private void initialiseStatusPanel() {
-        statusPanel.setPreferredSize(new Dimension(1090,40));
+    private void initialiseStatusPanel(int width) {
+        statusPanel = new JPanel();
+        statusPanel.setPreferredSize(new Dimension(width,40));
         statusPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         statusPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -302,12 +402,11 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         JTextField textField = new JTextField();
         textField.setBackground(null);
-        textField.setPreferredSize(new Dimension(1070,25));
+        textField.setPreferredSize(new Dimension(width-20,25));
         textField.setBorder(null);
         textField.setText("Modular image analysis (version "+getClass().getPackage().getImplementationVersion()+")");
         textField.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
         statusPanel.add(textField,c);
-
 
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
         PrintStream printStream = new PrintStream(outputStreamTextField);
@@ -315,91 +414,127 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     }
 
-    private void updateEvaluationButtons() {
-        int skip = 0;
-        for (Component component:modulesPanel.getComponents()) {
-            if (component.getName().equals("EvalButton")) {
-                if (!((EvalButton) component).getModule().isEnabled()) {
-                    skip++;
-                    component.setForeground(Color.LIGHT_GRAY);
-                    continue;
-                }
+    private void initialiseBasicControlPanel() {
+        basicControlPanel = new JPanel();
+        int buttonSize = 50;
 
-                int idx = modules.indexOf(((EvalButton) component).getModule());
+        basicControlPanel = new JPanel();
+        basicControlPanel.setPreferredSize(new Dimension(500, buttonSize + 15));
+        basicControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        basicControlPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 0;
+        c.insets = new Insets(5, 5, 5, 5);
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
 
-                if (idx == lastModuleEval+1+skip) {
-                    component.setForeground(Color.getHSBColor(0.08f,1f,1f));
-                } else if (idx <= lastModuleEval+skip) {
-                    component.setForeground(Color.getHSBColor(0.27f,1f,0.6f));
-                } else {
-                    component.setForeground(Color.getHSBColor(0f,1f,0.6f));
-                }
-            }
-        }
+        // Load analysis protocol button
+        JButton loadAnalysisButton = new JButton(loadAnalysis);
+        loadAnalysisButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
+        loadAnalysisButton.addActionListener(this);
+        loadAnalysisButton.setFocusPainted(false);
+        loadAnalysisButton.setMargin(new Insets(0,0,0,0));
+        loadAnalysisButton.setName("LoadPipeline");
+        c.gridx++;
+        c.anchor = GridBagConstraints.PAGE_END;
+        basicControlPanel.add(loadAnalysisButton, c);
+
+        // Save analysis protocol button
+        JButton saveAnalysisButton = new JButton(saveAnalysis);
+        saveAnalysisButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
+        saveAnalysisButton.addActionListener(this);
+        saveAnalysisButton.setFocusPainted(false);
+        saveAnalysisButton.setMargin(new Insets(0,0,0,0));
+        saveAnalysisButton.setName("SavePipeline");
+        c.gridx++;
+        basicControlPanel.add(saveAnalysisButton, c);
+
+        // Start analysis button
+        JButton startAnalysisButton = new JButton(startAnalysis);
+        startAnalysisButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
+        startAnalysisButton.addActionListener(this);
+        startAnalysisButton.setMargin(new Insets(0,0,0,0));
+        startAnalysisButton.setFocusPainted(false);
+        startAnalysisButton.setName("StartAnalysis");
+        c.gridx++;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        basicControlPanel.add(startAnalysisButton, c);
+
+        // Stop analysis button
+        JButton stopAnalysisButton = new JButton(stopAnalysisText);
+        stopAnalysisButton.setPreferredSize(new Dimension(buttonSize, buttonSize));
+        stopAnalysisButton.addActionListener(this);
+        stopAnalysisButton.setMargin(new Insets(0,0,0,0));
+        stopAnalysisButton.setFocusPainted(false);
+        stopAnalysisButton.setName("StopAnalysis");
+        c.gridx++;
+        c.weightx = 0;
+        basicControlPanel.add(stopAnalysisButton, c);
+
+        basicControlPanel.validate();
+        basicControlPanel.repaint();
+    }
+
+    private void initialiseBasicModulesPanel() {
+        int elementWidth = 500;
+
+        // Initialising the scroll panel
+        basicModulesScrollPane.setPreferredSize(new Dimension(elementWidth, frameHeight-165));
+        basicModulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        basicModulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        basicModulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        // Initialising the panel for module buttons
+        basicModulesPanel.setLayout(new GridBagLayout());
+        basicModulesPanel.validate();
+        basicModulesPanel.repaint();
+
+        basicModulesScrollPane.validate();
+        basicModulesScrollPane.repaint();
+
     }
 
     private void populateModuleList() {
         modulesPanel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+
+        ButtonGroup group = new ButtonGroup();
 
         // Adding module buttons
         for (HCModule module : modules) {
-            // Adding the module enabled checkbox
-            c.gridx = 0;
-            c.gridy++;
-            c.weightx = 0;
-            c.insets = new Insets(5, 5, 5, 0);
-            c.anchor = GridBagConstraints.BASELINE_LEADING;
-            ModuleEnabledCheck enabledCheck = new ModuleEnabledCheck(module);
-            enabledCheck.addActionListener(this);
-            modulesPanel.add(enabledCheck, c);
+            Color color;
+            int idx = modules.indexOf(module);
 
-            // Adding the main module button
-            c.gridx++;
-            c.weightx = 1;
-            c.insets = new Insets(5, 5, 5, 0);
-            c.anchor = GridBagConstraints.FIRST_LINE_START;
-            ModuleButton button = new ModuleButton(module);
-            button.setPreferredSize(new Dimension(-1, elementHeight));
-            button.addActionListener(this);
-            if (!module.isEnabled()) button.setForeground(Color.GRAY);
-            if (activeModule != null) {
-                if (module == activeModule) button.setSelected(true);
+            if (!module.isEnabled()) {
+                color = Color.LIGHT_GRAY;
+            } else {
+                if (idx <= lastModuleEval) {
+                    color = Color.getHSBColor(0.27f,1f,0.6f);
+                } else {
+                    color = Color.getHSBColor(0f,1f,0.6f);
+                }
             }
-            modulesPanel.add(button, c);
 
-            // Adding the state/evaluate button
-            c.gridx++;
-            c.weightx = 0;
-            c.insets = new Insets(5, 0, 5, 5);
-            c.anchor = GridBagConstraints.FIRST_LINE_END;
-            EvalButton evalButton = new EvalButton(module);
-            evalButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
-            evalButton.addActionListener(this);
-            modulesPanel.add(evalButton, c);
+            if (idx == modules.size()-1) c.weighty = 1;
+
+            JPanel modulePanel = componentFactory.createAdvancedModuleControl(module,group,activeModule,color,300-25);
+            modulesPanel.add(modulePanel, c);
+            c.gridy++;
 
         }
-
-        // Adding an invisible separator to prevent the checkboxes sitting in the middle of empty space
-        c.weighty = 1;
-        c.gridx = 0;
-        c.gridy++;
-        c.gridwidth = 2;
-        JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0,0));
-        separator.setName("Separator");
-        modulesPanel.add(separator,c);
 
         modulesPanel.validate();
         modulesPanel.repaint();
         modulesScrollPane.validate();
         modulesScrollPane.repaint();
-
-        updateEvaluationButtons();
 
     }
 
@@ -410,8 +545,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         c.gridy = 0;
         c.weightx = 0;
         c.weighty = 0;
+        c.insets = new Insets(0,0,0,5);
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
         if (activeModule == null) {
@@ -420,146 +555,16 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         // If the active module hasn't got parameters enabled, skip it
         if (activeModule.getActiveParameters() != null) {
-            Iterator<HCParameter> iterator = activeModule.getActiveParameters().getParameters().values().iterator();
+            Iterator<HCParameter> iterator = activeModule.getActiveParameters().values().iterator();
             while (iterator.hasNext()) {
                 HCParameter parameter = iterator.next();
 
                 c.gridx = 0;
-                c.insets = new Insets(5, 5, 5, 5);
-                c.anchor = GridBagConstraints.FIRST_LINE_START;
-
-                JTextField parameterName = new JTextField(parameter.getName());
-                parameterName.setPreferredSize(new Dimension(315, elementHeight));
-                parameterName.setEditable(false);
-                parameterName.setBorder(null);
-                paramsPanel.add(parameterName, c);
-
-                JComponent parameterControl = null;
-
-                if (parameter.getType() == HCParameter.INPUT_IMAGE) {
-                    // Getting a list of available images
-                    ArrayList<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_IMAGE,
-                            activeModule);
-
-                    parameterControl = new HCNameInputParameter(parameter);
-                    for (HCParameter image : images) {
-                        ((HCNameInputParameter) parameterControl).addItem(image.getValue());
-
-                    }
-                    ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-                    parameterControl.addFocusListener(this);
-                    parameterControl.setName("InputParameter");
-
-                } else if (parameter.getType() == HCParameter.INPUT_OBJECTS) {
-                    // Getting a list of available images
-                    ArrayList<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_OBJECTS,
-                            activeModule);
-
-                    parameterControl = new HCNameInputParameter(parameter);
-                    for (HCParameter image : images) {
-                        ((HCNameInputParameter) parameterControl).addItem(image.getValue());
-
-                    }
-                    ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-                    parameterControl.addFocusListener(this);
-                    parameterControl.setName("InputParameter");
-
-                } else if (parameter.getType() == HCParameter.INTEGER | parameter.getType() == HCParameter.DOUBLE
-                        | parameter.getType() == HCParameter.STRING | parameter.getType() == HCParameter.OUTPUT_IMAGE
-                        | parameter.getType() == HCParameter.OUTPUT_OBJECTS) {
-
-                    parameterControl = new TextParameter(parameter);
-                    String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
-                    ((TextParameter) parameterControl).setText(name);
-                    parameterControl.addFocusListener(this);
-                    parameterControl.setName("TextParameter");
-
-                } else if (parameter.getType() == HCParameter.BOOLEAN) {
-                    parameterControl = new BooleanParameter(parameter);
-                    ((BooleanParameter) parameterControl).setSelected(parameter.getValue());
-                    ((BooleanParameter) parameterControl).addActionListener(this);
-                    parameterControl.setName("BooleanParameter");
-
-                } else if (parameter.getType() == HCParameter.FILE_PATH) {
-                    parameterControl = new FileParameter(parameter);
-                    ((FileParameter) parameterControl).setText(FilenameUtils.getName(parameter.getValue()));
-                    ((FileParameter) parameterControl).addActionListener(this);
-                    parameterControl.setName("FileParameter");
-
-                } else if (parameter.getType() == HCParameter.CHOICE_ARRAY) {
-                    String[] valueSource = (String[]) parameter.getValueSource();
-                    parameterControl = new ChoiceArrayParameter(parameter, valueSource);
-                    if (parameter.getValue() != null) {
-                        ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
-                    }
-
-                    if (parameter.getValueSource() != null) {
-                        parameter.setValue(((ChoiceArrayParameter) parameterControl).getSelectedItem());
-                    }
-
-                    ((ChoiceArrayParameter) parameterControl).addActionListener(this);
-
-                    parameterControl.setName("ChoiceArrayParameter");
-
-                } else if (parameter.getType() == HCParameter.MEASUREMENT) {
-                    HCMeasurementCollection measurements = modules.getMeasurements(activeModule);
-                    String[] measurementChoices = measurements.getMeasurementNames((HCName) parameter.getValueSource());
-                    Arrays.sort(measurementChoices);
-
-                    parameterControl = new ChoiceArrayParameter(parameter, measurementChoices);
-                    if (parameter.getValue() != null) {
-                        ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
-                    }
-                    if (parameter.getValueSource() != null) {
-                        parameter.setValue(((ChoiceArrayParameter) parameterControl).getSelectedItem());
-                    }
-                    ((ChoiceArrayParameter) parameterControl).addActionListener(this);
-                    parameterControl.setName("ChoiceArrayParameter");
-
-                } else if (parameter.getType() == HCParameter.CHILD_OBJECTS) {
-                    HCRelationshipCollection relationships = modules.getRelationships(activeModule);
-                    HCName[] relationshipChoices = relationships.getChildNames((HCName) parameter.getValueSource());
-                    parameterControl = new HCNameInputParameter(parameter);
-                    if (relationshipChoices != null) {
-                        for (HCName relationship : relationshipChoices) {
-                            ((HCNameInputParameter) parameterControl).addItem(relationship);
-
-                        }
-                        ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-                    }
-                    ((HCNameInputParameter) parameterControl).addActionListener(this);
-                    parameterControl.setName("InputParameter");
-
-                } else if (parameter.getType() == HCParameter.PARENT_OBJECTS) {
-                    HCRelationshipCollection relationships = modules.getRelationships(activeModule);
-                    HCName[] relationshipChoices = relationships.getParentNames((HCName) parameter.getValueSource());
-                    parameterControl = new HCNameInputParameter(parameter);
-                    if (relationshipChoices != null) {
-                        for (HCName relationship : relationshipChoices) {
-                            ((HCNameInputParameter) parameterControl).addItem(relationship);
-
-                        }
-                        ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-                    }
-                    ((HCNameInputParameter) parameterControl).addActionListener(this);
-                    parameterControl.setName("InputParameter");
-
-                }
-
-                // Adding the input component
-                c.gridx++;
-                c.weightx=1;
-                c.anchor = GridBagConstraints.EAST;
-                if (parameterControl != null) {
-                    paramsPanel.add(parameterControl, c);
-                    parameterControl.setPreferredSize(new Dimension(320, elementHeight));
-
-                }
+                JPanel paramPanel = componentFactory.createParameterControl(parameter,modules,activeModule,635);
+                paramsPanel.add(paramPanel,c);
 
                 // Adding a checkbox to determine if the parameter should be visible to the user
                 c.gridx++;
-                c.insets = new Insets(5, 0, 5, 5);
-                c.anchor = GridBagConstraints.BASELINE_TRAILING;
                 VisibleCheck visibleCheck = new VisibleCheck(parameter);
                 visibleCheck.addActionListener(this);
                 paramsPanel.add(visibleCheck,c);
@@ -600,65 +605,76 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     }
 
-    private void populateAnalysisParameters() {
-        paramsPanel.removeAll();
+    private void populateBasicModules() {
+        basicModulesPanel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 0;
         c.weighty = 0;
-        c.insets = new Insets(5, 5, 5, 5);
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
 
-//        // Getting analysis mode
-//        String[] analysisModes = new String[]{"Use image open in ImageJ","Load single image from file","Batch mode"};
-//        JComboBox analysisMode = new JComboBox(analysisModes);
-//        analysisMode.setName("AnalysisMode");
-//        analysisMode.addActionListener(this);
-//        paramsPanel.add(analysisMode,c);
-//
-//        // If loading from ImageJ do nothing
-//        if (analysisMode.getSelectedItem().equals("Use image open in ImageJ"));
+        // Adding module buttons
+        for (HCModule module : modules) {
+            Color color;
+            int idx = modules.indexOf(module);
+            if (!module.isEnabled()) {
+                color = Color.LIGHT_GRAY;
+            } else {
+                if (idx <= lastModuleEval) {
+                    color = Color.getHSBColor(0.27f,1f,0.6f);
+                } else {
+                    color = Color.getHSBColor(0f,1f,0.6f);
+                }
+            }
 
+            if (idx == modules.size()-1) c.weighty = 1;
 
-        // Select file export location
-        JTextField exportFileName = new JTextField("Export location");
-        exportFileName.setPreferredSize(new Dimension(200, elementHeight));
-        exportFileName.setEditable(false);
-        exportFileName.setBorder(null);
-        c.gridy++;
-        paramsPanel.add(exportFileName, c);
+            // Only show if the module is enabled
+            if (!module.isEnabled()) continue;
 
-        JButton exportFileButton = new JButton(outputFilePath);
-        exportFileButton.addActionListener(this);
-        exportFileButton.setPreferredSize(new Dimension(200, elementHeight));
-        exportFileButton.setName("OutputFilePath");
-        c.gridx++;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.FIRST_LINE_END;
-        paramsPanel.add(exportFileButton, c);
+            // Only displaying the module title if it has at least one visible parameter
+            boolean hasVisibleParameters = false;
+            for (HCParameter parameter:module.getActiveParameters().values()) {
+                if (parameter.isVisible()) hasVisibleParameters = true;
+            }
+            if (!hasVisibleParameters) continue;
 
-        // Select export type
-        JCheckBox xmlCheck = new JCheckBox("Export XML");
-        xmlCheck.addActionListener(this);
-        xmlCheck.setSelected(exportXML);
-        xmlCheck.setName("XMLCheck");
-        c.gridx = 0;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-        c.gridy++;
-        paramsPanel.add(xmlCheck, c);
+            JPanel titlePanel = componentFactory.createBasicModuleHeading(module,color,500-50);
 
-        JCheckBox xlsxCheck = new JCheckBox("Export XLSX");
-        xlsxCheck.addActionListener(this);
-        xlsxCheck.setSelected(exportXLSX);
-        xlsxCheck.setName("XLSXCheck");
+            c.gridy++;
+            c.anchor = GridBagConstraints.FIRST_LINE_START;
+            basicModulesPanel.add(titlePanel,c);
+
+            for (HCParameter parameter:module.getActiveParameters().values()) {
+                if (parameter.isVisible()) {
+                    JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, module, 500-80);
+
+                    c.gridy++;
+                    c.anchor = GridBagConstraints.FIRST_LINE_END;
+                    basicModulesPanel.add(paramPanel, c);
+
+                }
+            }
+
+            c.gridy++;
+            JSeparator separator = new JSeparator();
+            separator.setPreferredSize(new Dimension(0,15));
+            separator.setName("Separator");
+            basicModulesPanel.add(separator,c);
+
+        }
+
         c.gridy++;
         c.weighty = 1;
-        paramsPanel.add(xlsxCheck, c);
+        JSeparator separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0,0));
+        separator.setName("Separator");
+        basicModulesPanel.add(separator,c);
 
-        paramsPanel.validate();
-        paramsPanel.repaint();
+        basicModulesPanel.validate();
+        basicModulesPanel.repaint();
+        basicModulesScrollPane.validate();
+        basicModulesScrollPane.repaint();
 
     }
 
@@ -713,14 +729,14 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private void removeModule() {
         if (activeModule != null) {
             // Removing a module resets all the current evaluation
-            lastModuleEval = -1;
-            testWorkspace = new HCWorkspace(1,null);
+            int idx = modules.indexOf(activeModule);
+            if (idx < lastModuleEval) lastModuleEval = -1;
 
             modules.remove(activeModule);
             activeModule = null;
 
             populateModuleList();
-            initialiseParametersPanel();
+            populateModuleParameters();
 
         }
     }
@@ -752,133 +768,31 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         }
     }
 
-    private void saveAnalysis() throws IOException, ParserConfigurationException, TransformerException {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
-        fileDialog.setMultipleMode(false);
-        fileDialog.setVisible(true);
-
-        String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
-        if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
-            outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
-        }
-
-        // Creating the outputStream
-        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(outputFileName));
-
-        // Adding the analysis object to the output stream
-        outputStream.writeObject(analysis);
-
-        // Adding an XML formatted summary of the modules and their values
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        doc.appendChild(HCExporter.prepareParametersXML(doc,analysis.getModules()));
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
-
-        outputStream.close();
-
-        System.out.println("File saved ("+FilenameUtils.getName(outputFileName)+")");
-
-    }
-
-    private void loadAnalysis() throws IOException, ClassNotFoundException {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.LOAD);
-        fileDialog.setMultipleMode(false);
-        fileDialog.setFile("*.mia");
-        fileDialog.setVisible(true);
-
-        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileDialog.getFiles()[0]));
-
-        analysis = (GUIAnalysis) inputStream.readObject();
-        inputStream.close();
-
-        modules = analysis.getModules();
-
-        populateModuleList();
-        populateModuleParameters();
-
-        lastModuleEval = -1;
-
-        System.out.println("File loaded ("+FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
-
-    }
-
-    private void startAnalysis() throws IOException {
-        // Initialising the testWorkspace
-        HCWorkspaceCollection workspaces = new HCWorkspaceCollection();
-        HCWorkspace workspace;
-        if (!inputFilePath.equals("")) {
-            workspace = workspaces.getNewWorkspace(new File(inputFilePath));
-
-        } else {
-            workspace = workspaces.getNewWorkspace(null);
-
-        }
-
-        // Running the analysis
-        if (!analysis.execute(workspace, true)) return;
-
-        // Exporting XLSX
-        if (exportXLSX & !outputFilePath.equals("")) {
-            HCExporter exporter = new HCExporter(outputFilePath, HCExporter.XLSX_EXPORT);
-            exporter.exportResults(workspaces, analysis);
-
-        }
-
-        // Exporting XML
-        if (exportXML & !outputFilePath.equals("")) {
-            HCExporter exporter = new HCExporter(outputFilePath, HCExporter.XML_EXPORT);
-            exporter.exportResults(workspaces, analysis);
-
-        }
-
-        // Making the most-recently evaluated workspace available to the GUI
-        testWorkspace = workspace;
-        lastModuleEval = modules.size()-1;
-        updateEvaluationButtons();
-
-    }
-
-    private void selectModule(HCModule module) {
-        // Clearing the previous module
-        ModuleButton prevModuleButton = getModuleButton(activeModule);
-        if (prevModuleButton != null) prevModuleButton.setSelected(false);
-
-        // Getting new button and setting enabled
-        ModuleButton activeModuleButton = getModuleButton(module);
-        if (activeModuleButton != null) activeModuleButton.setSelected(true);
-        activeModule = module;
-
-        // Updating the displayed parameters
-        populateModuleParameters();
-
-    }
-
-    private ModuleButton getModuleButton(HCModule module) {
-        for (Component component : modulesPanel.getComponents()) {
-            if (component.getName().equals("ModuleButton")) {
-                if (((ModuleButton) component).getModule() == module) {
-                    return (ModuleButton) component;
-
-                }
-            }
-        }
-
-        return null;
-
-    }
-
-    private void evaluateModule(HCModule module) {
+    private void evaluateModule(HCModule module) throws GenericMIAException {
         module.execute(testWorkspace,true);
         lastModuleEval = modules.indexOf(module);
-        populateModuleList();
 
+        if (basicGUI) {
+            populateBasicModules();
+
+        } else {
+            populateModuleList();
+
+        }
     }
 
     private void reactToAction(Object object)
-            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException, TransformerException, ParserConfigurationException {
+            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException, TransformerException, ParserConfigurationException, SAXException {
 
-        if (((JComponent) object).getName().equals("ControlButton")) {
+        String componentName = ((JComponent) object).getName();
+
+        if (componentName.equals("BasicModeView")) {
+            renderBasicMode();
+
+        } else if (componentName.equals("EditingModeView")) {
+            renderEditingMode();
+
+        } else if (componentName.equals("ControlButton")) {
             if (((JButton) object).getText().equals(addModuleText)) {
                 addModule();
 
@@ -891,29 +805,61 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             } else if (((JButton) object).getText().equals(moveModuleDownText)) {
                 moveModuleDown();
 
-            } else if (((JButton) object).getText().equals(saveAnalysis)) {
-                saveAnalysis();
+            }
 
-            } else if (((JButton) object).getText().equals(loadAnalysis)) {
-                loadAnalysis();
+        } else if (componentName.equals("LoadPipeline")) {
+            analysis = (GUIAnalysis) new AnalysisHandler().loadAnalysis();
+            modules = analysis.getModules();
 
-            } else if (((JButton) object).getText().equals(startAnalysisText)) {
-                t = new Thread(() -> {
-                    try {
-                        startAnalysis();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-                t.start();
+            if (basicGUI) {
+                populateBasicModules();
 
-            } else if (((JButton) object).getText().equals(stopAnalysisText)) {
-                System.out.println("Shutting system down");
-                analysis.shutdown();
+            } else {
+                populateModuleList();
+                populateModuleParameters();
 
             }
 
-        } else if (((JComponent) object).getName().equals("ModuleName")) {
+            lastModuleEval = -1;
+
+        } else if (componentName.equals("SavePipeline")) {
+            new AnalysisHandler().saveAnalysis(analysis);
+
+        } else if (componentName.equals("SetFileToAnalyse")) {
+            FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.LOAD);
+            fileDialog.setMultipleMode(false);
+            fileDialog.setVisible(true);
+
+            testWorkspace = new HCWorkspace(1,fileDialog.getFiles()[0]);
+
+            System.out.println("Set current file to \""+fileDialog.getFiles()[0].getName()+"\"");
+
+        } else if (componentName.equals("StartAnalysis")) {
+            Thread t = new Thread(() -> {
+                try {
+                    testWorkspace = new AnalysisHandler().startAnalysis(analysis);
+                    lastModuleEval = modules.size() - 1;
+
+                    if (basicGUI) {
+                        populateBasicModules();
+                    } else {
+                        populateModuleList();
+                        populateModuleParameters();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (GenericMIAException e) {
+                    IJ.showMessage(e.getMessage());
+                }
+            });
+            t.start();
+
+        } else if (componentName.equals("StopAnalysis")) {
+            System.out.println("Shutting system down");
+            analysis.shutdown();
+
+        } else if (componentName.equals("ModuleName")) {
             moduleListMenu.setVisible(false);
 
             if (((PopupMenuItem) object).getModule() == null) return;
@@ -922,9 +868,11 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             HCModule newModule = ((PopupMenuItem) object).getModule().getClass().newInstance();
             if (activeModule != null) {
                 int idx = modules.indexOf(activeModule);
+                activeModule = newModule;
                 modules.add(++idx,newModule);
 
             } else {
+                activeModule = newModule;
                 modules.add(newModule);
 
             }
@@ -932,32 +880,41 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             // Adding to the list of modules
             populateModuleList();
 
-            // Selecting the added module
-            selectModule(newModule);
+            activeModule = newModule;
 
-        } else if (((JComponent) object).getName().equals("EvalButton")) {
+            if (basicGUI) {
+                populateBasicModules();
+            } else {
+                populateModuleParameters();
+            }
+
+        } else if (componentName.equals("EvalButton")) {
             HCModule evalModule = ((EvalButton) object).getModule();
-
             int idx = modules.indexOf(evalModule);
-            int skip = 0;
-            for (HCModule module:modules) {
-                if (module==evalModule) break;
-                if (!module.isEnabled()) skip++;
 
-            }
+            // If the module is ready to be evaluated
+            if (idx <= lastModuleEval) new Thread(() -> {
+                try {
+                    evaluateModule(evalModule);
+                } catch (GenericMIAException e) {
+                    IJ.showMessage(e.getMessage());
+                }
+            }).start();
 
-            if (idx <= lastModuleEval+skip+1) {
-                new Thread(() -> evaluateModule(((EvalButton) object).getModule())).start();
+            // If multiple modules will need to be evaluated first
+            new Thread(() -> {
+                for (int i = lastModuleEval+1;i<=idx;i++) {
+                    HCModule module = modules.get(i);
+                    if (module.isEnabled()) try {
+                        evaluateModule(module);
+                    } catch (GenericMIAException e) {
+                        IJ.showMessage(e.getMessage());
+                    }
 
-            }
+                }
+            }).start();
 
-        } else if (((JComponent) object).getName().equals("AnalysisOptionsButton")) {
-            // Selecting the added module
-            selectModule(null);
-
-            populateAnalysisParameters();
-
-        } else if (((JComponent) object).getName().equals("ModuleEnabledCheck")) {
+        } else if (componentName.equals("ModuleEnabledCheck")) {
             HCModule module = ((ModuleEnabledCheck) object).getModule();
             module.setEnabled(((ModuleEnabledCheck) object).isSelected());
 
@@ -969,24 +926,36 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             populateModuleList();
             populateModuleParameters();
 
-        } else if (((JComponent) object).getName().equals("ModuleButton")) {
-            selectModule(((ModuleButton) object).getModule());
+        } else if (componentName.equals("ModuleButton")) {
+            activeModule = ((ModuleButton) object).getModule();
 
-        } else if (((JComponent) object).getName().equals("InputParameter")) {
-            HCParameter parameter = ((HCNameInputParameter) object).getParameter();
-            parameter.setValue(((HCNameInputParameter) object).getSelectedItem());
-            populateModuleParameters();
+            if (basicGUI) {
+                populateBasicModules();
+            } else {
+                populateModuleParameters();
+            }
 
-            int idx = modules.indexOf(activeModule);
+        } else if (componentName.equals("InputParameter")) {
+            HCParameter parameter = ((ImageObjectInputParameter) object).getParameter();
+            parameter.setValue(((ImageObjectInputParameter) object).getSelectedItem());
+            HCModule module = ((ImageObjectInputParameter) object).getModule();
+
+            int idx = modules.indexOf(module);
             if (idx <= lastModuleEval) lastModuleEval = idx-1;
-            populateModuleList();
+            if (basicGUI) {
+                populateBasicModules();
+            } else {
+                populateModuleList();
+                populateModuleParameters();
+            }
 
-        } else if (((JComponent) object).getName().equals("TextParameter")) {
+        } else if (componentName.equals("TextParameter")) {
             HCParameter parameter = ((TextParameter) object).getParameter();
             String text = ((TextParameter) object).getText();
+            HCModule module = ((TextParameter) object).getModule();
 
             if (parameter.getType() == HCParameter.OUTPUT_IMAGE | parameter.getType() == HCParameter.OUTPUT_OBJECTS) {
-                parameter.setValue(new HCName(text));
+                parameter.setValue(text);
 
             } else if (parameter.getType() == HCParameter.INTEGER) {
                 parameter.setValue(Integer.valueOf(text));
@@ -999,22 +968,34 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
             }
 
-            int idx = modules.indexOf(activeModule);
+            int idx = modules.indexOf(module);
             if (idx <= lastModuleEval) lastModuleEval = idx-1;
-            updateEvaluationButtons();
 
-        } else if (((JComponent) object).getName().equals("BooleanParameter")) {
+            if (basicGUI) {
+                populateBasicModules();
+            } else {
+                populateModuleList();
+            }
+
+        } else if (componentName.equals("BooleanParameter")) {
             HCParameter parameter = ((BooleanParameter) object).getParameter();
+            HCModule module = ((BooleanParameter) object).getModule();
 
             parameter.setValue(((BooleanParameter) object).isSelected());
-            populateModuleParameters();
 
-            int idx = modules.indexOf(activeModule);
+            int idx = modules.indexOf(module);
             if (idx <= lastModuleEval) lastModuleEval = idx-1;
-            updateEvaluationButtons();
 
-        } else if (((JComponent) object).getName().equals("FileParameter")) {
+            if (basicGUI) {
+                populateBasicModules();
+            } else {
+                populateModuleList();
+                populateModuleParameters();
+            }
+
+        } else if (componentName.equals("FileParameter")) {
             HCParameter parameter = ((FileParameter) object).getParameter();
+            HCModule module = ((FileParameter) object).getModule();
 
             FileDialog fileDialog = new FileDialog(new Frame(), "Select image to load", FileDialog.LOAD);
             fileDialog.setMultipleMode(false);
@@ -1023,53 +1004,46 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             parameter.setValue(fileDialog.getFiles()[0].getAbsolutePath());
             ((FileParameter) object).setText(FilenameUtils.getName(parameter.getValue()));
 
-            int idx = modules.indexOf(activeModule);
+            int idx = modules.indexOf(module);
             if (idx <= lastModuleEval) lastModuleEval = idx-1;
-            updateEvaluationButtons();
 
-        } else if (((JComponent) object).getName().equals("ChoiceArrayParameter")) {
+            if (basicGUI) {
+                populateBasicModules();
+            } else {
+                populateModuleList();
+            }
+
+        } else if (componentName.equals("ChoiceArrayParameter")) {
             HCParameter parameter = ((ChoiceArrayParameter) object).getParameter();
             parameter.setValue(((ChoiceArrayParameter) object).getSelectedItem());
+            HCModule module = ((ChoiceArrayParameter) object).getModule();
 
-            populateModuleParameters();
-
-            int idx = modules.indexOf(activeModule);
+            int idx = modules.indexOf(module);
             if (idx <= lastModuleEval) lastModuleEval = idx-1;
-            updateEvaluationButtons();
 
-        } else if (((JComponent) object).getName().equals("OutputFilePath")) {
-            FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
-            fileDialog.setMultipleMode(false);
-            fileDialog.setVisible(true);
+            if (basicGUI) {
+                populateBasicModules();
+            } else {
+                populateModuleList();
+                populateModuleParameters();
+            }
 
-            outputFilePath = fileDialog.getFiles()[0].getAbsolutePath();
-            populateAnalysisParameters();
-
-        } else if (((JComponent) object).getName().equals("VisibleCheck")) {
+        } else if (componentName.equals("VisibleCheck")) {
             HCParameter parameter = ((VisibleCheck) object).getParameter();
             parameter.setVisible(((VisibleCheck) object).isSelected());
-
-        } else if (((JComponent) object).getName().equals("NotesArea")) {
-            activeModule.setNotes(((JTextArea) object).getText());
-
-        } else if (((JComponent) object).getName().equals("XMLCheck")) {
-            exportXML = ((JCheckBox) object).isSelected();
-            populateAnalysisParameters();
-
-        } else if (((JComponent) object).getName().equals("XLSXCheck")) {
-            exportXLSX = ((JCheckBox) object).isSelected();
-            populateAnalysisParameters();
 
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            reactToAction(e.getSource());
-        } catch (IllegalAccessException | InstantiationException | IOException | ClassNotFoundException | ParserConfigurationException | TransformerException e1) {
-            e1.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                reactToAction(e.getSource());
+            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | ParserConfigurationException | IOException | TransformerException | SAXException e1) {
+                e1.printStackTrace();
+            }
+        }).start();
     }
 
     @Override
@@ -1079,11 +1053,13 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     @Override
     public void focusLost(FocusEvent e) {
-        try {
-            reactToAction(e.getSource());
-        } catch (IllegalAccessException | InstantiationException | IOException | ClassNotFoundException | TransformerException | ParserConfigurationException e1) {
-            e1.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                reactToAction(e.getSource());
+            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | ParserConfigurationException | IOException | TransformerException | SAXException e1) {
+                e1.printStackTrace();
+            }
+        }).start();
     }
 
     @Override
