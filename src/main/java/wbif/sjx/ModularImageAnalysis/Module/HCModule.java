@@ -75,6 +75,11 @@ public abstract class HCModule implements Serializable {
 
     }
 
+    public int getParameterType(String name) {
+        return parameters.get(name).getType();
+
+    }
+
     public void setParameterVisibility(String name, boolean visible) {
         parameters.updateVisible(name,visible);
 

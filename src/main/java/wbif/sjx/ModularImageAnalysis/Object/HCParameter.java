@@ -128,8 +128,8 @@ public class HCParameter implements Serializable {
         return type;
     }
 
-    public Object getValueSource() {
-        return valueSource;
+    public <T> T getValueSource() {
+        return (T) valueSource;
     }
 
     public void setValueSource(Object valueSource) {
@@ -140,10 +140,6 @@ public class HCParameter implements Serializable {
         return (T) value;
 
     }
-
-//    public Object getValue() {
-//        return value;
-//    }
 
     public void setValue(Object value) {
         this.value = value;

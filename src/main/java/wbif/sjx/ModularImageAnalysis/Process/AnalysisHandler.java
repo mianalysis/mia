@@ -1,15 +1,20 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import ij.IJ;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Object.HCWorkspace;
-import wbif.sjx.ModularImageAnalysis.Object.HCWorkspaceCollection;
+import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
@@ -19,6 +24,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.io.*;
+import java.util.HashMap;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -37,35 +43,151 @@ public class AnalysisHandler {
             outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
         }
 
-        // Creating the outputStream
-        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(outputFileName));
-
-        // Adding the analysis object to the output stream
-        outputStream.writeObject(analysis);
-
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         doc.appendChild(HCExporter.prepareParametersXML(doc,analysis.getModules()));
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
-        transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
 
-        outputStream.close();
+        // Preparing the target file for
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new FileOutputStream(outputFileName));
+        transformer.transform(source, result);
 
         System.out.println("File saved ("+FilenameUtils.getName(outputFileName)+")");
 
     }
 
-    public HCAnalysis loadAnalysis() throws IOException, ClassNotFoundException {
+    public HCAnalysis loadAnalysis() throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setFile("*.mia");
         fileDialog.setVisible(true);
 
-        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileDialog.getFiles()[0]));
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document doc = documentBuilder.parse(fileDialog.getFiles()[0]);
+        doc.getDocumentElement().normalize();
 
-        HCAnalysis analysis = (GUIAnalysis) inputStream.readObject();
-        inputStream.close();
+        HCAnalysis analysis = new GUIAnalysis();
+        HCModuleCollection modules = analysis.getModules();
+        HashMap<String,HCName> imageObjectNames = new HashMap<>();
+        HCName name;
+
+        NodeList moduleNodes = doc.getElementsByTagName("MODULE");
+        for (int i=0;i<moduleNodes.getLength();i++) {
+            Node moduleNode = moduleNodes.item(i);
+
+            try {
+                NamedNodeMap moduleAttributes = moduleNode.getAttributes();
+                String moduleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
+                Class<?> clazz = Class.forName(moduleName);
+                HCModule module = (HCModule) clazz.newInstance();
+
+                NodeList parameterNodes = moduleNode.getChildNodes();
+                for (int j = 0; j < parameterNodes.getLength(); j++) {
+                    Node parameterNode = parameterNodes.item(j);
+                    if (parameterNode.getNodeName().equals("PARAMETER")) {
+                        NamedNodeMap parameterAttributes = parameterNode.getAttributes();
+                        String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
+                        String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
+
+                        try {
+                            int parameterType = module.getParameterType(parameterName);
+                            switch (parameterType) {
+                                case HCParameter.INPUT_IMAGE:
+                                    name = imageObjectNames.get(parameterValue);
+                                    module.updateParameterValue(parameterName, name);
+                                    break;
+
+                                case HCParameter.OUTPUT_IMAGE:
+                                    name = new HCName(parameterValue);
+                                    imageObjectNames.put(parameterValue, name);
+                                    module.updateParameterValue(parameterName, name);
+                                    break;
+
+                                case HCParameter.INPUT_OBJECTS:
+                                    name = imageObjectNames.get(parameterValue);
+                                    module.updateParameterValue(parameterName, name);
+                                    break;
+
+                                case HCParameter.OUTPUT_OBJECTS:
+                                    name = new HCName(parameterValue);
+                                    imageObjectNames.put(parameterValue, name);
+                                    module.updateParameterValue(parameterName, name);
+                                    break;
+
+                                case HCParameter.INTEGER:
+                                    module.updateParameterValue(parameterName, Integer.parseInt(parameterValue));
+                                    break;
+
+                                case HCParameter.DOUBLE:
+                                    module.updateParameterValue(parameterName, Double.parseDouble(parameterValue));
+                                    break;
+
+                                case HCParameter.STRING:
+                                    module.updateParameterValue(parameterName, parameterValue);
+                                    break;
+
+                                case HCParameter.CHOICE_ARRAY:
+                                    module.updateParameterValue(parameterName, parameterValue);
+                                    break;
+
+                                case HCParameter.CHOICE_MAP:
+                                    module.updateParameterValue(parameterName, parameterValue);
+                                    break;
+
+                                case HCParameter.BOOLEAN:
+                                    module.updateParameterValue(parameterName, Boolean.parseBoolean(parameterValue));
+                                    break;
+
+                                case HCParameter.FILE_PATH:
+                                    module.updateParameterValue(parameterName, parameterValue);
+                                    break;
+
+                                case HCParameter.MEASUREMENT:
+                                    module.updateParameterValue(parameterName, parameterValue);
+                                    break;
+
+                                case HCParameter.CHILD_OBJECTS:
+                                    name = imageObjectNames.get(parameterValue);
+                                    module.updateParameterValue(parameterName, name);
+                                    break;
+
+                                case HCParameter.PARENT_OBJECTS:
+                                    name = imageObjectNames.get(parameterValue);
+                                    module.updateParameterValue(parameterName, name);
+                                    break;
+
+                            }
+
+                        } catch (NullPointerException e) {
+                            IJ.showMessage("Module "+moduleName+", parameter \""+parameterName + "\" not set");
+
+                        }
+                    }
+                }
+
+                modules.add(module);
+
+            } catch (ClassNotFoundException e) {
+                NamedNodeMap moduleAttributes = moduleNode.getAttributes();
+                String moduleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
+                IJ.showMessage("Class \""+moduleName+"\" not found (skipping)");
+
+            }
+        }
+
+//        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileDialog.getFiles()[0]));
+//
+//        HCAnalysis analysis = (GUIAnalysis) inputStream.readObject();
+//        inputStream.close();
+
+        for (HCModule module:modules) {
+            System.out.println(module.getTitle());
+            module.getActiveParameters().forEach((k,v) -> System.out.println("    "+v.getName()+"_"+v.getValue()));
+
+        }
 
         System.out.println("File loaded ("+FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
 

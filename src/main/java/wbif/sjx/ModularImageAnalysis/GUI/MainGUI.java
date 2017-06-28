@@ -10,6 +10,7 @@ import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
+import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -62,7 +63,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private GUIAnalysis analysis = new GUIAnalysis();
     private HCModuleCollection modules = analysis.modules;
 
-    public static void main(String[] args) throws IllegalAccessException, InstantiationException {
+    public static void main(String[] args) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
         new ImageJ();
         new MainGUI();
 
@@ -784,7 +785,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     }
 
     private void reactToAction(Object object)
-            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException, TransformerException, ParserConfigurationException {
+            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException, TransformerException, ParserConfigurationException, SAXException {
 
         String componentName = ((JComponent) object).getName();
 
@@ -1042,7 +1043,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         new Thread(() -> {
             try {
                 reactToAction(e.getSource());
-            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | ParserConfigurationException | IOException | TransformerException e1) {
+            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | ParserConfigurationException | IOException | TransformerException | SAXException e1) {
                 e1.printStackTrace();
             }
         }).start();
@@ -1058,7 +1059,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         new Thread(() -> {
             try {
                 reactToAction(e.getSource());
-            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | ParserConfigurationException | IOException | TransformerException e1) {
+            } catch (IllegalAccessException | InstantiationException | ClassNotFoundException | ParserConfigurationException | IOException | TransformerException | SAXException e1) {
                 e1.printStackTrace();
             }
         }).start();

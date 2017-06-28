@@ -58,16 +58,17 @@ class ComponentFactory {
 
         } else if (parameter.getType() == HCParameter.INPUT_OBJECTS) {
             // Getting a list of available images
-            ArrayList<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_OBJECTS,
+            ArrayList<HCParameter> objects = modules.getParametersMatchingType(HCParameter.OUTPUT_OBJECTS,
                     module);
 
             parameterControl = new HCNameInputParameter(module, parameter);
             ((HCNameInputParameter) parameterControl).addItem(null);
-            for (HCParameter image : images) {
-                ((HCNameInputParameter) parameterControl).addItem(image.getValue());
+            for (HCParameter object : objects) {
+                ((HCNameInputParameter) parameterControl).addItem(object.getValue());
 
             }
             ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
+
             parameterControl.addFocusListener(focusListener);
             parameterControl.setName("InputParameter");
 
@@ -94,7 +95,7 @@ class ComponentFactory {
             parameterControl.setName("FileParameter");
 
         } else if (parameter.getType() == HCParameter.CHOICE_ARRAY) {
-            String[] valueSource = (String[]) parameter.getValueSource();
+            String[] valueSource = parameter.getValueSource();
             parameterControl = new ChoiceArrayParameter(module, parameter, valueSource);
             if (parameter.getValue() != null) {
                 ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
@@ -110,7 +111,7 @@ class ComponentFactory {
 
         } else if (parameter.getType() == HCParameter.MEASUREMENT) {
             HCMeasurementCollection measurements = modules.getMeasurements(module);
-            String[] measurementChoices = measurements.getMeasurementNames((HCName) parameter.getValueSource());
+            String[] measurementChoices = measurements.getMeasurementNames(parameter.getValueSource());
             Arrays.sort(measurementChoices);
 
             parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
@@ -125,7 +126,7 @@ class ComponentFactory {
 
         } else if (parameter.getType() == HCParameter.CHILD_OBJECTS) {
             HCRelationshipCollection relationships = modules.getRelationships(module);
-            HCName[] relationshipChoices = relationships.getChildNames((HCName) parameter.getValueSource());
+            HCName[] relationshipChoices = relationships.getChildNames(parameter.getValueSource());
             parameterControl = new HCNameInputParameter(module, parameter);
             if (relationshipChoices != null) {
                 for (HCName relationship : relationshipChoices) {
@@ -139,7 +140,7 @@ class ComponentFactory {
 
         } else if (parameter.getType() == HCParameter.PARENT_OBJECTS) {
             HCRelationshipCollection relationships = modules.getRelationships(module);
-            HCName[] relationshipChoices = relationships.getParentNames((HCName) parameter.getValueSource());
+            HCName[] relationshipChoices = relationships.getParentNames(parameter.getValueSource());
             parameterControl = new HCNameInputParameter(module, parameter);
             if (relationshipChoices != null) {
                 for (HCName relationship : relationshipChoices) {

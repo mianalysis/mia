@@ -202,10 +202,11 @@ public class HCExporter {
                 // For the first parameter in a module, adding the name
                 if (first) {
                     Attr nameAttr = doc.createAttribute("NAME");
-                    nameAttr.appendChild(doc.createTextNode(module.getClass().getSimpleName()));
+                    nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
                     moduleElement.setAttributeNode(nameAttr);
 
                     first = false;
+
                 }
 
                 // Adding the name and value of the current parameter
@@ -218,6 +219,14 @@ public class HCExporter {
                 Attr valueAttr = doc.createAttribute("VALUE");
                 valueAttr.appendChild(doc.createTextNode(currParam.getValue().toString()));
                 parameterElement.setAttributeNode(valueAttr);
+
+                if (currParam.getType() == HCParameter.CHILD_OBJECTS | currParam.getType() == HCParameter.PARENT_OBJECTS) {
+                    if (currParam.getValueSource() != null) {
+                        Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+                        valueSourceAttr.appendChild(doc.createTextNode(currParam.getValueSource().toString()));
+                        parameterElement.setAttributeNode(valueSourceAttr);
+                    }
+                }
 
                 moduleElement.appendChild(parameterElement);
 

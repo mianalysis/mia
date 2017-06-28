@@ -12,7 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  */
 public class ChannelExtractor extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
-    public static final String OUTPUT_IMAGE = "Output image1";
+    public static final String OUTPUT_IMAGE = "Output image";
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract";
     public static final String SHOW_IMAGE = "Show output image";
 
