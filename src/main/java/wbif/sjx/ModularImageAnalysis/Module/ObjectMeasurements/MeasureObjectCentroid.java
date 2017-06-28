@@ -69,7 +69,7 @@ public class MeasureObjectCentroid extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting current objects
-        HCName inputObjectName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting which centroid measures to calculate

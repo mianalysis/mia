@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -35,7 +36,7 @@ public abstract class HCAnalysis implements Serializable {
      * @param workspace Workspace containing stores for images and objects
      * @return
      */
-    public boolean execute(HCWorkspace workspace) {
+    public boolean execute(HCWorkspace workspace) throws GenericMIAException {
         return execute(workspace,false);
 
     }
@@ -46,8 +47,18 @@ public abstract class HCAnalysis implements Serializable {
      * @param verbose Switch determining if modules should report progress to System.out
      * @return
      */
-    public boolean execute(HCWorkspace workspace, boolean verbose) {
+    public boolean execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
         if (verbose) System.out.println("Starting analysis");
+
+        // Check that all available parameters have been set
+        for (HCModule module:modules) {
+            HCParameterCollection activeParameters = module.getActiveParameters();
+
+            for (HCParameter activeParameter:activeParameters.values()) {
+                if (activeParameter.getValue() == null) throw new GenericMIAException(
+                        "Module \""+module.getTitle()+"\" parameter \""+activeParameter.getName()+"\" not set");
+            }
+        }
 
         // Running through modules
         for (HCModule module:modules) {
@@ -55,6 +66,7 @@ public abstract class HCAnalysis implements Serializable {
 
             if (shutdown) {
                 shutdown = false;
+                System.out.println("Shutdown successful");
                 return false;
 
             }

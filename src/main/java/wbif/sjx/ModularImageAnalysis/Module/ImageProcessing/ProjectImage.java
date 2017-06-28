@@ -15,7 +15,7 @@ public class ProjectImage extends HCModule {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
 
-    public HCImage projectImageInZ(HCImage inputImage, HCName outputImageName) {
+    public HCImage projectImageInZ(HCImage inputImage, String outputImageName) {
         ZProjector z_projector = new ZProjector(inputImage.getImagePlus());
         z_projector.setMethod(ZProjector.MAX_METHOD);
         z_projector.doProjection();
@@ -42,11 +42,11 @@ public class ProjectImage extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Loading image into workspace
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
 
         // Getting output image name
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Create max projection image
         HCImage outputImage = projectImageInZ(inputImage,outputImageName);

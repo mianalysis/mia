@@ -32,12 +32,12 @@ public class IdentifyObjects extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting output objects name
-        HCName outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         // Getting parameters
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
@@ -62,7 +62,7 @@ public class IdentifyObjects extends HCModule {
 
         // Converting image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
-        HCImage tempImage = new HCImage(new HCName("Temp image"),inputImagePlus);
+        HCImage tempImage = new HCImage(new String("Temp image"),inputImagePlus);
         HCObjectSet outputObjects = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectsName);
 
         // Adding distance calibration to each object
@@ -80,7 +80,7 @@ public class IdentifyObjects extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] "+outputObjects.size()+" objects detected");
 
         // Adding objects to workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName.getName()+") to workspace");
+        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
         if (verbose) System.out.println("["+moduleName+"] Complete");

@@ -35,12 +35,12 @@ public class RidgeDetection extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting output image name
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Getting parameters (RidgeDetection plugin wants to use pixel units only)
         double lowerThreshold = parameters.getValue(LOWER_THRESHOLD);

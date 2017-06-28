@@ -62,12 +62,12 @@ public class GaussianFitter2D extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting input objects to refine (if selected by used)
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
@@ -234,7 +234,7 @@ public class GaussianFitter2D extends HCModule {
 
         } else if (parameters.getValue(RADIUS_MODE).equals(MEASUREMENT)) {
             returnedParameters.addParameter(parameters.getParameter(RADIUS_MEASUREMENT));
-            HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueRange(RADIUS_MEASUREMENT,inputObjectsName);
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT_MULTIPLIER));
 
@@ -249,7 +249,7 @@ public class GaussianFitter2D extends HCModule {
 
     @Override
     public void addMeasurements(HCMeasurementCollection measurements) {
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         measurements.addMeasurement(inputObjectsName,X_0);
         measurements.addMeasurement(inputObjectsName,Y_0);
         measurements.addMeasurement(inputObjectsName,Z_0);

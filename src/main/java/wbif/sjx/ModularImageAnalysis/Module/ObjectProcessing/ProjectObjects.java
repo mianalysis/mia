@@ -32,8 +32,8 @@ public class ProjectObjects extends HCModule {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCName outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
         HCObjectSet outputObjects = new HCObjectSet(outputObjectsName);

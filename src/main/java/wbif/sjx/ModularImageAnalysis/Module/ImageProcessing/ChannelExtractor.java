@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.ImagePlus;
+import ij.plugin.ChannelSplitter;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -11,7 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  */
 public class ChannelExtractor extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
-    public static final String OUTPUT_IMAGE = "Output image1";
+    public static final String OUTPUT_IMAGE = "Output image";
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract";
     public static final String SHOW_IMAGE = "Show output image";
 
@@ -32,20 +33,22 @@ public class ChannelExtractor extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Loading input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
-        if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName.getName()+") into workspace");
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName+") into workspace");
         ImagePlus ipl = workspace.getImages().get(inputImageName).getImagePlus();
 
         // Getting parameters
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         int channel = parameters.getValue(CHANNEL_TO_EXTRACT);
 
         // Getting selected channel
         if (verbose) System.out.println("["+moduleName+"] Extracting channel "+channel);
-        ImagePlus outputChannelImagePlus = SubHyperstackMaker.makeSubhyperstack(ipl,String.valueOf(channel),"1-"+ipl.getNSlices(),"1-"+ipl.getNFrames());
+//        ImagePlus outputChannelImagePlus = SubHyperstackMaker.makeSubhyperstack(ipl,String.valueOf(channel),"1-"+ipl.getNSlices(),"1-"+ipl.getNFrames());
+        ipl = new Duplicator().run(ipl);
+        ImagePlus outputChannelImagePlus = ChannelSplitter.split(ipl)[channel-1];
 
         // Adding image to workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName.getName()+") to workspace");
+        if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
         workspace.addImage(new HCImage(outputImageName,outputChannelImagePlus));
 
         // (If selected) displaying the loaded image

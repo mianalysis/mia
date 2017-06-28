@@ -40,7 +40,7 @@ public class BinaryOperations extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -74,7 +74,7 @@ public class BinaryOperations extends HCModule {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
             HCImage outputImage = new HCImage(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);

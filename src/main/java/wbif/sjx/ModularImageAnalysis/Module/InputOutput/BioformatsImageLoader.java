@@ -35,7 +35,7 @@ public class BioformatsImageLoader extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting image name
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Running Bio-formats importer
         if (verbose) System.out.println("["+moduleName+"] Loading image");
@@ -53,7 +53,7 @@ public class BioformatsImageLoader extends HCModule {
 
         if (ipl != null) {
             // Adding image to workspace
-            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName.getName()+") to workspace");
+            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
             workspace.addImage(new HCImage(outputImageName, ipl));
 
             // (If selected) displaying the loaded image
@@ -65,7 +65,7 @@ public class BioformatsImageLoader extends HCModule {
 
         } else {
             // Warning that no image loaded
-            if (verbose) System.out.println("["+moduleName+"] Image ("+outputImageName.getName()+") failed to load");
+            if (verbose) System.out.println("["+moduleName+"] Image ("+outputImageName+") failed to load");
 
         }
 

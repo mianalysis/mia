@@ -37,12 +37,12 @@ public class MeasureSpotIntensity extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting image to measure spot intensity for
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting objects to measure
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
@@ -53,13 +53,13 @@ public class MeasureSpotIntensity extends HCModule {
         inputObjects = GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
 
         // Running through each object's timepoints, getting intensity measurements
-        for (HCObject object:inputObjects.values()) {
+        for (HCObject inputObject:inputObjects.values()) {
             // Getting pixel coordinates
-            ArrayList<Integer> x = object.getCoordinates(HCObject.X);
-            ArrayList<Integer> y = object.getCoordinates(HCObject.Y);
-            ArrayList<Integer> z = object.getCoordinates(HCObject.Z);
-            Integer c = object.getCoordinates(HCObject.C);
-            Integer t = object.getCoordinates(HCObject.T);
+            ArrayList<Integer> x = inputObject.getCoordinates(HCObject.X);
+            ArrayList<Integer> y = inputObject.getCoordinates(HCObject.Y);
+            ArrayList<Integer> z = inputObject.getCoordinates(HCObject.Z);
+            Integer c = inputObject.getCoordinates(HCObject.C);
+            Integer t = inputObject.getCoordinates(HCObject.T);
 
             // Initialising the cumulative statistics object to store pixel intensities.  Unlike MeasureObjectIntensity,
             // this uses a multi-element MultiCumStat where each element corresponds to a different frame
@@ -78,21 +78,21 @@ public class MeasureSpotIntensity extends HCModule {
 
             // Calculating mean, std, min and max intensity and adding to the parent (we will discard the expanded
             // objects after this module has run)
-            HCMeasurement meanIntensity = new HCMeasurement(inputImageName.getName()+"_MEAN", cs.getMean());
+            HCMeasurement meanIntensity = new HCMeasurement(inputImageName+"_MEAN", cs.getMean());
             meanIntensity.setSource(this);
-            object.getParent(inputImageName).addMeasurement(meanIntensity);
+            inputObject.getParent(inputObjectsName).addMeasurement(meanIntensity);
 
-            HCMeasurement stdIntensity = new HCMeasurement(inputImageName.getName()+"_STD", cs.getStd(CumStat.SAMPLE));
+            HCMeasurement stdIntensity = new HCMeasurement(inputImageName+"_STD", cs.getStd(CumStat.SAMPLE));
             stdIntensity.setSource(this);
-            object.getParent(inputImageName).addMeasurement(stdIntensity);
+            inputObject.getParent(inputObjectsName).addMeasurement(stdIntensity);
 
-            HCMeasurement minIntensity = new HCMeasurement(inputImageName.getName()+"_MIN", cs.getMin());
+            HCMeasurement minIntensity = new HCMeasurement(inputImageName+"_MIN", cs.getMin());
             minIntensity.setSource(this);
-            object.getParent(inputImageName).addMeasurement(minIntensity);
+            inputObject.getParent(inputObjectsName).addMeasurement(minIntensity);
 
-            HCMeasurement maxIntensity = new HCMeasurement(inputImageName.getName()+"_MAX", cs.getMax());
+            HCMeasurement maxIntensity = new HCMeasurement(inputImageName+"_MAX", cs.getMax());
             maxIntensity.setSource(this);
-            object.getParent(inputImageName).addMeasurement(maxIntensity);
+            inputObject.getParent(inputObjectsName).addMeasurement(maxIntensity);
 
         }
 
@@ -118,7 +118,7 @@ public class MeasureSpotIntensity extends HCModule {
 
     @Override
     public void addMeasurements(HCMeasurementCollection measurements) {
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MEAN");
         measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_STD");
         measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MIN");

@@ -34,7 +34,7 @@ public class ApplyManualClassification extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting classification file and storing classifications as HashMap that can be easily read later on

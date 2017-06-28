@@ -44,7 +44,7 @@ public class ImageStackLoader extends HCModule {
         String orderField = parameters.getValue(ORDER_FIELD);
         ArrayList<String> staticFields = parameters.getValue(STATIC_FIELDS);
         HashMap<String,String> setFields = parameters.getValue(SET_FIELDS);
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // Getting files
         File referenceFile = workspace.getMetadata().getFile();
