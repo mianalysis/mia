@@ -40,10 +40,10 @@ public class IdentifyPrimaryObjects extends HCModule {
         // Getting parameters
         double medFiltR = parameters.getValue(MEDIAN_FILTER_RADIUS);
         double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER);
-        HCName outputObjectName = parameters.getValue(OUTPUT_OBJECT);
+        String outputObjectName = parameters.getValue(OUTPUT_OBJECT);
 
         // Getting image stack
-        HCName targetImageName = parameters.getValue(INPUT_IMAGE);
+        String targetImageName = parameters.getValue(INPUT_IMAGE);
         ImagePlus ipl = workspace.getImages().get(targetImageName).getImagePlus();
 
         // Applying smoothing filter
@@ -67,11 +67,11 @@ public class IdentifyPrimaryObjects extends HCModule {
 
         // Converting image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
-        HCImage tempImage = new HCImage(new HCName("Temp image"),ipl);
+        HCImage tempImage = new HCImage(new String("Temp image"),ipl);
         HCObjectSet outputObjects = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectName);
 
         // Adding objects to workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectName.getName()+") to workspace");
+        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectName+") to workspace");
         workspace.addObjects(outputObjects);
 
         if (verbose) System.out.println("["+moduleName+"] Complete");

@@ -60,8 +60,8 @@ public class RunTrackMate extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Loading input image
-        HCName targetImageName = parameters.getValue(INPUT_IMAGE);
-        if (verbose) System.out.println("["+moduleName+"] Loading image ("+targetImageName.getName()+") into workspace");
+        String targetImageName = parameters.getValue(INPUT_IMAGE);
+        if (verbose) System.out.println("["+moduleName+"] Loading image ("+targetImageName+") into workspace");
         ImagePlus ipl = workspace.getImages().get(targetImageName).getImagePlus();
 
         // Storing, then removing calibration.  This will be reapplied after the detection.
@@ -87,12 +87,12 @@ public class RunTrackMate extends HCModule {
         }
 
         // Getting name of output objects
-        HCName outputObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
         HCObjectSet outputObjects = new HCObjectSet(outputObjectsName);
 
         // Getting name of output summary objects (if required)
         boolean createSummary = parameters.getValue(CREATE_TRACK_OBJECTS);
-        HCName outputSummaryObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
+        String outputSummaryObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
         HCObjectSet summaryObjects = null;
         if (createSummary) summaryObjects = new HCObjectSet(outputSummaryObjectsName);
 
@@ -161,7 +161,7 @@ public class RunTrackMate extends HCModule {
             if (verbose) System.out.println("["+moduleName+"] "+spots.getNSpots(false)+" objects detected");
 
             // Adding objects to the workspace
-            if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName.getName()+") to workspace");
+            if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
             workspace.addObjects(objects);
 
             // Displaying objects (if selected)
@@ -313,7 +313,7 @@ public class RunTrackMate extends HCModule {
         }
 
         // Adding objects to the workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName.getName()+") to workspace");
+        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
         if (createSummary) workspace.addObjects(summaryObjects);
@@ -350,7 +350,7 @@ public class RunTrackMate extends HCModule {
     @Override
     public void initialiseParameters() {
         parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(OUTPUT_SPOT_OBJECTS,HCParameter.OUTPUT_OBJECTS,new HCName("Spots")));
+        parameters.addParameter(new HCParameter(OUTPUT_SPOT_OBJECTS,HCParameter.OUTPUT_OBJECTS,new String("Spots")));
 
         parameters.addParameter(new HCParameter(CALIBRATED_UNITS,HCParameter.BOOLEAN,false));
         parameters.addParameter(new HCParameter(DO_SUBPIXEL_LOCALIZATION,HCParameter.BOOLEAN,true));
@@ -364,7 +364,7 @@ public class RunTrackMate extends HCModule {
         parameters.addParameter(new HCParameter(MAX_FRAME_GAP,HCParameter.INTEGER,3));
 
         parameters.addParameter(new HCParameter(CREATE_TRACK_OBJECTS,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(OUTPUT_TRACK_OBJECTS,HCParameter.OUTPUT_OBJECTS,new HCName("Tracks")));
+        parameters.addParameter(new HCParameter(OUTPUT_TRACK_OBJECTS,HCParameter.OUTPUT_OBJECTS,new String("Tracks")));
 
         parameters.addParameter(new HCParameter(SHOW_OBJECTS,HCParameter.BOOLEAN,false));
         parameters.addParameter(new HCParameter(SHOW_ID,HCParameter.BOOLEAN,false));

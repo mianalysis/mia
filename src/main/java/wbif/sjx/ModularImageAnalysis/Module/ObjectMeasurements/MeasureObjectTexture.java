@@ -42,12 +42,12 @@ public class MeasureObjectTexture extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
@@ -93,7 +93,7 @@ public class MeasureObjectTexture extends HCModule {
             textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs,coords);
 
             // Acquiring measurements
-            HCMeasurement ASMMeasurement = new HCMeasurement(inputImageName.getName()+"_ASM",textureCalculator.getASM());
+            HCMeasurement ASMMeasurement = new HCMeasurement(inputImageName+"_ASM",textureCalculator.getASM());
             ASMMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(ASMMeasurement);
@@ -101,7 +101,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(ASMMeasurement);
             }
 
-            HCMeasurement contrastMeasurement = new HCMeasurement(inputImageName.getName()+"_CONTRAST",textureCalculator.getContrast());
+            HCMeasurement contrastMeasurement = new HCMeasurement(inputImageName+"_CONTRAST",textureCalculator.getContrast());
             contrastMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(contrastMeasurement);
@@ -109,7 +109,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(contrastMeasurement);
             }
 
-            HCMeasurement correlationMeasurement = new HCMeasurement(inputImageName.getName()+"_CORRELATION",textureCalculator.getCorrelation());
+            HCMeasurement correlationMeasurement = new HCMeasurement(inputImageName+"_CORRELATION",textureCalculator.getCorrelation());
             correlationMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(correlationMeasurement);
@@ -117,7 +117,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(correlationMeasurement);
             }
 
-            HCMeasurement entropyMeasurement = new HCMeasurement(inputImageName.getName()+"_ENTROPY",textureCalculator.getEntropy());
+            HCMeasurement entropyMeasurement = new HCMeasurement(inputImageName+"_ENTROPY",textureCalculator.getEntropy());
             entropyMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(entropyMeasurement);
@@ -169,10 +169,10 @@ public class MeasureObjectTexture extends HCModule {
     @Override
     public void addMeasurements(HCMeasurementCollection measurements) {
         if (parameters.getValue(INPUT_OBJECTS) != null) {
-            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), ((HCName) parameters.getValue(INPUT_IMAGE)).getName() + "_ASM");
-            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), ((HCName) parameters.getValue(INPUT_IMAGE)).getName() + "_CONTRAST");
-            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), ((HCName) parameters.getValue(INPUT_IMAGE)).getName() + "_CORRELATION");
-            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), ((HCName) parameters.getValue(INPUT_IMAGE)).getName() + "_ENTROPY");
+            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_ASM");
+            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_CONTRAST");
+            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_CORRELATION");
+            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_ENTROPY");
         }
     }
 

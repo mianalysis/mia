@@ -29,11 +29,11 @@ public class MeasureTrackMotion extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input track objects
-        HCName inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
+        String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
         HCObjectSet inputTrackObjects = workspace.getObjects().get(inputTrackObjectsName);
 
         // Getting input spot objects
-        HCName inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS);
+        String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS);
 
         // Converting objects to Track class object
         for (HCObject inputTrackObject:inputTrackObjects.values()) {
@@ -116,7 +116,7 @@ public class MeasureTrackMotion extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
         // Updating measurements with measurement choices from currently-selected object
-        HCName objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
+        String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
         if (objectName != null) {
             parameters.updateValueRange(INPUT_SPOT_OBJECTS, objectName);
 

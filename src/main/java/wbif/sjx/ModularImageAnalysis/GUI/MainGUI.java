@@ -5,9 +5,6 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 
 import ij.IJ;
 import ij.ImageJ;
-import ij.ImagePlus;
-import ij.gui.OvalRoi;
-import ij.gui.Overlay;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
 import org.xml.sax.SAXException;
@@ -83,8 +80,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
 
-//        renderBasicMode();
-        renderEditingMode();
+        renderBasicMode();
+//        renderEditingMode();
 
         // Final bits for listeners
         frame.addMouseListener(this);
@@ -224,12 +221,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         frame.add(paramsScrollPane,c);
 
         // Initialising the status panel
-//        initialiseStatusPanel(1090);
-//        c.gridx = 0;
-//        c.gridy++;
-//        c.gridwidth = 3;
-//        c.insets = new Insets(0,5,5,5);
-//        frame.add(statusPanel,c);
+        initialiseStatusPanel(1090);
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 3;
+        c.insets = new Insets(0,5,5,5);
+        frame.add(statusPanel,c);
 
         frame.pack();
         frame.revalidate();
@@ -939,9 +936,9 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             }
 
         } else if (componentName.equals("InputParameter")) {
-            HCParameter parameter = ((HCNameInputParameter) object).getParameter();
-            parameter.setValue(((HCNameInputParameter) object).getSelectedItem());
-            HCModule module = ((HCNameInputParameter) object).getModule();
+            HCParameter parameter = ((ImageObjectInputParameter) object).getParameter();
+            parameter.setValue(((ImageObjectInputParameter) object).getSelectedItem());
+            HCModule module = ((ImageObjectInputParameter) object).getModule();
 
             int idx = modules.indexOf(module);
             if (idx <= lastModuleEval) lastModuleEval = idx-1;
@@ -958,7 +955,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             HCModule module = ((TextParameter) object).getModule();
 
             if (parameter.getType() == HCParameter.OUTPUT_IMAGE | parameter.getType() == HCParameter.OUTPUT_OBJECTS) {
-                parameter.setValue(new HCName(text));
+                parameter.setValue(text);
 
             } else if (parameter.getType() == HCParameter.INTEGER) {
                 parameter.setValue(Integer.valueOf(text));

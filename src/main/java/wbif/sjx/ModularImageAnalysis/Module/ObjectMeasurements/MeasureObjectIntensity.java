@@ -32,11 +32,11 @@ public class MeasureObjectIntensity extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
-        HCName objectName = parameters.getValue(INPUT_OBJECTS);
+        String objectName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet objects = workspace.getObjects().get(objectName);
 
         // Getting input image
-        HCName imageName = parameters.getValue(INPUT_IMAGE);
+        String imageName = parameters.getValue(INPUT_IMAGE);
         HCImage image = workspace.getImages().get(imageName);
         ImagePlus ipl = image.getImagePlus();
 
@@ -64,19 +64,19 @@ public class MeasureObjectIntensity extends HCModule {
             }
 
             // Calculating mean, std, min and max intensity
-            HCMeasurement meanIntensity = new HCMeasurement(imageName.getName()+"_MEAN", cs.getMean());
+            HCMeasurement meanIntensity = new HCMeasurement(imageName+"_MEAN", cs.getMean());
             meanIntensity.setSource(this);
             object.addMeasurement(meanIntensity);
 
-            HCMeasurement stdIntensity = new HCMeasurement(imageName.getName()+"_STD", cs.getStd(CumStat.SAMPLE));
+            HCMeasurement stdIntensity = new HCMeasurement(imageName+"_STD", cs.getStd(CumStat.SAMPLE));
             stdIntensity.setSource(this);
             object.addMeasurement(stdIntensity);
 
-            HCMeasurement minIntensity = new HCMeasurement(imageName.getName()+"_MIN", cs.getMin());
+            HCMeasurement minIntensity = new HCMeasurement(imageName+"_MIN", cs.getMin());
             minIntensity.setSource(this);
             object.addMeasurement(minIntensity);
 
-            HCMeasurement maxIntensity = new HCMeasurement(imageName.getName()+"_MAX", cs.getMax());
+            HCMeasurement maxIntensity = new HCMeasurement(imageName+"_MAX", cs.getMax());
             maxIntensity.setSource(this);
             object.addMeasurement(maxIntensity);
 
@@ -105,7 +105,7 @@ public class MeasureObjectIntensity extends HCModule {
 
     @Override
     public void addMeasurements(HCMeasurementCollection measurements) {
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MEAN");
         measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_STD");
         measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MIN");

@@ -37,7 +37,7 @@ public class FilterObjects extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
@@ -58,7 +58,7 @@ public class FilterObjects extends HCModule {
             }
 
         } else if (method.equals(NO_PARENT)) {
-            HCName parentObjectName = parameters.getValue(PARENT_OBJECT);
+            String parentObjectName = parameters.getValue(PARENT_OBJECT);
 
             Iterator<HCObject> iterator = inputObjects.values().iterator();
             while (iterator.hasNext()) {
@@ -71,7 +71,7 @@ public class FilterObjects extends HCModule {
             }
 
         } else if (method.equals(MIN_NUMBER_OF_CHILDREN)) {
-            HCName childObjectsName = parameters.getValue(CHILD_OBJECTS);
+            String childObjectsName = parameters.getValue(CHILD_OBJECTS);
             int minChildN = parameters.getValue(MIN_CHILD_N);
 
             Iterator<HCObject> iterator = inputObjects.values().iterator();
@@ -127,14 +127,14 @@ public class FilterObjects extends HCModule {
         } else if (parameters.getValue(FILTER_METHOD).equals(NO_PARENT)) {
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT));
 
-            HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueRange(PARENT_OBJECT,inputObjectsName);
 
         } else if (parameters.getValue(FILTER_METHOD).equals(MIN_NUMBER_OF_CHILDREN)) {
             returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
             returnedParameters.addParameter(parameters.getParameter(MIN_CHILD_N));
 
-            HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueRange(CHILD_OBJECTS,inputObjectsName);
 
         }

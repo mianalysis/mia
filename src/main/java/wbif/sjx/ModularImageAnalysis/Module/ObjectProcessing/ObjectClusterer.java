@@ -6,10 +6,15 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
+import ij.IJ;
+import ij.gui.PolygonRoi;
+import ij.gui.Roi;
 import org.apache.commons.math3.exception.InsufficientDataException;
+import org.apache.commons.math3.geometry.euclidean.twod.Euclidean2D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.commons.math3.geometry.euclidean.twod.hull.ConvexHull2D;
 import org.apache.commons.math3.geometry.euclidean.twod.hull.MonotoneChain;
+import org.apache.commons.math3.geometry.partitioning.Region;
 import org.apache.commons.math3.ml.clustering.*;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
@@ -17,8 +22,10 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.DoubleStream;
 
 /**
  * Created by sc13967 on 21/06/2017.
@@ -41,7 +48,7 @@ public class ObjectClusterer extends HCModule {
     private static final String CLUSTER_PERIMETER_XY = "CLUSTER_PERIMETER_2D";
 
 
-    private static HCObjectSet runKMeansPlusPlus(List<LocationWrapper> locations, HCName outputObjectsName, int kClusters, int maxIterations) {
+    private static HCObjectSet runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, int kClusters, int maxIterations) {
         KMeansPlusPlusClusterer<LocationWrapper> clusterer = new KMeansPlusPlusClusterer<>(kClusters,maxIterations);
         List<CentroidCluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
@@ -72,7 +79,7 @@ public class ObjectClusterer extends HCModule {
 
     }
 
-    private static HCObjectSet runDBSCAN(List<LocationWrapper> locations, HCName outputObjectsName, double eps, int minPoints) {
+    private static HCObjectSet runDBSCAN(List<LocationWrapper> locations, String outputObjectsName, double eps, int minPoints) {
         DBSCANClusterer<LocationWrapper> clusterer = new DBSCANClusterer<>(eps, minPoints);
         List<Cluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
@@ -130,11 +137,11 @@ public class ObjectClusterer extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting objects to measure
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting output objects name
-        HCName outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
+        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 
         // Getting parameters
         String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM);
@@ -213,18 +220,70 @@ public class ObjectClusterer extends HCModule {
                 }
 
                 ConvexHull2D convexHull2D = new MonotoneChain().generate(points);
+                Region<Euclidean2D> region = convexHull2D.createRegion();
 
-                double area = convexHull2D.createRegion().getSize();
+                double area = region.getSize();
                 outputObject.addMeasurement(new HCMeasurement(CLUSTER_AREA_XY, area, this));
 
-                double perimeter = convexHull2D.createRegion().getBoundarySize();
+                double perimeter = region.getBoundarySize();
                 outputObject.addMeasurement(new HCMeasurement(CLUSTER_PERIMETER_XY, perimeter, this));
+
+                // Creating a polygon ROI from the vertices
+                Vector2D[] vertices = convexHull2D.getVertices();
+                int[] x = new int[vertices.length];
+                int[] y = new int[vertices.length];
+
+                double minX = Double.MAX_VALUE;
+                double minY = Double.MAX_VALUE;
+                double maxX = Double.MIN_VALUE;
+                double maxY = Double.MIN_VALUE;
+
+                for (int i=0;i<vertices.length;i++) {
+                    x[i] = (int) Math.round(vertices[i].getX());
+                    y[i] = (int) Math.round(vertices[i].getY());
+
+                    // Getting limits of the cluster area
+                    if (x[i] < minX) minX = x[i];
+                    if (y[i] < minY) minY = y[i];
+                    if (x[i] > maxX) maxX = x[i];
+                    if (y[i] > maxY) maxY = y[i];
+
+                }
+
+                PolygonRoi polygonRoi = new PolygonRoi(x,y,x.length, Roi.POLYGON);
+
+                // Defining the area of the cluster as all points contained within the convex hull.  To do this, every
+                // point between the minimum and maximum XY coordinates is tested.
+                int minXInt = (int) Math.floor(minX);
+                int minYInt = (int) Math.floor(minY);
+                int maxXInt = (int) Math.ceil(maxX);
+                int maxYInt = (int) Math.ceil(maxY);
+
+                for (int xx=minXInt;xx<=maxXInt;xx++) {
+                    for (int yy=minYInt;yy<=maxYInt;yy++) {
+                        if (polygonRoi.contains(xx,yy)) {
+                            outputObject.addCoordinate(HCObject.X,xx);
+                            outputObject.addCoordinate(HCObject.Y,yy);
+                            outputObject.addCoordinate(HCObject.Z,0);
+                            outputObject.addCoordinate(HCObject.C,0);
+                            outputObject.addCoordinate(HCObject.T,0);
+
+                        }
+                    }
+                }
+
+                HCObject exampleChild = children.values().iterator().next();
+                outputObject.addCalibration(HCObject.X,exampleChild.getCalibration(HCObject.X));
+                outputObject.addCalibration(HCObject.Y,exampleChild.getCalibration(HCObject.Y));
+                outputObject.addCalibration(HCObject.Z,exampleChild.getCalibration(HCObject.Z));
+                outputObject.addCalibration(HCObject.C,exampleChild.getCalibration(HCObject.C));
+                outputObject.addCalibration(HCObject.T,exampleChild.getCalibration(HCObject.T));
 
             } catch (InsufficientDataException e) {
                 // This exception occurs when there are fewer than 3 points or in certain point arrangements (i.e. when
                 // they all lie in a straight line)
-                outputObject.addMeasurement(new HCMeasurement(CLUSTER_AREA_XY, Double.NaN, this));
-                outputObject.addMeasurement(new HCMeasurement(CLUSTER_PERIMETER_XY, Double.NaN, this));
+                outputObject.addMeasurement(new HCMeasurement(CLUSTER_AREA_XY,Double.NaN, this));
+                outputObject.addMeasurement(new HCMeasurement(CLUSTER_PERIMETER_XY,Double.NaN, this));
 
             }
         }
@@ -273,7 +332,7 @@ public class ObjectClusterer extends HCModule {
 
     @Override
     public void addMeasurements(HCMeasurementCollection measurements) {
-        HCName clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
+        String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         measurements.addMeasurement(clusterObjectsName,N_POINTS_IN_CLUSTER);
         measurements.addMeasurement(clusterObjectsName,CLUSTER_AREA_XY);
         measurements.addMeasurement(clusterObjectsName,CLUSTER_PERIMETER_XY);
@@ -282,8 +341,8 @@ public class ObjectClusterer extends HCModule {
 
     @Override
     public void addRelationships(HCRelationshipCollection relationships) {
-        HCName clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         relationships.addRelationship(clusterObjectsName,inputObjectsName);
 

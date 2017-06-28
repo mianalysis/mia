@@ -4,7 +4,6 @@ import ij.gui.GenericDialog;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.HCMeasurementCollection;
 import wbif.sjx.ModularImageAnalysis.Object.HCModuleCollection;
-import wbif.sjx.ModularImageAnalysis.Object.HCName;
 import wbif.sjx.ModularImageAnalysis.Object.HCParameter;
 
 import java.awt.*;
@@ -62,7 +61,7 @@ public class ParameterWindow {
                         // Getting the measurements available to this module
                         HCMeasurementCollection measurements = modules.getMeasurements(module);
                         String[] measurementChoices = measurements.getMeasurementNames(
-                                (HCName) entry.getValue().getValueSource());
+                                entry.getValue().getValueSource());
                         gd.addChoice(entry.getKey(),measurementChoices,measurementChoices[0]);
                         hasComponents = true;
 

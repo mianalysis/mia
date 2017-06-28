@@ -47,7 +47,7 @@ public class ImageFileLoader extends HCModule {
         // Getting parameters
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         // If the file currently in the workspace is to be used, update the file path accordingly
         if (importMode.equals(CURRENT_FILE)) {

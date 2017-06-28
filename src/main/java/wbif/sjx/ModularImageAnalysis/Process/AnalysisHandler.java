@@ -24,7 +24,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.io.*;
-import java.util.HashMap;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -32,6 +31,8 @@ import java.util.HashMap;
 public class AnalysisHandler {
     boolean exportXLSX = true;
     boolean exportXML = false;
+
+    private static File inputFile = null;
 
     public void saveAnalysis(HCAnalysis analysis) throws IOException, ParserConfigurationException, TransformerException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
@@ -71,8 +72,6 @@ public class AnalysisHandler {
 
         HCAnalysis analysis = new GUIAnalysis();
         HCModuleCollection modules = analysis.getModules();
-        HashMap<String,HCName> imageObjectNames = new HashMap<>();
-        HCName name;
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
@@ -96,25 +95,19 @@ public class AnalysisHandler {
                             int parameterType = module.getParameterType(parameterName);
                             switch (parameterType) {
                                 case HCParameter.INPUT_IMAGE:
-                                    name = imageObjectNames.get(parameterValue);
-                                    module.updateParameterValue(parameterName, name);
+                                    module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
                                 case HCParameter.OUTPUT_IMAGE:
-                                    name = new HCName(parameterValue);
-                                    imageObjectNames.put(parameterValue, name);
-                                    module.updateParameterValue(parameterName, name);
+                                    module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
                                 case HCParameter.INPUT_OBJECTS:
-                                    name = imageObjectNames.get(parameterValue);
-                                    module.updateParameterValue(parameterName, name);
+                                    module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
                                 case HCParameter.OUTPUT_OBJECTS:
-                                    name = new HCName(parameterValue);
-                                    imageObjectNames.put(parameterValue, name);
-                                    module.updateParameterValue(parameterName, name);
+                                    module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
                                 case HCParameter.INTEGER:
@@ -150,13 +143,11 @@ public class AnalysisHandler {
                                     break;
 
                                 case HCParameter.CHILD_OBJECTS:
-                                    name = imageObjectNames.get(parameterValue);
-                                    module.updateParameterValue(parameterName, name);
+                                    module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
                                 case HCParameter.PARENT_OBJECTS:
-                                    name = imageObjectNames.get(parameterValue);
-                                    module.updateParameterValue(parameterName, name);
+                                    module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
                             }
@@ -178,17 +169,6 @@ public class AnalysisHandler {
             }
         }
 
-//        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(fileDialog.getFiles()[0]));
-//
-//        HCAnalysis analysis = (GUIAnalysis) inputStream.readObject();
-//        inputStream.close();
-
-        for (HCModule module:modules) {
-            System.out.println(module.getTitle());
-            module.getActiveParameters().forEach((k,v) -> System.out.println("    "+v.getName()+"_"+v.getValue()));
-
-        }
-
         System.out.println("File loaded ("+FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
 
         return analysis;
@@ -196,13 +176,13 @@ public class AnalysisHandler {
     }
 
     public HCWorkspace startAnalysis(HCAnalysis analysis) throws IOException, GenericMIAException {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(inputFile);
         fileChooser.setDialogTitle("Select file to run");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.showDialog(null,"Open");
 
-        File inputFile = fileChooser.getSelectedFile();
+        inputFile = fileChooser.getSelectedFile();
         if (inputFile.isDirectory()) { // Batch mode
             HCExporter exporter = new HCExporter(inputFile.getAbsolutePath()+"\\output",HCExporter.XLSX_EXPORT);
             BatchProcessor batchProcessor = new BatchProcessor(inputFile);

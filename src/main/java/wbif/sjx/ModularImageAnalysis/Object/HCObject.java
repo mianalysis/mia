@@ -18,17 +18,12 @@ public class HCObject {
     public static final int C = 3;
     public static final int T = 4;
 
-    private HCName name;
+    private String name;
 
     /**
      * Unique instance ID for this object
      */
     private int ID;
-
-    /**
-     * ID number shared between linked objects (e.g. spots in a track)
-     */
-    private int groupID = 1;
 
     /**
      * 3D coordinates of this instance of the object.
@@ -39,8 +34,8 @@ public class HCObject {
      * HashMap containing extra dimensions specifying the location of this instance
      */
     private HashMap<Integer, Integer> positions = new HashMap<>();
-    private LinkedHashMap<HCName, HCObject> parents = new LinkedHashMap<>();
-    private LinkedHashMap<HCName, HCObjectSet> children = new LinkedHashMap<>();
+    private LinkedHashMap<String, HCObject> parents = new LinkedHashMap<>();
+    private LinkedHashMap<String, HCObjectSet> children = new LinkedHashMap<>();
     private LinkedHashMap<String, HCMeasurement> measurements = new LinkedHashMap<>();
     private String calibratedUnits = "px";
 
@@ -52,7 +47,7 @@ public class HCObject {
 
     // CONSTRUCTORS
 
-    public HCObject(HCName name, int ID) {
+    public HCObject(String name, int ID) {
         this.name = name;
         this.ID = ID;
 
@@ -135,11 +130,11 @@ public class HCObject {
 
     }
 
-    public HCName getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(HCName name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -149,14 +144,6 @@ public class HCObject {
 
     public void setID(int ID) {
         this.ID = ID;
-    }
-
-    public int getGroupID() {
-        return groupID;
-    }
-
-    public void setGroupID(int groupID) {
-        this.groupID = groupID;
     }
 
     public int getNumberOfDimensions() {
@@ -228,15 +215,15 @@ public class HCObject {
 
     }
 
-    public LinkedHashMap<HCName, HCObject> getParents() {
+    public LinkedHashMap<String, HCObject> getParents() {
         return parents;
     }
 
-    public void setParents(LinkedHashMap<HCName, HCObject> parents) {
+    public void setParents(LinkedHashMap<String, HCObject> parents) {
         this.parents = parents;
     }
 
-    public HCObject getParent(HCName name) {
+    public HCObject getParent(String name) {
         return parents.get(name);
 
     }
@@ -245,20 +232,20 @@ public class HCObject {
         parents.put(parent.getName(), parent);
     }
 
-    public void removeParent(HCName name) {
+    public void removeParent(String name) {
         parents.remove(name);
 
     }
 
-    public LinkedHashMap<HCName, HCObjectSet> getChildren() {
+    public LinkedHashMap<String, HCObjectSet> getChildren() {
         return children;
     }
 
-    public HCObjectSet getChildren(HCName name) {
+    public HCObjectSet getChildren(String name) {
         return children.get(name);
     }
 
-    public void setChildren(LinkedHashMap<HCName, HCObjectSet> children) {
+    public void setChildren(LinkedHashMap<String, HCObjectSet> children) {
         this.children = children;
     }
 
@@ -266,12 +253,12 @@ public class HCObject {
         children.put(childSet.getName(), childSet);
     }
 
-    public void removeChildren(HCName name) {
+    public void removeChildren(String name) {
         children.remove(name);
     }
 
     public void addChild(HCObject child) {
-        HCName childName = child.getName();
+        String childName = child.getName();
 
         children.computeIfAbsent(childName, k -> new HCObjectSet(childName));
         children.get(childName).put(child.getID(), child);
@@ -279,7 +266,7 @@ public class HCObject {
     }
 
     public void removeChild(HCObject child) {
-        HCName childName = child.getName();
+        String childName = child.getName();
         children.get(childName).values().remove(child);
 
     }

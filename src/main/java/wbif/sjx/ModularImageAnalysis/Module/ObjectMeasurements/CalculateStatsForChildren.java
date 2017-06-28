@@ -36,15 +36,19 @@ public class CalculateStatsForChildren extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
-        HCName parentObjectsName = parameters.getValue(PARENT_OBJECTS);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         HCObjectSet parentObjects = workspace.getObjects().get(parentObjectsName);
 
         // Getting child objects to calculate statistics for
-        HCName childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
 
         // Getting a list of the measurement names from the first child object in the set
-        Set<String> exampleMeasurements = parentObjects.values().iterator().next().getChildren(childObjectsName)
-                .values().iterator().next().getMeasurements().keySet();
+        if (!parentObjects.values().iterator().hasNext()) return;
+
+        HCObjectSet children = parentObjects.values().iterator().next().getChildren(childObjectsName);
+        if (!children.values().iterator().hasNext()) return;
+
+        Set<String> exampleMeasurements = children.values().iterator().next().getMeasurements().keySet();
 
         // Running through objects, calculating statistics for selected children
         for (HCObject parentObject:parentObjects.values()) {
@@ -160,7 +164,7 @@ public class CalculateStatsForChildren extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(CALCULATE_SUM));
 
         // Updating measurements with measurement choices from currently-selected object
-        HCName objectName = parameters.getValue(PARENT_OBJECTS);
+        String objectName = parameters.getValue(PARENT_OBJECTS);
         if (objectName != null) {
             parameters.updateValueRange(CHILD_OBJECTS, objectName);
 

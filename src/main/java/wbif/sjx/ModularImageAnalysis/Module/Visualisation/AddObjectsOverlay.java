@@ -67,14 +67,14 @@ public class AddObjectsOverlay extends HCModule {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean showID = parameters.getValue(SHOW_LABEL);
         int labelSize = parameters.getValue(LABEL_SIZE);
         boolean useParentID = parameters.getValue(USE_PARENT_ID);
-        HCName parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
+        String parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
         String positionMode = parameters.getValue(POSITION_MODE);
         String colourMode = parameters.getValue(COLOUR_MODE);
-        HCName parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
         String measurement = parameters.getValue(MEASUREMENT);
         String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
         String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
@@ -82,11 +82,11 @@ public class AddObjectsOverlay extends HCModule {
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Getting input objects
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
@@ -254,7 +254,7 @@ public class AddObjectsOverlay extends HCModule {
             if (parameters.getValue(USE_PARENT_ID)) {
                 returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_ID));
 
-                HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 parameters.updateValueRange(PARENT_OBJECT_FOR_ID,inputObjectsName);
 
             }
@@ -266,7 +266,7 @@ public class AddObjectsOverlay extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(Y_POSITION_MEASUREMENT));
             returnedParameters.addParameter(parameters.getParameter(Z_POSITION_MEASUREMENT));
 
-            HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueRange(X_POSITION_MEASUREMENT,inputObjectsName);
             parameters.updateValueRange(Y_POSITION_MEASUREMENT,inputObjectsName);
             parameters.updateValueRange(Z_POSITION_MEASUREMENT,inputObjectsName);
@@ -287,7 +287,7 @@ public class AddObjectsOverlay extends HCModule {
             // Use Parent ID
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
 
-            HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueRange(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
         }

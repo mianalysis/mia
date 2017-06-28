@@ -28,7 +28,7 @@ public class ImageJImageLoader extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting image
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         ImagePlus imagePlus = IJ.getImage();
 
         // Adding image to workspace

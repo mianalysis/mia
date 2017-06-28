@@ -30,12 +30,12 @@ public class CalculateNearestNeighbour extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting objects to measure
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         boolean calculateWithinParent = parameters.getValue(CALCULATE_WITHIN_PARENT);
-        HCName parentObjectsName = parameters.getValue(PARENT_OBJECTS);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
 
         // Running through each object, calculating the nearest neighbour distance
         for (HCObject inputObject:inputObjects.values()) {
@@ -123,7 +123,7 @@ public class CalculateNearestNeighbour extends HCModule {
         if (parameters.getValue(CALCULATE_WITHIN_PARENT)) {
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECTS));
 
-            HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueRange(PARENT_OBJECTS,inputObjectsName);
 
         }
@@ -134,7 +134,7 @@ public class CalculateNearestNeighbour extends HCModule {
 
     @Override
     public void addMeasurements(HCMeasurementCollection measurements) {
-        HCName inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         measurements.addMeasurement(inputObjectsName,NN_DISTANCE);
         measurements.addMeasurement(inputObjectsName,NN_ID);

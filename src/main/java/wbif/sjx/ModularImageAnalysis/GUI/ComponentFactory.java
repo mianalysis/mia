@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -43,31 +44,35 @@ class ComponentFactory {
 
         if (parameter.getType() == HCParameter.INPUT_IMAGE) {
             // Getting a list of available images
-            ArrayList<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_IMAGE,
-                    module);
+            LinkedHashSet<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_IMAGE,module);
 
-            parameterControl = new HCNameInputParameter(module, parameter);
-            ((HCNameInputParameter) parameterControl).addItem(null);
+            LinkedHashSet<String> names = new LinkedHashSet<>();
+            names.add(null);
             for (HCParameter image : images) {
-                ((HCNameInputParameter) parameterControl).addItem(image.getValue());
+                names.add(image.getValue());
 
             }
-            ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
+
+            parameterControl = new ImageObjectInputParameter(module, parameter);
+            for (String name:names) ((ImageObjectInputParameter) parameterControl).addItem(name);
+            ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
             parameterControl.addFocusListener(focusListener);
             parameterControl.setName("InputParameter");
 
         } else if (parameter.getType() == HCParameter.INPUT_OBJECTS) {
             // Getting a list of available images
-            ArrayList<HCParameter> objects = modules.getParametersMatchingType(HCParameter.OUTPUT_OBJECTS,
-                    module);
+            LinkedHashSet<HCParameter> objects = modules.getParametersMatchingType(HCParameter.OUTPUT_OBJECTS,module);
 
-            parameterControl = new HCNameInputParameter(module, parameter);
-            ((HCNameInputParameter) parameterControl).addItem(null);
+            LinkedHashSet<String> names = new LinkedHashSet<>();
+            names.add(null);
             for (HCParameter object : objects) {
-                ((HCNameInputParameter) parameterControl).addItem(object.getValue());
+                names.add(object.getValue());
 
             }
-            ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
+
+            parameterControl = new ImageObjectInputParameter(module, parameter);
+            for (String name:names) ((ImageObjectInputParameter) parameterControl).addItem(name);
+            ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
 
             parameterControl.addFocusListener(focusListener);
             parameterControl.setName("InputParameter");
@@ -126,30 +131,30 @@ class ComponentFactory {
 
         } else if (parameter.getType() == HCParameter.CHILD_OBJECTS) {
             HCRelationshipCollection relationships = modules.getRelationships(module);
-            HCName[] relationshipChoices = relationships.getChildNames(parameter.getValueSource());
-            parameterControl = new HCNameInputParameter(module, parameter);
+            String[] relationshipChoices = relationships.getChildNames(parameter.getValueSource());
+            parameterControl = new ImageObjectInputParameter(module, parameter);
             if (relationshipChoices != null) {
-                for (HCName relationship : relationshipChoices) {
-                    ((HCNameInputParameter) parameterControl).addItem(relationship);
+                for (String relationship : relationshipChoices) {
+                    ((ImageObjectInputParameter) parameterControl).addItem(relationship);
 
                 }
-                ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
+                ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
             }
-            ((HCNameInputParameter) parameterControl).addActionListener(actionListener);
+            ((ImageObjectInputParameter) parameterControl).addActionListener(actionListener);
             parameterControl.setName("InputParameter");
 
         } else if (parameter.getType() == HCParameter.PARENT_OBJECTS) {
             HCRelationshipCollection relationships = modules.getRelationships(module);
-            HCName[] relationshipChoices = relationships.getParentNames(parameter.getValueSource());
-            parameterControl = new HCNameInputParameter(module, parameter);
+            String[] relationshipChoices = relationships.getParentNames(parameter.getValueSource());
+            parameterControl = new ImageObjectInputParameter(module, parameter);
             if (relationshipChoices != null) {
-                for (HCName relationship : relationshipChoices) {
-                    ((HCNameInputParameter) parameterControl).addItem(relationship);
+                for (String relationship : relationshipChoices) {
+                    ((ImageObjectInputParameter) parameterControl).addItem(relationship);
 
                 }
-                ((HCNameInputParameter) parameterControl).setSelectedItem(parameter.getValue());
+                ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
             }
-            ((HCNameInputParameter) parameterControl).addActionListener(actionListener);
+            ((ImageObjectInputParameter) parameterControl).addActionListener(actionListener);
             parameterControl.setName("InputParameter");
 
         }

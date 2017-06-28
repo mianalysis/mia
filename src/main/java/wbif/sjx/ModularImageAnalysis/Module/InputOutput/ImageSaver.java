@@ -39,7 +39,7 @@ public class ImageSaver extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
         HCImage inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -51,9 +51,13 @@ public class ImageSaver extends HCModule {
 
         if (flattenOverlay) {
             // Flattening overlay onto image for saving
-            IntensityMinMax.run(inputImagePlus,true);
-            inputImagePlus.flattenStack();
-
+            if (inputImagePlus.getNSlices() > 1) {
+                IntensityMinMax.run(inputImagePlus,true);
+                inputImagePlus.flattenStack();
+            } else {
+                IntensityMinMax.run(inputImagePlus,false);
+                inputImagePlus.flatten();
+            }
         }
 
         if (saveLocation.equals(SAVE_WITH_INPUT)) {

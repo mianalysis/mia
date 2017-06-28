@@ -33,12 +33,12 @@ public class ChannelExtractor extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Loading input image
-        HCName inputImageName = parameters.getValue(INPUT_IMAGE);
-        if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName.getName()+") into workspace");
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName+") into workspace");
         ImagePlus ipl = workspace.getImages().get(inputImageName).getImagePlus();
 
         // Getting parameters
-        HCName outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         int channel = parameters.getValue(CHANNEL_TO_EXTRACT);
 
         // Getting selected channel
@@ -48,7 +48,7 @@ public class ChannelExtractor extends HCModule {
         ImagePlus outputChannelImagePlus = ChannelSplitter.split(ipl)[channel-1];
 
         // Adding image to workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName.getName()+") to workspace");
+        if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
         workspace.addImage(new HCImage(outputImageName,outputChannelImagePlus));
 
         // (If selected) displaying the loaded image

@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
  * Created by steph on 30/04/2017.
  */
 public class HCImage {
-    private HCName name;
+    private String name;
     private ImagePlus imagePlus;
     private LinkedHashMap<String,HCMeasurement> singleMeasurements = new LinkedHashMap<>();
 //    private LinkedHashMap<String,HCMultiMeasurement> multiMeasurements = new LinkedHashMap<>();
@@ -17,7 +17,7 @@ public class HCImage {
 
     // CONSTRUCTORS
 
-    public HCImage(HCName name, ImagePlus imagePlus) {
+    public HCImage(String name, ImagePlus imagePlus) {
         this.name = name;
         this.imagePlus = imagePlus;
 
@@ -39,7 +39,7 @@ public class HCImage {
 
     // GETTERS AND SETTERS
 
-    public HCName getName() {
+    public String getName() {
         return name;
     }
 
