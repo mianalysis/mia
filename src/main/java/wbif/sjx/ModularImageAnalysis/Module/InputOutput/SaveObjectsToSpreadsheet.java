@@ -63,9 +63,6 @@ public class SaveObjectsToSpreadsheet extends HCModule {
             Cell objectIDHeaderCell = objectHeaderRow.createCell(col++);
             objectIDHeaderCell.setCellValue("OBJECT_ID");
 
-            Cell groupIDHeaderCell = objectHeaderRow.createCell(col++);
-            groupIDHeaderCell.setCellValue("GROUP_ID");
-
             HCObject object = inputObjects.values().iterator().next();
 
             // Getting parents
