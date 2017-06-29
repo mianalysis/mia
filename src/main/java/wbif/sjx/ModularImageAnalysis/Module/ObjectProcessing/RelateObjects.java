@@ -3,10 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import inra.ijpb.binary.ChamferWeights;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.binary.distmap.DistanceTransform3DShort;
-import inra.ijpb.binary.distmap.DistanceTransform3x3Short;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -98,7 +96,15 @@ public class RelateObjects extends HCModule {
 
                         // Getting position within current parent object
                         HCMeasurement absDistanceFromEdge = new HCMeasurement(DIST_EDGE_PX_MEAS);
-                        absDistanceFromEdge.setValue(distanceMap.getVoxel(xCent-range[HCObject.X][0],yCent-range[HCObject.Y][0],zCent-range[HCObject.Z][0]));
+                        int xPos = xCent-range[HCObject.X][0];
+                        int yPos = yCent-range[HCObject.Y][0];
+                        int zPos = zCent-range[HCObject.Z][0];
+
+                        if (xPos < 0 | xPos > distanceMap.getWidth() | yPos < 0 | yPos > distanceMap.getHeight() | zPos < 0 | zPos >= distanceMap.size()) {
+                            absDistanceFromEdge.setValue(Double.NaN);
+                        } else {
+                            absDistanceFromEdge.setValue(distanceMap.getVoxel(xCent - range[HCObject.X][0], yCent - range[HCObject.Y][0], zCent - range[HCObject.Z][0]));
+                        }
                         childObject.addMeasurement(absDistanceFromEdge);
 
                         break;

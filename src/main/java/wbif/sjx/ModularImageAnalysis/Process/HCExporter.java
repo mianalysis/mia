@@ -5,8 +5,8 @@ package wbif.sjx.ModularImageAnalysis.Process;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,7 +16,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -241,7 +240,7 @@ public class HCExporter {
         HCModuleCollection modules = analysis.getModules();
 
         // Initialising the workbook
-        XSSFWorkbook workbook = new XSSFWorkbook();
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
 
         // Adding relevant sheets
         prepareParametersXLSX(workbook,modules);
@@ -259,9 +258,9 @@ public class HCExporter {
 
     }
 
-    private void prepareParametersXLSX(XSSFWorkbook workbook, HCModuleCollection modules) {
+    private void prepareParametersXLSX(SXSSFWorkbook workbook, HCModuleCollection modules) {
         // Creating a sheet for parameters
-        XSSFSheet paramSheet = workbook.createSheet("Parameters");
+        Sheet paramSheet = workbook.createSheet("Parameters");
 
         // Adding a header row for the parameter titles
         int paramRow = 0;
@@ -301,7 +300,7 @@ public class HCExporter {
         }
     }
 
-    private void prepareMetadataXLSX(XSSFWorkbook workbook, HCWorkspaceCollection workspaces) {
+    private void prepareMetadataXLSX(SXSSFWorkbook workbook, HCWorkspaceCollection workspaces) {
         // Basing column names on the first workspace in the WorkspaceCollection
         HCWorkspace exampleWorkspace = workspaces.get(0);
 
@@ -310,7 +309,7 @@ public class HCExporter {
 
             if (exampleMetadata.size() != 0) {
                 // Adding header rows for the metadata sheet.
-                XSSFSheet metaSheet = workbook.createSheet("Metadata");
+                Sheet metaSheet = workbook.createSheet("Metadata");
 
                 // Creating the header row
                 int metaRow = 0;
@@ -352,13 +351,13 @@ public class HCExporter {
         }
     }
 
-    private void prepareImagesXLSX(XSSFWorkbook workbook, HCWorkspaceCollection workspaces, HCModuleCollection modules) {
+    private void prepareImagesXLSX(SXSSFWorkbook workbook, HCWorkspaceCollection workspaces, HCModuleCollection modules) {
         // Basing column names on the first workspace in the WorkspaceCollection
         HCWorkspace exampleWorkspace = workspaces.get(0);
 
         if (exampleWorkspace.getImages() != null) {
             // Creating a new sheet for each image.  Each analysed file will have its own row.
-            HashMap<String, XSSFSheet> imageSheets = new HashMap<>();
+            HashMap<String, Sheet> imageSheets = new HashMap<>();
             HashMap<String, Integer> imageRows = new HashMap<>();
 
             // Using the first workspace in the WorkspaceCollection to initialise column headers
@@ -419,13 +418,13 @@ public class HCExporter {
         }
     }
 
-    private void prepareObjectsXLSX(XSSFWorkbook workbook,HCWorkspaceCollection workspaces, HCModuleCollection modules) {
+    private void prepareObjectsXLSX(SXSSFWorkbook workbook,HCWorkspaceCollection workspaces, HCModuleCollection modules) {
         // Basing column names on the first workspace in the WorkspaceCollection
         HCWorkspace exampleWorkspace = workspaces.get(0);
 
         if (exampleWorkspace != null) {
             // Creating a new sheet for each object.  Each analysed file has its own set of rows (one for each object)
-            HashMap<String, XSSFSheet> objectSheets = new HashMap<>();
+            HashMap<String, Sheet> objectSheets = new HashMap<>();
             HashMap<String, Integer> objectRows = new HashMap<>();
 
             // Creating a LinkedHashMap that links relationship ID names to column numbers.  This keeps the correct

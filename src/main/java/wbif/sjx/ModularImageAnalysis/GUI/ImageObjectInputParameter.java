@@ -8,7 +8,7 @@ import javax.swing.*;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class ImageObjectInputParameter extends JComboBox {
+public class ImageObjectInputParameter extends WiderDropDownCombo {
     private HCModule module;
     private HCParameter parameter;
 

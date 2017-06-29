@@ -5,6 +5,9 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 
 import ij.IJ;
 import ij.ImageJ;
+import ij.ImagePlus;
+import ij.gui.Overlay;
+import ij.gui.PointRoi;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
 import org.xml.sax.SAXException;
@@ -180,12 +183,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         frame.add(basicModulesScrollPane,c);
 
         // Initialising the status panel
-        initialiseStatusPanel(500);
-        c.gridx = 0;
-        c.gridy++;
-        c.gridwidth = 1;
-        c.insets = new Insets(5,5,5,5);
-        frame.add(statusPanel,c);
+//        initialiseStatusPanel(500);
+//        c.gridx = 0;
+//        c.gridy++;
+//        c.gridwidth = 1;
+//        c.insets = new Insets(5,5,5,5);
+//        frame.add(statusPanel,c);
 
         frame.pack();
         frame.revalidate();
@@ -221,12 +224,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         frame.add(paramsScrollPane,c);
 
         // Initialising the status panel
-        initialiseStatusPanel(1090);
-        c.gridx = 0;
-        c.gridy++;
-        c.gridwidth = 3;
-        c.insets = new Insets(0,5,5,5);
-        frame.add(statusPanel,c);
+//        initialiseStatusPanel(1090);
+//        c.gridx = 0;
+//        c.gridy++;
+//        c.gridwidth = 3;
+//        c.insets = new Insets(0,5,5,5);
+//        frame.add(statusPanel,c);
 
         frame.pack();
         frame.revalidate();

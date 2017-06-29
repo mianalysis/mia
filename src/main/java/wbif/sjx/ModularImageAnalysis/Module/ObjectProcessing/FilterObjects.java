@@ -14,12 +14,14 @@ public class FilterObjects extends HCModule {
     public static final String MEASUREMENT = "Measurement to filter on";
     public static final String PARENT_OBJECT = "Parent object";
     public static final String CHILD_OBJECTS = "Child objects";
-    public static final String MIN_CHILD_N = "Minimum number of children";
+    public static final String REFERENCE_VALUE = "Reference value";
 
     private static final String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
     private static final String NO_PARENT = "Remove objects without parent";
-    private static final String MIN_NUMBER_OF_CHILDREN = "Remove objects with too few children";
-    private static final String[] FILTER_METHODS = new String[]{MISSING_MEASUREMENTS,NO_PARENT,MIN_NUMBER_OF_CHILDREN};
+    private static final String MIN_NUMBER_OF_CHILDREN = "Remove objects with few children than:";
+    private static final String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
+    private static final String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
+    private static final String[] FILTER_METHODS = new String[]{MISSING_MEASUREMENTS,NO_PARENT,MIN_NUMBER_OF_CHILDREN,MEASUREMENTS_SMALLER_THAN,MEASUREMENTS_LARGER_THAN};
 
     @Override
     public String getTitle() {
@@ -72,7 +74,7 @@ public class FilterObjects extends HCModule {
 
         } else if (method.equals(MIN_NUMBER_OF_CHILDREN)) {
             String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-            int minChildN = parameters.getValue(MIN_CHILD_N);
+            double minChildN = parameters.getValue(REFERENCE_VALUE);
 
             Iterator<HCObject> iterator = inputObjects.values().iterator();
             while (iterator.hasNext()) {
@@ -94,6 +96,37 @@ public class FilterObjects extends HCModule {
 
                 }
             }
+
+        } else if (method.equals(MEASUREMENTS_SMALLER_THAN)) {
+            String measurement = parameters.getValue(MEASUREMENT);
+            double referenceValue = parameters.getValue(REFERENCE_VALUE);
+
+            Iterator<HCObject> iterator = inputObjects.values().iterator();
+            while (iterator.hasNext()) {
+                HCObject inputObject = iterator.next();
+
+                // Removing the object if it has no children
+                if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
+                    inputObject.removeRelationships();
+                    iterator.remove();
+
+                }
+            }
+        } else if (method.equals(MEASUREMENTS_LARGER_THAN)) {
+            String measurement = parameters.getValue(MEASUREMENT);
+            double referenceValue = parameters.getValue(REFERENCE_VALUE);
+
+            Iterator<HCObject> iterator = inputObjects.values().iterator();
+            while (iterator.hasNext()) {
+                HCObject inputObject = iterator.next();
+
+                // Removing the object if it has no children
+                if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
+                    inputObject.removeRelationships();
+                    iterator.remove();
+
+                }
+            }
         }
 
         if (verbose) System.out.println("["+moduleName+"] Complete");
@@ -107,7 +140,7 @@ public class FilterObjects extends HCModule {
         parameters.addParameter(new HCParameter(MEASUREMENT, HCParameter.MEASUREMENT,null,null));
         parameters.addParameter(new HCParameter(PARENT_OBJECT,HCParameter.PARENT_OBJECTS,null,null));
         parameters.addParameter(new HCParameter(CHILD_OBJECTS,HCParameter.CHILD_OBJECTS,null,null));
-        parameters.addParameter(new HCParameter(MIN_CHILD_N,HCParameter.INTEGER,1));
+        parameters.addParameter(new HCParameter(REFERENCE_VALUE,HCParameter.DOUBLE,1.0));
 
     }
 
@@ -132,10 +165,21 @@ public class FilterObjects extends HCModule {
 
         } else if (parameters.getValue(FILTER_METHOD).equals(MIN_NUMBER_OF_CHILDREN)) {
             returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
-            returnedParameters.addParameter(parameters.getParameter(MIN_CHILD_N));
+            returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueRange(CHILD_OBJECTS,inputObjectsName);
+
+        } else if (parameters.getValue(FILTER_METHOD).equals(MEASUREMENTS_SMALLER_THAN) |
+                parameters.getValue(FILTER_METHOD).equals(MEASUREMENTS_LARGER_THAN)) {
+
+            returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
+            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
+
+            if (parameters.getValue(INPUT_OBJECTS) != null) {
+                parameters.updateValueRange(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
+
+            }
 
         }
 

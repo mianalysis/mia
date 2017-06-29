@@ -113,6 +113,7 @@ class ComponentFactory {
             ((ChoiceArrayParameter) parameterControl).addActionListener(actionListener);
 
             parameterControl.setName("ChoiceArrayParameter");
+            ((ChoiceArrayParameter) parameterControl).setWide(true);
 
         } else if (parameter.getType() == HCParameter.MEASUREMENT) {
             HCMeasurementCollection measurements = modules.getMeasurements(module);
@@ -126,8 +127,10 @@ class ComponentFactory {
             if (parameter.getValueSource() != null) {
                 parameter.setValue(((ChoiceArrayParameter) parameterControl).getSelectedItem());
             }
+
             ((ChoiceArrayParameter) parameterControl).addActionListener(actionListener);
             parameterControl.setName("ChoiceArrayParameter");
+            ((ChoiceArrayParameter) parameterControl).setWide(true);
 
         } else if (parameter.getType() == HCParameter.CHILD_OBJECTS) {
             HCRelationshipCollection relationships = modules.getRelationships(module);
@@ -142,6 +145,7 @@ class ComponentFactory {
             }
             ((ImageObjectInputParameter) parameterControl).addActionListener(actionListener);
             parameterControl.setName("InputParameter");
+            ((ImageObjectInputParameter) parameterControl).setWide(true);
 
         } else if (parameter.getType() == HCParameter.PARENT_OBJECTS) {
             HCRelationshipCollection relationships = modules.getRelationships(module);
@@ -156,6 +160,7 @@ class ComponentFactory {
             }
             ((ImageObjectInputParameter) parameterControl).addActionListener(actionListener);
             parameterControl.setName("InputParameter");
+            ((ImageObjectInputParameter) parameterControl).setWide(true);
 
         }
 

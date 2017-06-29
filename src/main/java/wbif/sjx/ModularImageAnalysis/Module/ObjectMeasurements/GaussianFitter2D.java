@@ -1,7 +1,6 @@
 // TODO: Show original and fit PSFs - maybe as a mosaic - to demonstrate the process is working correctly
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;

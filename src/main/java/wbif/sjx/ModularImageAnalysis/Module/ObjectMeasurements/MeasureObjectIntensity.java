@@ -48,15 +48,13 @@ public class MeasureObjectIntensity extends HCModule {
             // Getting pixel coordinates
             ArrayList<Integer> x = object.getCoordinates(HCObject.X);
             ArrayList<Integer> y = object.getCoordinates(HCObject.Y);
-            ArrayList<Integer> c = object.getCoordinates(HCObject.C);
             ArrayList<Integer> z = object.getCoordinates(HCObject.Z);
-            ArrayList<Integer> t = object.getCoordinates(HCObject.T);
+            int cPos = object.getCoordinates(HCObject.C);
+            int tPos = object.getCoordinates(HCObject.T);
 
             // Running through all pixels in this object and adding the intensity to the MultiCumStat object
             for (int i=0;i<x.size();i++) {
-                int cPos = c==null ? 0 : c.get(i);
                 int zPos = z==null ? 0 : z.get(i);
-                int tPos = t==null ? 0 : t.get(i);
 
                 ipl.setPosition(cPos+1,zPos+1,tPos+1);
                 cs.addMeasure(ipl.getProcessor().getPixelValue(x.get(i),y.get(i)));
@@ -82,8 +80,8 @@ public class MeasureObjectIntensity extends HCModule {
 
         }
 
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
+        if (verbose) System.out.println("["+moduleName+"] Complete");
     }
 
     @Override

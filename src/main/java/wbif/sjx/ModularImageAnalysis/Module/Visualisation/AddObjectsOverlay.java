@@ -5,6 +5,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 import ij.ImagePlus;
 import ij.gui.OvalRoi;
 import ij.gui.Overlay;
+import ij.gui.PointRoi;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
@@ -163,7 +164,8 @@ public class AddObjectsOverlay extends HCModule {
             int t = ((int) object.getCoordinates(HCObject.T)) + 1;
 
             // Adding circles where the object centroids are
-            OvalRoi roi = new OvalRoi(xMean,yMean,1,1);
+            PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
+            roi.setPointType(3);
             if (ipl.isHyperStack()) {
                 roi.setPosition(c, z, t);
             } else {
@@ -171,7 +173,7 @@ public class AddObjectsOverlay extends HCModule {
                 roi.setPosition(pos);
             }
             roi.setStrokeColor(colour);
-            ovl.add(roi);
+            ovl.addElement(roi);
 
             if (showID) {
                 // Adding text label
@@ -188,7 +190,7 @@ public class AddObjectsOverlay extends HCModule {
                     text.setPosition(Math.max(Math.max(c, z), t));
                 }
                 text.setStrokeColor(colour);
-                ovl.add(text);
+                ovl.addElement(text);
 
             }
         }

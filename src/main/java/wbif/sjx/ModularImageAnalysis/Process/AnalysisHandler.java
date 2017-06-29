@@ -189,6 +189,8 @@ public class AnalysisHandler {
             batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"dv"}));
             batchProcessor.runAnalysisOnStructure(analysis,exporter);
 
+            Runtime.getRuntime().gc();
+
             return null;
 
         } else if (inputFile.isFile()) { // Single file mode

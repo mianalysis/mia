@@ -8,7 +8,7 @@ import javax.swing.*;
 /**
  * Created by sc13967 on 22/05/2017.
  */
-public class ChoiceArrayParameter extends JComboBox<String> {
+public class ChoiceArrayParameter extends WiderDropDownCombo {
     private HCModule module;
     private HCParameter parameter;
 
