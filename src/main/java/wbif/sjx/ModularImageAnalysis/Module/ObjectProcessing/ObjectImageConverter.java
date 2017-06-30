@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by sc13967 on 04/05/2017.
@@ -111,8 +112,8 @@ public class ObjectImageConverter extends HCModule {
             ArrayList<Integer> x = object.getCoordinates(HCObject.X);
             ArrayList<Integer> y = object.getCoordinates(HCObject.Y);
             ArrayList<Integer> z = object.getCoordinates(HCObject.Z);
-            Integer c = object.getCoordinates(HCObject.C);
-            Integer t = object.getCoordinates(HCObject.T);
+            Integer cPos = object.getCoordinates(HCObject.C);
+            Integer tPos = object.getCoordinates(HCObject.T);
 
             double valDouble = 1;
             int valInt = 1;
@@ -130,6 +131,7 @@ public class ObjectImageConverter extends HCModule {
                     break;
 
                 case ID:
+                    System.out.println(object.getID());
                     valInt = object.getID();
                     break;
 
@@ -147,8 +149,6 @@ public class ObjectImageConverter extends HCModule {
 
             for (int i=0;i<x.size();i++) {
                 int zPos = z==null ? 0 : z.get(i);
-                int cPos = c==null ? 0 : c;
-                int tPos = t==null ? 0 : t;
 
                 ipl.setPosition(cPos+1,zPos+1,tPos+1);
 
@@ -177,21 +177,36 @@ public class ObjectImageConverter extends HCModule {
 
         int h = ipl.getHeight();
         int w = ipl.getWidth();
-        int d = ipl.getNSlices();
+        int nSlices = ipl.getNSlices();
+        int nFrames = ipl.getNFrames();
+        int nChannels = ipl.getNChannels();
 
-        for (int z=0;z<=d;z++) {
-            ipl.setSlice(z+1);
-            for (int x=0;x<w;x++) {
-                for (int y=0;y<h;y++) {
-                    int ID = (int) ipr.getPixelValue(x,y); //Pixel value
+        for (int c=0;c<nChannels;c++) {
+            for (int t = 0; t < nFrames; t++) {
+                // HashMap linking the ID numbers in the present frame to those used to store the object (this means
+                // each frame instance has different ID numbers)
+                HashMap<Integer,Integer> IDlink = new HashMap<>();
 
-                    if (ID != 0) {
-                        outputObjects.computeIfAbsent(ID, k -> new HCObject(outputObjectsName,ID));
+                for (int z = 0; z < nSlices; z++) {
+                    ipl.setPosition(c+1,z+1,t+1);
+                    for (int x = 0; x < w; x++) {
+                        for (int y = 0; y < h; y++) {
+                            int imageID = (int) ipr.getPixelValue(x, y); //Pixel value
 
-                        outputObjects.get(ID).addCoordinate(HCObject.X, x);
-                        outputObjects.get(ID).addCoordinate(HCObject.Y, y);
-                        outputObjects.get(ID).addCoordinate(HCObject.Z, z);
+                            if (imageID != 0) {
+                                IDlink.computeIfAbsent(imageID, k -> outputObjects.getNextID());
+                                int outID = IDlink.get(imageID);
 
+                                outputObjects.computeIfAbsent(outID, k -> new HCObject(outputObjectsName, outID));
+
+                                outputObjects.get(outID).addCoordinate(HCObject.X, x);
+                                outputObjects.get(outID).addCoordinate(HCObject.Y, y);
+                                outputObjects.get(outID).addCoordinate(HCObject.Z, z);
+                                outputObjects.get(outID).addCoordinate(HCObject.C, c);
+                                outputObjects.get(outID).addCoordinate(HCObject.T, t);
+
+                            }
+                        }
                     }
                 }
             }

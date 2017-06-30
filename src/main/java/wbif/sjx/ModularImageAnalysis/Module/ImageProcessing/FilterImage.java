@@ -5,6 +5,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.Filters3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Filters.DoG;
 
 /**
  * Created by sc13967 on 30/05/2017.
@@ -19,7 +20,8 @@ public class FilterImage extends HCModule {
     public static final String SHOW_IMAGE = "Show image";
 
     private static final String MEDIAN3D = "Median 3D";
-    private static final String[] FILTER_MODES = new String[]{MEDIAN3D};
+    private static final String DOG2D = "Difference of Gaussian 2D";
+    private static final String[] FILTER_MODES = new String[]{DOG2D,MEDIAN3D};
 
     @Override
     public String getTitle() {
@@ -28,7 +30,7 @@ public class FilterImage extends HCModule {
 
     @Override
     public String getHelp() {
-        return "INCOMPLETE";
+        return "+++INCOMPLETE+++";
     }
 
     @Override
@@ -58,6 +60,10 @@ public class FilterImage extends HCModule {
         if (filterMode.equals(MEDIAN3D)) {
             if (verbose) System.out.println("[" + moduleName + "] Applying 3D median filter (radius = " + filterRadius + " px)");
             inputImagePlus.setStack(Filters3D.filter(inputImagePlus.getImageStack(), Filters3D.MEDIAN, (float) filterRadius, (float) filterRadius, (float) filterRadius));
+
+        } else if (filterMode.equals(DOG2D)) {
+            if (verbose) System.out.println("[" + moduleName + "] Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
+            DoG.run(inputImagePlus,filterRadius,true);
 
         }
 
