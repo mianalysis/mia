@@ -40,6 +40,30 @@ public class ObjectImageConverter extends HCModule {
     public static HCImage convertObjectsToImage(HCObjectSet objects, String outputImageName, HCImage templateImage, String colourMode, String colourSource) {
         ImagePlus ipl;
 
+        int bitDepth = 8;
+        switch (colourMode){
+            case SINGLE_COLOUR:
+                bitDepth = 8;
+                break;
+
+            case RANDOM_COLOUR:
+                bitDepth = 8;
+                break;
+
+            case MEASUREMENT_VALUE:
+                bitDepth = 32;
+                break;
+
+            case ID:
+                bitDepth = 16;
+                break;
+
+            case PARENT_ID:
+                bitDepth = 16;
+                break;
+
+        }
+
         if (templateImage == null) {
             // Getting range of object pixels
             int[][] coordinateRange = new int[5][2];
@@ -74,12 +98,12 @@ public class ObjectImageConverter extends HCModule {
             // Creating a new image
             ipl = IJ.createHyperStack("Objects", coordinateRange[HCObject.X][1] + 1,
                     coordinateRange[HCObject.Y][1] + 1, coordinateRange[HCObject.C][1] + 1,
-                    coordinateRange[HCObject.Z][1] + 1, coordinateRange[HCObject.T][1] + 1, 32);
+                    coordinateRange[HCObject.Z][1] + 1, coordinateRange[HCObject.T][1] + 1,bitDepth);
 
         } else {
             ImagePlus templateIpl = templateImage.getImagePlus();
             ipl = IJ.createHyperStack("Objects",templateIpl.getWidth(),templateIpl.getHeight(),
-                    templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),32);
+                    templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
         }
 
         // Labelling pixels in image
@@ -90,26 +114,33 @@ public class ObjectImageConverter extends HCModule {
             Integer c = object.getCoordinates(HCObject.C);
             Integer t = object.getCoordinates(HCObject.T);
 
-            double val = 1;
+            double valDouble = 1;
+            int valInt = 1;
             switch (colourMode){
                 case SINGLE_COLOUR:
-                    val = 1;
+                    valInt = 1;
                     break;
 
                 case RANDOM_COLOUR:
-                    val = Math.random();
+                    valInt = (int) Math.round(Math.random()*255);
                     break;
 
                 case MEASUREMENT_VALUE:
-                    val = object.getMeasurement(colourSource).getValue();
+                    valDouble = object.getMeasurement(colourSource).getValue();
                     break;
 
                 case ID:
-                    val = object.getID();
+                    valInt = object.getID();
                     break;
 
                 case PARENT_ID:
-                    val = object.getParent(colourSource).getID();
+                    // If there is no assigned parent, set the intensity to max integer (better than 1)
+                    if (object.getParent(colourSource) == null) {
+                        valInt = Integer.MAX_VALUE;
+                        break;
+                    }
+
+                    valInt = object.getParent(colourSource).getID();
                     break;
 
             }
@@ -120,8 +151,14 @@ public class ObjectImageConverter extends HCModule {
                 int tPos = t==null ? 0 : t;
 
                 ipl.setPosition(cPos+1,zPos+1,tPos+1);
-                ipl.getProcessor().putPixelValue(x.get(i), y.get(i), val);
 
+                if (colourMode.equals(SINGLE_COLOUR) | colourMode.equals(RANDOM_COLOUR) | colourMode.equals(ID) | colourMode.equals(PARENT_ID)) {
+                    ipl.getProcessor().putPixel(x.get(i), y.get(i), valInt);
+
+                } else if (colourMode.equals(MEASUREMENT_VALUE)) {
+                    ipl.getProcessor().putPixelValue(x.get(i), y.get(i), valDouble);
+
+                }
             }
         }
 

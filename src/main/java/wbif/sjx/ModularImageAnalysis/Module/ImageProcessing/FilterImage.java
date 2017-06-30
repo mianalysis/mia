@@ -79,8 +79,6 @@ public class FilterImage extends HCModule {
             }
         }
 
-
-
         if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }

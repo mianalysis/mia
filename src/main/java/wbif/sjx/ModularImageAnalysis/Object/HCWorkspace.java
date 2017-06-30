@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import java.io.File;
+import java.lang.instrument.Instrumentation;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -29,6 +30,10 @@ public class HCWorkspace {
 
     public void removeObject(String name) {
         objects.remove(name);
+
+        // Running garbage collector
+        Runtime.getRuntime().gc();
+
     }
 
     public void addImage(HCImage image) {
@@ -37,6 +42,10 @@ public class HCWorkspace {
 
     public void removeImage(String name) {
         images.remove(name);
+
+        // Running garbage collector
+        Runtime.getRuntime().gc();
+
     }
 
     /**

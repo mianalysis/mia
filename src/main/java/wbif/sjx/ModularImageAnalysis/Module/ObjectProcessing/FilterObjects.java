@@ -112,7 +112,8 @@ public class FilterObjects extends HCModule {
 
                 }
             }
-        } else if (method.equals(MEASUREMENTS_LARGER_THAN)) {
+        }
+        else if (method.equals(MEASUREMENTS_SMALLER_THAN)) {
             String measurement = parameters.getValue(MEASUREMENT);
             double referenceValue = parameters.getValue(REFERENCE_VALUE);
 
@@ -121,7 +122,7 @@ public class FilterObjects extends HCModule {
                 HCObject inputObject = iterator.next();
 
                 // Removing the object if it has no children
-                if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
+                if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
                     inputObject.removeRelationships();
                     iterator.remove();
 

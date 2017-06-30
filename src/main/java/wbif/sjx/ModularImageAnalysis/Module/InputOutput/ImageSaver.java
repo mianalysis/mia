@@ -53,10 +53,11 @@ public class ImageSaver extends HCModule {
             // Flattening overlay onto image for saving
             if (inputImagePlus.getNSlices() > 1) {
                 IntensityMinMax.run(inputImagePlus,true);
-                inputImagePlus.flattenStack();
+                if (inputImagePlus.getOverlay() != null) inputImagePlus.flattenStack();
+
             } else {
                 IntensityMinMax.run(inputImagePlus,false);
-                inputImagePlus.flatten();
+                if (inputImagePlus.getOverlay() != null) inputImagePlus.flatten();
             }
         }
 

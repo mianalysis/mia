@@ -126,7 +126,7 @@ public class HCObject {
 
     @Override
     public String toString() {
-        return "HCObject with " + coordinates.size() + " coordinate points";
+        return "HCObject " + name + ", ID = "+ID;
 
     }
 
@@ -232,6 +232,10 @@ public class HCObject {
         parents.put(parent.getName(), parent);
     }
 
+    public void addParent(String name, HCObject parent) {
+        parents.put(name, parent);
+    }
+
     public void removeParent(String name) {
         parents.remove(name);
 
@@ -278,7 +282,7 @@ public class HCObject {
         // Removing itself as a child from its parent
         if (parents != null) {
             for (HCObject parent:parents.values()) {
-                parent.removeChild(this);
+                if (parent != null) parent.removeChild(this);
 
             }
         }

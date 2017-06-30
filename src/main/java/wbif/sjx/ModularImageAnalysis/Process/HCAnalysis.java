@@ -70,6 +70,11 @@ public abstract class HCAnalysis implements Serializable {
                 return false;
 
             }
+
+            // Running garbage collector
+            Runtime.getRuntime().gc();
+            System.out.println((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())+ " used");
+
         }
 
         if (verbose) System.out.println("Complete");

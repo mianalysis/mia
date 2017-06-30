@@ -120,6 +120,7 @@ public class RelateObjects extends HCModule {
                 HCMeasurement absDistanceFromEdge = new HCMeasurement(DIST_EDGE_PX_MEAS);
                 absDistanceFromEdge.setValue(Double.NaN);
                 childObject.addMeasurement(absDistanceFromEdge);
+                childObject.addParent(parentObjects.getName(),null);
 
             }
         }

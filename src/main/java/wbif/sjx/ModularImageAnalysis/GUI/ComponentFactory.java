@@ -44,13 +44,20 @@ class ComponentFactory {
 
         if (parameter.getType() == HCParameter.INPUT_IMAGE) {
             // Getting a list of available images
-            LinkedHashSet<HCParameter> images = modules.getParametersMatchingType(HCParameter.OUTPUT_IMAGE,module);
+            LinkedHashSet<HCParameter> outputImages = modules.getParametersMatchingType(HCParameter.OUTPUT_IMAGE,module);
+            LinkedHashSet<HCParameter> removedImages = modules.getParametersMatchingType(HCParameter.REMOVED_IMAGE,module);
 
+            // Adding any output images to the list
             LinkedHashSet<String> names = new LinkedHashSet<>();
             names.add(null);
-            for (HCParameter image : images) {
+            for (HCParameter image : outputImages) {
                 names.add(image.getValue());
 
+            }
+
+            // Removing any images which have since been removed from the workspace
+            for (HCParameter image : removedImages) {
+                names.remove(image.getValue());
             }
 
             parameterControl = new ImageObjectInputParameter(module, parameter);
@@ -74,6 +81,30 @@ class ComponentFactory {
             for (String name:names) ((ImageObjectInputParameter) parameterControl).addItem(name);
             ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
 
+            parameterControl.addFocusListener(focusListener);
+            parameterControl.setName("InputParameter");
+
+        } else if (parameter.getType() == HCParameter.REMOVED_IMAGE) {
+            // Getting a list of available images
+            LinkedHashSet<HCParameter> outputImages = modules.getParametersMatchingType(HCParameter.OUTPUT_IMAGE,module);
+            LinkedHashSet<HCParameter> removedImages = modules.getParametersMatchingType(HCParameter.REMOVED_IMAGE,module);
+
+            // Adding any output images to the list
+            LinkedHashSet<String> names = new LinkedHashSet<>();
+            names.add(null);
+            for (HCParameter image : outputImages) {
+                names.add(image.getValue());
+
+            }
+
+            // Removing any images which have since been removed from the workspace
+            for (HCParameter image : removedImages) {
+                names.remove(image.getValue());
+            }
+
+            parameterControl = new ImageObjectInputParameter(module, parameter);
+            for (String name:names) ((ImageObjectInputParameter) parameterControl).addItem(name);
+            ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
             parameterControl.addFocusListener(focusListener);
             parameterControl.setName("InputParameter");
 

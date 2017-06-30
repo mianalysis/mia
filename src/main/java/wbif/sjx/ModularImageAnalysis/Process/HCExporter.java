@@ -518,16 +518,18 @@ public class HCExporter {
                                 objectIDValueCell.setCellValue(object.getID());
 
                                 // Adding relationships to the columns specified in relationshipNames
-                                for (int column : relationshipNames.get(objectName).keySet()) {
-                                    Cell parentValueCell = objectValueRow.createCell(column);
-                                    String parentName = relationshipNames.get(objectName).get(column);
-                                    HCObject parent = object.getParent(parentName);
-                                    if (parent != null) {
-                                        parentValueCell.setCellValue(parent.getID());
-                                    } else {
-                                        parentValueCell.setCellValue("");
+                                if (relationshipNames.get(objectName) != null) {
+                                    for (int column : relationshipNames.get(objectName).keySet()) {
+                                        Cell parentValueCell = objectValueRow.createCell(column);
+                                        String parentName = relationshipNames.get(objectName).get(column);
+                                        HCObject parent = object.getParent(parentName);
+                                        if (parent != null) {
+                                            parentValueCell.setCellValue(parent.getID());
+                                        } else {
+                                            parentValueCell.setCellValue("");
+                                        }
+                                        col++;
                                     }
-                                    col++;
                                 }
 
                                 for (int dim : object.getPositions().keySet()) {

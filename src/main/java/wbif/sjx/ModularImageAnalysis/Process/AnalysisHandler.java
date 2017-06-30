@@ -110,6 +110,10 @@ public class AnalysisHandler {
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
+                                case HCParameter.REMOVED_IMAGE:
+                                    module.updateParameterValue(parameterName, parameterValue);
+                                    break;
+
                                 case HCParameter.INTEGER:
                                     module.updateParameterValue(parameterName, Integer.parseInt(parameterValue));
                                     break;
