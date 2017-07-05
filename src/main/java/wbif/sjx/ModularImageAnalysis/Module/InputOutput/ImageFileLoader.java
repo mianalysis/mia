@@ -68,6 +68,7 @@ public class ImageFileLoader extends HCModule {
 
             System.setOut(fakeStream);
             ipl = Opener.openUsingBioFormats(filePath);
+            System.out.println(ipl.getNChannels());
             System.setOut(realStream);
 
         } else {

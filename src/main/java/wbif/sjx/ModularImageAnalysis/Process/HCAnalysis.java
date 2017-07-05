@@ -49,6 +49,7 @@ public abstract class HCAnalysis implements Serializable {
      */
     public boolean execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
         if (verbose) System.out.println("Starting analysis");
+        System.out.println("Processing file: " + workspace.getMetadata().getFile().getName());
 
         // Check that all available parameters have been set
         for (HCModule module:modules) {
@@ -73,9 +74,11 @@ public abstract class HCAnalysis implements Serializable {
 
             // Running garbage collector
             Runtime.getRuntime().gc();
-            System.out.println((Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())+ " used");
 
         }
+
+        // Clearing images from the workspace to prevent memory leak
+        workspace.clearAllImages(true);
 
         if (verbose) System.out.println("Complete");
 

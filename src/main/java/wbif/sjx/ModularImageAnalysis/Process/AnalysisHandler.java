@@ -12,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
+import wbif.sjx.common.FileConditions.NameContainsString;
 
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -190,7 +191,7 @@ public class AnalysisHandler {
         if (inputFile.isDirectory()) { // Batch mode
             HCExporter exporter = new HCExporter(inputFile.getAbsolutePath()+"\\output",HCExporter.XLSX_EXPORT);
             BatchProcessor batchProcessor = new BatchProcessor(inputFile);
-            batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"dv"}));
+            batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"tif"}));
             batchProcessor.runAnalysisOnStructure(analysis,exporter);
 
             Runtime.getRuntime().gc();

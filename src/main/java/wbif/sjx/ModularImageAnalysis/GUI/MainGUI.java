@@ -8,6 +8,7 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
+import ij.io.Opener;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
 import org.xml.sax.SAXException;
