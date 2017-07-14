@@ -30,7 +30,7 @@ public class BioformatsImageLoader extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -54,7 +54,7 @@ public class BioformatsImageLoader extends HCModule {
         if (ipl != null) {
             // Adding image to workspace
             if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
-            workspace.addImage(new HCImage(outputImageName, ipl));
+            workspace.addImage(new Image(outputImageName, ipl));
 
             // (If selected) displaying the loaded image
             boolean showImage = parameters.getValue(SHOW_IMAGE);
@@ -75,23 +75,23 @@ public class BioformatsImageLoader extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE, HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(SHOW_IMAGE, HCParameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

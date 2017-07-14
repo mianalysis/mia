@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.HCParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,19 +28,19 @@ public class ProjectObjects extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
-        HCObjectSet outputObjects = new HCObjectSet(outputObjectsName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjSet outputObjects = new ObjSet(outputObjectsName);
 
-        for (HCObject inputObject:inputObjects.values()) {
-            ArrayList<Integer> x = inputObject.getCoordinates().get(HCObject.X);
-            ArrayList<Integer> y = inputObject.getCoordinates().get(HCObject.Y);
+        for (Obj inputObject:inputObjects.values()) {
+            ArrayList<Integer> x = inputObject.getCoordinates().get(Obj.X);
+            ArrayList<Integer> y = inputObject.getCoordinates().get(Obj.Y);
 
             // All coordinate pairs will be stored in a HashMap, which will prevent coordinate duplication.  The keys will
             // correspond to the 2D index, for which we need to know the maximum x coordinate
@@ -59,16 +59,16 @@ public class ProjectObjects extends HCModule {
             }
 
             // Creating the new HCObject and assigning the parent-child relationship
-            HCObject outputObject = new HCObject(outputObjectsName,inputObject.getID());
+            Obj outputObject = new Obj(outputObjectsName,inputObject.getID());
             outputObject.addParent(inputObject);
             inputObject.addChild(outputObject);
 
             // Adding coordinates to the projected object
             for (Double key : projCoords.keySet()) {
                 int i = projCoords.get(key);
-                outputObject.addCoordinate(HCObject.X,x.get(i));
-                outputObject.addCoordinate(HCObject.Y,y.get(i));
-                outputObject.addCoordinate(HCObject.Z,0);
+                outputObject.addCoordinate(Obj.X,x.get(i));
+                outputObject.addCoordinate(Obj.Y,y.get(i));
+                outputObject.addCoordinate(Obj.Z,0);
             }
 
             // Copying additional dimensions from inputObject
@@ -78,9 +78,9 @@ public class ProjectObjects extends HCModule {
             }
 
             // Inheriting calibration from parent
-            outputObject.addCalibration(HCObject.X,outputObject.getParent(inputObjectsName).getCalibration(HCObject.X));
-            outputObject.addCalibration(HCObject.Y,outputObject.getParent(inputObjectsName).getCalibration(HCObject.Y));
-            outputObject.addCalibration(HCObject.Z,outputObject.getParent(inputObjectsName).getCalibration(HCObject.Z));
+            outputObject.addCalibration(Obj.X,outputObject.getParent(inputObjectsName).getCalibration(Obj.X));
+            outputObject.addCalibration(Obj.Y,outputObject.getParent(inputObjectsName).getCalibration(Obj.Y));
+            outputObject.addCalibration(Obj.Z,outputObject.getParent(inputObjectsName).getCalibration(Obj.Z));
             outputObject.setCalibratedUnits(outputObject.getParent(inputObjectsName).getCalibratedUnits());
 
             // Adding current object to object set
@@ -96,23 +96,23 @@ public class ProjectObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS, HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(OUTPUT_OBJECTS, HCParameter.OUTPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
         relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
 
     }

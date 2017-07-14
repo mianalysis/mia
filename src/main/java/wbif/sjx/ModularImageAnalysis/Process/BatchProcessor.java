@@ -35,11 +35,11 @@ public class BatchProcessor extends FileCrawler {
 
     // PUBLIC METHODS
 
-    public HCWorkspaceCollection runAnalysisOnStructure(HCAnalysis analysis, HCExporter exporter) throws IOException, GenericMIAException {
+    public WorkspaceCollection runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, GenericMIAException {
         int num_valid_files = getNumberOfValidFilesInStructure();
         resetIterator();
 
-        HCWorkspaceCollection workspaces = new HCWorkspaceCollection();
+        WorkspaceCollection workspaces = new WorkspaceCollection();
 
         folder = rootFolder;
         File next = getNextValidFileInStructure();
@@ -52,7 +52,7 @@ public class BatchProcessor extends FileCrawler {
                 ExecutorService pool = Executors.newFixedThreadPool(nThreads);
 
                 while (next != null) {
-                    HCWorkspace workspace = workspaces.getNewWorkspace(next);
+                    Workspace workspace = workspaces.getNewWorkspace(next);
                     Runnable task = () -> {
                         try {
                             analysis.execute(workspace, verbose);
@@ -79,7 +79,7 @@ public class BatchProcessor extends FileCrawler {
                     System.out.println("Processing file: " + next.getName() + " (file " + iter++ + " of " + num_valid_files + ")");
 
                     // Running the analysis
-                    HCWorkspace workspace = workspaces.getNewWorkspace(next);
+                    Workspace workspace = workspaces.getNewWorkspace(next);
                     analysis.execute(workspace, verbose);
 
                     // Clearing images from the workspace to prevent memory leak

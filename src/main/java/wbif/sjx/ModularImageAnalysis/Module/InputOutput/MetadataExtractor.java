@@ -1,8 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import wbif.sjx.ModularImageAnalysis.Extractor.Extractor;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.MetadataExtractors.Extractor;
+import wbif.sjx.common.Object.HCMetadata;
 
 
 /**
@@ -24,7 +25,7 @@ public class MetadataExtractor extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -48,23 +49,23 @@ public class MetadataExtractor extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(FILENAME_EXTRACTOR, HCParameter.OBJECT,null));
-        parameters.addParameter(new HCParameter(FOLDERNAME_EXTRACTOR, HCParameter.OBJECT,null));
+        parameters.addParameter(new Parameter(FILENAME_EXTRACTOR, Parameter.OBJECT,null));
+        parameters.addParameter(new Parameter(FOLDERNAME_EXTRACTOR, Parameter.OBJECT,null));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

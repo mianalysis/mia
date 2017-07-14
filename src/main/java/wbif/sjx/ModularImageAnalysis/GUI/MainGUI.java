@@ -5,10 +5,7 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 
 import ij.IJ;
 import ij.ImageJ;
-import ij.ImagePlus;
-import ij.gui.Overlay;
-import ij.gui.PointRoi;
-import ij.io.Opener;
+import ij.plugin.PlugIn;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
 import org.xml.sax.SAXException;
@@ -29,7 +26,7 @@ import java.util.*;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class MainGUI implements ActionListener, FocusListener, MouseListener {
+public class MainGUI implements PlugIn, ActionListener, FocusListener, MouseListener {
     private static final String addModuleText = "+";
     private static final String removeModuleText = "-";
     private static final String moveModuleUpText = "▲";
@@ -44,7 +41,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private int elementHeight = 30;
 
     private ComponentFactory componentFactory;
-    private HCWorkspace testWorkspace = new HCWorkspace(1,null);
+    private Workspace testWorkspace = new Workspace(1,null);
     private HCModule activeModule = null;
     private JFrame frame = new JFrame();
     private JMenuBar menuBar = new JMenuBar();
@@ -62,7 +59,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private boolean basicGUI = true;
 
     private GUIAnalysis analysis = new GUIAnalysis();
-    private HCModuleCollection modules = analysis.modules;
+    private ModuleCollection modules = analysis.modules;
 
     public static void main(String[] args) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
         new ImageJ();
@@ -184,12 +181,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         frame.add(basicModulesScrollPane,c);
 
         // Initialising the status panel
-//        initialiseStatusPanel(500);
-//        c.gridx = 0;
-//        c.gridy++;
-//        c.gridwidth = 1;
-//        c.insets = new Insets(5,5,5,5);
-//        frame.add(statusPanel,c);
+        initialiseStatusPanel(500);
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 1;
+        c.insets = new Insets(5,5,5,5);
+        frame.add(statusPanel,c);
 
         frame.pack();
         frame.revalidate();
@@ -225,12 +222,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         frame.add(paramsScrollPane,c);
 
         // Initialising the status panel
-//        initialiseStatusPanel(1090);
-//        c.gridx = 0;
-//        c.gridy++;
-//        c.gridwidth = 3;
-//        c.insets = new Insets(0,5,5,5);
-//        frame.add(statusPanel,c);
+        initialiseStatusPanel(1090);
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 3;
+        c.insets = new Insets(0,5,5,5);
+        frame.add(statusPanel,c);
 
         frame.pack();
         frame.revalidate();
@@ -559,9 +556,9 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
         // If the active module hasn't got parameters enabled, skip it
         if (activeModule.getActiveParameters() != null) {
-            Iterator<HCParameter> iterator = activeModule.getActiveParameters().values().iterator();
+            Iterator<Parameter> iterator = activeModule.getActiveParameters().values().iterator();
             while (iterator.hasNext()) {
-                HCParameter parameter = iterator.next();
+                Parameter parameter = iterator.next();
 
                 c.gridx = 0;
                 JPanel paramPanel = componentFactory.createParameterControl(parameter,modules,activeModule,635);
@@ -638,7 +635,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
             // Only displaying the module title if it has at least one visible parameter
             boolean hasVisibleParameters = false;
-            for (HCParameter parameter:module.getActiveParameters().values()) {
+            for (Parameter parameter:module.getActiveParameters().values()) {
                 if (parameter.isVisible()) hasVisibleParameters = true;
             }
             if (!hasVisibleParameters) continue;
@@ -649,7 +646,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             c.anchor = GridBagConstraints.FIRST_LINE_START;
             basicModulesPanel.add(titlePanel,c);
 
-            for (HCParameter parameter:module.getActiveParameters().values()) {
+            for (Parameter parameter:module.getActiveParameters().values()) {
                 if (parameter.isVisible()) {
                     JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, module, 500-80);
 
@@ -834,7 +831,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             fileDialog.setMultipleMode(false);
             fileDialog.setVisible(true);
 
-            testWorkspace = new HCWorkspace(1,fileDialog.getFiles()[0]);
+            testWorkspace = new Workspace(1,fileDialog.getFiles()[0]);
 
             System.out.println("Set current file to \""+fileDialog.getFiles()[0].getName()+"\"");
 
@@ -940,7 +937,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             }
 
         } else if (componentName.equals("InputParameter")) {
-            HCParameter parameter = ((ImageObjectInputParameter) object).getParameter();
+            Parameter parameter = ((ImageObjectInputParameter) object).getParameter();
             parameter.setValue(((ImageObjectInputParameter) object).getSelectedItem());
             HCModule module = ((ImageObjectInputParameter) object).getModule();
 
@@ -954,20 +951,20 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             }
 
         } else if (componentName.equals("TextParameter")) {
-            HCParameter parameter = ((TextParameter) object).getParameter();
+            Parameter parameter = ((TextParameter) object).getParameter();
             String text = ((TextParameter) object).getText();
             HCModule module = ((TextParameter) object).getModule();
 
-            if (parameter.getType() == HCParameter.OUTPUT_IMAGE | parameter.getType() == HCParameter.OUTPUT_OBJECTS) {
+            if (parameter.getType() == Parameter.OUTPUT_IMAGE | parameter.getType() == Parameter.OUTPUT_OBJECTS) {
                 parameter.setValue(text);
 
-            } else if (parameter.getType() == HCParameter.INTEGER) {
+            } else if (parameter.getType() == Parameter.INTEGER) {
                 parameter.setValue(Integer.valueOf(text));
 
-            } else if (parameter.getType() == HCParameter.DOUBLE) {
+            } else if (parameter.getType() == Parameter.DOUBLE) {
                 parameter.setValue(Double.valueOf(text));
 
-            } else if (parameter.getType() == HCParameter.STRING) {
+            } else if (parameter.getType() == Parameter.STRING) {
                 parameter.setValue(text);
 
             }
@@ -982,7 +979,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             }
 
         } else if (componentName.equals("BooleanParameter")) {
-            HCParameter parameter = ((BooleanParameter) object).getParameter();
+            Parameter parameter = ((BooleanParameter) object).getParameter();
             HCModule module = ((BooleanParameter) object).getModule();
 
             parameter.setValue(((BooleanParameter) object).isSelected());
@@ -998,7 +995,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             }
 
         } else if (componentName.equals("FileParameter")) {
-            HCParameter parameter = ((FileParameter) object).getParameter();
+            Parameter parameter = ((FileParameter) object).getParameter();
             HCModule module = ((FileParameter) object).getModule();
 
             FileDialog fileDialog = new FileDialog(new Frame(), "Select image to load", FileDialog.LOAD);
@@ -1018,7 +1015,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             }
 
         } else if (componentName.equals("ChoiceArrayParameter")) {
-            HCParameter parameter = ((ChoiceArrayParameter) object).getParameter();
+            Parameter parameter = ((ChoiceArrayParameter) object).getParameter();
             parameter.setValue(((ChoiceArrayParameter) object).getSelectedItem());
             HCModule module = ((ChoiceArrayParameter) object).getModule();
 
@@ -1033,7 +1030,7 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
             }
 
         } else if (componentName.equals("VisibleCheck")) {
-            HCParameter parameter = ((VisibleCheck) object).getParameter();
+            Parameter parameter = ((VisibleCheck) object).getParameter();
             parameter.setVisible(((VisibleCheck) object).isSelected());
 
         }
@@ -1093,6 +1090,16 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void run(String s) {
+        try {
+            new MainGUI();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
     }
 }

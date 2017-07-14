@@ -8,7 +8,7 @@ import java.util.HashMap;
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class HCParameter implements Serializable {
+public class Parameter implements Serializable {
     /**
      * Name of Image class objects input to the module.  Used to connect images to be analysed between classes.  Input
      * images have been created by previous modules.
@@ -108,7 +108,7 @@ public class HCParameter implements Serializable {
 
     // CONSTRUCTORS
 
-    public HCParameter(String name, int type, Object value, Object valueSource) {
+    public Parameter(String name, int type, Object value, Object valueSource) {
         this.type = type;
         this.name = name;
         this.value = value;
@@ -116,7 +116,7 @@ public class HCParameter implements Serializable {
 
     }
 
-    public HCParameter(String name, int type, Object value) {
+    public Parameter(String name, int type, Object value) {
         this.type = type;
         this.name = name;
         this.value = value;

@@ -12,13 +12,13 @@ import java.io.Serializable;
  * Interface Analysis-type class, which will be extended by particular analyses
  *
  */
-public abstract class HCAnalysis implements Serializable {
-    public HCModuleCollection modules = new HCModuleCollection();
+public abstract class Analysis implements Serializable {
+    public ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
 
     // CONSTRUCTOR
 
-    public HCAnalysis() {
+    public Analysis() {
         initialise();
 
     }
@@ -36,7 +36,7 @@ public abstract class HCAnalysis implements Serializable {
      * @param workspace Workspace containing stores for images and objects
      * @return
      */
-    public boolean execute(HCWorkspace workspace) throws GenericMIAException {
+    public boolean execute(Workspace workspace) throws GenericMIAException {
         return execute(workspace,false);
 
     }
@@ -47,15 +47,15 @@ public abstract class HCAnalysis implements Serializable {
      * @param verbose Switch determining if modules should report progress to System.out
      * @return
      */
-    public boolean execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
+    public boolean execute(Workspace workspace, boolean verbose) throws GenericMIAException {
         if (verbose) System.out.println("Starting analysis");
         System.out.println("Processing file: " + workspace.getMetadata().getFile().getName());
 
         // Check that all available parameters have been set
         for (HCModule module:modules) {
-            HCParameterCollection activeParameters = module.getActiveParameters();
+            ParameterCollection activeParameters = module.getActiveParameters();
 
-            for (HCParameter activeParameter:activeParameters.values()) {
+            for (Parameter activeParameter:activeParameters.values()) {
                 if (activeParameter.getValue() == null) throw new GenericMIAException(
                         "Module \""+module.getTitle()+"\" parameter \""+activeParameter.getName()+"\" not set");
             }
@@ -86,7 +86,7 @@ public abstract class HCAnalysis implements Serializable {
 
     }
 
-    public HCModuleCollection getModules() {
+    public ModuleCollection getModules() {
         return modules;
 
     }

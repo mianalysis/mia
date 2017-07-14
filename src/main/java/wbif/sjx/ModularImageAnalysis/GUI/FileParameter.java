@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Object.HCParameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
 
@@ -10,9 +10,9 @@ import javax.swing.*;
  */
 public class FileParameter extends JButton {
     private HCModule module;
-    private HCParameter parameter;
+    private Parameter parameter;
 
-    public FileParameter(HCModule module, HCParameter parameter) {
+    public FileParameter(HCModule module, Parameter parameter) {
         this.module = module;
         this.parameter = parameter;
         setFocusPainted(false);
@@ -23,7 +23,7 @@ public class FileParameter extends JButton {
         return module;
     }
 
-    public HCParameter getParameter() {
+    public Parameter getParameter() {
         return parameter;
     }
 }

@@ -34,13 +34,13 @@ public class ImageSaver extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -80,17 +80,17 @@ public class ImageSaver extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(SAVE_LOCATION,HCParameter.CHOICE_ARRAY,SAVE_LOCATIONS[0],SAVE_LOCATIONS));
-        parameters.addParameter(new HCParameter(SAVE_FILE_PATH,HCParameter.FILE_PATH,null));
-        parameters.addParameter(new HCParameter(SAVE_SUFFIX,HCParameter.STRING,""));
-        parameters.addParameter(new HCParameter(FLATTEN_OVERLAY,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SAVE_LOCATIONS[0],SAVE_LOCATIONS));
+        parameters.addParameter(new Parameter(SAVE_FILE_PATH, Parameter.FILE_PATH,null));
+        parameters.addParameter(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
+        parameters.addParameter(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParamters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParamters = new ParameterCollection();
 
         returnedParamters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParamters.addParameter(parameters.getParameter(SAVE_LOCATION));
@@ -107,12 +107,12 @@ public class ImageSaver extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

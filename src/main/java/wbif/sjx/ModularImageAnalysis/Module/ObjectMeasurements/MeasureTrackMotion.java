@@ -24,19 +24,19 @@ public class MeasureTrackMotion extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
-        HCObjectSet inputTrackObjects = workspace.getObjects().get(inputTrackObjectsName);
+        ObjSet inputTrackObjects = workspace.getObjects().get(inputTrackObjectsName);
 
         // Getting input spot objects
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS);
 
         // Converting objects to Track class object
-        for (HCObject inputTrackObject:inputTrackObjects.values()) {
+        for (Obj inputTrackObject:inputTrackObjects.values()) {
 
             // Initialising stores for coordinates
             double[] x = new double[inputTrackObject.getChildren(inputSpotObjectsName).size()];
@@ -46,11 +46,11 @@ public class MeasureTrackMotion extends HCModule {
 
             // Getting the corresponding spots for this track
             int iter = 0;
-            for (HCObject spotObject : inputTrackObject.getChildren(inputSpotObjectsName).values()) {
-                x[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(HCObject.X)).get(0);
-                y[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(HCObject.Y)).get(0);
-                z[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(HCObject.Z)).get(0);
-                f[iter] = spotObject.getCoordinates(HCObject.T);
+            for (Obj spotObject : inputTrackObject.getChildren(inputSpotObjectsName).values()) {
+                x[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(Obj.X)).get(0);
+                y[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(Obj.Y)).get(0);
+                z[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(Obj.Z)).get(0);
+                f[iter] = spotObject.getCoordinates(Obj.T);
                 iter++;
 
             }
@@ -60,37 +60,37 @@ public class MeasureTrackMotion extends HCModule {
 
             if (x.length == 0) {
                 // Adding measurements to track objects
-                HCMeasurement measurement = new HCMeasurement(HCMeasurement.DIRECTIONALITY_RATIO, Double.NaN);
+                MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.DIRECTIONALITY_RATIO, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new HCMeasurement(HCMeasurement.EUCLIDEAN_DISTANCE, Double.NaN);
+                measurement = new MIAMeasurement(MIAMeasurement.EUCLIDEAN_DISTANCE, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new HCMeasurement(HCMeasurement.TOTAL_PATH_LENGTH, Double.NaN);
+                measurement = new MIAMeasurement(MIAMeasurement.TOTAL_PATH_LENGTH, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new HCMeasurement(HCMeasurement.DURATION, Double.NaN);
+                measurement = new MIAMeasurement(MIAMeasurement.DURATION, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
             } else {
                 // Adding measurements to track objects
-                HCMeasurement measurement = new HCMeasurement(HCMeasurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
+                MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new HCMeasurement(HCMeasurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
+                measurement = new MIAMeasurement(MIAMeasurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new HCMeasurement(HCMeasurement.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
+                measurement = new MIAMeasurement(MIAMeasurement.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new HCMeasurement(HCMeasurement.DURATION, track.getDuration());
+                measurement = new MIAMeasurement(MIAMeasurement.DURATION, track.getDuration());
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
@@ -104,14 +104,14 @@ public class MeasureTrackMotion extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter( INPUT_TRACK_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter( INPUT_SPOT_OBJECTS,HCParameter.CHILD_OBJECTS,null));
+        parameters.addParameter(new Parameter( INPUT_TRACK_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter( INPUT_SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_TRACK_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
@@ -129,18 +129,18 @@ public class MeasureTrackMotion extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
         if (parameters.getValue(INPUT_TRACK_OBJECTS) != null & parameters.getValue(INPUT_SPOT_OBJECTS) != null) {
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS),HCMeasurement.DIRECTIONALITY_RATIO);
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS),HCMeasurement.EUCLIDEAN_DISTANCE);
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS),HCMeasurement.TOTAL_PATH_LENGTH);
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS),HCMeasurement.DURATION);
+            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DIRECTIONALITY_RATIO);
+            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.EUCLIDEAN_DISTANCE);
+            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.TOTAL_PATH_LENGTH);
+            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DURATION);
 
         }
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

@@ -23,7 +23,7 @@ public class ImageJImageLoader extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -33,7 +33,7 @@ public class ImageJImageLoader extends HCModule {
 
         // Adding image to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
-        HCImage outputImage = new HCImage(outputImageName, imagePlus);
+        Image outputImage = new Image(outputImageName, imagePlus);
         workspace.addImage(outputImage);
 
         if (verbose) System.out.println("["+moduleName+"] Complete");
@@ -42,22 +42,22 @@ public class ImageJImageLoader extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE, HCParameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

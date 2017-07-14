@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Object.HCParameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
 
@@ -10,9 +10,9 @@ import javax.swing.*;
  */
 public class TextParameter extends JTextField {
     private HCModule module;
-    private HCParameter parameter;
+    private Parameter parameter;
 
-    public TextParameter(HCModule module, HCParameter parameter) {
+    public TextParameter(HCModule module, Parameter parameter) {
         this.module = module;
         this.parameter = parameter;
 
@@ -22,7 +22,7 @@ public class TextParameter extends JTextField {
         return module;
     }
 
-    public HCParameter getParameter() {
+    public Parameter getParameter() {
         return parameter;
     }
 }

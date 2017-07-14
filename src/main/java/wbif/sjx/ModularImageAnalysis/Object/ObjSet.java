@@ -5,11 +5,11 @@ import java.util.LinkedHashMap;
 /**
  * Created by sc13967 on 12/05/2017.
  */
-public class HCObjectSet extends LinkedHashMap<Integer,HCObject> {
+public class ObjSet extends LinkedHashMap<Integer,Obj> {
     private String name;
     private int maxID = 0;
 
-    public HCObjectSet(String name) {
+    public ObjSet(String name) {
         this.name = name;
     }
 
@@ -17,7 +17,7 @@ public class HCObjectSet extends LinkedHashMap<Integer,HCObject> {
         return name;
     }
 
-    public void add(HCObject object) {
+    public void add(Obj object) {
         put(object.getID(),object);
 
     }

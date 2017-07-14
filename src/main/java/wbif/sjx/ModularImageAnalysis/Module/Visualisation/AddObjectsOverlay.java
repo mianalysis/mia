@@ -3,7 +3,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.ImagePlus;
-import ij.gui.OvalRoi;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
 import ij.gui.TextRoi;
@@ -12,8 +11,8 @@ import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
 import java.util.Random;
@@ -61,7 +60,7 @@ public class AddObjectsOverlay extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -84,11 +83,11 @@ public class AddObjectsOverlay extends HCModule {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
         // Duplicating the image, so the original isn't altered
@@ -111,7 +110,7 @@ public class AddObjectsOverlay extends HCModule {
         }
 
         // Running through each object, adding it to the overlay along with an ID label
-        for (HCObject object:inputObjects.values()) {
+        for (Obj object:inputObjects.values()) {
             // Default hue value in case none is assigned
             float H = 0.2f;
 
@@ -143,25 +142,25 @@ public class AddObjectsOverlay extends HCModule {
 
             double xMean; double yMean; double zMean;
             if (positionMode.equals(CENTROID)) {
-                xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.X), MeasureObjectCentroid.MEAN);
-                yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Y), MeasureObjectCentroid.MEAN);
-                zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Z), MeasureObjectCentroid.MEAN);
+                xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.X), MeasureObjectCentroid.MEAN);
+                yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Y), MeasureObjectCentroid.MEAN);
+                zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN);
 
             } else {
                 xMean = object.getMeasurement(xPosMeas).getValue();
                 yMean = object.getMeasurement(yPosMeas).getValue();
                 zMean = object.getMeasurement(zPosMeas).getValue();
 
-                if (xMean == Double.NaN) xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.X), MeasureObjectCentroid.MEAN);
-                if (yMean == Double.NaN) yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Y), MeasureObjectCentroid.MEAN);
-                if (zMean == Double.NaN) zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Z), MeasureObjectCentroid.MEAN);
+                if (xMean == Double.NaN) xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.X), MeasureObjectCentroid.MEAN);
+                if (yMean == Double.NaN) yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Y), MeasureObjectCentroid.MEAN);
+                if (zMean == Double.NaN) zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN);
 
             }
 
             // Getting coordinates to plot
-            int c = ((int) object.getCoordinates(HCObject.C)) + 1;
+            int c = ((int) object.getCoordinates(Obj.C)) + 1;
             int z = (int) Math.round(zMean+1);
-            int t = ((int) object.getCoordinates(HCObject.T)) + 1;
+            int t = ((int) object.getCoordinates(Obj.T)) + 1;
 
             // Adding circles where the object centroids are
             PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
@@ -197,7 +196,7 @@ public class AddObjectsOverlay extends HCModule {
 
         // If necessary, adding output image to workspace
         if (addOutputToWorkspace) {
-            HCImage outputImage = new HCImage(outputImageName,ipl);
+            Image outputImage = new Image(outputImageName,ipl);
             workspace.addImage(outputImage);
         }
 
@@ -211,29 +210,29 @@ public class AddObjectsOverlay extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(APPLY_TO_INPUT,HCParameter.BOOLEAN,false));
-        parameters.addParameter(new HCParameter(ADD_OUTPUT_TO_WORKSPACE,HCParameter.BOOLEAN,false));
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE,HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(SHOW_LABEL,HCParameter.BOOLEAN,false));
-        parameters.addParameter(new HCParameter(LABEL_SIZE,HCParameter.INTEGER,8));
-        parameters.addParameter(new HCParameter(USE_PARENT_ID,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(PARENT_OBJECT_FOR_ID,HCParameter.PARENT_OBJECTS,null,null));
-        parameters.addParameter(new HCParameter(POSITION_MODE,HCParameter.CHOICE_ARRAY,POSITION_MODES[0],POSITION_MODES));
-        parameters.addParameter(new HCParameter(X_POSITION_MEASUREMENT,HCParameter.MEASUREMENT,null,null));
-        parameters.addParameter(new HCParameter(Y_POSITION_MEASUREMENT,HCParameter.MEASUREMENT,null,null));
-        parameters.addParameter(new HCParameter(Z_POSITION_MEASUREMENT,HCParameter.MEASUREMENT,null,null));
-        parameters.addParameter(new HCParameter(COLOUR_MODE,HCParameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
-        parameters.addParameter(new HCParameter(MEASUREMENT,HCParameter.MEASUREMENT,null,null));
-        parameters.addParameter(new HCParameter(PARENT_OBJECT_FOR_COLOUR,HCParameter.PARENT_OBJECTS,null,null));
-        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(ADD_OUTPUT_TO_WORKSPACE, Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(SHOW_LABEL, Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
+        parameters.addParameter(new Parameter(USE_PARENT_ID, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
+        parameters.addParameter(new Parameter(POSITION_MODE, Parameter.CHOICE_ARRAY,POSITION_MODES[0],POSITION_MODES));
+        parameters.addParameter(new Parameter(X_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(Y_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(Z_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
+        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
+        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
@@ -301,12 +300,12 @@ public class AddObjectsOverlay extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }
