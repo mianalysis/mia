@@ -21,7 +21,7 @@ public class RemoveImage extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
+    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -38,23 +38,23 @@ public class RemoveImage extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.REMOVED_IMAGE,null));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.REMOVED_IMAGE,null));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
 
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

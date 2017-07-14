@@ -70,24 +70,4 @@ public class WiderDropDownCombo extends JComboBox {
         type = t;
     }
 
-    public static void main(String[] args) {
-        String title = "Combo Test";
-        JFrame frame = new JFrame(title);
-
-        String[] items = {
-                "I need lot of width to be visible , oh am I visible now",
-                "I need lot of width to be visible , oh am I visible now" };
-        WiderDropDownCombo simpleCombo = new WiderDropDownCombo(items);
-        simpleCombo.setPreferredSize(new Dimension(180, 20));
-        simpleCombo.setWide(true);
-        JLabel label = new JLabel("Wider Drop Down Demo");
-
-        frame.getContentPane().add(simpleCombo, BorderLayout.NORTH);
-        frame.getContentPane().add(label, BorderLayout.SOUTH);
-        int width = 200;
-        int height = 150;
-        frame.setSize(width, height);
-        frame.setVisible(true);
-
-    }
 }

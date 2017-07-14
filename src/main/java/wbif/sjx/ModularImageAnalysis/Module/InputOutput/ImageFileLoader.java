@@ -40,7 +40,7 @@ public class ImageFileLoader extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
+    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -68,6 +68,7 @@ public class ImageFileLoader extends HCModule {
 
             System.setOut(fakeStream);
             ipl = Opener.openUsingBioFormats(filePath);
+            System.out.println(ipl.getNChannels());
             System.setOut(realStream);
 
         } else {
@@ -80,7 +81,7 @@ public class ImageFileLoader extends HCModule {
 
         // Adding image to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
-        workspace.addImage(new HCImage(outputImageName,ipl));
+        workspace.addImage(new Image(outputImageName,ipl));
 
         // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
         if (parameters.getValue(SHOW_IMAGE)) {
@@ -94,17 +95,17 @@ public class ImageFileLoader extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(IMPORT_MODE,HCParameter.CHOICE_ARRAY,IMPORT_MODES[0],IMPORT_MODES));
-        parameters.addParameter(new HCParameter(FILE_PATH,HCParameter.FILE_PATH,null));
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE,HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(USE_BIOFORMATS,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,IMPORT_MODES[0],IMPORT_MODES));
+        parameters.addParameter(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.addParameter(parameters.getParameter(IMPORT_MODE));
         if (parameters.getValue(IMPORT_MODE).equals(SPECIFIC_FILE)) {
@@ -121,12 +122,12 @@ public class ImageFileLoader extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

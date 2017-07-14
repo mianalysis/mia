@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 /**
  * Created by sc13967 on 19/05/2017.
  */
-public class HCMeasurementCollection extends LinkedHashMap<String,LinkedHashSet<String>> {
+public class MeasurementCollection extends LinkedHashMap<String,LinkedHashSet<String>> {
     // PUBLIC METHODS
 
     public void addMeasurement(String objectName, String measurementName) {

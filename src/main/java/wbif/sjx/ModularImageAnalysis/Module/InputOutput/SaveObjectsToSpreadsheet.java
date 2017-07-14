@@ -30,13 +30,13 @@ public class SaveObjectsToSpreadsheet extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting file to save to
         String exportFilePath = parameters.getValue(OUTPUT_FILE);
@@ -63,10 +63,10 @@ public class SaveObjectsToSpreadsheet extends HCModule {
             Cell objectIDHeaderCell = objectHeaderRow.createCell(col++);
             objectIDHeaderCell.setCellValue("OBJECT_ID");
 
-            HCObject object = inputObjects.values().iterator().next();
+            Obj object = inputObjects.values().iterator().next();
 
             // Getting parents
-            LinkedHashMap<String,HCObject> parents = object.getParents();
+            LinkedHashMap<String,Obj> parents = object.getParents();
             for (String parent:parents.keySet()) {
                 Cell parentHeaderCell = objectHeaderRow.createCell(col++);
                 String name = (parent+"_ID").toUpperCase();
@@ -82,7 +82,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
             }
 
             // Adding measurement headers
-            for (HCMeasurement measurement : object.getMeasurements().values()) {
+            for (MIAMeasurement measurement : object.getMeasurements().values()) {
                 Cell measHeaderCell = objectHeaderRow.createCell(col++);
                 String measurementName = measurement.getName().toUpperCase().replaceAll(" ", "_");
                 measHeaderCell.setCellValue(measurementName);
@@ -90,7 +90,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
             }
 
             // Running through each object, adding a new row
-            for (HCObject inputObject : inputObjects.values()) {
+            for (Obj inputObject : inputObjects.values()) {
                 col = 0;
                 Row objectValueRow = sheet.createRow(row++);
 
@@ -113,7 +113,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
 
                 }
 
-                for (HCMeasurement measurement : inputObject.getMeasurements().values()) {
+                for (MIAMeasurement measurement : inputObject.getMeasurements().values()) {
                     Cell measValueCell = objectValueRow.createCell(col++);
                     measValueCell.setCellValue(measurement.getValue());
                 }
@@ -140,23 +140,23 @@ public class SaveObjectsToSpreadsheet extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(OUTPUT_FILE,HCParameter.FILE_PATH,null));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(OUTPUT_FILE, Parameter.FILE_PATH,null));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

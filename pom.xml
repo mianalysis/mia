@@ -4,16 +4,17 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
 
-    <name>Common</name>
+    <name>ModularImageAnalysis</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <myscope>compile</myscope>
     </properties>
 
     <repositories>
@@ -51,28 +52,33 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
             <version>3.6.1</version>
+            <scope>${myscope}</scope>
         </dependency>
 
         <dependency>
             <groupId>ome</groupId>
             <artifactId>bio-formats_plugins</artifactId>
             <version>5.4.1</version>
+            <scope>${myscope}</scope>
         </dependency>
 
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>ij</artifactId>
             <version>1.51h</version>
+            <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>Auto_Threshold</artifactId>
             <version>1.16.4</version>
+            <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>TrackMate_</artifactId>
             <version>3.5.1</version>
+            <scope>${myscope}</scope>
         </dependency>
 
         <dependency>
@@ -96,7 +102,7 @@
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.2.5-SNAPSHOT</version>
+            <version>1.2.6</version>
         </dependency>
     </dependencies>
 
@@ -105,7 +111,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
                 <configuration>
+                    <finalName>Modular_Image_Analysis-${project.version}</finalName>
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -113,6 +121,30 @@
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeGroupIds>com.github.quickhull3d,junit,net.imagej,net.imglib2,org.bonej,org.jogamp,org.scijava,sc.fiji</excludeGroupIds>
+                            <excludeScope>provided</excludeScope>
+
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

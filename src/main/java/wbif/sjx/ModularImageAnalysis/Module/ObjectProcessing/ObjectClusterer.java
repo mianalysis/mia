@@ -6,7 +6,6 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
-import ij.IJ;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import org.apache.commons.math3.exception.InsufficientDataException;
@@ -22,10 +21,8 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.DoubleStream;
 
 /**
  * Created by sc13967 on 21/06/2017.
@@ -48,22 +45,22 @@ public class ObjectClusterer extends HCModule {
     private static final String CLUSTER_PERIMETER_XY = "CLUSTER_PERIMETER_2D";
 
 
-    private static HCObjectSet runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, int kClusters, int maxIterations) {
+    private static ObjSet runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, int kClusters, int maxIterations) {
         KMeansPlusPlusClusterer<LocationWrapper> clusterer = new KMeansPlusPlusClusterer<>(kClusters,maxIterations);
         List<CentroidCluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
-        HCObjectSet outputObjects = new HCObjectSet(outputObjectsName);
+        ObjSet outputObjects = new ObjSet(outputObjectsName);
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            HCObject outputObject = new HCObject(outputObjectsName,outputObjects.getNextID());
+            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID());
 
             double[] centroid = cluster.getCenter().getPoint();
-            outputObject.addCoordinate(HCObject.X,(int) Math.round(centroid[0]));
-            outputObject.addCoordinate(HCObject.Y,(int) Math.round(centroid[1]));
-            outputObject.addCoordinate(HCObject.Z,(int) Math.round(centroid[2]));
+            outputObject.addCoordinate(Obj.X,(int) Math.round(centroid[0]));
+            outputObject.addCoordinate(Obj.Y,(int) Math.round(centroid[1]));
+            outputObject.addCoordinate(Obj.Z,(int) Math.round(centroid[2]));
 
             for (LocationWrapper point:cluster.getPoints()) {
-                HCObject pointObject = point.getObject();
+                Obj pointObject = point.getObject();
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
             }
@@ -79,33 +76,33 @@ public class ObjectClusterer extends HCModule {
 
     }
 
-    private static HCObjectSet runDBSCAN(List<LocationWrapper> locations, String outputObjectsName, double eps, int minPoints) {
+    private static ObjSet runDBSCAN(List<LocationWrapper> locations, String outputObjectsName, double eps, int minPoints) {
         DBSCANClusterer<LocationWrapper> clusterer = new DBSCANClusterer<>(eps, minPoints);
         List<Cluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
-        HCObjectSet outputObjects = new HCObjectSet(outputObjectsName);
+        ObjSet outputObjects = new ObjSet(outputObjectsName);
         for (Cluster<LocationWrapper> cluster:clusters) {
-            HCObject outputObject = new HCObject(outputObjectsName,outputObjects.getNextID());
+            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID());
 
             // Calculating the centroid (DBSCAN doesn't give one)
             CumStat[] cs = new CumStat[]{new CumStat(), new CumStat(), new CumStat()};
 
             for (LocationWrapper point:cluster.getPoints()) {
-                HCObject pointObject = point.getObject();
+                Obj pointObject = point.getObject();
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
 
                 // Getting the centroid of the current object
-                cs[0].addMeasure(pointObject.getCentroid(HCObject.X));
-                cs[1].addMeasure(pointObject.getCentroid(HCObject.Y));
-                cs[2].addMeasure(pointObject.getCentroid(HCObject.Z));
+                cs[0].addMeasure(pointObject.getCentroid(Obj.X));
+                cs[1].addMeasure(pointObject.getCentroid(Obj.Y));
+                cs[2].addMeasure(pointObject.getCentroid(Obj.Z));
 
             }
 
-            outputObject.addCoordinate(HCObject.X,(int) Math.round(cs[0].getMean()));
-            outputObject.addCoordinate(HCObject.Y,(int) Math.round(cs[1].getMean()));
-            outputObject.addCoordinate(HCObject.Z,(int) Math.round(cs[2].getMean()));
+            outputObject.addCoordinate(Obj.X,(int) Math.round(cs[0].getMean()));
+            outputObject.addCoordinate(Obj.Y,(int) Math.round(cs[1].getMean()));
+            outputObject.addCoordinate(Obj.Z,(int) Math.round(cs[2].getMean()));
 
             // Copying calibration from the first point in the cluster
             outputObject.copyCalibration(cluster.getPoints().get(0).getObject());
@@ -132,13 +129,13 @@ public class ObjectClusterer extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
@@ -153,13 +150,13 @@ public class ObjectClusterer extends HCModule {
         // Adding points to collection
         if (verbose) System.out.println("["+moduleName+"] Adding points to clustering algorithm");
         List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
-        for (HCObject inputObject:inputObjects.values()) {
+        for (Obj inputObject:inputObjects.values()) {
             locations.add(new LocationWrapper(inputObject));
         }
 
         // Running clustering system
         if (verbose) System.out.println("["+moduleName+"] Running clustering algorithm");
-        HCObjectSet outputObjects = null;
+        ObjSet outputObjects = null;
 
         switch (clusteringAlgorithm) {
             case KMEANSPLUSPLUS:
@@ -173,22 +170,22 @@ public class ObjectClusterer extends HCModule {
         }
 
         // Checking each object has a parent.  If not, a new parent is created for that object on its own
-        for (HCObject object:inputObjects.values()) {
+        for (Obj object:inputObjects.values()) {
             if (object.getParent(outputObjectsName) == null) {
-                HCObject parentObject = new HCObject(outputObjectsName,outputObjects.getNextID());
+                Obj parentObject = new Obj(outputObjectsName,outputObjects.getNextID());
 
                 // Getting the centroid of the current object
                 ArrayList<Integer> x = new ArrayList<>();
                 ArrayList<Integer> y = new ArrayList<>();
                 ArrayList<Integer> z = new ArrayList<>();
 
-                x.add((int) Math.round(object.getCentroid(HCObject.X)));
-                y.add((int) Math.round(object.getCentroid(HCObject.Y)));
-                z.add((int) Math.round(object.getCentroid(HCObject.Z)));
+                x.add((int) Math.round(object.getCentroid(Obj.X)));
+                y.add((int) Math.round(object.getCentroid(Obj.Y)));
+                z.add((int) Math.round(object.getCentroid(Obj.Z)));
 
-                parentObject.setCoordinates(HCObject.X, x);
-                parentObject.setCoordinates(HCObject.Y, y);
-                parentObject.setCoordinates(HCObject.Z, z);
+                parentObject.setCoordinates(Obj.X, x);
+                parentObject.setCoordinates(Obj.Y, y);
+                parentObject.setCoordinates(Obj.Z, z);
 
                 parentObject.copyCalibration(object);
 
@@ -201,20 +198,20 @@ public class ObjectClusterer extends HCModule {
         }
 
         // Adding measurement to each cluster
-        for (HCObject outputObject:outputObjects.values()) {
-            HCObjectSet children = outputObject.getChildren(inputObjectsName);
+        for (Obj outputObject:outputObjects.values()) {
+            ObjSet children = outputObject.getChildren(inputObjectsName);
 
             // The number of children per cluster
-            HCMeasurement measurement = new HCMeasurement(N_POINTS_IN_CLUSTER,children.size(),this);
+            MIAMeasurement measurement = new MIAMeasurement(N_POINTS_IN_CLUSTER,children.size(),this);
             outputObject.addMeasurement(measurement);
 
             // The area and perimeter of each cluster (convex hull around child centroids)
             try {
                 HashSet<Vector2D> points = new HashSet<>(children.size());
 
-                for (HCObject child : children.values()) {
-                    double x = child.getCentroid(HCObject.X);
-                    double y = child.getCentroid(HCObject.Y);
+                for (Obj child : children.values()) {
+                    double x = child.getCentroid(Obj.X);
+                    double y = child.getCentroid(Obj.Y);
                     points.add(new Vector2D(x, y));
 
                 }
@@ -223,10 +220,10 @@ public class ObjectClusterer extends HCModule {
                 Region<Euclidean2D> region = convexHull2D.createRegion();
 
                 double area = region.getSize();
-                outputObject.addMeasurement(new HCMeasurement(CLUSTER_AREA_XY, area, this));
+                outputObject.addMeasurement(new MIAMeasurement(CLUSTER_AREA_XY, area, this));
 
                 double perimeter = region.getBoundarySize();
-                outputObject.addMeasurement(new HCMeasurement(CLUSTER_PERIMETER_XY, perimeter, this));
+                outputObject.addMeasurement(new MIAMeasurement(CLUSTER_PERIMETER_XY, perimeter, this));
 
                 // Creating a polygon ROI from the vertices
                 Vector2D[] vertices = convexHull2D.getVertices();
@@ -262,28 +259,28 @@ public class ObjectClusterer extends HCModule {
                 for (int xx=minXInt;xx<=maxXInt;xx++) {
                     for (int yy=minYInt;yy<=maxYInt;yy++) {
                         if (polygonRoi.contains(xx,yy)) {
-                            outputObject.addCoordinate(HCObject.X,xx);
-                            outputObject.addCoordinate(HCObject.Y,yy);
-                            outputObject.addCoordinate(HCObject.Z,0);
-                            outputObject.addCoordinate(HCObject.C,0);
-                            outputObject.addCoordinate(HCObject.T,0);
+                            outputObject.addCoordinate(Obj.X,xx);
+                            outputObject.addCoordinate(Obj.Y,yy);
+                            outputObject.addCoordinate(Obj.Z,0);
+                            outputObject.addCoordinate(Obj.C,0);
+                            outputObject.addCoordinate(Obj.T,0);
 
                         }
                     }
                 }
 
-                HCObject exampleChild = children.values().iterator().next();
-                outputObject.addCalibration(HCObject.X,exampleChild.getCalibration(HCObject.X));
-                outputObject.addCalibration(HCObject.Y,exampleChild.getCalibration(HCObject.Y));
-                outputObject.addCalibration(HCObject.Z,exampleChild.getCalibration(HCObject.Z));
-                outputObject.addCalibration(HCObject.C,exampleChild.getCalibration(HCObject.C));
-                outputObject.addCalibration(HCObject.T,exampleChild.getCalibration(HCObject.T));
+                Obj exampleChild = children.values().iterator().next();
+                outputObject.addCalibration(Obj.X,exampleChild.getCalibration(Obj.X));
+                outputObject.addCalibration(Obj.Y,exampleChild.getCalibration(Obj.Y));
+                outputObject.addCalibration(Obj.Z,exampleChild.getCalibration(Obj.Z));
+                outputObject.addCalibration(Obj.C,exampleChild.getCalibration(Obj.C));
+                outputObject.addCalibration(Obj.T,exampleChild.getCalibration(Obj.T));
 
             } catch (InsufficientDataException e) {
                 // This exception occurs when there are fewer than 3 points or in certain point arrangements (i.e. when
                 // they all lie in a straight line)
-                outputObject.addMeasurement(new HCMeasurement(CLUSTER_AREA_XY,Double.NaN, this));
-                outputObject.addMeasurement(new HCMeasurement(CLUSTER_PERIMETER_XY,Double.NaN, this));
+                outputObject.addMeasurement(new MIAMeasurement(CLUSTER_AREA_XY,Double.NaN, this));
+                outputObject.addMeasurement(new MIAMeasurement(CLUSTER_PERIMETER_XY,Double.NaN, this));
 
             }
         }
@@ -297,19 +294,19 @@ public class ObjectClusterer extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(CLUSTER_OBJECTS,HCParameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(CLUSTERING_ALGORITHM,HCParameter.CHOICE_ARRAY,CLUSTERING_ALGORITHMS[0],CLUSTERING_ALGORITHMS));
-        parameters.addParameter(new HCParameter(K_CLUSTERS,HCParameter.INTEGER,100));
-        parameters.addParameter(new HCParameter(MAX_ITERATIONS,HCParameter.INTEGER,10000));
-        parameters.addParameter(new HCParameter(EPS,HCParameter.DOUBLE,10.0));
-        parameters.addParameter(new HCParameter(MIN_POINTS,HCParameter.INTEGER,5));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(CLUSTER_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(CLUSTERING_ALGORITHM, Parameter.CHOICE_ARRAY,CLUSTERING_ALGORITHMS[0],CLUSTERING_ALGORITHMS));
+        parameters.addParameter(new Parameter(K_CLUSTERS, Parameter.INTEGER,100));
+        parameters.addParameter(new Parameter(MAX_ITERATIONS, Parameter.INTEGER,10000));
+        parameters.addParameter(new Parameter(EPS, Parameter.DOUBLE,10.0));
+        parameters.addParameter(new Parameter(MIN_POINTS, Parameter.INTEGER,5));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(CLUSTER_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(CLUSTERING_ALGORITHM));
@@ -331,7 +328,7 @@ public class ObjectClusterer extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         measurements.addMeasurement(clusterObjectsName,N_POINTS_IN_CLUSTER);
         measurements.addMeasurement(clusterObjectsName,CLUSTER_AREA_XY);
@@ -340,7 +337,7 @@ public class ObjectClusterer extends HCModule {
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
@@ -350,16 +347,16 @@ public class ObjectClusterer extends HCModule {
 }
 
 class LocationWrapper implements Clusterable {
-    private HCObject object;
+    private Obj object;
     private double[] location;
 
-    LocationWrapper(HCObject object) {
+    LocationWrapper(Obj object) {
         this.object = object;
 
         // Getting the centroid of the current object
-        ArrayList<Integer> xArray = object.getCoordinates(HCObject.X);
-        ArrayList<Integer> yArray = object.getCoordinates(HCObject.Y);
-        ArrayList<Integer> zArray = object.getCoordinates(HCObject.Z);
+        ArrayList<Integer> xArray = object.getCoordinates(Obj.X);
+        ArrayList<Integer> yArray = object.getCoordinates(Obj.Y);
+        ArrayList<Integer> zArray = object.getCoordinates(Obj.Z);
         int x = (int) MeasureObjectCentroid.calculateCentroid(xArray);
         int y = (int) MeasureObjectCentroid.calculateCentroid(yArray);
         int z = (int) MeasureObjectCentroid.calculateCentroid(zArray);
@@ -374,7 +371,7 @@ class LocationWrapper implements Clusterable {
 
     }
 
-    public HCObject getObject() {
+    public Obj getObject() {
         return object;
 
     }

@@ -33,13 +33,13 @@ public class ImageTypeConverter extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -70,7 +70,7 @@ public class ImageTypeConverter extends HCModule {
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
-            HCImage outputImage = new HCImage(outputImageName,inputImagePlus);
+            Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
         }
@@ -81,17 +81,17 @@ public class ImageTypeConverter extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(APPLY_TO_INPUT,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE,HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(OUTPUT_TYPE,HCParameter.CHOICE_ARRAY,OUTPUT_TYPES[0],OUTPUT_TYPES));
-        parameters.addParameter(new HCParameter(SCALE_INTENSITIES,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(OUTPUT_TYPE, Parameter.CHOICE_ARRAY,OUTPUT_TYPES[0],OUTPUT_TYPES));
+        parameters.addParameter(new Parameter(SCALE_INTENSITIES, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -107,12 +107,12 @@ public class ImageTypeConverter extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

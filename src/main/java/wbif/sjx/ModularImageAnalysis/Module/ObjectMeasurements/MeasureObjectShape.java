@@ -26,20 +26,20 @@ public class MeasureObjectShape extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException {
+    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Running through each object, making the measurements
-        for (HCObject inputObject:inputObjects.values()) {
-            ArrayList<Integer> x = inputObject.getCoordinates(HCObject.X);
+        for (Obj inputObject:inputObjects.values()) {
+            ArrayList<Integer> x = inputObject.getCoordinates(Obj.X);
 
             // Adding the relevant measurements
-            inputObject.addMeasurement(new HCMeasurement(N_VOXELS,x.size(),this));
+            inputObject.addMeasurement(new MIAMeasurement(N_VOXELS,x.size(),this));
 
         }
 
@@ -49,17 +49,17 @@ public class MeasureObjectShape extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         measurements.addMeasurement(inputObjectsName,N_VOXELS);
@@ -67,7 +67,7 @@ public class MeasureObjectShape extends HCModule {
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

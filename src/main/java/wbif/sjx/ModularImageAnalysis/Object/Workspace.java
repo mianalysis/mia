@@ -1,22 +1,23 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import wbif.sjx.common.Object.HCMetadata;
+
 import java.io.File;
-import java.lang.instrument.Instrumentation;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class HCWorkspace {
-    private LinkedHashMap<String, HCObjectSet> objects = new LinkedHashMap<>();
-    private LinkedHashMap<String, HCImage> images = new LinkedHashMap<>();
+public class Workspace {
+    private LinkedHashMap<String, ObjSet> objects = new LinkedHashMap<>();
+    private LinkedHashMap<String, Image> images = new LinkedHashMap<>();
     private HCMetadata metadata = new HCMetadata();
     private int ID;
 
     // CONSTRUCTOR
 
-    public HCWorkspace(int ID, File currentFile) {
+    public Workspace(int ID, File currentFile) {
         this.ID = ID;
         metadata.put(HCMetadata.FILE,currentFile);
 
@@ -24,7 +25,7 @@ public class HCWorkspace {
 
     // PUBLIC METHODS
 
-    public void addObjects(HCObjectSet object) {
+    public void addObjects(ObjSet object) {
         objects.put(object.getName(), object);
     }
 
@@ -36,7 +37,7 @@ public class HCWorkspace {
 
     }
 
-    public void addImage(HCImage image) {
+    public void addImage(Image image) {
         images.put(image.getName(), image);
     }
 
@@ -55,7 +56,7 @@ public class HCWorkspace {
     public void clearAllImages(boolean retainMeasurements) {
         if (retainMeasurements) {
             // Sets the ImagePlus to null, but leaves measurements
-            for (HCImage image:images.values()) {
+            for (Image image:images.values()) {
                 image.setImagePlus(null);
             }
 
@@ -65,12 +66,12 @@ public class HCWorkspace {
         }
     }
 
-    public HCImage getImage(String name) {
+    public Image getImage(String name) {
         return images.get(name);
 
     }
 
-    public HCObjectSet getObjectSet(String name) {
+    public ObjSet getObjectSet(String name) {
         return objects.get(name);
 
     }
@@ -78,19 +79,19 @@ public class HCWorkspace {
 
     // GETTERS AND SETTERS
 
-    public HashMap<String, HCObjectSet> getObjects() {
+    public HashMap<String, ObjSet> getObjects() {
         return objects;
     }
 
-    public void setObjects(LinkedHashMap<String, HCObjectSet> objects) {
+    public void setObjects(LinkedHashMap<String, ObjSet> objects) {
         this.objects = objects;
     }
 
-    public HashMap<String, HCImage> getImages() {
+    public HashMap<String, Image> getImages() {
         return images;
     }
 
-    public void setImages(LinkedHashMap<String, HCImage> images) {
+    public void setImages(LinkedHashMap<String, Image> images) {
         this.images = images;
     }
 

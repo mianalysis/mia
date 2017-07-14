@@ -34,13 +34,13 @@ public class FilterObjects extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         String method = parameters.getValue(FILTER_METHOD);
@@ -49,9 +49,9 @@ public class FilterObjects extends HCModule {
         if (method.equals(MISSING_MEASUREMENTS)) {
             String measurement = parameters.getValue(MEASUREMENT);
 
-            Iterator<HCObject> iterator = inputObjects.values().iterator();
+            Iterator<Obj> iterator = inputObjects.values().iterator();
             while (iterator.hasNext()) {
-                HCObject inputObject = iterator.next();
+                Obj inputObject = iterator.next();
 
                 if (inputObject.getMeasurement(measurement).getValue() == Double.NaN) {
                     inputObject.removeRelationships();
@@ -62,9 +62,9 @@ public class FilterObjects extends HCModule {
         } else if (method.equals(NO_PARENT)) {
             String parentObjectName = parameters.getValue(PARENT_OBJECT);
 
-            Iterator<HCObject> iterator = inputObjects.values().iterator();
+            Iterator<Obj> iterator = inputObjects.values().iterator();
             while (iterator.hasNext()) {
-                HCObject inputObject = iterator.next();
+                Obj inputObject = iterator.next();
 
                 if (inputObject.getParent(parentObjectName) == null) {
                     inputObject.removeRelationships();
@@ -76,10 +76,10 @@ public class FilterObjects extends HCModule {
             String childObjectsName = parameters.getValue(CHILD_OBJECTS);
             double minChildN = parameters.getValue(REFERENCE_VALUE);
 
-            Iterator<HCObject> iterator = inputObjects.values().iterator();
+            Iterator<Obj> iterator = inputObjects.values().iterator();
             while (iterator.hasNext()) {
-                HCObject inputObject = iterator.next();
-                HCObjectSet childObjects = inputObject.getChildren(childObjectsName);
+                Obj inputObject = iterator.next();
+                ObjSet childObjects = inputObject.getChildren(childObjectsName);
 
                 // Removing the object if it has no children
                 if (childObjects == null) {
@@ -101,9 +101,9 @@ public class FilterObjects extends HCModule {
             String measurement = parameters.getValue(MEASUREMENT);
             double referenceValue = parameters.getValue(REFERENCE_VALUE);
 
-            Iterator<HCObject> iterator = inputObjects.values().iterator();
+            Iterator<Obj> iterator = inputObjects.values().iterator();
             while (iterator.hasNext()) {
-                HCObject inputObject = iterator.next();
+                Obj inputObject = iterator.next();
 
                 // Removing the object if it has no children
                 if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
@@ -117,9 +117,9 @@ public class FilterObjects extends HCModule {
             String measurement = parameters.getValue(MEASUREMENT);
             double referenceValue = parameters.getValue(REFERENCE_VALUE);
 
-            Iterator<HCObject> iterator = inputObjects.values().iterator();
+            Iterator<Obj> iterator = inputObjects.values().iterator();
             while (iterator.hasNext()) {
-                HCObject inputObject = iterator.next();
+                Obj inputObject = iterator.next();
 
                 // Removing the object if it has no children
                 if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
@@ -136,18 +136,18 @@ public class FilterObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(FILTER_METHOD,HCParameter.CHOICE_ARRAY,FILTER_METHODS[0],FILTER_METHODS));
-        parameters.addParameter(new HCParameter(MEASUREMENT, HCParameter.MEASUREMENT,null,null));
-        parameters.addParameter(new HCParameter(PARENT_OBJECT,HCParameter.PARENT_OBJECTS,null,null));
-        parameters.addParameter(new HCParameter(CHILD_OBJECTS,HCParameter.CHILD_OBJECTS,null,null));
-        parameters.addParameter(new HCParameter(REFERENCE_VALUE,HCParameter.DOUBLE,1.0));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(FILTER_METHOD, Parameter.CHOICE_ARRAY,FILTER_METHODS[0],FILTER_METHODS));
+        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
+        parameters.addParameter(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
+        parameters.addParameter(new Parameter(REFERENCE_VALUE, Parameter.DOUBLE,1.0));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(FILTER_METHOD));
 
@@ -189,12 +189,12 @@ public class FilterObjects extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

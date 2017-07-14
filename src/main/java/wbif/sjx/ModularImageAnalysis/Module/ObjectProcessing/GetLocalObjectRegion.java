@@ -17,29 +17,29 @@ public class GetLocalObjectRegion extends HCModule {
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String CALIBRATED_RADIUS = "Calibrated radius";
 
-    public static HCObjectSet getLocalRegions(HCObjectSet inputObjects, String outputObjectsName, double radius, boolean calibrated) {
+    public static ObjSet getLocalRegions(ObjSet inputObjects, String outputObjectsName, double radius, boolean calibrated) {
         // Creating store for output objects
-        HCObjectSet outputObjects = new HCObjectSet(outputObjectsName);
+        ObjSet outputObjects = new ObjSet(outputObjectsName);
 
         // Running through each object, calculating the local texture
-        for (HCObject inputObject:inputObjects.values()) {
+        for (Obj inputObject:inputObjects.values()) {
             // Creating new object and assigning relationship to input objects
-            HCObject outputObject = new HCObject(outputObjectsName,inputObject.getID());
+            Obj outputObject = new Obj(outputObjectsName,inputObject.getID());
             outputObject.addParent(inputObject);
             inputObject.addChild(outputObject);
 
             // Getting image calibration (to deal with different xy-z dimensions)
-            double xCal = inputObject.getCalibration(HCObject.X);
-            double yCal = inputObject.getCalibration(HCObject.Y);
-            double zCal = inputObject.getCalibration(HCObject.Z);
+            double xCal = inputObject.getCalibration(Obj.X);
+            double yCal = inputObject.getCalibration(Obj.Y);
+            double zCal = inputObject.getCalibration(Obj.Z);
 
             double xy_z_ratio = xCal/zCal;
 
             // Getting centroid coordinates
-            double xCent = MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(HCObject.X),MeasureObjectCentroid.MEAN);
-            double yCent = MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(HCObject.Y),MeasureObjectCentroid.MEAN);
-            double zCent = inputObject.getCoordinates(HCObject.Z) != null
-                    ? MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(HCObject.Z), MeasureObjectCentroid.MEAN)
+            double xCent = MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(Obj.X),MeasureObjectCentroid.MEAN);
+            double yCent = MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(Obj.Y),MeasureObjectCentroid.MEAN);
+            double zCent = inputObject.getCoordinates(Obj.Z) != null
+                    ? MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN)
                     : 0;
 
             if (calibrated) {
@@ -47,9 +47,9 @@ public class GetLocalObjectRegion extends HCModule {
                     for (int y = (int) Math.floor(yCent - radius/yCal); y <= (int) Math.ceil(yCent + radius/yCal); y++) {
                         for (int z = (int) Math.floor(zCent - radius/zCal); z <= (int) Math.ceil(zCent + radius/zCal); z++) {
                             if (Math.sqrt((xCent-x)*xCal*(xCent-x)*xCal + (yCent-y)*yCal*(yCent-y)*yCal + (zCent-z)*zCal*(zCent-z)*zCal) < radius) {
-                                outputObject.addCoordinate(HCObject.X, x);
-                                outputObject.addCoordinate(HCObject.Y, y);
-                                outputObject.addCoordinate(HCObject.Z, z);
+                                outputObject.addCoordinate(Obj.X, x);
+                                outputObject.addCoordinate(Obj.Y, y);
+                                outputObject.addCoordinate(Obj.Z, z);
 
                             }
                         }
@@ -61,9 +61,9 @@ public class GetLocalObjectRegion extends HCModule {
                     for (int y = (int) Math.floor(yCent - radius); y <= (int) Math.ceil(yCent + radius); y++) {
                         for (int z = (int) Math.floor(zCent - radius * xy_z_ratio); z <= (int) Math.ceil(zCent + radius * xy_z_ratio); z++) {
                             if (Math.sqrt((xCent-x)*(xCent-x) + (yCent-y)*(yCent-y) + (zCent-z)*(zCent-z)/(xy_z_ratio*xy_z_ratio)) < radius) {
-                                outputObject.addCoordinate(HCObject.X, x);
-                                outputObject.addCoordinate(HCObject.Y, y);
-                                outputObject.addCoordinate(HCObject.Z, z);
+                                outputObject.addCoordinate(Obj.X, x);
+                                outputObject.addCoordinate(Obj.Y, y);
+                                outputObject.addCoordinate(Obj.Z, z);
 
                             }
                         }
@@ -98,13 +98,13 @@ public class GetLocalObjectRegion extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -116,7 +116,7 @@ public class GetLocalObjectRegion extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Using local radius of "+radius+" ");
 
         // Getting local region
-        HCObjectSet outputObjects = getLocalRegions(inputObjects, outputObjectsName, radius, calibrated);
+        ObjSet outputObjects = getLocalRegions(inputObjects, outputObjectsName, radius, calibrated);
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
@@ -128,25 +128,25 @@ public class GetLocalObjectRegion extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS, HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(OUTPUT_OBJECTS, HCParameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(LOCAL_RADIUS, HCParameter.DOUBLE,10.0));
-        parameters.addParameter(new HCParameter(CALIBRATED_RADIUS, HCParameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE,10.0));
+        parameters.addParameter(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
         relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
 
     }

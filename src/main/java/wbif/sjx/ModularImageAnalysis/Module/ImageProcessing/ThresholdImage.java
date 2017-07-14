@@ -35,13 +35,13 @@ public class ThresholdImage extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -96,7 +96,7 @@ public class ThresholdImage extends HCModule {
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            HCImage outputImage = new HCImage(outputImageName,inputImagePlus);
+            Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
             // If selected, displaying the image
@@ -117,19 +117,19 @@ public class ThresholdImage extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(APPLY_TO_INPUT,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE,HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(THRESHOLD_MODE,HCParameter.CHOICE_ARRAY,THRESHOLD_MODES[0],THRESHOLD_MODES));
-        parameters.addParameter(new HCParameter(THRESHOLD_MULTIPLIER, HCParameter.DOUBLE,1.0));
-        parameters.addParameter(new HCParameter(WHITE_BACKGROUND,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(THRESHOLD_MODE, Parameter.CHOICE_ARRAY,THRESHOLD_MODES[0],THRESHOLD_MODES));
+        parameters.addParameter(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
+        parameters.addParameter(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -147,12 +147,12 @@ public class ThresholdImage extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

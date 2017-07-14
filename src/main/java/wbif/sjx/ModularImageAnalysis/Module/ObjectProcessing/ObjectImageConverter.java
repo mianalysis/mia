@@ -38,7 +38,7 @@ public class ObjectImageConverter extends HCModule {
     private static final String PARENT_ID = "Parent ID";
     public static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE,ID,PARENT_ID};
 
-    public static HCImage convertObjectsToImage(HCObjectSet objects, String outputImageName, HCImage templateImage, String colourMode, String colourSource) {
+    public static Image convertObjectsToImage(ObjSet objects, String outputImageName, Image templateImage, String colourMode, String colourSource) {
         ImagePlus ipl;
 
         int bitDepth = 8;
@@ -69,7 +69,7 @@ public class ObjectImageConverter extends HCModule {
             // Getting range of object pixels
             int[][] coordinateRange = new int[5][2];
 
-            for (HCObject object : objects.values()) {
+            for (Obj object : objects.values()) {
                 // Getting range of XYZ
                 int[][] currCoordinateRange = object.getCoordinateRange();
                 for (int dim = 0; dim < coordinateRange.length; dim++) {
@@ -97,9 +97,9 @@ public class ObjectImageConverter extends HCModule {
             }
 
             // Creating a new image
-            ipl = IJ.createHyperStack("Objects", coordinateRange[HCObject.X][1] + 1,
-                    coordinateRange[HCObject.Y][1] + 1, coordinateRange[HCObject.C][1] + 1,
-                    coordinateRange[HCObject.Z][1] + 1, coordinateRange[HCObject.T][1] + 1,bitDepth);
+            ipl = IJ.createHyperStack("Objects", coordinateRange[Obj.X][1] + 1,
+                    coordinateRange[Obj.Y][1] + 1, coordinateRange[Obj.C][1] + 1,
+                    coordinateRange[Obj.Z][1] + 1, coordinateRange[Obj.T][1] + 1,bitDepth);
 
         } else {
             ImagePlus templateIpl = templateImage.getImagePlus();
@@ -108,12 +108,12 @@ public class ObjectImageConverter extends HCModule {
         }
 
         // Labelling pixels in image
-        for (HCObject object:objects.values()) {
-            ArrayList<Integer> x = object.getCoordinates(HCObject.X);
-            ArrayList<Integer> y = object.getCoordinates(HCObject.Y);
-            ArrayList<Integer> z = object.getCoordinates(HCObject.Z);
-            Integer cPos = object.getCoordinates(HCObject.C);
-            Integer tPos = object.getCoordinates(HCObject.T);
+        for (Obj object:objects.values()) {
+            ArrayList<Integer> x = object.getCoordinates(Obj.X);
+            ArrayList<Integer> y = object.getCoordinates(Obj.Y);
+            ArrayList<Integer> z = object.getCoordinates(Obj.Z);
+            Integer cPos = object.getCoordinates(Obj.C);
+            Integer tPos = object.getCoordinates(Obj.T);
 
             double valDouble = 1;
             int valInt = 1;
@@ -162,16 +162,16 @@ public class ObjectImageConverter extends HCModule {
             }
         }
 
-        return new HCImage(outputImageName,ipl);
+        return new Image(outputImageName,ipl);
 
     }
 
-    public HCObjectSet convertImageToObjects(HCImage image, String outputObjectsName) {
+    public ObjSet convertImageToObjects(Image image, String outputObjectsName) {
         // Converting to ImagePlus for this operation
         ImagePlus ipl = image.getImagePlus();
 
         // Need to get coordinates and convert to a HCObject
-        HCObjectSet outputObjects = new HCObjectSet(outputObjectsName); //Local ArrayList of objects
+        ObjSet outputObjects = new ObjSet(outputObjectsName); //Local ArrayList of objects
 
         ImageProcessor ipr = ipl.getProcessor();
 
@@ -197,13 +197,13 @@ public class ObjectImageConverter extends HCModule {
                                 IDlink.computeIfAbsent(imageID, k -> outputObjects.getNextID());
                                 int outID = IDlink.get(imageID);
 
-                                outputObjects.computeIfAbsent(outID, k -> new HCObject(outputObjectsName, outID));
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName, outID));
 
-                                outputObjects.get(outID).addCoordinate(HCObject.X, x);
-                                outputObjects.get(outID).addCoordinate(HCObject.Y, y);
-                                outputObjects.get(outID).addCoordinate(HCObject.Z, z);
-                                outputObjects.get(outID).addCoordinate(HCObject.C, c);
-                                outputObjects.get(outID).addCoordinate(HCObject.T, t);
+                                outputObjects.get(outID).addCoordinate(Obj.X, x);
+                                outputObjects.get(outID).addCoordinate(Obj.Y, y);
+                                outputObjects.get(outID).addCoordinate(Obj.Z, z);
+                                outputObjects.get(outID).addCoordinate(Obj.C, c);
+                                outputObjects.get(outID).addCoordinate(Obj.T, t);
 
                             }
                         }
@@ -214,10 +214,10 @@ public class ObjectImageConverter extends HCModule {
 
         // Adding distance calibration to each object
         Calibration calibration = ipl.getCalibration();
-        for (HCObject object:outputObjects.values()) {
-            object.addCalibration(HCObject.X,calibration.getX(1));
-            object.addCalibration(HCObject.Y,calibration.getY(1));
-            object.addCalibration(HCObject.Z,calibration.getZ(1));
+        for (Obj object:outputObjects.values()) {
+            object.addCalibration(Obj.X,calibration.getX(1));
+            object.addCalibration(Obj.Y,calibration.getY(1));
+            object.addCalibration(Obj.Z,calibration.getZ(1));
             object.setCalibratedUnits(calibration.getUnits());
 
         }
@@ -238,7 +238,7 @@ public class ObjectImageConverter extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -248,9 +248,9 @@ public class ObjectImageConverter extends HCModule {
             String inputImageName = parameters.getValue(INPUT_IMAGE);
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-            HCImage inputImage = workspace.getImages().get(inputImageName);
+            Image inputImage = workspace.getImages().get(inputImageName);
 
-            HCObjectSet objects = convertImageToObjects(inputImage, outputObjectsName);
+            ObjSet objects = convertImageToObjects(inputImage, outputObjectsName);
 
             workspace.addObjects(objects);
 
@@ -270,10 +270,10 @@ public class ObjectImageConverter extends HCModule {
 
             }
 
-            HCObjectSet inputObjects = workspace.getObjects().get(objectName);
-            HCImage templateImage = workspace.getImages().get(templateImageName);
+            ObjSet inputObjects = workspace.getObjects().get(objectName);
+            Image templateImage = workspace.getImages().get(templateImageName);
 
-            HCImage outputImage = convertObjectsToImage(inputObjects,outputImageName,templateImage,colourMode,colourSource);
+            Image outputImage = convertObjectsToImage(inputObjects,outputImageName,templateImage,colourMode,colourSource);
 
             workspace.addImage(outputImage);
 
@@ -291,22 +291,22 @@ public class ObjectImageConverter extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(CONVERSION_MODE, HCParameter.CHOICE_ARRAY,CONVERSION_MODES[0],CONVERSION_MODES));
-        parameters.addParameter(new HCParameter(INPUT_IMAGE, HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(OUTPUT_OBJECTS, HCParameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(TEMPLATE_IMAGE, HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS, HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE, HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(COLOUR_MODE,HCParameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
-        parameters.addParameter(new HCParameter(MEASUREMENT,HCParameter.MEASUREMENT,null,null));
-        parameters.addParameter(new HCParameter(PARENT_OBJECT_FOR_COLOUR,HCParameter.PARENT_OBJECTS,null,null));
-        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,CONVERSION_MODES[0],CONVERSION_MODES));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
+        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
+        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(CONVERSION_MODE));
 
         if (parameters.getValue(CONVERSION_MODE).equals(IMAGE_TO_OBJECTS)) {
@@ -345,12 +345,12 @@ public class ObjectImageConverter extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 

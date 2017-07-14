@@ -37,7 +37,7 @@ public class IdentifySecondaryObjects extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -47,11 +47,11 @@ public class IdentifySecondaryObjects extends HCModule {
 
         // Loading images and objects into workspace
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage2 = workspace.getImages().get(inputImageName);
+        Image inputImage2 = workspace.getImages().get(inputImageName);
         ImagePlus image2 = inputImage2.getImagePlus();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet objects1 = workspace.getObjects().get(inputObjectsName);
+        ObjSet objects1 = workspace.getObjects().get(inputObjectsName);
 
         // Initialising the output objects ArrayList
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -82,8 +82,8 @@ public class IdentifySecondaryObjects extends HCModule {
 
         // Converting the labelled cell image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
-        HCImage tempImage = new HCImage("Temp image",im2);
-        HCObjectSet objects2 = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectsName);
+        Image tempImage = new Image("Temp image",im2);
+        ObjSet objects2 = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectsName);
 
         // Watershed will give one cell per nucleus and these should already have the same labelling number.
         if (verbose) System.out.println("["+moduleName+"] Linking primary and secondary objects by ID number");
@@ -99,26 +99,26 @@ public class IdentifySecondaryObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE, HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS, HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(OUTPUT_OBJECTS, HCParameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(MEDIAN_FILTER_RADIUS, HCParameter.DOUBLE,2.0));
-        parameters.addParameter(new HCParameter(THRESHOLD_METHOD, HCParameter.CHOICE_ARRAY,thresholdMethods[0],thresholdMethods));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(MEDIAN_FILTER_RADIUS, Parameter.DOUBLE,2.0));
+        parameters.addParameter(new Parameter(THRESHOLD_METHOD, Parameter.CHOICE_ARRAY,thresholdMethods[0],thresholdMethods));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
         relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
 
     }

@@ -14,7 +14,7 @@ import java.io.Serializable;
  * Created by sc13967 on 02/05/2017.
  */
 public abstract class HCModule implements Serializable {
-    public HCParameterCollection parameters = new HCParameterCollection();
+    public ParameterCollection parameters = new ParameterCollection();
     private String notes = "";
     private boolean enabled = true;
 
@@ -33,7 +33,7 @@ public abstract class HCModule implements Serializable {
 
     public abstract String getHelp();
 
-    public abstract void execute(HCWorkspace workspace, boolean verbose) throws GenericMIAException;
+    public abstract void execute(Workspace workspace, boolean verbose) throws GenericMIAException;
 
     /**
      * Get a ParameterCollection of all the possible parameters this class requires (not all may be used).  This returns
@@ -50,20 +50,20 @@ public abstract class HCModule implements Serializable {
      * an appropriate GUI panel.
      * @return
      */
-    public abstract HCParameterCollection getActiveParameters();
+    public abstract ParameterCollection getActiveParameters();
 
     /**
      * Takes an existing collection of measurements and adds any created
      * @param measurements
      * @return
      */
-    public abstract void addMeasurements(HCMeasurementCollection measurements);
+    public abstract void addMeasurements(MeasurementCollection measurements);
 
     /**
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
      * @return
      */
-    public abstract void addRelationships(HCRelationshipCollection relationships);
+    public abstract void addRelationships(RelationshipCollection relationships);
 
     public void updateParameterValue(String name, Object value) {
         parameters.updateValue(name,value);
@@ -88,7 +88,7 @@ public abstract class HCModule implements Serializable {
 
     // PRIVATE METHODS
 
-    void execute(HCWorkspace workspace) throws GenericMIAException {
+    void execute(Workspace workspace) throws GenericMIAException {
         execute(workspace,false);
 
     }

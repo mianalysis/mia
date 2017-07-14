@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bcdf6e90-d628-474f-bc83-9b3801034d57" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/DiffractionPatternFitter1D.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/ModularImageAnalysisPlugin.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImage.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImage.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ObjectImageConverter.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ObjectImageConverter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/WiderDropDownCombo.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/WiderDropDownCombo.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,167 +25,198 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="HCExporter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/HCExporter.java">
+      <file leaf-file-name="Exporter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Exporter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="448" column="50" lean-forward="false" selection-start-line="448" selection-start-column="50" selection-end-line="448" selection-end-column="50" />
+            <state relative-caret-position="318">
+              <caret line="339" column="85" lean-forward="false" selection-start-line="339" selection-start-column="85" selection-end-line="339" selection-end-column="85" />
               <folding>
-                <element signature="docComment;class#HCExporter#0" expanded="false" />
-                <element signature="method#HCExporter#0;class#HCExporter#0" expanded="false" />
-                <element signature="method#exportResults#0;class#HCExporter#0" expanded="false" />
-                <element signature="method#exportXML#0;class#HCExporter#0" expanded="false" />
-                <element signature="method#prepareParametersXML#0;class#HCExporter#0" expanded="false" />
-                <element signature="method#prepareParametersXLSX#0;class#HCExporter#0" expanded="false" />
-                <element signature="method#prepareMetadataXLSX#0;class#HCExporter#0" expanded="false" />
-                <element signature="e#13346#13458#0" expanded="false" />
-                <element signature="method#prepareImagesXLSX#0;class#HCExporter#0" expanded="false" />
-                <element signature="e#18246#18349#0" expanded="false" />
-                <element signature="e#18523#18622#0" expanded="false" />
-                <element signature="method#exportJSON#0;class#HCExporter#0" expanded="false" />
+                <element signature="docComment;class#Exporter#0" expanded="false" />
+                <element signature="method#Exporter#0;class#Exporter#0" expanded="false" />
+                <element signature="method#exportResults#0;class#Exporter#0" expanded="false" />
+                <element signature="method#exportXML#0;class#Exporter#0" expanded="false" />
+                <element signature="method#prepareParametersXML#0;class#Exporter#0" expanded="false" />
+                <element signature="method#exportXLSX#0;class#Exporter#0" expanded="false" />
+                <element signature="method#prepareParametersXLSX#0;class#Exporter#0" expanded="false" />
+                <element signature="e#13342#13454#0" expanded="false" />
+                <element signature="method#prepareImagesXLSX#0;class#Exporter#0" expanded="false" />
+                <element signature="method#prepareObjectsXLSX#0;class#Exporter#0" expanded="false" />
+                <element signature="e#18224#18327#0" expanded="false" />
+                <element signature="e#18501#18600#0" expanded="false" />
+                <element signature="method#exportJSON#0;class#Exporter#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ObjectImageConverter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ObjectImageConverter.java">
+      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="197" column="64" lean-forward="true" selection-start-line="197" selection-start-column="64" selection-end-line="197" selection-end-column="64" />
-              <folding>
-                <element signature="docComment;class#ObjectImageConverter#0" expanded="false" />
-                <element signature="method#getTitle#0;class#ObjectImageConverter#0" expanded="false" />
-                <element signature="method#addMeasurements#0;class#ObjectImageConverter#0" expanded="false" />
-                <element signature="method#addRelationships#0;class#ObjectImageConverter#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IdentifyObjects.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/IdentifyObjects.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="85" column="8" lean-forward="true" selection-start-line="85" selection-start-column="8" selection-end-line="85" selection-end-column="69" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RelateObjects.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/RelateObjects.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1938">
-              <caret line="124" column="13" lean-forward="false" selection-start-line="124" selection-start-column="13" selection-end-line="124" selection-end-column="13" />
-              <folding>
-                <element signature="e#8055#8056#0" expanded="false" />
-                <element signature="e#8088#8089#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FilterObjects.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/FilterObjects.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="80" column="55" lean-forward="false" selection-start-line="80" selection-start-column="55" selection-end-line="84" selection-end-column="43" />
+            <state relative-caret-position="85">
+              <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HCObject.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCObject.java">
+      <file leaf-file-name="plugins.config" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/plugins.config">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1156">
-              <caret line="276" column="0" lean-forward="true" selection-start-line="276" selection-start-column="0" selection-end-line="276" selection-end-column="0" />
-              <folding>
-                <element signature="docComment;class#HCObject#0" expanded="false" />
-                <element signature="docComment;field#ID#0;class#HCObject#0" expanded="false" />
-                <element signature="docComment;field#coordinates#0;class#HCObject#0" expanded="false" />
-                <element signature="docComment;field#positions#0;class#HCObject#0" expanded="false" />
-                <element signature="docComment;field#calibration#0;class#HCObject#0" expanded="false" />
-                <element signature="method#HCObject#0;class#HCObject#0" expanded="false" />
-                <element signature="method#addCoordinate#0;class#HCObject#0" expanded="false" />
-                <element signature="method#removeCoordinate#0;class#HCObject#0" expanded="false" />
-                <element signature="method#getCoordinateRange#0;class#HCObject#0" expanded="false" />
-                <element signature="method#addMeasurement#0;class#HCObject#0" expanded="false" />
-                <element signature="method#getMeasurement#0;class#HCObject#0" expanded="false" />
-                <element signature="method#addCalibration#0;class#HCObject#0" expanded="false" />
-                <element signature="method#getCalibration#0;class#HCObject#0" expanded="false" />
-                <element signature="docComment;method#copyCalibration#0;class#HCObject#0" expanded="false" />
-                <element signature="method#copyCalibration#0;class#HCObject#0" expanded="false" />
-                <element signature="method#toString#0;class#HCObject#0" expanded="false" />
-                <element signature="method#getNumberOfDimensions#0;class#HCObject#0" expanded="false" />
-                <element signature="docComment;method#setCoordinates#0;class#HCObject#0" expanded="false" />
-                <element signature="method#setCoordinates#0;class#HCObject#0" expanded="false" />
-                <element signature="docComment;method#setCoordinates#1;class#HCObject#0" expanded="false" />
-                <element signature="method#setCoordinates#1;class#HCObject#0" expanded="false" />
-                <element signature="method#getCoordinates#0;class#HCObject#0" expanded="false" />
-                <element signature="method#getPosition#0;class#HCObject#0" expanded="false" />
-                <element signature="method#setPosition#0;class#HCObject#0" expanded="false" />
-                <element signature="method#getCoordinates#1;class#HCObject#0" expanded="false" />
-                <element signature="method#setCoordinates#2;class#HCObject#0" expanded="false" />
-                <element signature="method#getParent#0;class#HCObject#0" expanded="false" />
-                <element signature="method#removeParent#0;class#HCObject#0" expanded="false" />
-                <element signature="method#addChild#0;class#HCObject#0" expanded="false" />
-                <element signature="method#removeChild#0;class#HCObject#0" expanded="false" />
-                <element signature="docComment;method#removeRelationships#0;class#HCObject#0" expanded="false" />
-                <element signature="method#removeRelationships#0;class#HCObject#0" expanded="false" />
-                <element signature="method#setMeasurements#0;class#HCObject#0" expanded="false" />
-                <element signature="method#getCentroid#0;class#HCObject#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="0">
+              <caret line="0" column="95" lean-forward="false" selection-start-line="0" selection-start-column="95" selection-end-line="0" selection-end-column="95" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HCObjectSet.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCObjectSet.java">
+      <file leaf-file-name="ModularImageAnalysisPlugin.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/ModularImageAnalysisPlugin.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="391">
-              <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+              <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
               <folding>
-                <element signature="docComment;class#HCObjectSet#0" expanded="false" />
+                <element signature="imports" expanded="true" />
+                <element signature="docComment;class#ModularImageAnalysisPlugin#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DiffractionPatternFitter1D.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/DiffractionPatternFitter1D.java">
+      <file leaf-file-name="ImageObjectInputParameter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ImageObjectInputParameter.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="357">
-              <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+              <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainGUI.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1768">
+              <caret line="1041" column="0" lean-forward="false" selection-start-line="1041" selection-start-column="0" selection-end-line="1041" selection-end-column="0" />
               <folding>
-                <element signature="docComment;class#DiffractionPatternFitter1D#0" expanded="false" />
-                <element signature="method#initialiseParameters#0;class#DiffractionPatternFitter1D#0" expanded="false" />
-                <element signature="method#addMeasurements#0;class#DiffractionPatternFitter1D#0" expanded="false" />
-                <element signature="method#addRelationships#0;class#DiffractionPatternFitter1D#0" expanded="false" />
+                <element signature="imports" expanded="true" />
+                <element signature="docComment;class#MainGUI#0" expanded="false" />
+                <element signature="method#MainGUI#0;class#MainGUI#0" expanded="false" />
+                <element signature="e#3138#3168#0" expanded="false" />
+                <element signature="method#initialiseMenuBar#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#clearFrame#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#renderBasicMode#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#renderEditingMode#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#initialiseControlPanel#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#initialisingModulesPanel#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#initialiseParametersPanel#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#initialiseStatusPanel#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#initialiseBasicControlPanel#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#initialiseBasicModulesPanel#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#populateModuleList#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#populateModuleParameters#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#populateBasicModules#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#listAvailableModules#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#addModule#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#removeModule#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#moveModuleUp#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#moveModuleDown#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#evaluateModule#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#reactToAction#0;class#MainGUI#0" expanded="false" />
+                <element signature="e#30265#30886#0" expanded="false" />
+                <element signature="e#32248#32459#0" expanded="false" />
+                <element signature="e#32561#32945#0" expanded="false" />
+                <element signature="method#actionPerformed#0;class#MainGUI#0" expanded="false" />
+                <element signature="e#37642#37958#0" expanded="false" />
+                <element signature="method#focusGained#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#focusLost#0;class#MainGUI#0" expanded="false" />
+                <element signature="e#38117#38433#0" expanded="false" />
+                <element signature="method#mouseClicked#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#mousePressed#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#mouseReleased#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#mouseEntered#0;class#MainGUI#0" expanded="false" />
+                <element signature="method#mouseExited#0;class#MainGUI#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ApplyManualClassification.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/ApplyManualClassification.java">
+      <file leaf-file-name="Workspace.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Workspace.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="40" column="81" lean-forward="true" selection-start-line="35" selection-start-column="8" selection-end-line="40" selection-end-column="81" />
-              <folding />
+            <state relative-caret-position="374">
+              <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+              <folding>
+                <element signature="docComment;class#Workspace#0" expanded="false" />
+                <element signature="e#676#677#0" expanded="false" />
+                <element signature="e#729#730#0" expanded="false" />
+                <element signature="method#removeObject#0;class#Workspace#0" expanded="false" />
+                <element signature="e#925#926#0" expanded="false" />
+                <element signature="e#975#976#0" expanded="false" />
+                <element signature="method#removeImage#0;class#Workspace#0" expanded="false" />
+                <element signature="docComment;method#clearAllImages#0;class#Workspace#0" expanded="false" />
+                <element signature="method#clearAllImages#0;class#Workspace#0" expanded="false" />
+                <element signature="method#getImage#0;class#Workspace#0" expanded="false" />
+                <element signature="method#getObjectSet#0;class#Workspace#0" expanded="false" />
+                <element signature="e#1916#1917#0" expanded="false" />
+                <element signature="e#1946#1947#0" expanded="false" />
+                <element signature="e#2015#2016#0" expanded="false" />
+                <element signature="e#2053#2054#0" expanded="false" />
+                <element signature="e#2102#2103#0" expanded="false" />
+                <element signature="e#2131#2132#0" expanded="false" />
+                <element signature="e#2197#2198#0" expanded="false" />
+                <element signature="e#2233#2234#0" expanded="false" />
+                <element signature="e#2272#2273#0" expanded="false" />
+                <element signature="e#2303#2304#0" expanded="false" />
+                <element signature="e#2355#2356#0" expanded="false" />
+                <element signature="e#2395#2396#0" expanded="false" />
+                <element signature="e#2421#2422#0" expanded="false" />
+                <element signature="e#2446#2447#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FilterImage.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImage.java">
+      <file leaf-file-name="StackComparator.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/StackComparator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="43" column="61" lean-forward="true" selection-start-line="40" selection-start-column="8" selection-end-line="43" selection-end-column="61" />
-              <folding />
+            <state relative-caret-position="119">
+              <caret line="9" column="59" lean-forward="false" selection-start-line="9" selection-start-column="59" selection-end-line="9" selection-end-column="59" />
+              <folding>
+                <element signature="e#633#634#0" expanded="false" />
+                <element signature="e#661#662#0" expanded="false" />
+                <element signature="e#703#704#0" expanded="false" />
+                <element signature="e#737#738#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ImageStackLoader.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="680">
+              <caret line="54" column="13" lean-forward="false" selection-start-line="54" selection-start-column="13" selection-end-line="54" selection-end-column="13" />
+              <folding>
+                <element signature="e#1040#1041#0" expanded="false" />
+                <element signature="e#1067#1068#0" expanded="false" />
+                <element signature="e#5064#5065#0" expanded="false" />
+                <element signature="e#5097#5098#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MetadataExtractor.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/MetadataExtractor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="459">
+              <caret line="32" column="15" lean-forward="false" selection-start-line="32" selection-start-column="15" selection-end-line="32" selection-end-column="15" />
+              <folding>
+                <element signature="e#635#636#0" expanded="false" />
+                <element signature="e#662#663#0" expanded="false" />
+                <element signature="e#1852#1853#0" expanded="false" />
+                <element signature="e#1885#1886#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -252,18 +284,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/ThresholdImage.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/BioformatsImageLoader.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageJImageLoader.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/ApplyManualClassification.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/CalculateNearestNeighbour.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectCentroid.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectTexture.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureTrackMotion.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureSpotIntensity.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/GetLocalObjectRegion.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ProjectObjects.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/RidgeDetection.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/Visualisation/PlotMeasurementsScatter.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/IdentifyPrimaryObjects.java" />
@@ -279,20 +299,14 @@
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/GaussianFitter2D.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectShape.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectIntensity.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/WiderDropDownCombo.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ImageObjectInputParameter.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ChoiceArrayParameter.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/SaveObjectsToSpreadsheet.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/HCExporter.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/CalculateStatsForChildren.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageFileLoader.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCParameter.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/RemoveImage.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCWorkspace.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/HCAnalysis.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/AnalysisHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ComponentFactory.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageSaver.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/RelateObjects.java" />
@@ -303,6 +317,24 @@
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ObjectImageConverter.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCObjectSet.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/DiffractionPatternFitter1D.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageFileLoader.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/HCAnalysis.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/AnalysisHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/BatchProcessor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Extractor/IncuCyteShortFilenameExtractor.java" />
+        <option value="$PROJECT_DIR$/../Common/src/main/java/wbif/sjx/common/System/CellVoyagerFilenameExtractor.java" />
+        <option value="$PROJECT_DIR$/../Common/src/main/java/wbif/sjx/common/Object/HCMetadata.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Analysis.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Workspace.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/StackComparator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/MetadataExtractor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Exporter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/WiderDropDownCombo.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/plugins.config" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/ModularImageAnalysisPlugin.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
   </component>
@@ -337,6 +369,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -345,6 +380,16 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ModularImageAnalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="ModularImageAnalysis" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -360,6 +405,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ModularImageAnalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ModularImageAnalysis" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -415,117 +482,12 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="Module" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ModularImageAnalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ModularImageAnalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ModularImageAnalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Module" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ObjectProcessing" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ModularImageAnalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ModularImageAnalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ModularImageAnalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Module" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ObjectMeasurements" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ModularImageAnalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ModularImageAnalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ModularImageAnalysis" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Module" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ImageProcessing" />
+              <option name="myItemId" value="GUI" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -561,7 +523,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.MainGUI">
+  <component name="RunManager" selected="Maven.ModularImageAnalysis [package]">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
@@ -733,7 +695,7 @@
       <listeners />
       <method />
     </configuration>
-    <configuration default="false" name="ModularImageAnalysis [install]" type="MavenRunConfiguration" factoryName="Maven">
+    <configuration default="false" name="ModularImageAnalysis [package]" type="MavenRunConfiguration" factoryName="Maven">
       <MavenSettings>
         <option name="myGeneralSettings" />
         <option name="myRunnerSettings" />
@@ -745,7 +707,8 @@
             <option name="goals">
               <list>
                 <option value="clean" />
-                <option value="install" />
+                <option value="package" />
+                <option value="-Dmyscope=provided" />
               </list>
             </option>
             <option name="profilesMap">
@@ -758,9 +721,9 @@
       </MavenSettings>
       <method />
     </configuration>
-    <configuration default="false" name="MainGUI" type="Application" factoryName="Application">
+    <configuration default="false" name="Modular Image Analysis" type="Application" factoryName="Application">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="MAIN_CLASS_NAME" value="wbif.sjx.ModularImageAnalysis.GUI.MainGUI" />
+      <option name="MAIN_CLASS_NAME" value="wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin" />
       <option name="VM_PARAMETERS" value="-Xmx12000m" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
@@ -774,8 +737,8 @@
       <method />
     </configuration>
     <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="Maven.ModularImageAnalysis [install]" />
-      <item index="1" class="java.lang.String" itemvalue="Application.MainGUI" />
+      <item index="0" class="java.lang.String" itemvalue="Maven.ModularImageAnalysis [package]" />
+      <item index="1" class="java.lang.String" itemvalue="Application.Modular Image Analysis" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
@@ -804,7 +767,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1096" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -814,10 +777,10 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.40041494" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3226141" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21055438" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21428572" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -840,6 +803,9 @@
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.config" />
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
@@ -854,97 +820,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ProjectObjects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="35" column="14" lean-forward="false" selection-start-line="35" selection-start-column="14" selection-end-line="35" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/RidgeDetection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="591">
-          <caret line="42" column="14" lean-forward="false" selection-start-line="42" selection-start-column="14" selection-end-line="42" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/Visualisation/PlotMeasurementsScatter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2818">
-          <caret line="178" column="14" lean-forward="false" selection-start-line="178" selection-start-column="14" selection-end-line="178" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/IdentifyPrimaryObjects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="73" column="92" lean-forward="false" selection-start-line="73" selection-start-column="92" selection-end-line="73" selection-end-column="92" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ParameterWindow.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="73" column="13" lean-forward="true" selection-start-line="73" selection-start-column="13" selection-end-line="73" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/HCModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="731">
-          <caret line="78" column="0" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
-          <folding>
-            <element signature="docComment;class#HCModule#0" expanded="false" />
-            <element signature="method#HCModule#0;class#HCModule#0" expanded="false" />
-            <element signature="docComment;method#initialiseParameters#0;class#HCModule#0" expanded="false" />
-            <element signature="docComment;method#getActiveParameters#0;class#HCModule#0" expanded="false" />
-            <element signature="docComment;method#addMeasurements#0;class#HCModule#0" expanded="false" />
-            <element signature="docComment;method#addRelationships#0;class#HCModule#0" expanded="false" />
-            <element signature="method#updateParameterValue#0;class#HCModule#0" expanded="false" />
-            <element signature="method#getParameterValue#0;class#HCModule#0" expanded="false" />
-            <element signature="method#setParameterVisibility#0;class#HCModule#0" expanded="false" />
-            <element signature="method#execute#1;class#HCModule#0" expanded="false" />
-            <element signature="method#getNotes#0;class#HCModule#0" expanded="false" />
-            <element signature="method#setNotes#0;class#HCModule#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ObjectClusterer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="289" column="0" lean-forward="true" selection-start-line="289" selection-start-column="0" selection-end-line="289" selection-end-column="0" />
-          <folding>
-            <element signature="class#LocationWrapper#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectTexture.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1921">
-          <caret line="24" column="53" lean-forward="true" selection-start-line="24" selection-start-column="53" selection-end-line="24" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/Visualisation/ShowObjects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="46" column="158" lean-forward="true" selection-start-line="46" selection-start-column="158" selection-end-line="46" selection-end-column="158" />
-          <folding>
-            <element signature="e#2399#2400#0" expanded="false" />
-            <element signature="e#2432#2433#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/RunTrackMate.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
           <caret line="302" column="9" lean-forward="true" selection-start-line="302" selection-start-column="9" selection-end-line="302" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -962,29 +841,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/Visualisation/AddObjectsOverlay.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="176" column="0" lean-forward="true" selection-start-line="166" selection-start-column="46" selection-end-line="176" selection-end-column="0" />
-          <folding>
-            <element signature="docComment;class#AddObjectsOverlay#0" expanded="false" />
-            <element signature="method#initialiseParameters#0;class#AddObjectsOverlay#0" expanded="false" />
-            <element signature="method#getActiveParameters#0;class#AddObjectsOverlay#0" expanded="false" />
-            <element signature="method#addMeasurements#0;class#AddObjectsOverlay#0" expanded="false" />
-            <element signature="method#addRelationships#0;class#AddObjectsOverlay#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/wbif/sjx/Common/1.2.5-SNAPSHOT/Common-1.2.5-SNAPSHOT.jar!/wbif/sjx/common/MathFunc/GaussianFitter.class" />
     <entry file="jar://$MAVEN_REPOSITORY$/wbif/sjx/Common/1.2.5-SNAPSHOT/Common-1.2.5-SNAPSHOT.jar!/wbif/sjx/common/MathFunc/Model.class" />
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/GaussianFitter2D.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="132" column="28" lean-forward="false" selection-start-line="132" selection-start-column="28" selection-end-line="132" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1016,20 +878,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/WiderDropDownCombo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ImageObjectInputParameter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="12" column="34" lean-forward="false" selection-start-line="12" selection-start-column="34" selection-end-line="12" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ChoiceArrayParameter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -1048,80 +896,41 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="57">
           <caret line="71" column="0" lean-forward="false" selection-start-line="71" selection-start-column="0" selection-end-line="85" selection-end-column="72" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCParameterCollection.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/ParameterCollection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="18" column="49" lean-forward="false" selection-start-line="18" selection-start-column="49" selection-end-line="18" selection-end-column="49" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCModuleCollection.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/ModuleCollection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="39" column="7" lean-forward="false" selection-start-line="39" selection-start-column="7" selection-end-line="39" selection-end-column="7" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Extractor/Extractor.java">
+    <entry file="file://$PROJECT_DIR$/../Common/src/main/java/wbif/sjx/common/MetadataExtractors/Extractor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCRelationshipCollection.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/RelationshipCollection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="8" column="64" lean-forward="false" selection-start-line="8" selection-start-column="64" selection-end-line="8" selection-end-column="64" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCParameter.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Parameter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="587">
           <caret line="98" column="40" lean-forward="false" selection-start-line="98" selection-start-column="40" selection-end-line="98" selection-end-column="40" />
-          <folding>
-            <element signature="docComment;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#INPUT_IMAGE#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#OUTPUT_IMAGE#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#INPUT_OBJECTS#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#OUTPUT_OBJECTS#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#REMOVED_IMAGE#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#INTEGER#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#DOUBLE#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#STRING#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#CHOICE_ARRAY#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#CHOICE_MAP#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#BOOLEAN#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#FILE_PATH#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#MEASUREMENT#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#CHILD_OBJECTS#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#PARENT_OBJECTS#0;class#HCParameter#0" expanded="false" />
-            <element signature="docComment;field#OBJECT#0;class#HCParameter#0" expanded="false" />
-            <element signature="method#HCParameter#0;class#HCParameter#0" expanded="false" />
-            <element signature="method#HCParameter#1;class#HCParameter#0" expanded="false" />
-            <element signature="method#getValue#0;class#HCParameter#0" expanded="false" />
-            <element signature="method#toString#0;class#HCParameter#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageFileLoader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCWorkspace.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="45" column="8" lean-forward="false" selection-start-line="45" selection-start-column="8" selection-end-line="46" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -1132,28 +941,146 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ComponentFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="944" column="0" lean-forward="true" selection-start-line="944" selection-start-column="0" selection-end-line="944" selection-end-column="0" />
+        <state relative-caret-position="306">
+          <caret line="285" column="0" lean-forward="true" selection-start-line="285" selection-start-column="0" selection-end-line="285" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageSaver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="816">
+          <caret line="61" column="9" lean-forward="false" selection-start-line="59" selection-start-column="82" selection-end-line="61" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/ChannelExtractor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="39" column="29" lean-forward="false" selection-start-line="39" selection-start-column="29" selection-end-line="39" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/RelateObjects.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1938">
+          <caret line="124" column="13" lean-forward="false" selection-start-line="124" selection-start-column="13" selection-end-line="124" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/ObjSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ObjectImageConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3145">
+          <caret line="197" column="64" lean-forward="false" selection-start-line="197" selection-start-column="64" selection-end-line="197" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/IdentifyObjects.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1343">
+          <caret line="85" column="8" lean-forward="false" selection-start-line="85" selection-start-column="8" selection-end-line="85" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/ApplyManualClassification.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="40" column="81" lean-forward="false" selection-start-line="35" selection-start-column="8" selection-end-line="40" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/FilterObjects.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1241">
+          <caret line="80" column="55" lean-forward="false" selection-start-line="80" selection-start-column="55" selection-end-line="84" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="43" column="61" lean-forward="false" selection-start-line="40" selection-start-column="8" selection-end-line="43" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/DiffractionPatternFitter1D.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/Visualisation/AddObjectsOverlay.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2975">
+          <caret line="195" column="9" lean-forward="false" selection-start-line="195" selection-start-column="9" selection-end-line="195" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageFileLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="952">
+          <caret line="69" column="55" lean-forward="false" selection-start-line="69" selection-start-column="12" selection-end-line="69" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Common/src/main/java/wbif/sjx/common/MetadataExtractors/CellVoyagerFilenameExtractor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="19" column="32" lean-forward="true" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Common/src/main/java/wbif/sjx/common/Object/HCMetadata.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="9" column="3" lean-forward="false" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Common/src/main/java/wbif/sjx/common/MetadataExtractors/IncuCyteShortFilenameExtractor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="45" column="0" lean-forward="false" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/AnalysisHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1258">
-          <caret line="99" column="0" lean-forward="false" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+        <state relative-caret-position="170">
+          <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
           <folding>
             <element signature="docComment;class#AnalysisHandler#0" expanded="false" />
             <element signature="method#saveAnalysis#0;class#AnalysisHandler#0" expanded="false" />
+            <element signature="method#loadAnalysis#0;class#AnalysisHandler#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/BatchProcessor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="42" column="0" lean-forward="false" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+          <folding>
+            <element signature="docComment;class#BatchProcessor#0" expanded="false" />
+            <element signature="method#BatchProcessor#0;class#BatchProcessor#0" expanded="false" />
+            <element signature="method#BatchProcessor#1;class#BatchProcessor#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/CalculateStatsForChildren.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="680">
-          <caret line="48" column="0" lean-forward="false" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+        <state relative-caret-position="323">
+          <caret line="25" column="5" lean-forward="false" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="false" />
             <element signature="e#1032#1033#0" expanded="false" />
@@ -1164,217 +1091,202 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ComponentFactory.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Obj.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="285" column="0" lean-forward="true" selection-start-line="285" selection-start-column="0" selection-end-line="285" selection-end-column="0" />
+        <state relative-caret-position="102">
+          <caret line="11" column="3" lean-forward="true" selection-start-line="11" selection-start-column="3" selection-end-line="11" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Analysis.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="799">
+          <caret line="51" column="76" lean-forward="false" selection-start-line="51" selection-start-column="76" selection-end-line="51" selection-end-column="76" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Workspace.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
           <folding>
-            <element signature="docComment;class#ComponentFactory#0" expanded="false" />
-            <element signature="method#ComponentFactory#0;class#ComponentFactory#0" expanded="false" />
-            <element signature="method#createParameterControl#0;class#ComponentFactory#0" expanded="false" />
-            <element signature="method#createAdvancedModuleControl#0;class#ComponentFactory#0" expanded="false" />
-            <element signature="method#createBasicModuleHeading#0;class#ComponentFactory#0" expanded="false" />
+            <element signature="docComment;class#Workspace#0" expanded="false" />
+            <element signature="e#676#677#0" expanded="false" />
+            <element signature="e#729#730#0" expanded="false" />
+            <element signature="method#removeObject#0;class#Workspace#0" expanded="false" />
+            <element signature="e#925#926#0" expanded="false" />
+            <element signature="e#975#976#0" expanded="false" />
+            <element signature="method#removeImage#0;class#Workspace#0" expanded="false" />
+            <element signature="docComment;method#clearAllImages#0;class#Workspace#0" expanded="false" />
+            <element signature="method#clearAllImages#0;class#Workspace#0" expanded="false" />
+            <element signature="method#getImage#0;class#Workspace#0" expanded="false" />
+            <element signature="method#getObjectSet#0;class#Workspace#0" expanded="false" />
+            <element signature="e#1916#1917#0" expanded="false" />
+            <element signature="e#1946#1947#0" expanded="false" />
+            <element signature="e#2015#2016#0" expanded="false" />
+            <element signature="e#2053#2054#0" expanded="false" />
+            <element signature="e#2102#2103#0" expanded="false" />
+            <element signature="e#2131#2132#0" expanded="false" />
+            <element signature="e#2197#2198#0" expanded="false" />
+            <element signature="e#2233#2234#0" expanded="false" />
+            <element signature="e#2272#2273#0" expanded="false" />
+            <element signature="e#2303#2304#0" expanded="false" />
+            <element signature="e#2355#2356#0" expanded="false" />
+            <element signature="e#2395#2396#0" expanded="false" />
+            <element signature="e#2421#2422#0" expanded="false" />
+            <element signature="e#2446#2447#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/HCAnalysis.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/StackComparator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
+        <state relative-caret-position="119">
+          <caret line="9" column="59" lean-forward="false" selection-start-line="9" selection-start-column="59" selection-end-line="9" selection-end-column="59" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="docComment;class#HCAnalysis#0" expanded="false" />
-            <element signature="method#HCAnalysis#0;class#HCAnalysis#0" expanded="false" />
-            <element signature="docComment;method#initialise#0;class#HCAnalysis#0" expanded="false" />
-            <element signature="docComment;method#execute#0;class#HCAnalysis#0" expanded="false" />
-            <element signature="method#execute#0;class#HCAnalysis#0" expanded="false" />
-            <element signature="docComment;method#execute#1;class#HCAnalysis#0" expanded="false" />
-            <element signature="method#getModules#0;class#HCAnalysis#0" expanded="false" />
-            <element signature="method#shutdown#0;class#HCAnalysis#0" expanded="false" />
+            <element signature="e#633#634#0" expanded="false" />
+            <element signature="e#661#662#0" expanded="false" />
+            <element signature="e#703#704#0" expanded="false" />
+            <element signature="e#737#738#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageSaver.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="61" column="9" lean-forward="false" selection-start-line="59" selection-start-column="82" selection-end-line="61" selection-end-column="9" />
+        <state relative-caret-position="680">
+          <caret line="54" column="13" lean-forward="false" selection-start-line="54" selection-start-column="13" selection-end-line="54" selection-end-column="13" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="docComment;class#ImageSaver#0" expanded="false" />
-            <element signature="e#1011#1012#0" expanded="false" />
-            <element signature="e#1046#1047#0" expanded="false" />
-            <element signature="e#1091#1092#0" expanded="false" />
-            <element signature="e#1132#1133#0" expanded="false" />
+            <element signature="e#1040#1041#0" expanded="false" />
+            <element signature="e#1067#1068#0" expanded="false" />
+            <element signature="e#5064#5065#0" expanded="false" />
+            <element signature="e#5097#5098#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/ChannelExtractor.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/MetadataExtractor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="39" column="29" lean-forward="false" selection-start-line="39" selection-start-column="29" selection-end-line="39" selection-end-column="29" />
+        <state relative-caret-position="459">
+          <caret line="32" column="15" lean-forward="false" selection-start-line="32" selection-start-column="15" selection-end-line="32" selection-end-column="15" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#773#774#0" expanded="false" />
-            <element signature="e#800#801#0" expanded="false" />
-            <element signature="e#2862#2863#0" expanded="false" />
-            <element signature="e#2895#2896#0" expanded="false" />
+            <element signature="e#635#636#0" expanded="false" />
+            <element signature="e#662#663#0" expanded="false" />
+            <element signature="e#1852#1853#0" expanded="false" />
+            <element signature="e#1885#1886#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/RelateObjects.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Exporter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1938">
-          <caret line="124" column="13" lean-forward="false" selection-start-line="124" selection-start-column="13" selection-end-line="124" selection-end-column="13" />
+        <state relative-caret-position="318">
+          <caret line="339" column="85" lean-forward="false" selection-start-line="339" selection-start-column="85" selection-end-line="339" selection-end-column="85" />
           <folding>
-            <element signature="e#8055#8056#0" expanded="false" />
-            <element signature="e#8088#8089#0" expanded="false" />
+            <element signature="docComment;class#Exporter#0" expanded="false" />
+            <element signature="method#Exporter#0;class#Exporter#0" expanded="false" />
+            <element signature="method#exportResults#0;class#Exporter#0" expanded="false" />
+            <element signature="method#exportXML#0;class#Exporter#0" expanded="false" />
+            <element signature="method#prepareParametersXML#0;class#Exporter#0" expanded="false" />
+            <element signature="method#exportXLSX#0;class#Exporter#0" expanded="false" />
+            <element signature="method#prepareParametersXLSX#0;class#Exporter#0" expanded="false" />
+            <element signature="e#13342#13454#0" expanded="false" />
+            <element signature="method#prepareImagesXLSX#0;class#Exporter#0" expanded="false" />
+            <element signature="method#prepareObjectsXLSX#0;class#Exporter#0" expanded="false" />
+            <element signature="e#18224#18327#0" expanded="false" />
+            <element signature="e#18501#18600#0" expanded="false" />
+            <element signature="method#exportJSON#0;class#Exporter#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/HCExporter.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/WiderDropDownCombo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="448" column="50" lean-forward="false" selection-start-line="448" selection-start-column="50" selection-end-line="448" selection-end-column="50" />
-          <folding>
-            <element signature="docComment;class#HCExporter#0" expanded="false" />
-            <element signature="method#HCExporter#0;class#HCExporter#0" expanded="false" />
-            <element signature="method#exportResults#0;class#HCExporter#0" expanded="false" />
-            <element signature="method#exportXML#0;class#HCExporter#0" expanded="false" />
-            <element signature="method#prepareParametersXML#0;class#HCExporter#0" expanded="false" />
-            <element signature="method#prepareParametersXLSX#0;class#HCExporter#0" expanded="false" />
-            <element signature="method#prepareMetadataXLSX#0;class#HCExporter#0" expanded="false" />
-            <element signature="e#13346#13458#0" expanded="false" />
-            <element signature="method#prepareImagesXLSX#0;class#HCExporter#0" expanded="false" />
-            <element signature="e#18246#18349#0" expanded="false" />
-            <element signature="e#18523#18622#0" expanded="false" />
-            <element signature="method#exportJSON#0;class#HCExporter#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="255">
+          <caret line="16" column="5" lean-forward="true" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCObject.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/plugins.config">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1156">
-          <caret line="276" column="0" lean-forward="true" selection-start-line="276" selection-start-column="0" selection-end-line="276" selection-end-column="0" />
-          <folding>
-            <element signature="docComment;class#HCObject#0" expanded="false" />
-            <element signature="docComment;field#ID#0;class#HCObject#0" expanded="false" />
-            <element signature="docComment;field#coordinates#0;class#HCObject#0" expanded="false" />
-            <element signature="docComment;field#positions#0;class#HCObject#0" expanded="false" />
-            <element signature="docComment;field#calibration#0;class#HCObject#0" expanded="false" />
-            <element signature="method#HCObject#0;class#HCObject#0" expanded="false" />
-            <element signature="method#addCoordinate#0;class#HCObject#0" expanded="false" />
-            <element signature="method#removeCoordinate#0;class#HCObject#0" expanded="false" />
-            <element signature="method#getCoordinateRange#0;class#HCObject#0" expanded="false" />
-            <element signature="method#addMeasurement#0;class#HCObject#0" expanded="false" />
-            <element signature="method#getMeasurement#0;class#HCObject#0" expanded="false" />
-            <element signature="method#addCalibration#0;class#HCObject#0" expanded="false" />
-            <element signature="method#getCalibration#0;class#HCObject#0" expanded="false" />
-            <element signature="docComment;method#copyCalibration#0;class#HCObject#0" expanded="false" />
-            <element signature="method#copyCalibration#0;class#HCObject#0" expanded="false" />
-            <element signature="method#toString#0;class#HCObject#0" expanded="false" />
-            <element signature="method#getNumberOfDimensions#0;class#HCObject#0" expanded="false" />
-            <element signature="docComment;method#setCoordinates#0;class#HCObject#0" expanded="false" />
-            <element signature="method#setCoordinates#0;class#HCObject#0" expanded="false" />
-            <element signature="docComment;method#setCoordinates#1;class#HCObject#0" expanded="false" />
-            <element signature="method#setCoordinates#1;class#HCObject#0" expanded="false" />
-            <element signature="method#getCoordinates#0;class#HCObject#0" expanded="false" />
-            <element signature="method#getPosition#0;class#HCObject#0" expanded="false" />
-            <element signature="method#setPosition#0;class#HCObject#0" expanded="false" />
-            <element signature="method#getCoordinates#1;class#HCObject#0" expanded="false" />
-            <element signature="method#setCoordinates#2;class#HCObject#0" expanded="false" />
-            <element signature="method#getParent#0;class#HCObject#0" expanded="false" />
-            <element signature="method#removeParent#0;class#HCObject#0" expanded="false" />
-            <element signature="method#addChild#0;class#HCObject#0" expanded="false" />
-            <element signature="method#removeChild#0;class#HCObject#0" expanded="false" />
-            <element signature="docComment;method#removeRelationships#0;class#HCObject#0" expanded="false" />
-            <element signature="method#removeRelationships#0;class#HCObject#0" expanded="false" />
-            <element signature="method#setMeasurements#0;class#HCObject#0" expanded="false" />
-            <element signature="method#getCentroid#0;class#HCObject#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="95" lean-forward="false" selection-start-line="0" selection-start-column="95" selection-end-line="0" selection-end-column="95" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCObjectSet.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ImageObjectInputParameter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-          <folding>
-            <element signature="docComment;class#HCObjectSet#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="357">
+          <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ObjectImageConverter.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="197" column="64" lean-forward="true" selection-start-line="197" selection-start-column="64" selection-end-line="197" selection-end-column="64" />
-          <folding>
-            <element signature="docComment;class#ObjectImageConverter#0" expanded="false" />
-            <element signature="method#getTitle#0;class#ObjectImageConverter#0" expanded="false" />
-            <element signature="method#addMeasurements#0;class#ObjectImageConverter#0" expanded="false" />
-            <element signature="method#addRelationships#0;class#ObjectImageConverter#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/IdentifyObjects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="85" column="8" lean-forward="true" selection-start-line="85" selection-start-column="8" selection-end-line="85" selection-end-column="69" />
+        <state relative-caret-position="1768">
+          <caret line="1041" column="0" lean-forward="false" selection-start-line="1041" selection-start-column="0" selection-end-line="1041" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="docComment;class#MainGUI#0" expanded="false" />
+            <element signature="method#MainGUI#0;class#MainGUI#0" expanded="false" />
+            <element signature="e#3138#3168#0" expanded="false" />
+            <element signature="method#initialiseMenuBar#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#clearFrame#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#renderBasicMode#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#renderEditingMode#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#initialiseControlPanel#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#initialisingModulesPanel#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#initialiseParametersPanel#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#initialiseStatusPanel#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#initialiseBasicControlPanel#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#initialiseBasicModulesPanel#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#populateModuleList#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#populateModuleParameters#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#populateBasicModules#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#listAvailableModules#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#addModule#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#removeModule#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#moveModuleUp#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#moveModuleDown#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#evaluateModule#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#reactToAction#0;class#MainGUI#0" expanded="false" />
+            <element signature="e#30265#30886#0" expanded="false" />
+            <element signature="e#32248#32459#0" expanded="false" />
+            <element signature="e#32561#32945#0" expanded="false" />
+            <element signature="method#actionPerformed#0;class#MainGUI#0" expanded="false" />
+            <element signature="e#37642#37958#0" expanded="false" />
+            <element signature="method#focusGained#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#focusLost#0;class#MainGUI#0" expanded="false" />
+            <element signature="e#38117#38433#0" expanded="false" />
+            <element signature="method#mouseClicked#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#mousePressed#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#mouseReleased#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#mouseEntered#0;class#MainGUI#0" expanded="false" />
+            <element signature="method#mouseExited#0;class#MainGUI#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/ModularImageAnalysisPlugin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#ModularImageAnalysisPlugin#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="83" column="20" lean-forward="true" selection-start-line="83" selection-start-column="20" selection-end-line="83" selection-end-column="20" />
+        <state relative-caret-position="85">
+          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/ApplyManualClassification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="40" column="81" lean-forward="true" selection-start-line="35" selection-start-column="8" selection-end-line="40" selection-end-column="81" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/FilterObjects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="80" column="55" lean-forward="false" selection-start-line="80" selection-start-column="55" selection-end-line="84" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="43" column="61" lean-forward="true" selection-start-line="40" selection-start-column="8" selection-end-line="43" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/DiffractionPatternFitter1D.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="44" column="0" lean-forward="false" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
-          <folding>
-            <element signature="docComment;class#DiffractionPatternFitter1D#0" expanded="false" />
-            <element signature="method#initialiseParameters#0;class#DiffractionPatternFitter1D#0" expanded="false" />
-            <element signature="method#addMeasurements#0;class#DiffractionPatternFitter1D#0" expanded="false" />
-            <element signature="method#addRelationships#0;class#DiffractionPatternFitter1D#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>

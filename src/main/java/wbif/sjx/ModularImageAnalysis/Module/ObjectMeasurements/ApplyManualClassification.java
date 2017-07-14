@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.BufferedReader;
@@ -29,13 +28,13 @@ public class ApplyManualClassification extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting classification file and storing classifications as HashMap that can be easily read later on
         String classificationFilePath = parameters.getValue(CLASSIFICATION_FILE);
@@ -50,11 +49,11 @@ public class ApplyManualClassification extends HCModule {
                 int f = Integer.valueOf(vals[2]);
                 int currClass = Integer.valueOf(vals[3]);
 
-                for (HCObject object:inputObjects.values()) {
-                    double xCent = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.X));
-                    double yCent = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(HCObject.Y));
-                    if (xCent==x & yCent==y & object.getCoordinates(HCObject.T).equals(f)) {
-                        HCMeasurement objClass = new HCMeasurement(HCMeasurement.CLASS,currClass);
+                for (Obj object:inputObjects.values()) {
+                    double xCent = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.X));
+                    double yCent = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Y));
+                    if (xCent==x & yCent==y & object.getCoordinates(Obj.T).equals(f)) {
+                        MIAMeasurement objClass = new MIAMeasurement(MIAMeasurement.CLASS,currClass);
                         objClass.setSource(this);
                         object.addMeasurement(objClass);
 
@@ -66,17 +65,17 @@ public class ApplyManualClassification extends HCModule {
             // Removing objects that don't have an assigned class (first removing the parent-child relationships).
             // Otherwise, the class measurement is set to Double.NaN
             if (parameters.getValue(REMOVE_MISSING)) {
-                for (HCObject object : inputObjects.values()) {
-                    if (object.getMeasurement(HCMeasurement.CLASS) == null) {
+                for (Obj object : inputObjects.values()) {
+                    if (object.getMeasurement(MIAMeasurement.CLASS) == null) {
                         object.removeRelationships();
                     }
                 }
-                inputObjects.entrySet().removeIf(entry -> entry.getValue().getMeasurement(HCMeasurement.CLASS) == null);
+                inputObjects.entrySet().removeIf(entry -> entry.getValue().getMeasurement(MIAMeasurement.CLASS) == null);
 
             } else {
-                for (HCObject object : inputObjects.values()) {
-                    if (object.getMeasurement(HCMeasurement.CLASS) == null) {
-                        HCMeasurement objClass = new HCMeasurement(HCMeasurement.CLASS,Double.NaN);
+                for (Obj object : inputObjects.values()) {
+                    if (object.getMeasurement(MIAMeasurement.CLASS) == null) {
+                        MIAMeasurement objClass = new MIAMeasurement(MIAMeasurement.CLASS,Double.NaN);
                         objClass.setSource(this);
                         object.addMeasurement(objClass);
                     }
@@ -93,15 +92,15 @@ public class ApplyManualClassification extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(CLASSIFICATION_FILE,HCParameter.FILE_PATH,null));
-        parameters.addParameter(new HCParameter(REMOVE_MISSING,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(CLASSIFICATION_FILE, Parameter.FILE_PATH,null));
+        parameters.addParameter(new Parameter(REMOVE_MISSING, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(CLASSIFICATION_FILE));
         returnedParameters.addParameter(parameters.getParameter(REMOVE_MISSING));
@@ -114,12 +113,12 @@ public class ApplyManualClassification extends HCModule {
      * Adds measurements from the current module to the measurement collection
      */
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
-        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),HCMeasurement.CLASS);
+    public void addMeasurements(MeasurementCollection measurements) {
+        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), MIAMeasurement.CLASS);
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

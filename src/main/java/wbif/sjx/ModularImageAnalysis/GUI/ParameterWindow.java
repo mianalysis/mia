@@ -2,9 +2,9 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 
 import ij.gui.GenericDialog;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Object.HCMeasurementCollection;
-import wbif.sjx.ModularImageAnalysis.Object.HCModuleCollection;
-import wbif.sjx.ModularImageAnalysis.Object.HCParameter;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementCollection;
+import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import java.util.Map;
  * Created by sc13967 on 02/05/2017.
  */
 public class ParameterWindow {
-    public void updateParameters(HCModuleCollection modules) {
+    public void updateParameters(ModuleCollection modules) {
         GenericDialog gd = new GenericDialog("Parameters");
 
         // Creating a font for the module titles
@@ -25,26 +25,26 @@ public class ParameterWindow {
             gd.addMessage(module.getTitle()+":",titleFont);
             boolean hasComponents = false;
 
-            for (Map.Entry<String,HCParameter> entry:module.getActiveParameters().entrySet()) {
+            for (Map.Entry<String,Parameter> entry:module.getActiveParameters().entrySet()) {
                 if (entry.getValue().isVisible()) {
-                    if (entry.getValue().getType() == HCParameter.INTEGER) {
+                    if (entry.getValue().getType() == Parameter.INTEGER) {
                         gd.addNumericField(entry.getKey(), (double) ((int) entry.getValue().getValue()), 1);
                         hasComponents = true;
 
-                    } else if (entry.getValue().getType() == HCParameter.DOUBLE) {
+                    } else if (entry.getValue().getType() == Parameter.DOUBLE) {
                         gd.addNumericField(entry.getKey(), entry.getValue().getValue(), 1);
                         hasComponents = true;
 
-                    } else if (entry.getValue().getType() == HCParameter.STRING) {
+                    } else if (entry.getValue().getType() == Parameter.STRING) {
                         gd.addStringField(entry.getKey(), String.valueOf(entry.getValue()));
                         hasComponents = true;
 
-                    } else if (entry.getValue().getType() == HCParameter.CHOICE_ARRAY) {
+                    } else if (entry.getValue().getType() == Parameter.CHOICE_ARRAY) {
                         gd.addChoice(entry.getKey(),(String[]) entry.getValue().getValueSource(),
                                 entry.getValue().getValue());
                         hasComponents = true;
 
-                    } else if (entry.getValue().getType() == HCParameter.CHOICE_MAP) {
+                    } else if (entry.getValue().getType() == Parameter.CHOICE_MAP) {
                         HashMap<String, String> map = entry.getValue().getValue();
 
                         for (String k:map.keySet()) {
@@ -53,13 +53,13 @@ public class ParameterWindow {
 
                         hasComponents = true;
 
-                    } else if (entry.getValue().getType() == HCParameter.BOOLEAN) {
+                    } else if (entry.getValue().getType() == Parameter.BOOLEAN) {
                         gd.addCheckbox(entry.getKey(), entry.getValue().getValue());
                         hasComponents = true;
 
-                    } else if (entry.getValue().getType() == HCParameter.MEASUREMENT) {
+                    } else if (entry.getValue().getType() == Parameter.MEASUREMENT) {
                         // Getting the measurements available to this module
-                        HCMeasurementCollection measurements = modules.getMeasurements(module);
+                        MeasurementCollection measurements = modules.getMeasurements(module);
                         String[] measurementChoices = measurements.getMeasurementNames(
                                 entry.getValue().getValueSource());
                         gd.addChoice(entry.getKey(),measurementChoices,measurementChoices[0]);
@@ -80,22 +80,22 @@ public class ParameterWindow {
 
             // Retrieving the results
             for (HCModule module:modules) {
-                for (Map.Entry<String,HCParameter> entry:module.getActiveParameters().entrySet()) {
+                for (Map.Entry<String,Parameter> entry:module.getActiveParameters().entrySet()) {
                     if (entry.getValue().isVisible()) {
-                        if (entry.getValue().getType() == HCParameter.INTEGER) {
+                        if (entry.getValue().getType() == Parameter.INTEGER) {
                             module.getActiveParameters().getParameter(entry.getKey()).setValue(
                                     (int) Math.round(gd.getNextNumber()));
 
-                        } else if (entry.getValue().getType() == HCParameter.DOUBLE) {
+                        } else if (entry.getValue().getType() == Parameter.DOUBLE) {
                             module.getActiveParameters().getParameter(entry.getKey()).setValue(gd.getNextNumber());
 
-                        } else if (entry.getValue().getType() == HCParameter.STRING) {
+                        } else if (entry.getValue().getType() == Parameter.STRING) {
                             module.getActiveParameters().getParameter(entry.getKey()).setValue(gd.getNextString());
 
-                        } else if (entry.getValue().getType() == HCParameter.CHOICE_ARRAY) {
+                        } else if (entry.getValue().getType() == Parameter.CHOICE_ARRAY) {
                             module.getActiveParameters().getParameter(entry.getKey()).setValue(gd.getNextChoice());
 
-                        } else if (entry.getValue().getType() == HCParameter.CHOICE_MAP) {
+                        } else if (entry.getValue().getType() == Parameter.CHOICE_MAP) {
                             HashMap<String,String> map = entry.getValue().getValue();
 
                             for (String k:map.keySet()) {
@@ -105,10 +105,10 @@ public class ParameterWindow {
 
                             module.getActiveParameters().getParameter(entry.getKey()).setValue(map);
 
-                        } else if (entry.getValue().getType() == HCParameter.BOOLEAN) {
+                        } else if (entry.getValue().getType() == Parameter.BOOLEAN) {
                             module.getActiveParameters().getParameter(entry.getKey()).setValue(gd.getNextBoolean());
 
-                        } else if (entry.getValue().getType() == HCParameter.MEASUREMENT) {
+                        } else if (entry.getValue().getType() == Parameter.MEASUREMENT) {
                             module.getActiveParameters().getParameter(entry.getKey()).setValue(gd.getNextChoice());
 
                         }

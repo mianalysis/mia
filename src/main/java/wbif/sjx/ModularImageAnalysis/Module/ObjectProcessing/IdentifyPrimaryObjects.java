@@ -10,7 +10,7 @@ import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import inra.ijpb.segment.Threshold;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.HCParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
@@ -33,7 +33,7 @@ public class IdentifyPrimaryObjects extends HCModule {
         return null;
     }
 
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -67,8 +67,8 @@ public class IdentifyPrimaryObjects extends HCModule {
 
         // Converting image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
-        HCImage tempImage = new HCImage(new String("Temp image"),ipl);
-        HCObjectSet outputObjects = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectName);
+        Image tempImage = new Image(new String("Temp image"),ipl);
+        ObjSet outputObjects = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectName);
 
         // Adding objects to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectName+") to workspace");
@@ -81,25 +81,25 @@ public class IdentifyPrimaryObjects extends HCModule {
     @Override
     public void initialiseParameters() {
         // Setting the input image stack name
-        parameters.addParameter(new HCParameter(INPUT_IMAGE, HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(OUTPUT_OBJECT, HCParameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(MEDIAN_FILTER_RADIUS, HCParameter.DOUBLE,2.0));
-        parameters.addParameter(new HCParameter(THRESHOLD_MULTIPLIER, HCParameter.DOUBLE,1.0));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(OUTPUT_OBJECT, Parameter.OUTPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(MEDIAN_FILTER_RADIUS, Parameter.DOUBLE,2.0));
+        parameters.addParameter(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

@@ -8,16 +8,16 @@ import java.util.LinkedHashMap;
 /**
  * Created by steph on 30/04/2017.
  */
-public class HCImage {
+public class Image {
     private String name;
     private ImagePlus imagePlus;
-    private LinkedHashMap<String,HCMeasurement> singleMeasurements = new LinkedHashMap<>();
+    private LinkedHashMap<String,MIAMeasurement> singleMeasurements = new LinkedHashMap<>();
 //    private LinkedHashMap<String,HCMultiMeasurement> multiMeasurements = new LinkedHashMap<>();
 
 
     // CONSTRUCTORS
 
-    public HCImage(String name, ImagePlus imagePlus) {
+    public Image(String name, ImagePlus imagePlus) {
         this.name = name;
         this.imagePlus = imagePlus;
 
@@ -26,12 +26,12 @@ public class HCImage {
 
     // PUBLIC METHODS
 
-    public void addMeasurement(String name, HCMeasurement measurement) {
+    public void addMeasurement(String name, MIAMeasurement measurement) {
         singleMeasurements.put(name,measurement);
 
     }
 
-    public HCMeasurement getMeasurement(String name) {
+    public MIAMeasurement getMeasurement(String name) {
         return singleMeasurements.get(name);
 
     }
@@ -51,11 +51,11 @@ public class HCImage {
         this.imagePlus = imagePlus;
     }
 
-    public HashMap<String, HCMeasurement> getSingleMeasurements() {
+    public HashMap<String, MIAMeasurement> getSingleMeasurements() {
         return singleMeasurements;
     }
 
-    public void setSingleMeasurements(LinkedHashMap<String, HCMeasurement> singleMeasurements) {
+    public void setSingleMeasurements(LinkedHashMap<String, MIAMeasurement> singleMeasurements) {
         this.singleMeasurements = singleMeasurements;
     }
 

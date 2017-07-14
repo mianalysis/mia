@@ -3,11 +3,12 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.io.Opener;
-import wbif.sjx.ModularImageAnalysis.Extractor.Extractor;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.HCParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Process.StackComparator;
+import wbif.sjx.common.MetadataExtractors.Extractor;
+import wbif.sjx.common.Object.HCMetadata;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class ImageStackLoader extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -108,7 +109,7 @@ public class ImageStackLoader extends HCModule {
 
         ipl.setPosition(1);
 
-        workspace.addImage(new HCImage(outputImageName,ipl));
+        workspace.addImage(new Image(outputImageName,ipl));
 
         if (verbose) System.out.println("["+moduleName+"] Complete");
 
@@ -117,26 +118,26 @@ public class ImageStackLoader extends HCModule {
     @Override
     public void initialiseParameters() {
         // Setting the input image stack name
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE, HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(EXTRACTOR, HCParameter.OBJECT,null));
-        parameters.addParameter(new HCParameter(ORDER_FIELD, HCParameter.STRING,""));
-        parameters.addParameter(new HCParameter(STATIC_FIELDS, HCParameter.OBJECT,new ArrayList<String>()));
-        parameters.addParameter(new HCParameter(SET_FIELDS, HCParameter.OBJECT,new HashMap<String,String>()));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(EXTRACTOR, Parameter.OBJECT,null));
+        parameters.addParameter(new Parameter(ORDER_FIELD, Parameter.STRING,""));
+        parameters.addParameter(new Parameter(STATIC_FIELDS, Parameter.OBJECT,new ArrayList<String>()));
+        parameters.addParameter(new Parameter(SET_FIELDS, Parameter.OBJECT,new HashMap<String,String>()));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

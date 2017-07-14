@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
  * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple
  * different types of children these are stored in an ArrayList.
  */
-public class HCRelationshipCollection extends LinkedHashMap<String,ArrayList<String>> {
+public class RelationshipCollection extends LinkedHashMap<String,ArrayList<String>> {
 
     public void addRelationship(String parent, String child) {
         computeIfAbsent(parent,k -> new ArrayList<>());
