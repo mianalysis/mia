@@ -7,7 +7,7 @@
     <version>0.0.1</version>
     <packaging>jar</packaging>
 
-    <name>Common</name>
+    <name>ModularImageAnalysis</name>
     <url>http://maven.apache.org</url>
 
     <properties>

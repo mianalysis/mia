@@ -4,8 +4,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
 import ij.IJ;
-import ij.ImageJ;
-import ij.plugin.PlugIn;
 import org.apache.commons.io.FilenameUtils;
 import org.reflections.Reflections;
 import org.xml.sax.SAXException;
@@ -26,7 +24,7 @@ import java.util.*;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class MainGUI implements PlugIn, ActionListener, FocusListener, MouseListener {
+public class MainGUI implements ActionListener, FocusListener, MouseListener {
     private static final String addModuleText = "+";
     private static final String removeModuleText = "-";
     private static final String moveModuleUpText = "▲";
@@ -61,13 +59,7 @@ public class MainGUI implements PlugIn, ActionListener, FocusListener, MouseList
     private GUIAnalysis analysis = new GUIAnalysis();
     private ModuleCollection modules = analysis.modules;
 
-    public static void main(String[] args) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        new ImageJ();
-        new MainGUI();
-
-    }
-
-    private MainGUI() throws InstantiationException, IllegalAccessException {
+    public MainGUI() throws InstantiationException, IllegalAccessException {
         componentFactory = new ComponentFactory(elementHeight,this,this);
 
         // Setting location of panel
@@ -783,7 +775,8 @@ public class MainGUI implements PlugIn, ActionListener, FocusListener, MouseList
     }
 
     private void reactToAction(Object object)
-            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException, TransformerException, ParserConfigurationException, SAXException {
+            throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException,
+            TransformerException, ParserConfigurationException, SAXException {
 
         String componentName = ((JComponent) object).getName();
 
@@ -1093,13 +1086,4 @@ public class MainGUI implements PlugIn, ActionListener, FocusListener, MouseList
 
     }
 
-    @Override
-    public void run(String s) {
-        try {
-            new MainGUI();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-    }
 }
