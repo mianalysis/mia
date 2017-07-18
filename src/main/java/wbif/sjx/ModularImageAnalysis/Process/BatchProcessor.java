@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class BatchProcessor extends FileCrawler {
     private boolean verbose = false;
     private boolean parallel = true;
-    private int nThreads = 4;
+    private int nThreads = 6;
 
 
     // CONSTRUCTORS

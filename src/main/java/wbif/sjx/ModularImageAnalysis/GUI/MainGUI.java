@@ -73,8 +73,8 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
 
-        renderBasicMode();
-//        renderEditingMode();
+//        renderBasicMode();
+        renderEditingMode();
 
         // Final bits for listeners
         frame.addMouseListener(this);
@@ -173,12 +173,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         frame.add(basicModulesScrollPane,c);
 
         // Initialising the status panel
-        initialiseStatusPanel(500);
-        c.gridx = 0;
-        c.gridy++;
-        c.gridwidth = 1;
-        c.insets = new Insets(5,5,5,5);
-        frame.add(statusPanel,c);
+//        initialiseStatusPanel(500);
+//        c.gridx = 0;
+//        c.gridy++;
+//        c.gridwidth = 1;
+//        c.insets = new Insets(5,5,5,5);
+//        frame.add(statusPanel,c);
 
         frame.pack();
         frame.revalidate();
@@ -214,12 +214,12 @@ public class MainGUI implements ActionListener, FocusListener, MouseListener {
         frame.add(paramsScrollPane,c);
 
         // Initialising the status panel
-        initialiseStatusPanel(1090);
-        c.gridx = 0;
-        c.gridy++;
-        c.gridwidth = 3;
-        c.insets = new Insets(0,5,5,5);
-        frame.add(statusPanel,c);
+//        initialiseStatusPanel(1090);
+//        c.gridx = 0;
+//        c.gridy++;
+//        c.gridwidth = 3;
+//        c.insets = new Insets(0,5,5,5);
+//        frame.add(statusPanel,c);
 
         frame.pack();
         frame.revalidate();

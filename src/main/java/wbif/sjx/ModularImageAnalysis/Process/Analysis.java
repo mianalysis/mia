@@ -37,6 +37,7 @@ public abstract class Analysis implements Serializable {
      * @return
      */
     public boolean execute(Workspace workspace) throws GenericMIAException {
+
         return execute(workspace,false);
 
     }

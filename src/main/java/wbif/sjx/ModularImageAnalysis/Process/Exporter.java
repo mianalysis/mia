@@ -40,6 +40,8 @@ public class Exporter {
     private String exportFilePath;
     private boolean verbose = false;
 
+    private boolean addMetadataToObjects = true;
+
 
     // CONSTRUCTOR
 
@@ -460,6 +462,18 @@ public class Exporter {
                     Cell objectIDHeaderCell = objectHeaderRow.createCell(col++);
                     objectIDHeaderCell.setCellValue("OBJECT_ID");
 
+                    // Adding metadata headers (if enabled)
+                    if (addMetadataToObjects) {
+                        // Running through all the metadata values, adding them as new columns
+                        HCMetadata exampleMetadata = exampleWorkspace.getMetadata();
+                        for (String name : exampleMetadata.keySet()) {
+                            Cell metaHeaderCell = objectHeaderRow.createCell(col++);
+                            String metadataName = name.toUpperCase().replaceAll(" ", "_");
+                            metaHeaderCell.setCellValue(metadataName);
+
+                        }
+                    }
+
                     // Adding parent IDs
                     RelationshipCollection relationships = modules.getRelationships();
                     String[] parentNames = relationships.getParentNames(objectName);
@@ -517,6 +531,16 @@ public class Exporter {
 
                                 Cell objectIDValueCell = objectValueRow.createCell(col++);
                                 objectIDValueCell.setCellValue(object.getID());
+
+                                // Adding metadata (if enabled)
+                                if (addMetadataToObjects) {
+                                    HCMetadata metadata = workspace.getMetadata();
+                                    for (String name : metadata.keySet()) {
+                                        Cell metaValueCell = objectValueRow.createCell(col++);
+                                        metaValueCell.setCellValue(metadata.getAsString(name));
+
+                                    }
+                                }
 
                                 // Adding relationships to the columns specified in relationshipNames
                                 if (relationshipNames.get(objectName) != null) {

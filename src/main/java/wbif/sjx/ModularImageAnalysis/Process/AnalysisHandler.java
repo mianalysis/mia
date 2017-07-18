@@ -190,7 +190,7 @@ public class AnalysisHandler {
         if (inputFile.isDirectory()) { // Batch mode
             Exporter exporter = new Exporter(inputFile.getAbsolutePath()+"\\output", Exporter.XLSX_EXPORT);
             BatchProcessor batchProcessor = new BatchProcessor(inputFile);
-            batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"tif"}));
+            batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"flex"}));
             batchProcessor.runAnalysisOnStructure(analysis,exporter);
 
             Runtime.getRuntime().gc();

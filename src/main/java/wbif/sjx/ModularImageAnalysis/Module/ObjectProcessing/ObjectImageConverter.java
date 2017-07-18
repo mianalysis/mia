@@ -131,7 +131,6 @@ public class ObjectImageConverter extends HCModule {
                     break;
 
                 case ID:
-                    System.out.println(object.getID());
                     valInt = object.getID();
                     break;
 
