@@ -46,9 +46,11 @@ public class ImageFileLoader extends HCModule {
             int sizeC = reader.getSizeC();
             int sizeT = reader.getSizeT();
             int sizeZ = reader.getSizeZ();
+            int bitDepth = reader.getBitsPerPixel();
 
             if (flexBugfix) {
-                ipl = IJ.createHyperStack("Image", width, height,2,reader.getSeriesCount()/2,1,16);
+
+                ipl = IJ.createHyperStack("Image", width, height,2,reader.getSeriesCount()/2,1,bitDepth);
 
                 int z = 0;
                 int c = 0;
@@ -69,7 +71,7 @@ public class ImageFileLoader extends HCModule {
                 }
 
             } else {
-                ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, 1, 16);
+                ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, 1, bitDepth);
 
                 for (int z = 0; z < sizeZ; z++) {
                     for (int c = 0; c < sizeC; c++) {
@@ -92,6 +94,7 @@ public class ImageFileLoader extends HCModule {
         }
 
         return ipl;
+
     }
 
     @Override
