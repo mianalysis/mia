@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis;
 
+import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
 import wbif.sjx.ModularImageAnalysis.GUI.MainGUI;
@@ -19,6 +20,7 @@ public class ModularImageAnalysisPlugin implements PlugIn {
         try {
             new MainGUI();
         } catch (InstantiationException | IllegalAccessException e) {
+            IJ.log("Error");
             e.printStackTrace();
         }
     }

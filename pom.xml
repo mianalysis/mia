@@ -135,8 +135,8 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <excludeGroupIds>com.github.quickhull3d,junit,net.imagej,net.imglib2,org.bonej,org.jogamp,org.scijava,sc.fiji</excludeGroupIds>
                             <excludeScope>provided</excludeScope>
+                            <excludeArtifactIds>commons-codec,guava,jama,javaassist,</excludeArtifactIds>
 
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
