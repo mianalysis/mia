@@ -6,17 +6,17 @@ import java.util.LinkedHashMap;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public class HCParameterCollection extends LinkedHashMap<String,HCParameter> implements Serializable {
+public class ParameterCollection extends LinkedHashMap<String,Parameter> implements Serializable {
 
 
     // PUBLIC METHODS
 
-    public void addParameter(HCParameter parameter) {
+    public void addParameter(Parameter parameter) {
         put(parameter.getName(),parameter);
 
     }
 
-    public HCParameter getParameter(String name) {
+    public Parameter getParameter(String name) {
         return get(name);
 
     }

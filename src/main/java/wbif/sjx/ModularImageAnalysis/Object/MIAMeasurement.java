@@ -5,7 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 /**
  * Measurement that holds a single value for an object
  */
-public class HCMeasurement {
+public class MIAMeasurement {
     // Spatial measures
     public static final String RADIUS = "Radius";
     public static final String ESTIMATED_DIAMETER = "Estimated diameter";
@@ -36,24 +36,24 @@ public class HCMeasurement {
 
     // CONSTRUCTOR
 
-    public HCMeasurement(String name) {
+    public MIAMeasurement(String name) {
         this.name = name;
 
     }
 
-    public HCMeasurement(String name, HCModule source) {
+    public MIAMeasurement(String name, HCModule source) {
         this.name = name;
         this.source = source;
 
     }
 
-    public HCMeasurement(String name, double value) {
+    public MIAMeasurement(String name, double value) {
         this.name = name;
         this.value = value;
 
     }
 
-    public HCMeasurement(String name, double value, HCModule source) {
+    public MIAMeasurement(String name, double value, HCModule source) {
         this.name = name;
         this.value = value;
         this.source = source;

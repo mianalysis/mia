@@ -31,13 +31,13 @@ public class CalculateStatsForChildren extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
-        HCObjectSet parentObjects = workspace.getObjects().get(parentObjectsName);
+        ObjSet parentObjects = workspace.getObjects().get(parentObjectsName);
 
         // Getting child objects to calculate statistics for
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
@@ -45,19 +45,19 @@ public class CalculateStatsForChildren extends HCModule {
         // Getting a list of the measurement names from the first child object in the set
         if (!parentObjects.values().iterator().hasNext()) return;
 
-        HCObjectSet children = parentObjects.values().iterator().next().getChildren(childObjectsName);
+        ObjSet children = parentObjects.values().iterator().next().getChildren(childObjectsName);
         if (!children.values().iterator().hasNext()) return;
 
         Set<String> exampleMeasurements = children.values().iterator().next().getMeasurements().keySet();
 
         // Running through objects, calculating statistics for selected children
-        for (HCObject parentObject:parentObjects.values()) {
-            HCObjectSet childObjects = parentObject.getChildren(childObjectsName);
+        for (Obj parentObject:parentObjects.values()) {
+            ObjSet childObjects = parentObject.getChildren(childObjectsName);
 
             for (String measurement : exampleMeasurements) {
                 // For each measurement type, calculating the mean, standard deviation, etc. (unless the value is NaN)
                 CumStat cs = new CumStat();
-                for (HCObject childObject : childObjects.values()) {
+                for (Obj childObject : childObjects.values()) {
                     if (childObject.getMeasurement(measurement).getValue() != Double.NaN) {
                         cs.addMeasure(childObject.getMeasurement(measurement).getValue());
                     }
@@ -66,68 +66,68 @@ public class CalculateStatsForChildren extends HCModule {
                 // Checking at least one measurement was taken
                 if (cs.getN() == 0) {
                     // Adding measurements to parent object
-                    HCMeasurement summaryMeasurement;
+                    MIAMeasurement summaryMeasurement;
 
                     if (parameters.getValue(CALCULATE_MEAN)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_MEAN", Double.NaN);
+                        summaryMeasurement = new MIAMeasurement(measurement + "_MEAN_OF_"+childObjectsName, Double.NaN);
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
 
                     if (parameters.getValue(CALCULATE_STD)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_STD", Double.NaN);
+                        summaryMeasurement = new MIAMeasurement(measurement + "_STD_OF_"+childObjectsName, Double.NaN);
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
 
                     if (parameters.getValue(CALCULATE_MIN)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_MIN", Double.NaN);
+                        summaryMeasurement = new MIAMeasurement(measurement + "_MIN_OF_"+childObjectsName, Double.NaN);
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
 
                     if (parameters.getValue(CALCULATE_MAX)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_MAX", Double.NaN);
+                        summaryMeasurement = new MIAMeasurement(measurement + "_MAX_OF_"+childObjectsName, Double.NaN);
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
 
                     if (parameters.getValue(CALCULATE_SUM)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_SUM", Double.NaN);
+                        summaryMeasurement = new MIAMeasurement(measurement + "_SUM_OF_"+childObjectsName, Double.NaN);
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
 
                 } else {
                     // Adding measurements to parent object
-                    HCMeasurement summaryMeasurement;
+                    MIAMeasurement summaryMeasurement;
 
                     if (parameters.getValue(CALCULATE_MEAN)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_MEAN", cs.getMean());
+                        summaryMeasurement = new MIAMeasurement(measurement + "_MEAN_OF_"+childObjectsName, cs.getMean());
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
 
                     if (parameters.getValue(CALCULATE_STD)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_STD", cs.getStd());
+                        summaryMeasurement = new MIAMeasurement(measurement + "_STD_OF_"+childObjectsName, cs.getStd());
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
 
                     if (parameters.getValue(CALCULATE_MIN)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_MIN", cs.getMin());
+                        summaryMeasurement = new MIAMeasurement(measurement + "_MIN_OF_"+childObjectsName, cs.getMin());
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
 
                     if (parameters.getValue(CALCULATE_MAX)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_MAX", cs.getMax());
+                        summaryMeasurement = new MIAMeasurement(measurement + "_MAX_OF_"+childObjectsName, cs.getMax());
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
 
                     if (parameters.getValue(CALCULATE_SUM)) {
-                        summaryMeasurement = new HCMeasurement(measurement + "_SUM", cs.getSum());
+                        summaryMeasurement = new MIAMeasurement(measurement + "_SUM_OF_"+childObjectsName, cs.getSum());
                         summaryMeasurement.setSource(this);
                         parentObject.addMeasurement(summaryMeasurement);
                     }
@@ -142,19 +142,19 @@ public class CalculateStatsForChildren extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(PARENT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(CHILD_OBJECTS,HCParameter.CHILD_OBJECTS,null,null));
-        parameters.addParameter(new HCParameter(CALCULATE_MEAN,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(CALCULATE_STD,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(CALCULATE_MIN,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(CALCULATE_MAX,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(CALCULATE_SUM,HCParameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
+        parameters.addParameter(new Parameter(CALCULATE_MEAN, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(CALCULATE_STD, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(CALCULATE_MIN, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(CALCULATE_MAX, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(CALCULATE_SUM, Parameter.BOOLEAN,true));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(CALCULATE_MEAN));
@@ -178,29 +178,31 @@ public class CalculateStatsForChildren extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
         if (parameters.getValue(PARENT_OBJECTS) != null & parameters.getValue(CHILD_OBJECTS) != null) {
+            String childName = parameters.getValue(CHILD_OBJECTS);
+
             String[] names = measurements.getMeasurementNames(parameters.getValue(CHILD_OBJECTS));
 
             for (String name:names) {
                 if (parameters.getValue(CALCULATE_MEAN)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MEAN");
+                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MEAN_OF_"+childName);
                 }
 
                 if (parameters.getValue(CALCULATE_STD)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_STD");
+                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_STD_OF_"+childName);
                 }
 
                 if (parameters.getValue(CALCULATE_MIN)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MIN");
+                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MIN_OF_"+childName);
                 }
 
                 if (parameters.getValue(CALCULATE_MAX)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MAX");
+                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MAX_OF_"+childName);
                 }
 
                 if (parameters.getValue(CALCULATE_SUM)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_SUM");
+                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_SUM_OF_"+childName);
                 }
 
             }
@@ -208,7 +210,7 @@ public class CalculateStatsForChildren extends HCModule {
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

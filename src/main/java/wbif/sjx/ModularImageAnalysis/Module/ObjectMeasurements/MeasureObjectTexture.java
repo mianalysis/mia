@@ -5,10 +5,8 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.GetLocalObjectRegion;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.Indexer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Takes a set of objects and measures intensity texture values on a provided image.  Measurements are stored with the
@@ -37,18 +35,18 @@ public class MeasureObjectTexture extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
@@ -77,13 +75,13 @@ public class MeasureObjectTexture extends HCModule {
         int nObjects = inputObjects.size();
         int iter = 1;
         if (verbose) System.out.println("["+moduleName+"] Initialising measurements");
-        for (HCObject object:inputObjects.values()) {
+        for (Obj object:inputObjects.values()) {
             if (verbose) System.out.println("["+moduleName+"] Processing object "+(iter++)+" of "+nObjects);
             ArrayList<int[]> coords = new ArrayList<>();
 
-            ArrayList<Integer> x = object.getCoordinates(HCObject.X);
-            ArrayList<Integer> y = object.getCoordinates(HCObject.Y);
-            ArrayList<Integer> z = object.getCoordinates(HCObject.Z);
+            ArrayList<Integer> x = object.getCoordinates(Obj.X);
+            ArrayList<Integer> y = object.getCoordinates(Obj.Y);
+            ArrayList<Integer> z = object.getCoordinates(Obj.Z);
 
             for (int i=0;i<x.size();i++) {
                 coords.add(new int[]{x.get(i),y.get(i),z.get(i)});
@@ -93,7 +91,7 @@ public class MeasureObjectTexture extends HCModule {
             textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs,coords);
 
             // Acquiring measurements
-            HCMeasurement ASMMeasurement = new HCMeasurement(inputImageName+"_ASM",textureCalculator.getASM());
+            MIAMeasurement ASMMeasurement = new MIAMeasurement(inputImageName+"_ASM",textureCalculator.getASM());
             ASMMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(ASMMeasurement);
@@ -101,7 +99,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(ASMMeasurement);
             }
 
-            HCMeasurement contrastMeasurement = new HCMeasurement(inputImageName+"_CONTRAST",textureCalculator.getContrast());
+            MIAMeasurement contrastMeasurement = new MIAMeasurement(inputImageName+"_CONTRAST",textureCalculator.getContrast());
             contrastMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(contrastMeasurement);
@@ -109,7 +107,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(contrastMeasurement);
             }
 
-            HCMeasurement correlationMeasurement = new HCMeasurement(inputImageName+"_CORRELATION",textureCalculator.getCorrelation());
+            MIAMeasurement correlationMeasurement = new MIAMeasurement(inputImageName+"_CORRELATION",textureCalculator.getCorrelation());
             correlationMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(correlationMeasurement);
@@ -117,7 +115,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(correlationMeasurement);
             }
 
-            HCMeasurement entropyMeasurement = new HCMeasurement(inputImageName+"_ENTROPY",textureCalculator.getEntropy());
+            MIAMeasurement entropyMeasurement = new MIAMeasurement(inputImageName+"_ENTROPY",textureCalculator.getEntropy());
             entropyMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(entropyMeasurement);
@@ -135,20 +133,20 @@ public class MeasureObjectTexture extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE, HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS, HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(POINT_MEASUREMENT,HCParameter.BOOLEAN,false));
-        parameters.addParameter(new HCParameter(CALIBRATED_RADIUS, HCParameter.BOOLEAN,false));
-        parameters.addParameter(new HCParameter(MEASUREMENT_RADIUS, HCParameter.DOUBLE,10.0));
-        parameters.addParameter(new HCParameter(X_OFFSET, HCParameter.INTEGER,1));
-        parameters.addParameter(new HCParameter(Y_OFFSET, HCParameter.INTEGER,0));
-        parameters.addParameter(new HCParameter(Z_OFFSET, HCParameter.INTEGER,0));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(POINT_MEASUREMENT, Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(MEASUREMENT_RADIUS, Parameter.DOUBLE,10.0));
+        parameters.addParameter(new Parameter(X_OFFSET, Parameter.INTEGER,1));
+        parameters.addParameter(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
+        parameters.addParameter(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(POINT_MEASUREMENT));
@@ -167,7 +165,7 @@ public class MeasureObjectTexture extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
         if (parameters.getValue(INPUT_OBJECTS) != null) {
             measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_ASM");
             measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_CONTRAST");
@@ -177,7 +175,7 @@ public class MeasureObjectTexture extends HCModule {
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

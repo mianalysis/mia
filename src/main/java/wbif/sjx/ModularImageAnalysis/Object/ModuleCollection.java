@@ -4,15 +4,14 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class HCModuleCollection extends ArrayList<HCModule> implements Serializable {
-    public HCMeasurementCollection getMeasurements(HCModule cutoffModule) {
-        HCMeasurementCollection measurements = new HCMeasurementCollection();
+public class ModuleCollection extends ArrayList<HCModule> implements Serializable {
+    public MeasurementCollection getMeasurements(HCModule cutoffModule) {
+        MeasurementCollection measurements = new MeasurementCollection();
 
         for (HCModule module:this) {
             if (module == cutoffModule) {
@@ -27,7 +26,7 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
 
     }
 
-    public HCMeasurementCollection getMeasurements() {
+    public MeasurementCollection getMeasurements() {
         return getMeasurements(null);
 
     }
@@ -38,8 +37,8 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
      * @param cutoffModule
      * @return
      */
-    public LinkedHashSet<HCParameter> getParametersMatchingType(int type, HCModule cutoffModule) {
-        LinkedHashSet<HCParameter> parameters = new LinkedHashSet<>();
+    public LinkedHashSet<Parameter> getParametersMatchingType(int type, HCModule cutoffModule) {
+        LinkedHashSet<Parameter> parameters = new LinkedHashSet<>();
 
         for (HCModule module:this) {
             // If this module isn't enabled, skip it
@@ -52,9 +51,9 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
             }
 
             // Running through all parameters, adding all images to the list
-            HCParameterCollection currParameters = module.getActiveParameters();
+            ParameterCollection currParameters = module.getActiveParameters();
             if (currParameters != null) {
-                for (HCParameter currParameter : currParameters.values()) {
+                for (Parameter currParameter : currParameters.values()) {
                     if (currParameter.getType() == type) {
                         parameters.add(currParameter);
                     }
@@ -66,13 +65,13 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
 
     }
 
-    public LinkedHashSet<HCParameter> getParametersMatchingType(int type) {
+    public LinkedHashSet<Parameter> getParametersMatchingType(int type) {
         return getParametersMatchingType(type,null);
 
     }
 
-    public HCRelationshipCollection getRelationships(HCModule cutoffModule) {
-        HCRelationshipCollection relationships = new HCRelationshipCollection();
+    public RelationshipCollection getRelationships(HCModule cutoffModule) {
+        RelationshipCollection relationships = new RelationshipCollection();
 
         for (HCModule module:this) {
             if (module == cutoffModule) {
@@ -87,7 +86,7 @@ public class HCModuleCollection extends ArrayList<HCModule> implements Serializa
 
     }
 
-    public HCRelationshipCollection getRelationships() {
+    public RelationshipCollection getRelationships() {
         return getRelationships(null);
 
     }

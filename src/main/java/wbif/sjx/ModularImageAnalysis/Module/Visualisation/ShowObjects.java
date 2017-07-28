@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.HCParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 import wbif.sjx.common.Object.LUTs;
 
 
@@ -25,15 +25,15 @@ public class ShowObjects extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Loading objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectName);
 
-        HCImage templateImage;
+        Image templateImage;
         if (parameters.getParameter(TEMPLATE_IMAGE) == null) {
             templateImage = null;
 
@@ -44,7 +44,7 @@ public class ShowObjects extends HCModule {
         }
 
         // Converting objects to an image
-        HCImage image = new ObjectImageConverter().convertObjectsToImage(inputObjects,"Object image",templateImage,ObjectImageConverter.COLOUR_MODES[1],null);
+        Image image = new ObjectImageConverter().convertObjectsToImage(inputObjects,"Object image",templateImage,ObjectImageConverter.COLOUR_MODES[1],null);
         image.getImagePlus().setTitle(inputObjectName);
 
         // Creating a random colour LUT and assigning it to the image (maximising intensity range to 0-255)
@@ -60,23 +60,23 @@ public class ShowObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS, HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(TEMPLATE_IMAGE, HCParameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

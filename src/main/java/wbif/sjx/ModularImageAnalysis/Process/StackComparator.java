@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
-import wbif.sjx.ModularImageAnalysis.Object.HCMetadata;
+import wbif.sjx.common.Object.HCMetadata;
 
 import java.util.Comparator;
 

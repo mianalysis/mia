@@ -24,36 +24,36 @@ public class MeasureImageIntensity extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName+")");
-        HCImage inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running measurement
         CumStat cs = IntensityCalculator.calculate(inputImagePlus);
 
         // Adding measurements to image
-        HCMeasurement meanIntensity = new HCMeasurement(HCMeasurement.MEAN_INTENSITY,cs.getMean());
+        MIAMeasurement meanIntensity = new MIAMeasurement(MIAMeasurement.MEAN_INTENSITY,cs.getMean());
         meanIntensity.setSource(this);
         inputImage.addMeasurement(meanIntensity.getName(),meanIntensity);
         if (verbose) System.out.println("["+moduleName+"] Mean intensity = "+meanIntensity.getValue());
 
-        HCMeasurement stdIntensity = new HCMeasurement(HCMeasurement.STD_INTENSITY,cs.getStd(CumStat.SAMPLE));
+        MIAMeasurement stdIntensity = new MIAMeasurement(MIAMeasurement.STD_INTENSITY,cs.getStd(CumStat.SAMPLE));
         stdIntensity.setSource(this);
         inputImage.addMeasurement(stdIntensity.getName(),stdIntensity);
         if (verbose) System.out.println("["+moduleName+"] Std intensity (sample) = "+stdIntensity.getValue());
 
-        HCMeasurement minIntensity = new HCMeasurement(HCMeasurement.MIN_INTENSITY,cs.getMin());
+        MIAMeasurement minIntensity = new MIAMeasurement(MIAMeasurement.MIN_INTENSITY,cs.getMin());
         minIntensity.setSource(this);
         inputImage.addMeasurement(minIntensity.getName(),minIntensity);
         if (verbose) System.out.println("["+moduleName+"] Min intensity = "+minIntensity.getValue());
 
-        HCMeasurement maxIntensity = new HCMeasurement(HCMeasurement.MAX_INTENSITY,cs.getMax());
+        MIAMeasurement maxIntensity = new MIAMeasurement(MIAMeasurement.MAX_INTENSITY,cs.getMax());
         maxIntensity.setSource(this);
         inputImage.addMeasurement(maxIntensity.getName(),maxIntensity);
         if (verbose) System.out.println("["+moduleName+"] Max intensity = "+maxIntensity.getValue());
@@ -64,22 +64,22 @@ public class MeasureImageIntensity extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE, HCParameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 

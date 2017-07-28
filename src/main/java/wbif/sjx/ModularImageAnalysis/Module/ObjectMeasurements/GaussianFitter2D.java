@@ -1,12 +1,10 @@
 // TODO: Show original and fit PSFs - maybe as a mosaic - to demonstrate the process is working correctly
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.process.ImageProcessor;
-import ij.process.ShortProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -57,18 +55,18 @@ public class GaussianFitter2D extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImage(inputImageName);
+        Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting input objects to refine (if selected by used)
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjectSet(inputObjectsName);
+        ObjSet inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
         String radiusMode = parameters.getValue(RADIUS_MODE);
@@ -78,23 +76,23 @@ public class GaussianFitter2D extends HCModule {
         // Running through each object, doing the fitting
         int count = 0;
         int startingNumber = inputObjects.size();
-        Iterator<HCObject> iterator = inputObjects.values().iterator();
+        Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
-            HCObject inputObject = iterator.next();
+            Obj inputObject = iterator.next();
             if (verbose) System.out.println("["+moduleName+"] Fitting object "+(count+1)+" of "+startingNumber);
             count++;
 
             // Getting the centroid of the current object (should be single points anyway)
-            ArrayList<Integer> xArray = inputObject.getCoordinates(HCObject.X);
-            ArrayList<Integer> yArray = inputObject.getCoordinates(HCObject.Y);
-            ArrayList<Integer> zArray = inputObject.getCoordinates(HCObject.Z);
+            ArrayList<Integer> xArray = inputObject.getCoordinates(Obj.X);
+            ArrayList<Integer> yArray = inputObject.getCoordinates(Obj.Y);
+            ArrayList<Integer> zArray = inputObject.getCoordinates(Obj.Z);
             int x = (int) MeasureObjectCentroid.calculateCentroid(xArray,MeasureObjectCentroid.MEAN);
             int y = (int) MeasureObjectCentroid.calculateCentroid(yArray,MeasureObjectCentroid.MEAN);
             int z = (int) MeasureObjectCentroid.calculateCentroid(zArray,MeasureObjectCentroid.MEAN);
 
             // Getting time and channel coordinates
-            int c = inputObject.getPosition(HCObject.C);
-            int t = inputObject.getPosition(HCObject.T);
+            int c = inputObject.getPosition(Obj.C);
+            int t = inputObject.getPosition(Obj.T);
 
             // Getting the radius of the object
             int r;
@@ -154,7 +152,7 @@ public class GaussianFitter2D extends HCModule {
                 if (pOut != null) {
                     x0 = pOut[0] + x - r;
                     y0 = pOut[1] + y - r;
-                    z0 = MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(HCObject.Z), MeasureObjectCentroid.MEAN);
+                    z0 = MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN);
                     sx = pOut[2];
                     sy = pOut[3];
                     A0 = pOut[4];
@@ -186,15 +184,15 @@ public class GaussianFitter2D extends HCModule {
             }
 
             // Storing the results as measurements
-            inputObject.addMeasurement(new HCMeasurement(X_0,x0,this));
-            inputObject.addMeasurement(new HCMeasurement(Y_0,y0,this));
-            inputObject.addMeasurement(new HCMeasurement(Z_0,z0,this));
-            inputObject.addMeasurement(new HCMeasurement(SIGMA_X,sx,this));
-            inputObject.addMeasurement(new HCMeasurement(SIGMA_Y,sy,this));
-            inputObject.addMeasurement(new HCMeasurement(A_0,A0,this));
-            inputObject.addMeasurement(new HCMeasurement(A_BG,ABG,this));
-            inputObject.addMeasurement(new HCMeasurement(THETA,th,this));
-            inputObject.addMeasurement(new HCMeasurement(ELLIPTICITY,ellipticity,this));
+            inputObject.addMeasurement(new MIAMeasurement(X_0,x0,this));
+            inputObject.addMeasurement(new MIAMeasurement(Y_0,y0,this));
+            inputObject.addMeasurement(new MIAMeasurement(Z_0,z0,this));
+            inputObject.addMeasurement(new MIAMeasurement(SIGMA_X,sx,this));
+            inputObject.addMeasurement(new MIAMeasurement(SIGMA_Y,sy,this));
+            inputObject.addMeasurement(new MIAMeasurement(A_0,A0,this));
+            inputObject.addMeasurement(new MIAMeasurement(A_BG,ABG,this));
+            inputObject.addMeasurement(new MIAMeasurement(THETA,th,this));
+            inputObject.addMeasurement(new MIAMeasurement(ELLIPTICITY,ellipticity,this));
 
             // If selected, any objects that weren't fit are removed
             if (removeUnfit & pOut == null) {
@@ -211,20 +209,20 @@ public class GaussianFitter2D extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(RADIUS_MODE,HCParameter.CHOICE_ARRAY,FIXED_VALUE,RADIUS_MODES));
-        parameters.addParameter(new HCParameter(RADIUS,HCParameter.DOUBLE,null));
-        parameters.addParameter(new HCParameter(RADIUS_MEASUREMENT,HCParameter.MEASUREMENT,null));
-        parameters.addParameter(new HCParameter(MEASUREMENT_MULTIPLIER,HCParameter.DOUBLE,1.0));
-        parameters.addParameter(new HCParameter(MAX_EVALUATIONS,HCParameter.INTEGER,1000));
-        parameters.addParameter(new HCParameter(REMOVE_UNFIT,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(RADIUS_MODE, Parameter.CHOICE_ARRAY,FIXED_VALUE,RADIUS_MODES));
+        parameters.addParameter(new Parameter(RADIUS, Parameter.DOUBLE,null));
+        parameters.addParameter(new Parameter(RADIUS_MEASUREMENT, Parameter.MEASUREMENT,null));
+        parameters.addParameter(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
+        parameters.addParameter(new Parameter(MAX_EVALUATIONS, Parameter.INTEGER,1000));
+        parameters.addParameter(new Parameter(REMOVE_UNFIT, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(RADIUS_MODE));
@@ -248,7 +246,7 @@ public class GaussianFitter2D extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         measurements.addMeasurement(inputObjectsName,X_0);
         measurements.addMeasurement(inputObjectsName,Y_0);
@@ -263,7 +261,7 @@ public class GaussianFitter2D extends HCModule {
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

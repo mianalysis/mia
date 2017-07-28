@@ -5,6 +5,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.Filters3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Filters.DoG;
 
 /**
  * Created by sc13967 on 30/05/2017.
@@ -19,7 +20,8 @@ public class FilterImage extends HCModule {
     public static final String SHOW_IMAGE = "Show image";
 
     private static final String MEDIAN3D = "Median 3D";
-    private static final String[] FILTER_MODES = new String[]{MEDIAN3D};
+    private static final String DOG2D = "Difference of Gaussian 2D";
+    private static final String[] FILTER_MODES = new String[]{DOG2D,MEDIAN3D};
 
     @Override
     public String getTitle() {
@@ -28,17 +30,17 @@ public class FilterImage extends HCModule {
 
     @Override
     public String getHelp() {
-        return "INCOMPLETE";
+        return "+++INCOMPLETE+++";
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        HCImage inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
@@ -59,12 +61,16 @@ public class FilterImage extends HCModule {
             if (verbose) System.out.println("[" + moduleName + "] Applying 3D median filter (radius = " + filterRadius + " px)");
             inputImagePlus.setStack(Filters3D.filter(inputImagePlus.getImageStack(), Filters3D.MEDIAN, (float) filterRadius, (float) filterRadius, (float) filterRadius));
 
+        } else if (filterMode.equals(DOG2D)) {
+            if (verbose) System.out.println("[" + moduleName + "] Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
+            DoG.run(inputImagePlus,filterRadius,true);
+
         }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            HCImage outputImage = new HCImage(outputImageName,inputImagePlus);
+            Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
             // If selected, displaying the image
@@ -79,27 +85,25 @@ public class FilterImage extends HCModule {
             }
         }
 
-
-
         if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE,HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(APPLY_TO_INPUT,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE,HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(FILTER_MODE,HCParameter.CHOICE_ARRAY,FILTER_MODES[0],FILTER_MODES));
-        parameters.addParameter(new HCParameter(FILTER_RADIUS,HCParameter.DOUBLE,2d));
-        parameters.addParameter(new HCParameter(CALIBRATED_UNITS,HCParameter.BOOLEAN,false));
-        parameters.addParameter(new HCParameter(SHOW_IMAGE,HCParameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FILTER_MODES[0],FILTER_MODES));
+        parameters.addParameter(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
+        parameters.addParameter(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
 
@@ -117,12 +121,12 @@ public class FilterImage extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

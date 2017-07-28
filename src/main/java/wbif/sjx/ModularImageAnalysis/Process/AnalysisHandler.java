@@ -34,7 +34,7 @@ public class AnalysisHandler {
 
     private static File inputFile = null;
 
-    public void saveAnalysis(HCAnalysis analysis) throws IOException, ParserConfigurationException, TransformerException {
+    public void saveAnalysis(Analysis analysis) throws IOException, ParserConfigurationException, TransformerException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
         fileDialog.setMultipleMode(false);
         fileDialog.setVisible(true);
@@ -46,7 +46,7 @@ public class AnalysisHandler {
 
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        doc.appendChild(HCExporter.prepareParametersXML(doc,analysis.getModules()));
+        doc.appendChild(Exporter.prepareParametersXML(doc,analysis.getModules()));
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
 
@@ -59,7 +59,7 @@ public class AnalysisHandler {
 
     }
 
-    public HCAnalysis loadAnalysis() throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
+    public Analysis loadAnalysis() throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setFile("*.mia");
@@ -70,8 +70,8 @@ public class AnalysisHandler {
         Document doc = documentBuilder.parse(fileDialog.getFiles()[0]);
         doc.getDocumentElement().normalize();
 
-        HCAnalysis analysis = new GUIAnalysis();
-        HCModuleCollection modules = analysis.getModules();
+        Analysis analysis = new GUIAnalysis();
+        ModuleCollection modules = analysis.getModules();
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
@@ -94,59 +94,63 @@ public class AnalysisHandler {
                         try {
                             int parameterType = module.getParameterType(parameterName);
                             switch (parameterType) {
-                                case HCParameter.INPUT_IMAGE:
+                                case Parameter.INPUT_IMAGE:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.OUTPUT_IMAGE:
+                                case Parameter.OUTPUT_IMAGE:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.INPUT_OBJECTS:
+                                case Parameter.INPUT_OBJECTS:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.OUTPUT_OBJECTS:
+                                case Parameter.OUTPUT_OBJECTS:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.INTEGER:
+                                case Parameter.REMOVED_IMAGE:
+                                    module.updateParameterValue(parameterName, parameterValue);
+                                    break;
+
+                                case Parameter.INTEGER:
                                     module.updateParameterValue(parameterName, Integer.parseInt(parameterValue));
                                     break;
 
-                                case HCParameter.DOUBLE:
+                                case Parameter.DOUBLE:
                                     module.updateParameterValue(parameterName, Double.parseDouble(parameterValue));
                                     break;
 
-                                case HCParameter.STRING:
+                                case Parameter.STRING:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.CHOICE_ARRAY:
+                                case Parameter.CHOICE_ARRAY:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.CHOICE_MAP:
+                                case Parameter.CHOICE_MAP:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.BOOLEAN:
+                                case Parameter.BOOLEAN:
                                     module.updateParameterValue(parameterName, Boolean.parseBoolean(parameterValue));
                                     break;
 
-                                case HCParameter.FILE_PATH:
+                                case Parameter.FILE_PATH:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.MEASUREMENT:
+                                case Parameter.MEASUREMENT:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.CHILD_OBJECTS:
+                                case Parameter.CHILD_OBJECTS:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
-                                case HCParameter.PARENT_OBJECTS:
+                                case Parameter.PARENT_OBJECTS:
                                     module.updateParameterValue(parameterName, parameterValue);
                                     break;
 
@@ -175,7 +179,7 @@ public class AnalysisHandler {
 
     }
 
-    public HCWorkspace startAnalysis(HCAnalysis analysis) throws IOException, GenericMIAException {
+    public Workspace startAnalysis(Analysis analysis) throws IOException, GenericMIAException {
         JFileChooser fileChooser = new JFileChooser(inputFile);
         fileChooser.setDialogTitle("Select file to run");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -184,10 +188,12 @@ public class AnalysisHandler {
 
         inputFile = fileChooser.getSelectedFile();
         if (inputFile.isDirectory()) { // Batch mode
-            HCExporter exporter = new HCExporter(inputFile.getAbsolutePath()+"\\output",HCExporter.XLSX_EXPORT);
+            Exporter exporter = new Exporter(inputFile.getAbsolutePath()+"\\output", Exporter.XLSX_EXPORT);
             BatchProcessor batchProcessor = new BatchProcessor(inputFile);
-            batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"dv"}));
+            batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"flex"}));
             batchProcessor.runAnalysisOnStructure(analysis,exporter);
+
+            Runtime.getRuntime().gc();
 
             return null;
 
@@ -196,8 +202,8 @@ public class AnalysisHandler {
             String outputFilePath = FilenameUtils.removeExtension(inputFilePath);
 
             // Initialising the testWorkspace
-            HCWorkspaceCollection workspaces = new HCWorkspaceCollection();
-            HCWorkspace workspace;
+            WorkspaceCollection workspaces = new WorkspaceCollection();
+            Workspace workspace;
             if (!inputFilePath.equals("")) {
                 workspace = workspaces.getNewWorkspace(new File(inputFilePath));
 
@@ -211,14 +217,14 @@ public class AnalysisHandler {
 
             // Exporting XLSX
             if (exportXLSX & !outputFilePath.equals("")) {
-                HCExporter exporter = new HCExporter(outputFilePath, HCExporter.XLSX_EXPORT);
+                Exporter exporter = new Exporter(outputFilePath, Exporter.XLSX_EXPORT);
                 exporter.exportResults(workspaces, analysis);
 
             }
 
             // Exporting XML
             if (exportXML & !outputFilePath.equals("")) {
-                HCExporter exporter = new HCExporter(outputFilePath, HCExporter.XML_EXPORT);
+                Exporter exporter = new Exporter(outputFilePath, Exporter.XML_EXPORT);
                 exporter.exportResults(workspaces, analysis);
 
             }

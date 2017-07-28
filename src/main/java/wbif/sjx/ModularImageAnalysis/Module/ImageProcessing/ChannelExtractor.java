@@ -3,7 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.Duplicator;
-import ij.plugin.SubHyperstackMaker;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -28,7 +27,7 @@ public class ChannelExtractor extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
@@ -49,7 +48,7 @@ public class ChannelExtractor extends HCModule {
 
         // Adding image to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
-        workspace.addImage(new HCImage(outputImageName,outputChannelImagePlus));
+        workspace.addImage(new Image(outputImageName,outputChannelImagePlus));
 
         // (If selected) displaying the loaded image
         if (parameters.getValue(SHOW_IMAGE)) {
@@ -63,25 +62,25 @@ public class ChannelExtractor extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_IMAGE, HCParameter.INPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(OUTPUT_IMAGE, HCParameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new HCParameter(CHANNEL_TO_EXTRACT, HCParameter.INTEGER,1));
-        parameters.addParameter(new HCParameter(SHOW_IMAGE, HCParameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(CHANNEL_TO_EXTRACT, Parameter.INTEGER,1));
+        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
+    public ParameterCollection getActiveParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

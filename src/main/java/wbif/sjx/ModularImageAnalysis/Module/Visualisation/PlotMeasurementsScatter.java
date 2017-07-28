@@ -52,13 +52,13 @@ public class PlotMeasurementsScatter extends HCModule {
     }
 
     @Override
-    public void execute(HCWorkspace workspace, boolean verbose) {
+    public void execute(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        HCObjectSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         boolean excludeNaN = parameters.getValue(EXCLUDE_NAN);
@@ -84,7 +84,7 @@ public class PlotMeasurementsScatter extends HCModule {
 
         if (verbose) System.out.println("["+moduleName+"] Getting measurements to plot");
         int iter = 0;
-        for (HCObject inputObject:inputObjects.values()) {
+        for (Obj inputObject:inputObjects.values()) {
             measurementValues1[iter] = inputObject.getMeasurement(measurement1).getValue();
             measurementValues2[iter] = inputObject.getMeasurement(measurement2).getValue();
             if (useColour) measurementValues3[iter] = inputObject.getMeasurement(measurement3).getValue();
@@ -157,19 +157,19 @@ public class PlotMeasurementsScatter extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new HCParameter(INPUT_OBJECTS,HCParameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new HCParameter(EXCLUDE_NAN,HCParameter.BOOLEAN,true));
-        parameters.addParameter(new HCParameter(MEASUREMENT1,HCParameter.MEASUREMENT,null,null));
-        parameters.addParameter(new HCParameter(MEASUREMENT2,HCParameter.MEASUREMENT,null,null));
-        parameters.addParameter(new HCParameter(INCLUDE_COLOUR,HCParameter.BOOLEAN,false,null));
-        parameters.addParameter(new HCParameter(MEASUREMENT3,HCParameter.MEASUREMENT,null,null));
-        parameters.addParameter(new HCParameter(COLOURMAP,HCParameter.CHOICE_ARRAY,COLOURMAPS[0],COLOURMAPS));
+        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.addParameter(new Parameter(EXCLUDE_NAN, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(MEASUREMENT1, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(MEASUREMENT2, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(INCLUDE_COLOUR, Parameter.BOOLEAN,false,null));
+        parameters.addParameter(new Parameter(MEASUREMENT3, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(COLOURMAP, Parameter.CHOICE_ARRAY,COLOURMAPS[0],COLOURMAPS));
 
     }
 
     @Override
-    public HCParameterCollection getActiveParameters() {
-        HCParameterCollection returnedParameters = new HCParameterCollection();
+    public ParameterCollection getActiveParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(EXCLUDE_NAN));
         returnedParameters.addParameter(parameters.getParameter(MEASUREMENT1));
@@ -207,12 +207,12 @@ public class PlotMeasurementsScatter extends HCModule {
     }
 
     @Override
-    public void addMeasurements(HCMeasurementCollection measurements) {
+    public void addMeasurements(MeasurementCollection measurements) {
 
     }
 
     @Override
-    public void addRelationships(HCRelationshipCollection relationships) {
+    public void addRelationships(RelationshipCollection relationships) {
 
     }
 }

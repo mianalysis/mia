@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
-import wbif.sjx.ModularImageAnalysis.Object.HCParameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
 
@@ -8,16 +8,16 @@ import javax.swing.*;
  * Created by sc13967 on 06/06/2017.
  */
 public class VisibleCheck extends JCheckBox {
-    private HCParameter parameter;
+    private Parameter parameter;
 
-    public VisibleCheck(HCParameter parameter) {
+    public VisibleCheck(Parameter parameter) {
         this.setSelected(parameter.isVisible());
         this.setName("VisibleCheck");
         this.parameter = parameter;
 
     }
 
-    public HCParameter getParameter() {
+    public Parameter getParameter() {
         return parameter;
     }
 }

@@ -1,18 +1,16 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Object.HCParameter;
-
-import javax.swing.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class ImageObjectInputParameter extends JComboBox {
+public class ImageObjectInputParameter extends WiderDropDownCombo {
     private HCModule module;
-    private HCParameter parameter;
+    private Parameter parameter;
 
-    public ImageObjectInputParameter(HCModule module, HCParameter parameter) {
+    public ImageObjectInputParameter(HCModule module, Parameter parameter) {
         this.module = module;
         this.parameter = parameter;
 
@@ -22,7 +20,7 @@ public class ImageObjectInputParameter extends JComboBox {
         return module;
     }
 
-    public HCParameter getParameter() {
+    public Parameter getParameter() {
         return parameter;
     }
 }
