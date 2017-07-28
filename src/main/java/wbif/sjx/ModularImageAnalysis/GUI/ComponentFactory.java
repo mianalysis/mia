@@ -1,13 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
-import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusListener;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
@@ -17,14 +14,10 @@ import java.util.LinkedHashSet;
 class ComponentFactory {
     private MainGUI gui;
     private int elementHeight;
-    private FocusListener focusListener;
-    private ActionListener actionListener;
 
-    ComponentFactory(MainGUI gui, int elementHeight, FocusListener focusListener, ActionListener actionListener) {
+    ComponentFactory(MainGUI gui, int elementHeight) {
         this.gui = gui;
         this.elementHeight = elementHeight;
-        this.focusListener = focusListener;
-        this.actionListener = actionListener;
 
     }
 
@@ -49,126 +42,74 @@ class ComponentFactory {
             LinkedHashSet<Parameter> removedImages = modules.getParametersMatchingType(Parameter.REMOVED_IMAGE,module);
 
             // Adding any output images to the list
-            LinkedHashSet<String> names = new LinkedHashSet<>();
-            names.add(null);
+            LinkedHashSet<String> namesSet = new LinkedHashSet<>();
+            namesSet.add(null);
             for (Parameter image : outputImages) {
-                names.add(image.getValue());
+                namesSet.add(image.getValue());
 
             }
 
             // Removing any images which have since been removed from the workspace
             for (Parameter image : removedImages) {
-                names.remove(image.getValue());
+                namesSet.remove(image.getValue());
             }
 
-            parameterControl = new ImageObjectInputParameter(module, parameter);
-            for (String name:names) ((ImageObjectInputParameter) parameterControl).addItem(name);
-            ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-            parameterControl.addFocusListener(focusListener);
-            parameterControl.setName("InputParameter");
+            String[] names = new String[namesSet.size()+1];
+            names[0] = null;
+            int i = 1;
+            for (String name:namesSet) {
+                names[i++] = name;
+            }
+
+            parameterControl = new ImageObjectInputParameter(gui,names,module,parameter);
 
         } else if (parameter.getType() == Parameter.INPUT_OBJECTS) {
             // Getting a list of available images
             LinkedHashSet<Parameter> objects = modules.getParametersMatchingType(Parameter.OUTPUT_OBJECTS,module);
 
-            LinkedHashSet<String> names = new LinkedHashSet<>();
-            names.add(null);
+            String[] names = new String[objects.size()+1];
+            names[0] = null;
+            int i = 1;
             for (Parameter object : objects) {
-                names.add(object.getValue());
-
+                names[i++] = object.getValue();
             }
 
-            parameterControl = new ImageObjectInputParameter(module, parameter);
-            for (String name:names) ((ImageObjectInputParameter) parameterControl).addItem(name);
-            ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-
-            parameterControl.addFocusListener(focusListener);
-            parameterControl.setName("InputParameter");
+            parameterControl = new ImageObjectInputParameter(gui,names,module,parameter);
 
         } else if (parameter.getType() == Parameter.INTEGER | parameter.getType() == Parameter.DOUBLE
                 | parameter.getType() == Parameter.STRING | parameter.getType() == Parameter.OUTPUT_IMAGE
                 | parameter.getType() == Parameter.OUTPUT_OBJECTS) {
 
-            parameterControl = new TextParameter(module, parameter);
-            String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
-            ((TextParameter) parameterControl).setText(name);
-            parameterControl.addFocusListener(focusListener);
-            parameterControl.setName("TextParameter");
+            parameterControl = new TextParameter(gui, module, parameter);
 
         } else if (parameter.getType() == Parameter.BOOLEAN) {
-            parameterControl = new BooleanParameter(module,parameter);
-            ((BooleanParameter) parameterControl).setSelected(parameter.getValue());
-            ((BooleanParameter) parameterControl).addActionListener(actionListener);
-            parameterControl.setName("BooleanParameter");
+            parameterControl = new BooleanParameter(gui,module,parameter);
 
         } else if (parameter.getType() == Parameter.FILE_PATH) {
-            parameterControl = new FileParameter(module, parameter);
-            ((FileParameter) parameterControl).setText(FilenameUtils.getName(parameter.getValue()));
-            ((FileParameter) parameterControl).addActionListener(actionListener);
-            parameterControl.setName("FileParameter");
+            parameterControl = new FileParameter(gui, module, parameter);
 
         } else if (parameter.getType() == Parameter.CHOICE_ARRAY) {
             String[] valueSource = parameter.getValueSource();
-            parameterControl = new ChoiceArrayParameter(module, parameter, valueSource);
-            if (parameter.getValue() != null) {
-                ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
-            }
-
-            if (parameter.getValueSource() != null) {
-                parameter.setValue(((ChoiceArrayParameter) parameterControl).getSelectedItem());
-            }
-
-            ((ChoiceArrayParameter) parameterControl).addActionListener(actionListener);
-
-            parameterControl.setName("ChoiceArrayParameter");
-            ((ChoiceArrayParameter) parameterControl).setWide(true);
+            parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
 
         } else if (parameter.getType() == Parameter.MEASUREMENT) {
             MeasurementCollection measurements = modules.getMeasurements(module);
             String[] measurementChoices = measurements.getMeasurementNames(parameter.getValueSource());
             Arrays.sort(measurementChoices);
 
-            parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
-            if (parameter.getValue() != null) {
-                ((ChoiceArrayParameter) parameterControl).setSelectedItem(parameter.getValue());
-            }
-            if (parameter.getValueSource() != null) {
-                parameter.setValue(((ChoiceArrayParameter) parameterControl).getSelectedItem());
-            }
-
-            ((ChoiceArrayParameter) parameterControl).addActionListener(actionListener);
-            parameterControl.setName("ChoiceArrayParameter");
-            ((ChoiceArrayParameter) parameterControl).setWide(true);
+            parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
         } else if (parameter.getType() == Parameter.CHILD_OBJECTS) {
             RelationshipCollection relationships = modules.getRelationships(module);
             String[] relationshipChoices = relationships.getChildNames(parameter.getValueSource());
-            parameterControl = new ImageObjectInputParameter(module, parameter);
-            if (relationshipChoices != null) {
-                for (String relationship : relationshipChoices) {
-                    ((ImageObjectInputParameter) parameterControl).addItem(relationship);
 
-                }
-                ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-            }
-            ((ImageObjectInputParameter) parameterControl).addActionListener(actionListener);
-            parameterControl.setName("InputParameter");
-            ((ImageObjectInputParameter) parameterControl).setWide(true);
+            parameterControl = new ImageObjectInputParameter(gui,relationshipChoices,module,parameter);
 
         } else if (parameter.getType() == Parameter.PARENT_OBJECTS) {
-            RelationshipCollection relationships = modules.getRelationships(module);
+            RelationshipCollection relationships = gui.getModules().getRelationships(module);
             String[] relationshipChoices = relationships.getParentNames(parameter.getValueSource());
-            parameterControl = new ImageObjectInputParameter(module, parameter);
-            if (relationshipChoices != null) {
-                for (String relationship : relationshipChoices) {
-                    ((ImageObjectInputParameter) parameterControl).addItem(relationship);
 
-                }
-                ((ImageObjectInputParameter) parameterControl).setSelectedItem(parameter.getValue());
-            }
-            ((ImageObjectInputParameter) parameterControl).addActionListener(actionListener);
-            parameterControl.setName("InputParameter");
-            ((ImageObjectInputParameter) parameterControl).setWide(true);
+            parameterControl = new ImageObjectInputParameter(gui,relationshipChoices,module,parameter);
 
         }
 
@@ -238,7 +179,6 @@ class ComponentFactory {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         EvalButton evalButton = new EvalButton(gui,module);
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        evalButton.addActionListener(actionListener);
         evalButton.setForeground(color);
         modulePanel.add(evalButton,c);
 

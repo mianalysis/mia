@@ -12,8 +12,8 @@ import javax.swing.*;
  */
 public class ModularImageAnalysisPlugin implements PlugIn {
     public static void main(String[] args) throws IllegalAccessException, InstantiationException, ClassNotFoundException, UnsupportedLookAndFeelException {
-//        UIManager.setLookAndFeel(
-//                UIManager.getSystemLookAndFeelClassName());
+        UIManager.setLookAndFeel(
+                UIManager.getSystemLookAndFeelClassName());
 
         new ImageJ();
         new MainGUI();

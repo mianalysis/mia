@@ -39,13 +39,13 @@ public class WiderDropDownCombo extends JComboBox {
     }
 
     public int getWidestItemWidth() {
-
         int numOfItems = this.getItemCount();
         Font font = this.getFont();
         FontMetrics metrics = this.getFontMetrics(font);
         int widest = 0;
         for (int i = 0; i < numOfItems; i++) {
             Object item = this.getItemAt(i);
+            if (item == null) continue;
             int lineWidth = metrics.stringWidth(item.toString());
             widest = Math.max(widest, lineWidth);
         }
