@@ -54,9 +54,8 @@ class ComponentFactory {
                 namesSet.remove(image.getValue());
             }
 
-            String[] names = new String[namesSet.size()+1];
-            names[0] = null;
-            int i = 1;
+            String[] names = new String[namesSet.size()];
+            int i = 0;
             for (String name:namesSet) {
                 names[i++] = name;
             }
@@ -67,9 +66,8 @@ class ComponentFactory {
             // Getting a list of available images
             LinkedHashSet<Parameter> objects = modules.getParametersMatchingType(Parameter.OUTPUT_OBJECTS,module);
 
-            String[] names = new String[objects.size()+1];
-            names[0] = null;
-            int i = 1;
+            String[] names = new String[objects.size()];
+            int i = 0;
             for (Parameter object : objects) {
                 names[i++] = object.getValue();
             }

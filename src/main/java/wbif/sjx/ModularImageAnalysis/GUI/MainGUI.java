@@ -489,9 +489,7 @@ public class MainGUI {
         notesHelpPane.addTab("Help", null, helpArea);
 
         String notes = activeModule.getNotes();
-        JTextArea notesArea = new JTextArea(notes);
-        notesArea.setName("NotesArea");
-//        notesArea.addFocusListener(this);
+        NotesArea notesArea = new NotesArea(this,notes);
         notesHelpPane.addTab("Notes", null, notesArea);
 
         c.anchor = GridBagConstraints.LAST_LINE_START;
