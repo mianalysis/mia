@@ -169,33 +169,33 @@ public class ObjectClusterer extends HCModule {
 
         }
 
-        // Checking each object has a parent.  If not, a new parent is created for that object on its own
-        for (Obj object:inputObjects.values()) {
-            if (object.getParent(outputObjectsName) == null) {
-                Obj parentObject = new Obj(outputObjectsName,outputObjects.getNextID());
-
-                // Getting the centroid of the current object
-                ArrayList<Integer> x = new ArrayList<>();
-                ArrayList<Integer> y = new ArrayList<>();
-                ArrayList<Integer> z = new ArrayList<>();
-
-                x.add((int) Math.round(object.getCentroid(Obj.X)));
-                y.add((int) Math.round(object.getCentroid(Obj.Y)));
-                z.add((int) Math.round(object.getCentroid(Obj.Z)));
-
-                parentObject.setCoordinates(Obj.X, x);
-                parentObject.setCoordinates(Obj.Y, y);
-                parentObject.setCoordinates(Obj.Z, z);
-
-                parentObject.copyCalibration(object);
-
-                object.addParent(parentObject);
-                parentObject.addChild(object);
-
-                outputObjects.add(parentObject);
-
-            }
-        }
+//        // Checking each object has a parent.  If not, a new parent is created for that object on its own
+//        for (Obj object:inputObjects.values()) {
+//            if (object.getParent(outputObjectsName) == null) {
+//                Obj parentObject = new Obj(outputObjectsName,outputObjects.getNextID());
+//
+//                // Getting the centroid of the current object
+//                ArrayList<Integer> x = new ArrayList<>();
+//                ArrayList<Integer> y = new ArrayList<>();
+//                ArrayList<Integer> z = new ArrayList<>();
+//
+//                x.add((int) Math.round(object.getCentroid(Obj.X)));
+//                y.add((int) Math.round(object.getCentroid(Obj.Y)));
+//                z.add((int) Math.round(object.getCentroid(Obj.Z)));
+//
+//                parentObject.setCoordinates(Obj.X, x);
+//                parentObject.setCoordinates(Obj.Y, y);
+//                parentObject.setCoordinates(Obj.Z, z);
+//
+//                parentObject.copyCalibration(object);
+//
+//                object.addParent(parentObject);
+//                parentObject.addChild(object);
+//
+//                outputObjects.add(parentObject);
+//
+//            }
+//        }
 
         // Adding measurement to each cluster
         for (Obj outputObject:outputObjects.values()) {
@@ -342,37 +342,6 @@ public class ObjectClusterer extends HCModule {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         relationships.addRelationship(clusterObjectsName,inputObjectsName);
-
-    }
-}
-
-class LocationWrapper implements Clusterable {
-    private Obj object;
-    private double[] location;
-
-    LocationWrapper(Obj object) {
-        this.object = object;
-
-        // Getting the centroid of the current object
-        ArrayList<Integer> xArray = object.getCoordinates(Obj.X);
-        ArrayList<Integer> yArray = object.getCoordinates(Obj.Y);
-        ArrayList<Integer> zArray = object.getCoordinates(Obj.Z);
-        int x = (int) MeasureObjectCentroid.calculateCentroid(xArray);
-        int y = (int) MeasureObjectCentroid.calculateCentroid(yArray);
-        int z = (int) MeasureObjectCentroid.calculateCentroid(zArray);
-
-        this.location = new double[]{x,y,z};
-
-    }
-
-    @Override
-    public double[] getPoint() {
-        return location;
-
-    }
-
-    public Obj getObject() {
-        return object;
 
     }
 }

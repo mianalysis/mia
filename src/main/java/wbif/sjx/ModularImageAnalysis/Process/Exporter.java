@@ -432,7 +432,8 @@ public class Exporter {
 
             // Creating a LinkedHashMap that links relationship ID names to column numbers.  This keeps the correct
             // relationships in the correct columns
-            LinkedHashMap<String, LinkedHashMap<Integer,String>> relationshipNames = new LinkedHashMap<>();
+            LinkedHashMap<String, LinkedHashMap<Integer,String>> parentNames = new LinkedHashMap<>();
+            LinkedHashMap<String, LinkedHashMap<Integer,String>> childNames = new LinkedHashMap<>();
 
             // Creating a LinkedHashMap that links measurement names to column numbers.  This keeps the correct
             // measurements in the correct columns
@@ -442,65 +443,76 @@ public class Exporter {
             for (String objectName : exampleWorkspace.getObjects().keySet()) {
                 ObjSet objects = exampleWorkspace.getObjects().get(objectName);
 
-                if (objects.values().iterator().next().getMeasurements().size() != 0) {
-                    // Creating relevant sheet prefixed with "IM"
-                    objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
+                // Creating relevant sheet prefixed with "IM"
+                objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
 
-                    // Adding headers to each column
-                    int col = 0;
+                // Adding headers to each column
+                int col = 0;
 
-                    objectRows.put(objectName, 1);
-                    Row objectHeaderRow = objectSheets.get(objectName).createRow(0);
+                objectRows.put(objectName, 1);
+                Row objectHeaderRow = objectSheets.get(objectName).createRow(0);
 
-                    // Creating a cell holding the path to the analysed file
-                    Cell IDHeaderCell = objectHeaderRow.createCell(col++);
-                    IDHeaderCell.setCellValue("ANALYSIS_ID");
+                // Creating a cell holding the path to the analysed file
+                Cell IDHeaderCell = objectHeaderRow.createCell(col++);
+                IDHeaderCell.setCellValue("ANALYSIS_ID");
 
-                    Cell filenameHeaderCell = objectHeaderRow.createCell(col++);
-                    filenameHeaderCell.setCellValue("FILENAME");
+                Cell objectIDHeaderCell = objectHeaderRow.createCell(col++);
+                objectIDHeaderCell.setCellValue("OBJECT_ID");
 
-                    Cell objectIDHeaderCell = objectHeaderRow.createCell(col++);
-                    objectIDHeaderCell.setCellValue("OBJECT_ID");
+                // Adding metadata headers (if enabled)
+                if (addMetadataToObjects) {
+                    // Running through all the metadata values, adding them as new columns
+                    HCMetadata exampleMetadata = exampleWorkspace.getMetadata();
+                    for (String name : exampleMetadata.keySet()) {
+                        Cell metaHeaderCell = objectHeaderRow.createCell(col++);
+                        String metadataName = name.toUpperCase().replaceAll(" ", "_");
+                        metaHeaderCell.setCellValue(metadataName);
 
-                    // Adding metadata headers (if enabled)
-                    if (addMetadataToObjects) {
-                        // Running through all the metadata values, adding them as new columns
-                        HCMetadata exampleMetadata = exampleWorkspace.getMetadata();
-                        for (String name : exampleMetadata.keySet()) {
-                            Cell metaHeaderCell = objectHeaderRow.createCell(col++);
-                            String metadataName = name.toUpperCase().replaceAll(" ", "_");
-                            metaHeaderCell.setCellValue(metadataName);
-
-                        }
                     }
+                }
 
-                    // Adding parent IDs
-                    RelationshipCollection relationships = modules.getRelationships();
-                    String[] parentNames = relationships.getParentNames(objectName);
-                    for (String parentName:parentNames) {
-                        relationshipNames.putIfAbsent(objectName,new LinkedHashMap<>());
-                        relationshipNames.get(objectName).put(col,parentName);
+                // Adding parent IDs
+                RelationshipCollection relationships = modules.getRelationships();
+                String[] parents = relationships.getParentNames(objectName);
+                if (parents != null) {
+                    for (String parent : parents) {
+                        parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
+                        parentNames.get(objectName).put(col, parent);
                         Cell parentHeaderCell = objectHeaderRow.createCell(col++);
-                        parentHeaderCell.setCellValue("PARENT_"+parentName+"_ID");
+                        parentHeaderCell.setCellValue("PARENT_" + parent + "_ID");
 
                     }
+                }
 
-                    // Getting an example object
-                    Obj object = objects.values().iterator().next();
-
-                    // Adding single-valued position headers
-                    for (int dim:object.getPositions().keySet()) {
-                        Cell positionsHeaderCell = objectHeaderRow.createCell(col++);
-                        String dimName = dim==3 ? "CHANNEL" : dim == 4 ? "FRAME" : "DIM_"+dim;
-                        positionsHeaderCell.setCellValue(dimName);
+                // Adding number of children for each child type
+                String[] children = relationships.getChildNames(objectName);
+                if (children != null) {
+                    for (String child : children) {
+                        childNames.putIfAbsent(objectName, new LinkedHashMap<>());
+                        childNames.get(objectName).put(col, child);
+                        Cell childHeaderCell = objectHeaderRow.createCell(col++);
+                        childHeaderCell.setCellValue("NUMBER_OF_" + child + "_CHILDREN");
 
                     }
+                }
 
-                    // Adding measurement headers
-                    String[] measurements = modules.getMeasurements().getMeasurementNames(objectName);
+                // Getting an example object
+                Obj object = objects.values().iterator().next();
+
+                // Adding single-valued position headers
+                for (int dim:object.getPositions().keySet()) {
+                    Cell positionsHeaderCell = objectHeaderRow.createCell(col++);
+                    String dimName = dim==3 ? "CHANNEL" : dim == 4 ? "FRAME" : "DIM_"+dim;
+                    positionsHeaderCell.setCellValue(dimName);
+
+                }
+
+                // Adding measurement headers
+                String[] measurements = modules.getMeasurements().getMeasurementNames(objectName);
+                if (measurements != null) {
                     for (String measurement : measurements) {
-                        measurementNames.putIfAbsent(objectName,new LinkedHashMap<>());
-                        measurementNames.get(objectName).put(col,measurement);
+                        measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
+                        measurementNames.get(objectName).put(col, measurement);
                         Cell measHeaderCell = objectHeaderRow.createCell(col++);
                         measHeaderCell.setCellValue(measurement);
 
@@ -514,69 +526,88 @@ public class Exporter {
                     ObjSet objects = workspace.getObjects().get(objectName);
 
                     if (objects.values().iterator().hasNext()) {
-                        if (objects.values().iterator().next().getMeasurements().size() != 0) {
-                            for (Obj object : objects.values()) {
-                                // Adding the measurements from this image
-                                int col = 0;
+                        for (Obj object : objects.values()) {
+                            // Adding the measurements from this image
+                            int col = 0;
 
-                                Row objectValueRow = objectSheets.get(objectName).createRow(objectRows.get(objectName));
-                                objectRows.compute(objectName, (k, v) -> v = v + 1);
+                            Row objectValueRow = objectSheets.get(objectName).createRow(objectRows.get(objectName));
+                            objectRows.compute(objectName, (k, v) -> v = v + 1);
 
-                                // Creating a cell holding the path to the analysed file
-                                Cell IDValueCell = objectValueRow.createCell(col++);
-                                IDValueCell.setCellValue(workspace.getID());
+                            // Creating a cell holding the path to the analysed file
+                            Cell IDValueCell = objectValueRow.createCell(col++);
+                            IDValueCell.setCellValue(workspace.getID());
 
-                                Cell filenameValueCell = objectValueRow.createCell(col++);
-                                filenameValueCell.setCellValue(workspace.getMetadata().getFile().getName());
+                            Cell objectIDValueCell = objectValueRow.createCell(col++);
+                            objectIDValueCell.setCellValue(object.getID());
 
-                                Cell objectIDValueCell = objectValueRow.createCell(col++);
-                                objectIDValueCell.setCellValue(object.getID());
-
-                                // Adding metadata (if enabled)
-                                if (addMetadataToObjects) {
-                                    HCMetadata metadata = workspace.getMetadata();
-                                    for (String name : metadata.keySet()) {
-                                        Cell metaValueCell = objectValueRow.createCell(col++);
-                                        metaValueCell.setCellValue(metadata.getAsString(name));
-
-                                    }
-                                }
-
-                                // Adding relationships to the columns specified in relationshipNames
-                                if (relationshipNames.get(objectName) != null) {
-                                    for (int column : relationshipNames.get(objectName).keySet()) {
-                                        Cell parentValueCell = objectValueRow.createCell(column);
-                                        String parentName = relationshipNames.get(objectName).get(column);
-                                        Obj parent = object.getParent(parentName);
-                                        if (parent != null) {
-                                            parentValueCell.setCellValue(parent.getID());
-                                        } else {
-                                            parentValueCell.setCellValue("");
-                                        }
-                                        col++;
-                                    }
-                                }
-
-                                for (int dim : object.getPositions().keySet()) {
-                                    Cell positionsValueCell = objectValueRow.createCell(col++);
-                                    positionsValueCell.setCellValue(object.getPosition(dim));
+                            // Adding metadata (if enabled)
+                            if (addMetadataToObjects) {
+                                HCMetadata metadata = workspace.getMetadata();
+                                for (String name : metadata.keySet()) {
+                                    Cell metaValueCell = objectValueRow.createCell(col++);
+                                    metaValueCell.setCellValue(metadata.getAsString(name));
 
                                 }
+                            }
 
-                                // Adding measurements to the columns specified in measurementNames
-                                for (int column : measurementNames.get(objectName).keySet()) {
-                                    Cell measValueCell = objectValueRow.createCell(column);
-                                    String measurementName = measurementNames.get(objectName).get(column);
-                                    MIAMeasurement measurement = object.getMeasurement(measurementName);
-
-                                    if (Double.isNaN(measurement.getValue())) {
-                                        measValueCell.setCellValue("");
-
+                            // Adding parents to the columns specified in parentNames
+                            if (parentNames.get(objectName) != null) {
+                                for (int column : parentNames.get(objectName).keySet()) {
+                                    Cell parentValueCell = objectValueRow.createCell(column);
+                                    String parentName = parentNames.get(objectName).get(column);
+                                    Obj parent = object.getParent(parentName);
+                                    if (parent != null) {
+                                        parentValueCell.setCellValue(parent.getID());
                                     } else {
-                                        measValueCell.setCellValue(measurement.getValue());
-
+                                        parentValueCell.setCellValue("");
                                     }
+                                    col++;
                                 }
+                            }
+
+                            // Adding number of children to the columns specified in childNames
+                            if (childNames.get(objectName) != null) {
+                                for (int column : childNames.get(objectName).keySet()) {
+                                    Cell childValueCell = objectValueRow.createCell(column);
+                                    String childName = childNames.get(objectName).get(column);
+                                    ObjSet children = object.getChildren(childName);
+                                    if (children != null) {
+                                        childValueCell.setCellValue(children.size());
+                                    } else {
+                                        childValueCell.setCellValue("");
+                                    }
+                                    col++;
+                                }
+                            }
+
+                            // Adding extra dimension positions
+                            for (int dim : object.getPositions().keySet()) {
+                                Cell positionsValueCell = objectValueRow.createCell(col++);
+                                positionsValueCell.setCellValue(object.getPosition(dim));
+
+                            }
+
+                            // Adding measurements to the columns specified in measurementNames
+                            for (int column : measurementNames.get(objectName).keySet()) {
+                                Cell measValueCell = objectValueRow.createCell(column);
+                                String measurementName = measurementNames.get(objectName).get(column);
+                                MIAMeasurement measurement = object.getMeasurement(measurementName);
+
+                                // If there isn't a corresponding value for this object, set a blank cell
+                                if (measurement == null) {
+                                    measValueCell.setCellValue("");
+                                    continue;
+                                }
+
+                                // If the value is a NaN, also set a blank cell
+                                if (Double.isNaN(measurement.getValue())) {
+                                    measValueCell.setCellValue("");
+                                    continue;
+
+                                }
+
+                                measValueCell.setCellValue(measurement.getValue());
+
                             }
                         }
                     }

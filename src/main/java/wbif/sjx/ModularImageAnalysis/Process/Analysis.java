@@ -96,4 +96,5 @@ public abstract class Analysis implements Serializable {
         shutdown = true;
 
     }
+
 }

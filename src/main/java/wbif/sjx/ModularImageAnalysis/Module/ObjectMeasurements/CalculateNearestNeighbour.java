@@ -49,22 +49,26 @@ public class CalculateNearestNeighbour extends HCModule {
 
             if (calculateWithinParent) {
                 Obj parentObject = inputObject.getParent(parentObjectsName);
-                ObjSet neighbourObjects = parentObject.getChildren(inputObjectsName);
 
-                for (Obj testObject:neighbourObjects.values()) {
-                    if (testObject != inputObject) {
-                        double xCentTest = testObject.getCentroid(Obj.X);
-                        double yCentTest = testObject.getCentroid(Obj.Y);
-                        double zCentTest = testObject.getCentroid(Obj.Z);
+                // Some objects may not have a parent
+                if (parentObject != null) {
+                    ObjSet neighbourObjects = parentObject.getChildren(inputObjectsName);
 
-                        double dist = Math.sqrt((xCentTest - xCent) * (xCentTest - xCent)
-                                + (yCentTest - yCent) * (yCentTest - yCent)
-                                + (zCentTest - zCent) * (zCentTest - zCent));
+                    for (Obj testObject : neighbourObjects.values()) {
+                        if (testObject != inputObject) {
+                            double xCentTest = testObject.getCentroid(Obj.X);
+                            double yCentTest = testObject.getCentroid(Obj.Y);
+                            double zCentTest = testObject.getCentroid(Obj.Z);
 
-                        if (dist < minDist) {
-                            minDist = dist;
-                            nearestNeighbour = testObject;
+                            double dist = Math.sqrt((xCentTest - xCent) * (xCentTest - xCent)
+                                    + (yCentTest - yCent) * (yCentTest - yCent)
+                                    + (zCentTest - zCent) * (zCentTest - zCent));
 
+                            if (dist < minDist) {
+                                minDist = dist;
+                                nearestNeighbour = testObject;
+
+                            }
                         }
                     }
                 }
