@@ -39,17 +39,22 @@ public class ModuleControlButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (getText().equals(ADD_MODULE)) {
-            gui.addModule();
+        switch (getText()) {
+            case ADD_MODULE:
+                gui.addModule();
+                break;
 
-        } else if (getText().equals(REMOVE_MODULE)) {
-            gui.removeModule();
+            case REMOVE_MODULE:
+                gui.removeModule();
+                break;
 
-        } else if (getText().equals(MOVE_MODULE_UP)) {
-            gui.moveModuleUp();
+            case MOVE_MODULE_UP:
+                gui.moveModuleUp();
+                break;
 
-        } else if (getText().equals(MOVE_MODULE_DOWN)) {
-            gui.moveModuleDown();
+            case MOVE_MODULE_DOWN:
+                gui.moveModuleDown();
+                break;
 
         }
     }

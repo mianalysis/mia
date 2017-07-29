@@ -22,6 +22,8 @@ public class MainGUI {
     private int frameWidth = 1100;
     private int frameHeight = 750;
     private int elementHeight = 25;
+    private int bigButtonSize = 40;
+    private int moduleButtonWidth = 300;
 
     private ComponentFactory componentFactory;
     private Workspace testWorkspace = new Workspace(1,null);
@@ -29,8 +31,10 @@ public class MainGUI {
     private JFrame frame = new JFrame();
     private JMenuBar menuBar = new JMenuBar();
     private JPanel controlPanel = new JPanel();
-    private JPanel inputPanel = new JPanel();
+    private JPanel inputEnablePanel = new JPanel();
+    private JPanel outputEnablePanel = new JPanel();
     private JPanel modulesPanel = new JPanel();
+    private InputControl inputControl = new InputControl();
     private JScrollPane modulesScrollPane = new JScrollPane(modulesPanel);
     private JPanel paramsPanel = new JPanel();
     private JScrollPane paramsScrollPane = new JScrollPane(paramsPanel);
@@ -42,10 +46,13 @@ public class MainGUI {
     private int lastModuleEval = -1;
     private boolean basicGUI = true;
 
+
     private GUIAnalysis analysis = new GUIAnalysis();
     private ModuleCollection modules = analysis.modules;
 
     public MainGUI() throws InstantiationException, IllegalAccessException {
+        inputControl.initialiseParameters();
+
         componentFactory = new ComponentFactory(this,elementHeight);
 
         // Setting location of panel
@@ -163,16 +170,34 @@ public class MainGUI {
 
         // Creating buttons to add and remove modules
         initialiseControlPanel();
+        c.gridheight = 3;
         frame.add(controlPanel,c);
 
-        // Initialising the module list
-        initialisingModulesPanel();
+        // Initialising the input enable panel
+        initialiseInputEnablePanel();
         c.gridx++;
+        c.gridheight = 1;
+        c.insets = new Insets(5,5,0,0);
+        frame.add(inputEnablePanel,c);
+
+        // Initialising the module list panel
+        initialisingModulesPanel();
+        c.gridy++;
+        c.insets = new Insets(5,5,0,0);
         frame.add(modulesScrollPane,c);
+
+        // Initialising the output enable panel
+        initialiseOutputEnablePanel();
+        c.gridy++;
+        c.gridheight = 1;
+        c.insets = new Insets(5,5,5,0);
+        frame.add(outputEnablePanel,c);
 
         // Initialising the parameters panel
         initialiseParametersPanel();
         c.gridx++;
+        c.gridy = 0;
+        c.gridheight = 3;
         c.insets = new Insets(5,5,5,5);
         frame.add(paramsScrollPane,c);
 
@@ -195,10 +220,9 @@ public class MainGUI {
 
     private void initialiseControlPanel() {
         controlPanel = new JPanel();
-        int buttonSize = 50;
 
         controlPanel = new JPanel();
-        controlPanel.setPreferredSize(new Dimension(buttonSize + 15, frameHeight-50));
+        controlPanel.setPreferredSize(new Dimension(bigButtonSize + 15, frameHeight-50));
         controlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         controlPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -209,7 +233,7 @@ public class MainGUI {
         c.anchor = GridBagConstraints.PAGE_START;
 
         // Add module button
-        ModuleControlButton.setButtonSize(buttonSize);
+        ModuleControlButton.setButtonSize(bigButtonSize);
         ModuleControlButton addModuleButton = new ModuleControlButton(this,ModuleControlButton.ADD_MODULE);
         addModuleButton.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,20));
         controlPanel.add(addModuleButton, c);
@@ -233,6 +257,7 @@ public class MainGUI {
         controlPanel.add(moveModuleDownButton, c);
 
         // Load analysis protocol button
+        AnalysisControlButton.setButtonSize(bigButtonSize);
         AnalysisControlButton loadAnalysisButton = new AnalysisControlButton(this,AnalysisControlButton.LOAD_ANALYSIS);
         c.gridy++;
         c.weighty = 1;
@@ -260,17 +285,55 @@ public class MainGUI {
 
     }
 
-    private void initialiseInputPanel() {
+    private void initialiseInputEnablePanel() {
+        // Initialising the panel
+        inputEnablePanel.setPreferredSize(new Dimension(moduleButtonWidth + 15, bigButtonSize + 15));
+        inputEnablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        inputEnablePanel.setLayout(new GridBagLayout());
 
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weighty = 0;
+        c.insets = new Insets(5, 5, 5, 5);
+        c.anchor = GridBagConstraints.PAGE_START;
+
+        InputOutputButton.setButtonHeight(bigButtonSize);
+        InputOutputButton.setButtonWidth(moduleButtonWidth);
+        InputOutputButton inputButton = new InputOutputButton(this,InputOutputButton.INPUT_OPTIONS);
+        inputEnablePanel.add(inputButton,c);
+
+        inputEnablePanel.validate();
+        inputEnablePanel.repaint();
+
+    }
+
+    private void initialiseOutputEnablePanel() {
+        // Initialising the panel
+        outputEnablePanel.setPreferredSize(new Dimension(moduleButtonWidth + 15, bigButtonSize + 15));
+        outputEnablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        outputEnablePanel.setLayout(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weighty = 0;
+        c.insets = new Insets(5, 5, 5, 5);
+        c.anchor = GridBagConstraints.PAGE_START;
+
+        InputOutputButton outputButton = new InputOutputButton(this,InputOutputButton.OUTPUT_OPTIONS);
+        outputEnablePanel.add(outputButton,c);
+
+        outputEnablePanel.validate();
+        outputEnablePanel.repaint();
 
     }
 
     private void initialisingModulesPanel() {
         modulesScrollPane = new JScrollPane(modulesPanel);
-        int buttonWidth = 300;
 
         // Initialising the scroll panel
-        modulesScrollPane.setPreferredSize(new Dimension(buttonWidth + 15, frameHeight-50));
+        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight-2*bigButtonSize-90));
         modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -400,6 +463,73 @@ public class MainGUI {
     }
 
     void populateInputMode() {
+        paramsPanel.removeAll();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridy = 0;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.insets = new Insets(0,0,0,5);
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        // If the active module hasn't got parameters enabled, skip it
+            Iterator<Parameter> iterator = inputControl.getActiveParameters().values().iterator();
+            while (iterator.hasNext()) {
+                Parameter parameter = iterator.next();
+
+                c.gridx = 0;
+                JPanel paramPanel = componentFactory.createParameterControl(parameter,modules,inputControl,635);
+                paramsPanel.add(paramPanel,c);
+
+                // Adding a checkbox to determine if the parameter should be visible to the user
+                c.gridx++;
+                VisibleCheck visibleCheck = new VisibleCheck(parameter);
+                paramsPanel.add(visibleCheck,c);
+
+                c.gridy++;
+
+            }
+
+        // Creating the notes/help field at the bottom of the panel
+        JTabbedPane notesHelpPane = new JTabbedPane();
+        notesHelpPane.setPreferredSize(new Dimension(-1, elementHeight*3));
+
+        String help = inputControl.getHelp();
+        JTextArea helpArea = new JTextArea(help);
+        helpArea.setEditable(false);
+        notesHelpPane.addTab("Help", null, helpArea);
+
+        String notes = inputControl.getNotes();
+        NotesArea notesArea = new NotesArea(this,notes);
+        notesHelpPane.addTab("Notes", null, notesArea);
+
+        c.anchor = GridBagConstraints.LAST_LINE_START;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.weighty = 1;
+        c.gridwidth = 3;
+        c.insets = new Insets(5, 5, 5, 5);
+        paramsPanel.add(notesHelpPane,c);
+
+        paramsPanel.validate();
+        paramsPanel.repaint();
+
+        paramsScrollPane.validate();
+        paramsScrollPane.repaint();
+    }
+
+    void populateOutputMode() {
+        paramsPanel.removeAll();
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridy = 0;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.insets = new Insets(0,0,0,5);
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        paramsPanel.validate();
+        paramsPanel.repaint();
 
     }
 
@@ -420,7 +550,7 @@ public class MainGUI {
             int idx = modules.indexOf(module);
             if (idx == modules.size()-1) c.weighty = 1;
 
-            JPanel modulePanel = componentFactory.createAdvancedModuleControl(module,group,activeModule,300-25);
+            JPanel modulePanel = componentFactory.createAdvancedModuleControl(module,group,activeModule,moduleButtonWidth-25);
             modulesPanel.add(modulePanel, c);
             c.gridy++;
 
@@ -658,13 +788,16 @@ public class MainGUI {
         return frame;
     }
 
+    public HCModule getInputControl() {
+        return inputControl;
+    }
+
     HCModule getActiveModule() {
         return activeModule;
     }
 
-    GUIAnalysis getAnalysis() {
-        return analysis;
-    }
+        } else {
+            populateModuleList();
 
     void setActiveModule(HCModule activeModule) {
         this.activeModule = activeModule;
@@ -690,16 +823,17 @@ public class MainGUI {
         this.lastModuleEval = lastModuleEval;
     }
 
-    Workspace getTestWorkspace() {
-        return testWorkspace;
-    }
-
     void setTestWorkspace(Workspace testWorkspace) {
         this.testWorkspace = testWorkspace;
     }
 
-    JPopupMenu getModuleListMenu() {
-        return moduleListMenu;
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.getComponent().getName().equals("ModuleListPackage")) {
+            // Adding the mouse listener to show the relevant sub-menu
+            moduleListMenu.show(frame, e.getX(), e.getY());
+
+        }
     }
 
     void evaluateModule(HCModule module) throws GenericMIAException {
