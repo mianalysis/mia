@@ -46,7 +46,6 @@ public class MainGUI {
     private int lastModuleEval = -1;
     private boolean basicGUI = true;
 
-
     private GUIAnalysis analysis = new GUIAnalysis();
     private ModuleCollection modules = analysis.modules;
 
@@ -174,24 +173,24 @@ public class MainGUI {
         frame.add(controlPanel, c);
 
         // Initialising the input enable panel
-        initialiseInputEnablePanel();
+//        initialiseInputEnablePanel();
         c.gridx++;
-        c.gridheight = 1;
-        c.insets = new Insets(5, 5, 0, 0);
-        frame.add(inputEnablePanel, c);
+//        c.gridheight = 1;
+//        c.insets = new Insets(5, 5, 0, 0);
+//        frame.add(inputEnablePanel, c);
 
         // Initialising the module list panel
         initialisingModulesPanel();
         c.gridy++;
-        c.insets = new Insets(5, 5, 0, 0);
+        c.insets = new Insets(5, 5, 5, 0);
         frame.add(modulesScrollPane, c);
 
         // Initialising the output enable panel
-        initialiseOutputEnablePanel();
-        c.gridy++;
-        c.gridheight = 1;
-        c.insets = new Insets(5, 5, 5, 0);
-        frame.add(outputEnablePanel, c);
+//        initialiseOutputEnablePanel();
+//        c.gridy++;
+//        c.gridheight = 1;
+//        c.insets = new Insets(5, 5, 5, 0);
+//        frame.add(outputEnablePanel, c);
 
         // Initialising the parameters panel
         initialiseParametersPanel();
@@ -333,7 +332,8 @@ public class MainGUI {
         modulesScrollPane = new JScrollPane(modulesPanel);
 
         // Initialising the scroll panel
-        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 2 * bigButtonSize - 90));
+//        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 2 * bigButtonSize - 90));
+        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 50));
         modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -713,12 +713,14 @@ public class MainGUI {
         // Creating new instances of these classes and adding to ArrayList
         TreeMap<String, ArrayList<HCModule>> availableModulesList = new TreeMap<>();
         for (Class clazz : availableModules) {
-            String[] names = clazz.getPackage().getName().split("\\.");
-            String pkg = names[names.length - 1];
+            if (clazz != InputControl.class) {
+                String[] names = clazz.getPackage().getName().split("\\.");
+                String pkg = names[names.length - 1];
 
-            availableModulesList.putIfAbsent(pkg, new ArrayList<>());
-            availableModulesList.get(pkg).add((HCModule) clazz.newInstance());
+                availableModulesList.putIfAbsent(pkg, new ArrayList<>());
+                availableModulesList.get(pkg).add((HCModule) clazz.newInstance());
 
+            }
         }
 
         // Sorting the ArrayList based on module title
