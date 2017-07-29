@@ -48,10 +48,7 @@ public class FileParameter extends JButton implements ActionListener {
         int idx = gui.getModules().indexOf(module);
         if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);
 
-        if (gui.isBasicGUI()) {
-            gui.populateBasicModules();
-        } else {
-            gui.populateModuleList();
-        }
+        gui.updateEvalButtonStates();
+
     }
 }

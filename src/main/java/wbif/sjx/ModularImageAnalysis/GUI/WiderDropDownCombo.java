@@ -61,13 +61,4 @@ public class WiderDropDownCombo extends JComboBox {
             layingOut = false;
         }
     }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String t) {
-        type = t;
-    }
-
 }

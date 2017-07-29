@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,9 +22,7 @@ public class ChoiceArrayParameter extends WiderDropDownCombo implements ActionLi
         this.module = module;
         this.parameter = parameter;
 
-        if (parameter.getValue() != null) setSelectedItem(parameter.getValue());
-        if (parameter.getValueSource() != null) parameter.setValue(getSelectedItem());
-
+        setSelectedItem(parameter.getValue());
         addActionListener(this);
         setWide(true);
 
@@ -44,11 +43,8 @@ public class ChoiceArrayParameter extends WiderDropDownCombo implements ActionLi
         int idx = gui.getModules().indexOf(module);
         if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);
 
-        if (gui.isBasicGUI()) {
-            gui.populateBasicModules();
-        } else {
-            gui.populateModuleList();
-            gui.populateModuleParameters();
-        }
+        gui.updateEvalButtonStates();
+        if (!gui.isBasicGUI()) gui.populateModuleParameters();
+
     }
 }

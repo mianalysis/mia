@@ -31,6 +31,24 @@ public class EvalButton extends JButton implements ActionListener {
         setText("⇩");
         setFont(new Font(Font.SERIF,Font.BOLD,14));
         addActionListener(this);
+        updateColour();
+
+    }
+
+    public void updateColour() {
+        Color color;
+        int idx = gui.getModules().indexOf(module);
+        if (!module.isEnabled()) {
+            color = Color.LIGHT_GRAY;
+        } else {
+            if (idx <= gui.getLastModuleEval()) {
+                color = Color.getHSBColor(0.27f,1f,0.6f);
+            } else {
+                color = Color.getHSBColor(0f,1f,0.6f);
+            }
+        }
+
+        setForeground(color);
 
     }
 

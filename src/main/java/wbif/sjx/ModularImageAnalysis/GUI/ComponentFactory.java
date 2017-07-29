@@ -60,7 +60,7 @@ class ComponentFactory {
                 names[i++] = name;
             }
 
-            parameterControl = new ImageObjectInputParameter(gui,names,module,parameter);
+            parameterControl = new ChoiceArrayParameter(gui,module,parameter,names);
 
         } else if (parameter.getType() == Parameter.INPUT_OBJECTS) {
             // Getting a list of available images
@@ -72,7 +72,7 @@ class ComponentFactory {
                 names[i++] = object.getValue();
             }
 
-            parameterControl = new ImageObjectInputParameter(gui,names,module,parameter);
+            parameterControl = new ChoiceArrayParameter(gui,module,parameter,names);
 
         } else if (parameter.getType() == Parameter.INTEGER | parameter.getType() == Parameter.DOUBLE
                 | parameter.getType() == Parameter.STRING | parameter.getType() == Parameter.OUTPUT_IMAGE
@@ -101,13 +101,13 @@ class ComponentFactory {
             RelationshipCollection relationships = modules.getRelationships(module);
             String[] relationshipChoices = relationships.getChildNames(parameter.getValueSource());
 
-            parameterControl = new ImageObjectInputParameter(gui,relationshipChoices,module,parameter);
+            parameterControl = new ChoiceArrayParameter(gui,module,parameter,relationshipChoices);
 
         } else if (parameter.getType() == Parameter.PARENT_OBJECTS) {
             RelationshipCollection relationships = gui.getModules().getRelationships(module);
             String[] relationshipChoices = relationships.getParentNames(parameter.getValueSource());
 
-            parameterControl = new ImageObjectInputParameter(gui,relationshipChoices,module,parameter);
+            parameterControl = new ChoiceArrayParameter(gui,module,parameter,relationshipChoices);
 
         }
 
@@ -125,7 +125,7 @@ class ComponentFactory {
 
     }
 
-    JPanel createAdvancedModuleControl(HCModule module, ButtonGroup group, HCModule activeModule, Color color, int panelWidth) {
+    JPanel createAdvancedModuleControl(HCModule module, ButtonGroup group, HCModule activeModule, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -159,14 +159,13 @@ class ComponentFactory {
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         EvalButton evalButton = new EvalButton(gui,module);
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        evalButton.setForeground(color);
         modulePanel.add(evalButton,c);
 
         return modulePanel;
 
     }
 
-    JPanel createBasicModuleHeading(HCModule module, Color color, int panelWidth) {
+    JPanel createBasicModuleHeading(HCModule module, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -177,7 +176,6 @@ class ComponentFactory {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         EvalButton evalButton = new EvalButton(gui,module);
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        evalButton.setForeground(color);
         modulePanel.add(evalButton,c);
 
         // Adding the state/evaluate button

@@ -41,8 +41,8 @@ public class ModuleButton extends JToggleButton implements ActionListener {
             gui.populateBasicModules();
 
         } else {
-            gui.populateModuleList();
             gui.populateModuleParameters();
+            gui.populateModuleList();
 
         }
     }

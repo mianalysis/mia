@@ -417,22 +417,10 @@ public class MainGUI {
 
         // Adding module buttons
         for (HCModule module : modules) {
-            Color color;
             int idx = modules.indexOf(module);
-
-            if (!module.isEnabled()) {
-                color = Color.LIGHT_GRAY;
-            } else {
-                if (idx <= lastModuleEval) {
-                    color = Color.getHSBColor(0.27f,1f,0.6f);
-                } else {
-                    color = Color.getHSBColor(0f,1f,0.6f);
-                }
-            }
-
             if (idx == modules.size()-1) c.weighty = 1;
 
-            JPanel modulePanel = componentFactory.createAdvancedModuleControl(module,group,activeModule,color,300-25);
+            JPanel modulePanel = componentFactory.createAdvancedModuleControl(module,group,activeModule,300-25);
             modulesPanel.add(modulePanel, c);
             c.gridy++;
 
@@ -508,6 +496,24 @@ public class MainGUI {
 
     }
 
+    void updateEvalButtonStates() {
+        if (basicGUI) {
+            for (Component component:basicModulesScrollPane.getComponents()) {
+                if (component.getClass() == EvalButton.class) {
+                    ((EvalButton) component).updateColour();
+
+                }
+            }
+        } else {
+            for (Component component : modulesScrollPane.getComponents()) {
+                if (component.getClass() == EvalButton.class) {
+                    ((EvalButton) component).updateColour();
+
+                }
+            }
+        }
+    }
+
     void populateBasicModules() {
         basicModulesPanel.removeAll();
 
@@ -518,18 +524,7 @@ public class MainGUI {
 
         // Adding module buttons
         for (HCModule module : modules) {
-            Color color;
             int idx = modules.indexOf(module);
-            if (!module.isEnabled()) {
-                color = Color.LIGHT_GRAY;
-            } else {
-                if (idx <= lastModuleEval) {
-                    color = Color.getHSBColor(0.27f,1f,0.6f);
-                } else {
-                    color = Color.getHSBColor(0f,1f,0.6f);
-                }
-            }
-
             if (idx == modules.size()-1) c.weighty = 1;
 
             // Only show if the module is enabled
@@ -542,7 +537,7 @@ public class MainGUI {
             }
             if (!hasVisibleParameters) continue;
 
-            JPanel titlePanel = componentFactory.createBasicModuleHeading(module,color,500-50);
+            JPanel titlePanel = componentFactory.createBasicModuleHeading(module,500-50);
 
             c.gridy++;
             c.anchor = GridBagConstraints.FIRST_LINE_START;
