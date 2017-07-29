@@ -7,9 +7,10 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Process.StackComparator;
-import wbif.sjx.common.MetadataExtractors.Extractor;
+import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
 
+import javax.naming.Name;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class ImageStackLoader extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         // Getting parameters
-        Extractor extractor = parameters.getValue(EXTRACTOR);
+        NameExtractor extractor = parameters.getValue(EXTRACTOR);
         String orderField = parameters.getValue(ORDER_FIELD);
         ArrayList<String> staticFields = parameters.getValue(STATIC_FIELDS);
         HashMap<String,String> setFields = parameters.getValue(SET_FIELDS);

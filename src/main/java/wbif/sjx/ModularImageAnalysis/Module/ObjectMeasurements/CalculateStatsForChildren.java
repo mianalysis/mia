@@ -4,6 +4,7 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -45,7 +46,14 @@ public class CalculateStatsForChildren extends HCModule {
         // Getting a list of the measurement names from the first child object in the set
         if (!parentObjects.values().iterator().hasNext()) return;
 
-        ObjSet children = parentObjects.values().iterator().next().getChildren(childObjectsName);
+        Iterator<Obj> iterator = parentObjects.values().iterator();
+        ObjSet children = iterator.next().getChildren(childObjectsName);
+        while (children == null) {
+            if (!iterator.hasNext()) {
+                return;
+            }
+            children = iterator.next().getChildren(childObjectsName);
+        }
         if (!children.values().iterator().hasNext()) return;
 
         Set<String> exampleMeasurements = children.values().iterator().next().getMeasurements().keySet();

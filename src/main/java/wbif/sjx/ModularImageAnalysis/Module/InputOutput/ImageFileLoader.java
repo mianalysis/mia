@@ -5,6 +5,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import loci.common.DebugTools;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
 import loci.plugins.util.ImageProcessorReader;
@@ -14,8 +15,7 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.text.DecimalFormat;
 
 /**
  * Created by sc13967 on 15/05/2017.
@@ -32,7 +32,7 @@ public class ImageFileLoader extends HCModule {
     private static final String SPECIFIC_FILE = "Specific file";
     private static final String[] IMPORT_MODES = new String[]{CURRENT_FILE,SPECIFIC_FILE};
 
-    private static ImagePlus getBFImage(String path, boolean flexBugfix) {
+    private static ImagePlus getBFImage(String path, boolean flexFile) {
         ImagePlus ipl = null;
 
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
@@ -46,30 +46,42 @@ public class ImageFileLoader extends HCModule {
             int sizeC = reader.getSizeC();
             int sizeT = reader.getSizeT();
             int sizeZ = reader.getSizeZ();
+            int bitDepth = reader.getBitsPerPixel();
 
-            if (flexBugfix) {
-                ipl = IJ.createHyperStack("Image", width, height,2,reader.getSeriesCount()/2,1,16);
+            if (flexFile) {
+
+                int seriesCount = reader.getSeriesCount();
+
+                // Getting maximum channel number
+                sizeC = 0;
+                DecimalFormat df = new DecimalFormat("00");
+
+                for (int i=0;i<seriesCount;i++) {
+                    String channelName = String.valueOf(reader.getMetadataValue("Name #"+df.format(i+1)));
+                    int currChannel = Integer.parseInt(channelName.substring(3,4));
+                    if (currChannel > sizeC) sizeC = currChannel;
+
+                }
+
+                ipl = IJ.createHyperStack("Image", width, height,3,reader.getSeriesCount()/sizeC,1,bitDepth);
 
                 int z = 0;
                 int c = 0;
-
                 for (int i=0;i<reader.getSeriesCount();i++) {
                     reader.setSeries(i);
-
                     ImageProcessor ip = reader.openProcessors(0)[0];
-
                     ipl.setPosition(c+1,z+1,1);
                     ipl.setProcessor(ip);
 
                     c++;
-                    if (c == 2) {
+                    if (c == sizeC) {
                         z++;
                         c = 0;
                     }
                 }
 
             } else {
-                ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, 1, 16);
+                ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, 1, bitDepth);
 
                 for (int z = 0; z < sizeZ; z++) {
                     for (int c = 0; c < sizeC; c++) {
@@ -92,6 +104,7 @@ public class ImageFileLoader extends HCModule {
         }
 
         return ipl;
+
     }
 
     @Override
@@ -125,17 +138,8 @@ public class ImageFileLoader extends HCModule {
         ImagePlus ipl;
         // Importing the file
         if (parameters.getValue(USE_BIOFORMATS)) {
-            // Bio-formats writes lots of unwanted information to System.out.  This diverts it to a fake PrintStream
-            PrintStream realStream = System.out;
-            PrintStream fakeStream = new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) throws IOException {
-                }
-            });
-
-            System.setOut(fakeStream);
+            DebugTools.enableLogging("off");
             ipl = getBFImage(filePath,flexBugfix);
-            System.setOut(realStream);
 
         } else {
             ipl = IJ.openImage(filePath);
