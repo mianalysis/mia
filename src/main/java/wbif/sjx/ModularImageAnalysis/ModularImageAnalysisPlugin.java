@@ -5,11 +5,16 @@ import ij.ImageJ;
 import ij.plugin.PlugIn;
 import wbif.sjx.ModularImageAnalysis.GUI.MainGUI;
 
+import javax.swing.*;
+
 /**
  * Created by sc13967 on 14/07/2017.
  */
 public class ModularImageAnalysisPlugin implements PlugIn {
-    public static void main(String[] args) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+    public static void main(String[] args) throws IllegalAccessException, InstantiationException, ClassNotFoundException, UnsupportedLookAndFeelException {
+        UIManager.setLookAndFeel(
+                UIManager.getSystemLookAndFeelClassName());
+
         new ImageJ();
         new MainGUI();
 

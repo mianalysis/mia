@@ -16,9 +16,13 @@ import java.util.concurrent.TimeUnit;
  * Created by sc13967 on 21/10/2016.
  */
 public class BatchProcessor extends FileCrawler {
-    private boolean verbose = false;
+    private boolean verbose = true;
     private boolean parallel = true;
     private int nThreads = 6;
+
+    private ExecutorService pool;
+
+    private boolean shutdownEarly;
 
 
     // CONSTRUCTORS
@@ -28,80 +32,99 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    public BatchProcessor() {
-
-    }
-
 
     // PUBLIC METHODS
 
-    public WorkspaceCollection runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, GenericMIAException {
-        int num_valid_files = getNumberOfValidFilesInStructure();
-        resetIterator();
+    public void runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, GenericMIAException, InterruptedException {
+        shutdownEarly = false;
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
 
-        folder = rootFolder;
-        File next = getNextValidFileInStructure();
+        // If no analysis has been specified, skip this method
+        if (analysis == null) return;
 
-        int iter = 1;
+        // The protocol to run will depend on if a single file or a folder was selected
+        if (rootFolder.getFolderAsFile().isFile()) {
+            runSingle(workspaces, analysis);
 
-        if (analysis != null) {
-            if (parallel) {
-                // Setting up the ExecutorService, which will manage the threads
-                ExecutorService pool = Executors.newFixedThreadPool(nThreads);
+        } else {
+            // The system can run multiple files in parallel or one at a time
+            if (parallel) runParallel(workspaces, analysis);
+            else runLinear(workspaces, analysis);
 
-                while (next != null) {
-                    Workspace workspace = workspaces.getNewWorkspace(next);
-                    Runnable task = () -> {
-                        try {
-                            analysis.execute(workspace, verbose);
-                        } catch (GenericMIAException e) {
-                            e.printStackTrace();
-                        }
-                    };
-                    pool.submit(task);
-
-                    next = getNextValidFileInStructure();
-
-                }
-
-                // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
-                pool.shutdown();
-                try {
-                    pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                while (next != null) {
-                    System.out.println("Processing file: " + next.getName() + " (file " + iter++ + " of " + num_valid_files + ")");
-
-                    // Running the analysis
-                    Workspace workspace = workspaces.getNewWorkspace(next);
-                    analysis.execute(workspace, verbose);
-
-                    // Clearing images from the workspace to prevent memory leak
-                    workspace.clearAllImages(true);
-
-                    next = getNextValidFileInStructure();
-
-                    System.out.println((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) + " used");
-
-                    // Adding a blank line to the output
-                    if (verbose) System.out.println(" ");
-
-                }
-            }
         }
 
+        // Saving the results
+        if (shutdownEarly) return;
+        exporter.exportResults(workspaces,analysis);
         System.out.println("Complete!");
 
-        // Saving the results
-        exporter.exportResults(workspaces,analysis);
-        System.out.println("Saved!");
-        return workspaces;
+    }
+
+    private void runParallel(WorkspaceCollection workspaces, Analysis analysis) throws InterruptedException {
+        File next = getNextValidFileInStructure();
+
+        // Setting up the ExecutorService, which will manage the threads
+        pool = Executors.newFixedThreadPool(nThreads);
+
+        while (next != null) {
+            Workspace workspace = workspaces.getNewWorkspace(next);
+            Runnable task = () -> {
+                try {
+                    analysis.execute(workspace, false);
+                } catch (GenericMIAException e) {
+                    e.printStackTrace();
+                }
+            };
+            pool.submit(task);
+
+            next = getNextValidFileInStructure();
+
+        }
+
+        // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+    }
+
+    private void runLinear(WorkspaceCollection workspaces, Analysis analysis) throws GenericMIAException {
+        File next = getNextValidFileInStructure();
+
+        while (next != null) {
+            // Running the analysis
+            Workspace workspace = workspaces.getNewWorkspace(next);
+            analysis.execute(workspace, verbose);
+
+            // Clearing images from the workspace to prevent memory leak
+            workspace.clearAllImages(true);
+
+            next = getNextValidFileInStructure();
+
+            // Adding a blank line to the output
+            if (verbose) System.out.println(" ");
+
+        }
+    }
+
+    private void runSingle(WorkspaceCollection workspaces, Analysis analysis) throws GenericMIAException {
+        // Running the analysis
+        Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
+        analysis.execute(workspace, verbose);
+
+        // Clearing images from the workspace to prevent memory leak
+        workspace.clearAllImages(true);
+
+        // Adding a blank line to the output
+        if (verbose) System.out.println(" ");
+
+    }
+
+    public void stopAnalysis() {
+        pool.shutdownNow();
+        shutdownEarly = true;
+
+        System.out.println("Shutdown complete!");
 
     }
 
