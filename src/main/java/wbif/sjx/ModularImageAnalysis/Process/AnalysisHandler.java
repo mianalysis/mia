@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.IJ;
+import ij.Prefs;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -12,6 +13,8 @@ import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
+import wbif.sjx.common.FileConditions.FileCondition;
+import wbif.sjx.common.FileConditions.NameContainsString;
 
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -29,10 +32,7 @@ import java.io.*;
  * Created by sc13967 on 23/06/2017.
  */
 public class AnalysisHandler {
-    boolean exportXLSX = true;
-    boolean exportXML = false;
-
-    private static File inputFile = null;
+    private BatchProcessor batchProcessor;
 
     public void saveAnalysis(Analysis analysis) throws IOException, ParserConfigurationException, TransformerException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
@@ -179,61 +179,34 @@ public class AnalysisHandler {
 
     }
 
-    public Workspace startAnalysis(Analysis analysis) throws IOException, GenericMIAException {
-        JFileChooser fileChooser = new JFileChooser(inputFile);
+    public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
+        String inputFilePath = Prefs.get("ModularImageAnalysis.inputFilePath","");
+
+        JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Select file to run");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.showDialog(null,"Open");
 
-        inputFile = fileChooser.getSelectedFile();
-        if (inputFile.isDirectory()) { // Batch mode
-            Exporter exporter = new Exporter(inputFile.getAbsolutePath()+"\\output", Exporter.XLSX_EXPORT);
-            BatchProcessor batchProcessor = new BatchProcessor(inputFile);
-            batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"flex"}));
-            batchProcessor.runAnalysisOnStructure(analysis,exporter);
+        File inputFile = fileChooser.getSelectedFile();
+        Prefs.set("ModularImageAnalysis.inputFilePath",inputFilePath);
 
-            Runtime.getRuntime().gc();
+        String exportName;
+        if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+        else exportName = inputFile.getAbsolutePath() + "\\output";
 
-            return null;
+        Exporter exporter = new Exporter(exportName, Exporter.XLSX_EXPORT);
+        batchProcessor = new BatchProcessor(inputFile);
+//        batchProcessor.addFileCondition(new NameContainsString("ALX", FileCondition.INC_PARTIAL));
+        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"flex"}));
+        batchProcessor.runAnalysisOnStructure(analysis,exporter);
 
-        } else if (inputFile.isFile()) { // Single file mode
-            String inputFilePath = inputFile.getAbsolutePath();
-            String outputFilePath = FilenameUtils.removeExtension(inputFilePath);
+        Runtime.getRuntime().gc();
 
-            // Initialising the testWorkspace
-            WorkspaceCollection workspaces = new WorkspaceCollection();
-            Workspace workspace;
-            if (!inputFilePath.equals("")) {
-                workspace = workspaces.getNewWorkspace(new File(inputFilePath));
+    }
 
-            } else {
-                workspace = workspaces.getNewWorkspace(null);
-
-            }
-
-            // Running the analysis
-            if (!analysis.execute(workspace, true)) return null;
-
-            // Exporting XLSX
-            if (exportXLSX & !outputFilePath.equals("")) {
-                Exporter exporter = new Exporter(outputFilePath, Exporter.XLSX_EXPORT);
-                exporter.exportResults(workspaces, analysis);
-
-            }
-
-            // Exporting XML
-            if (exportXML & !outputFilePath.equals("")) {
-                Exporter exporter = new Exporter(outputFilePath, Exporter.XML_EXPORT);
-                exporter.exportResults(workspaces, analysis);
-
-            }
-
-            return workspace;
-
-        }
-
-        return null;
+    public void stopAnalysis() {
+        batchProcessor.stopAnalysis();
 
     }
 }
