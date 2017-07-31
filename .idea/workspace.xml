@@ -4,8 +4,16 @@
     <list default="true" id="bcdf6e90-d628-474f-bc83-9b3801034d57" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/ModularImageAnalysis.iml" afterPath="$PROJECT_DIR$/.idea/ModularImageAnalysis.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+<<<<<<< Updated upstream
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java" />
+=======
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Workspace.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Workspace.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/WorkspaceCollection.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/WorkspaceCollection.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Analysis.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Analysis.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Exporter.java" afterPath="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Exporter.java" />
+>>>>>>> Stashed changes
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,6 +33,7 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+<<<<<<< Updated upstream
       <file leaf-file-name="MainGUI.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -84,21 +93,57 @@
                 <element signature="method#evaluateModule#0;class#MainGUI#0" expanded="false" />
                 <element signature="e#29239#29240#0" expanded="false" />
                 <element signature="e#29289#29290#0" expanded="false" />
+=======
+      <file leaf-file-name="AnalysisHandler.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/AnalysisHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="21" column="18" lean-forward="false" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
+              <folding>
+                <marker date="1501496200625" expanded="true" signature="55:69" ph="..." />
+                <marker date="1501496200625" expanded="true" signature="10453:10461" ph="{...}" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="BatchProcessor.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/BatchProcessor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="578">
+              <caret line="59" column="48" lean-forward="true" selection-start-line="59" selection-start-column="48" selection-end-line="59" selection-end-column="48" />
+              <folding>
+                <element signature="docComment;class#BatchProcessor#0" expanded="false" />
+>>>>>>> Stashed changes
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="AnalysisHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/AnalysisHandler.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="85">
               <caret line="157" column="0" lean-forward="false" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
               <folding />
+=======
+      <file leaf-file-name="WorkspaceCollection.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/WorkspaceCollection.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="docComment;class#WorkspaceCollection#0" expanded="false" />
+                <element signature="docComment;method#getNewWorkspace#0;class#WorkspaceCollection#0" expanded="false" />
+              </folding>
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="InputControl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/InputControl.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -110,11 +155,31 @@
                 <element signature="e#705#706#0" expanded="false" />
                 <element signature="e#750#751#0" expanded="false" />
                 <element signature="e#777#778#0" expanded="false" />
+=======
+      <file leaf-file-name="Exporter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Exporter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-855">
+              <caret line="417" column="21" lean-forward="true" selection-start-line="417" selection-start-column="21" selection-end-line="417" selection-end-column="21" />
+              <folding>
+                <element signature="docComment;class#Exporter#0" expanded="false" />
+                <element signature="method#Exporter#0;class#Exporter#0" expanded="false" />
+                <element signature="method#exportResults#0;class#Exporter#0" expanded="false" />
+                <element signature="method#exportXML#0;class#Exporter#0" expanded="false" />
+                <element signature="method#prepareParametersXML#0;class#Exporter#0" expanded="false" />
+                <element signature="method#exportXLSX#0;class#Exporter#0" expanded="false" />
+                <element signature="method#prepareParametersXLSX#0;class#Exporter#0" expanded="false" />
+                <element signature="e#13403#13515#0" expanded="false" />
+                <element signature="e#18307#18410#0" expanded="false" />
+                <element signature="e#18584#18683#0" expanded="false" />
+                <element signature="method#exportJSON#0;class#Exporter#0" expanded="false" />
+>>>>>>> Stashed changes
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="PopupMenuItem.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/PopupMenuItem.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -125,10 +190,19 @@
                 <element signature="e#601#602#0" expanded="false" />
                 <element signature="e#630#631#0" expanded="false" />
               </folding>
+=======
+      <file leaf-file-name="MainGUI.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="251">
+              <caret line="601" column="32" lean-forward="false" selection-start-line="601" selection-start-column="32" selection-end-line="601" selection-end-column="32" />
+              <folding />
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="ChoiceArrayParameter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ChoiceArrayParameter.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -138,11 +212,26 @@
                 <element signature="imports" expanded="false" />
                 <element signature="e#827#828#0" expanded="false" />
                 <element signature="e#856#857#0" expanded="false" />
+=======
+      <file leaf-file-name="Workspace.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Workspace.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+              <folding>
+                <element signature="docComment;class#Workspace#0" expanded="false" />
+                <element signature="method#removeObject#0;class#Workspace#0" expanded="false" />
+                <element signature="method#removeImage#0;class#Workspace#0" expanded="false" />
+                <element signature="docComment;method#clearAllImages#0;class#Workspace#0" expanded="false" />
+                <element signature="method#getImage#0;class#Workspace#0" expanded="false" />
+                <element signature="method#getObjectSet#0;class#Workspace#0" expanded="false" />
+>>>>>>> Stashed changes
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="AddObjectsOverlay.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/Visualisation/AddObjectsOverlay.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -155,10 +244,19 @@
                 <element signature="e#2640#2641#0" expanded="false" />
                 <element signature="e#2667#2668#0" expanded="false" />
               </folding>
+=======
+      <file leaf-file-name="Analysis.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Analysis.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="288">
+              <caret line="53" column="0" lean-forward="true" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+              <folding />
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="ComponentFactory.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ComponentFactory.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -167,11 +265,54 @@
               <folding>
                 <element signature="imports" expanded="false" />
                 <marker date="1501320652693" expanded="true" signature="7198:7727" ph="{...}" />
+=======
+      <file leaf-file-name="Obj.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Obj.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+              <folding>
+                <element signature="docComment;class#Obj#0" expanded="false" />
+                <element signature="docComment;field#ID#0;class#Obj#0" expanded="false" />
+                <element signature="docComment;field#coordinates#0;class#Obj#0" expanded="false" />
+                <element signature="docComment;field#positions#0;class#Obj#0" expanded="false" />
+                <element signature="docComment;field#calibration#0;class#Obj#0" expanded="false" />
+                <element signature="method#Obj#0;class#Obj#0" expanded="false" />
+                <element signature="method#addCoordinate#0;class#Obj#0" expanded="false" />
+                <element signature="method#removeCoordinate#0;class#Obj#0" expanded="false" />
+                <element signature="method#getCoordinateRange#0;class#Obj#0" expanded="false" />
+                <element signature="method#addMeasurement#0;class#Obj#0" expanded="false" />
+                <element signature="method#getMeasurement#0;class#Obj#0" expanded="false" />
+                <element signature="method#addCalibration#0;class#Obj#0" expanded="false" />
+                <element signature="method#getCalibration#0;class#Obj#0" expanded="false" />
+                <element signature="docComment;method#copyCalibration#0;class#Obj#0" expanded="false" />
+                <element signature="method#copyCalibration#0;class#Obj#0" expanded="false" />
+                <element signature="method#toString#0;class#Obj#0" expanded="false" />
+                <element signature="method#getNumberOfDimensions#0;class#Obj#0" expanded="false" />
+                <element signature="docComment;method#setCoordinates#0;class#Obj#0" expanded="false" />
+                <element signature="method#setCoordinates#0;class#Obj#0" expanded="false" />
+                <element signature="docComment;method#setCoordinates#1;class#Obj#0" expanded="false" />
+                <element signature="method#setCoordinates#1;class#Obj#0" expanded="false" />
+                <element signature="method#getCoordinates#0;class#Obj#0" expanded="false" />
+                <element signature="method#getPosition#0;class#Obj#0" expanded="false" />
+                <element signature="method#setPosition#0;class#Obj#0" expanded="false" />
+                <element signature="method#getCoordinates#1;class#Obj#0" expanded="false" />
+                <element signature="method#setCoordinates#2;class#Obj#0" expanded="false" />
+                <element signature="method#getParent#0;class#Obj#0" expanded="false" />
+                <element signature="method#removeParent#0;class#Obj#0" expanded="false" />
+                <element signature="method#addChild#0;class#Obj#0" expanded="false" />
+                <element signature="method#removeChild#0;class#Obj#0" expanded="false" />
+                <element signature="docComment;method#removeRelationships#0;class#Obj#0" expanded="false" />
+                <element signature="method#removeRelationships#0;class#Obj#0" expanded="false" />
+                <element signature="method#setMeasurements#0;class#Obj#0" expanded="false" />
+                <element signature="method#getCentroid#0;class#Obj#0" expanded="false" />
+>>>>>>> Stashed changes
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="WiderDropDownCombo.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/WiderDropDownCombo.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -183,16 +324,33 @@
                 <element signature="e#503#504#0" expanded="false" />
                 <element signature="e#534#535#0" expanded="false" />
                 <element signature="e#561#562#0" expanded="false" />
+=======
+      <file leaf-file-name="MetadataExtractor.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/MetadataExtractor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="704">
+              <caret line="116" column="9" lean-forward="true" selection-start-line="116" selection-start-column="9" selection-end-line="116" selection-end-column="9" />
+              <folding>
+                <element signature="docComment;class#MetadataExtractor#0" expanded="false" />
+>>>>>>> Stashed changes
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="pom.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="607">
               <caret line="139" column="119" lean-forward="false" selection-start-line="139" selection-start-column="119" selection-end-line="139" selection-end-column="119" />
+=======
+      <file leaf-file-name="ImageStackLoader.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" column="53" lean-forward="true" selection-start-line="5" selection-start-column="53" selection-end-line="5" selection-end-column="53" />
+>>>>>>> Stashed changes
               <folding />
             </state>
           </provider>
@@ -209,6 +367,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+<<<<<<< Updated upstream
       <find>ImageObj</find>
       <find>Boolen</find>
       <find>choicearr</find>
@@ -239,6 +398,38 @@
       <find>spac</find>
       <find>separa</find>
       <find>evau</find>
+=======
+      <find>re</find>
+      <find>removemodule(</find>
+      <find>dist</find>
+      <find>showmess</find>
+      <find>HCN</find>
+      <find>HCNameInputParameter</find>
+      <find>HCName</find>
+      <find>Selec</find>
+      <find>measuremen</find>
+      <find>Double.N</find>
+      <find>== D</find>
+      <find>catch</find>
+      <find>exampleW</find>
+      <find>example</find>
+      <find>SXSSFSheet</find>
+      <find>type</find>
+      <find>wide</find>
+      <find>choicear</find>
+      <find>show</find>
+      <find>GROUP</find>
+      <find>measurement</find>
+      <find>group</find>
+      <find>flatt</find>
+      <find>Sys</find>
+      <find>outputOb</find>
+      <find>objects</find>
+      <find>point</find>
+      <find>worksp</find>
+      <find>Extra</find>
+      <find>garb</find>
+>>>>>>> Stashed changes
     </findStrings>
     <replaceStrings>
       <replace>MultiCumStat</replace>
@@ -261,8 +452,45 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+<<<<<<< Updated upstream
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/BFRe.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageSaver.java" />
+=======
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCRelationshipCollection.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCModuleCollection.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ObjectClusterer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/Visualisation/ShowObjects.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/IdentifySecondaryObjects.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/Visualisation/ShowImage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/GaussianFitter2D.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectShape.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectIntensity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ImageObjectInputParameter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ChoiceArrayParameter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/SaveObjectsToSpreadsheet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/HCExporter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/CalculateStatsForChildren.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCParameter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/RemoveImage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCWorkspace.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ComponentFactory.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/RelateObjects.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCObject.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/IdentifyObjects.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/HCObjectSet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/DiffractionPatternFitter1D.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/HCAnalysis.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Extractor/IncuCyteShortFilenameExtractor.java" />
+        <option value="$PROJECT_DIR$/../Common/src/main/java/wbif/sjx/common/System/CellVoyagerFilenameExtractor.java" />
+        <option value="$PROJECT_DIR$/../Common/src/main/java/wbif/sjx/common/Object/HCMetadata.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/StackComparator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/WiderDropDownCombo.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/plugins.config" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/BFRe.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageSaver.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java" />
+>>>>>>> Stashed changes
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/ObjectImageConverter.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/FilterObjects.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/IdentifyPrimaryObjects.java" />
@@ -270,6 +498,7 @@
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/RunTrackMate.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageFileLoader.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/MetadataExtractor.java" />
+<<<<<<< Updated upstream
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectIntensity.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Analysis.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/BatchProcessor.java" />
@@ -312,6 +541,15 @@
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/AnalysisHandler.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
+=======
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Workspace.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Obj.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Exporter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/BatchProcessor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/WorkspaceCollection.java" />
+        <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Analysis.java" />
+>>>>>>> Stashed changes
       </list>
     </option>
   </component>
@@ -551,6 +789,10 @@
           </PATH>
         </subPane>
       </pane>
+<<<<<<< Updated upstream
+=======
+      <pane id="Scope" />
+>>>>>>> Stashed changes
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -820,12 +1062,20 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1496142986020</updated>
+<<<<<<< Updated upstream
       <workItem from="1501251365977" duration="5761000" />
+=======
+      <workItem from="1501504606458" duration="3000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< Updated upstream
     <option name="totallyTimeSpent" value="5761000" />
+=======
+    <option name="totallyTimeSpent" value="3000" />
+>>>>>>> Stashed changes
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -846,10 +1096,17 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+<<<<<<< Updated upstream
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32157677" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23560767" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+=======
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3226141" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2185501" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+>>>>>>> Stashed changes
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -860,18 +1117,37 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+<<<<<<< Updated upstream
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32606438" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+>>>>>>> Stashed changes
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+<<<<<<< Updated upstream
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+=======
+      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22068231" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+>>>>>>> Stashed changes
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -894,6 +1170,7 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/GUIAnalysis.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -955,6 +1232,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectIntensity.java">
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/RemoveImage.java">
+>>>>>>> Stashed changes
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="19" column="69" lean-forward="false" selection-start-line="19" selection-start-column="69" selection-end-line="19" selection-end-column="69" />
@@ -1042,6 +1322,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ModuleListMenu.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -1070,6 +1351,12 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/StackComparator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="9" column="59" lean-forward="false" selection-start-line="9" selection-start-column="59" selection-end-line="9" selection-end-column="59" />
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
@@ -1091,6 +1378,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/FileParameter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -1102,6 +1390,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/WiderDropDownCombo.java">
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/ImageObjectInputParameter.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectMeasurements/MeasureObjectShape.java">
+>>>>>>> Stashed changes
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
           <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
@@ -1153,6 +1445,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/InputOutputButton.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="697">
@@ -1175,6 +1468,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="986">
           <caret line="64" column="13" lean-forward="false" selection-start-line="64" selection-start-column="13" selection-end-line="64" selection-end-column="13" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/Visualisation/AddObjectsOverlay.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="310">
+          <caret line="157" column="13" lean-forward="false" selection-start-line="157" selection-start-column="13" selection-end-line="157" selection-end-column="13" />
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
@@ -1188,6 +1487,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="2057">
           <caret line="121" column="9" lean-forward="true" selection-start-line="114" selection-start-column="8" selection-end-line="121" selection-end-column="9" />
           <folding>
@@ -1245,6 +1545,11 @@
             <element signature="e#29239#29240#0" expanded="false" />
             <element signature="e#29289#29290#0" expanded="false" />
           </folding>
+=======
+        <state relative-caret-position="528">
+          <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding />
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
@@ -1268,16 +1573,181 @@
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/BooleanParameter.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="377">
           <caret line="40" column="47" lean-forward="false" selection-start-line="40" selection-start-column="47" selection-end-line="40" selection-end-column="47" />
           <folding>
             <element signature="docComment;class#BooleanParameter#0" expanded="false" />
+=======
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2397">
+          <caret line="141" column="72" lean-forward="false" selection-start-line="141" selection-start-column="72" selection-end-line="141" selection-end-column="72" />
+          <folding>
+            <marker date="1501496201311" expanded="true" signature="4850:5224" ph="..." />
+            <marker date="1501496201311" expanded="true" signature="4850:5257" ph="..." />
+            <marker date="1501496201311" expanded="true" signature="4850:5287" ph="..." />
+            <marker date="1501496201311" expanded="true" signature="4850:5309" ph="..." />
+            <marker date="1501496201311" expanded="true" signature="4850:5328" ph="..." />
+            <marker date="1501496201311" expanded="true" signature="4850:5341" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageFileLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="docComment;class#ImageFileLoader#0" expanded="false" />
+            <element signature="method#getBFImage#0;class#ImageFileLoader#0" expanded="false" />
+            <element signature="method#getTitle#0;class#ImageFileLoader#0" expanded="false" />
+            <element signature="method#initialiseParameters#0;class#ImageFileLoader#0" expanded="false" />
+            <element signature="method#getActiveParameters#0;class#ImageFileLoader#0" expanded="false" />
+            <element signature="method#addMeasurements#0;class#ImageFileLoader#0" expanded="false" />
+            <element signature="method#addRelationships#0;class#ImageFileLoader#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/ModularImageAnalysisPlugin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding>
+            <marker date="1501496200493" expanded="true" signature="473:663" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/AnalysisHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="18" lean-forward="false" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
+          <folding>
+            <marker date="1501496200625" expanded="true" signature="55:69" ph="..." />
+            <marker date="1501496200625" expanded="true" signature="10453:10461" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="53" lean-forward="true" selection-start-line="5" selection-start-column="53" selection-end-line="5" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/MetadataExtractor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="704">
+          <caret line="116" column="9" lean-forward="true" selection-start-line="116" selection-start-column="9" selection-end-line="116" selection-end-column="9" />
+          <folding>
+            <element signature="docComment;class#MetadataExtractor#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="601" column="32" lean-forward="false" selection-start-line="601" selection-start-column="32" selection-end-line="601" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Analysis.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="17" column="0" lean-forward="true" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Exporter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-855">
+          <caret line="417" column="21" lean-forward="true" selection-start-line="417" selection-start-column="21" selection-end-line="417" selection-end-column="21" />
+          <folding>
+            <element signature="docComment;class#Exporter#0" expanded="false" />
+            <element signature="method#Exporter#0;class#Exporter#0" expanded="false" />
+            <element signature="method#exportResults#0;class#Exporter#0" expanded="false" />
+            <element signature="method#exportXML#0;class#Exporter#0" expanded="false" />
+            <element signature="method#prepareParametersXML#0;class#Exporter#0" expanded="false" />
+            <element signature="method#exportXLSX#0;class#Exporter#0" expanded="false" />
+            <element signature="method#prepareParametersXLSX#0;class#Exporter#0" expanded="false" />
+            <element signature="e#13403#13515#0" expanded="false" />
+            <element signature="e#18307#18410#0" expanded="false" />
+            <element signature="e#18584#18683#0" expanded="false" />
+            <element signature="method#exportJSON#0;class#Exporter#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Obj.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding>
+            <element signature="docComment;class#Obj#0" expanded="false" />
+            <element signature="docComment;field#ID#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;field#coordinates#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;field#positions#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;field#calibration#0;class#Obj#0" expanded="false" />
+            <element signature="method#Obj#0;class#Obj#0" expanded="false" />
+            <element signature="method#addCoordinate#0;class#Obj#0" expanded="false" />
+            <element signature="method#removeCoordinate#0;class#Obj#0" expanded="false" />
+            <element signature="method#getCoordinateRange#0;class#Obj#0" expanded="false" />
+            <element signature="method#addMeasurement#0;class#Obj#0" expanded="false" />
+            <element signature="method#getMeasurement#0;class#Obj#0" expanded="false" />
+            <element signature="method#addCalibration#0;class#Obj#0" expanded="false" />
+            <element signature="method#getCalibration#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;method#copyCalibration#0;class#Obj#0" expanded="false" />
+            <element signature="method#copyCalibration#0;class#Obj#0" expanded="false" />
+            <element signature="method#toString#0;class#Obj#0" expanded="false" />
+            <element signature="method#getNumberOfDimensions#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;method#setCoordinates#0;class#Obj#0" expanded="false" />
+            <element signature="method#setCoordinates#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;method#setCoordinates#1;class#Obj#0" expanded="false" />
+            <element signature="method#setCoordinates#1;class#Obj#0" expanded="false" />
+            <element signature="method#getCoordinates#0;class#Obj#0" expanded="false" />
+            <element signature="method#getPosition#0;class#Obj#0" expanded="false" />
+            <element signature="method#setPosition#0;class#Obj#0" expanded="false" />
+            <element signature="method#getCoordinates#1;class#Obj#0" expanded="false" />
+            <element signature="method#setCoordinates#2;class#Obj#0" expanded="false" />
+            <element signature="method#getParent#0;class#Obj#0" expanded="false" />
+            <element signature="method#removeParent#0;class#Obj#0" expanded="false" />
+            <element signature="method#addChild#0;class#Obj#0" expanded="false" />
+            <element signature="method#removeChild#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;method#removeRelationships#0;class#Obj#0" expanded="false" />
+            <element signature="method#removeRelationships#0;class#Obj#0" expanded="false" />
+            <element signature="method#setMeasurements#0;class#Obj#0" expanded="false" />
+            <element signature="method#getCentroid#0;class#Obj#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Workspace.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding>
+            <element signature="docComment;class#Workspace#0" expanded="false" />
+            <element signature="method#removeObject#0;class#Workspace#0" expanded="false" />
+            <element signature="method#removeImage#0;class#Workspace#0" expanded="false" />
+            <element signature="docComment;method#clearAllImages#0;class#Workspace#0" expanded="false" />
+            <element signature="method#getImage#0;class#Workspace#0" expanded="false" />
+            <element signature="method#getObjectSet#0;class#Workspace#0" expanded="false" />
+>>>>>>> Stashed changes
+          </folding>
+        </state>
+      </provider>
+    </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/AnalysisControlButton.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-255">
@@ -1285,10 +1755,21 @@
           <folding>
             <element signature="imports" expanded="false" />
             <element signature="docComment;class#AnalysisControlButton#0" expanded="false" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/WorkspaceCollection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="25" column="1" lean-forward="true" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#WorkspaceCollection#0" expanded="false" />
+            <element signature="docComment;method#getNewWorkspace#0;class#WorkspaceCollection#0" expanded="false" />
+>>>>>>> Stashed changes
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/EvalButton.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="415">
@@ -1303,10 +1784,30 @@
           <caret line="23" column="68" lean-forward="true" selection-start-line="23" selection-start-column="68" selection-end-line="23" selection-end-column="68" />
           <folding>
             <element signature="imports" expanded="false" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/BatchProcessor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="55" column="64" lean-forward="false" selection-start-line="55" selection-start-column="64" selection-end-line="55" selection-end-column="64" />
+          <folding>
+            <element signature="docComment;class#BatchProcessor#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/AnalysisHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="18" lean-forward="false" selection-start-line="21" selection-start-column="18" selection-end-line="21" selection-end-column="18" />
+          <folding>
+            <marker date="1501496200625" expanded="true" signature="55:69" ph="..." />
+            <marker date="1501496200625" expanded="true" signature="10453:10461" ph="{...}" />
+>>>>>>> Stashed changes
+          </folding>
+        </state>
+      </provider>
+    </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/InputControl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
@@ -1317,12 +1818,31 @@
             <element signature="e#705#706#0" expanded="false" />
             <element signature="e#750#751#0" expanded="false" />
             <element signature="e#777#778#0" expanded="false" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Exporter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-855">
+          <caret line="417" column="21" lean-forward="true" selection-start-line="417" selection-start-column="21" selection-end-line="417" selection-end-column="21" />
+          <folding>
+            <element signature="docComment;class#Exporter#0" expanded="false" />
+            <element signature="method#Exporter#0;class#Exporter#0" expanded="false" />
+            <element signature="method#exportResults#0;class#Exporter#0" expanded="false" />
+            <element signature="method#exportXML#0;class#Exporter#0" expanded="false" />
+            <element signature="method#prepareParametersXML#0;class#Exporter#0" expanded="false" />
+            <element signature="method#exportXLSX#0;class#Exporter#0" expanded="false" />
+            <element signature="method#prepareParametersXLSX#0;class#Exporter#0" expanded="false" />
+            <element signature="e#13403#13515#0" expanded="false" />
+            <element signature="e#18307#18410#0" expanded="false" />
+            <element signature="e#18584#18683#0" expanded="false" />
+            <element signature="method#exportJSON#0;class#Exporter#0" expanded="false" />
+>>>>>>> Stashed changes
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/GUI/MainGUI.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="1139">
           <caret line="180" column="0" lean-forward="false" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
           <folding>
@@ -1380,11 +1900,17 @@
             <element signature="e#29239#29240#0" expanded="false" />
             <element signature="e#29289#29290#0" expanded="false" />
           </folding>
+=======
+        <state relative-caret-position="251">
+          <caret line="601" column="32" lean-forward="false" selection-start-line="601" selection-start-column="32" selection-end-line="601" selection-end-column="32" />
+          <folding />
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/AnalysisHandler.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="85">
           <caret line="157" column="0" lean-forward="false" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
           <folding />
@@ -1395,6 +1921,109 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="607">
           <caret line="139" column="119" lean-forward="false" selection-start-line="139" selection-start-column="119" selection-end-line="139" selection-end-column="119" />
+          <folding />
+=======
+        <state relative-caret-position="704">
+          <caret line="116" column="9" lean-forward="true" selection-start-line="116" selection-start-column="9" selection-end-line="116" selection-end-column="9" />
+          <folding>
+            <element signature="docComment;class#MetadataExtractor#0" expanded="false" />
+          </folding>
+>>>>>>> Stashed changes
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageStackLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="53" lean-forward="true" selection-start-line="5" selection-start-column="53" selection-end-line="5" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Obj.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding>
+            <element signature="docComment;class#Obj#0" expanded="false" />
+            <element signature="docComment;field#ID#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;field#coordinates#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;field#positions#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;field#calibration#0;class#Obj#0" expanded="false" />
+            <element signature="method#Obj#0;class#Obj#0" expanded="false" />
+            <element signature="method#addCoordinate#0;class#Obj#0" expanded="false" />
+            <element signature="method#removeCoordinate#0;class#Obj#0" expanded="false" />
+            <element signature="method#getCoordinateRange#0;class#Obj#0" expanded="false" />
+            <element signature="method#addMeasurement#0;class#Obj#0" expanded="false" />
+            <element signature="method#getMeasurement#0;class#Obj#0" expanded="false" />
+            <element signature="method#addCalibration#0;class#Obj#0" expanded="false" />
+            <element signature="method#getCalibration#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;method#copyCalibration#0;class#Obj#0" expanded="false" />
+            <element signature="method#copyCalibration#0;class#Obj#0" expanded="false" />
+            <element signature="method#toString#0;class#Obj#0" expanded="false" />
+            <element signature="method#getNumberOfDimensions#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;method#setCoordinates#0;class#Obj#0" expanded="false" />
+            <element signature="method#setCoordinates#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;method#setCoordinates#1;class#Obj#0" expanded="false" />
+            <element signature="method#setCoordinates#1;class#Obj#0" expanded="false" />
+            <element signature="method#getCoordinates#0;class#Obj#0" expanded="false" />
+            <element signature="method#getPosition#0;class#Obj#0" expanded="false" />
+            <element signature="method#setPosition#0;class#Obj#0" expanded="false" />
+            <element signature="method#getCoordinates#1;class#Obj#0" expanded="false" />
+            <element signature="method#setCoordinates#2;class#Obj#0" expanded="false" />
+            <element signature="method#getParent#0;class#Obj#0" expanded="false" />
+            <element signature="method#removeParent#0;class#Obj#0" expanded="false" />
+            <element signature="method#addChild#0;class#Obj#0" expanded="false" />
+            <element signature="method#removeChild#0;class#Obj#0" expanded="false" />
+            <element signature="docComment;method#removeRelationships#0;class#Obj#0" expanded="false" />
+            <element signature="method#removeRelationships#0;class#Obj#0" expanded="false" />
+            <element signature="method#setMeasurements#0;class#Obj#0" expanded="false" />
+            <element signature="method#getCentroid#0;class#Obj#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/Workspace.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding>
+            <element signature="docComment;class#Workspace#0" expanded="false" />
+            <element signature="method#removeObject#0;class#Workspace#0" expanded="false" />
+            <element signature="method#removeImage#0;class#Workspace#0" expanded="false" />
+            <element signature="docComment;method#clearAllImages#0;class#Workspace#0" expanded="false" />
+            <element signature="method#getImage#0;class#Workspace#0" expanded="false" />
+            <element signature="method#getObjectSet#0;class#Workspace#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Object/WorkspaceCollection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#WorkspaceCollection#0" expanded="false" />
+            <element signature="docComment;method#getNewWorkspace#0;class#WorkspaceCollection#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/BatchProcessor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="59" column="48" lean-forward="true" selection-start-line="59" selection-start-column="48" selection-end-line="59" selection-end-column="48" />
+          <folding>
+            <element signature="docComment;class#BatchProcessor#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Process/Analysis.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="53" column="0" lean-forward="true" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
           <folding />
         </state>
       </provider>
