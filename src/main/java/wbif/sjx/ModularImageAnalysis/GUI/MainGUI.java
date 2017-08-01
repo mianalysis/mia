@@ -47,7 +47,6 @@ public class MainGUI {
     private boolean basicGUI = true;
 
     private GUIAnalysis analysis = new GUIAnalysis();
-    private ModuleCollection modules = analysis.modules;
 
     public MainGUI() throws InstantiationException, IllegalAccessException {
         inputControl.initialiseParameters();
@@ -474,6 +473,7 @@ public class MainGUI {
 
         // If the active module hasn't got parameters enabled, skip it
         Iterator<Parameter> iterator = inputControl.getActiveParameters().values().iterator();
+        ModuleCollection modules = getModules();
         while (iterator.hasNext()) {
             Parameter parameter = iterator.next();
 
@@ -546,6 +546,7 @@ public class MainGUI {
         ButtonGroup group = new ButtonGroup();
 
         // Adding module buttons
+        ModuleCollection modules = getModules();
         for (HCModule module : modules) {
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
@@ -585,7 +586,7 @@ public class MainGUI {
                 Parameter parameter = iterator.next();
 
                 c.gridx = 0;
-                JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, activeModule, 635);
+                JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule, 635);
                 paramsPanel.add(paramPanel, c);
 
                 // Adding a checkbox to determine if the parameter should be visible to the user
@@ -653,6 +654,7 @@ public class MainGUI {
         c.weighty = 0;
 
         // Adding module buttons
+        ModuleCollection modules = getModules();
         for (HCModule module : modules) {
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
@@ -746,6 +748,7 @@ public class MainGUI {
 
     void removeModule() {
         if (activeModule != null) {
+            ModuleCollection modules = getModules();
             // Removing a module resets all the current evaluation
             int idx = modules.indexOf(activeModule);
             if (idx < lastModuleEval) lastModuleEval = -1;
@@ -761,6 +764,7 @@ public class MainGUI {
 
     void moveModuleUp() {
         if (activeModule != null) {
+            ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
             if (idx != 0) {
                 if (idx - 1 <= lastModuleEval) lastModuleEval = idx - 2;
@@ -775,6 +779,7 @@ public class MainGUI {
 
     void moveModuleDown() {
         if (activeModule != null) {
+            ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
             if (idx != modules.size()) {
                 if (idx <= lastModuleEval) lastModuleEval = idx - 1;
@@ -814,8 +819,12 @@ public class MainGUI {
         return analysis;
     }
 
+    public void setAnalysis(GUIAnalysis analysis) {
+        this.analysis = analysis;
+    }
+
     public ModuleCollection getModules() {
-        return modules;
+        return analysis.getModules();
     }
 
     public void setActiveModule(HCModule activeModule) {
@@ -826,13 +835,9 @@ public class MainGUI {
         this.lastModuleEval = lastModuleEval;
     }
 
-    public void setModules(ModuleCollection modules) {
-        this.modules = modules;
-    }
-
     void evaluateModule(HCModule module) throws GenericMIAException {
         module.execute(testWorkspace, true);
-        lastModuleEval = modules.indexOf(module);
+        lastModuleEval = getModules().indexOf(module);
 
         if (basicGUI) {
             populateBasicModules();

@@ -50,8 +50,9 @@ public class AnalysisControlButton extends JButton implements ActionListener {
         try {
             switch (getText()) {
                 case LOAD_ANALYSIS:
-                    Analysis analysis = new AnalysisHandler().loadAnalysis();
-                    gui.setModules(analysis.getModules());
+                    GUIAnalysis analysis = (GUIAnalysis) new AnalysisHandler().loadAnalysis();
+                    gui.setAnalysis(analysis);
+//                    gui.setModules(analysis.getModules());
 
                     if (gui.isBasicGUI()) {
                         gui.populateBasicModules();
@@ -67,6 +68,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
                     break;
 
                 case SAVE_ANALYSIS:
+                    System.out.println("here_"+gui.getAnalysis().getModules().size());
                     new AnalysisHandler().saveAnalysis(gui.getAnalysis());
                     break;
 

@@ -40,8 +40,8 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
         try {
             switch (getText()) {
                 case LOAD_ANALYSIS:
-                    Analysis analysis = new AnalysisHandler().loadAnalysis();
-                    gui.setModules(analysis.getModules());
+                    GUIAnalysis analysis = (GUIAnalysis) new AnalysisHandler().loadAnalysis();
+                    gui.setAnalysis(analysis);
 
                     if (gui.isBasicGUI()) {
                         gui.populateBasicModules();
