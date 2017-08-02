@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
 import wbif.sjx.ModularImageAnalysis.GUI.MainGUI;
+import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
 

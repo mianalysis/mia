@@ -7,6 +7,7 @@ import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Analysis.InstantaneousVelocityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Track;
 import wbif.sjx.common.Object.TrackCollection;
@@ -60,55 +61,6 @@ public class MeasureObjectIntensity extends HCModule {
 
     }
 
-    private void measureEdgeIntensity(Obj object, ImagePlus ipl) {
-        // Getting parameters
-        String imageName = parameters.getValue(INPUT_IMAGE);
-
-        // Initialising the cumulative statistics object to store pixel intensities
-        CumStat csEdge = new CumStat();
-        CumStat csInterior = new CumStat();
-
-        // Getting parent coordinates
-        ArrayList<Integer> parentX = object.getCoordinates(Obj.X);
-        ArrayList<Integer> parentY = object.getCoordinates(Obj.Y);
-        ArrayList<Integer> parentZ = object.getCoordinates(Obj.Z);
-
-        // Creating a Hyperstack to hold the distance transform
-        int[][] range = object.getCoordinateRange();
-        ImagePlus iplObj = IJ.createHyperStack("Objects", range[Obj.X][1]-range[Obj.X][0] + 1,
-                range[Obj.Y][1]-range[Obj.Y][0] + 1, 1, range[Obj.Z][1]-range[Obj.Z][0], 1, 8);
-
-        // Setting pixels corresponding to the parent object to 1
-        for (int i=0;i<parentX.size();i++) {
-            iplObj.setPosition(1,parentZ.get(i)-range[Obj.Z][0]+1,1);
-            iplObj.getProcessor().set(parentX.get(i)-range[Obj.X][0],parentY.get(i)-range[Obj.Y][0],255);
-
-        }
-
-        // Creating distance map using MorphoLibJ
-        short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
-        DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,true);
-        iplObj.setStack(distTransform.distanceMap(iplObj.getStack()));
-
-        // Adding pixel intensities to CumStat
-        // Running through all pixels in this object and adding the intensity to the MultiCumStat object
-        for (int i=0;i<parentX.size();i++) {
-            ipl.setPosition(1,parentZ.get(i)+1,1);
-            iplObj.setPosition(1,parentZ.get(i)-range[Obj.Z][0]+1,1);
-
-            double pixelVal = iplObj.getProcessor().getPixelValue(parentX.get(i)-range[Obj.X][0],parentY.get(i)-range[Obj.Y][0]);
-            if (pixelVal <= edgeDistance) {
-                csEdge.addMeasure(ipl.getProcessor().getPixelValue(parentX.get(i),parentY.get(i)));
-                iplObj.getProcessor().set(parentX.get(i)-range[Obj.X][0],parentY.get(i)-range[Obj.Y][0],0);
-
-            } else if (pixelVal > edgeDistance && (boolean) parameters.getValue(MEASURE_INTERIOR)) {
-                csInterior.addMeasure(ipl.getProcessor().getPixelValue(parentX.get(i),parentY.get(i)));
-                iplObj.getProcessor().set(parentX.get(i)-range[Obj.X][0],parentY.get(i)-range[Obj.Y][0],0);
-
-            }
-        }
-    }
-
     @Override
     public String getTitle() {
         return "Measure object intensity";
@@ -135,11 +87,7 @@ public class MeasureObjectIntensity extends HCModule {
         ImagePlus ipl = image.getImagePlus();
 
         // Measuring intensity for each object and adding the measurement to that object
-        for (Obj object:objects.values()) {
-            // Calculating object intensity
-            measureIntensity(object,ipl);
-
-        }
+        for (Obj object:objects.values()) measureIntensity(object,ipl);
 
         if (verbose) System.out.println("["+moduleName+"] Complete");
 
