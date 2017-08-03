@@ -141,12 +141,12 @@ public class MainGUI {
         frame.add(basicModulesScrollPane, c);
 
         // Initialising the status panel
-//        initialiseStatusPanel(500);
-//        c.gridx = 0;
-//        c.gridy++;
-//        c.gridwidth = 1;
-//        c.insets = new Insets(5,5,5,5);
-//        frame.add(statusPanel,c);
+        initialiseStatusPanel(500);
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 1;
+        c.insets = new Insets(5,5,5,5);
+        frame.add(statusPanel,c);
 
         frame.pack();
         frame.revalidate();
@@ -171,12 +171,24 @@ public class MainGUI {
         c.gridheight = 3;
         frame.add(controlPanel, c);
 
+        // Initialising the status panel
+        initialiseStatusPanel(1080);
+        c.gridheight = 1;
+        c.gridy++;
+        c.gridy++;
+        c.gridy++;
+        c.gridwidth = 3;
+        c.insets = new Insets(0,5,5,5);
+        frame.add(statusPanel,c);
+
         // Initialising the input enable panel
-//        initialiseInputEnablePanel();
+        initialiseInputEnablePanel();
+        c.gridy = 0;
         c.gridx++;
-//        c.gridheight = 1;
-//        c.insets = new Insets(5, 5, 0, 0);
-//        frame.add(inputEnablePanel, c);
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        c.insets = new Insets(5, 5, 0, 0);
+        frame.add(inputEnablePanel, c);
 
         // Initialising the module list panel
         initialisingModulesPanel();
@@ -185,11 +197,11 @@ public class MainGUI {
         frame.add(modulesScrollPane, c);
 
         // Initialising the output enable panel
-//        initialiseOutputEnablePanel();
-//        c.gridy++;
-//        c.gridheight = 1;
-//        c.insets = new Insets(5, 5, 5, 0);
-//        frame.add(outputEnablePanel, c);
+        initialiseOutputEnablePanel();
+        c.gridy++;
+        c.gridheight = 1;
+        c.insets = new Insets(0, 5, 5, 0);
+        frame.add(outputEnablePanel, c);
 
         // Initialising the parameters panel
         initialiseParametersPanel();
@@ -198,14 +210,6 @@ public class MainGUI {
         c.gridheight = 3;
         c.insets = new Insets(5, 5, 5, 5);
         frame.add(paramsScrollPane, c);
-
-        // Initialising the status panel
-//        initialiseStatusPanel(1090);
-//        c.gridx = 0;
-//        c.gridy++;
-//        c.gridwidth = 3;
-//        c.insets = new Insets(0,5,5,5);
-//        frame.add(statusPanel,c);
 
         frame.pack();
         frame.revalidate();
@@ -331,8 +335,8 @@ public class MainGUI {
         modulesScrollPane = new JScrollPane(modulesPanel);
 
         // Initialising the scroll panel
-//        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 2 * bigButtonSize - 90));
-        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 50));
+        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 2 * bigButtonSize - 90));
+//        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 50));
         modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
