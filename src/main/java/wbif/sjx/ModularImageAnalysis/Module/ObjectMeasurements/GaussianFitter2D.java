@@ -233,7 +233,7 @@ public class GaussianFitter2D extends HCModule {
         } else if (parameters.getValue(RADIUS_MODE).equals(MEASUREMENT)) {
             returnedParameters.addParameter(parameters.getParameter(RADIUS_MEASUREMENT));
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(RADIUS_MEASUREMENT,inputObjectsName);
+            parameters.updateValueSource(RADIUS_MEASUREMENT,inputObjectsName);
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT_MULTIPLIER));
 
         }

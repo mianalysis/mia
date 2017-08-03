@@ -256,7 +256,7 @@ public class AddObjectsOverlay extends HCModule {
                 returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_ID));
 
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                parameters.updateValueRange(PARENT_OBJECT_FOR_ID,inputObjectsName);
+                parameters.updateValueSource(PARENT_OBJECT_FOR_ID,inputObjectsName);
 
             }
         }
@@ -268,9 +268,9 @@ public class AddObjectsOverlay extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(Z_POSITION_MEASUREMENT));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(X_POSITION_MEASUREMENT,inputObjectsName);
-            parameters.updateValueRange(Y_POSITION_MEASUREMENT,inputObjectsName);
-            parameters.updateValueRange(Z_POSITION_MEASUREMENT,inputObjectsName);
+            parameters.updateValueSource(X_POSITION_MEASUREMENT,inputObjectsName);
+            parameters.updateValueSource(Y_POSITION_MEASUREMENT,inputObjectsName);
+            parameters.updateValueSource(Z_POSITION_MEASUREMENT,inputObjectsName);
 
         }
 
@@ -280,7 +280,7 @@ public class AddObjectsOverlay extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
 
             if (parameters.getValue(INPUT_OBJECTS) != null) {
-                parameters.updateValueRange(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
             }
 
@@ -289,7 +289,7 @@ public class AddObjectsOverlay extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+            parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
         }
 

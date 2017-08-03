@@ -128,7 +128,7 @@ public class CalculateNearestNeighbour extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECTS));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(PARENT_OBJECTS,inputObjectsName);
+            parameters.updateValueSource(PARENT_OBJECTS,inputObjectsName);
 
         }
 

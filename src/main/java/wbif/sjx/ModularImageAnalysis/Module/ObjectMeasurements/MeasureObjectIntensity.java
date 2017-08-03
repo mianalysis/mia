@@ -24,6 +24,7 @@ public class MeasureObjectIntensity extends HCModule {
     public static final String MEASURE_STDEV = "Measure standard deviation";
     public static final String MEASURE_MIN = "Measure minimum";
     public static final String MEASURE_MAX = "Measure maximum";
+    public static final String MEASURE_SUM = "Measure sum";
 
 
     private void measureIntensity(Obj object, ImagePlus ipl) {
@@ -58,6 +59,8 @@ public class MeasureObjectIntensity extends HCModule {
             object.addMeasurement(new MIAMeasurement(imageName+"_MAX", cs.getMax()));
         if (parameters.getValue(MEASURE_STDEV))
             object.addMeasurement(new MIAMeasurement(imageName+"_STD", cs.getStd(CumStat.SAMPLE)));
+        if (parameters.getValue(MEASURE_SUM))
+            object.addMeasurement(new MIAMeasurement(imageName+"_SUM", cs.getSum()));
 
     }
 
@@ -101,20 +104,13 @@ public class MeasureObjectIntensity extends HCModule {
         parameters.addParameter(new Parameter(MEASURE_MIN, Parameter.BOOLEAN, true));
         parameters.addParameter(new Parameter(MEASURE_MAX, Parameter.BOOLEAN, true));
         parameters.addParameter(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
+        parameters.addParameter(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
 
     }
 
     @Override
     public ParameterCollection getActiveParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(MEASURE_MEAN));
-        returnedParameters.addParameter(parameters.getParameter(MEASURE_MIN));
-        returnedParameters.addParameter(parameters.getParameter(MEASURE_MAX));
-        returnedParameters.addParameter(parameters.getParameter(MEASURE_STDEV));
-
-        return returnedParameters;
+        return parameters;
 
     }
 
@@ -124,6 +120,7 @@ public class MeasureObjectIntensity extends HCModule {
         boolean calcMin = parameters.getValue(MEASURE_MIN);
         boolean calcMax = parameters.getValue(MEASURE_MAX);
         boolean calcStdev = parameters.getValue(MEASURE_STDEV);
+        boolean calcSum = parameters.getValue(MEASURE_STDEV);
 
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -132,6 +129,7 @@ public class MeasureObjectIntensity extends HCModule {
         if (calcMin) measurements.addMeasurement(inputObjectsName,inputImageName+"_MIN");
         if (calcMax) measurements.addMeasurement(inputObjectsName,inputImageName+"_MAX");
         if (calcStdev) measurements.addMeasurement(inputObjectsName,inputImageName+"_STD");
+        if (calcSum) measurements.addMeasurement(inputObjectsName,inputImageName+"_SUM");
 
     }
 
