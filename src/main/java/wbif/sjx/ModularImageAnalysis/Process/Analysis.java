@@ -72,14 +72,11 @@ public abstract class Analysis implements Serializable {
                 return false;
 
             }
-
-            // Running garbage collector
-            Runtime.getRuntime().gc();
-
         }
 
-        // Clearing images from the workspace to prevent memory leak
+        // We're only interested in the measurements now, so clearing images and object coordinates
         workspace.clearAllImages(true);
+        workspace.clearAllObjects(true);
 
         if (verbose) System.out.println("Complete");
 

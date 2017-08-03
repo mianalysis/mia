@@ -305,7 +305,7 @@ public class Exporter {
 
     private void prepareMetadataXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces) {
         // Basing column names on the first workspace in the WorkspaceCollection
-        Workspace exampleWorkspace = workspaces.get(0);
+        Workspace exampleWorkspace = workspaces.iterator().next();
 
         if (exampleWorkspace != null) {
             HCMetadata exampleMetadata = exampleWorkspace.getMetadata();
@@ -356,7 +356,7 @@ public class Exporter {
 
     private void prepareImagesXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
         // Basing column names on the first workspace in the WorkspaceCollection
-        Workspace exampleWorkspace = workspaces.get(0);
+        Workspace exampleWorkspace = workspaces.iterator().next();
 
         if (exampleWorkspace.getImages() != null) {
             // Creating a new sheet for each image.  Each analysed file will have its own row.
@@ -423,7 +423,7 @@ public class Exporter {
 
     private void prepareObjectsXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
         // Basing column names on the first workspace in the WorkspaceCollection
-        Workspace exampleWorkspace = workspaces.get(0);
+        Workspace exampleWorkspace = workspaces.iterator().next();
 
         if (exampleWorkspace != null) {
             // Creating a new sheet for each object.  Each analysed file has its own set of rows (one for each object)

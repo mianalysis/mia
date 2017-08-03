@@ -178,12 +178,12 @@ public class PlotMeasurementsScatter extends HCModule {
         // Updating measurements with measurement choices from currently-selected object
         String objectName = parameters.getValue(INPUT_OBJECTS);
         if (objectName != null) {
-            parameters.updateValueRange(MEASUREMENT1, objectName);
-            parameters.updateValueRange(MEASUREMENT2, objectName);
+            parameters.updateValueSource(MEASUREMENT1, objectName);
+            parameters.updateValueSource(MEASUREMENT2, objectName);
 
         } else {
-            parameters.updateValueRange(MEASUREMENT1, null);
-            parameters.updateValueRange(MEASUREMENT2, null);
+            parameters.updateValueSource(MEASUREMENT1, null);
+            parameters.updateValueSource(MEASUREMENT2, null);
 
         }
 
@@ -193,10 +193,10 @@ public class PlotMeasurementsScatter extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(COLOURMAP));
 
             if (objectName != null) {
-                parameters.updateValueRange(MEASUREMENT3, objectName);
+                parameters.updateValueSource(MEASUREMENT3, objectName);
 
             } else {
-                parameters.updateValueRange(MEASUREMENT3, null);
+                parameters.updateValueSource(MEASUREMENT3, null);
 
             }
 

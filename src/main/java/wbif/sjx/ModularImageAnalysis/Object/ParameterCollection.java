@@ -41,7 +41,7 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
 
     }
 
-    public void updateValueRange(String name, Object valueRange) {
+    public void updateValueSource(String name, Object valueRange) {
         get(name).setValueSource(valueRange);
 
     }

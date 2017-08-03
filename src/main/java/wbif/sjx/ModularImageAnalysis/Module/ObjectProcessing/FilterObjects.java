@@ -186,7 +186,7 @@ public class FilterObjects extends HCModule {
         if (parameters.getValue(FILTER_METHOD).equals(MISSING_MEASUREMENTS)) {
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
             if (parameters.getValue(INPUT_OBJECTS) != null) {
-                parameters.updateValueRange(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
             }
 
@@ -197,14 +197,14 @@ public class FilterObjects extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(PARENT_OBJECT,inputObjectsName);
+            parameters.updateValueSource(PARENT_OBJECT,inputObjectsName);
 
         } else if (parameters.getValue(FILTER_METHOD).equals(MIN_NUMBER_OF_CHILDREN)) {
             returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
             returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(CHILD_OBJECTS,inputObjectsName);
+            parameters.updateValueSource(CHILD_OBJECTS,inputObjectsName);
 
         } else if (parameters.getValue(FILTER_METHOD).equals(MEASUREMENTS_SMALLER_THAN) |
                 parameters.getValue(FILTER_METHOD).equals(MEASUREMENTS_LARGER_THAN)) {
@@ -213,7 +213,7 @@ public class FilterObjects extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
 
             if (parameters.getValue(INPUT_OBJECTS) != null) {
-                parameters.updateValueRange(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
+                parameters.updateValueSource(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
 
             }
 

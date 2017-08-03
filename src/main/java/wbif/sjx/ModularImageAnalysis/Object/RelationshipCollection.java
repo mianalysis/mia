@@ -17,7 +17,7 @@ public class RelationshipCollection extends LinkedHashMap<String,ArrayList<Strin
 
     public String[] getChildNames(String parentName) {
         if (get(parentName) == null) {
-            return null;
+            return new String[]{""};
         }
 
         String[] childNames = new String[get(parentName).size()];

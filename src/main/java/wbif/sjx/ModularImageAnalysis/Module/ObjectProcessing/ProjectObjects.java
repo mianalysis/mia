@@ -42,8 +42,8 @@ public class ProjectObjects extends HCModule {
             ArrayList<Integer> x = inputObject.getCoordinates().get(Obj.X);
             ArrayList<Integer> y = inputObject.getCoordinates().get(Obj.Y);
 
-            // All coordinate pairs will be stored in a HashMap, which will prevent coordinate duplication.  The keys will
-            // correspond to the 2D index, for which we need to know the maximum x coordinate
+            // All coordinate pairs will be stored in a HashMap, which will prevent coordinate duplication.  The keys
+            // will correspond to the 2D index, for which we need to know the maximum x coordinate.
             double maxX = Double.MIN_VALUE;
             for (double currX : x) {
                 if (currX > maxX) {

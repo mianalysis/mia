@@ -174,10 +174,10 @@ public class CalculateStatsForChildren extends HCModule {
         // Updating measurements with measurement choices from currently-selected object
         String objectName = parameters.getValue(PARENT_OBJECTS);
         if (objectName != null) {
-            parameters.updateValueRange(CHILD_OBJECTS, objectName);
+            parameters.updateValueSource(CHILD_OBJECTS, objectName);
 
         } else {
-            parameters.updateValueRange(CHILD_OBJECTS, null);
+            parameters.updateValueSource(CHILD_OBJECTS, null);
 
         }
 
