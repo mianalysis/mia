@@ -323,7 +323,7 @@ public class ObjectImageConverter extends HCModule {
                 returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
 
                 if (parameters.getValue(INPUT_OBJECTS) != null) {
-                    parameters.updateValueRange(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                    parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
                 }
 
@@ -332,7 +332,7 @@ public class ObjectImageConverter extends HCModule {
                 returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
 
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                parameters.updateValueRange(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+                parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
             }
 

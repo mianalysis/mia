@@ -55,14 +55,14 @@ public class RelateObjects extends HCModule {
 
             // Setting pixels corresponding to the parent object to 1
             for (int i=0;i<parentX.size();i++) {
-                ipl.setPosition(1,parentZ.get(i)-range[Obj.Z][0],1);
+                ipl.setPosition(1,parentZ.get(i)-range[Obj.Z][0]+1,1);
                 ipl.getProcessor().set(parentX.get(i)-range[Obj.X][0],parentY.get(i)-range[Obj.Y][0],255);
 
             }
 
             // Creating distance map using MorphoLibJ
             short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
-            DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,false);
+            DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,true);
             ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
 
             for (Obj childObject:childObjects.values()) {

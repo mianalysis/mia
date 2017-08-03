@@ -118,10 +118,10 @@ public class MeasureTrackMotion extends HCModule {
         // Updating measurements with measurement choices from currently-selected object
         String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
         if (objectName != null) {
-            parameters.updateValueRange(INPUT_SPOT_OBJECTS, objectName);
+            parameters.updateValueSource(INPUT_SPOT_OBJECTS, objectName);
 
         } else {
-            parameters.updateValueRange(INPUT_SPOT_OBJECTS, null);
+            parameters.updateValueSource(INPUT_SPOT_OBJECTS, null);
 
         }
 
