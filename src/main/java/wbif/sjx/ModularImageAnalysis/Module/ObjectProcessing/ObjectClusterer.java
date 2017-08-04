@@ -19,6 +19,8 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.MathFunc.Indexer;
+import wbif.sjx.common.MathFunc.MidpointCircle;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -169,33 +171,9 @@ public class ObjectClusterer extends HCModule {
 
         }
 
-//        // Checking each object has a parent.  If not, a new parent is created for that object on its own
-//        for (Obj object:inputObjects.values()) {
-//            if (object.getParent(outputObjectsName) == null) {
-//                Obj parentObject = new Obj(outputObjectsName,outputObjects.getNextID());
-//
-//                // Getting the centroid of the current object
-//                ArrayList<Integer> x = new ArrayList<>();
-//                ArrayList<Integer> y = new ArrayList<>();
-//                ArrayList<Integer> z = new ArrayList<>();
-//
-//                x.add((int) Math.round(object.getCentroid(Obj.X)));
-//                y.add((int) Math.round(object.getCentroid(Obj.Y)));
-//                z.add((int) Math.round(object.getCentroid(Obj.Z)));
-//
-//                parentObject.setCoordinates(Obj.X, x);
-//                parentObject.setCoordinates(Obj.Y, y);
-//                parentObject.setCoordinates(Obj.Z, z);
-//
-//                parentObject.copyCalibration(object);
-//
-//                object.addParent(parentObject);
-//                parentObject.addChild(object);
-//
-//                outputObjects.add(parentObject);
-//
-//            }
-//        }
+        MidpointCircle midpointCircle = new MidpointCircle((int) Math.ceil(eps));
+        int[] xCirc = midpointCircle.getXCircleFill();
+        int[] yCirc = midpointCircle.getYCircleFill();
 
         // Adding measurement to each cluster
         for (Obj outputObject:outputObjects.values()) {
@@ -205,84 +183,87 @@ public class ObjectClusterer extends HCModule {
             MIAMeasurement measurement = new MIAMeasurement(N_POINTS_IN_CLUSTER,children.size(),this);
             outputObject.addMeasurement(measurement);
 
-            // The area and perimeter of each cluster (convex hull around child centroids)
-            try {
-                HashSet<Vector2D> points = new HashSet<>(children.size());
+            // Getting limits of the current cluster
+            double[][] limits = children.getSpatialLimits();
+            int xMin = (int) Math.floor(limits[0][0]-eps);
+            int xMax = (int) Math.floor(limits[0][1]+eps);
+            int yMin = (int) Math.floor(limits[1][0]-eps);
+            int yMax = (int) Math.floor(limits[1][1]+eps);
 
-                for (Obj child : children.values()) {
-                    double x = child.getCentroid(Obj.X);
-                    double y = child.getCentroid(Obj.Y);
-                    points.add(new Vector2D(x, y));
+            Indexer indexer = new Indexer(xMax,yMax);
 
-                }
+            // PROBABLY EASIEST TO GO OBJECT-BY-OBJECT and generate the local coordinates using the Midpoint circle
+            // algorithm, then convert all these points to indices, add them to a hashmap (indices as key) and convert
+            // back to objects
 
-                ConvexHull2D convexHull2D = new MonotoneChain().generate(points);
-                Region<Euclidean2D> region = convexHull2D.createRegion();
 
-                double area = region.getSize();
-                outputObject.addMeasurement(new MIAMeasurement(CLUSTER_AREA_XY, area, this));
 
-                double perimeter = region.getBoundarySize();
-                outputObject.addMeasurement(new MIAMeasurement(CLUSTER_PERIMETER_XY, perimeter, this));
+            HashSet<Vector2D> points = new HashSet<>(children.size());
 
-                // Creating a polygon ROI from the vertices
-                Vector2D[] vertices = convexHull2D.getVertices();
-                int[] x = new int[vertices.length];
-                int[] y = new int[vertices.length];
-
-                double minX = Double.MAX_VALUE;
-                double minY = Double.MAX_VALUE;
-                double maxX = Double.MIN_VALUE;
-                double maxY = Double.MIN_VALUE;
-
-                for (int i=0;i<vertices.length;i++) {
-                    x[i] = (int) Math.round(vertices[i].getX());
-                    y[i] = (int) Math.round(vertices[i].getY());
-
-                    // Getting limits of the cluster area
-                    if (x[i] < minX) minX = x[i];
-                    if (y[i] < minY) minY = y[i];
-                    if (x[i] > maxX) maxX = x[i];
-                    if (y[i] > maxY) maxY = y[i];
-
-                }
-
-                PolygonRoi polygonRoi = new PolygonRoi(x,y,x.length, Roi.POLYGON);
-
-                // Defining the area of the cluster as all points contained within the convex hull.  To do this, every
-                // point between the minimum and maximum XY coordinates is tested.
-                int minXInt = (int) Math.floor(minX);
-                int minYInt = (int) Math.floor(minY);
-                int maxXInt = (int) Math.ceil(maxX);
-                int maxYInt = (int) Math.ceil(maxY);
-
-                for (int xx=minXInt;xx<=maxXInt;xx++) {
-                    for (int yy=minYInt;yy<=maxYInt;yy++) {
-                        if (polygonRoi.contains(xx,yy)) {
-                            outputObject.addCoordinate(Obj.X,xx);
-                            outputObject.addCoordinate(Obj.Y,yy);
-                            outputObject.addCoordinate(Obj.Z,0);
-                            outputObject.addCoordinate(Obj.C,0);
-                            outputObject.addCoordinate(Obj.T,0);
-
-                        }
-                    }
-                }
-
-                Obj exampleChild = children.values().iterator().next();
-                outputObject.addCalibration(Obj.X,exampleChild.getCalibration(Obj.X));
-                outputObject.addCalibration(Obj.Y,exampleChild.getCalibration(Obj.Y));
-                outputObject.addCalibration(Obj.Z,exampleChild.getCalibration(Obj.Z));
-                outputObject.addCalibration(Obj.C,exampleChild.getCalibration(Obj.C));
-                outputObject.addCalibration(Obj.T,exampleChild.getCalibration(Obj.T));
-
-            } catch (InsufficientDataException e) {
-                // This exception occurs when there are fewer than 3 points or in certain point arrangements (i.e. when
-                // they all lie in a straight line)
-                outputObject.addMeasurement(new MIAMeasurement(CLUSTER_AREA_XY,Double.NaN, this));
-                outputObject.addMeasurement(new MIAMeasurement(CLUSTER_PERIMETER_XY,Double.NaN, this));
+            for (Obj child : children.values()) {
+                double x = child.getCentroid(Obj.X);
+                double y = child.getCentroid(Obj.Y);
+                points.add(new Vector2D(x, y));
 
             }
+
+            ConvexHull2D convexHull2D = new MonotoneChain().generate(points);
+            Region<Euclidean2D> region = convexHull2D.createRegion();
+
+            double area = region.getSize();
+            outputObject.addMeasurement(new MIAMeasurement(CLUSTER_AREA_XY, area, this));
+
+            // Creating a polygon ROI from the vertices
+            Vector2D[] vertices = convexHull2D.getVertices();
+            int[] x = new int[vertices.length];
+            int[] y = new int[vertices.length];
+
+            double minX = Double.MAX_VALUE;
+            double minY = Double.MAX_VALUE;
+            double maxX = Double.MIN_VALUE;
+            double maxY = Double.MIN_VALUE;
+
+            for (int i=0;i<vertices.length;i++) {
+                x[i] = (int) Math.round(vertices[i].getX());
+                y[i] = (int) Math.round(vertices[i].getY());
+
+                // Getting limits of the cluster area
+                if (x[i] < minX) minX = x[i];
+                if (y[i] < minY) minY = y[i];
+                if (x[i] > maxX) maxX = x[i];
+                if (y[i] > maxY) maxY = y[i];
+
+            }
+
+            PolygonRoi polygonRoi = new PolygonRoi(x,y,x.length, Roi.POLYGON);
+
+            // Defining the area of the cluster as all points contained within the convex hull.  To do this, every
+            // point between the minimum and maximum XY coordinates is tested.
+            int minXInt = (int) Math.floor(minX);
+            int minYInt = (int) Math.floor(minY);
+            int maxXInt = (int) Math.ceil(maxX);
+            int maxYInt = (int) Math.ceil(maxY);
+
+            for (int xx=minXInt;xx<=maxXInt;xx++) {
+                for (int yy=minYInt;yy<=maxYInt;yy++) {
+                    if (polygonRoi.contains(xx,yy)) {
+                        outputObject.addCoordinate(Obj.X,xx);
+                        outputObject.addCoordinate(Obj.Y,yy);
+                        outputObject.addCoordinate(Obj.Z,0);
+                        outputObject.addCoordinate(Obj.C,0);
+                        outputObject.addCoordinate(Obj.T,0);
+
+                    }
+                }
+            }
+
+            Obj exampleChild = children.values().iterator().next();
+            outputObject.addCalibration(Obj.X,exampleChild.getCalibration(Obj.X));
+            outputObject.addCalibration(Obj.Y,exampleChild.getCalibration(Obj.Y));
+            outputObject.addCalibration(Obj.Z,exampleChild.getCalibration(Obj.Z));
+            outputObject.addCalibration(Obj.C,exampleChild.getCalibration(Obj.C));
+            outputObject.addCalibration(Obj.T,exampleChild.getCalibration(Obj.T));
+
         }
 
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
@@ -332,7 +313,6 @@ public class ObjectClusterer extends HCModule {
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         measurements.addMeasurement(clusterObjectsName,N_POINTS_IN_CLUSTER);
         measurements.addMeasurement(clusterObjectsName,CLUSTER_AREA_XY);
-        measurements.addMeasurement(clusterObjectsName,CLUSTER_PERIMETER_XY);
 
     }
 

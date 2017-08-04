@@ -17,7 +17,7 @@ import java.util.concurrent.*;
 public class BatchProcessor extends FileCrawler {
     private boolean verbose = true;
     private boolean parallel = true;
-    private int nThreads = 6;
+    private int nThreads = 20;
 
 //    private ExecutorService pool;
     ThreadPoolExecutor pool;

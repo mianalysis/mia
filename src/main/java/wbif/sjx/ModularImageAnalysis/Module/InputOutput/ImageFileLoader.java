@@ -49,7 +49,6 @@ public class ImageFileLoader extends HCModule {
             int bitDepth = reader.getBitsPerPixel();
 
             if (flexFile) {
-
                 int seriesCount = reader.getSeriesCount();
 
                 // Getting maximum channel number
@@ -139,6 +138,7 @@ public class ImageFileLoader extends HCModule {
         // Importing the file
         if (parameters.getValue(USE_BIOFORMATS)) {
             DebugTools.enableLogging("off");
+            DebugTools.setRootLevel("off");
             ipl = getBFImage(filePath,flexBugfix);
 
         } else {

@@ -172,14 +172,14 @@ public class MainGUI {
         frame.add(controlPanel, c);
 
         // Initialising the status panel
-        initialiseStatusPanel(1080);
-        c.gridheight = 1;
-        c.gridy++;
-        c.gridy++;
-        c.gridy++;
-        c.gridwidth = 3;
-        c.insets = new Insets(0,5,5,5);
-        frame.add(statusPanel,c);
+//        initialiseStatusPanel(1080);
+//        c.gridheight = 1;
+//        c.gridy++;
+//        c.gridy++;
+//        c.gridy++;
+//        c.gridwidth = 3;
+//        c.insets = new Insets(0,5,5,5);
+//        frame.add(statusPanel,c);
 
         // Initialising the input enable panel
         initialiseInputEnablePanel();
