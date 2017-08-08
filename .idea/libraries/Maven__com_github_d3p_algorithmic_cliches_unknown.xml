@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.github.d3p:algorithmic-cliches:unknown">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/d3p/algorithmic-cliches/unknown/algorithmic-cliches-unknown.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/d3p/algorithmic-cliches/unknown/algorithmic-cliches-unknown-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/d3p/algorithmic-cliches/unknown/algorithmic-cliches-unknown-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

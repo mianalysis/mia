@@ -58,7 +58,7 @@
         <dependency>
             <groupId>ome</groupId>
             <artifactId>bio-formats_plugins</artifactId>
-            <version>5.4.1</version>
+            <version>5.5.3</version>
             <scope>${myscope}</scope>
         </dependency>
 
@@ -91,6 +91,11 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.d3p</groupId>
+            <artifactId>algorithmic-cliches</artifactId>
         </dependency>
 
         <!--dependency>
