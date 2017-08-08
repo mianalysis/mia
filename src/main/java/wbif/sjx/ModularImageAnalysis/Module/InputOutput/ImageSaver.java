@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -15,13 +16,15 @@ import java.io.File;
 public class ImageSaver extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String SAVE_LOCATION = "Save location";
+    public static final String MIRROR_DIRECTORY_ROOT = "Mirrored directory root";
     public static final String SAVE_FILE_PATH = "File path";
     public static final String SAVE_SUFFIX = "Add filename suffix";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
+    private static final String MIRRORED_DIRECTORY = "Mirrored directory";
     private static final String SAVE_WITH_INPUT = "Save with input file";
     private static final String SPECIFIC_LOCATION = "Specific location";
-    private static final String[] SAVE_LOCATIONS = new String[]{SAVE_WITH_INPUT,SPECIFIC_LOCATION};
+    private static final String[] SAVE_LOCATIONS = new String[]{MIRRORED_DIRECTORY,SAVE_WITH_INPUT,SPECIFIC_LOCATION};
 
     @Override
     public String getTitle() {
@@ -30,7 +33,8 @@ public class ImageSaver extends HCModule {
 
     @Override
     public String getHelp() {
-        return "+++INCOMPLETE+++";
+        return "+++INCOMPLETE+++" +
+                "\n'Mirrored location' is an equivalent directory structure to the input, but based at a different root";
     }
 
     @Override
@@ -45,6 +49,7 @@ public class ImageSaver extends HCModule {
 
         // Getting parameters
         String saveLocation = parameters.getValue(SAVE_LOCATION);
+        String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT);
         String filePath = parameters.getValue(SAVE_FILE_PATH);
         String suffix = parameters.getValue(SAVE_SUFFIX);
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
@@ -61,16 +66,38 @@ public class ImageSaver extends HCModule {
             }
         }
 
-        if (saveLocation.equals(SAVE_WITH_INPUT)) {
-            File rootFile = workspace.getMetadata().getFile();
-            String path = rootFile.getParent()+ "\\"+FilenameUtils.removeExtension(rootFile.getName());
-            path = path + suffix + ".tif";
-            IJ.save(inputImagePlus,path);
+        switch (saveLocation) {
+            case MIRRORED_DIRECTORY:
+                File rootFile = workspace.getMetadata().getFile();
+                int fileDepth = (int) workspace.getMetadata().get("FILE_DEPTH");
 
-        } else if (saveLocation.equals(SPECIFIC_LOCATION)) {
-            String path = FilenameUtils.removeExtension(filePath);
-            path = path + suffix + ".tif";
-            IJ.save(inputImagePlus,path);
+                StringBuilder sb = new StringBuilder();
+                File parentFile = rootFile.getParentFile();
+                for (int i=0;i<fileDepth;i++) {
+                    sb.insert(0,parentFile.getName()+"\\");
+                    parentFile = parentFile.getParentFile();
+
+                }
+
+                new File(mirroredDirectoryRoot+"\\"+sb).mkdirs();
+
+                String path = mirroredDirectoryRoot+"\\"+sb+FilenameUtils.removeExtension(rootFile.getName());
+                path = path + suffix + ".tif";
+                IJ.save(inputImagePlus,path);
+                break;
+
+            case SAVE_WITH_INPUT:
+                rootFile = workspace.getMetadata().getFile();
+                path = rootFile.getParent()+ "\\"+FilenameUtils.removeExtension(rootFile.getName());
+                path = path + suffix + ".tif";
+                IJ.save(inputImagePlus,path);
+                break;
+
+            case SPECIFIC_LOCATION:
+                path = FilenameUtils.removeExtension(filePath);
+                path = path + suffix + ".tif";
+                IJ.save(inputImagePlus,path);
+                break;
 
         }
 
@@ -82,6 +109,7 @@ public class ImageSaver extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SAVE_LOCATIONS[0],SAVE_LOCATIONS));
+        parameters.addParameter(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FILE_PATH,null));
         parameters.addParameter(new Parameter(SAVE_FILE_PATH, Parameter.FILE_PATH,null));
         parameters.addParameter(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
         parameters.addParameter(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
@@ -95,8 +123,15 @@ public class ImageSaver extends HCModule {
         returnedParamters.addParameter(parameters.getParameter(INPUT_IMAGE));
         returnedParamters.addParameter(parameters.getParameter(SAVE_LOCATION));
 
-        if (parameters.getValue(SAVE_LOCATION).equals(SPECIFIC_LOCATION)) {
-            returnedParamters.addParameter(parameters.getParameter(SAVE_FILE_PATH));
+        switch ((String) parameters.getValue(SAVE_LOCATION)) {
+            case SPECIFIC_LOCATION:
+                returnedParamters.addParameter(parameters.getParameter(SAVE_FILE_PATH));
+                break;
+
+            case MIRRORED_DIRECTORY:
+                returnedParamters.addParameter(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
+                break;
+
         }
 
         returnedParamters.addParameter(parameters.getParameter(SAVE_SUFFIX));

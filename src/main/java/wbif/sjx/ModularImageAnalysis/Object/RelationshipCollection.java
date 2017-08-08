@@ -8,47 +8,52 @@ import java.util.LinkedHashMap;
  * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple
  * different types of children these are stored in an ArrayList.
  */
-public class RelationshipCollection extends LinkedHashMap<String,ArrayList<String>> {
+public class RelationshipCollection {
+    private LinkedHashMap<String,ArrayList<String>> parents = new LinkedHashMap<>();
+    private LinkedHashMap<String,ArrayList<String>> children = new LinkedHashMap<>();
 
     public void addRelationship(String parent, String child) {
-        computeIfAbsent(parent,k -> new ArrayList<>());
-        get(parent).add(child);
+        parents.computeIfAbsent(child,k -> new ArrayList<>());
+        parents.get(child).add(parent);
+
+        children.computeIfAbsent(parent, k -> new ArrayList<>());
+        children.get(parent).add(child);
+
     }
 
     public String[] getChildNames(String parentName) {
-        if (get(parentName) == null) {
+        if (children.get(parentName) == null) {
             return new String[]{""};
         }
 
-        String[] childNames = new String[get(parentName).size()];
-        int iter = 0;
-        for (String childName:get(parentName)) {
-            childNames[iter++] = childName;
-        }
-
-        return childNames;
+        return children.get(parentName).toArray(new String[children.get(parentName).size()]);
 
     }
 
     public String[] getParentNames(String childName) {
-        // Running through the children associated to parent names.  If the target child is present, the parent is added
-        // to a HashSet
-        HashSet<String> parentSet = new HashSet<>();
-        for (String parentName:keySet()) {
-            for (String currChildName:get(parentName)) {
-                if (currChildName.equals(childName)) {
-                    parentSet.add(parentName);
-                }
+        if (parents.get(childName) == null) {
+            return new String[]{""};
+        }
+
+        // Adding each parent and then the parent of that
+        HashSet<String> parentHierarchy = new HashSet<>(parents.get(childName));
+
+        // Takes the parentHierarchy HashSet and adds all parents of each object.  As we're using a HashSet we won't get
+        // duplicates.  Therefore, this loop terminates when no more objects are added.
+        int lastNParents = 0;
+        while (parentHierarchy.size() != lastNParents) {
+            lastNParents = parentHierarchy.size();
+
+            for (String parent:parentHierarchy) {
+                ArrayList<String> newParents = parents.get(parent);
+                if (newParents == null) continue;
+
+                parentHierarchy.addAll(parents.get(parent));
+
             }
         }
 
-        String[] parentNames = new String[parentSet.size()];
-        int iter = 0;
-        for (String parentName : parentSet) {
-            parentNames[iter++] = parentName;
-        }
-
-        return parentNames;
+        return parentHierarchy.toArray(new String[parentHierarchy.size()]);
 
     }
 }

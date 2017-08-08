@@ -197,8 +197,8 @@ public class AnalysisHandler {
 
         Exporter exporter = new Exporter(exportName, Exporter.XLSX_EXPORT);
         batchProcessor = new BatchProcessor(inputFile);
-//        batchProcessor.addFileCondition(new NameContainsString("ALX", FileCondition.INC_PARTIAL));
-        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"flex"}));
+        batchProcessor.addFileCondition(new NameContainsString("ALX", FileCondition.INC_PARTIAL));
+        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"dv"}));
         batchProcessor.runAnalysisOnStructure(analysis,exporter);
 
         Runtime.getRuntime().gc();

@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 23/05/2017.
@@ -97,7 +98,8 @@ public class FilterObjects extends HCModule {
             while (iterator.hasNext()) {
                 Obj inputObject = iterator.next();
 
-                if (inputObject.getParent(parentObjectName) == null) {
+                LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
+                if (parents.get(parentObjectName) == null) {
                     inputObject.removeRelationships();
                     iterator.remove();
                 }

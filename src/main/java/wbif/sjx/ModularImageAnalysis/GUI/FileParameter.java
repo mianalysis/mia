@@ -38,11 +38,13 @@ public class FileParameter extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select image to load", FileDialog.LOAD);
-        fileDialog.setMultipleMode(false);
-        fileDialog.setVisible(true);
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Select file");
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.showDialog(null,"Open");
 
-        parameter.setValue(fileDialog.getFiles()[0].getAbsolutePath());
+        parameter.setValue(fileChooser.getSelectedFile().getAbsolutePath());
         setText(FilenameUtils.getName(parameter.getValue()));
 
         int idx = gui.getModules().indexOf(module);

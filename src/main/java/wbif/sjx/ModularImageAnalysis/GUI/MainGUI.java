@@ -336,10 +336,10 @@ public class MainGUI {
 
         // Initialising the scroll panel
         modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 2 * bigButtonSize - 90));
-//        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 50));
         modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        modulesScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 
         // Initialising the panel for module buttons
         modulesPanel.setLayout(new GridBagLayout());

@@ -1,11 +1,10 @@
+// TODO: Get Z coordinates scaled to "pixel units"
+
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 /**
  * Created by steph on 30/04/2017.
@@ -215,8 +214,25 @@ public class Obj {
 
     }
 
-    public LinkedHashMap<String, Obj> getParents() {
-        return parents;
+    public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
+        if (!useFullHierarchy) return parents;
+
+        // Adding each parent and then the parent of that
+        LinkedHashMap<String,Obj> parentHierarchy = new LinkedHashMap<>(parents);
+
+        // Going through each parent, adding the parents of that.
+        for (Obj parent:parents.values()) {
+            if (parent == null) continue;
+
+            LinkedHashMap<String,Obj> currentParents = parent.getParents(true);
+            if (currentParents == null) continue;
+
+            parentHierarchy.putAll(currentParents);
+
+        }
+
+        return parentHierarchy;
+
     }
 
     public void setParents(LinkedHashMap<String, Obj> parents) {

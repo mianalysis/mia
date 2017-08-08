@@ -66,7 +66,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
             Obj object = inputObjects.values().iterator().next();
 
             // Getting parents
-            LinkedHashMap<String,Obj> parents = object.getParents();
+            LinkedHashMap<String,Obj> parents = object.getParents(true);
             for (String parent:parents.keySet()) {
                 Cell parentHeaderCell = objectHeaderRow.createCell(col++);
                 String name = (parent+"_ID").toUpperCase();
@@ -101,7 +101,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
                 Cell objectIDValueCell = objectValueRow.createCell(col++);
                 objectIDValueCell.setCellValue(inputObject.getID());
 
-                parents = inputObject.getParents();
+                parents = inputObject.getParents(true);
                 for (String parent:parents.keySet()) {
                     Cell parentValueCell = objectValueRow.createCell(col++);
                     parentValueCell.setCellValue(parents.get(parent).getID());

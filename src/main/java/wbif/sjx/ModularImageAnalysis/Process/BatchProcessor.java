@@ -17,18 +17,19 @@ import java.util.concurrent.*;
 public class BatchProcessor extends FileCrawler {
     private boolean verbose = true;
     private boolean parallel = true;
-    private int nThreads = 20;
+    private int nThreads = Runtime.getRuntime().availableProcessors()/2;//4;
 
 //    private ExecutorService pool;
     ThreadPoolExecutor pool;
 
     private boolean shutdownEarly;
+    private int counter = 0;
 
 
     // CONSTRUCTORS
 
-    public BatchProcessor(File root_folder) {
-        super(root_folder);
+    public BatchProcessor(File rootFolder) {
+        super(rootFolder);
 
     }
 
@@ -74,17 +75,30 @@ public class BatchProcessor extends FileCrawler {
             Workspace workspace = workspaces.getNewWorkspace(next);
             File finalNext = next;
 
+            // Adding a parameter to the metadata structure indicating the depth of the current file in the folder structure
+            int fileDepth = 0;
+            File parent = next.getParentFile();
+            while (parent != rootFolder.getFolderAsFile()) {
+                parent = parent.getParentFile();
+                fileDepth++;
+            }
+            workspace.getMetadata().put("FILE_DEPTH",fileDepth);
+
+
             Runnable task = () -> {
                 try {
+                    // Running the current analysis
                     analysis.execute(workspace, false);
 
-                    double nComplete = pool.getCompletedTaskCount();
+                    // Getting the number of completed and total tasks
+                    incrementCounter();
+                    int nComplete = getCounter();
                     double nTotal = pool.getTaskCount();
                     double percentageComplete = (nComplete/nTotal)*100;
 
+                    // Displaying the current progress
                     String string = "Completed "+dfInt.format(nComplete)+"/"+dfInt.format(nTotal)
                             +" ("+dfDec.format(percentageComplete)+"%), "+ finalNext.getName();
-
                     System.out.println(string);
 
                 } catch (GenericMIAException e) {
@@ -170,4 +184,15 @@ public class BatchProcessor extends FileCrawler {
     public void setnThreads(int nThreads) {
         this.nThreads = nThreads;
     }
+
+    synchronized int getCounter() {
+        return counter;
+
+    }
+
+    synchronized void incrementCounter() {
+        counter++;
+
+    }
+
 }

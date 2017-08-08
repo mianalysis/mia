@@ -7,6 +7,7 @@ import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class ObjectImageConverter extends HCModule {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT = "Measurement";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
+    public static final String HIDE_IF_MISSING_PARENT = "Hide points without a parent";
     public static final String SHOW_IMAGE = "Show image";
 
     private static final String IMAGE_TO_OBJECTS = "Image to objects";
@@ -38,7 +40,7 @@ public class ObjectImageConverter extends HCModule {
     private static final String PARENT_ID = "Parent ID";
     public static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE,ID,PARENT_ID};
 
-    public static Image convertObjectsToImage(ObjSet objects, String outputImageName, Image templateImage, String colourMode, String colourSource) {
+    public static Image convertObjectsToImage(ObjSet objects, String outputImageName, Image templateImage, String colourMode, String colourSource, boolean hideMissing) {
         ImagePlus ipl;
 
         int bitDepth = 8;
@@ -97,13 +99,13 @@ public class ObjectImageConverter extends HCModule {
             }
 
             // Creating a new image
-            ipl = IJ.createHyperStack("Objects", coordinateRange[Obj.X][1] + 1,
+            ipl = IJ.createHyperStack(objects.getName()+"_Objects", coordinateRange[Obj.X][1] + 1,
                     coordinateRange[Obj.Y][1] + 1, coordinateRange[Obj.C][1] + 1,
                     coordinateRange[Obj.Z][1] + 1, coordinateRange[Obj.T][1] + 1,bitDepth);
 
         } else {
             ImagePlus templateIpl = templateImage.getImagePlus();
-            ipl = IJ.createHyperStack("Objects",templateIpl.getWidth(),templateIpl.getHeight(),
+            ipl = IJ.createHyperStack(objects.getName()+"Objects",templateIpl.getWidth(),templateIpl.getHeight(),
                     templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
         }
 
@@ -135,10 +137,16 @@ public class ObjectImageConverter extends HCModule {
                     break;
 
                 case PARENT_ID:
-                    // If there is no assigned parent, set the intensity to max integer (better than 1)
                     if (object.getParent(colourSource) == null) {
-                        valInt = Integer.MAX_VALUE;
-                        break;
+                        if (hideMissing) {
+                            valInt = 0;
+                            break;
+
+                        } else {
+                            valInt = Integer.MAX_VALUE;
+                            break;
+
+                        }
                     }
 
                     valInt = object.getParent(colourSource).getID();
@@ -260,6 +268,7 @@ public class ObjectImageConverter extends HCModule {
             String colourMode = parameters.getValue(COLOUR_MODE);
             String colourSource = null;
             boolean showImage = parameters.getValue(SHOW_IMAGE);
+            boolean hideMissing = parameters.getValue(HIDE_IF_MISSING_PARENT);
 
             if (parameters.getValue(COLOUR_MODE).equals(PARENT_ID)) {
                 colourSource = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
@@ -272,14 +281,16 @@ public class ObjectImageConverter extends HCModule {
             ObjSet inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
 
-            Image outputImage = convertObjectsToImage(inputObjects,outputImageName,templateImage,colourMode,colourSource);
+            Image outputImage = convertObjectsToImage(inputObjects,outputImageName,templateImage,colourMode,colourSource,hideMissing);
 
             workspace.addImage(outputImage);
 
             if (showImage) {
                 ImagePlus ipl = outputImage.getImagePlus();
                 IntensityMinMax.run(ipl,ipl.getNSlices() > 1);
-                new Duplicator().run(ipl).show();
+                ImagePlus iplShow = new Duplicator().run(ipl);
+                iplShow.setLut(LUTs.Random(true));
+                iplShow.show();
 
             }
         }
@@ -299,6 +310,7 @@ public class ObjectImageConverter extends HCModule {
         parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
         parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
+        parameters.addParameter(new Parameter(HIDE_IF_MISSING_PARENT,Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
@@ -330,6 +342,7 @@ public class ObjectImageConverter extends HCModule {
             } else if (parameters.getValue(COLOUR_MODE).equals(PARENT_ID)) {
                 // Use Parent ID
                 returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                returnedParameters.addParameter(parameters.getParameter(HIDE_IF_MISSING_PARENT));
 
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);

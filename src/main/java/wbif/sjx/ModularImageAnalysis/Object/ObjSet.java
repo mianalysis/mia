@@ -28,11 +28,11 @@ public class ObjSet extends LinkedHashMap<Integer,Obj> {
         return maxID;
     }
 
-    public double[][] getSpatialLimits() {
-        double[][] limits = new double[][]{
-                {Double.MAX_VALUE,Double.MIN_VALUE},
-                {Double.MAX_VALUE,Double.MIN_VALUE},
-                {Double.MAX_VALUE,Double.MIN_VALUE}};
+    public int[][] getSpatialLimits() {
+        int[][] limits = new int[][]{
+                {Integer.MAX_VALUE,Integer.MIN_VALUE},
+                {Integer.MAX_VALUE,Integer.MIN_VALUE},
+                {Integer.MAX_VALUE,Integer.MIN_VALUE}};
 
         for (Obj object:values()) {
             ArrayList<Integer> x = object.getCoordinates(Obj.X);
@@ -53,4 +53,5 @@ public class ObjSet extends LinkedHashMap<Integer,Obj> {
         return limits;
 
     }
+
 }

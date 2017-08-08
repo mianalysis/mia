@@ -19,10 +19,13 @@ public class RelateObjects extends HCModule {
     public final static String PARENT_OBJECTS = "Parent (larger) objects";
     public final static String CHILD_OBJECTS = "Child (smaller) objects";
     public final static String RELATE_MODE = "Method to relate objects";
+    public final static String TEST_CHILD_OBJECTS = "Child objects to test against";
+    public final static String LINKING_DISTANCE = "Linking distance";
 
     private final static String MATCHING_IDS = "Matching IDs";
     private final static String SPATIAL_OVERLAP = "Spatial overlap";
-    private final static String[] RELATE_MODES = new String[]{MATCHING_IDS,SPATIAL_OVERLAP};
+    private final static String PROXIMITY_TO_CHILDREN = "Proximity to children";
+    private final static String[] RELATE_MODES = new String[]{MATCHING_IDS,PROXIMITY_TO_CHILDREN,SPATIAL_OVERLAP};
 
     private final static String DIST_EDGE_PX_MEAS = "Distance from parent edge (px)";
 
@@ -36,6 +39,35 @@ public class RelateObjects extends HCModule {
                 parentObject.addChild(childObject);
                 childObject.addParent(parentObject);
 
+            }
+        }
+    }
+
+    public static void proximityToChildren(ObjSet parentObjects, ObjSet childObjects, String testChildObjectsName, double linkingDistance) {
+        // Runs through each child object against each parent object
+        for (Obj parentObject:parentObjects.values()) {
+            // Getting children of the parent to be used as references
+            ObjSet testChildren = parentObject.getChildren(testChildObjectsName);
+
+            // Running through all proximal children
+            for (Obj testChild : testChildren.values()) {
+                // Getting centroid of the current child
+                double xCentTest = testChild.getCentroid(Obj.X);
+                double yCentTest = testChild.getCentroid(Obj.Y);
+
+                // Running through all children to relate
+                for (Obj childObject : childObjects.values()) {
+                    double xDist = xCentTest - childObject.getCentroid(Obj.X);
+                    double yDist = yCentTest - childObject.getCentroid(Obj.Y);
+
+                    // If the test object and the current object is less than the linking distance, assign the relationship
+                    double dist = Math.sqrt(xDist * xDist + yDist * yDist);
+                    if (dist < linkingDistance) {
+                        childObject.addParent(parentObject);
+                        parentObject.addChild(childObject);
+
+                    }
+                }
             }
         }
     }
@@ -151,15 +183,24 @@ public class RelateObjects extends HCModule {
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE);
+        String testChildObjectsName = parameters.getValue(TEST_CHILD_OBJECTS);
+        double linkingDistance = parameters.getValue(LINKING_DISTANCE);
 
-        if (relateMode.equals(MATCHING_IDS)) {
-            if (verbose) System.out.println("["+moduleName+"] Relating objects by matching ID numbers");
-            linkMatchingIDs(parentObjects,childObjects);
+        switch (relateMode) {
+            case MATCHING_IDS:
+                if (verbose) System.out.println("["+moduleName+"] Relating objects by matching ID numbers");
+                linkMatchingIDs(parentObjects,childObjects);
+                break;
 
-        } else if (relateMode.equals(SPATIAL_OVERLAP)) {
-            if (verbose) System.out.println("["+moduleName+"] Relating objects by spatial overlap");
-            spatialLinking(parentObjects,childObjects);
+            case PROXIMITY_TO_CHILDREN:
+                if (verbose) System.out.println("["+moduleName+"] Relating objects by proximity to children");
+                proximityToChildren(parentObjects,childObjects,testChildObjectsName,linkingDistance);
+                break;
 
+            case SPATIAL_OVERLAP:
+                if (verbose) System.out.println("["+moduleName+"] Relating objects by spatial overlap");
+                spatialLinking(parentObjects,childObjects);
+                break;
         }
 
         if (verbose) System.out.println("["+moduleName+"] Complete");
@@ -171,12 +212,30 @@ public class RelateObjects extends HCModule {
         parameters.addParameter(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(CHILD_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(RELATE_MODE, Parameter.CHOICE_ARRAY,RELATE_MODES[0],RELATE_MODES));
+        parameters.addParameter(new Parameter(TEST_CHILD_OBJECTS,Parameter.CHILD_OBJECTS,null));
+        parameters.addParameter(new Parameter(LINKING_DISTANCE,Parameter.DOUBLE,1.0));
 
     }
 
     @Override
     public ParameterCollection getActiveParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECTS));
+        returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
+        returnedParameters.addParameter(parameters.getParameter(RELATE_MODE));
+
+        if (parameters.getValue(RELATE_MODE).equals(PROXIMITY_TO_CHILDREN)) {
+            returnedParameters.addParameter(parameters.getParameter(TEST_CHILD_OBJECTS));
+            returnedParameters.addParameter(parameters.getParameter(LINKING_DISTANCE));
+
+            String parentObjectNames = parameters.getValue(PARENT_OBJECTS);
+            parameters.updateValueSource(TEST_CHILD_OBJECTS,parentObjectNames);
+
+        }
+
+        return returnedParameters;
+
     }
 
     @Override

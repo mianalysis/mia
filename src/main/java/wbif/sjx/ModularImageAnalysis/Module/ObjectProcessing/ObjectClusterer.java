@@ -23,6 +23,7 @@ import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -44,7 +45,6 @@ public class ObjectClusterer extends HCModule {
 
     private static final String N_POINTS_IN_CLUSTER = "N_POINTS_IN_CLUSTER";
     private static final String CLUSTER_AREA_XY = "CLUSTER_AREA_2D";
-    private static final String CLUSTER_PERIMETER_XY = "CLUSTER_PERIMETER_2D";
 
 
     private static ObjSet runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, int kClusters, int maxIterations) {
@@ -171,11 +171,7 @@ public class ObjectClusterer extends HCModule {
 
         }
 
-        MidpointCircle midpointCircle = new MidpointCircle((int) Math.ceil(eps));
-        int[] xCirc = midpointCircle.getXCircleFill();
-        int[] yCirc = midpointCircle.getYCircleFill();
-
-        // Adding measurement to each cluster
+        // Adding measurement to each cluster and adding coordinates to clusters
         for (Obj outputObject:outputObjects.values()) {
             ObjSet children = outputObject.getChildren(inputObjectsName);
 
@@ -183,80 +179,48 @@ public class ObjectClusterer extends HCModule {
             MIAMeasurement measurement = new MIAMeasurement(N_POINTS_IN_CLUSTER,children.size(),this);
             outputObject.addMeasurement(measurement);
 
+            // Coordinates are stored as integers, so converting eps into an integer too
+            int epsInt = (int) Math.floor(eps);
+
             // Getting limits of the current cluster
-            double[][] limits = children.getSpatialLimits();
-            int xMin = (int) Math.floor(limits[0][0]-eps);
-            int xMax = (int) Math.floor(limits[0][1]+eps);
-            int yMin = (int) Math.floor(limits[1][0]-eps);
-            int yMax = (int) Math.floor(limits[1][1]+eps);
+            int[][] limits = children.getSpatialLimits();
+            int xMax = limits[0][1]+epsInt;
+            int yMax = limits[1][1]+epsInt;
 
             Indexer indexer = new Indexer(xMax,yMax);
+            HashSet<Integer> points = new HashSet<>();
 
-            // PROBABLY EASIEST TO GO OBJECT-BY-OBJECT and generate the local coordinates using the Midpoint circle
-            // algorithm, then convert all these points to indices, add them to a hashmap (indices as key) and convert
-            // back to objects
+            for (Obj child:children.values()) {
+                int xCent = (int) Math.round(child.getCentroid(Obj.X));
+                int yCent = (int) Math.round(child.getCentroid(Obj.Y));
 
+                for (int xx=xCent-epsInt;xx<xCent+epsInt;xx++) {
+                    for (int yy=yCent-epsInt;yy<yCent+epsInt;yy++) {
+                        if (Math.sqrt((xx-xCent)*(xx-xCent)+(yy-yCent)*(yy-yCent)) < eps) {
+                            int idx = indexer.getIndex(new int[]{xx,yy});
+                            points.add(idx);
 
-
-            HashSet<Vector2D> points = new HashSet<>(children.size());
-
-            for (Obj child : children.values()) {
-                double x = child.getCentroid(Obj.X);
-                double y = child.getCentroid(Obj.Y);
-                points.add(new Vector2D(x, y));
-
-            }
-
-            ConvexHull2D convexHull2D = new MonotoneChain().generate(points);
-            Region<Euclidean2D> region = convexHull2D.createRegion();
-
-            double area = region.getSize();
-            outputObject.addMeasurement(new MIAMeasurement(CLUSTER_AREA_XY, area, this));
-
-            // Creating a polygon ROI from the vertices
-            Vector2D[] vertices = convexHull2D.getVertices();
-            int[] x = new int[vertices.length];
-            int[] y = new int[vertices.length];
-
-            double minX = Double.MAX_VALUE;
-            double minY = Double.MAX_VALUE;
-            double maxX = Double.MIN_VALUE;
-            double maxY = Double.MIN_VALUE;
-
-            for (int i=0;i<vertices.length;i++) {
-                x[i] = (int) Math.round(vertices[i].getX());
-                y[i] = (int) Math.round(vertices[i].getY());
-
-                // Getting limits of the cluster area
-                if (x[i] < minX) minX = x[i];
-                if (y[i] < minY) minY = y[i];
-                if (x[i] > maxX) maxX = x[i];
-                if (y[i] > maxY) maxY = y[i];
-
-            }
-
-            PolygonRoi polygonRoi = new PolygonRoi(x,y,x.length, Roi.POLYGON);
-
-            // Defining the area of the cluster as all points contained within the convex hull.  To do this, every
-            // point between the minimum and maximum XY coordinates is tested.
-            int minXInt = (int) Math.floor(minX);
-            int minYInt = (int) Math.floor(minY);
-            int maxXInt = (int) Math.ceil(maxX);
-            int maxYInt = (int) Math.ceil(maxY);
-
-            for (int xx=minXInt;xx<=maxXInt;xx++) {
-                for (int yy=minYInt;yy<=maxYInt;yy++) {
-                    if (polygonRoi.contains(xx,yy)) {
-                        outputObject.addCoordinate(Obj.X,xx);
-                        outputObject.addCoordinate(Obj.Y,yy);
-                        outputObject.addCoordinate(Obj.Z,0);
-                        outputObject.addCoordinate(Obj.C,0);
-                        outputObject.addCoordinate(Obj.T,0);
-
+                        }
                     }
                 }
             }
 
+            int area = points.size();
+            outputObject.addMeasurement(new MIAMeasurement(CLUSTER_AREA_XY, area, this));
+
+            // Adding coordinates
+            for (int idx : points) {
+                int[] coords = indexer.getCoord(idx);
+
+                outputObject.addCoordinate(Obj.X,coords[0]);
+                outputObject.addCoordinate(Obj.Y,coords[1]);
+                outputObject.addCoordinate(Obj.Z,0);
+                outputObject.addCoordinate(Obj.C,0);
+                outputObject.addCoordinate(Obj.T,0);
+
+            }
+
+            // Adding calibration
             Obj exampleChild = children.values().iterator().next();
             outputObject.addCalibration(Obj.X,exampleChild.getCalibration(Obj.X));
             outputObject.addCalibration(Obj.Y,exampleChild.getCalibration(Obj.Y));

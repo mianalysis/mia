@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 /**
@@ -443,6 +444,15 @@ public class Exporter {
             for (String objectName : exampleWorkspace.getObjects().keySet()) {
                 ObjSet objects = exampleWorkspace.getObjects().get(objectName);
 
+                // Skipping this object if there are none in the set
+                if (!objects.values().iterator().hasNext()) {
+                    System.out.println("Skipping "+objects.getName());
+                    continue;
+                }
+
+                // Getting an example object
+                Obj object = objects.values().iterator().next();
+
                 // Creating relevant sheet prefixed with "IM"
                 objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
 
@@ -496,9 +506,6 @@ public class Exporter {
                     }
                 }
 
-                // Getting an example object
-                Obj object = objects.values().iterator().next();
-
                 // Adding single-valued position headers
                 for (int dim:object.getPositions().keySet()) {
                     Cell positionsHeaderCell = objectHeaderRow.createCell(col++);
@@ -524,6 +531,8 @@ public class Exporter {
             for (Workspace workspace : workspaces) {
                 for (String objectName : workspace.getObjects().keySet()) {
                     ObjSet objects = workspace.getObjects().get(objectName);
+
+                    System.out.println("Processing "+objects.getName());
 
                     if (objects.values().iterator().hasNext()) {
                         for (Obj object : objects.values()) {
