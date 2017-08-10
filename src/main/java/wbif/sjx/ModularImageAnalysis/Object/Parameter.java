@@ -2,6 +2,8 @@
 
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.NormaliseIntensity;
+
 import java.io.Serializable;
 import java.util.HashMap;
 

@@ -60,10 +60,7 @@ public class AddObjectsOverlay extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -203,8 +200,6 @@ public class AddObjectsOverlay extends HCModule {
         // Duplicating the image, then displaying it.  Duplicating prevents the image being removed from the workspace
         // if it's closed
         if (showImage) new Duplicator().run(ipl).show();
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

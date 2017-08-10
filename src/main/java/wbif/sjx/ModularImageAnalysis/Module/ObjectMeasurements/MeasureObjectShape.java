@@ -26,10 +26,7 @@ public class MeasureObjectShape extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectName);
@@ -42,9 +39,6 @@ public class MeasureObjectShape extends HCModule {
             inputObject.addMeasurement(new MIAMeasurement(N_VOXELS,x.size(),this));
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

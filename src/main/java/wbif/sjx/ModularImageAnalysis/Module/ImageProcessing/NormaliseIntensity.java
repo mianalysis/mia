@@ -1,41 +1,32 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
- * Created by sc13967 on 06/06/2017.
+ * Created by sc13967 on 10/08/2017.
  */
-public class BinaryOperations extends HCModule {
+public class NormaliseIntensity extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String OPERATION_MODE = "Filter mode";
-    public static final String NUM_ITERATIONS = "Number of iterations";
     public static final String SHOW_IMAGE = "Show image";
-
-    private static final String DILATE = "Dilate 2D";
-    private static final String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
-    private static final String ERODE = "Erode 2D";
-    private static final String FILL_HOLES_2D = "Fill holes 2D";
-    private static final String[] OPERATION_MODES = new String[]{DILATE,MANHATTAN_DISTANCE_MAP_2D,ERODE,FILL_HOLES_2D};
 
     @Override
     public String getTitle() {
-        return "Binary operations";
+        return "Normalise intensity";
     }
 
     @Override
     public String getHelp() {
-        return "Performs 2D fill holes, dilate and erode using ImageJ functions";
-
+        return "Sets the intensity to maximise the dynamic range of the image";
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -43,36 +34,44 @@ public class BinaryOperations extends HCModule {
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        String operationMode = parameters.getValue(OPERATION_MODE);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
+        if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
 
-        // Applying process to stack
-        if (operationMode.equals(DILATE)) {
-            int numIterations = parameters.getValue(NUM_ITERATIONS);
-            if (verbose) System.out.println("["+moduleName+"] Dilate ("+numIterations+"x)");
-            for (int i=0;i<numIterations;i++) {
-                IJ.run(inputImagePlus, "Dilate", "stack");
+        int bitDepth = inputImagePlus.getProcessor().getBitDepth();
+        double minIntensity = 0, maxIntensity = 0;
+        if (bitDepth == 32) {
+            minIntensity = inputImagePlus.getStatistics().min;
+            maxIntensity = inputImagePlus.getStatistics().max;
+        }
+
+        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
+                    inputImagePlus.setPosition(c, z, t);
+
+                    switch (bitDepth) {
+                        case 8:
+                            inputImagePlus.setProcessor(inputImagePlus.getProcessor().convertToByte(true));
+                            break;
+
+                        case 16:
+                            inputImagePlus.setProcessor(inputImagePlus.getProcessor().convertToShort(true));
+                            break;
+
+                        case 32:
+                            inputImagePlus.getProcessor().subtract(minIntensity);
+                            inputImagePlus.getProcessor().multiply(1/(maxIntensity-minIntensity));
+                            break;
+
+                    }
+                }
             }
-
-        } else if (operationMode.equals(ERODE)) {
-            int numIterations = parameters.getValue(NUM_ITERATIONS);
-            if (verbose) System.out.println("["+moduleName+"] Erode ("+numIterations+"x)");
-            for (int i=0;i<numIterations;i++) {
-                IJ.run(inputImagePlus, "Erode", "stack");
-            }
-
-        } else if (operationMode.equals(FILL_HOLES_2D)) {
-            if (verbose) System.out.println("["+moduleName+"] Filling binary holes");
-            IJ.run(inputImagePlus,"Fill Holes", "stack");
-
         }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
@@ -94,9 +93,7 @@ public class BinaryOperations extends HCModule {
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OPERATION_MODES[0],OPERATION_MODES));
-        parameters.addParameter(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
-        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
 
@@ -108,14 +105,6 @@ public class BinaryOperations extends HCModule {
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
-
-        }
-
-        returnedParameters.addParameter(parameters.getParameter(OPERATION_MODE));
-
-        if (parameters.getValue(OPERATION_MODE).equals(DILATE) | parameters.getValue(OPERATION_MODE).equals(ERODE)) {
-            returnedParameters.addParameter(parameters.getParameter(NUM_ITERATIONS));
-
         }
 
         returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));

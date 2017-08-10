@@ -25,10 +25,7 @@ public class ShowObjects extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Loading objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectName);
@@ -53,8 +50,6 @@ public class ShowObjects extends HCModule {
 
         // Showing the image
         image.getImagePlus().show();
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

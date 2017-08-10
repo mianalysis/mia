@@ -131,10 +131,7 @@ public class ObjectClusterer extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -198,7 +195,9 @@ public class ObjectClusterer extends HCModule {
                     for (int yy=yCent-epsInt;yy<yCent+epsInt;yy++) {
                         if (Math.sqrt((xx-xCent)*(xx-xCent)+(yy-yCent)*(yy-yCent)) < eps) {
                             int idx = indexer.getIndex(new int[]{xx,yy});
-                            points.add(idx);
+
+                            // Coordinates outside the indexed region are returned as -1
+                            if (idx != -1) points.add(idx);
 
                         }
                     }
@@ -232,8 +231,6 @@ public class ObjectClusterer extends HCModule {
 
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

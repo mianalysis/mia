@@ -170,10 +170,7 @@ public class RelateObjects extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
         ObjSet parentObjects = workspace.getObjects().get(parentObjectName);
@@ -202,9 +199,6 @@ public class RelateObjects extends HCModule {
                 spatialLinking(parentObjects,childObjects);
                 break;
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

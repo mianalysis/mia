@@ -98,10 +98,7 @@ public class GetLocalObjectRegion extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -121,8 +118,6 @@ public class GetLocalObjectRegion extends HCModule {
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

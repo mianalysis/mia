@@ -33,10 +33,7 @@ public class ImageTypeConverter extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -74,9 +71,6 @@ public class ImageTypeConverter extends HCModule {
             workspace.addImage(outputImage);
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

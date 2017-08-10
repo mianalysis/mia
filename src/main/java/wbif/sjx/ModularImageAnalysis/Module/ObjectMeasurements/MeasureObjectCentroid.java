@@ -64,10 +64,7 @@ public class MeasureObjectCentroid extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting current objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectName);
@@ -126,9 +123,6 @@ public class MeasureObjectCentroid extends HCModule {
                 }
             }
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

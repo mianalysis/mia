@@ -26,10 +26,7 @@ public class MeasureImageTexture extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
         int yOffs = parameters.getValue(Y_OFFSET);
@@ -69,8 +66,6 @@ public class MeasureImageTexture extends HCModule {
         entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement.getName(),entropyMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Entropy = "+entropyMeasurement.getValue());
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

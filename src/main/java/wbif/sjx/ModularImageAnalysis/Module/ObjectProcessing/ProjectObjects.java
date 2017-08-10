@@ -28,10 +28,7 @@ public class ProjectObjects extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
@@ -89,8 +86,6 @@ public class ProjectObjects extends HCModule {
         }
 
         workspace.addObjects(outputObjects);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

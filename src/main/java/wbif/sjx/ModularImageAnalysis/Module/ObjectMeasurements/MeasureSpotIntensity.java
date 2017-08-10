@@ -32,10 +32,7 @@ public class MeasureSpotIntensity extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting image to measure spot intensity for
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -95,9 +92,6 @@ public class MeasureSpotIntensity extends HCModule {
             inputObject.getParent(inputObjectsName).addMeasurement(maxIntensity);
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

@@ -30,10 +30,7 @@ public class RidgeDetection extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -74,8 +71,6 @@ public class RidgeDetection extends HCModule {
 //        if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
 //        HCImage outputImage = new HCImage(outputImageName,outputImagePlus);
 //        workspace.addImage(outputImage);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

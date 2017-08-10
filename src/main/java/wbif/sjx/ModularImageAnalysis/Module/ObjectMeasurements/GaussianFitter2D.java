@@ -55,10 +55,7 @@ public class GaussianFitter2D extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -202,8 +199,6 @@ public class GaussianFitter2D extends HCModule {
         }
 
         if (verbose) System.out.println("["+moduleName+"] Fit "+inputObjects.size()+" objects");
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

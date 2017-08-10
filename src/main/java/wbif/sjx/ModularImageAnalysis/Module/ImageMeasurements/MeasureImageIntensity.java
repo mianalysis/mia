@@ -24,11 +24,8 @@ public class MeasureImageIntensity extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
-        // Getting input image
+    public void run(Workspace workspace, boolean verbose) {
+       // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName+")");
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -57,8 +54,6 @@ public class MeasureImageIntensity extends HCModule {
         maxIntensity.setSource(this);
         inputImage.addMeasurement(maxIntensity.getName(),maxIntensity);
         if (verbose) System.out.println("["+moduleName+"] Max intensity = "+maxIntensity.getValue());
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

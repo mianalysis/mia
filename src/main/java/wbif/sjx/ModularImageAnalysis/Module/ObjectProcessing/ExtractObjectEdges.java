@@ -42,10 +42,7 @@ public class ExtractObjectEdges extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -176,6 +173,7 @@ public class ExtractObjectEdges extends HCModule {
 
         if (createEdgeObjects) workspace.addObjects(outputEdgeObjects);
         if (createInteriorObjects) workspace.addObjects(outputInteriorObjects);
+
     }
 
     @Override

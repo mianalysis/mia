@@ -76,7 +76,7 @@ public class MeasureObjectIntensity extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace, boolean verbose) {
         String moduleName = this.getClass().getSimpleName();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 

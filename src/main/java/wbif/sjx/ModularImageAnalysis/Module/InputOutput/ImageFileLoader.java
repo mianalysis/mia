@@ -118,10 +118,7 @@ public class ImageFileLoader extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting parameters
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
@@ -158,9 +155,6 @@ public class ImageFileLoader extends HCModule {
             ipl = new Duplicator().run(ipl);
             ipl.show();
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

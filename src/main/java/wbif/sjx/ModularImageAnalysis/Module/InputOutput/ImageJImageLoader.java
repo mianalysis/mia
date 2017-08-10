@@ -23,10 +23,7 @@ public class ImageJImageLoader extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting image
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         ImagePlus imagePlus = IJ.getImage();
@@ -35,8 +32,6 @@ public class ImageJImageLoader extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
         Image outputImage = new Image(outputImageName, imagePlus);
         workspace.addImage(outputImage);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

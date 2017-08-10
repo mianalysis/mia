@@ -35,10 +35,7 @@ public class MeasureObjectTexture extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -126,8 +123,6 @@ public class MeasureObjectTexture extends HCModule {
         }
 
         if (verbose) System.out.println("["+moduleName+"] Measurements complete");
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

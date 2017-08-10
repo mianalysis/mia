@@ -118,10 +118,7 @@ public class RunTrackMate extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Loading input image
         String targetImageName = parameters.getValue(INPUT_IMAGE);
         if (verbose) System.out.println("["+moduleName+"] Loading image ("+targetImageName+") into workspace");
@@ -243,8 +240,6 @@ public class RunTrackMate extends HCModule {
                 ipl.show();
 
             }
-
-            if (verbose) System.out.println("["+moduleName+"] Complete");
 
             return;
         }
@@ -398,8 +393,6 @@ public class RunTrackMate extends HCModule {
 
         // Reapplying calibration to input image
         ipl.setCalibration(calibration);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

@@ -24,10 +24,7 @@ public class MeasureTrackMotion extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
         ObjSet inputTrackObjects = workspace.getObjects().get(inputTrackObjectsName);
@@ -97,9 +94,6 @@ public class MeasureTrackMotion extends HCModule {
             }
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

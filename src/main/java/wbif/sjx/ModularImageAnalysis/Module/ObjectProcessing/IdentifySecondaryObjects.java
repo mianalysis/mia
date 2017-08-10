@@ -37,10 +37,7 @@ public class IdentifySecondaryObjects extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting relevant parameters
         double medFiltR = parameters.getValue(MEDIAN_FILTER_RADIUS);
         String thrMeth = parameters.getValue(THRESHOLD_METHOD);
@@ -92,8 +89,6 @@ public class IdentifySecondaryObjects extends HCModule {
         // Adding objects to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(objects2);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

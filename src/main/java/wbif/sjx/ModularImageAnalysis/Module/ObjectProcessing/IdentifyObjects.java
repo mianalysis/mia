@@ -27,10 +27,7 @@ public class IdentifyObjects extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -82,8 +79,6 @@ public class IdentifyObjects extends HCModule {
         // Adding objects to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

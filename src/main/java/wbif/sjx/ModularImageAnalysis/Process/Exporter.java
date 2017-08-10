@@ -446,7 +446,6 @@ public class Exporter {
 
                 // Skipping this object if there are none in the set
                 if (!objects.values().iterator().hasNext()) {
-                    System.out.println("Skipping "+objects.getName());
                     continue;
                 }
 
@@ -531,8 +530,6 @@ public class Exporter {
             for (Workspace workspace : workspaces) {
                 for (String objectName : workspace.getObjects().keySet()) {
                     ObjSet objects = workspace.getObjects().get(objectName);
-
-                    System.out.println("Processing "+objects.getName());
 
                     if (objects.values().iterator().hasNext()) {
                         for (Obj object : objects.values()) {

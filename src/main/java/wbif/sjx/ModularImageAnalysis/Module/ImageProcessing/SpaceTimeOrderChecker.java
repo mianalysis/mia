@@ -26,10 +26,7 @@ public class SpaceTimeOrderChecker extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -42,8 +39,6 @@ public class SpaceTimeOrderChecker extends HCModule {
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
         if (inputImagePlus.getNFrames() == 1 & inputImagePlus.getNSlices() > 1) SwitchTAndZ.run(inputImagePlus);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

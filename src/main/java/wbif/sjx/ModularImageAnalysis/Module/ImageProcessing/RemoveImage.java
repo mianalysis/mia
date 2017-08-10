@@ -21,18 +21,13 @@ public class RemoveImage extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         // Removing the relevant image from the workspace
         if (verbose) System.out.println("["+moduleName+"] Removing image ("+inputImageName+") from workspace");
         workspace.removeImage(inputImageName);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 
