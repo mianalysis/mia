@@ -66,7 +66,12 @@ public class ImageSaver extends HCModule {
         switch (saveLocation) {
             case MIRRORED_DIRECTORY:
                 File rootFile = workspace.getMetadata().getFile();
-                int fileDepth = (int) workspace.getMetadata().get("FILE_DEPTH");
+                int fileDepth;
+                if (workspace.getMetadata().get("FILE_DEPTH") == null) {
+                    fileDepth = 0;
+                } else {
+                    fileDepth = (int) workspace.getMetadata().get("FILE_DEPTH");
+                }
 
                 StringBuilder sb = new StringBuilder();
                 File parentFile = rootFile.getParentFile();

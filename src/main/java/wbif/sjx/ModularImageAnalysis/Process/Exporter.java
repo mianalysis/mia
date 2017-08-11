@@ -580,7 +580,7 @@ public class Exporter {
                                     if (children != null) {
                                         childValueCell.setCellValue(children.size());
                                     } else {
-                                        childValueCell.setCellValue("");
+                                        childValueCell.setCellValue("0");
                                     }
                                     col++;
                                 }

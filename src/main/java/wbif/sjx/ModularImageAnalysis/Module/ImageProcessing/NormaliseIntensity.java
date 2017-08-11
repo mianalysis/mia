@@ -15,6 +15,27 @@ public class NormaliseIntensity extends HCModule {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
 
+    public static void normaliseIntenisty(ImagePlus ipl) {
+        double minIntensity = ipl.getStatistics().min;
+        double maxIntensity = ipl.getStatistics().max;
+
+        int bitDepth = ipl.getProcessor().getBitDepth();
+
+        for (int z = 1; z <= ipl.getNSlices(); z++) {
+            for (int c = 1; c <= ipl.getNChannels(); c++) {
+                for (int t = 1; t <= ipl.getNFrames(); t++) {
+                    ipl.setPosition(c, z, t);
+
+                    if (bitDepth == 8 | bitDepth == 16) ipl.setProcessor(ipl.getProcessor().convertToFloat());
+
+                    ipl.getProcessor().subtract(minIntensity);
+                    ipl.getProcessor().multiply(1 / (maxIntensity - minIntensity));
+
+                }
+            }
+        }
+    }
+
     @Override
     public String getTitle() {
         return "Normalise intensity";
@@ -38,36 +59,8 @@ public class NormaliseIntensity extends HCModule {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
 
-        int bitDepth = inputImagePlus.getProcessor().getBitDepth();
-        double minIntensity = 0, maxIntensity = 0;
-        if (bitDepth == 32) {
-            minIntensity = inputImagePlus.getStatistics().min;
-            maxIntensity = inputImagePlus.getStatistics().max;
-        }
-
-        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    inputImagePlus.setPosition(c, z, t);
-
-                    switch (bitDepth) {
-                        case 8:
-                            inputImagePlus.setProcessor(inputImagePlus.getProcessor().convertToByte(true));
-                            break;
-
-                        case 16:
-                            inputImagePlus.setProcessor(inputImagePlus.getProcessor().convertToShort(true));
-                            break;
-
-                        case 32:
-                            inputImagePlus.getProcessor().subtract(minIntensity);
-                            inputImagePlus.getProcessor().multiply(1/(maxIntensity-minIntensity));
-                            break;
-
-                    }
-                }
-            }
-        }
+        // Running intensity normalisation
+        normaliseIntenisty(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {

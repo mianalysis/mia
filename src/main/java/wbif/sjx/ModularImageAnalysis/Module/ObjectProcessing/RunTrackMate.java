@@ -16,8 +16,10 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.NormaliseIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.awt.*;
@@ -36,6 +38,7 @@ public class RunTrackMate extends HCModule {
     public static final String DO_MEDIAN_FILTERING = "Median filtering";
     public static final String RADIUS = "Radius";
     public static final String THRESHOLD = "Threshold";
+    public static final String NORMALISE_INTENSITY = "Normalise intensity";
     public static final String LINKING_MAX_DISTANCE = "Max linking distance";
     public static final String GAP_CLOSING_MAX_DISTANCE = "Gap closing max distance";
     public static final String MAX_FRAME_GAP = "Max frame gap";
@@ -122,7 +125,8 @@ public class RunTrackMate extends HCModule {
         // Loading input image
         String targetImageName = parameters.getValue(INPUT_IMAGE);
         if (verbose) System.out.println("["+moduleName+"] Loading image ("+targetImageName+") into workspace");
-        ImagePlus ipl = workspace.getImages().get(targetImageName).getImagePlus();
+        Image targetImage = workspace.getImage(targetImageName);
+        ImagePlus ipl = targetImage.getImagePlus();
 
         // Storing, then removing calibration.  This will be reapplied after the detection.
         Calibration calibration = ipl.getCalibration();
@@ -133,6 +137,7 @@ public class RunTrackMate extends HCModule {
         boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
         double radius = parameters.getValue(RADIUS);
         double threshold = parameters.getValue(THRESHOLD);
+        boolean normaliseIntensity = parameters.getValue(NORMALISE_INTENSITY);
         boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING);
         double maxLinkDist = parameters.getValue(LINKING_MAX_DISTANCE);
         double maxGapDist = parameters.getValue(GAP_CLOSING_MAX_DISTANCE);
@@ -155,6 +160,13 @@ public class RunTrackMate extends HCModule {
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
         ObjSet trackObjects = null;
         if (createTracks) trackObjects = new ObjSet(trackObjectsName);
+
+        // If image should be normalised
+        if (normaliseIntensity) {
+            ipl = new Duplicator().run(ipl);
+            NormaliseIntensity.normaliseIntenisty(ipl);
+
+        }
 
         // Initialising TrackMate model to store data
         Model model = new Model();
@@ -187,6 +199,8 @@ public class RunTrackMate extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Running TrackMate");
         if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());
         if (!trackmate.process()) IJ.log(trackmate.getErrorMessage());
+
+        if (normaliseIntensity) ipl = targetImage.getImagePlus();
 
         if (!(boolean) parameters.getValue(DO_TRACKING)) {
             // Getting trackObjects and adding them to the output trackObjects
@@ -406,6 +420,7 @@ public class RunTrackMate extends HCModule {
         parameters.addParameter(new Parameter(DO_MEDIAN_FILTERING, Parameter.BOOLEAN,false));
         parameters.addParameter(new Parameter(RADIUS, Parameter.DOUBLE,2.0));
         parameters.addParameter(new Parameter(THRESHOLD, Parameter.DOUBLE,5000.0));
+        parameters.addParameter(new Parameter(NORMALISE_INTENSITY, Parameter.BOOLEAN,false));
 
         parameters.addParameter(new Parameter(DO_TRACKING, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(LINKING_MAX_DISTANCE, Parameter.DOUBLE,2.0));
@@ -432,6 +447,7 @@ public class RunTrackMate extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(DO_MEDIAN_FILTERING));
         returnedParameters.addParameter(parameters.getParameter(RADIUS));
         returnedParameters.addParameter(parameters.getParameter(THRESHOLD));
+        returnedParameters.addParameter(parameters.getParameter(NORMALISE_INTENSITY));
 
         returnedParameters.addParameter(parameters.getParameter(DO_TRACKING));
         if (parameters.getValue(DO_TRACKING)) {

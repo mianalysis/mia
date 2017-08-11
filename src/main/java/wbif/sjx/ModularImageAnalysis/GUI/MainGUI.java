@@ -1,5 +1,6 @@
 // TODO: Add controls for all parameter types (hashsets, etc.)
 // TODO: If an assigned image/object name is no longer available, flag up the module button in red
+// TODO: Output panel could allow the user to select which objects and images to output to the spreadsheet
 
 package wbif.sjx.ModularImageAnalysis.GUI;
 
