@@ -62,9 +62,11 @@ public class CalculateStatsForChildren extends HCModule {
             for (String measurement : exampleMeasurements) {
                 // For each measurement type, calculating the mean, standard deviation, etc. (unless the value is NaN)
                 CumStat cs = new CumStat();
-                for (Obj childObject : childObjects.values()) {
-                    if (childObject.getMeasurement(measurement).getValue() != Double.NaN) {
-                        cs.addMeasure(childObject.getMeasurement(measurement).getValue());
+                if (childObjects != null) {
+                    for (Obj childObject : childObjects.values()) {
+                        if (childObject.getMeasurement(measurement).getValue() != Double.NaN) {
+                            cs.addMeasure(childObject.getMeasurement(measurement).getValue());
+                        }
                     }
                 }
 
