@@ -53,7 +53,7 @@ public class IdentifyObjects extends HCModule {
 
         // Applying connected components labelling
         if (verbose) System.out.println("["+moduleName+"] Applying connected components labelling");
-        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D();
+        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26);
         inputImagePlus.setStack(ffcl3D.computeLabels(inputImagePlus.getImageStack()));
 
         // Converting image to objects
