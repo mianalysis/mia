@@ -76,16 +76,18 @@ public class MeasureObjectTexture extends HCModule {
             if (verbose) System.out.println("["+moduleName+"] Processing object "+(iter++)+" of "+nObjects);
             ArrayList<int[]> coords = new ArrayList<>();
 
-            ArrayList<Integer> x = object.getCoordinates(Obj.X);
-            ArrayList<Integer> y = object.getCoordinates(Obj.Y);
-            ArrayList<Integer> z = object.getCoordinates(Obj.Z);
+            ArrayList<Integer> x = object.getXCoords();
+            ArrayList<Integer> y = object.getYCoords();
+            ArrayList<Integer> z = object.getZCoords();
+            int c = 1;
+            int t = object.getT()+1;
 
             for (int i=0;i<x.size();i++) {
                 coords.add(new int[]{x.get(i),y.get(i),z.get(i)});
 
             }
 
-            textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs,coords);
+            textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs,c,t,coords);
 
             // Acquiring measurements
             MIAMeasurement ASMMeasurement = new MIAMeasurement(inputImageName+"_ASM",textureCalculator.getASM());

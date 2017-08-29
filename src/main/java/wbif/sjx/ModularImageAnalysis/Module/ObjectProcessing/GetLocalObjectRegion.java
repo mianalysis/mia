@@ -21,35 +21,30 @@ public class GetLocalObjectRegion extends HCModule {
         // Creating store for output objects
         ObjSet outputObjects = new ObjSet(outputObjectsName);
 
+        double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
+        double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
+        String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
+
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
             // Creating new object and assigning relationship to input objects
-            Obj outputObject = new Obj(outputObjectsName,inputObject.getID());
+            Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits);
             outputObject.addParent(inputObject);
             inputObject.addChild(outputObject);
 
-            // Getting image calibration (to deal with different xy-z dimensions)
-            double xCal = inputObject.getCalibration(Obj.X);
-            double yCal = inputObject.getCalibration(Obj.Y);
-            double zCal = inputObject.getCalibration(Obj.Z);
-
-            double xy_z_ratio = xCal/zCal;
+            double xy_z_ratio = dppXY/dppZ;
 
             // Getting centroid coordinates
-            double xCent = MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(Obj.X),MeasureObjectCentroid.MEAN);
-            double yCent = MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(Obj.Y),MeasureObjectCentroid.MEAN);
-            double zCent = inputObject.getCoordinates(Obj.Z) != null
-                    ? MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN)
-                    : 0;
+            double xCent = inputObject.getXMean(true);
+            double yCent = inputObject.getYMean(true);
+            double zCent = inputObject.getZMean(true,false);
 
             if (calibrated) {
-                for (int x = (int) Math.floor(xCent - radius/xCal); x <= (int) Math.ceil(xCent + radius/xCal); x++) {
-                    for (int y = (int) Math.floor(yCent - radius/yCal); y <= (int) Math.ceil(yCent + radius/yCal); y++) {
-                        for (int z = (int) Math.floor(zCent - radius/zCal); z <= (int) Math.ceil(zCent + radius/zCal); z++) {
-                            if (Math.sqrt((xCent-x)*xCal*(xCent-x)*xCal + (yCent-y)*yCal*(yCent-y)*yCal + (zCent-z)*zCal*(zCent-z)*zCal) < radius) {
-                                outputObject.addCoordinate(Obj.X, x);
-                                outputObject.addCoordinate(Obj.Y, y);
-                                outputObject.addCoordinate(Obj.Z, z);
+                for (int x = (int) Math.floor(xCent - radius/dppXY); x <= (int) Math.ceil(xCent + radius/dppXY); x++) {
+                    for (int y = (int) Math.floor(yCent - radius/dppXY); y <= (int) Math.ceil(yCent + radius/dppXY); y++) {
+                        for (int z = (int) Math.floor(zCent - radius/dppZ); z <= (int) Math.ceil(zCent + radius/dppZ); z++) {
+                            if (Math.sqrt((xCent-x)*dppXY*(xCent-x)*dppXY + (yCent-y)*dppXY*(yCent-y)*dppXY + (zCent-z)*dppZ*(zCent-z)*dppZ) < radius) {
+                                outputObject.addCoord(x,y,z);
 
                             }
                         }
@@ -61,9 +56,7 @@ public class GetLocalObjectRegion extends HCModule {
                     for (int y = (int) Math.floor(yCent - radius); y <= (int) Math.ceil(yCent + radius); y++) {
                         for (int z = (int) Math.floor(zCent - radius * xy_z_ratio); z <= (int) Math.ceil(zCent + radius * xy_z_ratio); z++) {
                             if (Math.sqrt((xCent-x)*(xCent-x) + (yCent-y)*(yCent-y) + (zCent-z)*(zCent-z)/(xy_z_ratio*xy_z_ratio)) < radius) {
-                                outputObject.addCoordinate(Obj.X, x);
-                                outputObject.addCoordinate(Obj.Y, y);
-                                outputObject.addCoordinate(Obj.Z, z);
+                                outputObject.addCoord(x,y,z);
 
                             }
                         }
@@ -71,11 +64,8 @@ public class GetLocalObjectRegion extends HCModule {
                 }
             }
 
-            // Copying additional dimensions from inputObject
-            HashMap<Integer,Integer> positions = inputObject.getPositions();
-            for (Entry<Integer,Integer> entry:positions.entrySet()) {
-                outputObject.setPosition(entry.getKey(),entry.getValue());
-            }
+            // Copying timepoint of input object
+            outputObject.setT(inputObject.getT());
 
             // Adding object to HashMap
             outputObjects.put(outputObject.getID(),outputObject);

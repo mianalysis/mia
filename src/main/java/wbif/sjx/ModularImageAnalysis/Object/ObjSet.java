@@ -35,9 +35,9 @@ public class ObjSet extends LinkedHashMap<Integer,Obj> {
                 {Integer.MAX_VALUE,Integer.MIN_VALUE}};
 
         for (Obj object:values()) {
-            ArrayList<Integer> x = object.getCoordinates(Obj.X);
-            ArrayList<Integer> y = object.getCoordinates(Obj.Y);
-            ArrayList<Integer> z = object.getCoordinates(Obj.Z);
+            ArrayList<Integer> x = object.getXCoords();
+            ArrayList<Integer> y = object.getYCoords();
+            ArrayList<Integer> z = object.getZCoords();
 
             for (int i=0;i<x.size();i++) {
                 limits[0][0] = Math.min(limits[0][0],x.get(i));

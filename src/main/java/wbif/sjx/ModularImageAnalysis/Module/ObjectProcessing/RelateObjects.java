@@ -52,16 +52,19 @@ public class RelateObjects extends HCModule {
             // Running through all proximal children
             for (Obj testChild : testChildren.values()) {
                 // Getting centroid of the current child
-                double xCentTest = testChild.getCentroid(Obj.X);
-                double yCentTest = testChild.getCentroid(Obj.Y);
+                double xCentTest = testChild.getXMean(true);
+                double yCentTest = testChild.getYMean(true);
+                double zCentTest = testChild.getZMean(true,true);
 
                 // Running through all children to relate
                 for (Obj childObject : childObjects.values()) {
-                    double xDist = xCentTest - childObject.getCentroid(Obj.X);
-                    double yDist = yCentTest - childObject.getCentroid(Obj.Y);
+                    double xDist = xCentTest - childObject.getXMean(true);
+                    double yDist = yCentTest - childObject.getYMean(true);
+                    double zDist = zCentTest - childObject.getZMean(true,true);
+
 
                     // If the test object and the current object is less than the linking distance, assign the relationship
-                    double dist = Math.sqrt(xDist * xDist + yDist * yDist);
+                    double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
                     if (dist < linkingDistance) {
                         childObject.addParent(parentObject);
                         parentObject.addChild(childObject);
@@ -76,19 +79,19 @@ public class RelateObjects extends HCModule {
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
             // Getting parent coordinates
-            ArrayList<Integer> parentX = parentObject.getCoordinates(Obj.X);
-            ArrayList<Integer> parentY = parentObject.getCoordinates(Obj.Y);
-            ArrayList<Integer> parentZ = parentObject.getCoordinates(Obj.Z);
+            ArrayList<Integer> parentX = parentObject.getXCoords();
+            ArrayList<Integer> parentY = parentObject.getYCoords();
+            ArrayList<Integer> parentZ = parentObject.getZCoords();
 
             // Creating a Hyperstack to hold the distance transform
             int[][] range = parentObject.getCoordinateRange();
-            ImagePlus ipl = IJ.createHyperStack("Objects", range[Obj.X][1]-range[Obj.X][0] + 1,
-                    range[Obj.Y][1]-range[Obj.Y][0] + 1, 1, range[Obj.Z][1]-range[Obj.Z][0], 1, 8);
+            ImagePlus ipl = IJ.createHyperStack("Objects", range[0][1]-range[0][0] + 1,
+                    range[1][1]-range[1][0] + 1, 1, range[2][1]-range[2][0], 1, 8);
 
             // Setting pixels corresponding to the parent object to 1
             for (int i=0;i<parentX.size();i++) {
-                ipl.setPosition(1,parentZ.get(i)-range[Obj.Z][0]+1,1);
-                ipl.getProcessor().set(parentX.get(i)-range[Obj.X][0],parentY.get(i)-range[Obj.Y][0],255);
+                ipl.setPosition(1,parentZ.get(i)-range[2][0]+1,1);
+                ipl.getProcessor().set(parentX.get(i)-range[0][0],parentY.get(i)-range[1][0],255);
 
             }
 
@@ -98,27 +101,13 @@ public class RelateObjects extends HCModule {
             ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
 
             for (Obj childObject:childObjects.values()) {
-                // Only testing if the child is present in the same dimensions as the parent
-                HashMap<Integer,Integer> parentPositions = parentObject.getPositions();
-                HashMap<Integer,Integer> childPositions = childObject.getPositions();
-
-                boolean matchingDimensions = true;
-                for (int dim:parentPositions.keySet()) {
-                    if (!parentPositions.get(dim).equals(childPositions.get(dim))) {
-                        matchingDimensions = false;
-                        break;
-                    }
-                }
-                if (!matchingDimensions) continue;
+                // Only testing if the child is present in the same timepoint as the parent
+                if (parentObject.getT() != childObject.getT()) continue;
 
                 // Getting the child centroid location
-                ArrayList<Integer> childX = childObject.getCoordinates(Obj.X);
-                ArrayList<Integer> childY = childObject.getCoordinates(Obj.Y);
-                ArrayList<Integer> childZ = childObject.getCoordinates(Obj.Z);
-
-                int xCent = (int) Math.round(MeasureObjectCentroid.calculateCentroid(childX));
-                int yCent = (int) Math.round(MeasureObjectCentroid.calculateCentroid(childY));
-                int zCent = (int) Math.round(MeasureObjectCentroid.calculateCentroid(childZ));
+                int xCent = (int) Math.round(childObject.getXMean(true));
+                int yCent = (int) Math.round(childObject.getYMean(true));
+                int zCent = (int) Math.round(childObject.getZMean(true,false)); // Relates to image location
 
                 // Testing if the child centroid exists in the object
                 for (int i=0;i<parentX.size();i++) {
@@ -128,14 +117,14 @@ public class RelateObjects extends HCModule {
 
                         // Getting position within current parent object
                         MIAMeasurement absDistanceFromEdge = new MIAMeasurement(DIST_EDGE_PX_MEAS);
-                        int xPos = xCent-range[Obj.X][0];
-                        int yPos = yCent-range[Obj.Y][0];
-                        int zPos = zCent-range[Obj.Z][0];
+                        int xPos = xCent-range[0][0];
+                        int yPos = yCent-range[1][0];
+                        int zPos = zCent-range[2][0];
 
                         if (xPos < 0 | xPos > distanceMap.getWidth() | yPos < 0 | yPos > distanceMap.getHeight() | zPos < 0 | zPos >= distanceMap.size()) {
                             absDistanceFromEdge.setValue(Double.NaN);
                         } else {
-                            absDistanceFromEdge.setValue(distanceMap.getVoxel(xCent - range[Obj.X][0], yCent - range[Obj.Y][0], zCent - range[Obj.Z][0]));
+                            absDistanceFromEdge.setValue(distanceMap.getVoxel(xCent - range[0][0], yCent - range[1][0], zCent - range[2][0]));
                         }
                         childObject.addMeasurement(absDistanceFromEdge);
 

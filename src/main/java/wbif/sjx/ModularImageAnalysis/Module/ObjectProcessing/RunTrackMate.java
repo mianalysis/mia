@@ -68,22 +68,21 @@ public class RunTrackMate extends HCModule {
             float H = new Random().nextFloat();
             Color colour = Color.getHSBColor(H, 1, 1);
 
-            double xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.X), MeasureObjectCentroid.MEAN);
-            double yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Y), MeasureObjectCentroid.MEAN);
-            double zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN);
+            double xMean = object.getXMean(true);
+            double yMean = object.getYMean(true);
+            double zMean = object.getZMean(true,false);
 
             // Getting coordinates to plot
-            int c = ((int) object.getCoordinates(Obj.C)) + 1;
             int z = (int) Math.round(zMean+1);
-            int t = ((int) object.getCoordinates(Obj.T)) + 1;
+            int t = object.getT();
 
             // Adding circles where the object centroids are
             PointRoi roi = new PointRoi(xMean+1,yMean+1);
             roi.setPointType(3);
             if (ipl.isHyperStack()) {
-                roi.setPosition(c, z, t);
+                roi.setPosition(1, z, t);
             } else {
-                int pos = Math.max(Math.max(c,z),t);
+                int pos = Math.max(Math.max(1,z),t);
                 roi.setPosition(pos);
             }
 
@@ -94,9 +93,9 @@ public class RunTrackMate extends HCModule {
                 text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
 
                 if (ipl.isHyperStack()) {
-                    text.setPosition(c, z, t);
+                    text.setPosition(1, z, t);
                 } else {
-                    text.setPosition(Math.max(Math.max(c, z), t));
+                    text.setPosition(Math.max(Math.max(1, z), t));
                 }
                 text.setStrokeColor(colour);
                 ovl.addElement(text);
@@ -131,6 +130,9 @@ public class RunTrackMate extends HCModule {
         // Storing, then removing calibration.  This will be reapplied after the detection.
         Calibration calibration = ipl.getCalibration();
         ipl.setCalibration(null);
+        double dppXY = calibration.getX(1);
+        double dppZ = calibration.getZ(1);
+        String calibrationUnits = calibration.getUnits();
 
         // Getting parameters
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
@@ -208,21 +210,9 @@ public class RunTrackMate extends HCModule {
 
             SpotCollection spots = model.getSpots();
             for (Spot spot:spots.iterable(false)) {
-                Obj spotObject = new Obj(spotObjectsName,spot.ID());
-
-                spotObject.addCoordinate(Obj.X,(int) spot.getDoublePosition(0));
-                spotObject.addCoordinate(Obj.Y,(int) spot.getDoublePosition(1));
-                spotObject.addCoordinate(Obj.Z,(int) spot.getDoublePosition(2));
-                spotObject.addCoordinate(Obj.C,0);
-                spotObject.addCoordinate(Obj.T,(int) Math.round(spot.getFeature(Spot.FRAME)));
-
-                // Adding calibration values to the HCObject (physical distance per pixel)
-                spotObject.addCalibration(Obj.X,calibration.getX(1));
-                spotObject.addCalibration(Obj.Y,calibration.getY(1));
-                spotObject.addCalibration(Obj.Z,calibration.getZ(1));
-                spotObject.addCalibration(Obj.C,1);
-                spotObject.addCalibration(Obj.T,1);
-                spotObject.setCalibratedUnits(calibration.getUnits());
+                Obj spotObject = new Obj(spotObjectsName,spot.ID(),dppXY,dppZ,calibrationUnits);
+                spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
+                spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
                 spotObject.addMeasurement(new MIAMeasurement(MIAMeasurement.RADIUS,spot.getFeature(Spot.RADIUS),this));
                 spotObject.addMeasurement(new MIAMeasurement(MIAMeasurement.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
@@ -268,15 +258,7 @@ public class RunTrackMate extends HCModule {
             // If necessary, creating a new summary object for the track
             Obj trackObject = null;
             if (createTracks) {
-                trackObject = new Obj(trackObjectsName,trackID);
-
-                // Adding calibration information
-                trackObject.addCalibration(Obj.X,calibration.getX(1));
-                trackObject.addCalibration(Obj.Y,calibration.getY(1));
-                trackObject.addCalibration(Obj.Z,calibration.getZ(1));
-                trackObject.addCalibration(Obj.C,1);
-                trackObject.addCalibration(Obj.T,1);
-                trackObject.setCalibratedUnits(calibration.getUnits());
+                trackObject = new Obj(trackObjectsName,trackID,dppXY,dppZ,calibrationUnits);
 
             }
 
@@ -298,28 +280,22 @@ public class RunTrackMate extends HCModule {
             // Getting x,y,f and 2-channel spot intensities from TrackMate results
             for (Spot spot:spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
-                Obj spotObject = new Obj(spotObjectsName,ID++);
+                Obj spotObject = new Obj(spotObjectsName,ID++,dppXY,dppZ,calibrationUnits);
 
                 // Getting coordinates
                 int x = (int) spot.getDoublePosition(0);
                 int y = (int) spot.getDoublePosition(1);
-                int z = (int) (spot.getDoublePosition(2)*calibration.getZ(1)/calibration.getX(1));
+                int z = (int) (spot.getDoublePosition(2)*dppZ/dppXY);
                 int t = (int) Math.round(spot.getFeature(Spot.FRAME));
 
                 // Adding coordinates to the instance objects
-                spotObject.addCoordinate(Obj.X,x);
-                spotObject.addCoordinate(Obj.Y,y);
-                spotObject.addCoordinate(Obj.Z,z);
-                spotObject.addCoordinate(Obj.C,0);
-                spotObject.addCoordinate(Obj.T,t);
+                spotObject.addCoord(x,y,z);
+                spotObject.setT(t);
 
                 // If necessary, adding coordinates to the summary objects
                 if (createTracks) {
-                    trackObject.addCoordinate(Obj.X,x);
-                    trackObject.addCoordinate(Obj.Y,y);
-                    trackObject.addCoordinate(Obj.Z,z);
-                    trackObject.addCoordinate(Obj.C,0);
-                    trackObject.addCoordinate(Obj.T,t);
+                    trackObject.addCoord(x,y,z);
+                    trackObject.setT(0);
 
                 }
 
@@ -333,14 +309,6 @@ public class RunTrackMate extends HCModule {
                 estDiaMeasure.setSource(this);
                 spotObject.addMeasurement(estDiaMeasure);
                 if (createTracks) estDiaAv.addMeasure(spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER));
-
-                // Adding calibration values to the HCObject (physical distance per pixel)
-                spotObject.addCalibration(Obj.X,calibration.getX(1));
-                spotObject.addCalibration(Obj.Y,calibration.getY(1));
-                spotObject.addCalibration(Obj.Z,calibration.getZ(1));
-                spotObject.addCalibration(Obj.C,1);
-                spotObject.addCalibration(Obj.T,1);
-                spotObject.setCalibratedUnits(calibration.getUnits());
 
                 // Adding the connection between instance and summary objects
                 if (createTracks) {

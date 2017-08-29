@@ -1,16 +1,11 @@
+// TODO: Could add an optional parameter to select the channel of the input image to use for measurement
+
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
-import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Analysis.InstantaneousVelocityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.Track;
-import wbif.sjx.common.Object.TrackCollection;
 
 import java.util.ArrayList;
 
@@ -35,17 +30,14 @@ public class MeasureObjectIntensity extends HCModule {
         CumStat cs = new CumStat();
 
         // Getting pixel coordinates
-        ArrayList<Integer> x = object.getCoordinates(Obj.X);
-        ArrayList<Integer> y = object.getCoordinates(Obj.Y);
-        ArrayList<Integer> z = object.getCoordinates(Obj.Z);
-        int cPos = object.getCoordinates(Obj.C);
-        int tPos = object.getCoordinates(Obj.T);
+        ArrayList<Integer> x = object.getXCoords();
+        ArrayList<Integer> y = object.getYCoords();
+        ArrayList<Integer> z = object.getZCoords();
+        int tPos = object.getT();
 
         // Running through all pixels in this object and adding the intensity to the MultiCumStat object
         for (int i=0;i<x.size();i++) {
-            int zPos = z==null ? 0 : z.get(i);
-
-            ipl.setPosition(cPos+1,zPos+1,tPos+1);
+            ipl.setPosition(1,z.get(i)+1,tPos+1);
             cs.addMeasure(ipl.getProcessor().getPixelValue(x.get(i),y.get(i)));
 
         }

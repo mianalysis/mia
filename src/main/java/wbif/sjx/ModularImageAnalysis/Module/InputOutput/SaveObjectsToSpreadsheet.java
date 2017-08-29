@@ -70,13 +70,9 @@ public class SaveObjectsToSpreadsheet extends HCModule {
                 parentHeaderCell.setCellValue(name);
             }
 
-            // Adding single-valued position headers
-            for (int dim : object.getPositions().keySet()) {
-                Cell positionsHeaderCell = objectHeaderRow.createCell(col++);
-                String dimName = dim == 3 ? "CHANNEL" : dim == 4 ? "FRAME" : "DIM_" + dim;
-                positionsHeaderCell.setCellValue(dimName);
-
-            }
+            // Adding timepoint header
+            Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
+            timepointHeaderCell.setCellValue("TIMEPOINT");
 
             // Adding measurement headers
             for (MIAMeasurement measurement : object.getMeasurements().values()) {
@@ -104,11 +100,8 @@ public class SaveObjectsToSpreadsheet extends HCModule {
                     parentValueCell.setCellValue(parents.get(parent).getID());
                 }
 
-                for (int dim : inputObject.getPositions().keySet()) {
-                    Cell positionsValueCell = objectValueRow.createCell(col++);
-                    positionsValueCell.setCellValue(inputObject.getPosition(dim));
-
-                }
+                Cell timepointValueCell = objectValueRow.createCell(col++);
+                timepointValueCell.setCellValue(inputObject.getT());
 
                 for (MIAMeasurement measurement : inputObject.getMeasurements().values()) {
                     Cell measValueCell = objectValueRow.createCell(col++);

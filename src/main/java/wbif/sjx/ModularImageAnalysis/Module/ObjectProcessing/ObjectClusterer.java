@@ -6,24 +6,13 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
-import ij.gui.PolygonRoi;
-import ij.gui.Roi;
-import org.apache.commons.math3.exception.InsufficientDataException;
-import org.apache.commons.math3.geometry.euclidean.twod.Euclidean2D;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.apache.commons.math3.geometry.euclidean.twod.hull.ConvexHull2D;
-import org.apache.commons.math3.geometry.euclidean.twod.hull.MonotoneChain;
-import org.apache.commons.math3.geometry.partitioning.Region;
 import org.apache.commons.math3.ml.clustering.*;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
-import wbif.sjx.common.MathFunc.MidpointCircle;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -47,28 +36,23 @@ public class ObjectClusterer extends HCModule {
     private static final String CLUSTER_AREA_XY = "CLUSTER_AREA_2D";
 
 
-    private static ObjSet runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, int kClusters, int maxIterations) {
+    private static ObjSet runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, double dppXY, double dppZ, String calibratedUnits, int kClusters, int maxIterations) {
         KMeansPlusPlusClusterer<LocationWrapper> clusterer = new KMeansPlusPlusClusterer<>(kClusters,maxIterations);
         List<CentroidCluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
         ObjSet outputObjects = new ObjSet(outputObjectsName);
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID());
+            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits);
 
             double[] centroid = cluster.getCenter().getPoint();
-            outputObject.addCoordinate(Obj.X,(int) Math.round(centroid[0]));
-            outputObject.addCoordinate(Obj.Y,(int) Math.round(centroid[1]));
-            outputObject.addCoordinate(Obj.Z,(int) Math.round(centroid[2]));
+            outputObject.addCoord((int) Math.round(centroid[0]),(int) Math.round(centroid[1]),(int) Math.round(centroid[2]));
 
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
                 pointObject.addParent(outputObject);
                 outputObject.addChild(pointObject);
             }
-
-            // Copying calibration from the first point in the cluster
-            outputObject.copyCalibration(cluster.getPoints().get(0).getObject());
 
             outputObjects.add(outputObject);
 
@@ -78,14 +62,14 @@ public class ObjectClusterer extends HCModule {
 
     }
 
-    private static ObjSet runDBSCAN(List<LocationWrapper> locations, String outputObjectsName, double eps, int minPoints) {
+    private static ObjSet runDBSCAN(List<LocationWrapper> locations, String outputObjectsName, double dppXY, double dppZ, String calibratedUnits, double eps, int minPoints) {
         DBSCANClusterer<LocationWrapper> clusterer = new DBSCANClusterer<>(eps, minPoints);
         List<Cluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
         ObjSet outputObjects = new ObjSet(outputObjectsName);
         for (Cluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID());
+            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits);
 
             // Calculating the centroid (DBSCAN doesn't give one)
             CumStat[] cs = new CumStat[]{new CumStat(), new CumStat(), new CumStat()};
@@ -96,18 +80,13 @@ public class ObjectClusterer extends HCModule {
                 outputObject.addChild(pointObject);
 
                 // Getting the centroid of the current object
-                cs[0].addMeasure(pointObject.getCentroid(Obj.X));
-                cs[1].addMeasure(pointObject.getCentroid(Obj.Y));
-                cs[2].addMeasure(pointObject.getCentroid(Obj.Z));
+                cs[0].addMeasure(pointObject.getXMean(true));
+                cs[1].addMeasure(pointObject.getYMean(true));
+                cs[2].addMeasure(pointObject.getZMean(true,false)); // We now want to go back to original Z-coordinates
 
             }
 
-            outputObject.addCoordinate(Obj.X,(int) Math.round(cs[0].getMean()));
-            outputObject.addCoordinate(Obj.Y,(int) Math.round(cs[1].getMean()));
-            outputObject.addCoordinate(Obj.Z,(int) Math.round(cs[2].getMean()));
-
-            // Copying calibration from the first point in the cluster
-            outputObject.copyCalibration(cluster.getPoints().get(0).getObject());
+            outputObject.addCoord((int) Math.round(cs[0].getMean()),(int) Math.round(cs[1].getMean()),(int) Math.round(cs[2].getMean()));
 
             outputObjects.add(outputObject);
 
@@ -145,6 +124,9 @@ public class ObjectClusterer extends HCModule {
         int maxIterations = parameters.getValue(MAX_ITERATIONS);
         double eps = parameters.getValue(EPS);
         int minPoints = parameters.getValue(MIN_POINTS);
+        double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
+        double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
+        String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
 
         // Adding points to collection
         if (verbose) System.out.println("["+moduleName+"] Adding points to clustering algorithm");
@@ -159,11 +141,11 @@ public class ObjectClusterer extends HCModule {
 
         switch (clusteringAlgorithm) {
             case KMEANSPLUSPLUS:
-                outputObjects = runKMeansPlusPlus(locations, outputObjectsName, kClusters, maxIterations);
+                outputObjects = runKMeansPlusPlus(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, kClusters, maxIterations);
                 break;
 
             case DBSCAN:
-                outputObjects = runDBSCAN(locations, outputObjectsName, eps, minPoints);
+                outputObjects = runDBSCAN(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, eps, minPoints);
                 break;
 
         }
@@ -188,8 +170,8 @@ public class ObjectClusterer extends HCModule {
             HashSet<Integer> points = new HashSet<>();
 
             for (Obj child:children.values()) {
-                int xCent = (int) Math.round(child.getCentroid(Obj.X));
-                int yCent = (int) Math.round(child.getCentroid(Obj.Y));
+                int xCent = (int) Math.round(child.getXMean(true));
+                int yCent = (int) Math.round(child.getYMean(true));
 
                 for (int xx=xCent-epsInt;xx<xCent+epsInt;xx++) {
                     for (int yy=yCent-epsInt;yy<yCent+epsInt;yy++) {
@@ -211,22 +193,10 @@ public class ObjectClusterer extends HCModule {
             for (int idx : points) {
                 int[] coords = indexer.getCoord(idx);
 
-                outputObject.addCoordinate(Obj.X,coords[0]);
-                outputObject.addCoordinate(Obj.Y,coords[1]);
-                outputObject.addCoordinate(Obj.Z,0);
-                outputObject.addCoordinate(Obj.C,0);
-                outputObject.addCoordinate(Obj.T,0);
+                outputObject.addCoord(coords[0],coords[1],0);
+                outputObject.setT(0);
 
             }
-
-            // Adding calibration
-            Obj exampleChild = children.values().iterator().next();
-            outputObject.addCalibration(Obj.X,exampleChild.getCalibration(Obj.X));
-            outputObject.addCalibration(Obj.Y,exampleChild.getCalibration(Obj.Y));
-            outputObject.addCalibration(Obj.Z,exampleChild.getCalibration(Obj.Z));
-            outputObject.addCalibration(Obj.C,exampleChild.getCalibration(Obj.C));
-            outputObject.addCalibration(Obj.T,exampleChild.getCalibration(Obj.T));
-
         }
 
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");

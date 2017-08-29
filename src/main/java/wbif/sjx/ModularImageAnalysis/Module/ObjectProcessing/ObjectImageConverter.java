@@ -69,7 +69,7 @@ public class ObjectImageConverter extends HCModule {
 
         if (templateImage == null) {
             // Getting range of object pixels
-            int[][] coordinateRange = new int[5][2];
+            int[][] coordinateRange = new int[4][2];
 
             for (Obj object : objects.values()) {
                 // Getting range of XYZ
@@ -84,24 +84,20 @@ public class ObjectImageConverter extends HCModule {
                     }
                 }
 
-                // Getting range of additional dimensions
-                for (int dim:object.getPositions().keySet()) {
-                    int currValue = object.getPosition(dim);
+                // Getting range of timepoints
+                int currTimepoint = object.getT();
+                if (currTimepoint < coordinateRange[3][0]) {
+                    coordinateRange[3][0] = currTimepoint;
+                }
 
-                    if (currValue < coordinateRange[dim][0]) {
-                        coordinateRange[dim][0] = currValue;
-                    }
-
-                    if (currValue > coordinateRange[dim][1]) {
-                        coordinateRange[dim][1] = currValue;
-                    }
+                if (currTimepoint > coordinateRange[3][1]) {
+                    coordinateRange[3][1] = currTimepoint;
                 }
             }
 
             // Creating a new image
-            ipl = IJ.createHyperStack(objects.getName()+"_Objects", coordinateRange[Obj.X][1] + 1,
-                    coordinateRange[Obj.Y][1] + 1, coordinateRange[Obj.C][1] + 1,
-                    coordinateRange[Obj.Z][1] + 1, coordinateRange[Obj.T][1] + 1,bitDepth);
+            ipl = IJ.createHyperStack(objects.getName()+"_Objects", coordinateRange[0][1] + 1,coordinateRange[1][1] + 1,
+                    1, coordinateRange[2][1] + 1, coordinateRange[3][1] + 1,bitDepth);
 
         } else {
             ImagePlus templateIpl = templateImage.getImagePlus();
@@ -111,11 +107,10 @@ public class ObjectImageConverter extends HCModule {
 
         // Labelling pixels in image
         for (Obj object:objects.values()) {
-            ArrayList<Integer> x = object.getCoordinates(Obj.X);
-            ArrayList<Integer> y = object.getCoordinates(Obj.Y);
-            ArrayList<Integer> z = object.getCoordinates(Obj.Z);
-            Integer cPos = object.getCoordinates(Obj.C);
-            Integer tPos = object.getCoordinates(Obj.T);
+            ArrayList<Integer> x = object.getXCoords();
+            ArrayList<Integer> y = object.getYCoords();
+            ArrayList<Integer> z = object.getZCoords();
+            Integer tPos = object.getT();
 
             double valDouble = 1;
             int valInt = 1;
@@ -157,7 +152,7 @@ public class ObjectImageConverter extends HCModule {
             for (int i=0;i<x.size();i++) {
                 int zPos = z==null ? 0 : z.get(i);
 
-                ipl.setPosition(cPos+1,zPos+1,tPos+1);
+                ipl.setPosition(1,zPos+1,tPos+1);
 
                 if (colourMode.equals(SINGLE_COLOUR) | colourMode.equals(RANDOM_COLOUR) | colourMode.equals(ID) | colourMode.equals(PARENT_ID)) {
                     ipl.getProcessor().putPixel(x.get(i), y.get(i), valInt);
@@ -179,6 +174,11 @@ public class ObjectImageConverter extends HCModule {
 
         // Need to get coordinates and convert to a HCObject
         ObjSet outputObjects = new ObjSet(outputObjectsName); //Local ArrayList of objects
+
+        // Getting spatial calibration
+        double dppXY = ipl.getCalibration().getX(1);
+        double dppZ = ipl.getCalibration().getZ(1);
+        String calibratedUnits = ipl.getCalibration().getUnits();
 
         ImageProcessor ipr = ipl.getProcessor();
 
@@ -204,29 +204,15 @@ public class ObjectImageConverter extends HCModule {
                                 IDlink.computeIfAbsent(imageID, k -> outputObjects.getNextID());
                                 int outID = IDlink.get(imageID);
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName, outID));
-
-                                outputObjects.get(outID).addCoordinate(Obj.X, x);
-                                outputObjects.get(outID).addCoordinate(Obj.Y, y);
-                                outputObjects.get(outID).addCoordinate(Obj.Z, z);
-                                outputObjects.get(outID).addCoordinate(Obj.C, c);
-                                outputObjects.get(outID).addCoordinate(Obj.T, t);
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName, outID,dppXY,dppZ,calibratedUnits));
+                                outputObjects.get(outID).addCoord(x,y,z);
+                                outputObjects.get(outID).setT(t);
 
                             }
                         }
                     }
                 }
             }
-        }
-
-        // Adding distance calibration to each object
-        Calibration calibration = ipl.getCalibration();
-        for (Obj object:outputObjects.values()) {
-            object.addCalibration(Obj.X,calibration.getX(1));
-            object.addCalibration(Obj.Y,calibration.getY(1));
-            object.addCalibration(Obj.Z,calibration.getZ(1));
-            object.setCalibratedUnits(calibration.getUnits());
-
         }
 
         return outputObjects;

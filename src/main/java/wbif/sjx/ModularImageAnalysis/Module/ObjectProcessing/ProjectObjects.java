@@ -35,9 +35,13 @@ public class ProjectObjects extends HCModule {
         ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
         ObjSet outputObjects = new ObjSet(outputObjectsName);
 
+        double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
+        double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
+        String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
+
         for (Obj inputObject:inputObjects.values()) {
-            ArrayList<Integer> x = inputObject.getCoordinates().get(Obj.X);
-            ArrayList<Integer> y = inputObject.getCoordinates().get(Obj.Y);
+            ArrayList<Integer> x = inputObject.getXCoords();
+            ArrayList<Integer> y = inputObject.getYCoords();
 
             // All coordinate pairs will be stored in a HashMap, which will prevent coordinate duplication.  The keys
             // will correspond to the 2D index, for which we need to know the maximum x coordinate.
@@ -56,29 +60,16 @@ public class ProjectObjects extends HCModule {
             }
 
             // Creating the new HCObject and assigning the parent-child relationship
-            Obj outputObject = new Obj(outputObjectsName,inputObject.getID());
+            Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits);
             outputObject.addParent(inputObject);
             inputObject.addChild(outputObject);
 
             // Adding coordinates to the projected object
             for (Double key : projCoords.keySet()) {
                 int i = projCoords.get(key);
-                outputObject.addCoordinate(Obj.X,x.get(i));
-                outputObject.addCoordinate(Obj.Y,y.get(i));
-                outputObject.addCoordinate(Obj.Z,0);
+                outputObject.addCoord(x.get(i),y.get(i),0);
             }
-
-            // Copying additional dimensions from inputObject
-            HashMap<Integer,Integer> positions = inputObject.getPositions();
-            for (Map.Entry<Integer,Integer> entry:positions.entrySet()) {
-                outputObject.setPosition(entry.getKey(),entry.getValue());
-            }
-
-            // Inheriting calibration from parent
-            outputObject.addCalibration(Obj.X,outputObject.getParent(inputObjectsName).getCalibration(Obj.X));
-            outputObject.addCalibration(Obj.Y,outputObject.getParent(inputObjectsName).getCalibration(Obj.Y));
-            outputObject.addCalibration(Obj.Z,outputObject.getParent(inputObjectsName).getCalibration(Obj.Z));
-            outputObject.setCalibratedUnits(outputObject.getParent(inputObjectsName).getCalibratedUnits());
+            outputObject.setT(inputObject.getT());
 
             // Adding current object to object set
             outputObjects.put(outputObject.getID(),outputObject);
