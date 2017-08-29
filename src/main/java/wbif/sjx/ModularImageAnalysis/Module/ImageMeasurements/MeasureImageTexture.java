@@ -4,6 +4,9 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.MathFunc.CumStat;
+
+import java.util.HashMap;
 
 /**
  * Created by Stephen on 09/05/2017.
@@ -43,8 +46,18 @@ public class MeasureImageTexture extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Y-offset: "+yOffs);
         if (verbose) System.out.println("["+moduleName+"] Z-offset: "+zOffs);
 
+        HashMap<String,CumStat> textureMeasurements = new HashMap<>();
+        textureMeasurements.put("ASM",new CumStat());
+        textureMeasurements.put("CONTRAST",new CumStat());
+        textureMeasurements.put("CORRELATION",new CumStat());
+        textureMeasurements.put("ENTROPY",new CumStat());
+
         TextureCalculator textureCalculator = new TextureCalculator();
-        textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs);
+
+        for (int f=0;f<inputImagePlus.getNFrames();f++) {
+            textureCalculator.calculate(inputImagePlus, xOffs, yOffs, zOffs,1,f+1);
+
+        }
 
         // Acquiring measurements
         MIAMeasurement ASMMeasurement = new MIAMeasurement("ASM",textureCalculator.getASM());

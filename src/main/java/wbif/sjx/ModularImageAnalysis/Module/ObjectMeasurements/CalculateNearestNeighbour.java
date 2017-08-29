@@ -40,9 +40,9 @@ public class CalculateNearestNeighbour extends HCModule {
             Obj nearestNeighbour = null;
 
             // Getting the object centroid
-            double xCent = inputObject.getCentroid(Obj.X);
-            double yCent = inputObject.getCentroid(Obj.Y);
-            double zCent = inputObject.getCentroid(Obj.Z);
+            double xCent = inputObject.getXMean(true);
+            double yCent = inputObject.getYMean(true);
+            double zCent = inputObject.getZMean(true,true);
 
             if (calculateWithinParent) {
                 Obj parentObject = inputObject.getParent(parentObjectsName);
@@ -53,9 +53,9 @@ public class CalculateNearestNeighbour extends HCModule {
 
                     for (Obj testObject : neighbourObjects.values()) {
                         if (testObject != inputObject) {
-                            double xCentTest = testObject.getCentroid(Obj.X);
-                            double yCentTest = testObject.getCentroid(Obj.Y);
-                            double zCentTest = testObject.getCentroid(Obj.Z);
+                            double xCentTest = testObject.getXMean(true);
+                            double yCentTest = testObject.getYMean(true);
+                            double zCentTest = testObject.getZMean(true,true);
 
                             double dist = Math.sqrt((xCentTest - xCent) * (xCentTest - xCent)
                                     + (yCentTest - yCent) * (yCentTest - yCent)
@@ -73,9 +73,9 @@ public class CalculateNearestNeighbour extends HCModule {
             } else {
                 for (Obj testObject:inputObjects.values()) {
                     if (testObject != inputObject) {
-                        double xCentTest = testObject.getCentroid(Obj.X);
-                        double yCentTest = testObject.getCentroid(Obj.Y);
-                        double zCentTest = testObject.getCentroid(Obj.Z);
+                        double xCentTest = testObject.getXMean(true);
+                        double yCentTest = testObject.getYMean(true);
+                        double zCentTest = testObject.getZMean(true,true);
 
                         double dist = Math.sqrt((xCentTest - xCent) * (xCentTest - xCent)
                                 + (yCentTest - yCent) * (yCentTest - yCent)

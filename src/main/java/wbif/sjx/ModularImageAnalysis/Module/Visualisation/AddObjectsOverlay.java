@@ -139,33 +139,28 @@ public class AddObjectsOverlay extends HCModule {
 
             double xMean; double yMean; double zMean;
             if (positionMode.equals(CENTROID)) {
-                xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.X), MeasureObjectCentroid.MEAN);
-                yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Y), MeasureObjectCentroid.MEAN);
-                zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN);
+                xMean = object.getXMean(true);
+                yMean = object.getYMean(true);
+                zMean = object.getZMean(true,false);
 
             } else {
                 xMean = object.getMeasurement(xPosMeas).getValue();
                 yMean = object.getMeasurement(yPosMeas).getValue();
                 zMean = object.getMeasurement(zPosMeas).getValue();
 
-                if (xMean == Double.NaN) xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.X), MeasureObjectCentroid.MEAN);
-                if (yMean == Double.NaN) yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Y), MeasureObjectCentroid.MEAN);
-                if (zMean == Double.NaN) zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN);
-
             }
 
             // Getting coordinates to plot
-            int c = ((int) object.getCoordinates(Obj.C)) + 1;
             int z = (int) Math.round(zMean+1);
-            int t = ((int) object.getCoordinates(Obj.T)) + 1;
+            int t = object.getT()+1;
 
             // Adding circles where the object centroids are
             PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
             roi.setPointType(3);
             if (ipl.isHyperStack()) {
-                roi.setPosition(c, z, t);
+                roi.setPosition(1, z, t);
             } else {
-                int pos = Math.max(Math.max(c,z),t);
+                int pos = Math.max(Math.max(1,z),t);
                 roi.setPosition(pos);
             }
             roi.setStrokeColor(colour);
@@ -181,9 +176,9 @@ public class AddObjectsOverlay extends HCModule {
                 }
                 text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
                 if (ipl.isHyperStack()) {
-                    text.setPosition(c, z, t);
+                    text.setPosition(1, z, t);
                 } else {
-                    text.setPosition(Math.max(Math.max(c, z), t));
+                    text.setPosition(Math.max(Math.max(1, z), t));
                 }
                 text.setStrokeColor(colour);
                 ovl.addElement(text);

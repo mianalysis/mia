@@ -16,12 +16,9 @@ public class LocationWrapper implements Clusterable {
         this.object = object;
 
         // Getting the centroid of the current object
-        ArrayList<Integer> xArray = object.getCoordinates(Obj.X);
-        ArrayList<Integer> yArray = object.getCoordinates(Obj.Y);
-        ArrayList<Integer> zArray = object.getCoordinates(Obj.Z);
-        int x = (int) MeasureObjectCentroid.calculateCentroid(xArray);
-        int y = (int) MeasureObjectCentroid.calculateCentroid(yArray);
-        int z = (int) MeasureObjectCentroid.calculateCentroid(zArray);
+        int x = (int) Math.round(object.getXMean(true));
+        int y = (int) Math.round(object.getYMean(true));
+        int z = (int) Math.round(object.getZMean(true,true));
 
         this.location = new double[]{x,y,z};
 

@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.ImagePlus;
-import ij.measure.Calibration;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -59,20 +58,8 @@ public class IdentifyObjects extends HCModule {
 
         // Converting image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
-        Image tempImage = new Image(new String("Temp image"),inputImagePlus);
+        Image tempImage = new Image("Temp image",inputImagePlus);
         ObjSet outputObjects = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectsName);
-
-        // Adding distance calibration to each object
-        Calibration calibration = inputImagePlus.getCalibration();
-        for (Obj object:outputObjects.values()) {
-            object.addCalibration(Obj.X,calibration.getX(1));
-            object.addCalibration(Obj.Y,calibration.getY(1));
-            object.addCalibration(Obj.Z,calibration.getZ(1));
-            object.addCalibration(Obj.C,1);
-            object.addCalibration(Obj.T,1);
-            object.setCalibratedUnits(calibration.getUnits());
-
-        }
 
         if (verbose) System.out.println("["+moduleName+"] "+outputObjects.size()+" objects detected");
 

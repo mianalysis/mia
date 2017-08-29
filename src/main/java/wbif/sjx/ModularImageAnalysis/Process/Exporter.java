@@ -137,13 +137,9 @@ public class Exporter {
                         nameAttr.appendChild(doc.createTextNode(String.valueOf(objectNames)));
                         objectElement.setAttributeNode(nameAttr);
 
-                        for (int dim:object.getPositions().keySet()) {
-                            String dimName = dim==3 ? "CHANNEL" : dim == 4 ? "TIME" : "DIM_"+dim;
-                            Attr positionAttr = doc.createAttribute(dimName);
-                            positionAttr.appendChild(doc.createTextNode(String.valueOf(dim)));
-                            objectElement.setAttributeNode(positionAttr);
-
-                        }
+                        Attr positionAttr = doc.createAttribute("TIMEPOINT");
+                        positionAttr.appendChild(doc.createTextNode(String.valueOf(object.getT())));
+                        objectElement.setAttributeNode(positionAttr);
 
                         for (MIAMeasurement measurement:object.getMeasurements().values()) {
                             Element measElement = doc.createElement("MEAS");
@@ -505,13 +501,9 @@ public class Exporter {
                     }
                 }
 
-                // Adding single-valued position headers
-                for (int dim:object.getPositions().keySet()) {
-                    Cell positionsHeaderCell = objectHeaderRow.createCell(col++);
-                    String dimName = dim==3 ? "CHANNEL" : dim == 4 ? "FRAME" : "DIM_"+dim;
-                    positionsHeaderCell.setCellValue(dimName);
-
-                }
+                // Adding timepoint header
+                Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
+                timepointHeaderCell.setCellValue("TIMEPOINT");
 
                 // Adding measurement headers
                 String[] measurements = modules.getMeasurements().getMeasurementNames(objectName);
@@ -586,12 +578,8 @@ public class Exporter {
                                 }
                             }
 
-                            // Adding extra dimension positions
-                            for (int dim : object.getPositions().keySet()) {
-                                Cell positionsValueCell = objectValueRow.createCell(col++);
-                                positionsValueCell.setCellValue(object.getPosition(dim));
-
-                            }
+                            Cell timepointValueCell = objectValueRow.createCell(col++);
+                            timepointValueCell.setCellValue(object.getT());
 
                             // Adding measurements to the columns specified in measurementNames
                             for (int column : measurementNames.get(objectName).keySet()) {

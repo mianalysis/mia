@@ -33,7 +33,7 @@ public class MeasureObjectShape extends HCModule {
 
         // Running through each object, making the measurements
         for (Obj inputObject:inputObjects.values()) {
-            ArrayList<Integer> x = inputObject.getCoordinates(Obj.X);
+            ArrayList<Integer> x = inputObject.getXCoords();
 
             // Adding the relevant measurements
             inputObject.addMeasurement(new MIAMeasurement(N_VOXELS,x.size(),this));

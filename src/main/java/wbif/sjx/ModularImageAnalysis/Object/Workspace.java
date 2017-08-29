@@ -71,7 +71,7 @@ public class Workspace {
             // Sets the ImagePlus to null, but leaves measurements
             for (ObjSet objSet:objects.values()) {
                 for (Obj obj:objSet.values()) {
-                    obj.setCoordinates(null);
+                    obj.setPoints(null);
 
                 }
             }

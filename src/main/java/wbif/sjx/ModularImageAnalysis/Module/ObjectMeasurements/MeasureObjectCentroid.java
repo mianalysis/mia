@@ -77,9 +77,9 @@ public class MeasureObjectCentroid extends HCModule {
 
         // Getting the centroids of each and saving them to the objects
         for (Obj object:inputObjects.values()) {
-            ArrayList<Integer> x = object.getCoordinates(Obj.X);
-            ArrayList<Integer> y = object.getCoordinates(Obj.Y);
-            ArrayList<Integer> z = object.getCoordinates(Obj.Z);
+            ArrayList<Integer> x = object.getXCoords();
+            ArrayList<Integer> y = object.getYCoords();
+            ArrayList<Integer> z = object.getZCoords();
 
             if (useMean) {
                 if (x != null) {

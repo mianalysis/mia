@@ -44,10 +44,10 @@ public class MeasureTrackMotion extends HCModule {
             // Getting the corresponding spots for this track
             int iter = 0;
             for (Obj spotObject : inputTrackObject.getChildren(inputSpotObjectsName).values()) {
-                x[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(Obj.X)).get(0);
-                y[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(Obj.Y)).get(0);
-                z[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(Obj.Z)).get(0);
-                f[iter] = spotObject.getCoordinates(Obj.T);
+                x[iter] = spotObject.getXMean(true);
+                y[iter] = spotObject.getYMean(true);
+                z[iter] = spotObject.getZMean(true,true);
+                f[iter] = spotObject.getT();
                 iter++;
 
             }

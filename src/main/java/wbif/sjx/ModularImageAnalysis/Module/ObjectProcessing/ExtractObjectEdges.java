@@ -53,6 +53,9 @@ public class ExtractObjectEdges extends HCModule {
         String edgeMode = parameters.getValue(EDGE_MODE);
         double edgeDistance = parameters.getValue(EDGE_DISTANCE);
         double edgePercentage = parameters.getValue(EDGE_PERCENTAGE);
+        double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
+        double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
+        String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
 
         // Initialising output edge objects
         String outputEdgeObjectName = null;
@@ -74,33 +77,33 @@ public class ExtractObjectEdges extends HCModule {
             // Creating new edge object
             Obj outputEdgeObject = null;
             if (createEdgeObjects) {
-                outputEdgeObject = new Obj(outputEdgeObjectName, outputEdgeObjects.getNextID());
+                outputEdgeObject = new Obj(outputEdgeObjectName, outputEdgeObjects.getNextID(),dppXY,dppZ,calibratedUnits);
             }
 
             // Creating new interior object
             Obj outputInteriorObject = null;
             if (createInteriorObjects) {
-                outputInteriorObject = new Obj(outputInteriorObjectName, outputInteriorObjects.getNextID());
+                outputInteriorObject = new Obj(outputInteriorObjectName, outputInteriorObjects.getNextID(),dppXY,dppZ,calibratedUnits);
             }
 
             // Getting parent coordinates
-            ArrayList<Integer> parentX = inputObject.getCoordinates(Obj.X);
-            ArrayList<Integer> parentY = inputObject.getCoordinates(Obj.Y);
-            ArrayList<Integer> parentZ = inputObject.getCoordinates(Obj.Z);
+            ArrayList<Integer> parentX = inputObject.getXCoords();
+            ArrayList<Integer> parentY = inputObject.getYCoords();
+            ArrayList<Integer> parentZ = inputObject.getZCoords();
 
             // Creating a Hyperstack to hold the distance transform.  The image is padded by 1px to ensure the distance
             // map knows where the object edges are.  If the image is a single plane there is no z-padding.
             int[][] range = inputObject.getCoordinateRange();
             int zPad = 0;
-            if (range[Obj.Z][1] - range[Obj.Z][0] > 0) zPad = 1;
+            if (range[2][1] - range[2][0] > 0) zPad = 1;
 
-            ImagePlus iplObj = IJ.createHyperStack("Objects", range[Obj.X][1] - range[Obj.X][0] + 3,
-                    range[Obj.Y][1] - range[Obj.Y][0] + 3, 1, range[Obj.Z][1] - range[Obj.Z][0] + 1 + 2*zPad, 1, 8);
+            ImagePlus iplObj = IJ.createHyperStack("Objects", range[0][1] - range[0][0] + 3,
+                    range[1][1] - range[1][0] + 3, 1, range[2][1] - range[2][0] + 1 + 2*zPad, 1, 8);
 
             // Setting pixels corresponding to the parent object to 1
             for (int i = 0; i < parentX.size(); i++) {
-                iplObj.setPosition(1, parentZ.get(i) - range[Obj.Z][0] + 1 + zPad, 1);
-                iplObj.getProcessor().set(parentX.get(i) - range[Obj.X][0] + 1, parentY.get(i) - range[Obj.Y][0] + 1, 255);
+                iplObj.setPosition(1, parentZ.get(i) - range[2][0] + 1 + zPad, 1);
+                iplObj.getProcessor().set(parentX.get(i) - range[0][0] + 1, parentY.get(i) - range[1][0] + 1, 255);
 
             }
 
@@ -119,43 +122,23 @@ public class ExtractObjectEdges extends HCModule {
             // Adding pixel intensities to CumStat
             // Running through all pixels in this object and adding the intensity to the MultiCumStat object
             for (int i = 0; i < parentX.size(); i++) {
-                iplObj.setPosition(1, parentZ.get(i) - range[Obj.Z][0] + 2, 1);
-                double pixelVal = iplObj.getProcessor().getPixelValue(parentX.get(i) - range[Obj.X][0] + 1, parentY.get(i) - range[Obj.Y][0] + 1);
+                iplObj.setPosition(1, parentZ.get(i) - range[2][0] + 2, 1);
+                double pixelVal = iplObj.getProcessor().getPixelValue(parentX.get(i) - range[0][0] + 1, parentY.get(i) - range[1][0] + 1);
 
                 if (pixelVal <= edgeDistance && createEdgeObjects) {
-                    outputEdgeObject.addCoordinate(Obj.X,parentX.get(i));
-                    outputEdgeObject.addCoordinate(Obj.Y,parentY.get(i));
-                    outputEdgeObject.addCoordinate(Obj.Z,parentZ.get(i));
-                    outputEdgeObject.addCoordinate(Obj.T,inputObject.getPosition(Obj.T));
-                    outputEdgeObject.addCoordinate(Obj.C,inputObject.getPosition(Obj.C));
-
-                    outputEdgeObject.addCalibration(Obj.X,inputObject.getCalibration(Obj.X));
-                    outputEdgeObject.addCalibration(Obj.Y,inputObject.getCalibration(Obj.Y));
-                    outputEdgeObject.addCalibration(Obj.Z,inputObject.getCalibration(Obj.Z));
-                    outputEdgeObject.addCalibration(Obj.C,1);
-                    outputEdgeObject.addCalibration(Obj.T,1);
-                    outputEdgeObject.setCalibratedUnits(inputObject.getCalibratedUnits());
+                    outputEdgeObject.addCoord(parentX.get(i),parentY.get(i),parentZ.get(i));
+                    outputEdgeObject.setT(inputObject.getT());
 
                 } else if (pixelVal > edgeDistance && createInteriorObjects) {
-                    outputInteriorObject.addCoordinate(Obj.X,parentX.get(i));
-                    outputInteriorObject.addCoordinate(Obj.Y,parentY.get(i));
-                    outputInteriorObject.addCoordinate(Obj.Z,parentZ.get(i));
-                    outputInteriorObject.addCoordinate(Obj.T,inputObject.getPosition(Obj.T));
-                    outputInteriorObject.addCoordinate(Obj.C,inputObject.getPosition(Obj.C));
-
-                    outputInteriorObject.addCalibration(Obj.X,inputObject.getCalibration(Obj.X));
-                    outputInteriorObject.addCalibration(Obj.Y,inputObject.getCalibration(Obj.Y));
-                    outputInteriorObject.addCalibration(Obj.Z,inputObject.getCalibration(Obj.Z));
-                    outputInteriorObject.addCalibration(Obj.C,1);
-                    outputInteriorObject.addCalibration(Obj.T,1);
-                    outputInteriorObject.setCalibratedUnits(inputObject.getCalibratedUnits());
+                    outputInteriorObject.addCoord(parentX.get(i),parentY.get(i),parentZ.get(i));
+                    outputInteriorObject.setT(inputObject.getT());
 
                 }
             }
 
             // If the current object has a size, adding it to the current object collection and assigning relationships
             if (createEdgeObjects) {
-                if (outputEdgeObject.getCoordinates(Obj.X) == null) break;
+                if (outputEdgeObject.getXCoords() == null) break;
 
                 outputEdgeObjects.add(outputEdgeObject);
                 outputEdgeObject.addParent(inputObject);
@@ -163,7 +146,7 @@ public class ExtractObjectEdges extends HCModule {
             }
 
             if (createInteriorObjects) {
-                if (outputInteriorObject.getCoordinates(Obj.X) == null) break;
+                if (outputInteriorObject.getXCoords() == null) break;
 
                 outputInteriorObjects.add(outputInteriorObject);
                 outputInteriorObject.addParent(inputObject);
