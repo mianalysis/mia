@@ -1,3 +1,5 @@
+// TODO: Add object linking for 4D - linking should be done on spatial overlap (similar to how its done in 3D)
+
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.ImagePlus;
@@ -22,7 +24,8 @@ public class IdentifyObjects extends HCModule {
     public String getHelp() {
         return "INCOMPLETE" +
                 "\nTakes a binary image and uses connected components labelling to create objects" +
-                "\nUses MorphoLibJ to perform connected components labelling in 3D";
+                "\nUses MorphoLibJ to perform connected components labelling in 3D" +
+                "\nDoesn't currently link objects in time.";
     }
 
     @Override

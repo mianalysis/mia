@@ -1,3 +1,6 @@
+// TODO: For image to objects, could add the image ID number as a measurement to the object
+// TODO: For image to objects, could create parent object for all instances of that image ID in different frames
+
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.IJ;
@@ -31,7 +34,7 @@ public class ObjectImageConverter extends HCModule {
 
     private static final String IMAGE_TO_OBJECTS = "Image to objects";
     private static final String OBJECTS_TO_IMAGE = "Objects to image";
-    private static final String[] CONVERSION_MODES = new String[]{IMAGE_TO_OBJECTS,OBJECTS_TO_IMAGE};
+    public static final String[] CONVERSION_MODES = new String[]{IMAGE_TO_OBJECTS,OBJECTS_TO_IMAGE};
 
     private static final String SINGLE_COLOUR = "Single colour";
     private static final String ID = "ID";
@@ -164,11 +167,21 @@ public class ObjectImageConverter extends HCModule {
             }
         }
 
+        // Assigning the spatial calibration from the first object
+        Obj referenceObject = objects.values().iterator().next();
+        if (referenceObject != null) {
+            ipl.getCalibration().pixelWidth = referenceObject.getDistPerPxXY();
+            ipl.getCalibration().pixelHeight = referenceObject.getDistPerPxXY();
+            ipl.getCalibration().pixelDepth = referenceObject.getDistPerPxZ();
+            ipl.getCalibration().setUnit(referenceObject.getCalibratedUnits());
+
+        }
+
         return new Image(outputImageName,ipl);
 
     }
 
-    public ObjSet convertImageToObjects(Image image, String outputObjectsName) {
+    public static ObjSet convertImageToObjects(Image image, String outputObjectsName) {
         // Converting to ImagePlus for this operation
         ImagePlus ipl = image.getImagePlus();
 
