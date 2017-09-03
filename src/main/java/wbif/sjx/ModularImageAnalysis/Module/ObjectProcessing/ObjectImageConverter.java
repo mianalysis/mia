@@ -77,7 +77,7 @@ public class ObjectImageConverter extends HCModule {
             for (Obj object : objects.values()) {
                 // Getting range of XYZ
                 int[][] currCoordinateRange = object.getCoordinateRange();
-                for (int dim = 0; dim < coordinateRange.length; dim++) {
+                for (int dim = 0; dim < currCoordinateRange.length; dim++) {
                     if (currCoordinateRange[dim][0] < coordinateRange[dim][0]) {
                         coordinateRange[dim][0] = currCoordinateRange[dim][0];
                     }

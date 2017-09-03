@@ -32,7 +32,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
-        imageFileLoader.run(workspace,true);
+        imageFileLoader.run(workspace,false);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -80,7 +80,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
-        imageFileLoader.run(workspace,true);
+        imageFileLoader.run(workspace,false);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -128,7 +128,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
-        imageFileLoader.run(workspace,true);
+        imageFileLoader.run(workspace,false);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -176,7 +176,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
-        imageFileLoader.run(workspace,true);
+        imageFileLoader.run(workspace,false);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());

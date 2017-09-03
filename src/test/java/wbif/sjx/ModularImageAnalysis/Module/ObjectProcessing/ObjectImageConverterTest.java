@@ -5,7 +5,7 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ExpectedObjects;
+import wbif.sjx.ModularImageAnalysis.Module.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
@@ -39,24 +39,7 @@ public class ObjectImageConverterTest {
         String calibratedUnits = "um";
 
         // Initialising object store
-        ObjSet testObjects = new ObjSet(objectName);
-
-        // Adding all provided coordinates to each object
-        int[][] coordinates = ExpectedObjects.getCoordinates();
-        for (int i = 0;i<coordinates.length;i++) {
-            int ID = coordinates[i][0];
-            int x = coordinates[i][1];
-            int y = coordinates[i][2];
-            int z = coordinates[i][4];
-            int t = coordinates[i][5];
-
-            testObjects.putIfAbsent(ID,new Obj(objectName,ID,dppXY,dppZ,calibratedUnits));
-
-            Obj testObject = testObjects.get(ID);
-            testObject.addCoord(x,y,z);
-            testObject.setT(t);
-
-        }
+        ObjSet testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_16bit.tif").getPath(),"UTF-8");
@@ -65,11 +48,6 @@ public class ObjectImageConverterTest {
 
         // Converting objects to image
         Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);
-
-//        new ImageJ();
-//        testImage.getImagePlus().show();
-//        referenceImage.getImagePlus().show();
-//        IJ.runMacro("waitForUser");
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -83,6 +61,61 @@ public class ObjectImageConverterTest {
         assertEquals(0.02,testImagePlus.getCalibration().getX(1),tolerance);
         assertEquals(0.02,testImagePlus.getCalibration().getY(1),tolerance);
         assertEquals(0.1,testImagePlus.getCalibration().getZ(1),tolerance);
+
+        // Running through each image, comparing the bytes to those of an expected image
+        for (int z = 0;z<12;z++) {
+            referenceImage.getImagePlus().setPosition(1,z+1,1);
+            testImage.getImagePlus().setPosition(1,z+1,1);
+
+            int[][] referenceArray = referenceImage.getImagePlus().getProcessor().getIntArray();
+            int[][] testArray = testImage.getImagePlus().getProcessor().getIntArray();
+
+            assertArrayEquals(referenceArray, testArray);
+
+        }
+    }
+
+    /**
+     * Takes provided objects and converts to an image using another image as a reference
+     * @throws Exception
+     */
+    @Test
+    public void testConvertObjectsToImage16bit3DWithNoRefImage() throws Exception {
+        // Initialising parameters
+        String colourMode = ObjectImageConverter.COLOUR_MODES[3];
+        String colourSource = ""; // This isn't required for COLOUR_MODES[3] (ID)
+        boolean hideMissing = false;
+
+        // Setting object parameters
+        String objectName = "Test objects";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "um";
+
+        // Initialising object store
+        ObjSet testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
+
+        // Loading a reference image
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_16bit_NoRef.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image referenceImage = new Image("Reference image",ipl);
+
+        // Converting objects to image
+        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",null,colourMode,colourSource,hideMissing);
+
+        // Testing the resultant image is the expected size
+        ImagePlus testImagePlus = testImage.getImagePlus();
+        assertEquals(58,testImagePlus.getWidth());
+        assertEquals(76,testImagePlus.getHeight());
+        assertEquals(1,testImagePlus.getNFrames());
+        assertEquals(12,testImagePlus.getNSlices());
+        assertEquals(1,testImagePlus.getNChannels());
+
+        // Testing the spatial calibration of the new image
+        assertEquals(0.02,testImagePlus.getCalibration().getX(1),tolerance);
+        assertEquals(0.02,testImagePlus.getCalibration().getY(1),tolerance);
+        assertEquals(0.1,testImagePlus.getCalibration().getZ(1),tolerance);
+        new ImageJ();
 
         // Running through each image, comparing the bytes to those of an expected image
         for (int z = 0;z<12;z++) {
@@ -121,7 +154,7 @@ public class ObjectImageConverterTest {
         assertEquals("Testing the number of converted objects",8,testObjects.size());
 
         // Checking the spatial calibration and coordinate limits of each object
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects.get3D();
+        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         for (Obj object:testObjects.values()) {
             // Getting the number of voxels in this object (this is used as the key for the expected values map)
@@ -133,13 +166,13 @@ public class ObjectImageConverterTest {
 
             // Testing coordinate ranges
             int[][] coordinateRange = object.getCoordinateRange();
-            assertEquals("X-min",expected[ExpectedObjects.X_MIN],coordinateRange[0][0],tolerance);
-            assertEquals("X-max",expected[ExpectedObjects.X_MAX],coordinateRange[0][1],tolerance);
-            assertEquals("Y-min",expected[ExpectedObjects.Y_MIN],coordinateRange[1][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects.Y_MAX],coordinateRange[1][1],tolerance);
-            assertEquals("X-min",expected[ExpectedObjects.Z_MIN],coordinateRange[2][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects.Z_MAX],coordinateRange[2][1],tolerance);
-            assertEquals("F",expected[ExpectedObjects.F],object.getT(),tolerance);
+            assertEquals("X-min",expected[ExpectedObjects3D.X_MIN],coordinateRange[0][0],tolerance);
+            assertEquals("X-max",expected[ExpectedObjects3D.X_MAX],coordinateRange[0][1],tolerance);
+            assertEquals("Y-min",expected[ExpectedObjects3D.Y_MIN],coordinateRange[1][0],tolerance);
+            assertEquals("Y-max",expected[ExpectedObjects3D.Y_MAX],coordinateRange[1][1],tolerance);
+            assertEquals("X-min",expected[ExpectedObjects3D.Z_MIN],coordinateRange[2][0],tolerance);
+            assertEquals("Y-max",expected[ExpectedObjects3D.Z_MAX],coordinateRange[2][1],tolerance);
+            assertEquals("F",expected[ExpectedObjects3D.F],object.getT(),tolerance);
 
             // Checking the objects have the correct spatial calibration
             double dppXY = object.getDistPerPxXY();
@@ -175,7 +208,7 @@ public class ObjectImageConverterTest {
         assertEquals("Testing the number of converted objects",8,testObjects.size());
 
         // Checking the spatial calibration and coordinate limits of each object
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects.get3D();
+        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         for (Obj object:testObjects.values()) {
             // Getting the number of voxels in this object (this is used as the key for the expected values map)
@@ -187,13 +220,13 @@ public class ObjectImageConverterTest {
 
             // Testing coordinate ranges
             int[][] coordinateRange = object.getCoordinateRange();
-            assertEquals("X-min",expected[ExpectedObjects.X_MIN],coordinateRange[0][0],tolerance);
-            assertEquals("X-max",expected[ExpectedObjects.X_MAX],coordinateRange[0][1],tolerance);
-            assertEquals("Y-min",expected[ExpectedObjects.Y_MIN],coordinateRange[1][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects.Y_MAX],coordinateRange[1][1],tolerance);
-            assertEquals("X-min",expected[ExpectedObjects.Z_MIN],coordinateRange[2][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects.Z_MAX],coordinateRange[2][1],tolerance);
-            assertEquals("F",expected[ExpectedObjects.F],object.getT(),tolerance);
+            assertEquals("X-min",expected[ExpectedObjects3D.X_MIN],coordinateRange[0][0],tolerance);
+            assertEquals("X-max",expected[ExpectedObjects3D.X_MAX],coordinateRange[0][1],tolerance);
+            assertEquals("Y-min",expected[ExpectedObjects3D.Y_MIN],coordinateRange[1][0],tolerance);
+            assertEquals("Y-max",expected[ExpectedObjects3D.Y_MAX],coordinateRange[1][1],tolerance);
+            assertEquals("Z-min",expected[ExpectedObjects3D.Z_MIN],coordinateRange[2][0],tolerance);
+            assertEquals("Z-max",expected[ExpectedObjects3D.Z_MAX],coordinateRange[2][1],tolerance);
+            assertEquals("F",expected[ExpectedObjects3D.F],object.getT(),tolerance);
 
             // Checking the objects have the correct spatial calibration
             double dppXY = object.getDistPerPxXY();
@@ -206,7 +239,12 @@ public class ObjectImageConverterTest {
     }
 
     @Test @Ignore
-    public void testRun() throws Exception {
+    public void testRunObjectToImage() throws Exception {
+
+    }
+
+    @Test @Ignore
+    public void testRunImageToObject() throws Exception {
 
     }
 }
