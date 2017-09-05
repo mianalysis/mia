@@ -7,7 +7,7 @@
     <version>0.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ModularImageAnalysis</name>
+    <name>Modular_Image_Analysis</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -107,6 +107,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
+                    <outputDirectory>${project.build.directory}/${name}-${version}/plugins/WBIF_Bristol</outputDirectory>
                     <finalName>Modular_Image_Analysis-${project.version}</finalName>
                     <archive>
                         <manifest>
@@ -131,9 +132,9 @@
                         <configuration>
                             <excludeScope>provided</excludeScope>
 
-                            <excludeArtifactIds>commons-codec,commons-collections,commons-io,guava,jama,javassist,junit</excludeArtifactIds>
+                            <excludeArtifactIds>commons-codec,commons-collections,commons-io,guava,jama,javassist,junit,MorphoLibJ_</excludeArtifactIds>
 
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${name}-${version}/jars/WBIF_Bristol</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>

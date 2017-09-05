@@ -65,8 +65,8 @@ public class MainGUI {
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
 
-//        renderBasicMode();
-        renderEditingMode();
+        renderBasicMode();
+//        renderEditingMode();
 
         // Final bits for listeners
 //        frame.addMouseListener(this);
@@ -112,6 +112,8 @@ public class MainGUI {
 
     private void clearFrame() {
         frame.remove(controlPanel);
+        frame.remove(inputEnablePanel);
+        frame.remove(outputEnablePanel);
         frame.remove(modulesPanel);
         frame.remove(modulesScrollPane);
         frame.remove(statusPanel);
@@ -173,14 +175,14 @@ public class MainGUI {
         frame.add(controlPanel, c);
 
         // Initialising the status panel
-//        initialiseStatusPanel(1080);
-//        c.gridheight = 1;
-//        c.gridy++;
-//        c.gridy++;
-//        c.gridy++;
-//        c.gridwidth = 3;
-//        c.insets = new Insets(0,5,5,5);
-//        frame.add(statusPanel,c);
+        initialiseStatusPanel(1080);
+        c.gridheight = 1;
+        c.gridy++;
+        c.gridy++;
+        c.gridy++;
+        c.gridwidth = 3;
+        c.insets = new Insets(0,5,5,5);
+        frame.add(statusPanel,c);
 
         // Initialising the input enable panel
         initialiseInputEnablePanel();
@@ -289,6 +291,8 @@ public class MainGUI {
     }
 
     private void initialiseInputEnablePanel() {
+        inputEnablePanel = new JPanel();
+
         // Initialising the panel
         inputEnablePanel.setPreferredSize(new Dimension(moduleButtonWidth + 15, bigButtonSize + 15));
         inputEnablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
@@ -312,6 +316,8 @@ public class MainGUI {
     }
 
     private void initialiseOutputEnablePanel() {
+        outputEnablePanel = new JPanel();
+
         // Initialising the panel
         outputEnablePanel.setPreferredSize(new Dimension(moduleButtonWidth + 15, bigButtonSize + 15));
         outputEnablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));

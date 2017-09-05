@@ -60,7 +60,7 @@ public class MeasureObjectCentroid extends HCModule {
 
     @Override
     public String getHelp() {
-        return null;
+        return "Z-coordinates are specified in terms of slices (not pixels)";
     }
 
     @Override
@@ -139,7 +139,24 @@ public class MeasureObjectCentroid extends HCModule {
 
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
+        String choice = parameters.getValue(CENTROID_METHOD);
+        boolean useMean = choice.equals(MEAN) | choice.equals(ALL);
+        boolean useMedian = choice.equals(MEDIAN) | choice.equals(ALL);
+
+
+        if (useMean) {
+            measurements.addMeasurement(inputObjectsName,MIAMeasurement.X_CENTROID_MEAN);
+            measurements.addMeasurement(inputObjectsName,MIAMeasurement.Y_CENTROID_MEAN);
+            measurements.addMeasurement(inputObjectsName,MIAMeasurement.Z_CENTROID_MEAN);
+        }
+
+        if (useMedian) {
+            measurements.addMeasurement(inputObjectsName, MIAMeasurement.X_CENTROID_MEDIAN);
+            measurements.addMeasurement(inputObjectsName, MIAMeasurement.Y_CENTROID_MEDIAN);
+            measurements.addMeasurement(inputObjectsName, MIAMeasurement.Z_CENTROID_MEDIAN);
+        }
     }
 
     @Override
