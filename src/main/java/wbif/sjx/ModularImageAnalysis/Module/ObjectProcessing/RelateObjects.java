@@ -34,6 +34,9 @@ public class RelateObjects extends HCModule {
     private final static String DIST_EDGE_PX_MEAS = "Distance from parent edge (px)";
     private final static String DIST_SURFACE_PX_MEAS = "Distance to parent surface (px)";
     private final static String DIST_CENTROID_PX_MEAS = "Distance to parent centroid (px)";
+//    private final static String DIST_EDGE_CAL_MEAS = "Distance from parent edge (cal)";
+    private final static String DIST_SURFACE_CAL_MEAS = "Distance to parent surface (cal)";
+    private final static String DIST_CENTROID_CAL_MEAS = "Distance to parent centroid (cal)";
 
 
     public static void linkMatchingIDs(ObjSet parentObjects, ObjSet childObjects) {
@@ -60,6 +63,7 @@ public class RelateObjects extends HCModule {
     public static void proximity(ObjSet parentObjects, ObjSet childObjects, double linkingDistance, String referencePoint, boolean verbose) {
         for (Obj childObject:childObjects.values()) {
             double minDist = Double.MAX_VALUE;
+            double dpp = parentObjects.values().iterator().next().getDistPerPxXY();
             Obj currentLink = null;
 
             for (Obj parentObject:parentObjects.values()) {
@@ -109,9 +113,11 @@ public class RelateObjects extends HCModule {
 
                 if (referencePoint.equals(CENTROID)) {
                     childObject.addMeasurement(new MIAMeasurement(DIST_CENTROID_PX_MEAS,minDist));
+                    childObject.addMeasurement(new MIAMeasurement(DIST_CENTROID_CAL_MEAS,minDist*dpp));
 
                 } else if (referencePoint.equals(SURFACE)) {
                     childObject.addMeasurement(new MIAMeasurement(DIST_SURFACE_PX_MEAS,minDist));
+                    childObject.addMeasurement(new MIAMeasurement(DIST_SURFACE_CAL_MEAS,minDist*dpp));
 
                 }
             }
@@ -190,17 +196,17 @@ public class RelateObjects extends HCModule {
                         childObject.addParent(parentObject);
 
                         // Getting position within current parent object
-                        MIAMeasurement absDistanceFromEdge = new MIAMeasurement(DIST_EDGE_PX_MEAS);
-                        int xPos = xCent-range[0][0];
-                        int yPos = yCent-range[1][0];
-                        int zPos = zCent-range[2][0];
-
-                        if (xPos < 0 | xPos > distanceMap.getWidth() | yPos < 0 | yPos > distanceMap.getHeight() | zPos < 0 | zPos >= distanceMap.size()) {
-                            absDistanceFromEdge.setValue(Double.NaN);
-                        } else {
-                            absDistanceFromEdge.setValue(distanceMap.getVoxel(xCent - range[0][0], yCent - range[1][0], zCent - range[2][0]));
-                        }
-                        childObject.addMeasurement(absDistanceFromEdge);
+//                        MIAMeasurement absDistanceFromEdge = new MIAMeasurement(DIST_EDGE_PX_MEAS);
+//                        int xPos = xCent-range[0][0];
+//                        int yPos = yCent-range[1][0];
+//                        int zPos = zCent-range[2][0];
+//
+//                        if (xPos < 0 | xPos > distanceMap.getWidth() | yPos < 0 | yPos > distanceMap.getHeight() | zPos < 0 | zPos >= distanceMap.size()) {
+//                            absDistanceFromEdge.setValue(Double.NaN);
+//                        } else {
+//                            absDistanceFromEdge.setValue(distanceMap.getVoxel(xCent - range[0][0], yCent - range[1][0], zCent - range[2][0]));
+//                        }
+//                        childObject.addMeasurement(absDistanceFromEdge);
 
                         break;
 
@@ -313,18 +319,21 @@ public class RelateObjects extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         switch ((String) parameters.getValue(RELATE_MODE)) {
-            case SPATIAL_OVERLAP:
-                measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_EDGE_PX_MEAS);
-                break;
+//            case SPATIAL_OVERLAP:
+//                measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_EDGE_PX_MEAS);
+//                measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_EDGE_CAL_MEAS);
+//                break;
 
             case PROXIMITY:
                 switch ((String) parameters.getValue(REFERENCE_POINT)) {
                     case CENTROID:
                         measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_PX_MEAS);
+                        measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_CAL_MEAS);
                         break;
 
                     case SURFACE:
                         measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_PX_MEAS);
+                        measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_CAL_MEAS);
                         break;
                 }
                 break;

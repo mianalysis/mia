@@ -13,12 +13,12 @@ public class MIAMeasurement {
     public static final String DURATION = "Duration";
     public static final String TOTAL_PATH_LENGTH = "Total path length";
     public static final String EUCLIDEAN_DISTANCE = "Euclidean distance";
-    public static final String X_CENTROID_MEAN = "X-Centroid Mean";
-    public static final String Y_CENTROID_MEAN = "Y-Centroid Mean";
-    public static final String Z_CENTROID_MEAN = "Z-Centroid Mean";
-    public static final String X_CENTROID_MEDIAN = "X-Centroid Median";
-    public static final String Y_CENTROID_MEDIAN = "Y-Centroid Median";
-    public static final String Z_CENTROID_MEDIAN = "Z-Centroid Median";
+    public static final String X_CENTROID_MEAN_PX = "X-Centroid Mean (px)";
+    public static final String Y_CENTROID_MEAN_PX = "Y-Centroid Mean (px)";
+    public static final String Z_CENTROID_MEAN_SLICE = "Z-Centroid Mean (slice)";
+    public static final String X_CENTROID_MEDIAN_PX = "X-Centroid Median (px)";
+    public static final String Y_CENTROID_MEDIAN_PX = "Y-Centroid Median (px)";
+    public static final String Z_CENTROID_MEDIAN_SLICE = "Z-Centroid Median (slice)";
 
     // Intensity measures
     public static final String MEAN_INTENSITY = "Mean intensity";

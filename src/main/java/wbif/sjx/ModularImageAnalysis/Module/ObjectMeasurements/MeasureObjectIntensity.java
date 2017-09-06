@@ -81,12 +81,12 @@ public class MeasureObjectIntensity extends HCModule {
 
         }
 
-        object.addMeasurement(new MIAMeasurement(imageName+"_X_CENTRE_MEAN", csX.getMean()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_X_CENTRE_STD", csX.getStd()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_Y_CENTRE_MEAN", csY.getMean()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_Y_CENTRE_STD", csY.getStd()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_Z_CENTRE_MEAN", csZ.getMean()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_Z_CENTRE_STD", csZ.getStd()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_X_CENTRE_MEAN (PX)", csX.getMean()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_X_CENTRE_STD (PX)", csX.getStd()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_Y_CENTRE_MEAN (PX)", csY.getMean()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_Y_CENTRE_STD (PX)", csY.getStd()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_Z_CENTRE_MEAN (SLICE)", csZ.getMean()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_Z_CENTRE_STD (SLICE)", csZ.getStd()));
 
     }
 
@@ -163,12 +163,12 @@ public class MeasureObjectIntensity extends HCModule {
         if (calcMax) measurements.addMeasurement(inputObjectsName,inputImageName+"_MAX");
         if (calcStdev) measurements.addMeasurement(inputObjectsName,inputImageName+"_STD");
         if (calcSum) measurements.addMeasurement(inputObjectsName,inputImageName+"_SUM");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_MEAN");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_STD");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_MEAN");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_STD");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_MEAN");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_STD");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_MEAN (PX)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_STD (PX)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_MEAN (PX)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_STD (PX)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_MEAN (SLICE)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_STD (SLICE)");
 
     }
 

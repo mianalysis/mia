@@ -1,4 +1,5 @@
 // TODO: Get measurements to export from analysis.getModules().getMeasurements().get(String) for each object
+// TODO: Export calibration and units to each object
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
@@ -199,6 +200,10 @@ public class Exporter {
                     nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
                     moduleElement.setAttributeNode(nameAttr);
 
+                    Attr nicknameAttr = doc.createAttribute("NICKNAME");
+                    nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
+                    moduleElement.setAttributeNode(nicknameAttr);
+
                     first = false;
 
                 }
@@ -213,6 +218,10 @@ public class Exporter {
                 Attr valueAttr = doc.createAttribute("VALUE");
                 valueAttr.appendChild(doc.createTextNode(currParam.getValue().toString()));
                 parameterElement.setAttributeNode(valueAttr);
+
+                Attr visibleAttr = doc.createAttribute("VISIBLE");
+                visibleAttr.appendChild(doc.createTextNode(Boolean.toString(currParam.isVisible())));
+                parameterElement.setAttributeNode(visibleAttr);
 
                 if (currParam.getType() == Parameter.CHILD_OBJECTS | currParam.getType() == Parameter.PARENT_OBJECTS) {
                     if (currParam.getValueSource() != null) {

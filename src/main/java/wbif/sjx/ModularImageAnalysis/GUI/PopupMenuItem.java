@@ -61,5 +61,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
             gui.populateModuleParameters();
         }
 
+        gui.getModuleListMenu().setVisible(false);
+
     }
 }
