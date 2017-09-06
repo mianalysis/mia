@@ -4,6 +4,9 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.MathFunc.CumStat;
+
+import java.util.HashMap;
 
 /**
  * Created by Stephen on 09/05/2017.
@@ -26,10 +29,7 @@ public class MeasureImageTexture extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
         int yOffs = parameters.getValue(Y_OFFSET);
@@ -46,8 +46,18 @@ public class MeasureImageTexture extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Y-offset: "+yOffs);
         if (verbose) System.out.println("["+moduleName+"] Z-offset: "+zOffs);
 
+        HashMap<String,CumStat> textureMeasurements = new HashMap<>();
+        textureMeasurements.put("ASM",new CumStat());
+        textureMeasurements.put("CONTRAST",new CumStat());
+        textureMeasurements.put("CORRELATION",new CumStat());
+        textureMeasurements.put("ENTROPY",new CumStat());
+
         TextureCalculator textureCalculator = new TextureCalculator();
-        textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs);
+
+        for (int f=0;f<inputImagePlus.getNFrames();f++) {
+            textureCalculator.calculate(inputImagePlus, xOffs, yOffs, zOffs,1,f+1);
+
+        }
 
         // Acquiring measurements
         MIAMeasurement ASMMeasurement = new MIAMeasurement("ASM",textureCalculator.getASM());
@@ -69,8 +79,6 @@ public class MeasureImageTexture extends HCModule {
         entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement.getName(),entropyMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Entropy = "+entropyMeasurement.getValue());
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

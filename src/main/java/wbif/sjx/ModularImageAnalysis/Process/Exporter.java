@@ -1,4 +1,5 @@
 // TODO: Get measurements to export from analysis.getModules().getMeasurements().get(String) for each object
+// TODO: Export calibration and units to each object
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
@@ -25,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 /**
@@ -136,13 +138,9 @@ public class Exporter {
                         nameAttr.appendChild(doc.createTextNode(String.valueOf(objectNames)));
                         objectElement.setAttributeNode(nameAttr);
 
-                        for (int dim:object.getPositions().keySet()) {
-                            String dimName = dim==3 ? "CHANNEL" : dim == 4 ? "TIME" : "DIM_"+dim;
-                            Attr positionAttr = doc.createAttribute(dimName);
-                            positionAttr.appendChild(doc.createTextNode(String.valueOf(dim)));
-                            objectElement.setAttributeNode(positionAttr);
-
-                        }
+                        Attr positionAttr = doc.createAttribute("TIMEPOINT");
+                        positionAttr.appendChild(doc.createTextNode(String.valueOf(object.getT())));
+                        objectElement.setAttributeNode(positionAttr);
 
                         for (MIAMeasurement measurement:object.getMeasurements().values()) {
                             Element measElement = doc.createElement("MEAS");
@@ -202,6 +200,10 @@ public class Exporter {
                     nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
                     moduleElement.setAttributeNode(nameAttr);
 
+                    Attr nicknameAttr = doc.createAttribute("NICKNAME");
+                    nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
+                    moduleElement.setAttributeNode(nicknameAttr);
+
                     first = false;
 
                 }
@@ -216,6 +218,10 @@ public class Exporter {
                 Attr valueAttr = doc.createAttribute("VALUE");
                 valueAttr.appendChild(doc.createTextNode(currParam.getValue().toString()));
                 parameterElement.setAttributeNode(valueAttr);
+
+                Attr visibleAttr = doc.createAttribute("VISIBLE");
+                visibleAttr.appendChild(doc.createTextNode(Boolean.toString(currParam.isVisible())));
+                parameterElement.setAttributeNode(visibleAttr);
 
                 if (currParam.getType() == Parameter.CHILD_OBJECTS | currParam.getType() == Parameter.PARENT_OBJECTS) {
                     if (currParam.getValueSource() != null) {
@@ -305,7 +311,7 @@ public class Exporter {
 
     private void prepareMetadataXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces) {
         // Basing column names on the first workspace in the WorkspaceCollection
-        Workspace exampleWorkspace = workspaces.get(0);
+        Workspace exampleWorkspace = workspaces.iterator().next();
 
         if (exampleWorkspace != null) {
             HCMetadata exampleMetadata = exampleWorkspace.getMetadata();
@@ -356,7 +362,7 @@ public class Exporter {
 
     private void prepareImagesXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
         // Basing column names on the first workspace in the WorkspaceCollection
-        Workspace exampleWorkspace = workspaces.get(0);
+        Workspace exampleWorkspace = workspaces.iterator().next();
 
         if (exampleWorkspace.getImages() != null) {
             // Creating a new sheet for each image.  Each analysed file will have its own row.
@@ -423,7 +429,7 @@ public class Exporter {
 
     private void prepareObjectsXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
         // Basing column names on the first workspace in the WorkspaceCollection
-        Workspace exampleWorkspace = workspaces.get(0);
+        Workspace exampleWorkspace = workspaces.iterator().next();
 
         if (exampleWorkspace != null) {
             // Creating a new sheet for each object.  Each analysed file has its own set of rows (one for each object)
@@ -442,6 +448,14 @@ public class Exporter {
             // Using the first workspace in the WorkspaceCollection to initialise column headers
             for (String objectName : exampleWorkspace.getObjects().keySet()) {
                 ObjSet objects = exampleWorkspace.getObjects().get(objectName);
+
+                // Skipping this object if there are none in the set
+                if (!objects.values().iterator().hasNext()) {
+                    continue;
+                }
+
+                // Getting an example object
+                Obj object = objects.values().iterator().next();
 
                 // Creating relevant sheet prefixed with "IM"
                 objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
@@ -496,16 +510,9 @@ public class Exporter {
                     }
                 }
 
-                // Getting an example object
-                Obj object = objects.values().iterator().next();
-
-                // Adding single-valued position headers
-                for (int dim:object.getPositions().keySet()) {
-                    Cell positionsHeaderCell = objectHeaderRow.createCell(col++);
-                    String dimName = dim==3 ? "CHANNEL" : dim == 4 ? "FRAME" : "DIM_"+dim;
-                    positionsHeaderCell.setCellValue(dimName);
-
-                }
+                // Adding timepoint header
+                Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
+                timepointHeaderCell.setCellValue("TIMEPOINT");
 
                 // Adding measurement headers
                 String[] measurements = modules.getMeasurements().getMeasurementNames(objectName);
@@ -574,18 +581,14 @@ public class Exporter {
                                     if (children != null) {
                                         childValueCell.setCellValue(children.size());
                                     } else {
-                                        childValueCell.setCellValue("");
+                                        childValueCell.setCellValue("0");
                                     }
                                     col++;
                                 }
                             }
 
-                            // Adding extra dimension positions
-                            for (int dim : object.getPositions().keySet()) {
-                                Cell positionsValueCell = objectValueRow.createCell(col++);
-                                positionsValueCell.setCellValue(object.getPosition(dim));
-
-                            }
+                            Cell timepointValueCell = objectValueRow.createCell(col++);
+                            timepointValueCell.setCellValue(object.getT());
 
                             // Adding measurements to the columns specified in measurementNames
                             for (int column : measurementNames.get(objectName).keySet()) {

@@ -169,20 +169,20 @@ class ComponentFactory {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        // Adding the module title
+        // Adding the state/evaluate button
         c.gridx = 0;
         c.weightx = 0;
         c.insets = new Insets(5, 5, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
-        EvalButton evalButton = new EvalButton(gui,module);
-        evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        modulePanel.add(evalButton,c);
-
-        // Adding the state/evaluate button
-        c.gridx++;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.FIRST_LINE_END;
-        JTextField title = new JTextField(module.getTitle());
+//        EvalButton evalButton = new EvalButton(gui,module);
+//        evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
+//        modulePanel.add(evalButton,c);
+//
+//        // Adding the module title
+//        c.gridx++;
+//        c.weightx = 1;
+//        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        JTextField title = new JTextField(module.getNickname());
         title.setEditable(false);
         title.setBorder(null);
         title.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));

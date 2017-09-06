@@ -42,10 +42,7 @@ public class IdentifyPrimaryObjects extends HCModule {
         return null;
     }
 
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting parameters
         double medFiltR = parameters.getValue(MEDIAN_FILTER_RADIUS);
         double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER);
@@ -115,8 +112,6 @@ public class IdentifyPrimaryObjects extends HCModule {
         // Adding objects to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectName+") to workspace");
         workspace.addObjects(outputObjects);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

@@ -15,7 +15,7 @@ public class ChoiceArrayParameter extends WiderDropDownCombo implements ActionLi
     private HCModule module;
     private Parameter parameter;
 
-    ChoiceArrayParameter(MainGUI gui, HCModule module, Parameter parameter, String[] choices) {
+    public ChoiceArrayParameter(MainGUI gui, HCModule module, Parameter parameter, String[] choices) {
         super(choices);
 
         this.gui = gui;

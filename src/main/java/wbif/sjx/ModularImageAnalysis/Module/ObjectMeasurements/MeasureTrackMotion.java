@@ -24,10 +24,7 @@ public class MeasureTrackMotion extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
         ObjSet inputTrackObjects = workspace.getObjects().get(inputTrackObjectsName);
@@ -47,10 +44,10 @@ public class MeasureTrackMotion extends HCModule {
             // Getting the corresponding spots for this track
             int iter = 0;
             for (Obj spotObject : inputTrackObject.getChildren(inputSpotObjectsName).values()) {
-                x[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(Obj.X)).get(0);
-                y[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(Obj.Y)).get(0);
-                z[iter] = ((ArrayList<Integer>) spotObject.getCoordinates(Obj.Z)).get(0);
-                f[iter] = spotObject.getCoordinates(Obj.T);
+                x[iter] = spotObject.getXMean(true);
+                y[iter] = spotObject.getYMean(true);
+                z[iter] = spotObject.getZMean(true,true);
+                f[iter] = spotObject.getT();
                 iter++;
 
             }
@@ -97,9 +94,6 @@ public class MeasureTrackMotion extends HCModule {
             }
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override
@@ -118,10 +112,10 @@ public class MeasureTrackMotion extends HCModule {
         // Updating measurements with measurement choices from currently-selected object
         String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
         if (objectName != null) {
-            parameters.updateValueRange(INPUT_SPOT_OBJECTS, objectName);
+            parameters.updateValueSource(INPUT_SPOT_OBJECTS, objectName);
 
         } else {
-            parameters.updateValueRange(INPUT_SPOT_OBJECTS, null);
+            parameters.updateValueSource(INPUT_SPOT_OBJECTS, null);
 
         }
 

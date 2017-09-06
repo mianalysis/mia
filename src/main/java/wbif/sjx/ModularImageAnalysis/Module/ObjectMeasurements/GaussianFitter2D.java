@@ -55,10 +55,7 @@ public class GaussianFitter2D extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -83,16 +80,12 @@ public class GaussianFitter2D extends HCModule {
             count++;
 
             // Getting the centroid of the current object (should be single points anyway)
-            ArrayList<Integer> xArray = inputObject.getCoordinates(Obj.X);
-            ArrayList<Integer> yArray = inputObject.getCoordinates(Obj.Y);
-            ArrayList<Integer> zArray = inputObject.getCoordinates(Obj.Z);
-            int x = (int) MeasureObjectCentroid.calculateCentroid(xArray,MeasureObjectCentroid.MEAN);
-            int y = (int) MeasureObjectCentroid.calculateCentroid(yArray,MeasureObjectCentroid.MEAN);
-            int z = (int) MeasureObjectCentroid.calculateCentroid(zArray,MeasureObjectCentroid.MEAN);
+            int x = (int) Math.round(inputObject.getXMean(true));
+            int y = (int) Math.round(inputObject.getYMean(true));
+            int z = (int) Math.round(inputObject.getZMean(true,false));
 
             // Getting time and channel coordinates
-            int c = inputObject.getPosition(Obj.C);
-            int t = inputObject.getPosition(Obj.T);
+            int t = inputObject.getT();
 
             // Getting the radius of the object
             int r;
@@ -128,7 +121,7 @@ public class GaussianFitter2D extends HCModule {
 
             // Getting the local image region
             if (x-r > 0 & x+r+1 < inputImagePlus.getWidth() & y-r>0 & y+r+1 < inputImagePlus.getHeight()) {
-                inputImagePlus.setPosition(c+1, z+1, t+1);
+                inputImagePlus.setPosition(1, z+1, t+1);
                 ImageProcessor ipr = inputImagePlus.getProcessor();
                 int[] xx = new int[]{x - r, x - r, x + r + 1, x + r + 1, x - r};
                 int[] yy = new int[]{y - r, y + r + 1, y + r + 1, y - r, y - r};
@@ -149,10 +142,11 @@ public class GaussianFitter2D extends HCModule {
 
                 // Fitting the Gaussian and checking it reached convergence
                 pOut = fitGaussian2D(iprCrop, pIn, limits, maxEvaluations);
+
                 if (pOut != null) {
                     x0 = pOut[0] + x - r;
                     y0 = pOut[1] + y - r;
-                    z0 = MeasureObjectCentroid.calculateCentroid(inputObject.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN);
+                    z0 = inputObject.getZMean(true,false);
                     sx = pOut[2];
                     sy = pOut[3];
                     A0 = pOut[4];
@@ -203,8 +197,6 @@ public class GaussianFitter2D extends HCModule {
 
         if (verbose) System.out.println("["+moduleName+"] Fit "+inputObjects.size()+" objects");
 
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override
@@ -233,7 +225,7 @@ public class GaussianFitter2D extends HCModule {
         } else if (parameters.getValue(RADIUS_MODE).equals(MEASUREMENT)) {
             returnedParameters.addParameter(parameters.getParameter(RADIUS_MEASUREMENT));
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(RADIUS_MEASUREMENT,inputObjectsName);
+            parameters.updateValueSource(RADIUS_MEASUREMENT,inputObjectsName);
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT_MULTIPLIER));
 
         }

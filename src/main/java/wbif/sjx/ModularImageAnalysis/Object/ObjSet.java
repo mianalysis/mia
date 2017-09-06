@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
@@ -26,4 +27,31 @@ public class ObjSet extends LinkedHashMap<Integer,Obj> {
         maxID++;
         return maxID;
     }
+
+    public int[][] getSpatialLimits() {
+        int[][] limits = new int[][]{
+                {Integer.MAX_VALUE,Integer.MIN_VALUE},
+                {Integer.MAX_VALUE,Integer.MIN_VALUE},
+                {Integer.MAX_VALUE,Integer.MIN_VALUE}};
+
+        for (Obj object:values()) {
+            ArrayList<Integer> x = object.getXCoords();
+            ArrayList<Integer> y = object.getYCoords();
+            ArrayList<Integer> z = object.getZCoords();
+
+            for (int i=0;i<x.size();i++) {
+                limits[0][0] = Math.min(limits[0][0],x.get(i));
+                limits[0][1] = Math.max(limits[0][1],x.get(i));
+                limits[1][0] = Math.min(limits[1][0],y.get(i));
+                limits[1][1] = Math.max(limits[1][1],y.get(i));
+                limits[2][0] = Math.min(limits[2][0],z.get(i));
+                limits[2][1] = Math.max(limits[2][1],z.get(i));
+
+            }
+        }
+
+        return limits;
+
+    }
+
 }

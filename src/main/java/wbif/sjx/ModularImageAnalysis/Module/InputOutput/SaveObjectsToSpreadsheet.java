@@ -30,10 +30,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -66,20 +63,16 @@ public class SaveObjectsToSpreadsheet extends HCModule {
             Obj object = inputObjects.values().iterator().next();
 
             // Getting parents
-            LinkedHashMap<String,Obj> parents = object.getParents();
+            LinkedHashMap<String,Obj> parents = object.getParents(true);
             for (String parent:parents.keySet()) {
                 Cell parentHeaderCell = objectHeaderRow.createCell(col++);
                 String name = (parent+"_ID").toUpperCase();
                 parentHeaderCell.setCellValue(name);
             }
 
-            // Adding single-valued position headers
-            for (int dim : object.getPositions().keySet()) {
-                Cell positionsHeaderCell = objectHeaderRow.createCell(col++);
-                String dimName = dim == 3 ? "CHANNEL" : dim == 4 ? "FRAME" : "DIM_" + dim;
-                positionsHeaderCell.setCellValue(dimName);
-
-            }
+            // Adding timepoint header
+            Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
+            timepointHeaderCell.setCellValue("TIMEPOINT");
 
             // Adding measurement headers
             for (MIAMeasurement measurement : object.getMeasurements().values()) {
@@ -101,17 +94,14 @@ public class SaveObjectsToSpreadsheet extends HCModule {
                 Cell objectIDValueCell = objectValueRow.createCell(col++);
                 objectIDValueCell.setCellValue(inputObject.getID());
 
-                parents = inputObject.getParents();
+                parents = inputObject.getParents(true);
                 for (String parent:parents.keySet()) {
                     Cell parentValueCell = objectValueRow.createCell(col++);
                     parentValueCell.setCellValue(parents.get(parent).getID());
                 }
 
-                for (int dim : inputObject.getPositions().keySet()) {
-                    Cell positionsValueCell = objectValueRow.createCell(col++);
-                    positionsValueCell.setCellValue(inputObject.getPosition(dim));
-
-                }
+                Cell timepointValueCell = objectValueRow.createCell(col++);
+                timepointValueCell.setCellValue(inputObject.getT());
 
                 for (MIAMeasurement measurement : inputObject.getMeasurements().values()) {
                     Cell measValueCell = objectValueRow.createCell(col++);
@@ -133,9 +123,6 @@ public class SaveObjectsToSpreadsheet extends HCModule {
                 e.printStackTrace();
             }
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

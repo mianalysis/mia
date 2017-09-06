@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 23/05/2017.
@@ -38,10 +39,7 @@ public class FilterObjects extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -50,119 +48,131 @@ public class FilterObjects extends HCModule {
         String method = parameters.getValue(FILTER_METHOD);
 
         // Removing objects with a missing measurement (i.e. value set to null)
-        if (method.equals(REMOVE_ON_IMAGE_EDGE_2D)) {
-            String inputImageName = parameters.getValue(REFERENCE_IMAGE);
-            Image inputImage = workspace.getImage(inputImageName);
+        switch (method) {
+            case REMOVE_ON_IMAGE_EDGE_2D:
+                String inputImageName = parameters.getValue(REFERENCE_IMAGE);
+                Image inputImage = workspace.getImage(inputImageName);
 
-            int minX = 0;
-            int minY = 0;
-            int maxX = inputImage.getImagePlus().getWidth()-1;
-            int maxY = inputImage.getImagePlus().getHeight()-1;
+                int minX = 0;
+                int minY = 0;
+                int maxX = inputImage.getImagePlus().getWidth()-1;
+                int maxY = inputImage.getImagePlus().getHeight()-1;
 
-            Iterator<Obj> iterator = inputObjects.values().iterator();
-            while (iterator.hasNext()) {
-                Obj inputObject = iterator.next();
+                Iterator<Obj> iterator = inputObjects.values().iterator();
+                while (iterator.hasNext()) {
+                    Obj inputObject = iterator.next();
 
-                ArrayList<Integer> x = inputObject.getCoordinates(Obj.X);
-                ArrayList<Integer> y = inputObject.getCoordinates(Obj.Y);
+                    ArrayList<Integer> x = inputObject.getXCoords();
+                    ArrayList<Integer> y = inputObject.getYCoords();
 
-                for (int i=0;i<x.size();i++) {
-                    if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY) {
+                    for (int i=0;i<x.size();i++) {
+                        if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY) {
+                            inputObject.removeRelationships();
+                            iterator.remove();
+
+                            break;
+
+                        }
+                    }
+                }
+
+                break;
+
+            case MISSING_MEASUREMENTS:
+                String measurement = parameters.getValue(MEASUREMENT);
+
+                iterator = inputObjects.values().iterator();
+                while (iterator.hasNext()) {
+                    Obj inputObject = iterator.next();
+
+                    if (inputObject.getMeasurement(measurement).getValue() == Double.NaN) {
+                        inputObject.removeRelationships();
+                        iterator.remove();
+                    }
+                }
+
+                break;
+
+            case NO_PARENT:
+                String parentObjectName = parameters.getValue(PARENT_OBJECT);
+
+                iterator = inputObjects.values().iterator();
+                while (iterator.hasNext()) {
+                    Obj inputObject = iterator.next();
+
+                    LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
+                    if (parents.get(parentObjectName) == null) {
+                        inputObject.removeRelationships();
+                        iterator.remove();
+                    }
+                }
+
+                break;
+
+            case MIN_NUMBER_OF_CHILDREN:
+                String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+                double minChildN = parameters.getValue(REFERENCE_VALUE);
+
+                iterator = inputObjects.values().iterator();
+                while (iterator.hasNext()) {
+                    Obj inputObject = iterator.next();
+                    ObjSet childObjects = inputObject.getChildren(childObjectsName);
+
+                    // Removing the object if it has no children
+                    if (childObjects == null) {
+                        inputObject.removeRelationships();
+                        iterator.remove();
+                        continue;
+
+                    }
+
+                    // Removing the object if it has too few children
+                    if (childObjects.size() < minChildN) {
                         inputObject.removeRelationships();
                         iterator.remove();
 
-                        break;
+                    }
+                }
+
+                break;
+
+            case MEASUREMENTS_SMALLER_THAN:
+                measurement = parameters.getValue(MEASUREMENT);
+                double referenceValue = parameters.getValue(REFERENCE_VALUE);
+
+                iterator = inputObjects.values().iterator();
+                while (iterator.hasNext()) {
+                    Obj inputObject = iterator.next();
+
+                    // Removing the object if it has no children
+                    if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
+                        inputObject.removeRelationships();
+                        iterator.remove();
 
                     }
                 }
-            }
 
-        } else if (method.equals(MISSING_MEASUREMENTS)) {
-            String measurement = parameters.getValue(MEASUREMENT);
+                break;
 
-            Iterator<Obj> iterator = inputObjects.values().iterator();
-            while (iterator.hasNext()) {
-                Obj inputObject = iterator.next();
+            case MEASUREMENTS_LARGER_THAN:
+                measurement = parameters.getValue(MEASUREMENT);
+                referenceValue = parameters.getValue(REFERENCE_VALUE);
 
-                if (inputObject.getMeasurement(measurement).getValue() == Double.NaN) {
-                    inputObject.removeRelationships();
-                    iterator.remove();
-                }
-            }
+                iterator = inputObjects.values().iterator();
+                while (iterator.hasNext()) {
+                    Obj inputObject = iterator.next();
 
-        } else if (method.equals(NO_PARENT)) {
-            String parentObjectName = parameters.getValue(PARENT_OBJECT);
+                    // Removing the object if it has no children
+                    if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
+                        inputObject.removeRelationships();
+                        iterator.remove();
 
-            Iterator<Obj> iterator = inputObjects.values().iterator();
-            while (iterator.hasNext()) {
-                Obj inputObject = iterator.next();
-
-                if (inputObject.getParent(parentObjectName) == null) {
-                    inputObject.removeRelationships();
-                    iterator.remove();
-                }
-            }
-
-        } else if (method.equals(MIN_NUMBER_OF_CHILDREN)) {
-            String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-            double minChildN = parameters.getValue(REFERENCE_VALUE);
-
-            Iterator<Obj> iterator = inputObjects.values().iterator();
-            while (iterator.hasNext()) {
-                Obj inputObject = iterator.next();
-                ObjSet childObjects = inputObject.getChildren(childObjectsName);
-
-                // Removing the object if it has no children
-                if (childObjects == null) {
-                    inputObject.removeRelationships();
-                    iterator.remove();
-                    continue;
-
+                    }
                 }
 
-                // Removing the object if it has too few children
-                if (childObjects.size() < minChildN) {
-                    inputObject.removeRelationships();
-                    iterator.remove();
+                break;
 
-                }
-            }
-
-        } else if (method.equals(MEASUREMENTS_SMALLER_THAN)) {
-            String measurement = parameters.getValue(MEASUREMENT);
-            double referenceValue = parameters.getValue(REFERENCE_VALUE);
-
-            Iterator<Obj> iterator = inputObjects.values().iterator();
-            while (iterator.hasNext()) {
-                Obj inputObject = iterator.next();
-
-                // Removing the object if it has no children
-                if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
-                    inputObject.removeRelationships();
-                    iterator.remove();
-
-                }
-            }
         }
-        else if (method.equals(MEASUREMENTS_SMALLER_THAN)) {
-            String measurement = parameters.getValue(MEASUREMENT);
-            double referenceValue = parameters.getValue(REFERENCE_VALUE);
-
-            Iterator<Obj> iterator = inputObjects.values().iterator();
-            while (iterator.hasNext()) {
-                Obj inputObject = iterator.next();
-
-                // Removing the object if it has no children
-                if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
-                    inputObject.removeRelationships();
-                    iterator.remove();
-
-                }
-            }
-        }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override
@@ -186,7 +196,7 @@ public class FilterObjects extends HCModule {
         if (parameters.getValue(FILTER_METHOD).equals(MISSING_MEASUREMENTS)) {
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
             if (parameters.getValue(INPUT_OBJECTS) != null) {
-                parameters.updateValueRange(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
             }
 
@@ -197,14 +207,14 @@ public class FilterObjects extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(PARENT_OBJECT,inputObjectsName);
+            parameters.updateValueSource(PARENT_OBJECT,inputObjectsName);
 
         } else if (parameters.getValue(FILTER_METHOD).equals(MIN_NUMBER_OF_CHILDREN)) {
             returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
             returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(CHILD_OBJECTS,inputObjectsName);
+            parameters.updateValueSource(CHILD_OBJECTS,inputObjectsName);
 
         } else if (parameters.getValue(FILTER_METHOD).equals(MEASUREMENTS_SMALLER_THAN) |
                 parameters.getValue(FILTER_METHOD).equals(MEASUREMENTS_LARGER_THAN)) {
@@ -213,7 +223,7 @@ public class FilterObjects extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
 
             if (parameters.getValue(INPUT_OBJECTS) != null) {
-                parameters.updateValueRange(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
+                parameters.updateValueSource(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
 
             }
 

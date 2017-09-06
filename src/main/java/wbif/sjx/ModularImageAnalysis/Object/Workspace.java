@@ -66,6 +66,22 @@ public class Workspace {
         }
     }
 
+    public void clearAllObjects(boolean retainMeasurements) {
+        if (retainMeasurements) {
+            // Sets the ImagePlus to null, but leaves measurements
+            for (ObjSet objSet:objects.values()) {
+                for (Obj obj:objSet.values()) {
+                    obj.setPoints(null);
+
+                }
+            }
+
+        } else {
+            // Removes all the data
+            objects = null;
+        }
+    }
+
     public Image getImage(String name) {
         return images.get(name);
 

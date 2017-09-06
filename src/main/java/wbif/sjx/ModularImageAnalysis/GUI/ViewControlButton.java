@@ -39,7 +39,8 @@ public class ViewControlButton extends JRadioButton implements ActionListener {
                 break;
         }
 
-        setSelected(false);
+        gui.getViewMenu().setSelected(false);
+        gui.getViewMenu().setPopupMenuVisible(false);
 
     }
 }

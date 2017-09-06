@@ -60,10 +60,7 @@ public class AddObjectsOverlay extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -142,33 +139,28 @@ public class AddObjectsOverlay extends HCModule {
 
             double xMean; double yMean; double zMean;
             if (positionMode.equals(CENTROID)) {
-                xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.X), MeasureObjectCentroid.MEAN);
-                yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Y), MeasureObjectCentroid.MEAN);
-                zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN);
+                xMean = object.getXMean(true);
+                yMean = object.getYMean(true);
+                zMean = object.getZMean(true,false);
 
             } else {
                 xMean = object.getMeasurement(xPosMeas).getValue();
                 yMean = object.getMeasurement(yPosMeas).getValue();
                 zMean = object.getMeasurement(zPosMeas).getValue();
 
-                if (xMean == Double.NaN) xMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.X), MeasureObjectCentroid.MEAN);
-                if (yMean == Double.NaN) yMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Y), MeasureObjectCentroid.MEAN);
-                if (zMean == Double.NaN) zMean = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Z), MeasureObjectCentroid.MEAN);
-
             }
 
             // Getting coordinates to plot
-            int c = ((int) object.getCoordinates(Obj.C)) + 1;
             int z = (int) Math.round(zMean+1);
-            int t = ((int) object.getCoordinates(Obj.T)) + 1;
+            int t = object.getT()+1;
 
             // Adding circles where the object centroids are
             PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
             roi.setPointType(3);
             if (ipl.isHyperStack()) {
-                roi.setPosition(c, z, t);
+                roi.setPosition(1, z, t);
             } else {
-                int pos = Math.max(Math.max(c,z),t);
+                int pos = Math.max(Math.max(1,z),t);
                 roi.setPosition(pos);
             }
             roi.setStrokeColor(colour);
@@ -184,9 +176,9 @@ public class AddObjectsOverlay extends HCModule {
                 }
                 text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
                 if (ipl.isHyperStack()) {
-                    text.setPosition(c, z, t);
+                    text.setPosition(1, z, t);
                 } else {
-                    text.setPosition(Math.max(Math.max(c, z), t));
+                    text.setPosition(Math.max(Math.max(1, z), t));
                 }
                 text.setStrokeColor(colour);
                 ovl.addElement(text);
@@ -203,8 +195,6 @@ public class AddObjectsOverlay extends HCModule {
         // Duplicating the image, then displaying it.  Duplicating prevents the image being removed from the workspace
         // if it's closed
         if (showImage) new Duplicator().run(ipl).show();
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 
@@ -256,7 +246,7 @@ public class AddObjectsOverlay extends HCModule {
                 returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_ID));
 
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                parameters.updateValueRange(PARENT_OBJECT_FOR_ID,inputObjectsName);
+                parameters.updateValueSource(PARENT_OBJECT_FOR_ID,inputObjectsName);
 
             }
         }
@@ -268,9 +258,9 @@ public class AddObjectsOverlay extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(Z_POSITION_MEASUREMENT));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(X_POSITION_MEASUREMENT,inputObjectsName);
-            parameters.updateValueRange(Y_POSITION_MEASUREMENT,inputObjectsName);
-            parameters.updateValueRange(Z_POSITION_MEASUREMENT,inputObjectsName);
+            parameters.updateValueSource(X_POSITION_MEASUREMENT,inputObjectsName);
+            parameters.updateValueSource(Y_POSITION_MEASUREMENT,inputObjectsName);
+            parameters.updateValueSource(Z_POSITION_MEASUREMENT,inputObjectsName);
 
         }
 
@@ -280,7 +270,7 @@ public class AddObjectsOverlay extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
 
             if (parameters.getValue(INPUT_OBJECTS) != null) {
-                parameters.updateValueRange(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
             }
 
@@ -289,7 +279,7 @@ public class AddObjectsOverlay extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueRange(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+            parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
         }
 

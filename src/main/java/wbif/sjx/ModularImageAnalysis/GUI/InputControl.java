@@ -27,7 +27,7 @@ public class InputControl extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
+    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
 
     }
 

@@ -8,9 +8,8 @@ import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.text.DecimalFormat;
+import java.util.concurrent.*;
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -18,17 +17,19 @@ import java.util.concurrent.TimeUnit;
 public class BatchProcessor extends FileCrawler {
     private boolean verbose = true;
     private boolean parallel = true;
-    private int nThreads = 6;
+    private int nThreads = Runtime.getRuntime().availableProcessors()/2;//4;
 
-    private ExecutorService pool;
+//    private ExecutorService pool;
+    ThreadPoolExecutor pool;
 
     private boolean shutdownEarly;
+    private int counter = 0;
 
 
     // CONSTRUCTORS
 
-    public BatchProcessor(File root_folder) {
-        super(root_folder);
+    public BatchProcessor(File rootFolder) {
+        super(rootFolder);
 
     }
 
@@ -62,20 +63,49 @@ public class BatchProcessor extends FileCrawler {
     }
 
     private void runParallel(WorkspaceCollection workspaces, Analysis analysis) throws InterruptedException {
+        DecimalFormat dfInt = new DecimalFormat("0");
+        DecimalFormat dfDec = new DecimalFormat("0.00");
+
         File next = getNextValidFileInStructure();
 
         // Setting up the ExecutorService, which will manage the threads
-        pool = Executors.newFixedThreadPool(nThreads);
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         while (next != null) {
             Workspace workspace = workspaces.getNewWorkspace(next);
+            File finalNext = next;
+
+            // Adding a parameter to the metadata structure indicating the depth of the current file in the folder structure
+            int fileDepth = 0;
+            File parent = next.getParentFile();
+            while (parent != rootFolder.getFolderAsFile()) {
+                parent = parent.getParentFile();
+                fileDepth++;
+            }
+            workspace.getMetadata().put("FILE_DEPTH",fileDepth);
+
+
             Runnable task = () -> {
                 try {
+                    // Running the current analysis
                     analysis.execute(workspace, false);
+
+                    // Getting the number of completed and total tasks
+                    incrementCounter();
+                    int nComplete = getCounter();
+                    double nTotal = pool.getTaskCount();
+                    double percentageComplete = (nComplete/nTotal)*100;
+
+                    // Displaying the current progress
+                    String string = "Completed "+dfInt.format(nComplete)+"/"+dfInt.format(nTotal)
+                            +" ("+dfDec.format(percentageComplete)+"%), "+ finalNext.getName();
+                    System.out.println(string);
+
                 } catch (GenericMIAException e) {
                     e.printStackTrace();
                 }
             };
+
             pool.submit(task);
 
             next = getNextValidFileInStructure();
@@ -154,4 +184,15 @@ public class BatchProcessor extends FileCrawler {
     public void setnThreads(int nThreads) {
         this.nThreads = nThreads;
     }
+
+    synchronized int getCounter() {
+        return counter;
+
+    }
+
+    synchronized void incrementCounter() {
+        counter++;
+
+    }
+
 }

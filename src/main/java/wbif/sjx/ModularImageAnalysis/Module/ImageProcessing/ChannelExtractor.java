@@ -27,10 +27,7 @@ public class ChannelExtractor extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Loading input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName+") into workspace");
@@ -55,9 +52,6 @@ public class ChannelExtractor extends HCModule {
             new Duplicator().run(outputChannelImagePlus).show();
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

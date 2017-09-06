@@ -32,10 +32,7 @@ public class MeasureSpotIntensity extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting image to measure spot intensity for
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -55,11 +52,10 @@ public class MeasureSpotIntensity extends HCModule {
         // Running through each object's timepoints, getting intensity measurements
         for (Obj inputObject:inputObjects.values()) {
             // Getting pixel coordinates
-            ArrayList<Integer> x = inputObject.getCoordinates(Obj.X);
-            ArrayList<Integer> y = inputObject.getCoordinates(Obj.Y);
-            ArrayList<Integer> z = inputObject.getCoordinates(Obj.Z);
-            Integer c = inputObject.getCoordinates(Obj.C);
-            Integer t = inputObject.getCoordinates(Obj.T);
+            ArrayList<Integer> x = inputObject.getXCoords();
+            ArrayList<Integer> y = inputObject.getYCoords();
+            ArrayList<Integer> z = inputObject.getZCoords();
+            Integer t = inputObject.getT();
 
             // Initialising the cumulative statistics object to store pixel intensities.  Unlike MeasureObjectIntensity,
             // this uses a multi-element MultiCumStat where each element corresponds to a different frame
@@ -67,11 +63,7 @@ public class MeasureSpotIntensity extends HCModule {
 
             // Running through all pixels in this object and adding the intensity to the MultiCumStat object
             for (int i=0;i<x.size();i++) {
-                int zPos = z==null ? 0 : z.get(i);
-                int cPos = c==null ? 0 : c;
-                int tPos = t==null ? 0 : t;
-
-                ipl.setPosition(cPos+1,zPos+1,tPos+1);
+                ipl.setPosition(1,z.get(i)+1,t+1);
                 cs.addMeasure(ipl.getProcessor().getPixelValue(x.get(i),y.get(i)));
 
             }
@@ -95,9 +87,6 @@ public class MeasureSpotIntensity extends HCModule {
             inputObject.getParent(inputObjectsName).addMeasurement(maxIntensity);
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

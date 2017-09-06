@@ -28,10 +28,7 @@ public class ApplyManualClassification extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -50,9 +47,11 @@ public class ApplyManualClassification extends HCModule {
                 int currClass = Integer.valueOf(vals[3]);
 
                 for (Obj object:inputObjects.values()) {
-                    double xCent = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.X));
-                    double yCent = MeasureObjectCentroid.calculateCentroid(object.getCoordinates(Obj.Y));
-                    if (xCent==x & yCent==y & object.getCoordinates(Obj.T).equals(f)) {
+                    double xCent = object.getXMean(true);
+                    double yCent = object.getYMean(true);
+                    int timepoint = object.getT();
+
+                    if (xCent==x & yCent==y & timepoint == f) {
                         MIAMeasurement objClass = new MIAMeasurement(MIAMeasurement.CLASS,currClass);
                         objClass.setSource(this);
                         object.addMeasurement(objClass);
@@ -85,9 +84,6 @@ public class ApplyManualClassification extends HCModule {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

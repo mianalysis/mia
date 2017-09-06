@@ -37,10 +37,7 @@ public class ProjectImage extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Loading image into workspace
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -58,9 +55,6 @@ public class ProjectImage extends HCModule {
         if (parameters.getValue(SHOW_IMAGE)) {
             new Duplicator().run(outputImage.getImagePlus()).show();
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

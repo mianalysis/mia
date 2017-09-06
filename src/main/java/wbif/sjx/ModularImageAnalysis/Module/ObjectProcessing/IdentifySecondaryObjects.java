@@ -37,10 +37,7 @@ public class IdentifySecondaryObjects extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting relevant parameters
         double medFiltR = parameters.getValue(MEDIAN_FILTER_RADIUS);
         String thrMeth = parameters.getValue(THRESHOLD_METHOD);
@@ -58,7 +55,7 @@ public class IdentifySecondaryObjects extends HCModule {
 
         // Getting nuclei objects as image
         if (verbose) System.out.println("["+moduleName+"] Converting objects to image");
-        ImagePlus image1 = new ObjectImageConverter().convertObjectsToImage(objects1,"Temp image",inputImage2,ObjectImageConverter.COLOUR_MODES[3],null).getImagePlus();
+        ImagePlus image1 = ObjectImageConverter.convertObjectsToImage(objects1,"Temp image",inputImage2,ObjectImageConverter.COLOUR_MODES[3],null,false).getImagePlus();
 
         // Segmenting cell image
         // Filtering cell image
@@ -92,8 +89,6 @@ public class IdentifySecondaryObjects extends HCModule {
         // Adding objects to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(objects2);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

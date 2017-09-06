@@ -3,19 +3,29 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import loci.common.DebugTools;
-import loci.formats.ChannelSeparator;
-import loci.formats.FormatException;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
+import loci.common.services.ServiceFactory;
+import loci.formats.*;
+import loci.formats.in.BIFormatReader;
+import loci.formats.meta.MetadataStore;
+import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
+import ome.xml.meta.IMetadata;
+import ome.xml.meta.MetadataRetrieve;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Created by sc13967 on 15/05/2017.
@@ -30,12 +40,24 @@ public class ImageFileLoader extends HCModule {
 
     private static final String CURRENT_FILE = "Current file";
     private static final String SPECIFIC_FILE = "Specific file";
-    private static final String[] IMPORT_MODES = new String[]{CURRENT_FILE,SPECIFIC_FILE};
+    public static final String[] IMPORT_MODES = new String[]{CURRENT_FILE,SPECIFIC_FILE};
 
     private static ImagePlus getBFImage(String path, boolean flexFile) {
         ImagePlus ipl = null;
 
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+
+        // Setting spatial calibration
+        IMetadata meta = null;
+        try {
+            ServiceFactory factory = new ServiceFactory();
+            OMEXMLService service = factory.getInstance(OMEXMLService.class);
+            meta = service.createOMEXMLMetadata();
+            reader.setMetadataStore((MetadataStore) meta);
+
+        } catch (DependencyException | ServiceException e) {
+            e.printStackTrace();
+        }
 
         try {
             reader.setGroupFiles(false);
@@ -49,7 +71,6 @@ public class ImageFileLoader extends HCModule {
             int bitDepth = reader.getBitsPerPixel();
 
             if (flexFile) {
-
                 int seriesCount = reader.getSeriesCount();
 
                 // Getting maximum channel number
@@ -81,7 +102,7 @@ public class ImageFileLoader extends HCModule {
                 }
 
             } else {
-                ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, 1, bitDepth);
+                ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, sizeT, bitDepth);
 
                 for (int z = 0; z < sizeZ; z++) {
                     for (int c = 0; c < sizeC; c++) {
@@ -95,6 +116,14 @@ public class ImageFileLoader extends HCModule {
                         }
                     }
                 }
+            }
+
+            // Add spatial calibration
+            if (meta != null) {
+                ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
+                ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeY(0).value();
+                ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(0).value();
+
             }
 
             reader.close();
@@ -119,10 +148,7 @@ public class ImageFileLoader extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting parameters
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
@@ -139,6 +165,7 @@ public class ImageFileLoader extends HCModule {
         // Importing the file
         if (parameters.getValue(USE_BIOFORMATS)) {
             DebugTools.enableLogging("off");
+            DebugTools.setRootLevel("off");
             ipl = getBFImage(filePath,flexBugfix);
 
         } else {
@@ -158,9 +185,6 @@ public class ImageFileLoader extends HCModule {
             ipl = new Duplicator().run(ipl);
             ipl.show();
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override

@@ -52,10 +52,7 @@ public class PlotMeasurementsScatter extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -150,9 +147,6 @@ public class PlotMeasurementsScatter extends HCModule {
             plot.show();
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override
@@ -178,12 +172,12 @@ public class PlotMeasurementsScatter extends HCModule {
         // Updating measurements with measurement choices from currently-selected object
         String objectName = parameters.getValue(INPUT_OBJECTS);
         if (objectName != null) {
-            parameters.updateValueRange(MEASUREMENT1, objectName);
-            parameters.updateValueRange(MEASUREMENT2, objectName);
+            parameters.updateValueSource(MEASUREMENT1, objectName);
+            parameters.updateValueSource(MEASUREMENT2, objectName);
 
         } else {
-            parameters.updateValueRange(MEASUREMENT1, null);
-            parameters.updateValueRange(MEASUREMENT2, null);
+            parameters.updateValueSource(MEASUREMENT1, null);
+            parameters.updateValueSource(MEASUREMENT2, null);
 
         }
 
@@ -193,10 +187,10 @@ public class PlotMeasurementsScatter extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(COLOURMAP));
 
             if (objectName != null) {
-                parameters.updateValueRange(MEASUREMENT3, objectName);
+                parameters.updateValueSource(MEASUREMENT3, objectName);
 
             } else {
-                parameters.updateValueRange(MEASUREMENT3, null);
+                parameters.updateValueSource(MEASUREMENT3, null);
 
             }
 

@@ -1,7 +1,8 @@
+// TODO: Add object linking for 4D - linking should be done on spatial overlap (similar to how its done in 3D)
+
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.ImagePlus;
-import ij.measure.Calibration;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -23,14 +24,12 @@ public class IdentifyObjects extends HCModule {
     public String getHelp() {
         return "INCOMPLETE" +
                 "\nTakes a binary image and uses connected components labelling to create objects" +
-                "\nUses MorphoLibJ to perform connected components labelling in 3D";
+                "\nUses MorphoLibJ to perform connected components labelling in 3D" +
+                "\nDoesn't currently link objects in time.";
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -57,33 +56,19 @@ public class IdentifyObjects extends HCModule {
 
         // Applying connected components labelling
         if (verbose) System.out.println("["+moduleName+"] Applying connected components labelling");
-        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D();
+        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26);
         inputImagePlus.setStack(ffcl3D.computeLabels(inputImagePlus.getImageStack()));
 
         // Converting image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
-        Image tempImage = new Image(new String("Temp image"),inputImagePlus);
+        Image tempImage = new Image("Temp image",inputImagePlus);
         ObjSet outputObjects = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectsName);
-
-        // Adding distance calibration to each object
-        Calibration calibration = inputImagePlus.getCalibration();
-        for (Obj object:outputObjects.values()) {
-            object.addCalibration(Obj.X,calibration.getX(1));
-            object.addCalibration(Obj.Y,calibration.getY(1));
-            object.addCalibration(Obj.Z,calibration.getZ(1));
-            object.addCalibration(Obj.C,1);
-            object.addCalibration(Obj.T,1);
-            object.setCalibratedUnits(calibration.getUnits());
-
-        }
 
         if (verbose) System.out.println("["+moduleName+"] "+outputObjects.size()+" objects detected");
 
         // Adding objects to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

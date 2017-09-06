@@ -2,6 +2,7 @@
 // TODO: Module to plot histograms of measurements (e.g. mean intensity for objects)
 // TODO: Module to calculate size metrics of objects (can used Blob class)
 // TODO: Module to calculate radial intensity distribution of objects
+// TODO: Modules creating new images should pass spatial calibrations across in case new images are used to get objects
 
 package wbif.sjx.ModularImageAnalysis.Module;
 
@@ -15,14 +16,18 @@ import java.io.Serializable;
  */
 public abstract class HCModule implements Serializable {
     public ParameterCollection parameters = new ParameterCollection();
+    private String nickname;
     private String notes = "";
     private boolean enabled = true;
+    protected String moduleName = "";
 
 
     // CONSTRUCTOR
 
     public HCModule() {
         initialiseParameters();
+        moduleName = this.getClass().getSimpleName();
+        nickname = moduleName;
 
     }
 
@@ -33,7 +38,17 @@ public abstract class HCModule implements Serializable {
 
     public abstract String getHelp();
 
-    public abstract void execute(Workspace workspace, boolean verbose) throws GenericMIAException;
+    protected abstract void run(Workspace workspace, boolean verbose) throws GenericMIAException;
+
+    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
+        String moduleName = this.getClass().getSimpleName();
+        if (verbose) System.out.println("["+moduleName+"] Initialising");
+
+        run(workspace,verbose);
+
+        if (verbose) System.out.println("["+moduleName+"] Complete");
+
+    }
 
     /**
      * Get a ParameterCollection of all the possible parameters this class requires (not all may be used).  This returns
@@ -88,9 +103,17 @@ public abstract class HCModule implements Serializable {
 
     // PRIVATE METHODS
 
-    void execute(Workspace workspace) throws GenericMIAException {
-        execute(workspace,false);
+    void run(Workspace workspace) throws GenericMIAException {
+        run(workspace,false);
 
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getNotes() {

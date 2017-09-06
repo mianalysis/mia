@@ -37,10 +37,7 @@ public class ImageStackLoader extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting parameters
         NameExtractor extractor = parameters.getValue(EXTRACTOR);
         String orderField = parameters.getValue(ORDER_FIELD);
@@ -111,8 +108,6 @@ public class ImageStackLoader extends HCModule {
         ipl.setPosition(1);
 
         workspace.addImage(new Image(outputImageName,ipl));
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
 

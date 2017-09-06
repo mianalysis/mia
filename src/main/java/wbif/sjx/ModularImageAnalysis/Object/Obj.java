@@ -1,23 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
+import wbif.sjx.common.Object.Volume;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 /**
  * Created by steph on 30/04/2017.
  */
-public class Obj {
-    // Indices for dimensional coordinates.  Coordinates are all zero indexed
-    public static final int X = 0;
-    public static final int Y = 1;
-    public static final int Z = 2;
-    public static final int C = 3;
-    public static final int T = 4;
-
+public class Obj extends Volume {
     private String name;
 
     /**
@@ -25,65 +15,39 @@ public class Obj {
      */
     private int ID;
 
-    /**
-     * 3D coordinates of this instance of the object.
-     */
-    private HashMap<Integer, ArrayList<Integer>> coordinates = new HashMap<>();
+    private int T = 0;
 
-    /**
-     * HashMap containing extra dimensions specifying the location of this instance
-     */
-    private HashMap<Integer, Integer> positions = new HashMap<>();
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
     private LinkedHashMap<String, ObjSet> children = new LinkedHashMap<>();
     private LinkedHashMap<String, MIAMeasurement> measurements = new LinkedHashMap<>();
-    private String calibratedUnits = "px";
-
-    /**
-     * Calibration for each dimension.  Stored as physical distance per pixel
-     */
-    private HashMap<Integer, Double> calibration = new HashMap<>();
 
 
     // CONSTRUCTORS
 
-    public Obj(String name, int ID) {
+    public Obj(String name, int ID, double dppXY, double dppZ, String calibratedUnits) {
+        super(dppXY,dppZ,calibratedUnits);
+
         this.name = name;
         this.ID = ID;
-
-        // Setting default values for C and T
-        positions.put(C, 0);
-        positions.put(T, 0);
 
     }
 
 
     // PUBLIC METHODS
 
-    public void addCoordinate(int dim, int coordinate) {
-        if (dim < 3) {
-            coordinates.computeIfAbsent(dim, k -> new ArrayList<>());
-            coordinates.get(dim).add(coordinate);
-        } else {
-            positions.put(dim, coordinate);
-        }
-    }
-
-    public void removeCoordinate(int dim, double coordinate) {
-        coordinates.get(dim).remove(coordinate);
-
-    }
-
     public int[][] getCoordinateRange() {
         int[][] dimSize = new int[3][2];
 
-        for (int dim : coordinates.keySet()) {
-            if (coordinates.get(dim) != null) {
-                ArrayList<Integer> vals = coordinates.get(dim);
-                dimSize[dim][0] = Collections.min(vals);
-                dimSize[dim][1] = Collections.max(vals);
-            }
-        }
+        ArrayList<Integer> x = getXCoords();
+        ArrayList<Integer> y = getYCoords();
+        ArrayList<Integer> z = getZCoords();
+
+        dimSize[0][0] = Collections.min(x);
+        dimSize[0][1] = Collections.max(x);
+        dimSize[1][0] = Collections.min(y);
+        dimSize[1][1] = Collections.max(y);
+        dimSize[2][0] = Collections.min(z);
+        dimSize[2][1] = Collections.max(z);
 
         return dimSize;
 
@@ -100,33 +64,9 @@ public class Obj {
 
     }
 
-    public void addCalibration(Integer dim, double cal) {
-        calibration.put(dim, cal);
-
-    }
-
-    public double getCalibration(Integer dim) {
-        // If no calibration has been set, return 1
-        if (coordinates.get(dim) == null) return 1;
-
-        return calibration.get(dim);
-
-    }
-
-    /**
-     * Copies all calibration dimensions from another object
-     * @param object
-     */
-    public void copyCalibration(Obj object) {
-        for (int dim:object.getCalibration().keySet()) {
-            calibration.put(dim,object.getCalibration(dim));
-
-        }
-    }
-
     @Override
     public String toString() {
-        return "HCObject " + name + ", ID = "+ID;
+        return "Object " + name + ", ID = "+ID;
 
     }
 
@@ -146,77 +86,33 @@ public class Obj {
         this.ID = ID;
     }
 
-    public int getNumberOfDimensions() {
-        // The number of position dimensions, plus the original 3 (XYZ)
-        return positions.size()+3;
-
+    public int getT() {
+        return T;
     }
 
-    /**
-     * Setting one of the XYZ coordinates
-     *
-     * @param dim
-     * @param coordinateList
-     */
-    public void setCoordinates(int dim, ArrayList<Integer> coordinateList) {
-        assert dim < 3;
-        coordinates.put(dim, coordinateList);
-
+    public void setT(int t) {
+        T = t;
     }
 
-    /**
-     * Setting a single-valued coordinate (e.g. C or T)
-     *
-     * @param dim
-     * @param coordinateList
-     */
-    public void setCoordinates(int dim, int coordinateList) {
-        assert dim >= 3;
-        positions.put(dim, coordinateList);
+    public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {
+        if (!useFullHierarchy) return parents;
 
-    }
+        // Adding each parent and then the parent of that
+        LinkedHashMap<String,Obj> parentHierarchy = new LinkedHashMap<>(parents);
 
-    public <T> T getCoordinates(int dim) {
-        // Returning one of the XYZ coordinates
-        if (dim < 3) {
-            return (T) coordinates.get(dim);
+        // Going through each parent, adding the parents of that.
+        for (Obj parent:parents.values()) {
+            if (parent == null) continue;
+
+            LinkedHashMap<String,Obj> currentParents = parent.getParents(true);
+            if (currentParents == null) continue;
+
+            parentHierarchy.putAll(currentParents);
+
         }
 
-        // Returning a single-valued coordinate
-        return (T) positions.get(dim);
+        return parentHierarchy;
 
-    }
-
-    public HashMap<Integer, Integer> getPositions() {
-        return positions;
-    }
-
-    public void setPositions(HashMap<Integer, Integer> positions) {
-        this.positions = positions;
-    }
-
-    public Integer getPosition(int dim) {
-        return positions.get(dim);
-
-    }
-
-    public void setPosition(int dim, int pos) {
-        positions.put(dim, pos);
-
-    }
-
-    public HashMap<Integer, ArrayList<Integer>> getCoordinates() {
-        return coordinates;
-
-    }
-
-    public void setCoordinates(HashMap<Integer, ArrayList<Integer>> coordinates) {
-        this.coordinates = coordinates;
-
-    }
-
-    public LinkedHashMap<String, Obj> getParents() {
-        return parents;
     }
 
     public void setParents(LinkedHashMap<String, Obj> parents) {
@@ -307,26 +203,6 @@ public class Obj {
 
     }
 
-    public HashMap<Integer, Double> getCalibration() {
-        return calibration;
-    }
-
-    public void setCalibration(HashMap<Integer, Double> calibration) {
-        this.calibration = calibration;
-    }
-
-    public String getCalibratedUnits() {
-        return calibratedUnits;
-    }
-
-    public void setCalibratedUnits(String calibratedUnits) {
-        this.calibratedUnits = calibratedUnits;
-    }
-
-    public double getCentroid(Integer dim) {
-        return MeasureObjectCentroid.calculateCentroid(getCoordinates(dim));
-
-    }
 
 }
 

@@ -2,7 +2,11 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.plugin.Duplicator;
+import ij.plugin.frame.ThresholdAdjuster;
+import inra.ijpb.binary.BinaryImages;
+import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -16,12 +20,14 @@ public class BinaryOperations extends HCModule {
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
     public static final String SHOW_IMAGE = "Show image";
+    public static final String DYNAMIC = "Dynamic (Watershed)";
 
     private static final String DILATE = "Dilate 2D";
     private static final String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
     private static final String ERODE = "Erode 2D";
     private static final String FILL_HOLES_2D = "Fill holes 2D";
-    private static final String[] OPERATION_MODES = new String[]{DILATE,MANHATTAN_DISTANCE_MAP_2D,ERODE,FILL_HOLES_2D};
+    private static final String WATERSHED_3D = "Watershed 2D";
+    private static final String[] OPERATION_MODES = new String[]{DILATE,MANHATTAN_DISTANCE_MAP_2D,ERODE,FILL_HOLES_2D,WATERSHED_3D};
 
     @Override
     public String getTitle() {
@@ -35,10 +41,7 @@ public class BinaryOperations extends HCModule {
     }
 
     @Override
-    public void execute(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
-
+    public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -47,28 +50,51 @@ public class BinaryOperations extends HCModule {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String operationMode = parameters.getValue(OPERATION_MODE);
+        int dynamic = parameters.getValue(DYNAMIC);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
         // Applying process to stack
-        if (operationMode.equals(DILATE)) {
-            int numIterations = parameters.getValue(NUM_ITERATIONS);
-            if (verbose) System.out.println("["+moduleName+"] Dilate ("+numIterations+"x)");
-            for (int i=0;i<numIterations;i++) {
-                IJ.run(inputImagePlus, "Dilate", "stack");
-            }
+        switch (operationMode) {
+            case DILATE:
+                int numIterations = parameters.getValue(NUM_ITERATIONS);
+                if (verbose) System.out.println("["+moduleName+"] Dilate ("+numIterations+"x)");
+                for (int i=0;i<numIterations;i++) {
+                    IJ.run(inputImagePlus, "Dilate", "stack");
+                }
 
-        } else if (operationMode.equals(ERODE)) {
-            int numIterations = parameters.getValue(NUM_ITERATIONS);
-            if (verbose) System.out.println("["+moduleName+"] Erode ("+numIterations+"x)");
-            for (int i=0;i<numIterations;i++) {
-                IJ.run(inputImagePlus, "Erode", "stack");
-            }
+                break;
 
-        } else if (operationMode.equals(FILL_HOLES_2D)) {
-            if (verbose) System.out.println("["+moduleName+"] Filling binary holes");
-            IJ.run(inputImagePlus,"Fill Holes", "stack");
+            case ERODE:
+                numIterations = parameters.getValue(NUM_ITERATIONS);
+                if (verbose) System.out.println("["+moduleName+"] Erode ("+numIterations+"x)");
+                for (int i=0;i<numIterations;i++) {
+                    IJ.run(inputImagePlus, "Erode", "stack");
+                }
+
+                break;
+
+            case FILL_HOLES_2D:
+                if (verbose) System.out.println("["+moduleName+"] Filling binary holes");
+                IJ.run(inputImagePlus,"Fill Holes", "stack");
+
+                break;
+
+            case WATERSHED_3D:
+                if (verbose) System.out.println("["+moduleName+"] Calculating distance map");
+                IJ.run(inputImagePlus,"Invert", "stack");
+                ImagePlus distIpl = new ImagePlus("Dist", BinaryImages.distanceMap(inputImagePlus.getImageStack()));
+                distIpl.getProcessor().invert();
+
+                if (verbose) System.out.println("["+moduleName+"] Applying watershed segmentation");
+                inputImagePlus.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(distIpl.getImageStack(),inputImagePlus.getImageStack(),dynamic,6,false));
+
+                IJ.setRawThreshold(inputImagePlus, 0, 0, null);
+                IJ.run(inputImagePlus, "Convert to Mask", "method=Default background=Light");
+                IJ.run(inputImagePlus, "Invert LUT", "");
+
+                break;
 
         }
 
@@ -90,9 +116,6 @@ public class BinaryOperations extends HCModule {
                 new Duplicator().run(inputImagePlus).show();
             }
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Complete");
-
     }
 
     @Override
@@ -103,6 +126,7 @@ public class BinaryOperations extends HCModule {
         parameters.addParameter(new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OPERATION_MODES[0],OPERATION_MODES));
         parameters.addParameter(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(DYNAMIC, Parameter.INTEGER,1));
 
     }
 
@@ -121,6 +145,9 @@ public class BinaryOperations extends HCModule {
 
         if (parameters.getValue(OPERATION_MODE).equals(DILATE) | parameters.getValue(OPERATION_MODE).equals(ERODE)) {
             returnedParameters.addParameter(parameters.getParameter(NUM_ITERATIONS));
+
+        } else if (parameters.getValue(OPERATION_MODE).equals(WATERSHED_3D)) {
+            returnedParameters.addParameter(parameters.getParameter(DYNAMIC));
 
         }
 
