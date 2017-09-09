@@ -31,6 +31,7 @@ public class MainGUI {
     private HCModule activeModule = null;
     private JFrame frame = new JFrame();
     private JMenuBar menuBar = new JMenuBar();
+    private JMenu viewMenu = new JMenu("View");
     private JPanel controlPanel = new JPanel();
     private JPanel inputEnablePanel = new JPanel();
     private JPanel outputEnablePanel = new JPanel();
@@ -65,8 +66,8 @@ public class MainGUI {
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
 
-//        renderBasicMode();
-        renderEditingMode();
+        renderBasicMode();
+//        renderEditingMode();
 
         // Final bits for listeners
 //        frame.addMouseListener(this);
@@ -83,35 +84,33 @@ public class MainGUI {
         // Creating the file menu
         JMenu menu = new JMenu("File");
         menuBar.add(menu);
-
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.LOAD_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SAVE_ANALYSIS));
 
         // Creating the analysis menu
         menu = new JMenu("Analysis");
         menuBar.add(menu);
-
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.START_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.STOP_ANALYSIS));
 
         // Creating the new menu
-        menu = new JMenu("View");
-        menuBar.add(menu);
-
+        menuBar.add(viewMenu);
         ButtonGroup group = new ButtonGroup();
         ViewControlButton rbMenuItem = new ViewControlButton(this, ViewControlButton.BASIC_MODE);
         group.add(rbMenuItem);
-        menu.add(rbMenuItem);
+        viewMenu.add(rbMenuItem);
 
         rbMenuItem = new ViewControlButton(this, ViewControlButton.EDITING_MODE);
         group.add(rbMenuItem);
-        menu.add(rbMenuItem);
+        viewMenu.add(rbMenuItem);
 
     }
 
     private void clearFrame() {
         frame.remove(controlPanel);
+        frame.remove(inputEnablePanel);
+        frame.remove(outputEnablePanel);
         frame.remove(modulesPanel);
         frame.remove(modulesScrollPane);
         frame.remove(statusPanel);
@@ -173,14 +172,14 @@ public class MainGUI {
         frame.add(controlPanel, c);
 
         // Initialising the status panel
-//        initialiseStatusPanel(1080);
-//        c.gridheight = 1;
-//        c.gridy++;
-//        c.gridy++;
-//        c.gridy++;
-//        c.gridwidth = 3;
-//        c.insets = new Insets(0,5,5,5);
-//        frame.add(statusPanel,c);
+        initialiseStatusPanel(1080);
+        c.gridheight = 1;
+        c.gridy++;
+        c.gridy++;
+        c.gridy++;
+        c.gridwidth = 3;
+        c.insets = new Insets(0,5,5,5);
+        frame.add(statusPanel,c);
 
         // Initialising the input enable panel
         initialiseInputEnablePanel();
@@ -289,6 +288,8 @@ public class MainGUI {
     }
 
     private void initialiseInputEnablePanel() {
+        inputEnablePanel = new JPanel();
+
         // Initialising the panel
         inputEnablePanel.setPreferredSize(new Dimension(moduleButtonWidth + 15, bigButtonSize + 15));
         inputEnablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
@@ -312,6 +313,8 @@ public class MainGUI {
     }
 
     private void initialiseOutputEnablePanel() {
+        outputEnablePanel = new JPanel();
+
         // Initialising the panel
         outputEnablePanel.setPreferredSize(new Dimension(moduleButtonWidth + 15, bigButtonSize + 15));
         outputEnablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
@@ -576,29 +579,41 @@ public class MainGUI {
         c.gridy = 0;
         c.weightx = 0;
         c.weighty = 0;
-        c.insets = new Insets(0, 0, 0, 5);
-        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5,5,20,5);
+        c.anchor = GridBagConstraints.WEST;
 
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
         if (activeModule == null) {
             return;
         }
 
+        // Adding the nickname control to the top of the panel
+        ModuleName moduleName = new ModuleName(this,activeModule);
+        paramsPanel.add(moduleName,c);
+
+        ResetModuleName resetModuleName = new ResetModuleName(this,activeModule);
+        c.gridx++;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.EAST;
+        paramsPanel.add(resetModuleName,c);
+
         // If the active module hasn't got parameters enabled, skip it
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(0, 0, 0, 5);
+        c.gridwidth = 2;
         if (activeModule.getActiveParameters() != null) {
             Iterator<Parameter> iterator = activeModule.getActiveParameters().values().iterator();
             while (iterator.hasNext()) {
                 Parameter parameter = iterator.next();
 
                 c.gridx = 0;
+                c.gridy++;
                 JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule, 635);
                 paramsPanel.add(paramPanel, c);
 
                 // Adding a checkbox to determine if the parameter should be visible to the user
                 c.gridx++;
                 paramsPanel.add(new VisibleCheck(parameter), c);
-
-                c.gridy++;
 
             }
         }
@@ -619,6 +634,7 @@ public class MainGUI {
         c.anchor = GridBagConstraints.LAST_LINE_START;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
+        c.gridy++;
         c.weighty = 1;
         c.gridwidth = 3;
         c.insets = new Insets(5, 5, 5, 5);
@@ -674,7 +690,7 @@ public class MainGUI {
             }
             if (!hasVisibleParameters) continue;
 
-            JPanel titlePanel = componentFactory.createBasicModuleHeading(module, 500 - 50);
+            JPanel titlePanel = componentFactory.createBasicModuleHeading(module, 460);
 
             c.gridy++;
             c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -682,10 +698,9 @@ public class MainGUI {
 
             for (Parameter parameter : module.getActiveParameters().values()) {
                 if (parameter.isVisible()) {
-                    JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, module, 500 - 80);
+                    JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, module, 460);
 
                     c.gridy++;
-                    c.anchor = GridBagConstraints.FIRST_LINE_END;
                     basicModulesPanel.add(paramPanel, c);
 
                 }
@@ -810,6 +825,10 @@ public class MainGUI {
 
     public JPopupMenu getModuleListMenu() {
         return moduleListMenu;
+    }
+
+    public JMenu getViewMenu() {
+        return viewMenu;
     }
 
     public int getLastModuleEval() {

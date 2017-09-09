@@ -60,7 +60,7 @@ public class MeasureObjectCentroid extends HCModule {
 
     @Override
     public String getHelp() {
-        return null;
+        return "Z-coordinates are specified in terms of slices (not pixels)";
     }
 
     @Override
@@ -84,19 +84,19 @@ public class MeasureObjectCentroid extends HCModule {
             if (useMean) {
                 if (x != null) {
                     double xMean = calculateCentroid(x,MEAN);
-                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.X_CENTROID_MEAN,xMean);
+                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.X_CENTROID_MEAN_PX,xMean);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (y!= null) {
                     double yMean = calculateCentroid(y,MEAN);
-                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Y_CENTROID_MEAN,yMean);
+                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Y_CENTROID_MEAN_PX,yMean);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (z!= null) {
                     double zMean = calculateCentroid(z,MEAN);
-                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Z_CENTROID_MEAN,zMean);
+                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Z_CENTROID_MEAN_SLICE,zMean);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
@@ -105,19 +105,19 @@ public class MeasureObjectCentroid extends HCModule {
             if (useMedian) {
                 if (x != null) {
                     double xMedian = calculateCentroid(x,MEDIAN);
-                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.X_CENTROID_MEDIAN,xMedian);
+                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.X_CENTROID_MEDIAN_PX,xMedian);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (y!= null) {
                     double yMedian = calculateCentroid(y,MEDIAN);
-                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Y_CENTROID_MEDIAN,yMedian);
+                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Y_CENTROID_MEDIAN_PX,yMedian);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (z!= null) {
                     double zMedian = calculateCentroid(z,MEDIAN);
-                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Z_CENTROID_MEDIAN,zMedian);
+                    MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Z_CENTROID_MEDIAN_SLICE,zMedian);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
@@ -139,7 +139,24 @@ public class MeasureObjectCentroid extends HCModule {
 
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
+        String choice = parameters.getValue(CENTROID_METHOD);
+        boolean useMean = choice.equals(MEAN) | choice.equals(ALL);
+        boolean useMedian = choice.equals(MEDIAN) | choice.equals(ALL);
+
+
+        if (useMean) {
+            measurements.addMeasurement(inputObjectsName,MIAMeasurement.X_CENTROID_MEAN_PX);
+            measurements.addMeasurement(inputObjectsName,MIAMeasurement.Y_CENTROID_MEAN_PX);
+            measurements.addMeasurement(inputObjectsName,MIAMeasurement.Z_CENTROID_MEAN_SLICE);
+        }
+
+        if (useMedian) {
+            measurements.addMeasurement(inputObjectsName, MIAMeasurement.X_CENTROID_MEDIAN_PX);
+            measurements.addMeasurement(inputObjectsName, MIAMeasurement.Y_CENTROID_MEDIAN_PX);
+            measurements.addMeasurement(inputObjectsName, MIAMeasurement.Z_CENTROID_MEDIAN_SLICE);
+        }
     }
 
     @Override

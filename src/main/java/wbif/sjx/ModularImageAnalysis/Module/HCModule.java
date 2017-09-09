@@ -16,6 +16,7 @@ import java.io.Serializable;
  */
 public abstract class HCModule implements Serializable {
     public ParameterCollection parameters = new ParameterCollection();
+    private String nickname;
     private String notes = "";
     private boolean enabled = true;
     protected String moduleName = "";
@@ -26,6 +27,7 @@ public abstract class HCModule implements Serializable {
     public HCModule() {
         initialiseParameters();
         moduleName = this.getClass().getSimpleName();
+        nickname = moduleName;
 
     }
 
@@ -104,6 +106,14 @@ public abstract class HCModule implements Serializable {
     void run(Workspace workspace) throws GenericMIAException {
         run(workspace,false);
 
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getNotes() {

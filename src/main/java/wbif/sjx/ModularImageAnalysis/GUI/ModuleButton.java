@@ -22,7 +22,7 @@ public class ModuleButton extends JToggleButton implements ActionListener {
         setFocusPainted(false);
         setSelected(false);
         addActionListener(this);
-        if (module != null) setText(module.getTitle());
+        setText(module.getNickname());
 
     }
 

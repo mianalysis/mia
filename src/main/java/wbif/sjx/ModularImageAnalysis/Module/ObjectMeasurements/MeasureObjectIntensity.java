@@ -20,6 +20,7 @@ public class MeasureObjectIntensity extends HCModule {
     public static final String MEASURE_MIN = "Measure minimum";
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
+    public static final String MEASURE_WEIGHTED_CENTRE = "Measure weighted centre";
 
 
     private void measureIntensity(Obj object, ImagePlus ipl) {
@@ -56,6 +57,39 @@ public class MeasureObjectIntensity extends HCModule {
 
     }
 
+    private void measureWeightedCentre(Obj object, ImagePlus ipl) {
+        // Getting parameters
+        String imageName = parameters.getValue(INPUT_IMAGE);
+
+        // Initialising the cumulative statistics objects to store pixel intensities in each direction.
+        CumStat csX = new CumStat();
+        CumStat csY = new CumStat();
+        CumStat csZ = new CumStat();
+
+        // Getting pixel coordinates
+        ArrayList<Integer> x = object.getXCoords();
+        ArrayList<Integer> y = object.getYCoords();
+        ArrayList<Integer> z = object.getZCoords();
+        int tPos = object.getT();
+
+        // Running through all pixels in this object and adding the intensity to the MultiCumStat object
+        for (int i=0;i<x.size();i++) {
+            ipl.setPosition(1,z.get(i)+1,tPos+1);
+            csX.addMeasure(x.get(i),ipl.getProcessor().getPixelValue(x.get(i),y.get(i)));
+            csY.addMeasure(y.get(i),ipl.getProcessor().getPixelValue(x.get(i),y.get(i)));
+            csZ.addMeasure(z.get(i),ipl.getProcessor().getPixelValue(x.get(i),y.get(i)));
+
+        }
+
+        object.addMeasurement(new MIAMeasurement(imageName+"_X_CENTRE_MEAN (PX)", csX.getMean()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_X_CENTRE_STD (PX)", csX.getStd()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_Y_CENTRE_MEAN (PX)", csY.getMean()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_Y_CENTRE_STD (PX)", csY.getStd()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_Z_CENTRE_MEAN (SLICE)", csZ.getMean()));
+        object.addMeasurement(new MIAMeasurement(imageName+"_Z_CENTRE_STD (SLICE)", csZ.getStd()));
+
+    }
+
     @Override
     public String getTitle() {
         return "Measure object intensity";
@@ -84,6 +118,11 @@ public class MeasureObjectIntensity extends HCModule {
         // Measuring intensity for each object and adding the measurement to that object
         for (Obj object:objects.values()) measureIntensity(object,ipl);
 
+        // If specified, measuring weighted centre for intensity
+        if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
+            for (Obj object:objects.values()) measureWeightedCentre(object,ipl);
+        }
+
         if (verbose) System.out.println("["+moduleName+"] Complete");
 
     }
@@ -97,6 +136,7 @@ public class MeasureObjectIntensity extends HCModule {
         parameters.addParameter(new Parameter(MEASURE_MAX, Parameter.BOOLEAN, true));
         parameters.addParameter(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
         parameters.addParameter(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
+        parameters.addParameter(new Parameter(MEASURE_WEIGHTED_CENTRE, Parameter.BOOLEAN, true));
 
     }
 
@@ -112,7 +152,8 @@ public class MeasureObjectIntensity extends HCModule {
         boolean calcMin = parameters.getValue(MEASURE_MIN);
         boolean calcMax = parameters.getValue(MEASURE_MAX);
         boolean calcStdev = parameters.getValue(MEASURE_STDEV);
-        boolean calcSum = parameters.getValue(MEASURE_STDEV);
+        boolean calcSum = parameters.getValue(MEASURE_SUM);
+        boolean calcCent = parameters.getValue(MEASURE_WEIGHTED_CENTRE);
 
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -122,6 +163,12 @@ public class MeasureObjectIntensity extends HCModule {
         if (calcMax) measurements.addMeasurement(inputObjectsName,inputImageName+"_MAX");
         if (calcStdev) measurements.addMeasurement(inputObjectsName,inputImageName+"_STD");
         if (calcSum) measurements.addMeasurement(inputObjectsName,inputImageName+"_SUM");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_MEAN (PX)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_STD (PX)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_MEAN (PX)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_STD (PX)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_MEAN (SLICE)");
+        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_STD (SLICE)");
 
     }
 
