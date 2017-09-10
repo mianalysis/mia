@@ -1,12 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -16,6 +15,12 @@ import static org.junit.Assert.*;
  */
 public class ProjectObjectsTest {
     private double tolerance = 1E-2;
+
+    @Test
+    public void testGetTitle() throws Exception {
+        assertNotNull(new ProjectObjects().getTitle());
+
+    }
 
     @Test
     public void testRun() throws Exception {
@@ -51,7 +56,7 @@ public class ProjectObjectsTest {
         assertEquals(8,workspace.getObjectSet(outputObjectsName).size());
 
         // Getting expected values
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Testing coordinate range for projected objects.  These are accessed via the number of voxels of the parent
         // (as this is how they are stored in the expected values HashMap)
@@ -75,21 +80,20 @@ public class ProjectObjectsTest {
             int nVoxels = parentObject.getNVoxels();
 
             // Getting the relevant measures
-            double[] expected = expectedValues.get(nVoxels);
+            HashMap<ExpectedObjects3D.Measures, Object> expected = expectedValues.get(nVoxels);
             assertNotNull("Null means no expected object with the specified number of voxels",expected);
 
             // Testing coordinate ranges
             int[][] coordinateRange = testObject.getCoordinateRange();
-            assertEquals("X-min",expected[ExpectedObjects3D.X_MIN],coordinateRange[0][0],tolerance);
-            assertEquals("X-max",expected[ExpectedObjects3D.X_MAX],coordinateRange[0][1],tolerance);
-            assertEquals("Y-min",expected[ExpectedObjects3D.Y_MIN],coordinateRange[1][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects3D.Y_MAX],coordinateRange[1][1],tolerance);
-            assertEquals("Z-min",0,0);
+            assertEquals("X-min",(int) expected.get(ExpectedObjects3D.Measures.X_MIN),coordinateRange[0][0],tolerance);
+            assertEquals("X-max",(int) expected.get(ExpectedObjects3D.Measures.X_MAX),coordinateRange[0][1],tolerance);
+            assertEquals("Y-min",(int) expected.get(ExpectedObjects3D.Measures.Y_MIN),coordinateRange[1][0],tolerance);
+            assertEquals("Y-max",(int) expected.get(ExpectedObjects3D.Measures.Y_MAX),coordinateRange[1][1],tolerance);
+              assertEquals("Z-min",0,0);
             assertEquals("Z-max",0,0,tolerance);
-            assertEquals("F",expected[ExpectedObjects3D.F],testObject.getT(),tolerance);
-
+            assertEquals("F",(int) expected.get(ExpectedObjects3D.Measures.F),testObject.getT(),tolerance);
             // Testing the number of voxels in the test object
-            int expectedNVoxels = (int) expected[ExpectedObjects3D.N_VOXELS_PROJ];
+            int expectedNVoxels = (int) expected.get(ExpectedObjects3D.Measures.N_VOXELS_PROJ);
             int actualNVoxels = testObject.getPoints().size();
             assertEquals("Number of voxels", expectedNVoxels, actualNVoxels);
 

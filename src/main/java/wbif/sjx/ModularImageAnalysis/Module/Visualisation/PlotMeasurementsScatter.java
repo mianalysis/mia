@@ -21,7 +21,13 @@ public class PlotMeasurementsScatter extends HCModule {
     public static final String MEASUREMENT3 = "Third measurement (Colour)";
     public static final String COLOURMAP = "Colourmap";
 
-    private static final String[] COLOURMAPS = new String[]{"Red to blue","Red to green"};
+    public interface ColourMaps {
+        String RED_TO_BLUE = "Red to blue";
+        String RED_TO_GREEN = "Blue to green";
+
+        String[] ALL = new String[]{"Red to blue", "Red to green"};
+
+    }
 
     private Color[] createColourGradient(double startH, double endH, double[] values) {
         // Getting colour range
@@ -102,10 +108,10 @@ public class PlotMeasurementsScatter extends HCModule {
             Plot plot = new Plot(title, measurement1, measurement2);
 
             Color[] colors = null;
-            if (colourmap.equals(COLOURMAPS[0])) { // Red to blue
+            if (colourmap.equals(ColourMaps.RED_TO_BLUE)) { // Red to blue
                 colors = createColourGradient(0,240d/255d,measurementValues3);
 
-            } else if (colourmap.equals(COLOURMAPS[1])) { // Red to green
+            } else if (colourmap.equals(ColourMaps.RED_TO_GREEN)) { // Red to green
                 colors = createColourGradient(0,120d/255d,measurementValues3);
 
             }
@@ -157,7 +163,7 @@ public class PlotMeasurementsScatter extends HCModule {
         parameters.addParameter(new Parameter(MEASUREMENT2, Parameter.MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(INCLUDE_COLOUR, Parameter.BOOLEAN,false,null));
         parameters.addParameter(new Parameter(MEASUREMENT3, Parameter.MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(COLOURMAP, Parameter.CHOICE_ARRAY,COLOURMAPS[0],COLOURMAPS));
+        parameters.addParameter(new Parameter(COLOURMAP, Parameter.CHOICE_ARRAY,ColourMaps.RED_TO_BLUE,ColourMaps.ALL));
 
     }
 

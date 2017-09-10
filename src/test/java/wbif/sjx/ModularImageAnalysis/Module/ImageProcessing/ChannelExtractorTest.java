@@ -3,9 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.net.URLDecoder;
@@ -16,6 +14,12 @@ import static org.junit.Assert.*;
  * Created by Stephen Cross on 09/09/2017.
  */
 public class ChannelExtractorTest {
+    @Test
+    public void testGetTitle() throws Exception {
+        assertNotNull(new ChannelExtractor().getTitle());
+
+    }
+
     @Test
     public void testRun8bit5DChannel1() throws Exception {
         // Creating a new workspace
@@ -399,5 +403,4 @@ public class ChannelExtractorTest {
             }
         }
     }
-
 }

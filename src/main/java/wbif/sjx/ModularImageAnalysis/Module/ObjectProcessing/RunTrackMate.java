@@ -49,9 +49,13 @@ public class RunTrackMate extends HCModule {
     public static final String SHOW_ID = "Show ID";
     public static final String ID_MODE = "ID source";
 
-    private static final String USE_SPOT_ID = "Use spot ID";
-    private static final String USE_TRACK_ID = "Use track ID";
-    private static final String[] ID_MODES = new String[]{USE_SPOT_ID,USE_TRACK_ID};
+    public interface IDModes {
+        String USE_SPOT_ID = "Use spot ID";
+        String USE_TRACK_ID = "Use track ID";
+
+        String[] ALL = new String[]{USE_SPOT_ID, USE_TRACK_ID};
+
+    }
 
     private static void createOverlay(ObjSet inputObjects, ImagePlus ipl, boolean showID, boolean useParentID, String parentObjectsName) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -360,7 +364,7 @@ public class RunTrackMate extends HCModule {
             boolean showID = parameters.getValue(SHOW_ID);
             boolean useTrackID = false;
             if (parameters.getValue(DO_TRACKING)) {
-                if (parameters.getValue(ID_MODE).equals(USE_TRACK_ID)) {
+                if (parameters.getValue(ID_MODE).equals(IDModes.USE_TRACK_ID)) {
                     useTrackID = true;
                 }
             }
@@ -400,7 +404,7 @@ public class RunTrackMate extends HCModule {
 
         parameters.addParameter(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN,false));
         parameters.addParameter(new Parameter(SHOW_ID, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(ID_MODE, Parameter.CHOICE_ARRAY,ID_MODES[0],ID_MODES));
+        parameters.addParameter(new Parameter(ID_MODE, Parameter.CHOICE_ARRAY,IDModes.USE_SPOT_ID,IDModes.ALL));
 
     }
 

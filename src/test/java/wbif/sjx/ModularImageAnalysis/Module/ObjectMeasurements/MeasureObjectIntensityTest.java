@@ -6,7 +6,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
@@ -21,6 +21,12 @@ import static org.junit.Assert.*;
  * Created by Stephen Cross on 09/09/2017.
  */
 public class MeasureObjectIntensityTest {
+    @Test
+    public void testGetTitle() throws Exception {
+        assertNotNull(new MeasureObjectIntensity().getTitle());
+
+    }
+
     @Test
     public void testRun8bit3D() throws Exception {
         // Creating a new workspace
@@ -65,33 +71,33 @@ public class MeasureObjectIntensityTest {
         assertEquals(8,workspace.getObjectSet(inputObjectsName).size());
 
         // Getting expected values
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double[] currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            HashMap<ExpectedObjects3D.Measures, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
 
             assertEquals("Number of measurements",5,testObject.getMeasurements().size());
 
-            double expected = currExpectedValues[ExpectedObjects3D.I_MEAN_8BIT];
+            double expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MEAN_8BIT);
             double actual = testObject.getMeasurement("Test_image_MEAN").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedDouble, actual, 1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_MIN_8BIT];
+            int expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_MIN_8BIT);
             actual = testObject.getMeasurement("Test_image_MIN").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_MAX_8BIT];
+            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_MAX_8BIT);
             actual = testObject.getMeasurement("Test_image_MAX").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_STD_8BIT];
+            expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_STD_8BIT);
             actual = testObject.getMeasurement("Test_image_STD").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedDouble, actual, 1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_SUM_8BIT];
+            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_SUM_8BIT);
             actual = testObject.getMeasurement("Test_image_SUM").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 
         }
     }
@@ -140,33 +146,33 @@ public class MeasureObjectIntensityTest {
         assertEquals(8,workspace.getObjectSet(inputObjectsName).size());
 
         // Getting expected values
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double[] currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            HashMap<ExpectedObjects3D.Measures, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
 
-            assertEquals("Number of measurements",5,testObject.getMeasurements().size());
+            assertEquals("Number of measurements", 5, testObject.getMeasurements().size());
 
-            double expected = currExpectedValues[ExpectedObjects3D.I_MEAN_16BIT];
+            double expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MEAN_16BIT);
             double actual = testObject.getMeasurement("Test_image_MEAN").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedDouble, actual, 1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_MIN_16BIT];
+            int expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_MIN_16BIT);
             actual = testObject.getMeasurement("Test_image_MIN").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_MAX_16BIT];
+            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_MAX_16BIT);
             actual = testObject.getMeasurement("Test_image_MAX").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_STD_16BIT];
+            expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_STD_16BIT);
             actual = testObject.getMeasurement("Test_image_STD").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedDouble, actual, 1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_SUM_16BIT];
+            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_SUM_16BIT);
             actual = testObject.getMeasurement("Test_image_SUM").getValue();
-            assertEquals("Measurement value", expected, actual,1E-2);
+            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 
         }
     }
@@ -215,31 +221,31 @@ public class MeasureObjectIntensityTest {
         assertEquals(8,workspace.getObjectSet(inputObjectsName).size());
 
         // Getting expected values
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double[] currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            HashMap<ExpectedObjects3D.Measures, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
 
             assertEquals("Number of measurements",5,testObject.getMeasurements().size());
 
-            double expected = currExpectedValues[ExpectedObjects3D.I_MEAN_32BIT];
+            double expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MEAN_32BIT);
             double actual = testObject.getMeasurement("Test_image_MEAN").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_MIN_32BIT];
+            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MIN_32BIT);
             actual = testObject.getMeasurement("Test_image_MIN").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_MAX_32BIT];
+            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MAX_32BIT);
             actual = testObject.getMeasurement("Test_image_MAX").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_STD_32BIT];
+            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_STD_32BIT);
             actual = testObject.getMeasurement("Test_image_STD").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
-            expected = currExpectedValues[ExpectedObjects3D.I_SUM_32BIT];
+            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_SUM_32BIT);
             actual = testObject.getMeasurement("Test_image_SUM").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 

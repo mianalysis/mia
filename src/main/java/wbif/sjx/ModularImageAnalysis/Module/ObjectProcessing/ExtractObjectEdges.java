@@ -27,9 +27,13 @@ public class ExtractObjectEdges extends HCModule {
     public static final String EDGE_DISTANCE = "Distance";
     public static final String EDGE_PERCENTAGE = "Percentage";
 
-    private static final String DISTANCE_FROM_EDGE = "Distance to edge";
-    private static final String PERCENTAGE_FROM_EDGE = "Percentage of maximum distance to edge";
-    private static final String[] EDGE_MODES = new String[]{DISTANCE_FROM_EDGE,PERCENTAGE_FROM_EDGE};
+    public interface EdgeModes {
+        String DISTANCE_FROM_EDGE = "Distance to edge";
+        String PERCENTAGE_FROM_EDGE = "Percentage of maximum distance to edge";
+
+        String[] ALL = new String[]{DISTANCE_FROM_EDGE, PERCENTAGE_FROM_EDGE};
+
+    }
 
     @Override
     public String getTitle() {
@@ -113,7 +117,7 @@ public class ExtractObjectEdges extends HCModule {
             iplObj.setStack(distTransform.distanceMap(iplObj.getStack()));
 
             // If percentage is being used, calculate the current value for edgeDistance
-            if (edgeMode.equals(PERCENTAGE_FROM_EDGE)) {
+            if (edgeMode.equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
                 double maxDist = iplObj.getStatistics().max;
                 edgeDistance = (edgePercentage/100)*maxDist;
 
@@ -166,7 +170,7 @@ public class ExtractObjectEdges extends HCModule {
         parameters.addParameter(new Parameter(OUTPUT_EDGE_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(CREATE_INTERIOR_OBJECTS, Parameter.BOOLEAN, true));
         parameters.addParameter(new Parameter(OUTPUT_INTERIOR_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(EDGE_MODE, Parameter.CHOICE_ARRAY, EDGE_MODES[0], EDGE_MODES));
+        parameters.addParameter(new Parameter(EDGE_MODE, Parameter.CHOICE_ARRAY, EdgeModes.DISTANCE_FROM_EDGE, EdgeModes.ALL));
         parameters.addParameter(new Parameter(EDGE_DISTANCE, Parameter.DOUBLE, 1.0));
         parameters.addParameter(new Parameter(EDGE_PERCENTAGE, Parameter.DOUBLE, 1.0));
 
@@ -189,10 +193,10 @@ public class ExtractObjectEdges extends HCModule {
 
         returnedParameters.addParameter(parameters.getParameter(EDGE_MODE));
 
-        if (parameters.getValue(EDGE_MODE).equals(DISTANCE_FROM_EDGE)) {
+        if (parameters.getValue(EDGE_MODE).equals(EdgeModes.DISTANCE_FROM_EDGE)) {
             returnedParameters.addParameter(parameters.getParameter(EDGE_DISTANCE));
 
-        } else if (parameters.getValue(EDGE_MODE).equals(PERCENTAGE_FROM_EDGE)) {
+        } else if (parameters.getValue(EDGE_MODE).equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
             returnedParameters.addParameter(parameters.getParameter(EDGE_PERCENTAGE));
 
         }
