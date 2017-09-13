@@ -32,39 +32,47 @@ public class ObjectImageConverter extends HCModule {
     public static final String HIDE_IF_MISSING_PARENT = "Hide points without a parent";
     public static final String SHOW_IMAGE = "Show image";
 
-    private static final String IMAGE_TO_OBJECTS = "Image to objects";
-    private static final String OBJECTS_TO_IMAGE = "Objects to image";
-    public static final String[] CONVERSION_MODES = new String[]{IMAGE_TO_OBJECTS,OBJECTS_TO_IMAGE};
+    public interface ConversionModes {
+        String IMAGE_TO_OBJECTS = "Image to objects";
+        String OBJECTS_TO_IMAGE = "Objects to image";
 
-    private static final String SINGLE_COLOUR = "Single colour";
-    private static final String ID = "ID";
-    private static final String RANDOM_COLOUR = "Random colour";
-    private static final String MEASUREMENT_VALUE = "Measurement value";
-    private static final String PARENT_ID = "Parent ID";
-    public static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE,ID,PARENT_ID};
+        String[] ALL = new String[]{IMAGE_TO_OBJECTS, OBJECTS_TO_IMAGE};
+
+    }
+
+    public interface ColourModes {
+        String SINGLE_COLOUR = "Single colour";
+        String ID = "ID";
+        String RANDOM_COLOUR = "Random colour";
+        String MEASUREMENT_VALUE = "Measurement value";
+        String PARENT_ID = "Parent ID";
+
+        String[] ALL = new String[]{SINGLE_COLOUR, RANDOM_COLOUR, MEASUREMENT_VALUE, ID, PARENT_ID};
+
+    }
 
     public static Image convertObjectsToImage(ObjSet objects, String outputImageName, Image templateImage, String colourMode, String colourSource, boolean hideMissing) {
         ImagePlus ipl;
 
         int bitDepth = 8;
         switch (colourMode){
-            case SINGLE_COLOUR:
+            case ColourModes.SINGLE_COLOUR:
                 bitDepth = 8;
                 break;
 
-            case RANDOM_COLOUR:
+            case ColourModes.RANDOM_COLOUR:
                 bitDepth = 8;
                 break;
 
-            case MEASUREMENT_VALUE:
+            case ColourModes.MEASUREMENT_VALUE:
                 bitDepth = 32;
                 break;
 
-            case ID:
+            case ColourModes.ID:
                 bitDepth = 16;
                 break;
 
-            case PARENT_ID:
+            case ColourModes.PARENT_ID:
                 bitDepth = 16;
                 break;
 
@@ -118,23 +126,23 @@ public class ObjectImageConverter extends HCModule {
             double valDouble = 1;
             int valInt = 1;
             switch (colourMode){
-                case SINGLE_COLOUR:
+                case ColourModes.SINGLE_COLOUR:
                     valInt = 1;
                     break;
 
-                case RANDOM_COLOUR:
+                case ColourModes.RANDOM_COLOUR:
                     valInt = (int) Math.round(Math.random()*255);
                     break;
 
-                case MEASUREMENT_VALUE:
+                case ColourModes.MEASUREMENT_VALUE:
                     valDouble = object.getMeasurement(colourSource).getValue();
                     break;
 
-                case ID:
+                case ColourModes.ID:
                     valInt = object.getID();
                     break;
 
-                case PARENT_ID:
+                case ColourModes.PARENT_ID:
                     if (object.getParent(colourSource) == null) {
                         if (hideMissing) {
                             valInt = 0;
@@ -157,10 +165,10 @@ public class ObjectImageConverter extends HCModule {
 
                 ipl.setPosition(1,zPos+1,tPos+1);
 
-                if (colourMode.equals(SINGLE_COLOUR) | colourMode.equals(RANDOM_COLOUR) | colourMode.equals(ID) | colourMode.equals(PARENT_ID)) {
+                if (colourMode.equals(ColourModes.SINGLE_COLOUR) | colourMode.equals(ColourModes.RANDOM_COLOUR) | colourMode.equals(ColourModes.ID) | colourMode.equals(ColourModes.PARENT_ID)) {
                     ipl.getProcessor().putPixel(x.get(i), y.get(i), valInt);
 
-                } else if (colourMode.equals(MEASUREMENT_VALUE)) {
+                } else if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
                     ipl.getProcessor().putPixelValue(x.get(i), y.get(i), valDouble);
 
                 }
@@ -247,7 +255,7 @@ public class ObjectImageConverter extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         String conversionMode = parameters.getValue(CONVERSION_MODE);
 
-        if (conversionMode.equals(IMAGE_TO_OBJECTS)) {
+        if (conversionMode.equals(ConversionModes.IMAGE_TO_OBJECTS)) {
             String inputImageName = parameters.getValue(INPUT_IMAGE);
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
@@ -257,7 +265,7 @@ public class ObjectImageConverter extends HCModule {
 
             workspace.addObjects(objects);
 
-        } else if (conversionMode.equals(OBJECTS_TO_IMAGE)) {
+        } else if (conversionMode.equals(ConversionModes.OBJECTS_TO_IMAGE)) {
             String objectName = parameters.getValue(INPUT_OBJECTS);
             String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -266,10 +274,10 @@ public class ObjectImageConverter extends HCModule {
             boolean showImage = parameters.getValue(SHOW_IMAGE);
             boolean hideMissing = parameters.getValue(HIDE_IF_MISSING_PARENT);
 
-            if (parameters.getValue(COLOUR_MODE).equals(PARENT_ID)) {
+            if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
                 colourSource = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
 
-            } else if (parameters.getValue(COLOUR_MODE).equals(MEASUREMENT_VALUE)) {
+            } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.MEASUREMENT_VALUE)) {
                 colourSource = parameters.getValue(MEASUREMENT);
 
             }
@@ -294,13 +302,13 @@ public class ObjectImageConverter extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,CONVERSION_MODES[0],CONVERSION_MODES));
+        parameters.addParameter(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,ConversionModes.IMAGE_TO_OBJECTS,ConversionModes.ALL));
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
+        parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
         parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
         parameters.addParameter(new Parameter(HIDE_IF_MISSING_PARENT,Parameter.BOOLEAN,true));
@@ -313,17 +321,17 @@ public class ObjectImageConverter extends HCModule {
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.addParameter(parameters.getParameter(CONVERSION_MODE));
 
-        if (parameters.getValue(CONVERSION_MODE).equals(IMAGE_TO_OBJECTS)) {
+        if (parameters.getValue(CONVERSION_MODE).equals(ConversionModes.IMAGE_TO_OBJECTS)) {
             returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
             returnedParameters.addParameter(parameters.getParameter(OUTPUT_OBJECTS));
 
-        } else if(parameters.getValue(CONVERSION_MODE).equals(OBJECTS_TO_IMAGE)) {
+        } else if(parameters.getValue(CONVERSION_MODE).equals(ConversionModes.OBJECTS_TO_IMAGE)) {
             returnedParameters.addParameter(parameters.getParameter(TEMPLATE_IMAGE));
             returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
             returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
 
             returnedParameters.addParameter(parameters.getParameter(COLOUR_MODE));
-            if (parameters.getValue(COLOUR_MODE).equals(MEASUREMENT_VALUE)) {
+            if (parameters.getValue(COLOUR_MODE).equals(ColourModes.MEASUREMENT_VALUE)) {
                 // Use measurement
                 returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
 
@@ -332,7 +340,7 @@ public class ObjectImageConverter extends HCModule {
 
                 }
 
-            } else if (parameters.getValue(COLOUR_MODE).equals(PARENT_ID)) {
+            } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
                 // Use Parent ID
                 returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
                 returnedParameters.addParameter(parameters.getParameter(HIDE_IF_MISSING_PARENT));

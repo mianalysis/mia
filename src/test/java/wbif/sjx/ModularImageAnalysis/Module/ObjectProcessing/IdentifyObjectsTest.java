@@ -3,7 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectShape;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
@@ -19,6 +20,12 @@ import static org.junit.Assert.*;
  */
 public class IdentifyObjectsTest {
     private double tolerance = 1E-2;
+
+    @Test
+    public void testGetTitle() throws Exception {
+        assertNotNull(new IdentifyObjects().getTitle());
+
+    }
 
     @Test
     public void testRunBlackBackground8Bit3D() throws Exception {
@@ -53,25 +60,25 @@ public class IdentifyObjectsTest {
         assertEquals(8,objects.size());
 
         // Checking the spatial calibration and coordinate limits of each object
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         for (Obj object:objects.values()) {
             // Getting the number of voxels in this object (this is used as the key for the expected values map)
             int nVoxels = object.getNVoxels();
 
             // Getting the relevant measures
-            double[] expected = expectedValues.get(nVoxels);
+            HashMap<ExpectedObjects3D.Measures, Object> expected = expectedValues.get(nVoxels);
             assertNotNull("Null means no expected object with the specified number of voxels",expected);
 
             // Testing coordinate ranges
             int[][] coordinateRange = object.getCoordinateRange();
-            assertEquals("X-min",expected[ExpectedObjects3D.X_MIN],coordinateRange[0][0],tolerance);
-            assertEquals("X-max",expected[ExpectedObjects3D.X_MAX],coordinateRange[0][1],tolerance);
-            assertEquals("Y-min",expected[ExpectedObjects3D.Y_MIN],coordinateRange[1][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects3D.Y_MAX],coordinateRange[1][1],tolerance);
-            assertEquals("X-min",expected[ExpectedObjects3D.Z_MIN],coordinateRange[2][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects3D.Z_MAX],coordinateRange[2][1],tolerance);
-            assertEquals("F",expected[ExpectedObjects3D.F],object.getT(),tolerance);
+            assertEquals("X-min",(int) expected.get(ExpectedObjects3D.Measures.X_MIN),coordinateRange[0][0],tolerance);
+            assertEquals("X-max",(int) expected.get(ExpectedObjects3D.Measures.X_MAX),coordinateRange[0][1],tolerance);
+            assertEquals("Y-min",(int) expected.get(ExpectedObjects3D.Measures.Y_MIN),coordinateRange[1][0],tolerance);
+            assertEquals("Y-max",(int) expected.get(ExpectedObjects3D.Measures.Y_MAX),coordinateRange[1][1],tolerance);
+            assertEquals("X-min",(int) expected.get(ExpectedObjects3D.Measures.Z_MIN),coordinateRange[2][0],tolerance);
+            assertEquals("Y-max",(int) expected.get(ExpectedObjects3D.Measures.Z_MAX),coordinateRange[2][1],tolerance);
+            assertEquals("F",(int) expected.get(ExpectedObjects3D.Measures.F),object.getT(),tolerance);
 
             // Checking the objects have the correct spatial calibration
             double dppXY = object.getDistPerPxXY();
@@ -119,25 +126,25 @@ public class IdentifyObjectsTest {
         assertEquals(8,objects.size());
 
         // Checking the spatial calibration and coordinate limits of each object
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         for (Obj object:objects.values()) {
             // Getting the number of voxels in this object (this is used as the key for the expected values map)
             int nVoxels = object.getNVoxels();
 
             // Getting the relevant measures
-            double[] expected = expectedValues.get(nVoxels);
+            HashMap<ExpectedObjects3D.Measures, Object> expected = expectedValues.get(nVoxels);
             assertNotNull("Null means no expected object with the specified number of voxels",expected);
 
             // Testing coordinate ranges
             int[][] coordinateRange = object.getCoordinateRange();
-            assertEquals("X-min",expected[ExpectedObjects3D.X_MIN],coordinateRange[0][0],tolerance);
-            assertEquals("X-max",expected[ExpectedObjects3D.X_MAX],coordinateRange[0][1],tolerance);
-            assertEquals("Y-min",expected[ExpectedObjects3D.Y_MIN],coordinateRange[1][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects3D.Y_MAX],coordinateRange[1][1],tolerance);
-            assertEquals("X-min",expected[ExpectedObjects3D.Z_MIN],coordinateRange[2][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects3D.Z_MAX],coordinateRange[2][1],tolerance);
-            assertEquals("F",expected[ExpectedObjects3D.F],object.getT(),tolerance);
+            assertEquals("X-min",(int) expected.get(ExpectedObjects3D.Measures.X_MIN),coordinateRange[0][0],tolerance);
+            assertEquals("X-max",(int) expected.get(ExpectedObjects3D.Measures.X_MAX),coordinateRange[0][1],tolerance);
+            assertEquals("Y-min",(int) expected.get(ExpectedObjects3D.Measures.Y_MIN),coordinateRange[1][0],tolerance);
+            assertEquals("Y-max",(int) expected.get(ExpectedObjects3D.Measures.Y_MAX),coordinateRange[1][1],tolerance);
+            assertEquals("X-min",(int) expected.get(ExpectedObjects3D.Measures.Z_MIN),coordinateRange[2][0],tolerance);
+            assertEquals("Y-max",(int) expected.get(ExpectedObjects3D.Measures.Z_MAX),coordinateRange[2][1],tolerance);
+            assertEquals("F",(int) expected.get(ExpectedObjects3D.Measures.F),object.getT(),tolerance);
 
             // Checking the objects have the correct spatial calibration
             double dppXY = object.getDistPerPxXY();
@@ -181,25 +188,25 @@ public class IdentifyObjectsTest {
         assertEquals(8,objects.size());
 
         // Checking the spatial calibration and coordinate limits of each object
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         for (Obj object:objects.values()) {
             // Getting the number of voxels in this object (this is used as the key for the expected values map)
             int nVoxels = object.getNVoxels();
 
             // Getting the relevant measures
-            double[] expected = expectedValues.get(nVoxels);
+            HashMap<ExpectedObjects3D.Measures, Object> expected = expectedValues.get(nVoxels);
             assertNotNull("Null means no expected object with the specified number of voxels",expected);
 
             // Testing coordinate ranges
             int[][] coordinateRange = object.getCoordinateRange();
-            assertEquals("X-min",expected[ExpectedObjects3D.X_MIN],coordinateRange[0][0],tolerance);
-            assertEquals("X-max",expected[ExpectedObjects3D.X_MAX],coordinateRange[0][1],tolerance);
-            assertEquals("Y-min",expected[ExpectedObjects3D.Y_MIN],coordinateRange[1][0],tolerance);
-            assertEquals("Y-max",expected[ExpectedObjects3D.Y_MAX],coordinateRange[1][1],tolerance);
-            assertEquals("Z-min",expected[ExpectedObjects3D.Z_MIN],coordinateRange[2][0],tolerance);
-            assertEquals("Z-max",expected[ExpectedObjects3D.Z_MAX],coordinateRange[2][1],tolerance);
-            assertEquals("F",expected[ExpectedObjects3D.F],object.getT(),tolerance);
+            assertEquals("X-min",(int) expected.get(ExpectedObjects3D.Measures.X_MIN),coordinateRange[0][0],tolerance);
+            assertEquals("X-max",(int) expected.get(ExpectedObjects3D.Measures.X_MAX),coordinateRange[0][1],tolerance);
+            assertEquals("Y-min",(int) expected.get(ExpectedObjects3D.Measures.Y_MIN),coordinateRange[1][0],tolerance);
+            assertEquals("Y-max",(int) expected.get(ExpectedObjects3D.Measures.Y_MAX),coordinateRange[1][1],tolerance);
+            assertEquals("X-min",(int) expected.get(ExpectedObjects3D.Measures.Z_MIN),coordinateRange[2][0],tolerance);
+            assertEquals("Y-max",(int) expected.get(ExpectedObjects3D.Measures.Z_MAX),coordinateRange[2][1],tolerance);
+            assertEquals("F",(int) expected.get(ExpectedObjects3D.Measures.F),object.getT(),tolerance);
 
             // Checking the objects have the correct spatial calibration
             double dppXY = object.getDistPerPxXY();

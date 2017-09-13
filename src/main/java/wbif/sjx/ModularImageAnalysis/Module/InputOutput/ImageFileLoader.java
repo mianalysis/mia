@@ -38,9 +38,14 @@ public class ImageFileLoader extends HCModule {
     public static final String SHOW_IMAGE = "Show image";
     public static final String FLEX_BUGFIX = "Apply Flex bugfix (2 or fewer channels)";
 
-    private static final String CURRENT_FILE = "Current file";
-    private static final String SPECIFIC_FILE = "Specific file";
-    public static final String[] IMPORT_MODES = new String[]{CURRENT_FILE,SPECIFIC_FILE};
+    public interface ImportModes {
+        String CURRENT_FILE = "Current file";
+        String SPECIFIC_FILE = "Specific file";
+
+        String[] ALL = new String[]{CURRENT_FILE, SPECIFIC_FILE};
+
+    }
+
 
     private static ImagePlus getBFImage(String path, boolean flexFile) {
         ImagePlus ipl = null;
@@ -156,7 +161,7 @@ public class ImageFileLoader extends HCModule {
         boolean flexBugfix = parameters.getValue(FLEX_BUGFIX);
 
         // If the file currently in the workspace is to be used, update the file path accordingly
-        if (importMode.equals(CURRENT_FILE)) {
+        if (importMode.equals(ImportModes.CURRENT_FILE)) {
             if (workspace.getMetadata().getFile() == null) throw new GenericMIAException("Load file using Analysis > Set file to analyse");
             filePath = workspace.getMetadata().getFile().getAbsolutePath();
         }
@@ -189,7 +194,7 @@ public class ImageFileLoader extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,IMPORT_MODES[0],IMPORT_MODES));
+        parameters.addParameter(new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
         parameters.addParameter(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.addParameter(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
@@ -203,7 +208,7 @@ public class ImageFileLoader extends HCModule {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.addParameter(parameters.getParameter(IMPORT_MODE));
-        if (parameters.getValue(IMPORT_MODE).equals(SPECIFIC_FILE)) {
+        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)) {
             returnedParameters.addParameter(parameters.getParameter(FILE_PATH));
 
         }

@@ -26,9 +26,13 @@ public class GaussianFitter2D extends HCModule {
     public static final String MAX_EVALUATIONS = "Maximum number of evaluations";
     public static final String REMOVE_UNFIT = "Remove objects with failed fitting";
 
-    private static final String FIXED_VALUE = "Fixed value";
-    private static final String MEASUREMENT = "Measurement";
-    private static final String[] RADIUS_MODES = new String[]{FIXED_VALUE,MEASUREMENT};
+    public interface RadiusModes {
+        String FIXED_VALUE = "Fixed value";
+        String MEASUREMENT = "Measurement";
+
+        String[] ALL = new String[]{FIXED_VALUE, MEASUREMENT};
+
+    }
 
     private static final String X_0 = "X_0";
     private static final String Y_0 = "Y_0";
@@ -89,7 +93,7 @@ public class GaussianFitter2D extends HCModule {
 
             // Getting the radius of the object
             int r;
-            if (radiusMode.equals(FIXED_VALUE)) {
+            if (radiusMode.equals(RadiusModes.FIXED_VALUE)) {
                 r = (int) Math.ceil(parameters.getValue(RADIUS));
             } else {
                 double multiplier = parameters.getValue(MEASUREMENT_MULTIPLIER);
@@ -203,7 +207,7 @@ public class GaussianFitter2D extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(RADIUS_MODE, Parameter.CHOICE_ARRAY,FIXED_VALUE,RADIUS_MODES));
+        parameters.addParameter(new Parameter(RADIUS_MODE, Parameter.CHOICE_ARRAY,RadiusModes.FIXED_VALUE,RadiusModes.ALL));
         parameters.addParameter(new Parameter(RADIUS, Parameter.DOUBLE,null));
         parameters.addParameter(new Parameter(RADIUS_MEASUREMENT, Parameter.MEASUREMENT,null));
         parameters.addParameter(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
@@ -219,10 +223,10 @@ public class GaussianFitter2D extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(RADIUS_MODE));
 
-        if (parameters.getValue(RADIUS_MODE).equals(FIXED_VALUE)) {
+        if (parameters.getValue(RADIUS_MODE).equals(RadiusModes.FIXED_VALUE)) {
             returnedParameters.addParameter(parameters.getParameter(RADIUS));
 
-        } else if (parameters.getValue(RADIUS_MODE).equals(MEASUREMENT)) {
+        } else if (parameters.getValue(RADIUS_MODE).equals(RadiusModes.MEASUREMENT)) {
             returnedParameters.addParameter(parameters.getParameter(RADIUS_MEASUREMENT));
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(RADIUS_MEASUREMENT,inputObjectsName);

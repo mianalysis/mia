@@ -21,15 +21,23 @@ public class RelateObjects extends HCModule {
     public final static String TEST_CHILD_OBJECTS = "Child objects to test against";
     public final static String LINKING_DISTANCE = "Linking distance";
 
-    private final static String MATCHING_IDS = "Matching IDs";
-    private final static String PROXIMITY = "Proximity";
-    private final static String PROXIMITY_TO_CHILDREN = "Proximity to children";
-    private final static String SPATIAL_OVERLAP = "Spatial overlap";
-    public final static String[] RELATE_MODES = new String[]{MATCHING_IDS,PROXIMITY,PROXIMITY_TO_CHILDREN,SPATIAL_OVERLAP};
+    public interface RelateModes {
+        String MATCHING_IDS = "Matching IDs";
+        String PROXIMITY = "Proximity";
+        String PROXIMITY_TO_CHILDREN = "Proximity to children";
+        String SPATIAL_OVERLAP = "Spatial overlap";
 
-    private final static String CENTROID = "Centroid";
-    private final static String SURFACE = "Surface";
-    public final static String[] REFERENCE_POINTS = new String[]{CENTROID,SURFACE};
+        String[] ALL = new String[]{MATCHING_IDS, PROXIMITY, PROXIMITY_TO_CHILDREN, SPATIAL_OVERLAP};
+
+    }
+
+    public interface ReferencePoints {
+        String CENTROID = "Centroid";
+        String SURFACE = "Surface";
+
+        String[] ALL = new String[]{CENTROID, SURFACE};
+
+    }
 
     private final static String DIST_EDGE_PX_MEAS = "Distance from parent edge (px)";
     private final static String DIST_SURFACE_PX_MEAS = "Distance to parent surface (px)";
@@ -68,7 +76,7 @@ public class RelateObjects extends HCModule {
 
             for (Obj parentObject:parentObjects.values()) {
                 // Calculating the object spacing
-                if (referencePoint.equals(CENTROID)) {
+                if (referencePoint.equals(ReferencePoints.CENTROID)) {
                     double xDist = childObject.getXMean(true) - parentObject.getXMean(true);
                     double yDist = childObject.getYMean(true) - parentObject.getYMean(true);
                     double zDist = childObject.getZMean(true, true) - parentObject.getZMean(true, true);
@@ -79,7 +87,7 @@ public class RelateObjects extends HCModule {
                         currentLink = parentObject;
                     }
 
-                } else if (referencePoint.equals(SURFACE)) {
+                } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
                     // Getting coordinates for the surface points (6-way connectivity)
                     double[] parentX = parentObject.getSurfaceX(true);
                     double[] parentY = parentObject.getSurfaceY(true);
@@ -111,11 +119,11 @@ public class RelateObjects extends HCModule {
                 childObject.addParent(currentLink);
                 currentLink.addChild(childObject);
 
-                if (referencePoint.equals(CENTROID)) {
+                if (referencePoint.equals(ReferencePoints.CENTROID)) {
                     childObject.addMeasurement(new MIAMeasurement(DIST_CENTROID_PX_MEAS,minDist));
                     childObject.addMeasurement(new MIAMeasurement(DIST_CENTROID_CAL_MEAS,minDist*dpp));
 
-                } else if (referencePoint.equals(SURFACE)) {
+                } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
                     childObject.addMeasurement(new MIAMeasurement(DIST_SURFACE_PX_MEAS,minDist));
                     childObject.addMeasurement(new MIAMeasurement(DIST_SURFACE_CAL_MEAS,minDist*dpp));
 
@@ -254,22 +262,22 @@ public class RelateObjects extends HCModule {
         double linkingDistance = parameters.getValue(LINKING_DISTANCE);
 
         switch (relateMode) {
-            case MATCHING_IDS:
+            case RelateModes.MATCHING_IDS:
                 if (verbose) System.out.println("["+moduleName+"] Relating objects by matching ID numbers");
                 linkMatchingIDs(parentObjects,childObjects);
                 break;
 
-            case PROXIMITY:
+            case RelateModes.PROXIMITY:
                 if (verbose) System.out.println("["+moduleName+"] Relating objects by proximity");
                 proximity(parentObjects,childObjects,linkingDistance,referencePoint,verbose);
                 break;
 
-            case PROXIMITY_TO_CHILDREN:
+            case RelateModes.PROXIMITY_TO_CHILDREN:
                 if (verbose) System.out.println("["+moduleName+"] Relating objects by proximity to children");
                 proximityToChildren(parentObjects,childObjects,testChildObjectsName,linkingDistance);
                 break;
 
-            case SPATIAL_OVERLAP:
+            case RelateModes.SPATIAL_OVERLAP:
                 if (verbose) System.out.println("["+moduleName+"] Relating objects by spatial overlap");
                 spatialLinking(parentObjects,childObjects);
                 break;
@@ -280,10 +288,10 @@ public class RelateObjects extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(CHILD_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(RELATE_MODE, Parameter.CHOICE_ARRAY,RELATE_MODES[0],RELATE_MODES));
+        parameters.addParameter(new Parameter(RELATE_MODE, Parameter.CHOICE_ARRAY,RelateModes.MATCHING_IDS,RelateModes.ALL));
         parameters.addParameter(new Parameter(TEST_CHILD_OBJECTS,Parameter.CHILD_OBJECTS,null));
         parameters.addParameter(new Parameter(LINKING_DISTANCE,Parameter.DOUBLE,1.0));
-        parameters.addParameter(new Parameter(REFERENCE_POINT,Parameter.CHOICE_ARRAY,REFERENCE_POINTS[0],REFERENCE_POINTS));
+        parameters.addParameter(new Parameter(REFERENCE_POINT,Parameter.CHOICE_ARRAY,ReferencePoints.CENTROID,ReferencePoints.ALL));
 
     }
 
@@ -296,13 +304,13 @@ public class RelateObjects extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(RELATE_MODE));
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
-            case PROXIMITY:
+            case RelateModes.PROXIMITY:
                 returnedParameters.addParameter(parameters.getParameter(REFERENCE_POINT));
                 returnedParameters.addParameter(parameters.getParameter(LINKING_DISTANCE));
 
                 break;
 
-            case PROXIMITY_TO_CHILDREN:
+            case RelateModes.PROXIMITY_TO_CHILDREN:
                 returnedParameters.addParameter(parameters.getParameter(TEST_CHILD_OBJECTS));
                 returnedParameters.addParameter(parameters.getParameter(LINKING_DISTANCE));
 
@@ -319,19 +327,19 @@ public class RelateObjects extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         switch ((String) parameters.getValue(RELATE_MODE)) {
-//            case SPATIAL_OVERLAP:
+//            case RelateModes.SPATIAL_OVERLAP:
 //                measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_EDGE_PX_MEAS);
 //                measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_EDGE_CAL_MEAS);
 //                break;
 
-            case PROXIMITY:
+            case RelateModes.PROXIMITY:
                 switch ((String) parameters.getValue(REFERENCE_POINT)) {
-                    case CENTROID:
+                    case ReferencePoints.CENTROID:
                         measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_PX_MEAS);
                         measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_CAL_MEAS);
                         break;
 
-                    case SURFACE:
+                    case ReferencePoints.SURFACE:
                         measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_PX_MEAS);
                         measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_CAL_MEAS);
                         break;

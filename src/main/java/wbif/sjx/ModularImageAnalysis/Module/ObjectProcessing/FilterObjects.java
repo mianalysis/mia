@@ -19,14 +19,18 @@ public class FilterObjects extends HCModule {
     public static final String CHILD_OBJECTS = "Child objects";
     public static final String REFERENCE_VALUE = "Reference value";
 
-    private static final String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)";
-    private static final String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
-    private static final String NO_PARENT = "Remove objects without parent";
-    private static final String MIN_NUMBER_OF_CHILDREN = "Remove objects with few children than:";
-    private static final String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
-    private static final String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
-    private static final String[] FILTER_METHODS = new String[]{REMOVE_ON_IMAGE_EDGE_2D,MISSING_MEASUREMENTS,NO_PARENT,
-            MIN_NUMBER_OF_CHILDREN,MEASUREMENTS_SMALLER_THAN,MEASUREMENTS_LARGER_THAN};
+    public interface FilterMethods {
+        String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)";
+        String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
+        String NO_PARENT = "Remove objects without parent";
+        String MIN_NUMBER_OF_CHILDREN = "Remove objects with few children than:";
+        String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
+        String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
+
+        String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, MIN_NUMBER_OF_CHILDREN,
+                MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
+
+    }
 
     @Override
     public String getTitle() {
@@ -49,7 +53,7 @@ public class FilterObjects extends HCModule {
 
         // Removing objects with a missing measurement (i.e. value set to null)
         switch (method) {
-            case REMOVE_ON_IMAGE_EDGE_2D:
+            case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
                 String inputImageName = parameters.getValue(REFERENCE_IMAGE);
                 Image inputImage = workspace.getImage(inputImageName);
 
@@ -78,7 +82,7 @@ public class FilterObjects extends HCModule {
 
                 break;
 
-            case MISSING_MEASUREMENTS:
+            case FilterMethods.MISSING_MEASUREMENTS:
                 String measurement = parameters.getValue(MEASUREMENT);
 
                 iterator = inputObjects.values().iterator();
@@ -93,7 +97,7 @@ public class FilterObjects extends HCModule {
 
                 break;
 
-            case NO_PARENT:
+            case FilterMethods.NO_PARENT:
                 String parentObjectName = parameters.getValue(PARENT_OBJECT);
 
                 iterator = inputObjects.values().iterator();
@@ -109,7 +113,7 @@ public class FilterObjects extends HCModule {
 
                 break;
 
-            case MIN_NUMBER_OF_CHILDREN:
+            case FilterMethods.MIN_NUMBER_OF_CHILDREN:
                 String childObjectsName = parameters.getValue(CHILD_OBJECTS);
                 double minChildN = parameters.getValue(REFERENCE_VALUE);
 
@@ -136,7 +140,7 @@ public class FilterObjects extends HCModule {
 
                 break;
 
-            case MEASUREMENTS_SMALLER_THAN:
+            case FilterMethods.MEASUREMENTS_SMALLER_THAN:
                 measurement = parameters.getValue(MEASUREMENT);
                 double referenceValue = parameters.getValue(REFERENCE_VALUE);
 
@@ -154,7 +158,7 @@ public class FilterObjects extends HCModule {
 
                 break;
 
-            case MEASUREMENTS_LARGER_THAN:
+            case FilterMethods.MEASUREMENTS_LARGER_THAN:
                 measurement = parameters.getValue(MEASUREMENT);
                 referenceValue = parameters.getValue(REFERENCE_VALUE);
 
@@ -178,7 +182,7 @@ public class FilterObjects extends HCModule {
     @Override
     public void initialiseParameters() {
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(FILTER_METHOD, Parameter.CHOICE_ARRAY,FILTER_METHODS[0],FILTER_METHODS));
+        parameters.addParameter(new Parameter(FILTER_METHOD, Parameter.CHOICE_ARRAY,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
         parameters.addParameter(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
@@ -193,31 +197,31 @@ public class FilterObjects extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(FILTER_METHOD));
 
-        if (parameters.getValue(FILTER_METHOD).equals(MISSING_MEASUREMENTS)) {
+        if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.MISSING_MEASUREMENTS)) {
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
             if (parameters.getValue(INPUT_OBJECTS) != null) {
                 parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
             }
 
-        } else if (parameters.getValue(FILTER_METHOD).equals(REMOVE_ON_IMAGE_EDGE_2D)) {
+        } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.REMOVE_ON_IMAGE_EDGE_2D)) {
             returnedParameters.addParameter(parameters.getParameter(REFERENCE_IMAGE));
 
-        } else if (parameters.getValue(FILTER_METHOD).equals(NO_PARENT)) {
+        } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.NO_PARENT)) {
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(PARENT_OBJECT,inputObjectsName);
 
-        } else if (parameters.getValue(FILTER_METHOD).equals(MIN_NUMBER_OF_CHILDREN)) {
+        } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.MIN_NUMBER_OF_CHILDREN)) {
             returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
             returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(CHILD_OBJECTS,inputObjectsName);
 
-        } else if (parameters.getValue(FILTER_METHOD).equals(MEASUREMENTS_SMALLER_THAN) |
-                parameters.getValue(FILTER_METHOD).equals(MEASUREMENTS_LARGER_THAN)) {
+        } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.MEASUREMENTS_SMALLER_THAN) |
+                parameters.getValue(FILTER_METHOD).equals(FilterMethods.MEASUREMENTS_LARGER_THAN)) {
 
             returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));

@@ -22,7 +22,14 @@ public class IdentifySecondaryObjects extends HCModule {
     public static final String MEDIAN_FILTER_RADIUS = "Median filter radius";
     public static final String THRESHOLD_METHOD = "Threshold method";
 
-    private static final String[] thresholdMethods = new String[]{"Otsu","Huang","Li"};
+    public interface ThresholdMethods {
+        String HUANG = "Huang";
+        String LI = "Li";
+        String OTSU = "Otsu";
+
+        String[] ALL = new String[]{HUANG,LI,OTSU};
+
+    }
 
     @Override
     public String getTitle() {
@@ -55,7 +62,7 @@ public class IdentifySecondaryObjects extends HCModule {
 
         // Getting nuclei objects as image
         if (verbose) System.out.println("["+moduleName+"] Converting objects to image");
-        ImagePlus image1 = ObjectImageConverter.convertObjectsToImage(objects1,"Temp image",inputImage2,ObjectImageConverter.COLOUR_MODES[3],null,false).getImagePlus();
+        ImagePlus image1 = ObjectImageConverter.convertObjectsToImage(objects1,"Temp image",inputImage2,ObjectImageConverter.ColourModes.ID,null,false).getImagePlus();
 
         // Segmenting cell image
         // Filtering cell image
@@ -98,7 +105,7 @@ public class IdentifySecondaryObjects extends HCModule {
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(MEDIAN_FILTER_RADIUS, Parameter.DOUBLE,2.0));
-        parameters.addParameter(new Parameter(THRESHOLD_METHOD, Parameter.CHOICE_ARRAY,thresholdMethods[0],thresholdMethods));
+        parameters.addParameter(new Parameter(THRESHOLD_METHOD, Parameter.CHOICE_ARRAY,ThresholdMethods.HUANG,ThresholdMethods.ALL));
 
     }
 
