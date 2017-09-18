@@ -22,12 +22,17 @@ public class BinaryOperations extends HCModule {
     public static final String SHOW_IMAGE = "Show image";
     public static final String DYNAMIC = "Dynamic (Watershed)";
 
-    private static final String DILATE = "Dilate 2D";
-    private static final String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
-    private static final String ERODE = "Erode 2D";
-    private static final String FILL_HOLES_2D = "Fill holes 2D";
-    private static final String WATERSHED_3D = "Watershed 2D";
-    private static final String[] OPERATION_MODES = new String[]{DILATE,MANHATTAN_DISTANCE_MAP_2D,ERODE,FILL_HOLES_2D,WATERSHED_3D};
+    public interface OperationModes {
+        String DILATE = "Dilate 2D";
+        String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
+        String ERODE = "Erode 2D";
+        String FILL_HOLES_2D = "Fill holes 2D";
+        String WATERSHED_3D = "Watershed 2D";
+
+        String[] ALL = new String[]{DILATE,MANHATTAN_DISTANCE_MAP_2D,ERODE,FILL_HOLES_2D,WATERSHED_3D};
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -57,7 +62,7 @@ public class BinaryOperations extends HCModule {
 
         // Applying process to stack
         switch (operationMode) {
-            case DILATE:
+            case OperationModes.DILATE:
                 int numIterations = parameters.getValue(NUM_ITERATIONS);
                 if (verbose) System.out.println("["+moduleName+"] Dilate ("+numIterations+"x)");
                 for (int i=0;i<numIterations;i++) {
@@ -66,7 +71,7 @@ public class BinaryOperations extends HCModule {
 
                 break;
 
-            case ERODE:
+            case OperationModes.ERODE:
                 numIterations = parameters.getValue(NUM_ITERATIONS);
                 if (verbose) System.out.println("["+moduleName+"] Erode ("+numIterations+"x)");
                 for (int i=0;i<numIterations;i++) {
@@ -75,13 +80,13 @@ public class BinaryOperations extends HCModule {
 
                 break;
 
-            case FILL_HOLES_2D:
+            case OperationModes.FILL_HOLES_2D:
                 if (verbose) System.out.println("["+moduleName+"] Filling binary holes");
                 IJ.run(inputImagePlus,"Fill Holes", "stack");
 
                 break;
 
-            case WATERSHED_3D:
+            case OperationModes.WATERSHED_3D:
                 if (verbose) System.out.println("["+moduleName+"] Calculating distance map");
                 IJ.run(inputImagePlus,"Invert", "stack");
                 ImagePlus distIpl = new ImagePlus("Dist", BinaryImages.distanceMap(inputImagePlus.getImageStack()));
@@ -123,7 +128,7 @@ public class BinaryOperations extends HCModule {
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OPERATION_MODES[0],OPERATION_MODES));
+        parameters.addParameter(new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE,OperationModes.ALL));
         parameters.addParameter(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
         parameters.addParameter(new Parameter(DYNAMIC, Parameter.INTEGER,1));
@@ -143,10 +148,10 @@ public class BinaryOperations extends HCModule {
 
         returnedParameters.addParameter(parameters.getParameter(OPERATION_MODE));
 
-        if (parameters.getValue(OPERATION_MODE).equals(DILATE) | parameters.getValue(OPERATION_MODE).equals(ERODE)) {
+        if (parameters.getValue(OPERATION_MODE).equals(OperationModes.DILATE) | parameters.getValue(OPERATION_MODE).equals(OperationModes.ERODE)) {
             returnedParameters.addParameter(parameters.getParameter(NUM_ITERATIONS));
 
-        } else if (parameters.getValue(OPERATION_MODE).equals(WATERSHED_3D)) {
+        } else if (parameters.getValue(OPERATION_MODE).equals(OperationModes.WATERSHED_3D)) {
             returnedParameters.addParameter(parameters.getParameter(DYNAMIC));
 
         }

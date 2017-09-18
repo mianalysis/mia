@@ -41,7 +41,7 @@ public class ShowObjects extends HCModule {
         }
 
         // Converting objects to an image
-        Image image = ObjectImageConverter.convertObjectsToImage(inputObjects,"Object image",templateImage,ObjectImageConverter.COLOUR_MODES[1],null,false);
+        Image image = ObjectImageConverter.convertObjectsToImage(inputObjects,"Object image",templateImage,ObjectImageConverter.ColourModes.RANDOM_COLOUR,null,false);
         image.getImagePlus().setTitle(inputObjectName);
 
         // Creating a random colour LUT and assigning it to the image (maximising intensity range to 0-255)

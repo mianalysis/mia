@@ -27,9 +27,13 @@ public class IdentifyPrimaryObjects extends HCModule {
     public static final String FILL_HOLES_BOOLEAN = "Fill holes";
     public static final String FILL_HOLES_MODE = "Fill holes mode";
 
-    private static final String FILL_HOLES_3D = "Full 3D";
-    private static final String FILL_HOLES_SLICE = "Slice-by-slice in 2D";
-    private static final String[] FILL_HOLES_MODES = new String[]{FILL_HOLES_3D,FILL_HOLES_SLICE};
+    public interface FillHolesModes {
+        String FILL_HOLES_3D = "Full 3D";
+        String FILL_HOLES_SLICE = "Slice-by-slice in 2D";
+
+        String[] ALL = new String[]{FILL_HOLES_3D, FILL_HOLES_SLICE};
+
+    }
 
     @Override
     public String getTitle() {
@@ -71,13 +75,13 @@ public class IdentifyPrimaryObjects extends HCModule {
         // Applying fill holes 3D
         if (fillHoles) {
             switch (fillHolesMode) {
-                case FILL_HOLES_3D:
+                case FillHolesModes.FILL_HOLES_3D:
                     if (verbose) System.out.println("[" + moduleName + "] Applying fill holes 3D");
                     ipl.setStack(GeodesicReconstruction3D.fillHoles(ipl.getImageStack()));
 
                     break;
 
-                case FILL_HOLES_SLICE:
+                case FillHolesModes.FILL_HOLES_SLICE:
                     if (verbose) System.out.println("[" + moduleName + "] Applying fill holes slice-by-slice");
                     for (int z = 0; z < ipl.getNSlices(); z++) {
                         for (int c = 0; c < ipl.getNChannels(); c++) {
@@ -123,7 +127,7 @@ public class IdentifyPrimaryObjects extends HCModule {
         parameters.addParameter(new Parameter(MEDIAN_FILTER_RADIUS, Parameter.DOUBLE,2.0));
         parameters.addParameter(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
         parameters.addParameter(new Parameter(FILL_HOLES_BOOLEAN,Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(FILL_HOLES_MODE,Parameter.CHOICE_ARRAY,FILL_HOLES_MODES[0],FILL_HOLES_MODES));
+        parameters.addParameter(new Parameter(FILL_HOLES_MODE,Parameter.CHOICE_ARRAY,FillHolesModes.FILL_HOLES_3D,FillHolesModes.ALL));
 
     }
 

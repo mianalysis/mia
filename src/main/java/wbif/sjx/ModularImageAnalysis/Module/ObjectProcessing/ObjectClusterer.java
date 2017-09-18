@@ -28,9 +28,13 @@ public class ObjectClusterer extends HCModule {
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
 
-    private static final String KMEANSPLUSPLUS = "KMeans++";
-    private static final String DBSCAN = "DBSCAN";
-    private static final String[] CLUSTERING_ALGORITHMS = new String[]{KMEANSPLUSPLUS, DBSCAN};
+    public interface ClusteringAlgorithms {
+        String KMEANSPLUSPLUS = "KMeans++";
+        String DBSCAN = "DBSCAN";
+
+        String[] ALL = new String[]{KMEANSPLUSPLUS, DBSCAN};
+
+    }
 
     private static final String N_POINTS_IN_CLUSTER = "N_POINTS_IN_CLUSTER";
     private static final String CLUSTER_AREA_XY = "CLUSTER_AREA_2D";
@@ -140,11 +144,11 @@ public class ObjectClusterer extends HCModule {
         ObjSet outputObjects = null;
 
         switch (clusteringAlgorithm) {
-            case KMEANSPLUSPLUS:
+            case ClusteringAlgorithms.KMEANSPLUSPLUS:
                 outputObjects = runKMeansPlusPlus(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, kClusters, maxIterations);
                 break;
 
-            case DBSCAN:
+            case ClusteringAlgorithms.DBSCAN:
                 outputObjects = runDBSCAN(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, eps, minPoints);
                 break;
 
@@ -208,7 +212,7 @@ public class ObjectClusterer extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(CLUSTER_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CLUSTERING_ALGORITHM, Parameter.CHOICE_ARRAY,CLUSTERING_ALGORITHMS[0],CLUSTERING_ALGORITHMS));
+        parameters.addParameter(new Parameter(CLUSTERING_ALGORITHM, Parameter.CHOICE_ARRAY,ClusteringAlgorithms.DBSCAN,ClusteringAlgorithms.ALL));
         parameters.addParameter(new Parameter(K_CLUSTERS, Parameter.INTEGER,100));
         parameters.addParameter(new Parameter(MAX_ITERATIONS, Parameter.INTEGER,10000));
         parameters.addParameter(new Parameter(EPS, Parameter.DOUBLE,10.0));
@@ -223,12 +227,12 @@ public class ObjectClusterer extends HCModule {
         returnedParameters.addParameter(parameters.getParameter(CLUSTER_OBJECTS));
         returnedParameters.addParameter(parameters.getParameter(CLUSTERING_ALGORITHM));
 
-        if (parameters.getValue(CLUSTERING_ALGORITHM).equals(KMEANSPLUSPLUS)) {
+        if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.KMEANSPLUSPLUS)) {
             // Running KMeans++ clustering
             returnedParameters.addParameter(parameters.getParameter(K_CLUSTERS));
             returnedParameters.addParameter(parameters.getParameter(MAX_ITERATIONS));
 
-        } else if (parameters.getValue(CLUSTERING_ALGORITHM).equals(DBSCAN)) {
+        } else if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.DBSCAN)) {
             // Running DBSCAN clustering
             returnedParameters.addParameter(parameters.getParameter(EPS));
             returnedParameters.addParameter(parameters.getParameter(MIN_POINTS));

@@ -17,10 +17,15 @@ public class ImageTypeConverter extends HCModule {
     public static final String OUTPUT_TYPE = "Output image type";
     public static final String SCALE_INTENSITIES = "Scale intensities to full range";
 
-    private static final String INT8 = "8-bit integer";
-    private static final String INT16 = "16-bit integer";
-    private static final String FLOAT32 = "32-bit float";
-    private static final String[] OUTPUT_TYPES = new String[]{INT8,INT16,FLOAT32};
+    public interface OutputTypes {
+        String INT8 = "8-bit integer";
+        String INT16 = "16-bit integer";
+        String FLOAT32 = "32-bit float";
+
+        String[] ALL = new String[]{INT8, INT16, FLOAT32};
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -52,13 +57,13 @@ public class ImageTypeConverter extends HCModule {
 
         // Converting to requested type
         switch (outputType) {
-            case INT8:
+            case OutputTypes.INT8:
                 IJ.run(inputImagePlus, "8-bit", null);
                 break;
-            case INT16:
+            case OutputTypes.INT16:
                 IJ.run(inputImagePlus, "16-bit", null);
                 break;
-            case FLOAT32:
+            case OutputTypes.FLOAT32:
                 IJ.run(inputImagePlus, "32-bit", null);
                 break;
         }
@@ -78,7 +83,7 @@ public class ImageTypeConverter extends HCModule {
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(OUTPUT_TYPE, Parameter.CHOICE_ARRAY,OUTPUT_TYPES[0],OUTPUT_TYPES));
+        parameters.addParameter(new Parameter(OUTPUT_TYPE, Parameter.CHOICE_ARRAY,OutputTypes.INT8,OutputTypes.ALL));
         parameters.addParameter(new Parameter(SCALE_INTENSITIES, Parameter.BOOLEAN,false));
 
     }

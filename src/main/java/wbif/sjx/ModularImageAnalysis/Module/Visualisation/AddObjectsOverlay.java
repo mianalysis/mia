@@ -39,15 +39,23 @@ public class AddObjectsOverlay extends HCModule {
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String SHOW_IMAGE = "Show image";
 
-    private static final String CENTROID = "Centroid";
-    private static final String POSITION_MEASUREMENTS = "Position measurements";
-    public static final String[] POSITION_MODES = new String[]{CENTROID, POSITION_MEASUREMENTS};
+    public interface PositionModes {
+        String CENTROID = "Centroid";
+        String POSITION_MEASUREMENTS = "Position measurements";
 
-    private static final String SINGLE_COLOUR = "Single colour";
-    private static final String RANDOM_COLOUR = "Random colour";
-    private static final String MEASUREMENT_VALUE = "Measurement value";
-    private static final String PARENT_ID = "Parent ID";
-    public static final String[] COLOUR_MODES = new String[]{SINGLE_COLOUR,RANDOM_COLOUR,MEASUREMENT_VALUE, PARENT_ID};
+        String[] ALL = new String[]{CENTROID, POSITION_MEASUREMENTS};
+
+    }
+
+    public interface ColourModes {
+        String SINGLE_COLOUR = "Single colour";
+        String RANDOM_COLOUR = "Random colour";
+        String MEASUREMENT_VALUE = "Measurement value";
+        String PARENT_ID = "Parent ID";
+
+        String[] ALL = new String[]{SINGLE_COLOUR, RANDOM_COLOUR, MEASUREMENT_VALUE, PARENT_ID};
+
+    }
 
     @Override
     public String getTitle() {
@@ -101,7 +109,7 @@ public class AddObjectsOverlay extends HCModule {
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
-        if (colourMode.equals(COLOUR_MODES[2])) {
+        if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
             inputObjects.values().forEach(e -> cs.addMeasure(e.getMeasurement(measurement).getValue()));
 
         }
@@ -112,19 +120,19 @@ public class AddObjectsOverlay extends HCModule {
             float H = 0.2f;
 
             switch (colourMode) {
-                case RANDOM_COLOUR:
+                case ColourModes.RANDOM_COLOUR:
                     // Random colours
                     H = new Random().nextFloat();
                     break;
 
-                case MEASUREMENT_VALUE:
+                case ColourModes.MEASUREMENT_VALUE:
                     double value = object.getMeasurement(measurement).getValue();
                     double startH = 0;
                     double endH = 120d / 255d;
                     H = (float) ((value - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
                     break;
 
-                case PARENT_ID:
+                case ColourModes.PARENT_ID:
                     if (object.getParent(parentObjectsForColourName)==null) {
                         H = 0.2f;
                     } else {
@@ -138,7 +146,7 @@ public class AddObjectsOverlay extends HCModule {
             Color colour = Color.getHSBColor(H, 1, 1);
 
             double xMean; double yMean; double zMean;
-            if (positionMode.equals(CENTROID)) {
+            if (positionMode.equals(PositionModes.CENTROID)) {
                 xMean = object.getXMean(true);
                 yMean = object.getYMean(true);
                 zMean = object.getZMean(true,false);
@@ -209,11 +217,11 @@ public class AddObjectsOverlay extends HCModule {
         parameters.addParameter(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
         parameters.addParameter(new Parameter(USE_PARENT_ID, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
-        parameters.addParameter(new Parameter(POSITION_MODE, Parameter.CHOICE_ARRAY,POSITION_MODES[0],POSITION_MODES));
+        parameters.addParameter(new Parameter(POSITION_MODE, Parameter.CHOICE_ARRAY,PositionModes.CENTROID,PositionModes.ALL));
         parameters.addParameter(new Parameter(X_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(Y_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(Z_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,COLOUR_MODES[0],COLOUR_MODES));
+        parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
         parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
@@ -252,7 +260,7 @@ public class AddObjectsOverlay extends HCModule {
         }
 
         returnedParameters.addParameter(parameters.getParameter(POSITION_MODE));
-        if (parameters.getValue(POSITION_MODE).equals(POSITION_MEASUREMENTS)) {
+        if (parameters.getValue(POSITION_MODE).equals(PositionModes.POSITION_MEASUREMENTS)) {
             returnedParameters.addParameter(parameters.getParameter(X_POSITION_MEASUREMENT));
             returnedParameters.addParameter(parameters.getParameter(Y_POSITION_MEASUREMENT));
             returnedParameters.addParameter(parameters.getParameter(Z_POSITION_MEASUREMENT));
@@ -265,7 +273,7 @@ public class AddObjectsOverlay extends HCModule {
         }
 
         returnedParameters.addParameter(parameters.getParameter(COLOUR_MODE));
-        if (parameters.getValue(COLOUR_MODE).equals(MEASUREMENT_VALUE)) {
+        if (parameters.getValue(COLOUR_MODE).equals(ColourModes.MEASUREMENT_VALUE)) {
             // Use measurement
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
 
@@ -274,7 +282,7 @@ public class AddObjectsOverlay extends HCModule {
 
             }
 
-        } else if (parameters.getValue(COLOUR_MODE).equals(PARENT_ID)) {
+        } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
             // Use Parent ID
             returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
 

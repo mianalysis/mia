@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -14,6 +14,12 @@ import static org.junit.Assert.*;
  * Created by Stephen Cross on 03/09/2017.
  */
 public class MeasureObjectShapeTest {
+    @Test
+    public void testGetTitle() throws Exception {
+        assertNotNull(new MeasureObjectShape().getTitle());
+
+    }
+
     @Test
     public void testRun() throws Exception {
         // Creating a new workspace
@@ -45,16 +51,16 @@ public class MeasureObjectShapeTest {
         assertEquals(8,workspace.getObjectSet(inputObjectsName).size());
 
         // Getting expected values
-        HashMap<Integer,double[]> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double[] currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            HashMap<ExpectedObjects3D.Measures, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
 
             assertEquals("Number of measurements",1,testObject.getMeasurements().size());
             assertEquals("Measurement name","N_VOXELS",testObject.getMeasurements().keySet().iterator().next());
 
-            int expectedNVoxels = (int) currExpectedValues[ExpectedObjects3D.N_VOXELS];
+            int expectedNVoxels = (int) currExpectedValues.get(ExpectedObjects3D.Measures.N_VOXELS);
             int actualNVoxels = (int) testObject.getMeasurement("N_VOXELS").getValue();
             assertEquals("Measurement value", expectedNVoxels, actualNVoxels);
 

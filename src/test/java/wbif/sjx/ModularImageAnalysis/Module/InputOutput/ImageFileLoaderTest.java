@@ -1,6 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
+import org.junit.Ignore;
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.ChannelExtractor;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -14,6 +16,12 @@ import static org.junit.Assert.*;
  */
 public class ImageFileLoaderTest {
     @Test
+    public void testGetTitle() throws Exception {
+        assertNotNull(new ImageFileLoader().getTitle());
+
+    }
+
+    @Test
     public void testRunWithSpecificTiffFile() throws Exception {
         // Initialising a blank workspace
         Workspace workspace = new Workspace(0,null);
@@ -23,7 +31,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.IMPORT_MODES[1]);
+        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.ImportModes.SPECIFIC_FILE);
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
         imageFileLoader.updateParameterValue(ImageFileLoader.FILE_PATH,pathToImage);
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,false);
@@ -73,7 +81,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.IMPORT_MODES[0]);
+        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,false);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
@@ -108,7 +116,7 @@ public class ImageFileLoaderTest {
 
     }
 
-    @Test
+    @Test @Ignore
     public void testRunWithCurrentTiffFileBioformats() throws Exception {
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
@@ -121,7 +129,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.IMPORT_MODES[0]);
+        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,true);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
@@ -156,7 +164,7 @@ public class ImageFileLoaderTest {
 
     }
 
-    @Test
+    @Test @Ignore
     public void testRunWithCurrentLifFile() throws Exception {
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankLif5D_8bit.lif").getPath(),"UTF-8");
@@ -169,7 +177,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.IMPORT_MODES[0]);
+        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,true);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);

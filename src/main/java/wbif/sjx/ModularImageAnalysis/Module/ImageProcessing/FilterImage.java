@@ -7,6 +7,8 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
 
+import java.util.Arrays;
+
 /**
  * Created by sc13967 on 30/05/2017.
  */
@@ -19,9 +21,14 @@ public class FilterImage extends HCModule {
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String SHOW_IMAGE = "Show image";
 
-    private static final String MEDIAN3D = "Median 3D";
-    private static final String DOG2D = "Difference of Gaussian 2D";
-    private static final String[] FILTER_MODES = new String[]{DOG2D,MEDIAN3D};
+    public interface FilterModes {
+        String DOG2D = "Difference of Gaussian 2D";
+        String MEDIAN3D = "Median 3D";
+
+        String[] ALL = new String[]{DOG2D,MEDIAN3D};
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -54,11 +61,11 @@ public class FilterImage extends HCModule {
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
         // Applying smoothing filter
-        if (filterMode.equals(MEDIAN3D)) {
+        if (filterMode.equals(FilterModes.MEDIAN3D)) {
             if (verbose) System.out.println("[" + moduleName + "] Applying 3D median filter (radius = " + filterRadius + " px)");
             inputImagePlus.setStack(Filters3D.filter(inputImagePlus.getImageStack(), Filters3D.MEDIAN, (float) filterRadius, (float) filterRadius, (float) filterRadius));
 
-        } else if (filterMode.equals(DOG2D)) {
+        } else if (filterMode.equals(FilterModes.DOG2D)) {
             if (verbose) System.out.println("[" + moduleName + "] Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
             DoG.run(inputImagePlus,filterRadius,true);
 
@@ -88,7 +95,8 @@ public class FilterImage extends HCModule {
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FILTER_MODES[0],FILTER_MODES));
+
+        parameters.addParameter(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FilterModes.DOG2D,FilterModes.ALL));
         parameters.addParameter(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
         parameters.addParameter(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));

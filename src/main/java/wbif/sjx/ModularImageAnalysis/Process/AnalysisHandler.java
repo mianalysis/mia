@@ -83,8 +83,12 @@ public class AnalysisHandler {
                 Class<?> clazz = Class.forName(moduleName);
                 HCModule module = (HCModule) clazz.newInstance();
 
-                String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
-                module.setNickname(moduleNickname);
+                if (moduleAttributes.getNamedItem("NICKNAME") != null) {
+                    String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
+                    module.setNickname(moduleNickname);
+                } else {
+                    module.setNickname(module.getTitle());
+                }
 
                 NodeList parameterNodes = moduleNode.getChildNodes();
                 for (int j = 0; j < parameterNodes.getLength(); j++) {
@@ -93,7 +97,11 @@ public class AnalysisHandler {
                         NamedNodeMap parameterAttributes = parameterNode.getAttributes();
                         String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
                         String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
-                        boolean parameterVisible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
+
+                        boolean parameterVisible = false;
+                        if (parameterAttributes.getNamedItem("VISIBLE") != null) {
+                            parameterVisible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
+                        }
 
                         try {
                             int parameterType = module.getParameterType(parameterName);
@@ -203,8 +211,8 @@ public class AnalysisHandler {
 
         Exporter exporter = new Exporter(exportName, Exporter.XLSX_EXPORT);
         batchProcessor = new BatchProcessor(inputFile);
-        batchProcessor.addFileCondition(new NameContainsString("ALX", FileCondition.INC_PARTIAL));
-        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"dv"}));
+//        batchProcessor.addFileCondition(new NameContainsString("ALX", FileCondition.INC_PARTIAL));
+        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"flex"}));
         batchProcessor.runAnalysisOnStructure(analysis,exporter);
 
         Runtime.getRuntime().gc();

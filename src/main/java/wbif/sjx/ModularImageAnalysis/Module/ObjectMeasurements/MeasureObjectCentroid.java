@@ -16,20 +16,17 @@ public class MeasureObjectCentroid extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CENTROID_METHOD = "Centroid method";
 
-    public static final String MEAN = "Mean";
-    public static final String MEDIAN = "Median";
-    public static final String ALL = "Both";
+    public interface Methods {
+        String MEAN = "Mean";
+        String MEDIAN = "Median";
+        String BOTH = "Both";
 
-    private static String[] methodChoices = new String[]{MEAN,MEDIAN,ALL};
-
-
-    public static double calculateCentroid(ArrayList<Integer> values) {
-        return calculateCentroid(values,MEAN);
+        String[] ALL = new String[]{MEAN, MEDIAN, BOTH};
 
     }
 
     public static double calculateCentroid(ArrayList<Integer> values, String method) {
-        if (method.equals(MEAN)) {
+        if (method.equals(Methods.MEAN)) {
             CumStat cs = new CumStat();
             for (int value:values) {
                 cs.addMeasure(value);
@@ -38,14 +35,20 @@ public class MeasureObjectCentroid extends HCModule {
             return cs.getMean();
         }
 
-        if (method.equals(MEDIAN)) {
+        if (method.equals(Methods.MEDIAN)) {
             // Sorting values in ascending order
             Collections.sort(values);
 
             // Taking the central value
-            double nValues = values.size();
-            return values.get((int) Math.floor(nValues/2));
+            int nValues = values.size();
 
+            if (nValues%2==0) {
+                return ((double)values.get(nValues/2-1)+(double)values.get(nValues/2))/2;
+
+            } else {
+                return values.get(nValues/2);
+
+            }
         }
 
         return 0;
@@ -71,8 +74,8 @@ public class MeasureObjectCentroid extends HCModule {
 
         // Getting which centroid measures to calculate
         String choice = parameters.getValue(CENTROID_METHOD);
-        boolean useMean = choice.equals(MEAN) | choice.equals(ALL);
-        boolean useMedian = choice.equals(MEDIAN) | choice.equals(ALL);
+        boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
+        boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
         if (verbose) System.out.println("["+moduleName+"] Calculating centroid as "+choice);
 
         // Getting the centroids of each and saving them to the objects
@@ -83,19 +86,19 @@ public class MeasureObjectCentroid extends HCModule {
 
             if (useMean) {
                 if (x != null) {
-                    double xMean = calculateCentroid(x,MEAN);
+                    double xMean = calculateCentroid(x,Methods.MEAN);
                     MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.X_CENTROID_MEAN_PX,xMean);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (y!= null) {
-                    double yMean = calculateCentroid(y,MEAN);
+                    double yMean = calculateCentroid(y,Methods.MEAN);
                     MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Y_CENTROID_MEAN_PX,yMean);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (z!= null) {
-                    double zMean = calculateCentroid(z,MEAN);
+                    double zMean = calculateCentroid(z,Methods.MEAN);
                     MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Z_CENTROID_MEAN_SLICE,zMean);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
@@ -104,19 +107,19 @@ public class MeasureObjectCentroid extends HCModule {
 
             if (useMedian) {
                 if (x != null) {
-                    double xMedian = calculateCentroid(x,MEDIAN);
+                    double xMedian = calculateCentroid(x,Methods.MEDIAN);
                     MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.X_CENTROID_MEDIAN_PX,xMedian);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (y!= null) {
-                    double yMedian = calculateCentroid(y,MEDIAN);
+                    double yMedian = calculateCentroid(y,Methods.MEDIAN);
                     MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Y_CENTROID_MEDIAN_PX,yMedian);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (z!= null) {
-                    double zMedian = calculateCentroid(z,MEDIAN);
+                    double zMedian = calculateCentroid(z,Methods.MEDIAN);
                     MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.Z_CENTROID_MEDIAN_SLICE,zMedian);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
@@ -128,7 +131,7 @@ public class MeasureObjectCentroid extends HCModule {
     @Override
     public void initialiseParameters() {
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CENTROID_METHOD, Parameter.CHOICE_ARRAY,methodChoices[0],methodChoices));
+        parameters.addParameter(new Parameter(CENTROID_METHOD, Parameter.CHOICE_ARRAY,Methods.MEAN,Methods.ALL));
 
     }
 
@@ -142,8 +145,8 @@ public class MeasureObjectCentroid extends HCModule {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         String choice = parameters.getValue(CENTROID_METHOD);
-        boolean useMean = choice.equals(MEAN) | choice.equals(ALL);
-        boolean useMedian = choice.equals(MEDIAN) | choice.equals(ALL);
+        boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
+        boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
 
 
         if (useMean) {

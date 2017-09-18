@@ -4,6 +4,7 @@ import fiji.threshold.Auto_Threshold;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import org.apache.poi.ss.formula.functions.T;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -20,9 +21,14 @@ public class ThresholdImage extends HCModule {
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String SHOW_IMAGE = "Show image";
 
-    private static final String HUANG = "Huang";
-    private static final String OTSU = "Otsu";
-    private static final String[] THRESHOLD_MODES = new String[]{HUANG,OTSU};
+    public interface ThresholdModes {
+        String HUANG = "Huang";
+        String OTSU = "Otsu";
+
+        String[] ALL = new String[]{HUANG, OTSU};
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -58,11 +64,11 @@ public class ThresholdImage extends HCModule {
         Auto_Threshold auto_threshold = new Auto_Threshold();
         Object[] results1 = new Object[]{0};
 
-        if (thresholdMode.equals(HUANG)) {
+        if (thresholdMode.equals(ThresholdModes.HUANG)) {
             if (verbose) System.out.println("["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
             results1 = auto_threshold.exec(inputImagePlus,"Huang",true,false,true,true,false,true);
 
-        } else if (thresholdMode.equals(OTSU)) {
+        } else if (thresholdMode.equals(ThresholdModes.OTSU)) {
             if (verbose) System.out.println("["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
             results1 = auto_threshold.exec(inputImagePlus,"Otsu",true,false,true,true,false,true);
 
@@ -114,7 +120,7 @@ public class ThresholdImage extends HCModule {
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(THRESHOLD_MODE, Parameter.CHOICE_ARRAY,THRESHOLD_MODES[0],THRESHOLD_MODES));
+        parameters.addParameter(new Parameter(THRESHOLD_MODE, Parameter.CHOICE_ARRAY,ThresholdModes.HUANG,ThresholdModes.ALL));
         parameters.addParameter(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
         parameters.addParameter(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
