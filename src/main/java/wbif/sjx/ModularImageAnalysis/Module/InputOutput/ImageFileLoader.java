@@ -34,6 +34,7 @@ public class ImageFileLoader extends HCModule {
     public static final String IMPORT_MODE = "Import mode";
     public static final String FILE_PATH = "File path";
     public static final String USE_BIOFORMATS = "Use Bio-formats importer";
+    public static final String SERIES_NUMBER = "Series number (>= 1)";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
     public static final String FLEX_BUGFIX = "Apply Flex bugfix (2 or fewer channels)";
@@ -47,7 +48,7 @@ public class ImageFileLoader extends HCModule {
     }
 
 
-    private static ImagePlus getBFImage(String path, boolean flexFile) {
+    private static ImagePlus getBFImage(String path, int seriesNumber, boolean flexFile) {
         ImagePlus ipl = null;
 
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
@@ -68,18 +69,14 @@ public class ImageFileLoader extends HCModule {
             reader.setGroupFiles(false);
             reader.setId(path);
 
-            int width = reader.getSizeX();
-            int height = reader.getSizeY();
-            int sizeC = reader.getSizeC();
-            int sizeT = reader.getSizeT();
-            int sizeZ = reader.getSizeZ();
-            int bitDepth = reader.getBitsPerPixel();
-
             if (flexFile) {
+                int width = reader.getSizeX();
+                int height = reader.getSizeY();
+                int bitDepth = reader.getBitsPerPixel();
                 int seriesCount = reader.getSeriesCount();
 
                 // Getting maximum channel number
-                sizeC = 0;
+                int sizeC = 0;
                 DecimalFormat df = new DecimalFormat("00");
 
                 for (int i=0;i<seriesCount;i++) {
@@ -107,6 +104,15 @@ public class ImageFileLoader extends HCModule {
                 }
 
             } else {
+                reader.setSeries(seriesNumber-1);
+
+                int width = reader.getSizeX();
+                int height = reader.getSizeY();
+                int sizeC = reader.getSizeC();
+                int sizeT = reader.getSizeT();
+                int sizeZ = reader.getSizeZ();
+                int bitDepth = reader.getBitsPerPixel();
+
                 ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, sizeT, bitDepth);
 
                 for (int z = 0; z < sizeZ; z++) {
@@ -123,13 +129,13 @@ public class ImageFileLoader extends HCModule {
                 }
             }
 
-            // Add spatial calibration
-            if (meta != null) {
-                ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
-                ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeY(0).value();
-                ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(0).value();
-
-            }
+//            // Add spatial calibration
+//            if (meta != null) {
+//                ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(1).value();
+//                ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeY(1).value();
+//                ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(1).value();
+//
+//            }
 
             reader.close();
 
@@ -159,6 +165,7 @@ public class ImageFileLoader extends HCModule {
         String filePath = parameters.getValue(FILE_PATH);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean flexBugfix = parameters.getValue(FLEX_BUGFIX);
+        int seriesNumber = parameters.getValue(SERIES_NUMBER);
 
         // If the file currently in the workspace is to be used, update the file path accordingly
         if (importMode.equals(ImportModes.CURRENT_FILE)) {
@@ -171,7 +178,7 @@ public class ImageFileLoader extends HCModule {
         if (parameters.getValue(USE_BIOFORMATS)) {
             DebugTools.enableLogging("off");
             DebugTools.setRootLevel("off");
-            ipl = getBFImage(filePath,flexBugfix);
+            ipl = getBFImage(filePath,seriesNumber,flexBugfix);
 
         } else {
             ipl = IJ.openImage(filePath);
@@ -198,6 +205,7 @@ public class ImageFileLoader extends HCModule {
         parameters.addParameter(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.addParameter(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
         parameters.addParameter(new Parameter(FLEX_BUGFIX,Parameter.BOOLEAN,false));
 
@@ -207,6 +215,7 @@ public class ImageFileLoader extends HCModule {
     public ParameterCollection getActiveParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(IMPORT_MODE));
         if (parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)) {
             returnedParameters.addParameter(parameters.getParameter(FILE_PATH));
@@ -214,9 +223,16 @@ public class ImageFileLoader extends HCModule {
         }
 
         returnedParameters.addParameter(parameters.getParameter(USE_BIOFORMATS));
-        returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+        if (parameters.getValue(USE_BIOFORMATS)) {
+            returnedParameters.addParameter(parameters.getParameter(FLEX_BUGFIX));
+
+            if (! (boolean) parameters.getValue(FLEX_BUGFIX)) {
+                returnedParameters.addParameter(parameters.getParameter(SERIES_NUMBER));
+
+            }
+        }
+
         returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(FLEX_BUGFIX));
 
         return returnedParameters;
 
