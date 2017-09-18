@@ -1,8 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.ChannelExtractor;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -116,7 +114,7 @@ public class ImageFileLoaderTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testRunWithCurrentTiffFileBioformats() throws Exception {
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
@@ -164,7 +162,7 @@ public class ImageFileLoaderTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testRunWithCurrentLifFile() throws Exception {
         // Getting path to image file
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankLif5D_8bit.lif").getPath(),"UTF-8");
@@ -211,4 +209,5 @@ public class ImageFileLoaderTest {
         assertEquals(2.00,image.getImagePlus().getCalibration().getZ(1),1E-2);
 
     }
+
 }

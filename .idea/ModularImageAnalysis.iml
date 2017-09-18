@@ -67,13 +67,14 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Maven: sc.fiji:Fiji_Plugins:3.1.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:fiji-lib:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: net.imagej:ij1-patcher:0.12.2" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:Auto_Threshold:1.16.4" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:TrackMate_:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:3D_Viewer:4.0.1" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:VIB-lib:2.1.0" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:pal-optimization:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:fiji-lib:2.1.1" level="project" />
-    <orderEntry type="library" name="Maven: net.imagej:ij1-patcher:0.12.2" level="project" />
     <orderEntry type="library" name="Maven: net.imagej:imagej-deprecated:0.1.1" level="project" />
     <orderEntry type="library" name="Maven: net.imagej:imagej-common:0.18.1" level="project" />
     <orderEntry type="library" name="Maven: net.imglib2:imglib2-roi:0.4.2" level="project" />
@@ -119,7 +120,7 @@
     <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.11" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:20.0" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.21.0-GA" level="project" />
-    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.2.8" level="project" />
+    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.2.9-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
   </component>
 </module>

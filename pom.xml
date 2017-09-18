@@ -70,6 +70,12 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
+            <artifactId>Fiji_Plugins</artifactId>
+            <version>3.1.1</version>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
             <artifactId>Auto_Threshold</artifactId>
             <version>1.16.4</version>
             <scope>${myscope}</scope>
@@ -96,7 +102,7 @@
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.2.8</version>
+            <version>1.2.9-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

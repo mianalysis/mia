@@ -47,6 +47,8 @@ public class BinaryOperations extends HCModule {
 
     @Override
     public void run(Workspace workspace, boolean verbose) {
+        Prefs.blackBackground = false;
+
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);

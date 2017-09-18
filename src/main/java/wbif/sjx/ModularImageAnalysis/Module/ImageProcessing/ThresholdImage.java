@@ -24,8 +24,9 @@ public class ThresholdImage extends HCModule {
     public interface ThresholdModes {
         String HUANG = "Huang";
         String OTSU = "Otsu";
+        String TRIANGLE = "Triangle";
 
-        String[] ALL = new String[]{HUANG, OTSU};
+        String[] ALL = new String[]{HUANG, OTSU, TRIANGLE};
 
     }
 
@@ -64,14 +65,21 @@ public class ThresholdImage extends HCModule {
         Auto_Threshold auto_threshold = new Auto_Threshold();
         Object[] results1 = new Object[]{0};
 
-        if (thresholdMode.equals(ThresholdModes.HUANG)) {
-            if (verbose) System.out.println("["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
-            results1 = auto_threshold.exec(inputImagePlus,"Huang",true,false,true,true,false,true);
+        switch (thresholdMode) {
+            case ThresholdModes.HUANG:
+                if (verbose) System.out.println("["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
+                results1 = auto_threshold.exec(inputImagePlus,"Huang",true,false,true,true,false,true);
+                break;
 
-        } else if (thresholdMode.equals(ThresholdModes.OTSU)) {
-            if (verbose) System.out.println("["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
-            results1 = auto_threshold.exec(inputImagePlus,"Otsu",true,false,true,true,false,true);
+            case ThresholdModes.OTSU:
+                if (verbose) System.out.println("["+moduleName+"] Applying global Otsu threshold (multplier = "+thrMult+" x)");
+                results1 = auto_threshold.exec(inputImagePlus,"Otsu",true,false,true,true,false,true);
+                break;
 
+            case ThresholdModes.TRIANGLE:
+                if (verbose) System.out.println("["+moduleName+"] Applying global Triangle threshold (multplier = "+thrMult+" x)");
+                results1 = auto_threshold.exec(inputImagePlus,"Triangle",true,false,true,true,false,true);
+                break;
         }
 
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
