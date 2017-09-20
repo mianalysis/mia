@@ -1,9 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.ChannelExtractor;
 import wbif.sjx.ModularImageAnalysis.Object.MIAMeasurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjSet;

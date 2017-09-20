@@ -116,6 +116,22 @@ public class ObjectImageConverter extends HCModule {
                     templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
         }
 
+        // If it's a 32-bit image, set all background pixels to NaN
+        if (bitDepth == 32) {
+            for (int z = 1; z <= ipl.getNSlices(); z++) {
+                for (int c = 1; c <= ipl.getNChannels(); c++) {
+                    for (int t = 1; t <= ipl.getNFrames(); t++) {
+                        for (int x=0;x<ipl.getWidth();x++) {
+                            for (int y=0;y<ipl.getHeight();y++) {
+                                ipl.setPosition(c,z,t);
+                                ipl.getProcessor().putPixelValue(x,y,Double.NaN);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Labelling pixels in image
         for (Obj object:objects.values()) {
             ArrayList<Integer> x = object.getXCoords();
@@ -178,10 +194,10 @@ public class ObjectImageConverter extends HCModule {
         // Assigning the spatial calibration from the first object
         Obj referenceObject = objects.values().iterator().next();
         if (referenceObject != null) {
-            ipl.getCalibration().pixelWidth = referenceObject.getDistPerPxXY();
-            ipl.getCalibration().pixelHeight = referenceObject.getDistPerPxXY();
-            ipl.getCalibration().pixelDepth = referenceObject.getDistPerPxZ();
-            ipl.getCalibration().setUnit(referenceObject.getCalibratedUnits());
+            ipl.getCalibration().pixelWidth = templateImage.getImagePlus().getCalibration().getX(1);
+            ipl.getCalibration().pixelHeight = templateImage.getImagePlus().getCalibration().getY(1);
+            ipl.getCalibration().pixelDepth = templateImage.getImagePlus().getCalibration().getZ(1);
+            ipl.getCalibration().setUnit(templateImage.getImagePlus().getCalibration().getUnit());
 
         }
 

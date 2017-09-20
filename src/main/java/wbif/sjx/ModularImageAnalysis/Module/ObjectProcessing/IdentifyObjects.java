@@ -3,6 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -34,6 +35,9 @@ public class IdentifyObjects extends HCModule {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
+
+        // Creating a copy of the input image
+        inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);

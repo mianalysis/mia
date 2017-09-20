@@ -44,7 +44,6 @@ public class FilterImage extends HCModule {
                 }
             }
         }
-
     }
 
     public static ImagePlus runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth) {
@@ -98,7 +97,6 @@ public class FilterImage extends HCModule {
             for (int z = 1; z <= iplOut.getNSlices(); z++) {
                 for (int c = 1; c <= iplOut.getNChannels(); c++) {
                     outputImagePlus.setPosition(c,z,f);
-//                    System.out.println(iplOut.getNChannels()+"_"+iplOut.getNFrames()+"_"+iplOut.getNSlices());
                     iplOut.setPosition(c,z,1);
 
                     outputImagePlus.setProcessor(iplOut.getProcessor());
@@ -106,6 +104,8 @@ public class FilterImage extends HCModule {
                 }
             }
         }
+
+        outputImagePlus.setPosition(1,1,1);
 
         return outputImagePlus;
 

@@ -101,8 +101,9 @@ public class ThresholdImage extends HCModule {
                     }
                 }
             }
-            inputImagePlus.setPosition(1,1,1);
         }
+
+        inputImagePlus.setPosition(1,1,1);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {

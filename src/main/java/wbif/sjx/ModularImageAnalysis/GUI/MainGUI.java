@@ -66,8 +66,8 @@ public class MainGUI {
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
 
-        renderBasicMode();
-//        renderEditingMode();
+//        renderBasicMode();
+        renderEditingMode();
 
         // Final bits for listeners
 //        frame.addMouseListener(this);
