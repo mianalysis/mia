@@ -47,6 +47,8 @@ public class BinaryOperations extends HCModule {
 
     @Override
     public void run(Workspace workspace, boolean verbose) {
+        Prefs.blackBackground = false;
+
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -54,6 +56,7 @@ public class BinaryOperations extends HCModule {
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String operationMode = parameters.getValue(OPERATION_MODE);
         int dynamic = parameters.getValue(DYNAMIC);
 
@@ -103,23 +106,17 @@ public class BinaryOperations extends HCModule {
 
         }
 
+        // If selected, displaying the image
+        if (parameters.getValue(SHOW_IMAGE)) {
+            new Duplicator().run(inputImagePlus).show();
+        }
+
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
-            // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(outputImage.getImagePlus()).show();
-            }
-
-        } else {
-            // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(inputImagePlus).show();
-            }
         }
     }
 

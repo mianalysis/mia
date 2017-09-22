@@ -11,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
+import java.util.HashSet;
 
 /**
  * Created by sc13967 on 14/07/2017.

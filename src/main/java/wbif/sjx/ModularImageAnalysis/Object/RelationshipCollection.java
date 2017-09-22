@@ -44,13 +44,14 @@ public class RelationshipCollection {
         while (parentHierarchy.size() != lastNParents) {
             lastNParents = parentHierarchy.size();
 
+            ArrayList<String> newParents = new ArrayList<>();
             for (String parent:parentHierarchy) {
-                ArrayList<String> newParents = parents.get(parent);
-                if (newParents == null) continue;
-
-                parentHierarchy.addAll(parents.get(parent));
+                if (parents.get(parent) == null) continue;
+                newParents.addAll(parents.get(parent));
 
             }
+
+            parentHierarchy.addAll(newParents);
         }
 
         return parentHierarchy.toArray(new String[parentHierarchy.size()]);

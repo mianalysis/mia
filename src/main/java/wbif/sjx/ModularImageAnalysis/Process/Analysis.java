@@ -88,6 +88,11 @@ public abstract class Analysis implements Serializable {
 
     }
 
+    public void removeAllModules() {
+        modules.clear();
+
+    }
+
     public void shutdown() {
         shutdown = true;
 

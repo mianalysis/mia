@@ -93,6 +93,7 @@ public class MainGUI {
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.START_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.STOP_ANALYSIS));
+        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.CLEAR_PIPELINE));
 
         // Creating the new menu
         menuBar.add(viewMenu);

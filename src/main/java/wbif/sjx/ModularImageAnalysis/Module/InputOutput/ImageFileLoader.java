@@ -129,13 +129,17 @@ public class ImageFileLoader extends HCModule {
                 }
             }
 
-//            // Add spatial calibration
-//            if (meta != null) {
-//                ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(1).value();
-//                ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeY(1).value();
-//                ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(1).value();
-//
-//            }
+            // Add spatial calibration
+            if (meta != null) {
+                ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
+                ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeY(0).value();
+
+                if (ipl.getNSlices() == 1) {
+                    ipl.getCalibration().pixelDepth = 1.0;
+                } else {
+                    ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(0).value();
+                }
+            }
 
             reader.close();
 

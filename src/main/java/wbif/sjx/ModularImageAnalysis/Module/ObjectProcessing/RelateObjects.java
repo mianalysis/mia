@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by sc13967 on 04/05/2017.
@@ -19,7 +20,8 @@ public class RelateObjects extends HCModule {
     public final static String RELATE_MODE = "Method to relate objects";
     public final static String REFERENCE_POINT = "Reference point";
     public final static String TEST_CHILD_OBJECTS = "Child objects to test against";
-    public final static String LINKING_DISTANCE = "Linking distance";
+    public final static String LINKING_DISTANCE = "Maximum linking distance (px)";
+    public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
     public interface RelateModes {
         String MATCHING_IDS = "Matching IDs";
@@ -68,50 +70,65 @@ public class RelateObjects extends HCModule {
      * @param childObjects
      * @param linkingDistance
      */
-    public static void proximity(ObjSet parentObjects, ObjSet childObjects, double linkingDistance, String referencePoint, boolean verbose) {
+    public static void proximity(ObjSet parentObjects, ObjSet childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame, boolean verbose) {
+        String moduleName = RelateObjects.class.getSimpleName();
+
+        int iter = 1;
+        int numberOfChildren = childObjects.size();
+
         for (Obj childObject:childObjects.values()) {
+            if (verbose) System.out.println("["+moduleName+"] Processing object "+(iter++)+" of "+numberOfChildren);
+
             double minDist = Double.MAX_VALUE;
             double dpp = parentObjects.values().iterator().next().getDistPerPxXY();
             Obj currentLink = null;
 
             for (Obj parentObject:parentObjects.values()) {
+                if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
+
                 // Calculating the object spacing
-                if (referencePoint.equals(ReferencePoints.CENTROID)) {
-                    double xDist = childObject.getXMean(true) - parentObject.getXMean(true);
-                    double yDist = childObject.getYMean(true) - parentObject.getYMean(true);
-                    double zDist = childObject.getZMean(true, true) - parentObject.getZMean(true, true);
-                    double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+                switch (referencePoint) {
+                    case ReferencePoints.CENTROID:
+                        double xDist = childObject.getXMean(true) - parentObject.getXMean(true);
+                        double yDist = childObject.getYMean(true) - parentObject.getYMean(true);
+                        double zDist = childObject.getZMean(true, true) - parentObject.getZMean(true, true);
+                        double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
-                    if (dist < minDist && dist < linkingDistance) {
-                        minDist = dist;
-                        currentLink = parentObject;
-                    }
+                        if (dist < minDist && dist < linkingDistance) {
+                            minDist = dist;
+                            currentLink = parentObject;
+                        }
 
-                } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
-                    // Getting coordinates for the surface points (6-way connectivity)
-                    double[] parentX = parentObject.getSurfaceX(true);
-                    double[] parentY = parentObject.getSurfaceY(true);
-                    double[] parentZ = parentObject.getSurfaceZ(true,true);
+                        break;
 
-                    double[] childX = childObject.getSurfaceX(true);
-                    double[] childY = childObject.getSurfaceY(true);
-                    double[] childZ = childObject.getSurfaceZ(true,true);
+                    case ReferencePoints.SURFACE:
+                        // Getting coordinates for the surface points (6-way connectivity)
+                        double[] parentX = parentObject.getSurfaceX(true);
+                        double[] parentY = parentObject.getSurfaceY(true);
+                        double[] parentZ = parentObject.getSurfaceZ(true,true);
 
-                    // Measuring point-to-point distances on both object surfaces
-                    for (int i = 0;i<parentX.length;i++) {
-                        for (int j = 0;j<childX.length;j++) {
-                            double xDist = childX[j] - parentX[i];
-                            double yDist = childY[j] - parentY[i];
-                            double zDist = childZ[j] - parentZ[i];
-                            double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+                        double[] childX = childObject.getSurfaceX(true);
+                        double[] childY = childObject.getSurfaceY(true);
+                        double[] childZ = childObject.getSurfaceZ(true,true);
 
-                            if (dist < minDist && dist < linkingDistance) {
-                                minDist = dist;
-                                currentLink = parentObject;
+                        // Measuring point-to-point distances on both object surfaces
+                        for (int i = 0;i<parentX.length;i++) {
+                            for (int j = 0;j<childX.length;j++) {
+                                xDist = childX[j] - parentX[i];
+                                yDist = childY[j] - parentY[i];
+                                zDist = childZ[j] - parentZ[i];
+                                dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
+                                if (dist < minDist && dist < linkingDistance) {
+                                    minDist = dist;
+                                    currentLink = parentObject;
+
+                                }
                             }
                         }
-                    }
+
+                        break;
+
                 }
             }
 
@@ -183,10 +200,10 @@ public class RelateObjects extends HCModule {
 
             }
 
-            // Creating distance map using MorphoLibJ
-            short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
-            DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,true);
-            ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
+//            // Creating distance map using MorphoLibJ
+//            short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
+//            DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,true);
+//            ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
 
             for (Obj childObject:childObjects.values()) {
                 // Only testing if the child is present in the same timepoint as the parent
@@ -260,6 +277,7 @@ public class RelateObjects extends HCModule {
         String testChildObjectsName = parameters.getValue(TEST_CHILD_OBJECTS);
         String referencePoint = parameters.getValue(REFERENCE_POINT);
         double linkingDistance = parameters.getValue(LINKING_DISTANCE);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
 
         switch (relateMode) {
             case RelateModes.MATCHING_IDS:
@@ -269,7 +287,7 @@ public class RelateObjects extends HCModule {
 
             case RelateModes.PROXIMITY:
                 if (verbose) System.out.println("["+moduleName+"] Relating objects by proximity");
-                proximity(parentObjects,childObjects,linkingDistance,referencePoint,verbose);
+                proximity(parentObjects,childObjects,linkingDistance,referencePoint,linkInSameFrame,verbose);
                 break;
 
             case RelateModes.PROXIMITY_TO_CHILDREN:
@@ -292,6 +310,7 @@ public class RelateObjects extends HCModule {
         parameters.addParameter(new Parameter(TEST_CHILD_OBJECTS,Parameter.CHILD_OBJECTS,null));
         parameters.addParameter(new Parameter(LINKING_DISTANCE,Parameter.DOUBLE,1.0));
         parameters.addParameter(new Parameter(REFERENCE_POINT,Parameter.CHOICE_ARRAY,ReferencePoints.CENTROID,ReferencePoints.ALL));
+        parameters.addParameter(new Parameter(LINK_IN_SAME_FRAME,Parameter.BOOLEAN,true));
 
     }
 
@@ -319,6 +338,8 @@ public class RelateObjects extends HCModule {
 
                 break;
         }
+
+        returnedParameters.addParameter(parameters.getParameter(LINK_IN_SAME_FRAME));
 
         return returnedParameters;
 
@@ -354,4 +375,3 @@ public class RelateObjects extends HCModule {
 
     }
 }
-
