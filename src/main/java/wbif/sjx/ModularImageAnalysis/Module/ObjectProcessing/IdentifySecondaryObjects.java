@@ -87,7 +87,7 @@ public class IdentifySecondaryObjects extends HCModule {
         // Converting the labelled cell image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
         Image tempImage = new Image("Temp image",im2);
-        ObjSet objects2 = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectsName);
+        ObjSet objects2 = ObjectImageConverter.convertImageToObjects(tempImage,outputObjectsName);
 
         // Watershed will give one cell per nucleus and these should already have the same labelling number.
         if (verbose) System.out.println("["+moduleName+"] Linking primary and secondary objects by ID number");

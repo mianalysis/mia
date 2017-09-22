@@ -1,5 +1,6 @@
 // TODO: For image to objects, could add the image ID number as a measurement to the object
 // TODO: For image to objects, could create parent object for all instances of that image ID in different frames
+// TODO: Colour based on parent measurement
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 

@@ -200,10 +200,10 @@ public class RelateObjects extends HCModule {
 
             }
 
-            // Creating distance map using MorphoLibJ
-            short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
-            DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,true);
-            ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
+//            // Creating distance map using MorphoLibJ
+//            short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
+//            DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,true);
+//            ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
 
             for (Obj childObject:childObjects.values()) {
                 // Only testing if the child is present in the same timepoint as the parent
