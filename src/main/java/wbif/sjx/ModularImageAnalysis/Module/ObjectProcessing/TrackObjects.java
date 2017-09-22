@@ -126,6 +126,8 @@ public class TrackObjects extends HCModule {
         int[] frameLimits = inputObjects.getTimepointLimits();
 
         for (int t2=frameLimits[0]+1;t2<=frameLimits[1];t2++) {
+            if (verbose) System.out.println("["+moduleName+"] Tracking to frame "+(t2+1)+" of "+frameLimits[1]);
+
             for (int t1 = t2-1;t1>=t2-1-maxMissingFrames;t1--) {
                 // Creating a pair of ArrayLists to store the current and previous objects
                 ArrayList<Obj> prevObjects = new ArrayList<>();

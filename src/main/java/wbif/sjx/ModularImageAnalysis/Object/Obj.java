@@ -1,7 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
 
 import java.util.*;

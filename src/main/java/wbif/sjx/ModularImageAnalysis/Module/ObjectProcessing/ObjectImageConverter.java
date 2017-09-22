@@ -192,9 +192,8 @@ public class ObjectImageConverter extends HCModule {
             }
         }
 
-        // Assigning the spatial calibration from the first object
-        Obj referenceObject = objects.values().iterator().next();
-        if (referenceObject != null) {
+        // Assigning the spatial calibration from the template image
+        if (templateImage != null) {
             ipl.getCalibration().pixelWidth = templateImage.getImagePlus().getCalibration().getX(1);
             ipl.getCalibration().pixelHeight = templateImage.getImagePlus().getCalibration().getY(1);
             ipl.getCalibration().pixelDepth = templateImage.getImagePlus().getCalibration().getZ(1);

@@ -12,6 +12,7 @@ public class ObjSet extends LinkedHashMap<Integer,Obj> {
 
     public ObjSet(String name) {
         this.name = name;
+
     }
 
     public String getName() {

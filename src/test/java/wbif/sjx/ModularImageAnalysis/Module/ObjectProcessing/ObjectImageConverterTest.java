@@ -107,7 +107,7 @@ public class ObjectImageConverterTest {
         Image referenceImage = new Image("Reference image",ipl);
 
         // Converting objects to image
-        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",null,colourMode,colourSource,hideMissing);
+        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
