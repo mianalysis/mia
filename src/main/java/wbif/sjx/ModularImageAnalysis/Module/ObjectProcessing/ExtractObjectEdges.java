@@ -57,9 +57,21 @@ public class ExtractObjectEdges extends HCModule {
         String edgeMode = parameters.getValue(EDGE_MODE);
         double edgeDistance = parameters.getValue(EDGE_DISTANCE);
         double edgePercentage = parameters.getValue(EDGE_PERCENTAGE);
-        double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
-        double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
-        String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
+
+        double dppXY;
+        double dppZ;
+        String calibratedUnits;
+        if (inputObjects.values().iterator().hasNext()) {
+            dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
+            dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
+            calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
+
+        } else {
+            dppXY = 1;
+            dppZ = 1;
+            calibratedUnits = "pixels";
+
+        }
 
         // Initialising output edge objects
         String outputEdgeObjectName = null;

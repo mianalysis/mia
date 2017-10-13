@@ -35,7 +35,6 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,false);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -83,7 +82,6 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,false);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -131,7 +129,6 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,true);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -179,7 +176,6 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,true);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
