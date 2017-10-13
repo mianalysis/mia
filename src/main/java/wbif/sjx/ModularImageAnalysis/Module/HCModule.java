@@ -26,7 +26,7 @@ public abstract class HCModule implements Serializable {
 
     public HCModule() {
         initialiseParameters();
-        moduleName = this.getClass().getSimpleName();
+        moduleName = getTitle();
         nickname = moduleName;
 
     }
@@ -41,7 +41,7 @@ public abstract class HCModule implements Serializable {
     protected abstract void run(Workspace workspace, boolean verbose) throws GenericMIAException;
 
     public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
-        String moduleName = this.getClass().getSimpleName();
+        String moduleName = getTitle();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
         run(workspace,verbose);

@@ -18,6 +18,10 @@ public class ThresholdImage extends HCModule {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String THRESHOLD_MODE = "Threshold mode";
     public static final String THRESHOLD_MULTIPLIER = "Threshold multiplier";
+    public static final String USE_LOWER_THRESHOLD_LIMIT = "Use lower threshold limit";
+    public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
+    public static final String USE_UPPER_THRESHOLD_LIMIT = "Use upper threshold limit";
+    public static final String UPPER_THRESHOLD_LIMIT = "Upper threshold limit";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -53,6 +57,10 @@ public class ThresholdImage extends HCModule {
         String thresholdMode = parameters.getValue(THRESHOLD_MODE);
         double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
+        boolean useLowerThresholdLimit = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
+        double lowerThresholdLimit = parameters.getValue(LOWER_THRESHOLD_LIMIT);
+        boolean useUpperThresholdLimit = parameters.getValue(USE_UPPER_THRESHOLD_LIMIT);
+        double upperThresholdLimit = parameters.getValue(UPPER_THRESHOLD_LIMIT);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
@@ -65,6 +73,7 @@ public class ThresholdImage extends HCModule {
         Auto_Threshold auto_threshold = new Auto_Threshold();
         Object[] results1 = new Object[]{0};
 
+        // Calculating the threshold based on the selected algorithm
         switch (thresholdMode) {
             case ThresholdModes.HUANG:
                 if (verbose) System.out.println("["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
@@ -82,6 +91,19 @@ public class ThresholdImage extends HCModule {
                 break;
         }
 
+        // Applying limits, where applicable
+        System.out.println("Res1 "+results1[0]+"_"+lowerThresholdLimit);
+        if (useLowerThresholdLimit && (int) results1[0] < lowerThresholdLimit) {
+            results1[0] = (int) Math.round(lowerThresholdLimit);
+        }
+        System.out.println("Res1 "+results1[0]+"_"+lowerThresholdLimit);
+        System.out.println("Res1 "+results1[0]+"_"+upperThresholdLimit);
+        if (useUpperThresholdLimit && (int) results1[0] > upperThresholdLimit) {
+            results1[0] = (int) Math.round(upperThresholdLimit);
+        }
+        System.out.println("Res1 "+results1[0]+"_"+upperThresholdLimit);
+
+        // Applying threshold
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
@@ -131,6 +153,10 @@ public class ThresholdImage extends HCModule {
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.addParameter(new Parameter(THRESHOLD_MODE, Parameter.CHOICE_ARRAY,ThresholdModes.HUANG,ThresholdModes.ALL));
         parameters.addParameter(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
+        parameters.addParameter(new Parameter(USE_LOWER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
+        parameters.addParameter(new Parameter(LOWER_THRESHOLD_LIMIT, Parameter.DOUBLE, 0.0));
+        parameters.addParameter(new Parameter(USE_UPPER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
+        parameters.addParameter(new Parameter(UPPER_THRESHOLD_LIMIT, Parameter.DOUBLE, 65535.0));
         parameters.addParameter(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
@@ -148,6 +174,18 @@ public class ThresholdImage extends HCModule {
 
         returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MODE));
         returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MULTIPLIER));
+        returnedParameters.addParameter(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
+
+        if (parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
+            returnedParameters.addParameter(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
+        }
+
+        returnedParameters.addParameter(parameters.getParameter(USE_UPPER_THRESHOLD_LIMIT));
+
+        if (parameters.getValue(USE_UPPER_THRESHOLD_LIMIT)) {
+            returnedParameters.addParameter(parameters.getParameter(UPPER_THRESHOLD_LIMIT));
+        }
+
         returnedParameters.addParameter(parameters.getParameter(WHITE_BACKGROUND));
         returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
 

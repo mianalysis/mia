@@ -19,6 +19,7 @@ import wbif.sjx.common.Process.IntensityMinMax;
 /**
  * Created by sc13967 on 02/05/2017.
  */
+@Deprecated
 public class IdentifyPrimaryObjects extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECT = "Output object";

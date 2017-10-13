@@ -37,7 +37,6 @@ public class ImageFileLoader extends HCModule {
     public static final String SERIES_NUMBER = "Series number (>= 1)";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
-    public static final String FLEX_BUGFIX = "Apply Flex bugfix (2 or fewer channels)";
 
     public interface ImportModes {
         String CURRENT_FILE = "Current file";
@@ -48,7 +47,7 @@ public class ImageFileLoader extends HCModule {
     }
 
 
-    private static ImagePlus getBFImage(String path, int seriesNumber, boolean flexFile) {
+    private static ImagePlus getBFImage(String path, int seriesNumber) {
         ImagePlus ipl = null;
 
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
@@ -69,75 +68,48 @@ public class ImageFileLoader extends HCModule {
             reader.setGroupFiles(false);
             reader.setId(path);
 
-            if (flexFile) {
-                int width = reader.getSizeX();
-                int height = reader.getSizeY();
-                int bitDepth = reader.getBitsPerPixel();
-                int seriesCount = reader.getSeriesCount();
+            reader.setSeries(seriesNumber-1);
 
-                // Getting maximum channel number
-                int sizeC = 0;
-                DecimalFormat df = new DecimalFormat("00");
+            int width = reader.getSizeX();
+            int height = reader.getSizeY();
+            int sizeC = reader.getSizeC();
+            int sizeT = reader.getSizeT();
+            int sizeZ = reader.getSizeZ();
+            int bitDepth = reader.getBitsPerPixel();
 
-                for (int i=0;i<seriesCount;i++) {
-                    String channelName = String.valueOf(reader.getMetadataValue("Name #"+df.format(i+1)));
-                    int currChannel = Integer.parseInt(channelName.substring(3,4));
-                    if (currChannel > sizeC) sizeC = currChannel;
+            ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, sizeT, bitDepth);
 
-                }
+            for (int z = 0; z < sizeZ; z++) {
+                for (int c = 0; c < sizeC; c++) {
+                    for (int t = 0; t < sizeT; t++) {
+                        int idx = reader.getIndex(z, c, t);
+                        ImageProcessor ip = reader.openProcessors(idx)[0];
 
-                ipl = IJ.createHyperStack("Image", width, height,3,reader.getSeriesCount()/sizeC,1,bitDepth);
+                        ipl.setPosition(c + 1, z + 1, t + 1);
+                        ipl.setProcessor(ip);
 
-                int z = 0;
-                int c = 0;
-                for (int i=0;i<reader.getSeriesCount();i++) {
-                    reader.setSeries(i);
-                    ImageProcessor ip = reader.openProcessors(0)[0];
-                    ipl.setPosition(c+1,z+1,1);
-                    ipl.setProcessor(ip);
-
-                    c++;
-                    if (c == sizeC) {
-                        z++;
-                        c = 0;
-                    }
-                }
-
-            } else {
-                reader.setSeries(seriesNumber-1);
-
-                int width = reader.getSizeX();
-                int height = reader.getSizeY();
-                int sizeC = reader.getSizeC();
-                int sizeT = reader.getSizeT();
-                int sizeZ = reader.getSizeZ();
-                int bitDepth = reader.getBitsPerPixel();
-
-                ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, sizeT, bitDepth);
-
-                for (int z = 0; z < sizeZ; z++) {
-                    for (int c = 0; c < sizeC; c++) {
-                        for (int t = 0; t < sizeT; t++) {
-                            int idx = reader.getIndex(z, c, t);
-                            ImageProcessor ip = reader.openProcessors(idx)[0];
-
-                            ipl.setPosition(c + 1, z + 1, t + 1);
-                            ipl.setProcessor(ip);
-
-                        }
                     }
                 }
             }
 
             // Add spatial calibration
             if (meta != null) {
-                ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
-                ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeY(0).value();
-
-                if (ipl.getNSlices() == 1) {
-                    ipl.getCalibration().pixelDepth = 1.0;
+                if (meta.getPixelsPhysicalSizeX(0) != null) {
+                    ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
                 } else {
+                    ipl.getCalibration().pixelWidth = 1.0;
+                }
+
+                if (meta.getPixelsPhysicalSizeX(0) != null) {
+                    ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeX(0).value();
+                } else {
+                    ipl.getCalibration().pixelHeight = 1.0;
+                }
+
+                if (ipl.getNSlices() > 1 && meta.getPixelsPhysicalSizeZ(0) != null) {
                     ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(0).value();
+                } else {
+                    ipl.getCalibration().pixelDepth = 1.0;
                 }
             }
 
@@ -168,7 +140,6 @@ public class ImageFileLoader extends HCModule {
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean flexBugfix = parameters.getValue(FLEX_BUGFIX);
         int seriesNumber = parameters.getValue(SERIES_NUMBER);
 
         // If the file currently in the workspace is to be used, update the file path accordingly
@@ -182,7 +153,7 @@ public class ImageFileLoader extends HCModule {
         if (parameters.getValue(USE_BIOFORMATS)) {
             DebugTools.enableLogging("off");
             DebugTools.setRootLevel("off");
-            ipl = getBFImage(filePath,seriesNumber,flexBugfix);
+            ipl = getBFImage(filePath,seriesNumber);
 
         } else {
             ipl = IJ.openImage(filePath);
@@ -211,7 +182,6 @@ public class ImageFileLoader extends HCModule {
         parameters.addParameter(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(FLEX_BUGFIX,Parameter.BOOLEAN,false));
 
     }
 
@@ -228,12 +198,8 @@ public class ImageFileLoader extends HCModule {
 
         returnedParameters.addParameter(parameters.getParameter(USE_BIOFORMATS));
         if (parameters.getValue(USE_BIOFORMATS)) {
-            returnedParameters.addParameter(parameters.getParameter(FLEX_BUGFIX));
-
-            if (! (boolean) parameters.getValue(FLEX_BUGFIX)) {
                 returnedParameters.addParameter(parameters.getParameter(SERIES_NUMBER));
 
-            }
         }
 
         returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));

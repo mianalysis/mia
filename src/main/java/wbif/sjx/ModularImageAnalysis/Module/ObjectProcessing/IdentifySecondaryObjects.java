@@ -15,6 +15,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 /**
  * Created by sc13967 on 03/05/2017.
  */
+@Deprecated
 public class IdentifySecondaryObjects extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
