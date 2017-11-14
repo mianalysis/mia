@@ -1,2 +1,6 @@
 
 target/
+
+\.idea/workspace\.xml
+
+\.idea/ModularImageAnalysis\.iml

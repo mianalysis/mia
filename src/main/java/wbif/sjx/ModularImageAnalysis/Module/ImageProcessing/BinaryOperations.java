@@ -27,7 +27,7 @@ public class BinaryOperations extends HCModule {
         String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
         String ERODE = "Erode 2D";
         String FILL_HOLES_2D = "Fill holes 2D";
-        String WATERSHED_3D = "Watershed 2D";
+        String WATERSHED_3D = "Watershed 3D";
 
         String[] ALL = new String[]{DILATE,MANHATTAN_DISTANCE_MAP_2D,ERODE,FILL_HOLES_2D,WATERSHED_3D};
 
