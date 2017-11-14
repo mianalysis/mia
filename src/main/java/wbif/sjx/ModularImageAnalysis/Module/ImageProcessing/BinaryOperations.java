@@ -6,6 +6,8 @@ import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.plugin.frame.ThresholdAdjuster;
 import inra.ijpb.binary.BinaryImages;
+import inra.ijpb.binary.ChamferWeights3D;
+import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -27,7 +29,7 @@ public class BinaryOperations extends HCModule {
         String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
         String ERODE = "Erode 2D";
         String FILL_HOLES_2D = "Fill holes 2D";
-        String WATERSHED_3D = "Watershed 2D";
+        String WATERSHED_3D = "Watershed 3D";
 
         String[] ALL = new String[]{DILATE,MANHATTAN_DISTANCE_MAP_2D,ERODE,FILL_HOLES_2D,WATERSHED_3D};
 
@@ -41,7 +43,8 @@ public class BinaryOperations extends HCModule {
 
     @Override
     public String getHelp() {
-        return "Performs 2D fill holes, dilate and erode using ImageJ functions";
+        return "Performs 2D fill holes, dilate and erode using ImageJ functions\n" +
+                "Uses MorphoLibJ to do 3D Watershed";
 
     }
 
@@ -92,11 +95,39 @@ public class BinaryOperations extends HCModule {
             case OperationModes.WATERSHED_3D:
                 if (verbose) System.out.println("["+moduleName+"] Calculating distance map");
                 IJ.run(inputImagePlus,"Invert", "stack");
-                ImagePlus distIpl = new ImagePlus("Dist", BinaryImages.distanceMap(inputImagePlus.getImageStack()));
-                distIpl.getProcessor().invert();
+
+                // Creating a marker image
+                ImagePlus markerIpl = new Duplicator().run(inputImagePlus);
+
+                // Inverting the mask intensity
+                for (int z = 1; z <= markerIpl.getNSlices(); z++) {
+                    for (int c = 1; c <= markerIpl.getNChannels(); c++) {
+                        for (int t = 1; t <= markerIpl.getNFrames(); t++) {
+                            markerIpl.setPosition(c, z, t);
+                            markerIpl.getProcessor().invert();
+                        }
+                    }
+                }
+                markerIpl.setPosition(1,1,1);
+
+                // Calculating the distance map using MorphoLibJ
+                if (verbose) System.out.println("["+moduleName+"] Calculating distance map");
+                float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
+                ImagePlus distIpl = new GeodesicDistanceMap3D().process(markerIpl,inputImagePlus,"Dist",weights,false);
+
+                // Inverting the distance map, so the centres of objects have the smallest values
+                for (int z = 1; z <= distIpl.getNSlices(); z++) {
+                    for (int c = 1; c <= distIpl.getNChannels(); c++) {
+                        for (int t = 1; t <= distIpl.getNFrames(); t++) {
+                            distIpl.setPosition(c, z, t);
+                            distIpl.getProcessor().invert();
+                        }
+                    }
+                }
+                distIpl.setPosition(1,1,1);
 
                 if (verbose) System.out.println("["+moduleName+"] Applying watershed segmentation");
-                inputImagePlus.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(distIpl.getImageStack(),inputImagePlus.getImageStack(),dynamic,6,false));
+                inputImagePlus.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(distIpl.getImageStack(),inputImagePlus.getImageStack(),dynamic,26,false));
 
                 IJ.setRawThreshold(inputImagePlus, 0, 0, null);
                 IJ.run(inputImagePlus, "Convert to Mask", "method=Default background=Light");

@@ -23,14 +23,14 @@ public class ModularImageAnalysisPlugin implements PlugIn {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         new ImageJ();
-        new MainGUI();
+        new MainGUI(true);
 
     }
 
     @Override
     public void run(String s) {
         try {
-            new MainGUI();
+            new MainGUI(false);
         } catch (InstantiationException | IllegalAccessException e) {
             IJ.log("Error");
             e.printStackTrace();

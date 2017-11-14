@@ -6,6 +6,8 @@ import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.*;
+import ij.plugin.filter.Filters;
+import ij.plugin.filter.RankFilters;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
@@ -19,7 +21,7 @@ public class FilterImage extends HCModule {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String FILTER_MODE = "Filter mode";
-    public static final String FILTER_RADIUS = "Filter radius (px)";
+    public static final String FILTER_RADIUS = "Filter radius";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String WINDOW_HALF_WIDTH = "Window half width (frames)";
     public static final String SHOW_IMAGE = "Show image";
@@ -28,11 +30,27 @@ public class FilterImage extends HCModule {
         String DOG2D = "Difference of Gaussian 2D";
         String GAUSSIAN2D = "Gaussian 2D";
         String GAUSSIAN3D = "Gaussian 3D";
+        String MEDIAN2D = "Median 2D";
         String MEDIAN3D = "Median 3D";
         String ROLLING_FRAME = "Rolling frame";
 
-        String[] ALL = new String[]{DOG2D,GAUSSIAN2D,GAUSSIAN3D,MEDIAN3D,ROLLING_FRAME};
+        String[] ALL = new String[]{DOG2D,GAUSSIAN2D,GAUSSIAN3D,MEDIAN2D,MEDIAN3D,ROLLING_FRAME};
 
+    }
+
+    public void applyRankFilterToStack(ImagePlus inputImagePlus, int rankFilter, double filterRadius) {
+        RankFilters filter = new RankFilters();
+
+        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
+                    inputImagePlus.setPosition(c, z, t);
+                    filter.rank(inputImagePlus.getProcessor(),filterRadius,rankFilter);
+
+                }
+            }
+        }
+        inputImagePlus.setPosition(1,1,1);
     }
 
     public static void runGaussian2DFilter(ImagePlus imagePlus, double sigma) {
@@ -158,6 +176,11 @@ public class FilterImage extends HCModule {
             case FilterModes.GAUSSIAN3D:
                 if (verbose) System.out.println("[" + moduleName + "] Applying 3D Gaussian filter (radius = " + filterRadius + " px)");
                 GaussianBlur3D.blur(inputImagePlus,filterRadius,filterRadius,filterRadius);
+                break;
+
+            case FilterModes.MEDIAN2D:
+                if (verbose) System.out.println("[" + moduleName + "] Applying 2D median filter (radius = " + filterRadius + " px)");
+                applyRankFilterToStack(inputImagePlus,RankFilters.MEDIAN,filterRadius);
                 break;
 
             case FilterModes.MEDIAN3D:
