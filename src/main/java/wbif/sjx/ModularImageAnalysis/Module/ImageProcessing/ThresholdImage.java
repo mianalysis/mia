@@ -9,6 +9,7 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Filters.AutoLocalThreshold3D;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
@@ -49,10 +50,12 @@ public class ThresholdImage extends HCModule {
     }
 
     public interface LocalThresholdAlgorithms {
+        String BERNSEN_3D = "Bersen (3D)";
+        String MEAN_3D = "Mean (3D)";
         String PHANSALKAR_3D = "Phansalkar (3D)";
         String PHANSALKAR_SLICE = "Phansalkar (slice-by-slice)";
 
-        String[] ALL = new String[]{PHANSALKAR_3D,PHANSALKAR_SLICE};
+        String[] ALL = new String[]{BERNSEN_3D,MEAN_3D,PHANSALKAR_3D,PHANSALKAR_SLICE};
 
     }
 
@@ -111,7 +114,7 @@ public class ThresholdImage extends HCModule {
     public void applyLocalThreshold3D(ImagePlus inputImagePlus, String algorithm, double localRadius, double thrMult) {
         double localRadiusZ = inputImagePlus.getCalibration().getX(1)/inputImagePlus.getCalibration().getZ(1);
 
-        new AutoLocalThreshold3D().exec(inputImagePlus,localRadius,localRadiusZ,thrMult,0,0,true);
+        new AutoLocalThreshold3D().exec(inputImagePlus,algorithm,(int) Math.round(localRadius),(int) Math.round(localRadiusZ),thrMult,0,0,true);
 
     }
 
@@ -181,9 +184,19 @@ public class ThresholdImage extends HCModule {
 
             case ThresholdTypes.LOCAL_TYPE:
                 switch (localThresholdAlgorithm) {
+                    case LocalThresholdAlgorithms.BERNSEN_3D:
+                        if (verbose) System.out.println("["+moduleName+"] Applying local Bernsen threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.BERNSEN,localRadius,thrMult);
+                        break;
+
+                    case LocalThresholdAlgorithms.MEAN_3D:
+                        if (verbose) System.out.println("["+moduleName+"] Applying local Mean threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEAN,localRadius,thrMult);
+                        break;
+
                     case LocalThresholdAlgorithms.PHANSALKAR_3D:
                         if (verbose) System.out.println("["+moduleName+"] Applying local Phansalkar threshold (radius = "+localRadius+" px)");
-                        applyLocalThreshold3D(inputImagePlus,"Phansalkar",localRadius,thrMult);
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.PHANSALKAR,localRadius,thrMult);
                         break;
 
                     case LocalThresholdAlgorithms.PHANSALKAR_SLICE:
