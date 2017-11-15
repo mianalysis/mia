@@ -49,9 +49,10 @@ public class ThresholdImage extends HCModule {
     }
 
     public interface LocalThresholdAlgorithms {
-        String PHANSALKAR = "Phansalkar";
+        String PHANSALKAR_3D = "Phansalkar (3D)";
+        String PHANSALKAR_SLICE = "Phansalkar (slice-by-slice)";
 
-        String[] ALL = new String[]{PHANSALKAR};
+        String[] ALL = new String[]{PHANSALKAR_3D,PHANSALKAR_SLICE};
 
     }
 
@@ -105,6 +106,13 @@ public class ThresholdImage extends HCModule {
             }
         }
         inputImagePlus.setPosition(1,1,1);
+    }
+
+    public void applyLocalThreshold3D(ImagePlus inputImagePlus, String algorithm, double localRadius, double thrMult) {
+        double localRadiusZ = inputImagePlus.getCalibration().getX(1)/inputImagePlus.getCalibration().getZ(1);
+
+        new AutoLocalThreshold3D().exec(inputImagePlus,localRadius,localRadiusZ,thrMult,0,0,true);
+
     }
 
     @Override
@@ -173,7 +181,12 @@ public class ThresholdImage extends HCModule {
 
             case ThresholdTypes.LOCAL_TYPE:
                 switch (localThresholdAlgorithm) {
-                    case LocalThresholdAlgorithms.PHANSALKAR:
+                    case LocalThresholdAlgorithms.PHANSALKAR_3D:
+                        if (verbose) System.out.println("["+moduleName+"] Applying local Phansalkar threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,"Phansalkar",localRadius,thrMult);
+                        break;
+
+                    case LocalThresholdAlgorithms.PHANSALKAR_SLICE:
                         if (verbose) System.out.println("["+moduleName+"] Applying local Phansalkar threshold (radius = "+localRadius+" px)");
                         applyLocalThresholdToStack(inputImagePlus,"Phansalkar",localRadius);
                         break;
@@ -221,7 +234,7 @@ public class ThresholdImage extends HCModule {
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.addParameter(new Parameter(THRESHOLD_TYPE, Parameter.CHOICE_ARRAY, ThresholdTypes.GLOBAL_TYPE, ThresholdTypes.ALL));
         parameters.addParameter(new Parameter(GLOBAL_THRESHOLD_ALGORITHM, Parameter.CHOICE_ARRAY, GlobalThresholdAlgorithms.HUANG, GlobalThresholdAlgorithms.ALL));
-        parameters.addParameter(new Parameter(LOCAL_THRESHOLD_ALGORITHM, Parameter.CHOICE_ARRAY, LocalThresholdAlgorithms.PHANSALKAR, LocalThresholdAlgorithms.ALL));
+        parameters.addParameter(new Parameter(LOCAL_THRESHOLD_ALGORITHM, Parameter.CHOICE_ARRAY, LocalThresholdAlgorithms.PHANSALKAR_3D, LocalThresholdAlgorithms.ALL));
         parameters.addParameter(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
         parameters.addParameter(new Parameter(USE_LOWER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
         parameters.addParameter(new Parameter(LOWER_THRESHOLD_LIMIT, Parameter.DOUBLE, 0.0));
@@ -245,11 +258,11 @@ public class ThresholdImage extends HCModule {
         }
 
         returnedParameters.addParameter(parameters.getParameter(THRESHOLD_TYPE));
+        returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MULTIPLIER));
 
         switch ((String) parameters.getValue(THRESHOLD_TYPE)) {
             case ThresholdTypes.GLOBAL_TYPE:
                 returnedParameters.addParameter(parameters.getParameter(GLOBAL_THRESHOLD_ALGORITHM));
-                returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MULTIPLIER));
                 returnedParameters.addParameter(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
 
                 if (parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
