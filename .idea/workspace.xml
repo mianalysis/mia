@@ -5,25 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="41e5c176-e94a-4fe4-bf1c-f07a687905f6" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects2D_8bit_whiteBG_dilate1.tif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects2D_8bit_whiteBG_erode100.tif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects2D_8bit_whiteBG_erode5.tif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects3D_8bit_whiteBG_dilate1.tif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects3D_8bit_whiteBG_erode5.tif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects4D_8bit_whiteBG_dilate1.tif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects4D_8bit_whiteBG_erode5.tif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects5D_8bit_whiteBG_dilate1.tif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects5D_8bit_whiteBG_erode5.tif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_ehcache_ehcache_3_4_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__sc_fiji_Fiji_Plugins_3_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__wbif_sjx_Common_1_2_9.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__wbif_sjx_Common_1_2_8.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/ModularImageAnalysis.iml" afterPath="$PROJECT_DIR$/.idea/ModularImageAnalysis.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects2D_8bit_whiteBG_fillHoles2D.tif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects3D_8bit_whiteBG_erode5.tif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects3D_8bit_whiteBG_fillHoles2D.tif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects4D_8bit_whiteBG_erode5.tif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects4D_8bit_whiteBG_fillHoles2D.tif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects5D_8bit_whiteBG_erode5.tif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects5D_8bit_whiteBG_fillHoles2D.tif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/ImageFilter/LabelledObjects5D_8bit_2pxGauss2D.tif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/images/LabelledObjects5D_8bit_2pxGauss2D.tif" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects2D_8bit_whiteBG_dilate1.tif" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects2D_8bit_whiteBG_dilate1.tif" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects2D_8bit_whiteBG_erode100.tif" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects2D_8bit_whiteBG_erode100.tif" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects2D_8bit_whiteBG_erode5.tif" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects2D_8bit_whiteBG_erode5.tif" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects3D_8bit_whiteBG_dilate1.tif" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects3D_8bit_whiteBG_dilate1.tif" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects3D_8bit_whiteBG_erode5.tif" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects3D_8bit_whiteBG_erode100.tif" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects4D_8bit_whiteBG_dilate1.tif" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects4D_8bit_whiteBG_dilate1.tif" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects4D_8bit_whiteBG_erode5.tif" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects4D_8bit_whiteBG_erode100.tif" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects5D_8bit_whiteBG_dilate1.tif" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects5D_8bit_whiteBG_dilate1.tif" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/images/BinaryObjects5D_8bit_whiteBG_erode5.tif" afterPath="$PROJECT_DIR$/src/test/resources/images/BinaryOperations/BinaryObjects5D_8bit_whiteBG_erode100.tif" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/BinaryOperationsTest.java" afterPath="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/BinaryOperationsTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/ChannelExtractorTest.java" afterPath="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/ChannelExtractorTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImageTest.java" afterPath="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImageTest.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -37,7 +39,7 @@
     <SUITE FILE_PATH="coverage/ModularImageAnalysis$ModularImageAnalysisPlugin.coverage" NAME="ModularImageAnalysisPlugin Coverage Results" MODIFIED="1504010034590" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>wbif.sjx.ModularImageAnalysis.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/ModularImageAnalysis$All_in_ModularImageAnalysis.coverage" NAME="All in ModularImageAnalysis Coverage Results" MODIFIED="1510735461387" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/ModularImageAnalysis$All_in_ModularImageAnalysis.coverage" NAME="All in ModularImageAnalysis Coverage Results" MODIFIED="1510768237966" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ModularImageAnalysis$Modular_Image_Analysis__run_.coverage" NAME="Modular Image Analysis [run] Coverage Results" MODIFIED="1505920165231" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/ModularImageAnalysis$MeasureObjectCentroidTest.coverage" NAME="MeasureObjectCentroidTest Coverage Results" MODIFIED="1505049668819" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
       <FILTER>wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.*</FILTER>
@@ -62,18 +64,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BinaryOperationsTest.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="BinaryOperationsTest.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/BinaryOperationsTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="467">
-              <caret line="756" column="0" lean-forward="true" selection-start-line="756" selection-start-column="0" selection-end-line="756" selection-end-column="0" />
+            <state relative-caret-position="25">
+              <caret line="219" column="0" lean-forward="false" selection-start-line="219" selection-start-column="0" selection-end-line="219" selection-end-column="0" />
               <folding>
                 <element signature="docComment;class#BinaryOperationsTest#0" expanded="false" />
                 <element signature="method#testGetTitle#0;class#BinaryOperationsTest#0" expanded="false" />
                 <element signature="method#testRunWithDilate2DOperation2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
                 <element signature="method#testRunWithDilate2DOperation3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
                 <element signature="method#testRunWithDilate2DOperation4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
-                <element signature="method#testRunWithDilate2DOperation5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
                 <element signature="method#testRunWithDilateOperation2DStackOnInput#0;class#BinaryOperationsTest#0" expanded="false" />
                 <element signature="method#testRunWithDilate2DOperationZeroIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
                 <element signature="method#testRunWithErode2DOperationFiveIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
@@ -82,6 +83,16 @@
                 <element signature="method#testRunWithErode2DOperationFiveIters5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
                 <element signature="docComment;method#testRunWithErode2DOperationHundredIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
                 <element signature="method#testRunWithErode2DOperationHundredIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="docComment;method#testRunWithErode2DOperationHundredIters3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="method#testRunWithErode2DOperationHundredIters3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="docComment;method#testRunWithErode2DOperationHundredIters4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="method#testRunWithErode2DOperationHundredIters4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="docComment;method#testRunWithErode2DOperationHundredIters5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="method#testRunWithErode2DOperationHundredIters5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="method#testRunWithFillHoles2DOperation2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="method#testRunWithFillHoles2DOperation3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="method#testRunWithFillHoles2DOperation4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+                <element signature="method#testRunWithFillHoles2DOperation5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -90,8 +101,8 @@
       <file leaf-file-name="BinaryOperations.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/BinaryOperations.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="87" column="0" lean-forward="true" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+            <state relative-caret-position="-1288">
+              <caret line="26" column="34" lean-forward="true" selection-start-line="26" selection-start-column="34" selection-end-line="26" selection-end-column="34" />
               <folding>
                 <element signature="docComment;class#BinaryOperations#0" expanded="false" />
               </folding>
@@ -104,37 +115,48 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="31" column="33" lean-forward="false" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FilterImageTest.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="FilterImageTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImageTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="25" column="17" lean-forward="false" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
+            <state relative-caret-position="193">
+              <caret line="54" column="29" lean-forward="false" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
               <folding>
                 <element signature="docComment;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunGaussian2DFilterMethod#0;class#FilterImageTest#0" expanded="false" />
                 <element signature="method#testRunRollingFrameFilterMethod#0;class#FilterImageTest#0" expanded="false" />
                 <element signature="method#testGetTitle#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunDoG2DFilter#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunDoG2DFilter3DStack#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunDoG2DFilter4DStack#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunGaussian2DFilter#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunGaussian2DFilter3DStack#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunGaussian2DFilter4DStack#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunGaussian3DFilter#0;class#FilterImageTest#0" expanded="false" />
+                <element signature="method#testRunDoG2DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
+                <element signature="method#testRunDoG2DFilter5DStack#0;class#FilterImageTest#0" expanded="false" />
+                <element signature="method#testRunGaussian2DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
                 <element signature="docComment;method#testRunGaussian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
                 <element signature="method#testRunGaussian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunMedian3DFilter#0;class#FilterImageTest#0" expanded="false" />
                 <element signature="docComment;method#testRunMedian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
                 <element signature="method#testRunMedian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="docComment;method#testRunRollingFrameFilter#0;class#FilterImageTest#0" expanded="false" />
-                <element signature="method#testRunRollingFrameFilter#0;class#FilterImageTest#0" expanded="false" />
+                <element signature="docComment;method#testRunRollingFrameFilter5DStack#0;class#FilterImageTest#0" expanded="false" />
                 <element signature="docComment;method#testRunRollingFrameFilterOneTimepoint#0;class#FilterImageTest#0" expanded="false" />
                 <element signature="method#testRunRollingFrameFilterOneTimepoint#0;class#FilterImageTest#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FilterImage.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="100">
+              <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+              <folding>
+                <element signature="docComment;class#FilterImage#0" expanded="false" />
+                <element signature="method#initialiseParameters#0;class#FilterImage#0" expanded="false" />
+                <element signature="method#getActiveParameters#0;class#FilterImage#0" expanded="false" />
+                <element signature="method#addMeasurements#0;class#FilterImage#0" expanded="false" />
+                <element signature="method#addRelationships#0;class#FilterImage#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -146,6 +168,7 @@
             <state relative-caret-position="0">
               <caret line="192" column="22" lean-forward="false" selection-start-line="192" selection-start-column="22" selection-end-line="192" selection-end-column="22" />
               <folding>
+                <element signature="imports" expanded="false" />
                 <element signature="docComment;class#RelateObjects#0" expanded="false" />
                 <element signature="class#ReferencePoints#0;class#RelateObjects#0" expanded="false" />
                 <element signature="method#linkMatchingIDs#0;class#RelateObjects#0" expanded="false" />
@@ -270,11 +293,11 @@
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/HCModule.java" />
         <option value="$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/BinaryOperations.java" />
         <option value="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/InputOutput/ImageSaverTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImageTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/ExpectedObjects5D.java" />
         <option value="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/ChannelExtractorTest.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/BinaryOperationsTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImageTest.java" />
       </list>
     </option>
   </component>
@@ -536,6 +559,7 @@
       <recent name="" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\sc13967\Local Documents\Java Projects\ModularImageAnalysis\src\test\resources\images\ImageFilter" />
       <recent name="C:\Users\sc13967\Local Documents\Java Projects\ModularImageAnalysis\src\test\resources\images" />
       <recent name="E:\Stephen\Java Projects\ModularImageAnalysis\src\test\resources\images" />
     </key>
@@ -543,6 +567,7 @@
       <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\sc13967\Local Documents\Java Projects\ModularImageAnalysis\src\test\resources\images\BinaryOperations" />
       <recent name="C:\Users\sc13967\Local Documents\Java Projects\ModularImageAnalysis\src\test\resources\images" />
       <recent name="E:\Stephen\Java Projects\ModularImageAnalysis\src\test\resources\images" />
     </key>
@@ -860,18 +885,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 08h 24m 02s.xml">
-      <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 08h 26m 34s.xml">
-      <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 08h 28m 10s.xml">
-      <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 08h 28m 44s.xml">
-      <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 08h 31m 41s.xml">
       <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
     </history-entry>
@@ -890,9 +903,21 @@
     <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 08h 44m 31s.xml">
       <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 17h 41m 24s.xml">
+      <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 17h 41m 48s.xml">
+      <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 17h 48m 01s.xml">
+      <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="All_in_ModularImageAnalysis - 2017.11.15 at 17h 50m 52s.xml">
+      <configuration name="All in ModularImageAnalysis" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-9" width="1864" height="1098" extended-state="7" />
+    <frame x="65" y="-9" width="1864" height="1098" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -948,23 +973,16 @@
           <caret line="25" column="17" lean-forward="false" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
           <folding>
             <element signature="docComment;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian2DFilterMethod#0;class#FilterImageTest#0" expanded="false" />
             <element signature="method#testRunRollingFrameFilterMethod#0;class#FilterImageTest#0" expanded="false" />
             <element signature="method#testGetTitle#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunDoG2DFilter#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunDoG2DFilter3DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunDoG2DFilter4DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian2DFilter#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian2DFilter3DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian2DFilter4DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian3DFilter#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunDoG2DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunDoG2DFilter5DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunGaussian2DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
             <element signature="docComment;method#testRunGaussian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
             <element signature="method#testRunGaussian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunMedian3DFilter#0;class#FilterImageTest#0" expanded="false" />
             <element signature="docComment;method#testRunMedian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
             <element signature="method#testRunMedian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="docComment;method#testRunRollingFrameFilter#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunRollingFrameFilter#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="docComment;method#testRunRollingFrameFilter5DStack#0;class#FilterImageTest#0" expanded="false" />
             <element signature="docComment;method#testRunRollingFrameFilterOneTimepoint#0;class#FilterImageTest#0" expanded="false" />
             <element signature="method#testRunRollingFrameFilterOneTimepoint#0;class#FilterImageTest#0" expanded="false" />
           </folding>
@@ -976,6 +994,7 @@
         <state relative-caret-position="1632">
           <caret line="192" column="22" lean-forward="false" selection-start-line="192" selection-start-column="22" selection-end-line="192" selection-end-column="22" />
           <folding>
+            <element signature="imports" expanded="false" />
             <element signature="docComment;class#RelateObjects#0" expanded="false" />
             <element signature="class#ReferencePoints#0;class#RelateObjects#0" expanded="false" />
             <element signature="method#linkMatchingIDs#0;class#RelateObjects#0" expanded="false" />
@@ -1001,7 +1020,6 @@
             <element signature="method#testRunWithDilate2DOperation2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithDilate2DOperation3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithDilate2DOperation4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
-            <element signature="method#testRunWithDilate2DOperation5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithDilateOperation2DStackOnInput#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithDilate2DOperationZeroIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithErode2DOperationFiveIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
@@ -1010,6 +1028,16 @@
             <element signature="method#testRunWithErode2DOperationFiveIters5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="docComment;method#testRunWithErode2DOperationHundredIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithErode2DOperationHundredIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="docComment;method#testRunWithErode2DOperationHundredIters3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithErode2DOperationHundredIters3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="docComment;method#testRunWithErode2DOperationHundredIters4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithErode2DOperationHundredIters4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="docComment;method#testRunWithErode2DOperationHundredIters5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithErode2DOperationHundredIters5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithFillHoles2DOperation2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithFillHoles2DOperation3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithFillHoles2DOperation4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithFillHoles2DOperation5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1271,6 +1299,7 @@
         <state relative-caret-position="0">
           <caret line="192" column="22" lean-forward="false" selection-start-line="192" selection-start-column="22" selection-end-line="192" selection-end-column="22" />
           <folding>
+            <element signature="imports" expanded="false" />
             <element signature="docComment;class#RelateObjects#0" expanded="false" />
             <element signature="class#ReferencePoints#0;class#RelateObjects#0" expanded="false" />
             <element signature="method#linkMatchingIDs#0;class#RelateObjects#0" expanded="false" />
@@ -1301,42 +1330,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImageTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="25" column="17" lean-forward="false" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
-          <folding>
-            <element signature="docComment;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian2DFilterMethod#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunRollingFrameFilterMethod#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testGetTitle#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunDoG2DFilter#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunDoG2DFilter3DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunDoG2DFilter4DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian2DFilter#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian2DFilter3DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian2DFilter4DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian3DFilter#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="docComment;method#testRunGaussian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunGaussian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunMedian3DFilter#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="docComment;method#testRunMedian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunMedian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="docComment;method#testRunRollingFrameFilter#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunRollingFrameFilter#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="docComment;method#testRunRollingFrameFilterOneTimepoint#0;class#FilterImageTest#0" expanded="false" />
-            <element signature="method#testRunRollingFrameFilterOneTimepoint#0;class#FilterImageTest#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ObjectProcessing/TrackObjects.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/ExpectedObjects5D.java" />
     <entry file="file://$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/ExpectedSpots3D.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="31" column="33" lean-forward="false" selection-start-line="31" selection-start-column="33" selection-end-line="31" selection-end-column="33" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1363,30 +1365,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="20" column="35" lean-forward="false" selection-start-line="20" selection-start-column="31" selection-end-line="20" selection-end-column="35" />
-          <folding>
-            <element signature="docComment;class#FilterImage#0" expanded="false" />
-            <element signature="method#initialiseParameters#0;class#FilterImage#0" expanded="false" />
-            <element signature="method#getActiveParameters#0;class#FilterImage#0" expanded="false" />
-            <element signature="method#addMeasurements#0;class#FilterImage#0" expanded="false" />
-            <element signature="method#addRelationships#0;class#FilterImage#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/BinaryOperations.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="87" column="0" lean-forward="true" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
-          <folding>
-            <element signature="docComment;class#BinaryOperations#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/ChannelExtractorTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -1403,17 +1381,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/BinaryOperations.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1288">
+          <caret line="26" column="34" lean-forward="true" selection-start-line="26" selection-start-column="34" selection-end-line="26" selection-end-column="34" />
+          <folding>
+            <element signature="docComment;class#BinaryOperations#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="14" column="13" lean-forward="false" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+          <folding>
+            <element signature="docComment;class#FilterImage#0" expanded="false" />
+            <element signature="method#initialiseParameters#0;class#FilterImage#0" expanded="false" />
+            <element signature="method#getActiveParameters#0;class#FilterImage#0" expanded="false" />
+            <element signature="method#addMeasurements#0;class#FilterImage#0" expanded="false" />
+            <element signature="method#addRelationships#0;class#FilterImage#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/BinaryOperationsTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="467">
-          <caret line="756" column="0" lean-forward="true" selection-start-line="756" selection-start-column="0" selection-end-line="756" selection-end-column="0" />
+        <state relative-caret-position="25">
+          <caret line="219" column="0" lean-forward="false" selection-start-line="219" selection-start-column="0" selection-end-line="219" selection-end-column="0" />
           <folding>
             <element signature="docComment;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testGetTitle#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithDilate2DOperation2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithDilate2DOperation3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithDilate2DOperation4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
-            <element signature="method#testRunWithDilate2DOperation5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithDilateOperation2DStackOnInput#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithDilate2DOperationZeroIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithErode2DOperationFiveIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
@@ -1422,6 +1423,38 @@
             <element signature="method#testRunWithErode2DOperationFiveIters5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="docComment;method#testRunWithErode2DOperationHundredIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
             <element signature="method#testRunWithErode2DOperationHundredIters2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="docComment;method#testRunWithErode2DOperationHundredIters3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithErode2DOperationHundredIters3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="docComment;method#testRunWithErode2DOperationHundredIters4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithErode2DOperationHundredIters4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="docComment;method#testRunWithErode2DOperationHundredIters5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithErode2DOperationHundredIters5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithFillHoles2DOperation2DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithFillHoles2DOperation3DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithFillHoles2DOperation4DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+            <element signature="method#testRunWithFillHoles2DOperation5DStack#0;class#BinaryOperationsTest#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/wbif/sjx/ModularImageAnalysis/Module/ImageProcessing/FilterImageTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="54" column="29" lean-forward="false" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
+          <folding>
+            <element signature="docComment;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunRollingFrameFilterMethod#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testGetTitle#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunDoG2DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunDoG2DFilter5DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunGaussian2DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="docComment;method#testRunGaussian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunGaussian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="docComment;method#testRunMedian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunMedian3DFilter2DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="docComment;method#testRunRollingFrameFilter5DStack#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="docComment;method#testRunRollingFrameFilterOneTimepoint#0;class#FilterImageTest#0" expanded="false" />
+            <element signature="method#testRunRollingFrameFilterOneTimepoint#0;class#FilterImageTest#0" expanded="false" />
           </folding>
         </state>
       </provider>

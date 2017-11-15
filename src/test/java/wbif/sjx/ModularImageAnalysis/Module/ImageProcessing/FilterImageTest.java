@@ -1,8 +1,14 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
+import ij.IJ;
+import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.InputOutput.ImageSaver;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+
+import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
 
@@ -24,31 +30,82 @@ public class FilterImageTest {
     }
 
     @Test @Ignore
-    public void testRunDoG2DFilter() throws Exception {
+    public void testRunDoG2DFilter2DStack() throws Exception {
     }
 
     @Test @Ignore
-    public void testRunDoG2DFilter3DStack() throws Exception {
+    public void testRunDoG2DFilter5DStack() throws Exception {
     }
 
     @Test @Ignore
-    public void testRunDoG2DFilter4DStack() throws Exception {
+    public void testRunGaussian2DFilter2DStack() throws Exception {
     }
 
     @Test @Ignore
-    public void testRunGaussian2DFilter() throws Exception {
-    }
+    public void testRunGaussian2DFilter5DStack() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null);
 
-    @Test @Ignore
-    public void testRunGaussian2DFilter3DStack() throws Exception {
-    }
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
 
-    @Test @Ignore
-    public void testRunGaussian2DFilter4DStack() throws Exception {
-    }
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
 
-    @Test @Ignore
-    public void testRunGaussian3DFilter() throws Exception {
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects5D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        ImagePlus expectedImage = IJ.openImage(pathToImage);
+
+        // Initialising BinaryOperations
+        FilterImage filterImage = new FilterImage();
+        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
+        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
+        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
+        filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.GAUSSIAN2D);
+        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
+        filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2);
+
+        // Running BinaryOperations
+        filterImage.run(workspace,false);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
+        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
+        assertEquals(dppZ,outputImage.getCalibration().pixelDepth,1E-2);
+        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
+        assertEquals(8,outputImage.getBitDepth());
+
+        // Checking the size of the output image
+        assertEquals(64,outputImage.getWidth());
+        assertEquals(76,outputImage.getHeight());
+        assertEquals(2,outputImage.getNChannels());
+        assertEquals(12,outputImage.getNSlices());
+        assertEquals(4,outputImage.getNFrames());
+
+        // Checking the individual image pixel values
+        for (int c=0;c<outputImage.getNChannels();c++) {
+            for (int z = 0; z < outputImage.getNSlices(); z++) {
+                for (int t = 0; t < outputImage.getNFrames(); t++) {
+                    expectedImage.setPosition(c+1, z + 1, t + 1);
+                    outputImage.setPosition(c+1, z + 1, t + 1);
+
+                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
+                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
+
+                    assertArrayEquals(expectedValues, actualValues);
+
+                }
+            }
+        }
     }
 
     /**
@@ -60,7 +117,7 @@ public class FilterImageTest {
     }
 
     @Test @Ignore
-    public void testRunMedian3DFilter() throws Exception {
+    public void testRunGaussian3DFilter5DStack() throws Exception {
     }
 
     /**
@@ -71,12 +128,16 @@ public class FilterImageTest {
     public void testRunMedian3DFilter2DStack() throws Exception {
     }
 
+    @Test @Ignore
+    public void testRunMedian3DFilter5DStack() throws Exception {
+    }
+
     /**
      * Tests the rolling frame filter (designed for image stacks with more than 1 timepoint)
      * @throws Exception
      */
     @Test @Ignore
-    public void testRunRollingFrameFilter() throws Exception {
+    public void testRunRollingFrameFilter5DStack() throws Exception {
     }
 
     /**
