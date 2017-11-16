@@ -71,7 +71,7 @@ public class ChannelExtractorTest {
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNSlices();t++) {
+            for (int t=0;t<outputImage.getNFrames();t++) {
                 expectedImage.setPosition(1,z+1,t+1);
                 outputImage.setPosition(1,z+1,t+1);
 
@@ -135,7 +135,7 @@ public class ChannelExtractorTest {
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNSlices();t++) {
+            for (int t=0;t<outputImage.getNFrames();t++) {
                 expectedImage.setPosition(1,z+1,t+1);
                 outputImage.setPosition(1,z+1,t+1);
 
@@ -199,7 +199,7 @@ public class ChannelExtractorTest {
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNSlices();t++) {
+            for (int t=0;t<outputImage.getNFrames();t++) {
                 expectedImage.setPosition(1,z+1,t+1);
                 outputImage.setPosition(1,z+1,t+1);
 
@@ -263,7 +263,7 @@ public class ChannelExtractorTest {
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNSlices();t++) {
+            for (int t=0;t<outputImage.getNFrames();t++) {
                 expectedImage.setPosition(1,z+1,t+1);
                 outputImage.setPosition(1,z+1,t+1);
 
@@ -327,7 +327,7 @@ public class ChannelExtractorTest {
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNSlices();t++) {
+            for (int t=0;t<outputImage.getNFrames();t++) {
                 expectedImage.setPosition(1,z+1,t+1);
                 outputImage.setPosition(1,z+1,t+1);
 
@@ -391,7 +391,7 @@ public class ChannelExtractorTest {
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNSlices();t++) {
+            for (int t=0;t<outputImage.getNFrames();t++) {
                 expectedImage.setPosition(1,z+1,t+1);
                 outputImage.setPosition(1,z+1,t+1);
 

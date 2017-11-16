@@ -2,3 +2,8 @@
 target/
 
 \.idea/workspace\.xml
+<<<<<<< HEAD
+=======
+
+\.idea/ModularImageAnalysis\.iml
+>>>>>>> UnitTests
