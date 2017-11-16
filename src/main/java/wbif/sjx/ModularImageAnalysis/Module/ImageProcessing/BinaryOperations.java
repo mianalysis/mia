@@ -6,6 +6,8 @@ import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.plugin.frame.ThresholdAdjuster;
 import inra.ijpb.binary.BinaryImages;
+import inra.ijpb.binary.ChamferWeights3D;
+import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -41,12 +43,15 @@ public class BinaryOperations extends HCModule {
 
     @Override
     public String getHelp() {
-        return "Performs 2D fill holes, dilate and erode using ImageJ functions";
+        return "Performs 2D fill holes, dilate and erode using ImageJ functions\n" +
+                "Uses MorphoLibJ to do 3D Watershed";
 
     }
 
     @Override
     public void run(Workspace workspace, boolean verbose) {
+        Prefs.blackBackground = false;
+
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -54,6 +59,7 @@ public class BinaryOperations extends HCModule {
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String operationMode = parameters.getValue(OPERATION_MODE);
         int dynamic = parameters.getValue(DYNAMIC);
 
@@ -89,11 +95,39 @@ public class BinaryOperations extends HCModule {
             case OperationModes.WATERSHED_3D:
                 if (verbose) System.out.println("["+moduleName+"] Calculating distance map");
                 IJ.run(inputImagePlus,"Invert", "stack");
-                ImagePlus distIpl = new ImagePlus("Dist", BinaryImages.distanceMap(inputImagePlus.getImageStack()));
-                distIpl.getProcessor().invert();
+
+                // Creating a marker image
+                ImagePlus markerIpl = new Duplicator().run(inputImagePlus);
+
+                // Inverting the mask intensity
+                for (int z = 1; z <= markerIpl.getNSlices(); z++) {
+                    for (int c = 1; c <= markerIpl.getNChannels(); c++) {
+                        for (int t = 1; t <= markerIpl.getNFrames(); t++) {
+                            markerIpl.setPosition(c, z, t);
+                            markerIpl.getProcessor().invert();
+                        }
+                    }
+                }
+                markerIpl.setPosition(1,1,1);
+
+                // Calculating the distance map using MorphoLibJ
+                if (verbose) System.out.println("["+moduleName+"] Calculating distance map");
+                float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
+                ImagePlus distIpl = new GeodesicDistanceMap3D().process(markerIpl,inputImagePlus,"Dist",weights,false);
+
+                // Inverting the distance map, so the centres of objects have the smallest values
+                for (int z = 1; z <= distIpl.getNSlices(); z++) {
+                    for (int c = 1; c <= distIpl.getNChannels(); c++) {
+                        for (int t = 1; t <= distIpl.getNFrames(); t++) {
+                            distIpl.setPosition(c, z, t);
+                            distIpl.getProcessor().invert();
+                        }
+                    }
+                }
+                distIpl.setPosition(1,1,1);
 
                 if (verbose) System.out.println("["+moduleName+"] Applying watershed segmentation");
-                inputImagePlus.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(distIpl.getImageStack(),inputImagePlus.getImageStack(),dynamic,6,false));
+                inputImagePlus.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(distIpl.getImageStack(),inputImagePlus.getImageStack(),dynamic,26,false));
 
                 IJ.setRawThreshold(inputImagePlus, 0, 0, null);
                 IJ.run(inputImagePlus, "Convert to Mask", "method=Default background=Light");
@@ -103,23 +137,17 @@ public class BinaryOperations extends HCModule {
 
         }
 
+        // If selected, displaying the image
+        if (parameters.getValue(SHOW_IMAGE)) {
+            new Duplicator().run(inputImagePlus).show();
+        }
+
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
-            // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(outputImage.getImagePlus()).show();
-            }
-
-        } else {
-            // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(inputImagePlus).show();
-            }
         }
     }
 

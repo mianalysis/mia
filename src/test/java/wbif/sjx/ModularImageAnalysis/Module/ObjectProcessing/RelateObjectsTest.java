@@ -283,4 +283,5 @@ public class RelateObjectsTest {
     @Test @Ignore
     public void testSpatialLinking() throws Exception {
     }
+
 }

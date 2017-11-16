@@ -12,6 +12,7 @@ public class ObjSet extends LinkedHashMap<Integer,Obj> {
 
     public ObjSet(String name) {
         this.name = name;
+
     }
 
     public String getName() {
@@ -54,4 +55,19 @@ public class ObjSet extends LinkedHashMap<Integer,Obj> {
 
     }
 
+    public int[] getTimepointLimits() {
+        // Finding the first and last frame of all objects in the inputObjects set
+        int[] limits = new int[2];
+        limits[0] = Integer.MAX_VALUE;
+        limits[1] = Integer.MIN_VALUE;
+
+        for (Obj object:values()) {
+            if (object.getT() < limits[0]) limits[0] = object.getT();
+            if (object.getT() > limits[1]) limits[1] = object.getT();
+
+        }
+
+        return limits;
+
+    }
 }

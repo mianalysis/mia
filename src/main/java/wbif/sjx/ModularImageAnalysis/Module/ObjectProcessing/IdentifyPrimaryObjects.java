@@ -19,6 +19,7 @@ import wbif.sjx.common.Process.IntensityMinMax;
 /**
  * Created by sc13967 on 02/05/2017.
  */
+@Deprecated
 public class IdentifyPrimaryObjects extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECT = "Output object";
@@ -111,7 +112,7 @@ public class IdentifyPrimaryObjects extends HCModule {
         // Converting image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
         Image tempImage = new Image("Temp image",ipl);
-        ObjSet outputObjects = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectName);
+        ObjSet outputObjects = ObjectImageConverter.convertImageToObjects(tempImage,outputObjectName);
 
         // Adding objects to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectName+") to workspace");

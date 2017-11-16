@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.ChannelExtractor;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -36,7 +35,6 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,false);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -84,7 +82,6 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,false);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -132,7 +129,6 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,true);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -180,7 +176,6 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,true);
         imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.FLEX_BUGFIX,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -210,4 +205,5 @@ public class ImageFileLoaderTest {
         assertEquals(2.00,image.getImagePlus().getCalibration().getZ(1),1E-2);
 
     }
+
 }

@@ -305,7 +305,6 @@ public class Exporter {
                 moduleValueCell.setCellValue(module.getClass().getSimpleName());
 
             }
-
         }
     }
 

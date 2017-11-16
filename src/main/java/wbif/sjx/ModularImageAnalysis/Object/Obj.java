@@ -15,6 +15,10 @@ public class Obj extends Volume {
      */
     private int ID;
 
+    /**
+     * Each instance of an object is only present in XYZ and a single timepoint.  Any other dimensionality
+     * (e.g. channel) must be added as a measurement.
+     */
     private int T = 0;
 
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
@@ -61,6 +65,11 @@ public class Obj extends Volume {
     public MIAMeasurement getMeasurement(String name) {
         if (measurements.get(name) == null) return null;
         return measurements.get(name);
+
+    }
+
+    public void removeMeasurement(String name) {
+        measurements.remove(name);
 
     }
 

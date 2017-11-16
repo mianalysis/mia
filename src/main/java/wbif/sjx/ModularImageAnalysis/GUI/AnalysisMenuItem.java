@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 import ij.IJ;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
@@ -24,6 +25,7 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
     static final String SET_FILE_TO_ANALYSE = "Set file to analyse";
     static final String START_ANALYSIS = "Run analysis";
     static final String STOP_ANALYSIS = "Stop analysis";
+    static final String CLEAR_PIPELINE = "Remove all modules";
 
     private MainGUI gui;
 
@@ -91,6 +93,22 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                 case STOP_ANALYSIS:
                     System.out.println("Shutting system down");
                     new AnalysisHandler().stopAnalysis();
+                    break;
+
+                case CLEAR_PIPELINE:
+                    gui.getAnalysis().removeAllModules();
+
+                    if (gui.isBasicGUI()) {
+                        gui.populateBasicModules();
+
+                    } else {
+                        gui.populateModuleList();
+                        gui.populateModuleParameters();
+
+                    }
+
+                    gui.setLastModuleEval(-1);
+
                     break;
 
             }

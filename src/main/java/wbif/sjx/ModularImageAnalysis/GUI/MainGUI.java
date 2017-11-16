@@ -47,10 +47,13 @@ public class MainGUI {
     private JPopupMenu moduleListMenu = new JPopupMenu();
     private int lastModuleEval = -1;
     private boolean basicGUI = true;
+    private boolean debugOn = false;
 
     private GUIAnalysis analysis = new GUIAnalysis();
 
-    public MainGUI() throws InstantiationException, IllegalAccessException {
+    public MainGUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
+        this.debugOn = debugOn;
+
         inputControl.initialiseParameters();
 
         componentFactory = new ComponentFactory(this, elementHeight);
@@ -66,8 +69,11 @@ public class MainGUI {
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
 
-        renderBasicMode();
-//        renderEditingMode();
+        if (debugOn) {
+            renderEditingMode();
+        } else {
+            renderBasicMode();
+        }
 
         // Final bits for listeners
 //        frame.addMouseListener(this);
@@ -93,6 +99,7 @@ public class MainGUI {
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.START_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.STOP_ANALYSIS));
+        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.CLEAR_PIPELINE));
 
         // Creating the new menu
         menuBar.add(viewMenu);
@@ -141,12 +148,14 @@ public class MainGUI {
         frame.add(basicModulesScrollPane, c);
 
         // Initialising the status panel
-        initialiseStatusPanel(500);
-        c.gridx = 0;
-        c.gridy++;
-        c.gridwidth = 1;
-        c.insets = new Insets(5,5,5,5);
-        frame.add(statusPanel,c);
+        if (!debugOn) {
+            initialiseStatusPanel(500);
+            c.gridx = 0;
+            c.gridy++;
+            c.gridwidth = 1;
+            c.insets = new Insets(5,5,5,5);
+            frame.add(statusPanel,c);
+        }
 
         frame.pack();
         frame.revalidate();
@@ -172,14 +181,16 @@ public class MainGUI {
         frame.add(controlPanel, c);
 
         // Initialising the status panel
-        initialiseStatusPanel(1080);
-        c.gridheight = 1;
-        c.gridy++;
-        c.gridy++;
-        c.gridy++;
-        c.gridwidth = 3;
-        c.insets = new Insets(0,5,5,5);
-        frame.add(statusPanel,c);
+        if (!debugOn) {
+            initialiseStatusPanel(1080);
+            c.gridheight = 1;
+            c.gridy++;
+            c.gridy++;
+            c.gridy++;
+            c.gridwidth = 3;
+            c.insets = new Insets(0, 5, 5, 5);
+            frame.add(statusPanel, c);
+        }
 
         // Initialising the input enable panel
         initialiseInputEnablePanel();

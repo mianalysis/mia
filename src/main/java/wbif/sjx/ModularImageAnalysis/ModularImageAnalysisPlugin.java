@@ -11,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
+import java.util.HashSet;
 
 /**
  * Created by sc13967 on 14/07/2017.
@@ -22,14 +23,14 @@ public class ModularImageAnalysisPlugin implements PlugIn {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         new ImageJ();
-        new MainGUI();
+        new MainGUI(true);
 
     }
 
     @Override
     public void run(String s) {
         try {
-            new MainGUI();
+            new MainGUI(false);
         } catch (InstantiationException | IllegalAccessException e) {
             IJ.log("Error");
             e.printStackTrace();

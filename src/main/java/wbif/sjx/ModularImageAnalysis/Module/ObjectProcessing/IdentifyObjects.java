@@ -3,6 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.ImagePlus;
+import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -35,34 +36,46 @@ public class IdentifyObjects extends HCModule {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
-        // Getting output objects name
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-
         // Getting parameters
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        ObjSet outputObjects = new ObjSet(outputObjectsName);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
-        if (whiteBackground) {
-            for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+
+        for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
+            if (verbose) System.out.println("[" + moduleName + "] Processing frame "+t+" of "+inputImagePlus.getNFrames());
+            // Creating a copy of the input image
+            ImagePlus currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,1+"-"+inputImagePlus.getNChannels(),1+"-"+inputImagePlus.getNSlices(),t+"-"+t);
+
+            if (whiteBackground) {
                 for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                    for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                        inputImagePlus.setPosition(c, z, t);
-                        inputImagePlus.getProcessor().invert();
+                    for (int z = 1; z <= currStack.getNSlices(); z++) {
+                        currStack.setPosition(c, z, 1);
+                        currStack.updateChannelAndDraw();
+                        currStack.getProcessor().invert();
                     }
                 }
             }
 
-            inputImagePlus.setPosition(1,1,1);
+            // Applying connected components labelling
+            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26);
+            currStack.setStack(ffcl3D.computeLabels(currStack.getImageStack()));
 
+            // Converting image to objects
+            Image tempImage = new Image("Temp image", currStack);
+            ObjSet currOutputObjects = ObjectImageConverter.convertImageToObjects(tempImage, outputObjectsName);
+
+            // Updating the current objects (setting the real frame number and offsetting the ID)
+            int maxID = 0;
+            for (Obj object:outputObjects.values()) {
+                maxID = Math.max(object.getID(),maxID);
+            }
+
+            for (Obj object:currOutputObjects.values()) {
+                object.setID(object.getID() + maxID + 1);
+                object.setT(t-1);
+                outputObjects.put(object.getID(),object);
+            }
         }
-
-        // Applying connected components labelling
-        if (verbose) System.out.println("["+moduleName+"] Applying connected components labelling");
-        FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26);
-        inputImagePlus.setStack(ffcl3D.computeLabels(inputImagePlus.getImageStack()));
-
-        // Converting image to objects
-        if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
-        Image tempImage = new Image("Temp image",inputImagePlus);
-        ObjSet outputObjects = new ObjectImageConverter().convertImageToObjects(tempImage,outputObjectsName);
 
         if (verbose) System.out.println("["+moduleName+"] "+outputObjects.size()+" objects detected");
 
