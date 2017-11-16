@@ -78,7 +78,7 @@ public class BatchProcessor extends FileCrawler {
             // Adding a parameter to the metadata structure indicating the depth of the current file in the folder structure
             int fileDepth = 0;
             File parent = next.getParentFile();
-            while (parent != rootFolder.getFolderAsFile()) {
+            while (parent != rootFolder.getFolderAsFile() && parent != null) {
                 parent = parent.getParentFile();
                 fileDepth++;
             }

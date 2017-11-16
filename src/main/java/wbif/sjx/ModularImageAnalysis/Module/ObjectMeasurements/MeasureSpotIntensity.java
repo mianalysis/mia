@@ -46,6 +46,31 @@ public class MeasureSpotIntensity extends HCModule {
         double radius = parameters.getValue(MEASUREMENT_RADIUS);
         boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
 
+        // Checking if there are any objects to measure
+        if (inputObjects.size() == 0) {
+            for (Obj inputObject:inputObjects.values()) {
+                MIAMeasurement meanIntensity = new MIAMeasurement(inputImageName + "_MEAN", Double.NaN);
+                meanIntensity.setSource(this);
+                inputObject.getParent(inputObjectsName).addMeasurement(meanIntensity);
+
+                MIAMeasurement stdIntensity = new MIAMeasurement(inputImageName + "_STD", Double.NaN);
+                stdIntensity.setSource(this);
+                inputObject.getParent(inputObjectsName).addMeasurement(stdIntensity);
+
+                MIAMeasurement minIntensity = new MIAMeasurement(inputImageName + "_MIN", Double.NaN);
+                minIntensity.setSource(this);
+                inputObject.getParent(inputObjectsName).addMeasurement(minIntensity);
+
+                MIAMeasurement maxIntensity = new MIAMeasurement(inputImageName + "_MAX", Double.NaN);
+                maxIntensity.setSource(this);
+                inputObject.getParent(inputObjectsName).addMeasurement(maxIntensity);
+
+            }
+
+            return;
+
+        }
+
         // Getting local object region (this overwrites the original inputObjects)
         inputObjects = GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
 

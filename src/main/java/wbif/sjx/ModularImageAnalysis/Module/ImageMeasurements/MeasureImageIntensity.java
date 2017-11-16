@@ -70,6 +70,12 @@ public class MeasureImageIntensity extends HCModule {
 
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+
+        measurements.addMeasurement(inputImageName,"MEAN_I");
+        measurements.addMeasurement(inputImageName,"STD_I");
+        measurements.addMeasurement(inputImageName,"MIN_I");
+        measurements.addMeasurement(inputImageName,"MAX_I");
 
     }
 

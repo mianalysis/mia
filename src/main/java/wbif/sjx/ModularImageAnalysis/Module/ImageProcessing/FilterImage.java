@@ -14,6 +14,7 @@ import loci.formats.ChannelMerger;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 
 /**
@@ -232,13 +233,17 @@ public class FilterImage extends HCModule {
 
             // If selected, displaying the image
             if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(outputImage.getImagePlus()).show();
+                ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
+                IntensityMinMax.run(dispIpl,true);
+                dispIpl.show();
             }
 
         } else {
             // If selected, displaying the image
             if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(inputImagePlus).show();
+                ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+                IntensityMinMax.run(dispIpl,true);
+                dispIpl.show();
             }
         }
     }

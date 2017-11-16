@@ -11,6 +11,7 @@ import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -139,7 +140,9 @@ public class BinaryOperations extends HCModule {
 
         // If selected, displaying the image
         if (parameters.getValue(SHOW_IMAGE)) {
-            new Duplicator().run(inputImagePlus).show();
+            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+            IntensityMinMax.run(dispIpl,true);
+            dispIpl.show();
         }
 
         // If the image is being saved as a new image, adding it to the workspace

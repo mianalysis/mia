@@ -196,14 +196,15 @@ public class AnalysisHandler {
     public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
         String inputFilePath = Prefs.get("ModularImageAnalysis.inputFilePath","");
 
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(inputFilePath);
         fileChooser.setDialogTitle("Select file to run");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.showDialog(null,"Open");
 
         File inputFile = fileChooser.getSelectedFile();
-        Prefs.set("ModularImageAnalysis.inputFilePath",inputFilePath);
+        Prefs.set("ModularImageAnalysis.inputFilePath",inputFile.getParentFile().getAbsolutePath());
+        Prefs.savePreferences();
 
         String exportName;
         if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());

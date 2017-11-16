@@ -21,6 +21,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCent
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -202,15 +203,16 @@ public class RunTrackMate extends HCModule {
         TrackMate trackmate = new TrackMate(model, settings);
 
         // Running TrackMate
-        if (verbose) System.out.println("["+moduleName+"] Running TrackMate");
+        if (verbose) System.out.println("["+moduleName+"] Running TrackMate detection");
         if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());
-        if (!trackmate.process()) IJ.log(trackmate.getErrorMessage());
+        if (!trackmate.execDetection()) IJ.log(trackmate.getErrorMessage());
+        if (!trackmate.computeSpotFeatures(false)) IJ.log(trackmate.getErrorMessage());
 
         if (normaliseIntensity) ipl = targetImage.getImagePlus();
 
         if (!(boolean) parameters.getValue(DO_TRACKING)) {
             // Getting trackObjects and adding them to the output trackObjects
-            if (verbose) System.out.println("["+moduleName+"] Processing detected trackObjects");
+            if (verbose) System.out.println("["+moduleName+"] Processing detected objects");
 
             SpotCollection spots = model.getSpots();
             for (Spot spot:spots.iterable(false)) {
@@ -237,6 +239,7 @@ public class RunTrackMate extends HCModule {
 
                 // Creating a duplicate of the input image
                 ipl = new Duplicator().run(ipl);
+                IntensityMinMax.run(ipl,true);
 
                 // Getting parameters
                 boolean showID = parameters.getValue(SHOW_ID);
@@ -251,6 +254,9 @@ public class RunTrackMate extends HCModule {
 
             return;
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Running TrackMate tracking");
+        if (!trackmate.execTracking()) IJ.log(trackmate.getErrorMessage());
 
         // Converting tracks to local track model
         int ID = 1;

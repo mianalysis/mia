@@ -158,11 +158,11 @@ public class MeasureObjectIntensity extends HCModule {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        if (calcMean) measurements.addMeasurement(inputObjectsName,inputImageName+"_MEAN");
-        if (calcMin) measurements.addMeasurement(inputObjectsName,inputImageName+"_MIN");
-        if (calcMax) measurements.addMeasurement(inputObjectsName,inputImageName+"_MAX");
-        if (calcStdev) measurements.addMeasurement(inputObjectsName,inputImageName+"_STD");
-        if (calcSum) measurements.addMeasurement(inputObjectsName,inputImageName+"_SUM");
+        if (calcMean) measurements.addMeasurement(inputObjectsName,inputImageName+"_MEAN_I");
+        if (calcMin) measurements.addMeasurement(inputObjectsName,inputImageName+"_MIN_I");
+        if (calcMax) measurements.addMeasurement(inputObjectsName,inputImageName+"_MAX_I");
+        if (calcStdev) measurements.addMeasurement(inputObjectsName,inputImageName+"_STD_I");
+        if (calcSum) measurements.addMeasurement(inputObjectsName,inputImageName+"_SUM_I");
         if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_MEAN (PX)");
         if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_STD (PX)");
         if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_MEAN (PX)");

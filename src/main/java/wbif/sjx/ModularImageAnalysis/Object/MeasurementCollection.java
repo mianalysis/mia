@@ -15,8 +15,8 @@ public class MeasurementCollection extends LinkedHashMap<String,LinkedHashSet<St
 
     }
 
-    public String[] getMeasurementNames(String measurementName) {
-        return get(measurementName) == null ? new String[]{""} : get(measurementName).toArray(new String[get(measurementName).size()]);
+    public String[] getMeasurementNames(String objectName) {
+        return get(objectName) == null ? new String[]{""} : get(objectName).toArray(new String[get(objectName).size()]);
 
     }
 }
