@@ -1,9 +1,10 @@
+// TODO: Load colours from LIF file (if possible).  Similarly, colour Flex files blue, green, red (currently RGB)
+
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import loci.common.DebugTools;
@@ -11,21 +12,16 @@ import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
 import loci.formats.*;
-import loci.formats.in.BIFormatReader;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
-import ome.xml.meta.MetadataRetrieve;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Created by sc13967 on 15/05/2017.
