@@ -148,28 +148,33 @@ public class MeasureObjectIntensity extends HCModule {
 
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
-        boolean calcMean = parameters.getValue(MEASURE_MEAN);
-        boolean calcMin = parameters.getValue(MEASURE_MIN);
-        boolean calcMax = parameters.getValue(MEASURE_MAX);
-        boolean calcStdev = parameters.getValue(MEASURE_STDEV);
-        boolean calcSum = parameters.getValue(MEASURE_SUM);
-        boolean calcCent = parameters.getValue(MEASURE_WEIGHTED_CENTRE);
-
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        if (calcMean) measurements.addMeasurement(inputObjectsName,inputImageName+"_MEAN_I");
-        if (calcMin) measurements.addMeasurement(inputObjectsName,inputImageName+"_MIN_I");
-        if (calcMax) measurements.addMeasurement(inputObjectsName,inputImageName+"_MAX_I");
-        if (calcStdev) measurements.addMeasurement(inputObjectsName,inputImageName+"_STD_I");
-        if (calcSum) measurements.addMeasurement(inputObjectsName,inputImageName+"_SUM_I");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_MEAN (PX)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_STD (PX)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_MEAN (PX)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_STD (PX)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_MEAN (SLICE)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_STD (SLICE)");
+        if (parameters.getValue(MEASURE_MEAN))
+            measurements.addMeasurement(inputObjectsName,inputImageName+"_MEAN_I");
 
+        if (parameters.getValue(MEASURE_MIN))
+            measurements.addMeasurement(inputObjectsName,inputImageName+"_MIN_I");
+
+        if (parameters.getValue(MEASURE_MAX))
+            measurements.addMeasurement(inputObjectsName,inputImageName+"_MAX_I");
+
+        if (parameters.getValue(MEASURE_STDEV))
+            measurements.addMeasurement(inputObjectsName,inputImageName+"_STD_I");
+
+        if (parameters.getValue(MEASURE_SUM))
+            measurements.addMeasurement(inputObjectsName,inputImageName+"_SUM_I");
+
+        if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
+            measurements.addMeasurement(inputObjectsName, inputImageName + "_X_CENTRE_MEAN (PX)");
+            measurements.addMeasurement(inputObjectsName, inputImageName + "_X_CENTRE_STD (PX)");
+            measurements.addMeasurement(inputObjectsName, inputImageName + "_Y_CENTRE_MEAN (PX)");
+            measurements.addMeasurement(inputObjectsName, inputImageName + "_Y_CENTRE_STD (PX)");
+            measurements.addMeasurement(inputObjectsName, inputImageName + "_Z_CENTRE_MEAN (SLICE)");
+            measurements.addMeasurement(inputObjectsName, inputImageName + "_Z_CENTRE_STD (SLICE)");
+
+        }
     }
 
     @Override

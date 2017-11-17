@@ -25,6 +25,17 @@ public class MIAMeasurement {
     public static final String MIN_INTENSITY = "Min I";
     public static final String MAX_INTENSITY = "Max I";
     public static final String STD_INTENSITY = "Stdev I";
+    public static final String SUM_INTENSITY = "Sum I";
+
+    // Intensity distribution measures
+    public static final String N_PX_INRANGE = "N px inrange";
+    public static final String N_PX_OUTRANGE = "N px outrange";
+    public static final String SUM_I_INRANGE = "Sum I inrange";
+    public static final String SUM_I_OUTRANGE = "Sum I outrange";
+    public static final String MEAN_I_INRANGE = "Mean I inrange";
+    public static final String MEAN_I_OUTRANGE = "Mean I outrange";
+    public static final String MEAN_I_PROXIMITY = "Mean I proximity";
+    public static final String STD_I_PROXIMITY = "Std I proximity";
 
     // Other measures
     public static final String CLASS = "Class";

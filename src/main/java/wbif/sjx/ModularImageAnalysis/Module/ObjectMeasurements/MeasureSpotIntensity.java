@@ -17,7 +17,12 @@ public class MeasureSpotIntensity extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input spot objects";
     public static final String MEASUREMENT_RADIUS = "Measurement radius";
-    public static final String CALIBRATED_RADIUS = "Calibrated radius";
+    public static final String CALIBRATED_UNITS = "Calibrated units";
+    public static final String MEASURE_MEAN = "Measure mean";
+    public static final String MEASURE_STDEV = "Measure standard deviation";
+    public static final String MEASURE_MIN = "Measure minimum";
+    public static final String MEASURE_MAX = "Measure maximum";
+    public static final String MEASURE_SUM = "Measure sum";
 
 
     @Override
@@ -44,26 +49,16 @@ public class MeasureSpotIntensity extends HCModule {
 
         // Getting parameters
         double radius = parameters.getValue(MEASUREMENT_RADIUS);
-        boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
+        boolean calibrated = parameters.getValue(CALIBRATED_UNITS);
 
         // Checking if there are any objects to measure
         if (inputObjects.size() == 0) {
             for (Obj inputObject:inputObjects.values()) {
-                MIAMeasurement meanIntensity = new MIAMeasurement(inputImageName + "_MEAN", Double.NaN);
-                meanIntensity.setSource(this);
-                inputObject.getParent(inputObjectsName).addMeasurement(meanIntensity);
-
-                MIAMeasurement stdIntensity = new MIAMeasurement(inputImageName + "_STD", Double.NaN);
-                stdIntensity.setSource(this);
-                inputObject.getParent(inputObjectsName).addMeasurement(stdIntensity);
-
-                MIAMeasurement minIntensity = new MIAMeasurement(inputImageName + "_MIN", Double.NaN);
-                minIntensity.setSource(this);
-                inputObject.getParent(inputObjectsName).addMeasurement(minIntensity);
-
-                MIAMeasurement maxIntensity = new MIAMeasurement(inputImageName + "_MAX", Double.NaN);
-                maxIntensity.setSource(this);
-                inputObject.getParent(inputObjectsName).addMeasurement(maxIntensity);
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName + "_"+ MIAMeasurement.MEAN_INTENSITY, Double.NaN));
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName + "_"+ MIAMeasurement.MIN_INTENSITY, Double.NaN));
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName + "_"+ MIAMeasurement.MAX_INTENSITY, Double.NaN));
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName + "_"+ MIAMeasurement.STD_INTENSITY, Double.NaN));
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName + "_"+ MIAMeasurement.SUM_INTENSITY, Double.NaN));
 
             }
 
@@ -95,21 +90,16 @@ public class MeasureSpotIntensity extends HCModule {
 
             // Calculating mean, std, min and max intensity and adding to the parent (we will discard the expanded
             // objects after this module has run)
-            MIAMeasurement meanIntensity = new MIAMeasurement(inputImageName+"_MEAN", cs.getMean());
-            meanIntensity.setSource(this);
-            inputObject.getParent(inputObjectsName).addMeasurement(meanIntensity);
-
-            MIAMeasurement stdIntensity = new MIAMeasurement(inputImageName+"_STD", cs.getStd(CumStat.SAMPLE));
-            stdIntensity.setSource(this);
-            inputObject.getParent(inputObjectsName).addMeasurement(stdIntensity);
-
-            MIAMeasurement minIntensity = new MIAMeasurement(inputImageName+"_MIN", cs.getMin());
-            minIntensity.setSource(this);
-            inputObject.getParent(inputObjectsName).addMeasurement(minIntensity);
-
-            MIAMeasurement maxIntensity = new MIAMeasurement(inputImageName+"_MAX", cs.getMax());
-            maxIntensity.setSource(this);
-            inputObject.getParent(inputObjectsName).addMeasurement(maxIntensity);
+            if (parameters.getValue(MEASURE_MEAN))
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName+ "_"+ MIAMeasurement.MEAN_INTENSITY, cs.getMean()));
+            if (parameters.getValue(MEASURE_MIN))
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName+ "_"+ MIAMeasurement.MIN_INTENSITY, cs.getMin()));
+            if (parameters.getValue(MEASURE_MAX))
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName+ "_"+ MIAMeasurement.MAX_INTENSITY, cs.getMax()));
+            if (parameters.getValue(MEASURE_STDEV))
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName+ "_"+ MIAMeasurement.STD_INTENSITY, cs.getStd(CumStat.SAMPLE)));
+            if (parameters.getValue(MEASURE_SUM))
+                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(inputImageName+ "_"+ MIAMeasurement.SUM_INTENSITY, cs.getSum()));
 
         }
     }
@@ -118,9 +108,13 @@ public class MeasureSpotIntensity extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
         parameters.addParameter(new Parameter(MEASUREMENT_RADIUS, Parameter.DOUBLE,2.0));
-        
+        parameters.addParameter(new Parameter(MEASURE_MEAN, Parameter.BOOLEAN, true));
+        parameters.addParameter(new Parameter(MEASURE_MIN, Parameter.BOOLEAN, true));
+        parameters.addParameter(new Parameter(MEASURE_MAX, Parameter.BOOLEAN, true));
+        parameters.addParameter(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
+        parameters.addParameter(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
 
     }
 
@@ -133,10 +127,22 @@ public class MeasureSpotIntensity extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MEAN");
-        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_STD");
-        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MIN");
-        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS),inputImageName+"_MAX");
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
+        if (parameters.getValue(MEASURE_MEAN))
+            measurements.addMeasurement(inputObjectsName,inputImageName+ "_"+ MIAMeasurement.MEAN_INTENSITY);
+
+        if (parameters.getValue(MEASURE_MIN))
+            measurements.addMeasurement(inputObjectsName,inputImageName+ "_"+ MIAMeasurement.MIN_INTENSITY);
+
+        if (parameters.getValue(MEASURE_MAX))
+            measurements.addMeasurement(inputObjectsName,inputImageName+ "_"+ MIAMeasurement.MAX_INTENSITY);
+
+        if (parameters.getValue(MEASURE_STDEV))
+            measurements.addMeasurement(inputObjectsName,inputImageName+ "_"+ MIAMeasurement.STD_INTENSITY);
+
+        if (parameters.getValue(MEASURE_SUM))
+            measurements.addMeasurement(inputObjectsName,inputImageName+ "_"+ MIAMeasurement.SUM_INTENSITY);
 
     }
 
