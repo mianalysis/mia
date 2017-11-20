@@ -17,6 +17,16 @@ public class MeasureImageIntensity extends HCModule {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
+    private interface Measurements {
+        String MEAN = "INTENSITY//MEAN";
+        String MIN = "INTENSITY//MIN";
+        String MAX = "INTENSITY//MAX";
+        String SUM = "INTENSITY//SUM";
+        String STDEV = "INTENSITY//STDEV";
+
+    }
+
+
     @Override
     public String getTitle() {
         return "Measure image intensity";
@@ -41,15 +51,15 @@ public class MeasureImageIntensity extends HCModule {
 
         // Adding measurements to image
         if (parameters.getValue(MEASURE_MEAN))
-            inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.MEAN_INTENSITY, cs.getMean()));
+            inputImage.addMeasurement(new MIAMeasurement(Measurements.MEAN, cs.getMean()));
         if (parameters.getValue(MEASURE_MIN))
-            inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.MIN_INTENSITY, cs.getMin()));
+            inputImage.addMeasurement(new MIAMeasurement(Measurements.MIN, cs.getMin()));
         if (parameters.getValue(MEASURE_MAX))
-            inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.MAX_INTENSITY, cs.getMax()));
+            inputImage.addMeasurement(new MIAMeasurement(Measurements.MAX, cs.getMax()));
         if (parameters.getValue(MEASURE_STDEV))
-            inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.STD_INTENSITY, cs.getStd(CumStat.SAMPLE)));
+            inputImage.addMeasurement(new MIAMeasurement(Measurements.STDEV, cs.getStd(CumStat.SAMPLE)));
         if (parameters.getValue(MEASURE_SUM))
-            inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.SUM_INTENSITY, cs.getSum()));
+            inputImage.addMeasurement(new MIAMeasurement(Measurements.SUM, cs.getSum()));
 
     }
 
@@ -74,19 +84,19 @@ public class MeasureImageIntensity extends HCModule {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         if (parameters.getValue(MEASURE_MEAN))
-            measurements.addMeasurement(inputImageName,MIAMeasurement.MEAN_INTENSITY);
+            measurements.addMeasurement(inputImageName,Measurements.MEAN);
 
         if (parameters.getValue(MEASURE_MIN))
-            measurements.addMeasurement(inputImageName,MIAMeasurement.MIN_INTENSITY);
+            measurements.addMeasurement(inputImageName,Measurements.MIN);
 
         if (parameters.getValue(MEASURE_MAX))
-            measurements.addMeasurement(inputImageName,MIAMeasurement.MAX_INTENSITY);
+            measurements.addMeasurement(inputImageName,Measurements.MAX);
 
         if (parameters.getValue(MEASURE_STDEV))
-            measurements.addMeasurement(inputImageName,MIAMeasurement.STD_INTENSITY);
+            measurements.addMeasurement(inputImageName,Measurements.STDEV);
 
         if (parameters.getValue(MEASURE_SUM))
-            measurements.addMeasurement(inputImageName,MIAMeasurement.SUM_INTENSITY);
+            measurements.addMeasurement(inputImageName,Measurements.SUM);
 
     }
 

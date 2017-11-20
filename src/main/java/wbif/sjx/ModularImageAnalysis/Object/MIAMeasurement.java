@@ -7,8 +7,6 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
  */
 public class MIAMeasurement {
     // Spatial measures
-    public static final String RADIUS = "Radius";
-    public static final String ESTIMATED_DIAMETER = "Est dia";
     public static final String DIRECTIONALITY_RATIO = "Directionality ratio";
     public static final String DURATION = "Duration";
     public static final String TOTAL_PATH_LENGTH = "Total path length";
@@ -19,23 +17,6 @@ public class MIAMeasurement {
     public static final String X_CENTROID_MEDIAN_PX = "X-Centroid Median (px)";
     public static final String Y_CENTROID_MEDIAN_PX = "Y-Centroid Median (px)";
     public static final String Z_CENTROID_MEDIAN_SLICE = "Z-Centroid Median (slice)";
-
-    // Intensity measures
-    public static final String MEAN_INTENSITY = "Mean I";
-    public static final String MIN_INTENSITY = "Min I";
-    public static final String MAX_INTENSITY = "Max I";
-    public static final String STD_INTENSITY = "Stdev I";
-    public static final String SUM_INTENSITY = "Sum I";
-
-    // Intensity distribution measures
-    public static final String N_PX_INRANGE = "N px inrange";
-    public static final String N_PX_OUTRANGE = "N px outrange";
-    public static final String SUM_I_INRANGE = "Sum I inrange";
-    public static final String SUM_I_OUTRANGE = "Sum I outrange";
-    public static final String MEAN_I_INRANGE = "Mean I inrange";
-    public static final String MEAN_I_OUTRANGE = "Mean I outrange";
-    public static final String MEAN_I_PROXIMITY = "Mean I proximity";
-    public static final String STD_I_PROXIMITY = "Std I proximity";
 
     // Other measures
     public static final String CLASS = "Class";

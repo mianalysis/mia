@@ -364,7 +364,7 @@ public class Exporter {
 
                 // Adding the number of objects
                 Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                String summaryDataName = getObjectString(exampleObjSetName,"","N");
+                String summaryDataName = getObjectString(exampleObjSetName,"","NUMBER");
                 summaryHeaderCell.setCellValue(summaryDataName);
                 colNumbers.put(summaryDataName, headerCol++);
 
@@ -429,7 +429,7 @@ public class Exporter {
                 String objSetName = objSet.getName();
                 String[] measurementNames = modules.getMeasurements().getMeasurementNames(objSetName);
 
-                String headerName = getObjectString(objSetName,"","N");
+                String headerName = getObjectString(objSetName,"","NUMBER");
                 int colNum = colNumbers.get(headerName);
                 Cell summaryCell = summaryValueRow.createCell(colNum);
                 summaryCell.setCellValue(objSet.size());
@@ -707,19 +707,24 @@ public class Exporter {
     }
 
     private String getMetadataString(String metadataName) {
-        return metadataName.toUpperCase().replaceAll(" ", "_")+"_(META)";
+        return "META//"+metadataName.toUpperCase().replaceAll(" ", "_");
 
     }
 
     private String getImageString(String imageName, String measurementName) {
-        return imageName+"_(IM)_"+measurementName.toUpperCase().replaceAll(" ", "_");
+        imageName = imageName.toUpperCase().replaceAll(" ", "_");
+
+        return imageName+"_(IM)//"+measurementName.toUpperCase().replaceAll(" ", "_");
+
     }
 
     private String getObjectString(String objectName, String mode, String measurementName) {
+        objectName = objectName.toUpperCase().replaceAll(" ", "_");
+
         if (mode.equals("")) {
-            return objectName+"_(OBJ)_"+measurementName.toUpperCase().replaceAll(" ", "_");
+            return objectName+"_(OBJ)//"+measurementName.toUpperCase().replaceAll(" ", "_");
         } else {
-            return objectName+"_(OBJ_"+mode+")_"+measurementName.toUpperCase().replaceAll(" ", "_");
+            return objectName+"_(OBJ_"+mode+")//"+measurementName.toUpperCase().replaceAll(" ", "_");
         }
     }
 
