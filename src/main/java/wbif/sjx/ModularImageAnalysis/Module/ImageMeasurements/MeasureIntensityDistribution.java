@@ -19,6 +19,7 @@ public class MeasureIntensityDistribution extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String PROXIMAL_DISTANCE = "Proximal distance";
     public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String IGNORE_ON_OBJECTS = "Ignore values on objects";
 
     public interface MeasurementTypes {
         String FRACTION_PROXIMAL_TO_OBJECTS = "Fraction proximal to objects";
@@ -37,7 +38,7 @@ public class MeasureIntensityDistribution extends HCModule {
     }
 
 
-    public CumStat[] measureFractionProximal(ObjSet inputObjects, Image inputImage, double proximalDistance) {
+    public CumStat[] measureFractionProximal(ObjSet inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
@@ -98,7 +99,7 @@ public class MeasureIntensityDistribution extends HCModule {
 
     }
 
-    public CumStat measureIntensityWeightedProximity(ObjSet inputObjects, Image inputImage) {
+    public CumStat measureIntensityWeightedProximity(ObjSet inputObjects, Image inputImage, boolean ignoreOnObjects) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
@@ -118,8 +119,18 @@ public class MeasureIntensityDistribution extends HCModule {
         }
         maskIpl.setPosition(1,1,1);
 
+        maskIpl.show();
+        objectsImage.getImagePlus().show();
+
         float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
         ImagePlus distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,false);
+        distIpl.show();
+
+        maskIpl.setCalibration(null);
+        objectsImage.getImagePlus().setCalibration(null);
+
+        ImagePlus distIpl2 = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist2",weights,false);
+        distIpl2.show();
 
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
@@ -138,6 +149,8 @@ public class MeasureIntensityDistribution extends HCModule {
                         for (int y=0;y<distVals[0].length;y++) {
                             float dist = distVals[x][y];
                             float val = inputVals[x][y];
+
+                            if (ignoreOnObjects && dist == 0) continue;
 
                             cs.addMeasure(dist,val);
 
@@ -171,6 +184,7 @@ public class MeasureIntensityDistribution extends HCModule {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         double proximalDistance = parameters.getValue(PROXIMAL_DISTANCE);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS);
+        boolean ignoreOnObjects = parameters.getValue(IGNORE_ON_OBJECTS);
 
         Image inputImage = workspace.getImages().get(inputImageName);
 
@@ -193,7 +207,7 @@ public class MeasureIntensityDistribution extends HCModule {
                     return;
                 }
 
-                CumStat[] css = measureFractionProximal(inputObjects, inputImage, proximalDistance);
+                CumStat[] css = measureFractionProximal(inputObjects, inputImage, proximalDistance, ignoreOnObjects);
 
                 inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.N_PX_INRANGE, css[0].getN()));
                 inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.N_PX_OUTRANGE, css[1].getN()));
@@ -201,6 +215,13 @@ public class MeasureIntensityDistribution extends HCModule {
                 inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.SUM_I_OUTRANGE, css[1].getSum()));
                 inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.MEAN_I_INRANGE, css[0].getMean()));
                 inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.MEAN_I_OUTRANGE, css[1].getMean()));
+
+                if (verbose) System.out.println("[" + moduleName + "] Number of pixels inside range = " + css[0].getN());
+                if (verbose) System.out.println("[" + moduleName + "] Number of pixels outside range = " + css[1].getN());
+                if (verbose) System.out.println("[" + moduleName + "] Total intensity in range = " + css[0].getSum());
+                if (verbose) System.out.println("[" + moduleName + "] Total intensity outside range = " + css[1].getSum());
+                if (verbose) System.out.println("[" + moduleName + "] Mean intensity in range = " + css[0].getMean());
+                if (verbose) System.out.println("[" + moduleName + "] Mean intensity outside range = " + css[1].getMean());
 
                 break;
 
@@ -214,12 +235,12 @@ public class MeasureIntensityDistribution extends HCModule {
                     return;
                 }
 
-                CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage);
+                CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage, ignoreOnObjects);
 
                 inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.MEAN_I_PROXIMITY, cs.getMean()));
                 inputImage.addMeasurement(new MIAMeasurement(MIAMeasurement.STD_I_PROXIMITY, cs.getStd()));
 
-                System.out.println(cs.getMean());
+                if (verbose) System.out.println("[" + moduleName + "] Mean intensity proximity = " + cs.getMean() + " +/- "+cs.getStd());
 
                 break;
 
@@ -233,6 +254,8 @@ public class MeasureIntensityDistribution extends HCModule {
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(PROXIMAL_DISTANCE, Parameter.DOUBLE,2d));
         parameters.addParameter(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.addParameter(new Parameter(IGNORE_ON_OBJECTS, Parameter.BOOLEAN,true));
+
     }
 
     @Override
@@ -255,6 +278,8 @@ public class MeasureIntensityDistribution extends HCModule {
                 break;
 
         }
+
+        returnedParameters.addParameter(parameters.getParameter(IGNORE_ON_OBJECTS));
 
         return returnedParameters;
 
