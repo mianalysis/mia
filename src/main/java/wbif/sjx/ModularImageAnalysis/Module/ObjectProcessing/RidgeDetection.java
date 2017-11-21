@@ -11,6 +11,7 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -25,6 +26,7 @@ public class RidgeDetection extends HCModule {
     public static final String SIGMA = "Sigma (px)";
     public static final String MIN_LENGTH = "Minimum length (px)";
     public static final String MAX_LENGTH = "Maximum length (px)";
+    public static final String SHOW_OBJECTS = "Show objects";
 
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT//LENGTH_(PX)";
@@ -68,11 +70,6 @@ public class RidgeDetection extends HCModule {
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
 
-//        // Converting image to 8-bit
-//        inputImagePlus = new Duplicator().run(inputImagePlus);
-//        IntensityMinMax.run(inputImagePlus,true);
-//        IJ.run(inputImagePlus,"8-bit",null);
-
         // Running ridge detection
         if (verbose) System.out.println("["+moduleName+"] Running RidgeDetection plugin (plugin by Thorsten Wagner)");
         Lines lines = new LineDetector().detectLines(inputImagePlus.getProcessor(),sigma,upperThreshold,lowerThreshold,minLength,maxLength,false,true,false,false);
@@ -101,10 +98,23 @@ public class RidgeDetection extends HCModule {
 
         workspace.addObjects(outputObjects);
 
-        // Adding image to workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
+        if (parameters.getValue(SHOW_OBJECTS)) {
+            // Adding image to workspace
+            if (verbose)
+                System.out.println("[" + moduleName + "] Adding objects (" + outputObjectsName + ") to workspace");
 
+            // Creating a duplicate of the input image
+            inputImagePlus = new Duplicator().run(inputImagePlus);
+            IntensityMinMax.run(inputImagePlus, true);
 
+            // Creating the overlay
+            AddObjectsOverlay.createOverlay(inputImagePlus, outputObjects, "", AddObjectsOverlay.ColourModes.RANDOM_COLOUR,
+                    "", AddObjectsOverlay.PositionModes.ALL_POINTS, "", "", "", false, false, 0, "");
+
+            // Displaying the overlay
+            inputImagePlus.show();
+
+        }
     }
 
     @Override
@@ -116,6 +126,7 @@ public class RidgeDetection extends HCModule {
         parameters.addParameter(new Parameter(SIGMA, Parameter.DOUBLE,3d));
         parameters.addParameter(new Parameter(MIN_LENGTH, Parameter.DOUBLE,0d));
         parameters.addParameter(new Parameter(MAX_LENGTH, Parameter.DOUBLE,0d));
+        parameters.addParameter(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
 
     }
 

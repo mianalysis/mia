@@ -59,15 +59,22 @@ public class AnalysisHandler {
 
     }
 
-    public Analysis loadAnalysis() throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
+    public Analysis loadAnalysis() throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setFile("*.mia");
         fileDialog.setVisible(true);
 
+        File analysisFile = fileDialog.getFiles()[0];
+
+        return loadAnalysis(analysisFile);
+
+    }
+
+    public Analysis loadAnalysis(File analysisFile) throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document doc = documentBuilder.parse(fileDialog.getFiles()[0]);
+        Document doc = documentBuilder.parse(analysisFile);
         doc.getDocumentElement().normalize();
 
         Analysis analysis = new GUIAnalysis();
@@ -187,7 +194,7 @@ public class AnalysisHandler {
             }
         }
 
-        System.out.println("File loaded ("+FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
+        System.out.println("File loaded ("+FilenameUtils.getName(analysisFile.getName())+")");
 
         return analysis;
 

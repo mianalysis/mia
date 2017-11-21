@@ -725,9 +725,9 @@ public class MainGUI {
         }
 
         c.gridy++;
-        c.weighty = 1;
+        c.weighty = 100;
         JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0, 0));
+        separator.setPreferredSize(new Dimension(10, 15));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();

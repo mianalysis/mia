@@ -58,46 +58,10 @@ public class AddObjectsOverlay extends HCModule {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Add objects as overlay";
-    }
-
-    @Override
-    public String getHelp() {
-        return null;
-    }
-
-    @Override
-    public void run(Workspace workspace, boolean verbose) {
-        // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean showID = parameters.getValue(SHOW_LABEL);
-        int labelSize = parameters.getValue(LABEL_SIZE);
-        boolean useParentID = parameters.getValue(USE_PARENT_ID);
-        String parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
-        String positionMode = parameters.getValue(POSITION_MODE);
-        String colourMode = parameters.getValue(COLOUR_MODE);
-        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
-        String measurement = parameters.getValue(MEASUREMENT);
-        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
-        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
-        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
-
-        // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
-
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
-
-        // Duplicating the image, so the original isn't altered
-        if (!applyToInput) ipl = new Duplicator().run(ipl);
+    public static void createOverlay(ImagePlus ipl, ObjSet inputObjects, String measurement, String colourMode,
+                                     String parentObjectsForColourName, String positionMode, String xPosMeas,
+                                     String yPosMeas, String zPosMeas, boolean useParentID, boolean showID,
+                                     int labelSize, String parentObjectsForIDName) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
@@ -248,6 +212,51 @@ public class AddObjectsOverlay extends HCModule {
 
             }
         }
+    }
+
+    @Override
+    public String getTitle() {
+        return "Add objects as overlay";
+    }
+
+    @Override
+    public String getHelp() {
+        return null;
+    }
+
+    @Override
+    public void run(Workspace workspace, boolean verbose) {
+        // Getting parameters
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean showID = parameters.getValue(SHOW_LABEL);
+        int labelSize = parameters.getValue(LABEL_SIZE);
+        boolean useParentID = parameters.getValue(USE_PARENT_ID);
+        String parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
+        String positionMode = parameters.getValue(POSITION_MODE);
+        String colourMode = parameters.getValue(COLOUR_MODE);
+        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+        String measurement = parameters.getValue(MEASUREMENT);
+        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
+        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
+        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
+        boolean showImage = parameters.getValue(SHOW_IMAGE);
+
+        // Getting input objects
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+
+        // Getting input image
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        Image inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus ipl = inputImage.getImagePlus();
+
+        // Duplicating the image, so the original isn't altered
+        if (!applyToInput) ipl = new Duplicator().run(ipl);
+
+        createOverlay(ipl, inputObjects, measurement, colourMode,  parentObjectsForColourName, positionMode, xPosMeas,
+                yPosMeas, zPosMeas, useParentID, showID, labelSize, parentObjectsForIDName);
 
         // If necessary, adding output image to workspace
         if (addOutputToWorkspace) {
