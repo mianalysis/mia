@@ -7,8 +7,6 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
  */
 public class MIAMeasurement {
     // Spatial measures
-    public static final String RADIUS = "Radius";
-    public static final String ESTIMATED_DIAMETER = "Est dia";
     public static final String DIRECTIONALITY_RATIO = "Directionality ratio";
     public static final String DURATION = "Duration";
     public static final String TOTAL_PATH_LENGTH = "Total path length";
@@ -19,12 +17,6 @@ public class MIAMeasurement {
     public static final String X_CENTROID_MEDIAN_PX = "X-Centroid Median (px)";
     public static final String Y_CENTROID_MEDIAN_PX = "Y-Centroid Median (px)";
     public static final String Z_CENTROID_MEDIAN_SLICE = "Z-Centroid Median (slice)";
-
-    // Intensity measures
-    public static final String MEAN_INTENSITY = "Mean I";
-    public static final String MIN_INTENSITY = "Min I";
-    public static final String MAX_INTENSITY = "Max I";
-    public static final String STD_INTENSITY = "Stdev I";
 
     // Other measures
     public static final String CLASS = "Class";

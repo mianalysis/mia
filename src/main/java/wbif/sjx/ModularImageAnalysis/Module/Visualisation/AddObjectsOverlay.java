@@ -40,10 +40,11 @@ public class AddObjectsOverlay extends HCModule {
     public static final String SHOW_IMAGE = "Show image";
 
     public interface PositionModes {
+        String ALL_POINTS = "All points";
         String CENTROID = "Centroid";
         String POSITION_MEASUREMENTS = "Position measurements";
 
-        String[] ALL = new String[]{CENTROID, POSITION_MEASUREMENTS};
+        String[] ALL = new String[]{ALL_POINTS, CENTROID, POSITION_MEASUREMENTS};
 
     }
 
@@ -145,34 +146,88 @@ public class AddObjectsOverlay extends HCModule {
 
             Color colour = Color.getHSBColor(H, 1, 1);
 
-            double xMean; double yMean; double zMean;
-            if (positionMode.equals(PositionModes.CENTROID)) {
-                xMean = object.getXMean(true);
-                yMean = object.getYMean(true);
-                zMean = object.getZMean(true,false);
+            double xMean = 0;
+            double yMean = 0;
+            double zMean;
+            int z = 0;
+            int t = 0;
 
-            } else {
-                xMean = object.getMeasurement(xPosMeas).getValue();
-                yMean = object.getMeasurement(yPosMeas).getValue();
-                zMean = object.getMeasurement(zPosMeas).getValue();
+            switch (positionMode) {
+                case PositionModes.ALL_POINTS:
+                    // Still need to get mean coords for label
+                    xMean = object.getXMean(true);
+                    yMean = object.getYMean(true);
+
+                    // Adding each point
+                    double[] xx = object.getX(false);
+                    double[] yy = object.getY(false);
+                    double[] zz = object.getZ(false,false);
+
+                    t = object.getT()+1;
+
+                    for (int i=0;i<xx.length;i++) {
+                        PointRoi roi = new PointRoi(xx[i]+0.5,yy[i]+0.5);
+                        roi.setPointType(PointRoi.NORMAL);
+
+                        if (ipl.isHyperStack()) {
+                            roi.setPosition(1, (int) zz[i], t);
+                        } else {
+                            int pos = Math.max(Math.max(1,(int) zz[i]),t);
+                            roi.setPosition(pos);
+                        }
+                        roi.setStrokeColor(colour);
+                        ovl.addElement(roi);
+                    }
+
+                    break;
+
+                case PositionModes.CENTROID:
+                    xMean = object.getXMean(true);
+                    yMean = object.getYMean(true);
+                    zMean = object.getZMean(true,false);
+
+                    // Getting coordinates to plot
+                    z = (int) Math.round(zMean+1);
+                    t = object.getT()+1;
+
+                    // Adding circles where the object centroids are
+                    PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
+                    roi.setPointType(PointRoi.NORMAL);
+                    if (ipl.isHyperStack()) {
+                        roi.setPosition(1, z, t);
+                    } else {
+                        int pos = Math.max(Math.max(1,z),t);
+                        roi.setPosition(pos);
+                    }
+                    roi.setStrokeColor(colour);
+                    ovl.addElement(roi);
+
+                    break;
+
+                case PositionModes.POSITION_MEASUREMENTS:
+                    xMean = object.getMeasurement(xPosMeas).getValue();
+                    yMean = object.getMeasurement(yPosMeas).getValue();
+                    zMean = object.getMeasurement(zPosMeas).getValue();
+
+                    // Getting coordinates to plot
+                    z = (int) Math.round(zMean+1);
+                    t = object.getT()+1;
+
+                    // Adding circles where the object centroids are
+                    roi = new PointRoi(xMean+0.5,yMean+0.5);
+                    roi.setPointType(PointRoi.NORMAL);
+                    if (ipl.isHyperStack()) {
+                        roi.setPosition(1, z, t);
+                    } else {
+                        int pos = Math.max(Math.max(1,z),t);
+                        roi.setPosition(pos);
+                    }
+                    roi.setStrokeColor(colour);
+                    ovl.addElement(roi);
+
+                    break;
 
             }
-
-            // Getting coordinates to plot
-            int z = (int) Math.round(zMean+1);
-            int t = object.getT()+1;
-
-            // Adding circles where the object centroids are
-            PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
-            roi.setPointType(3);
-            if (ipl.isHyperStack()) {
-                roi.setPosition(1, z, t);
-            } else {
-                int pos = Math.max(Math.max(1,z),t);
-                roi.setPosition(pos);
-            }
-            roi.setStrokeColor(colour);
-            ovl.addElement(roi);
 
             if (showID) {
                 // Adding text label

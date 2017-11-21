@@ -62,22 +62,22 @@ public class MeasureImageTexture extends HCModule {
         // Acquiring measurements
         MIAMeasurement ASMMeasurement = new MIAMeasurement("ASM",textureCalculator.getASM());
         ASMMeasurement.setSource(this);
-        inputImage.addMeasurement(ASMMeasurement.getName(),ASMMeasurement);
+        inputImage.addMeasurement(ASMMeasurement);
         if (verbose) System.out.println("["+moduleName+"] ASM = "+ASMMeasurement.getValue());
 
         MIAMeasurement contrastMeasurement = new MIAMeasurement("CONTRAST",textureCalculator.getContrast());
         contrastMeasurement.setSource(this);
-        inputImage.addMeasurement(contrastMeasurement.getName(),contrastMeasurement);
+        inputImage.addMeasurement(contrastMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Contrast = "+contrastMeasurement.getValue());
 
         MIAMeasurement correlationMeasurement = new MIAMeasurement("CORRELATION",textureCalculator.getCorrelation());
         correlationMeasurement.setSource(this);
-        inputImage.addMeasurement(correlationMeasurement.getName(),correlationMeasurement);
+        inputImage.addMeasurement(correlationMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Correlation = "+correlationMeasurement.getValue());
 
         MIAMeasurement entropyMeasurement = new MIAMeasurement("ENTROPY",textureCalculator.getEntropy());
         entropyMeasurement.setSource(this);
-        inputImage.addMeasurement(entropyMeasurement.getName(),entropyMeasurement);
+        inputImage.addMeasurement(entropyMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Entropy = "+entropyMeasurement.getValue());
 
     }

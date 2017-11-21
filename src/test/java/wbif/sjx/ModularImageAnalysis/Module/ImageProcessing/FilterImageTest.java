@@ -309,7 +309,7 @@ public class FilterImageTest {
      * Tests the module doesn't crash if a 2D image is passed to the 3D median filter
      * @throws Exception
      */
-    @Test
+    @Test @Ignore
     public void testRunMedian3DFilter2DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -374,7 +374,7 @@ public class FilterImageTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testRunMedian3DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);

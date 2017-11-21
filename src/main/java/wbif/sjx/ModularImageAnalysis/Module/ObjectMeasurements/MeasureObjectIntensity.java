@@ -22,6 +22,26 @@ public class MeasureObjectIntensity extends HCModule {
     public static final String MEASURE_SUM = "Measure sum";
     public static final String MEASURE_WEIGHTED_CENTRE = "Measure weighted centre";
 
+    private interface Measurements {
+        String MEAN = "MEAN";
+        String MIN = "MIN";
+        String MAX = "MAX";
+        String SUM = "SUM";
+        String STDEV = "STDEV";
+
+        String X_CENT_MEAN = "X_CENTRE_MEAN (PX)";
+        String X_CENT_STD = "X_CENTRE_STD (PX)";
+        String Y_CENT_MEAN = "Y_CENTRE_MEAN (PX)";
+        String Y_CENT_STD = "Y_CENTRE_STD (PX)";
+        String Z_CENT_MEAN = "Z_CENTRE_MEAN (SLICE)";
+        String Z_CENT_STD = "Z_CENTRE_STD (SLICE)";
+        
+    }
+    
+    private String getFullName(String imageName, String measurement) {
+        return "INTENSITY//"+imageName+"_"+measurement;
+    }
+
 
     private void measureIntensity(Obj object, ImagePlus ipl) {
         // Getting parameters
@@ -45,15 +65,15 @@ public class MeasureObjectIntensity extends HCModule {
 
         // Calculating mean, std, min and max intensity
         if (parameters.getValue(MEASURE_MEAN))
-            object.addMeasurement(new MIAMeasurement(imageName+"_MEAN", cs.getMean()));
+            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.MEAN), cs.getMean()));
         if (parameters.getValue(MEASURE_MIN))
-            object.addMeasurement(new MIAMeasurement(imageName+"_MIN", cs.getMin()));
+            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.MIN), cs.getMin()));
         if (parameters.getValue(MEASURE_MAX))
-            object.addMeasurement(new MIAMeasurement(imageName+"_MAX", cs.getMax()));
+            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.MAX), cs.getMax()));
         if (parameters.getValue(MEASURE_STDEV))
-            object.addMeasurement(new MIAMeasurement(imageName+"_STD", cs.getStd(CumStat.SAMPLE)));
+            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
         if (parameters.getValue(MEASURE_SUM))
-            object.addMeasurement(new MIAMeasurement(imageName+"_SUM", cs.getSum()));
+            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.SUM), cs.getSum()));
 
     }
 
@@ -81,12 +101,12 @@ public class MeasureObjectIntensity extends HCModule {
 
         }
 
-        object.addMeasurement(new MIAMeasurement(imageName+"_X_CENTRE_MEAN (PX)", csX.getMean()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_X_CENTRE_STD (PX)", csX.getStd()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_Y_CENTRE_MEAN (PX)", csY.getMean()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_Y_CENTRE_STD (PX)", csY.getStd()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_Z_CENTRE_MEAN (SLICE)", csZ.getMean()));
-        object.addMeasurement(new MIAMeasurement(imageName+"_Z_CENTRE_STD (SLICE)", csZ.getStd()));
+        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.X_CENT_MEAN), csX.getMean()));
+        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.X_CENT_STD), csX.getStd()));
+        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.Y_CENT_MEAN), csY.getMean()));
+        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.Y_CENT_STD), csY.getStd()));
+        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.Z_CENT_MEAN), csZ.getMean()));
+        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.Z_CENT_STD), csZ.getStd()));
 
     }
 
@@ -148,28 +168,33 @@ public class MeasureObjectIntensity extends HCModule {
 
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
-        boolean calcMean = parameters.getValue(MEASURE_MEAN);
-        boolean calcMin = parameters.getValue(MEASURE_MIN);
-        boolean calcMax = parameters.getValue(MEASURE_MAX);
-        boolean calcStdev = parameters.getValue(MEASURE_STDEV);
-        boolean calcSum = parameters.getValue(MEASURE_SUM);
-        boolean calcCent = parameters.getValue(MEASURE_WEIGHTED_CENTRE);
-
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        if (calcMean) measurements.addMeasurement(inputObjectsName,inputImageName+"_MEAN_I");
-        if (calcMin) measurements.addMeasurement(inputObjectsName,inputImageName+"_MIN_I");
-        if (calcMax) measurements.addMeasurement(inputObjectsName,inputImageName+"_MAX_I");
-        if (calcStdev) measurements.addMeasurement(inputObjectsName,inputImageName+"_STD_I");
-        if (calcSum) measurements.addMeasurement(inputObjectsName,inputImageName+"_SUM_I");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_MEAN (PX)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_X_CENTRE_STD (PX)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_MEAN (PX)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Y_CENTRE_STD (PX)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_MEAN (SLICE)");
-        if (calcCent) measurements.addMeasurement(inputObjectsName,inputImageName+"_Z_CENTRE_STD (SLICE)");
+        if (parameters.getValue(MEASURE_MEAN))
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MEAN));
 
+        if (parameters.getValue(MEASURE_MIN))
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MIN));
+
+        if (parameters.getValue(MEASURE_MAX))
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MAX));
+
+        if (parameters.getValue(MEASURE_STDEV))
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.STDEV));
+
+        if (parameters.getValue(MEASURE_SUM))
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.SUM));
+
+        if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.X_CENT_MEAN));
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.X_CENT_STD));
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Y_CENT_MEAN));
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Y_CENT_STD));
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Z_CENT_MEAN));
+            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Z_CENT_STD));
+
+        }
     }
 
     @Override

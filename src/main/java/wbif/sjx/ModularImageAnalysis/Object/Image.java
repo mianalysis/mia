@@ -25,8 +25,8 @@ public class Image {
 
     // PUBLIC METHODS
 
-    public void addMeasurement(String name, MIAMeasurement measurement) {
-        measurements.put(name,measurement);
+    public void addMeasurement(MIAMeasurement measurement) {
+        measurements.put(measurement.getName(), measurement);
 
     }
 

@@ -144,7 +144,7 @@ public class ObjectImageConverter extends HCModule {
             int valInt = 1;
             switch (colourMode){
                 case ColourModes.SINGLE_COLOUR:
-                    valInt = 1;
+                    valInt = 255;
                     break;
 
                 case ColourModes.RANDOM_COLOUR:

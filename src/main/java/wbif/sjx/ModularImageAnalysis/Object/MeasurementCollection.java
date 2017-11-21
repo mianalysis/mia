@@ -9,14 +9,14 @@ import java.util.LinkedHashSet;
 public class MeasurementCollection extends LinkedHashMap<String,LinkedHashSet<String>> {
     // PUBLIC METHODS
 
-    public void addMeasurement(String objectName, String measurementName) {
-        computeIfAbsent(objectName,k -> new LinkedHashSet<>());
-        get(objectName).add(measurementName);
+    public void addMeasurement(String imageObjectName, String measurementName) {
+        computeIfAbsent(imageObjectName,k -> new LinkedHashSet<>());
+        get(imageObjectName).add(measurementName);
 
     }
 
-    public String[] getMeasurementNames(String objectName) {
-        return get(objectName) == null ? new String[]{""} : get(objectName).toArray(new String[get(objectName).size()]);
+    public String[] getMeasurementNames(String imageObjectName) {
+        return get(imageObjectName) == null ? new String[]{""} : get(imageObjectName).toArray(new String[get(imageObjectName).size()]);
 
     }
 }
