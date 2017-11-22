@@ -14,13 +14,13 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 08/06/2017.
  */
 public class EvalButton extends JButton implements ActionListener {
-    private MainGUI gui;
+    private GUI gui;
     private HCModule module;
 
 
     // CONSTRUCTOR
 
-    EvalButton(MainGUI gui, HCModule module) {
+    EvalButton(GUI gui, HCModule module) {
         this.gui = gui;
         this.module = module;
 

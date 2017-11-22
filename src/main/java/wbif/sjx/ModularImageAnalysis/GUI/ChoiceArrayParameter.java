@@ -11,11 +11,11 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 22/05/2017.
  */
 public class ChoiceArrayParameter extends WiderDropDownCombo implements ActionListener {
-    private MainGUI gui;
+    private GUI gui;
     private HCModule module;
     private Parameter parameter;
 
-    public ChoiceArrayParameter(MainGUI gui, HCModule module, Parameter parameter, String[] choices) {
+    public ChoiceArrayParameter(GUI gui, HCModule module, Parameter parameter, String[] choices) {
         super(choices);
 
         this.gui = gui;
@@ -43,8 +43,7 @@ public class ChoiceArrayParameter extends WiderDropDownCombo implements ActionLi
         int idx = gui.getModules().indexOf(module);
         if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);
 
-        gui.updateEvalButtonStates();
-        if (!gui.isBasicGUI()) gui.populateModuleParameters();
+        gui.updateModules();
 
     }
 }

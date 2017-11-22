@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -24,9 +25,9 @@ import java.net.URL;
 /**
  * Created by sc13967 on 21/11/2017.
  */
-public class DeployedGUI implements ActionListener {
-    private int frameWidth = 300;
-    private int frameHeight = 750;
+public class DeployedGUI extends GUI implements ActionListener {
+    private int frameWidth = 350;
+    private int frameHeight = 550;
     private int elementHeight = 25;
 
     private JFrame frame = new JFrame();
@@ -36,28 +37,35 @@ public class DeployedGUI implements ActionListener {
     private JPanel statusPanel = new JPanel();
 
     private Analysis analysis;
+    private String name;
+    private String version;
     private ComponentFactory componentFactory;
 
-    public DeployedGUI(String analysisResourcePath) throws URISyntaxException, SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
-        URL fileURL = ClassLoader.getSystemResource(analysisResourcePath);
-        File analaysisFile = new File(fileURL.toURI());
-        Analysis analysis = new AnalysisHandler().loadAnalysis(analaysisFile);
+    public static void main(String[] args) throws IllegalAccessException, ParserConfigurationException, IOException, InstantiationException, URISyntaxException, SAXException, ClassNotFoundException {
+        new DeployedGUI("/2017-11-20 Cilia analysis.mia","t","1");
+    }
 
-        new DeployedGUI(analysis);
+    public DeployedGUI(String analysisResourcePath, String name, String version) throws URISyntaxException, SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
+        InputStream analysisResourceStream = DeployedGUI.class.getResourceAsStream(analysisResourcePath);
+        Analysis analysis = new AnalysisHandler().loadAnalysis(analysisResourceStream);
+
+        new DeployedGUI(analysis,name,version);
 
     }
 
-    public DeployedGUI(Analysis analysis) throws IllegalAccessException, InstantiationException {
+    public DeployedGUI(Analysis analysis, String name, String version) throws IllegalAccessException, InstantiationException {
         this.analysis = analysis;
+        this.name = name;
+        this.version = version;
 
-        componentFactory = new ComponentFactory(null, elementHeight);
+        componentFactory = new ComponentFactory(this, elementHeight);
 
         // Setting location of panel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - frameWidth) / 2, (screenSize.height - frameHeight) / 2);
 
         frame.setLayout(new GridBagLayout());
-        frame.setTitle("Modular image analysis (version " + getClass().getPackage().getImplementationVersion() + ")");
+        frame.setTitle(name+" (version " + version + ")");
 
         render();
 
@@ -81,7 +89,7 @@ public class DeployedGUI implements ActionListener {
         frame.add(basicModulesScrollPane, c);
 
         // Initialising the status panel
-        initialiseStatusPanel(500);
+        initialiseStatusPanel(frameWidth);
         c.gridx = 0;
         c.gridy++;
         c.gridwidth = 1;
@@ -99,7 +107,7 @@ public class DeployedGUI implements ActionListener {
         int buttonSize = 50;
 
         basicControlPanel = new JPanel();
-        basicControlPanel.setPreferredSize(new Dimension(500, buttonSize + 15));
+        basicControlPanel.setPreferredSize(new Dimension(frameWidth, buttonSize + 15));
         basicControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicControlPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -122,7 +130,7 @@ public class DeployedGUI implements ActionListener {
     }
 
     private void initialiseModulesPanel() {
-        int elementWidth = 500;
+        int elementWidth = frameWidth;
 
         // Initialising the scroll panel
         basicModulesScrollPane.setPreferredSize(new Dimension(elementWidth, frameHeight - 165));
@@ -132,6 +140,14 @@ public class DeployedGUI implements ActionListener {
 
         // Initialising the panel for module buttons
         basicModulesPanel.setLayout(new GridBagLayout());
+
+        updateModules();
+
+    }
+
+    public void updateModules() {
+        basicModulesPanel.removeAll();
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -153,7 +169,7 @@ public class DeployedGUI implements ActionListener {
             }
             if (!hasVisibleParameters) continue;
 
-            JPanel titlePanel = componentFactory.createBasicModuleHeading(module, 460);
+            JPanel titlePanel = componentFactory.createBasicModuleHeading(module, frameWidth-40);
 
             c.gridy++;
             c.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -161,7 +177,7 @@ public class DeployedGUI implements ActionListener {
 
             for (Parameter parameter : module.getActiveParameters().values()) {
                 if (parameter.isVisible()) {
-                    JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, module, 460);
+                    JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, module, frameWidth-40);
 
                     c.gridy++;
                     basicModulesPanel.add(paramPanel, c);
@@ -179,7 +195,7 @@ public class DeployedGUI implements ActionListener {
         c.gridy++;
         c.weighty = 100;
         JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(10, 15));
+        separator.setPreferredSize(new Dimension(0, 0));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();
@@ -201,7 +217,7 @@ public class DeployedGUI implements ActionListener {
         textField.setBackground(null);
         textField.setPreferredSize(new Dimension(width - 20, 25));
         textField.setBorder(null);
-        textField.setText("Modular image analysis (version " + getClass().getPackage().getImplementationVersion() + ")");
+        textField.setText(name+" (version " + version + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         statusPanel.add(textField, c);
 

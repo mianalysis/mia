@@ -254,7 +254,6 @@ public class Exporter {
         // Adding relevant sheets
         prepareParametersXLSX(workbook,modules);
         prepareSummaryXLSX(workbook,workspaces,modules);
-//        prepareImagesXLSX(workbook,workspaces,modules);
         prepareObjectsXLSX(workbook,workspaces,modules);
 
         // Writing the workbook to file

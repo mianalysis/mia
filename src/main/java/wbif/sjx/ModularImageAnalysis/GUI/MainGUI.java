@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class MainGUI {
+public class MainGUI extends GUI {
     private int frameWidth = 1100;
     private int frameHeight = 750;
     private int elementHeight = 25;
@@ -27,7 +27,6 @@ public class MainGUI {
     private int moduleButtonWidth = 300;
 
     private ComponentFactory componentFactory;
-    private Workspace testWorkspace = new Workspace(1, null);
     private HCModule activeModule = null;
     private JFrame frame = new JFrame();
     private JMenuBar menuBar = new JMenuBar();
@@ -49,7 +48,7 @@ public class MainGUI {
     private boolean basicGUI = true;
     private boolean debugOn = false;
 
-    private GUIAnalysis analysis = new GUIAnalysis();
+
 
     public MainGUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
         this.debugOn = debugOn;
@@ -842,10 +841,6 @@ public class MainGUI {
         return viewMenu;
     }
 
-    public int getLastModuleEval() {
-        return lastModuleEval;
-    }
-
     public boolean isBasicGUI() {
         return basicGUI;
     }
@@ -862,28 +857,19 @@ public class MainGUI {
         return analysis.getModules();
     }
 
+    @Override
+    public void updateModules() {
+        updateEvalButtonStates();
+        if (!isBasicGUI()) {
+            populateModuleParameters();
+        } else {
+            populateBasicModules();
+        }
+        populateModuleList();
+    }
+
     public void setActiveModule(HCModule activeModule) {
         this.activeModule = activeModule;
     }
 
-    public void setLastModuleEval(int lastModuleEval) {
-        this.lastModuleEval = lastModuleEval;
-    }
-
-    void evaluateModule(HCModule module) throws GenericMIAException {
-        module.execute(testWorkspace, true);
-        lastModuleEval = getModules().indexOf(module);
-
-        if (basicGUI) {
-            populateBasicModules();
-
-        } else {
-            populateModuleList();
-
-        }
-    }
-
-    public void setTestWorkspace(Workspace testWorkspace) {
-        this.testWorkspace = testWorkspace;
-    }
 }
