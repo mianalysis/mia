@@ -17,10 +17,10 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.NormaliseIntensity;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -54,6 +54,12 @@ public class RunTrackMate extends HCModule {
         String USE_TRACK_ID = "Use track ID";
 
         String[] ALL = new String[]{USE_SPOT_ID, USE_TRACK_ID};
+
+    }
+
+    private interface Measurements {
+        String RADIUS = "SPOT_DETECT_TRACK//RADIUS";
+        String ESTIMATED_DIAMETER = "SPOT_DETECT_TRACK//EST_DIAMETER";
 
     }
 
@@ -202,15 +208,16 @@ public class RunTrackMate extends HCModule {
         TrackMate trackmate = new TrackMate(model, settings);
 
         // Running TrackMate
-        if (verbose) System.out.println("["+moduleName+"] Running TrackMate");
+        if (verbose) System.out.println("["+moduleName+"] Running TrackMate detection");
         if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());
-        if (!trackmate.process()) IJ.log(trackmate.getErrorMessage());
+        if (!trackmate.execDetection()) IJ.log(trackmate.getErrorMessage());
+        if (!trackmate.computeSpotFeatures(false)) IJ.log(trackmate.getErrorMessage());
 
         if (normaliseIntensity) ipl = targetImage.getImagePlus();
 
         if (!(boolean) parameters.getValue(DO_TRACKING)) {
             // Getting trackObjects and adding them to the output trackObjects
-            if (verbose) System.out.println("["+moduleName+"] Processing detected trackObjects");
+            if (verbose) System.out.println("["+moduleName+"] Processing detected objects");
 
             SpotCollection spots = model.getSpots();
             for (Spot spot:spots.iterable(false)) {
@@ -218,8 +225,8 @@ public class RunTrackMate extends HCModule {
                 spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
                 spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
-                spotObject.addMeasurement(new MIAMeasurement(MIAMeasurement.RADIUS,spot.getFeature(Spot.RADIUS),this));
-                spotObject.addMeasurement(new MIAMeasurement(MIAMeasurement.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
+                spotObject.addMeasurement(new MIAMeasurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
+                spotObject.addMeasurement(new MIAMeasurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
 
                 spotObjects.put(spotObject.getID(),spotObject);
 
@@ -237,6 +244,7 @@ public class RunTrackMate extends HCModule {
 
                 // Creating a duplicate of the input image
                 ipl = new Duplicator().run(ipl);
+                IntensityMinMax.run(ipl,true);
 
                 // Getting parameters
                 boolean showID = parameters.getValue(SHOW_ID);
@@ -251,6 +259,9 @@ public class RunTrackMate extends HCModule {
 
             return;
         }
+
+        if (verbose) System.out.println("["+moduleName+"] Running TrackMate tracking");
+        if (!trackmate.execTracking()) IJ.log(trackmate.getErrorMessage());
 
         // Converting tracks to local track model
         int ID = 1;
@@ -304,12 +315,12 @@ public class RunTrackMate extends HCModule {
                 }
 
                 // Adding radius measurement using the same coordinate system as HCObject (XYCZT)
-                MIAMeasurement radiusMeasure = new MIAMeasurement(MIAMeasurement.RADIUS,spot.getFeature(Spot.RADIUS));
+                MIAMeasurement radiusMeasure = new MIAMeasurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS));
                 radiusMeasure.setSource(this);
                 spotObject.addMeasurement(radiusMeasure);
                 if (createTracks) radiusAv.addMeasure(spot.getFeature(Spot.RADIUS));
 
-                MIAMeasurement estDiaMeasure = new MIAMeasurement(MIAMeasurement.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER));
+                MIAMeasurement estDiaMeasure = new MIAMeasurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER));
                 estDiaMeasure.setSource(this);
                 spotObject.addMeasurement(estDiaMeasure);
                 if (createTracks) estDiaAv.addMeasure(spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER));
@@ -328,11 +339,11 @@ public class RunTrackMate extends HCModule {
 
             // Taking average measurements for the summary object
             if (createTracks) {
-                MIAMeasurement radiusMeasure = new MIAMeasurement(MIAMeasurement.RADIUS,radiusAv.getMean());
+                MIAMeasurement radiusMeasure = new MIAMeasurement(Measurements.RADIUS,radiusAv.getMean());
                 radiusMeasure.setSource(this);
                 trackObject.addMeasurement(radiusMeasure);
 
-                MIAMeasurement estDiaMeasure = new MIAMeasurement(MIAMeasurement.ESTIMATED_DIAMETER,estDiaAv.getMean());
+                MIAMeasurement estDiaMeasure = new MIAMeasurement(Measurements.ESTIMATED_DIAMETER,estDiaAv.getMean());
                 estDiaMeasure.setSource(this);
                 trackObject.addMeasurement(estDiaMeasure);
 
@@ -453,17 +464,16 @@ public class RunTrackMate extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         if (parameters.getValue(OUTPUT_SPOT_OBJECTS) != null) {
-            measurements.addMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), MIAMeasurement.RADIUS);
-            measurements.addMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), MIAMeasurement.ESTIMATED_DIAMETER);
+            measurements.addMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.RADIUS);
+            measurements.addMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.ESTIMATED_DIAMETER);
         }
 
         if (parameters.getValue(CREATE_TRACK_OBJECTS)) {
             if (parameters.getValue(OUTPUT_TRACK_OBJECTS) != null) {
-                measurements.addMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), MIAMeasurement.RADIUS);
-                measurements.addMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), MIAMeasurement.ESTIMATED_DIAMETER);
+                measurements.addMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.RADIUS);
+                measurements.addMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.ESTIMATED_DIAMETER);
             }
         }
-
     }
 
     @Override

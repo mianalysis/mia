@@ -68,6 +68,8 @@ public class BatchProcessor extends FileCrawler {
 
         File next = getNextValidFileInStructure();
 
+        System.out.println("Starting batch processor");
+
         // Setting up the ExecutorService, which will manage the threads
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
@@ -78,12 +80,11 @@ public class BatchProcessor extends FileCrawler {
             // Adding a parameter to the metadata structure indicating the depth of the current file in the folder structure
             int fileDepth = 0;
             File parent = next.getParentFile();
-            while (parent != rootFolder.getFolderAsFile()) {
+            while (parent != rootFolder.getFolderAsFile() && parent != null) {
                 parent = parent.getParentFile();
                 fileDepth++;
             }
             workspace.getMetadata().put("FILE_DEPTH",fileDepth);
-
 
             Runnable task = () -> {
                 try {

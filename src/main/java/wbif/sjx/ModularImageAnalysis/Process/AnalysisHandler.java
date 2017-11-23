@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.Prefs;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
@@ -13,8 +14,6 @@ import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
-import wbif.sjx.common.FileConditions.FileCondition;
-import wbif.sjx.common.FileConditions.NameContainsString;
 
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -59,15 +58,22 @@ public class AnalysisHandler {
 
     }
 
-    public Analysis loadAnalysis() throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
+    public Analysis loadAnalysis() throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setFile("*.mia");
         fileDialog.setVisible(true);
 
+        File analysisFile = fileDialog.getFiles()[0];
+
+        return loadAnalysis(new FileInputStream(analysisFile));
+
+    }
+
+    public Analysis loadAnalysis(InputStream analysisFileStream) throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document doc = documentBuilder.parse(fileDialog.getFiles()[0]);
+        Document doc = documentBuilder.parse(analysisFileStream);
         doc.getDocumentElement().normalize();
 
         Analysis analysis = new GUIAnalysis();
@@ -187,23 +193,24 @@ public class AnalysisHandler {
             }
         }
 
-        System.out.println("File loaded ("+FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
+        System.out.println("File loaded");
 
         return analysis;
 
     }
 
     public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
-        String inputFilePath = Prefs.get("ModularImageAnalysis.inputFilePath","");
+        String inputFilePath = Prefs.get("MIA.inputFilePath","");
 
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(inputFilePath);
         fileChooser.setDialogTitle("Select file to run");
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.showDialog(null,"Open");
 
         File inputFile = fileChooser.getSelectedFile();
-        Prefs.set("ModularImageAnalysis.inputFilePath",inputFilePath);
+        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
+        Prefs.savePreferences();
 
         String exportName;
         if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());

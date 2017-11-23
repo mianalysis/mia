@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis;
 
 import ij.IJ;
 import ij.ImageJ;
+import ij.Prefs;
 import ij.plugin.PlugIn;
 import wbif.sjx.ModularImageAnalysis.GUI.ChoiceArrayParameter;
 import wbif.sjx.ModularImageAnalysis.GUI.MainGUI;
@@ -23,14 +24,15 @@ public class ModularImageAnalysisPlugin implements PlugIn {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         new ImageJ();
-        new MainGUI();
+        Prefs.setThreads(1);
+        new MainGUI(true);
 
     }
 
     @Override
     public void run(String s) {
         try {
-            new MainGUI();
+            new MainGUI(false);
         } catch (InstantiationException | IllegalAccessException e) {
             IJ.log("Error");
             e.printStackTrace();

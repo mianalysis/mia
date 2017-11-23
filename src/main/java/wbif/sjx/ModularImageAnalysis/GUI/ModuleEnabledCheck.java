@@ -10,10 +10,10 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class ModuleEnabledCheck extends JCheckBox implements ActionListener {
-    private MainGUI gui;
+    private GUI gui;
     private HCModule module;
 
-    public ModuleEnabledCheck(MainGUI gui, HCModule module) {
+    public ModuleEnabledCheck(GUI gui, HCModule module) {
         this.gui = gui;
         this.module = module;
 
@@ -37,7 +37,6 @@ public class ModuleEnabledCheck extends JCheckBox implements ActionListener {
             gui.setLastModuleEval(idx-1);
         }
 
-        gui.populateModuleList();
-        gui.populateModuleParameters();
+        gui.updateModules();
     }
 }

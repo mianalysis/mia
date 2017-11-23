@@ -1,3 +1,5 @@
+// TODO: Could have separator parameter, which draws a line across the GUI
+
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import java.io.Serializable;

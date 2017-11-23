@@ -14,6 +14,7 @@ import java.io.File;
  * Created by sc13967 on 26/06/2017.
  */
 public class ImageSaver extends HCModule {
+    public static final String SAVE_IMAGE = "Save image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String SAVE_LOCATION = "Save location";
     public static final String MIRROR_DIRECTORY_ROOT = "Mirrored directory root";
@@ -50,11 +51,15 @@ public class ImageSaver extends HCModule {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
+        boolean saveImage = parameters.getValue(SAVE_IMAGE);
         String saveLocation = parameters.getValue(SAVE_LOCATION);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT);
         String filePath = parameters.getValue(SAVE_FILE_PATH);
         String suffix = parameters.getValue(SAVE_SUFFIX);
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
+
+        // The save image option is there so users can toggle it
+        if (!saveImage) return;
 
         if (flattenOverlay) {
             // Flattening overlay onto image for saving
@@ -111,10 +116,11 @@ public class ImageSaver extends HCModule {
 
     @Override
     public void initialiseParameters() {
+        parameters.addParameter(new Parameter(SAVE_IMAGE,Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.MIRRORED_DIRECTORY,SaveLocations.ALL));
-        parameters.addParameter(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FILE_PATH,null));
-        parameters.addParameter(new Parameter(SAVE_FILE_PATH, Parameter.FILE_PATH,null));
+        parameters.addParameter(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FILE_PATH,""));
+        parameters.addParameter(new Parameter(SAVE_FILE_PATH, Parameter.FILE_PATH,""));
         parameters.addParameter(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
         parameters.addParameter(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
 
@@ -124,22 +130,27 @@ public class ImageSaver extends HCModule {
     public ParameterCollection getActiveParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 
-        returnedParamters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParamters.addParameter(parameters.getParameter(SAVE_LOCATION));
+        returnedParamters.addParameter(parameters.getParameter(SAVE_IMAGE));
 
-        switch ((String) parameters.getValue(SAVE_LOCATION)) {
-            case SaveLocations.SPECIFIC_LOCATION:
-                returnedParamters.addParameter(parameters.getParameter(SAVE_FILE_PATH));
-                break;
+        if (parameters.getValue(SAVE_IMAGE)) {
+            returnedParamters.addParameter(parameters.getParameter(INPUT_IMAGE));
+            returnedParamters.addParameter(parameters.getParameter(SAVE_LOCATION));
 
-            case SaveLocations.MIRRORED_DIRECTORY:
-                returnedParamters.addParameter(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
-                break;
+            switch ((String) parameters.getValue(SAVE_LOCATION)) {
+                case SaveLocations.SPECIFIC_LOCATION:
+                    returnedParamters.addParameter(parameters.getParameter(SAVE_FILE_PATH));
+                    break;
+
+                case SaveLocations.MIRRORED_DIRECTORY:
+                    returnedParamters.addParameter(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
+                    break;
+
+            }
+
+            returnedParamters.addParameter(parameters.getParameter(SAVE_SUFFIX));
+            returnedParamters.addParameter(parameters.getParameter(FLATTEN_OVERLAY));
 
         }
-
-        returnedParamters.addParameter(parameters.getParameter(SAVE_SUFFIX));
-        returnedParamters.addParameter(parameters.getParameter(FLATTEN_OVERLAY));
 
         return returnedParamters;
 

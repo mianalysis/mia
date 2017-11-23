@@ -13,11 +13,11 @@ import java.awt.event.FocusListener;
  * Created by Stephen on 20/05/2017.
  */
 public class TextParameter extends JTextField implements FocusListener {
-    private MainGUI gui;
+    private GUI gui;
     private HCModule module;
     private Parameter parameter;
 
-    TextParameter(MainGUI gui, HCModule module, Parameter parameter) {
+    TextParameter(GUI gui, HCModule module, Parameter parameter) {
         this.gui = gui;
         this.module = module;
         this.parameter = parameter;
@@ -62,7 +62,7 @@ public class TextParameter extends JTextField implements FocusListener {
         int idx = gui.getModules().indexOf(module);
         if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);
 
-        gui.updateEvalButtonStates();
+        gui.updateModules();
 
     }
 }

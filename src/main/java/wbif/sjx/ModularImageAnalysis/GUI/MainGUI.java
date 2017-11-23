@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class MainGUI {
+public class MainGUI extends GUI {
     private int frameWidth = 1100;
     private int frameHeight = 750;
     private int elementHeight = 25;
@@ -27,7 +27,6 @@ public class MainGUI {
     private int moduleButtonWidth = 300;
 
     private ComponentFactory componentFactory;
-    private Workspace testWorkspace = new Workspace(1, null);
     private HCModule activeModule = null;
     private JFrame frame = new JFrame();
     private JMenuBar menuBar = new JMenuBar();
@@ -47,10 +46,13 @@ public class MainGUI {
     private JPopupMenu moduleListMenu = new JPopupMenu();
     private int lastModuleEval = -1;
     private boolean basicGUI = true;
+    private boolean debugOn = false;
 
-    private GUIAnalysis analysis = new GUIAnalysis();
 
-    public MainGUI() throws InstantiationException, IllegalAccessException {
+
+    public MainGUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
+        this.debugOn = debugOn;
+
         inputControl.initialiseParameters();
 
         componentFactory = new ComponentFactory(this, elementHeight);
@@ -66,8 +68,11 @@ public class MainGUI {
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
 
-        renderBasicMode();
-//        renderEditingMode();
+        if (debugOn) {
+            renderEditingMode();
+        } else {
+            renderBasicMode();
+        }
 
         // Final bits for listeners
 //        frame.addMouseListener(this);
@@ -142,12 +147,14 @@ public class MainGUI {
         frame.add(basicModulesScrollPane, c);
 
         // Initialising the status panel
-        initialiseStatusPanel(500);
-        c.gridx = 0;
-        c.gridy++;
-        c.gridwidth = 1;
-        c.insets = new Insets(5,5,5,5);
-        frame.add(statusPanel,c);
+        if (!debugOn) {
+            initialiseStatusPanel(500);
+            c.gridx = 0;
+            c.gridy++;
+            c.gridwidth = 1;
+            c.insets = new Insets(5,5,5,5);
+            frame.add(statusPanel,c);
+        }
 
         frame.pack();
         frame.revalidate();
@@ -173,14 +180,16 @@ public class MainGUI {
         frame.add(controlPanel, c);
 
         // Initialising the status panel
-        initialiseStatusPanel(1080);
-        c.gridheight = 1;
-        c.gridy++;
-        c.gridy++;
-        c.gridy++;
-        c.gridwidth = 3;
-        c.insets = new Insets(0,5,5,5);
-        frame.add(statusPanel,c);
+        if (!debugOn) {
+            initialiseStatusPanel(1080);
+            c.gridheight = 1;
+            c.gridy++;
+            c.gridy++;
+            c.gridy++;
+            c.gridwidth = 3;
+            c.insets = new Insets(0, 5, 5, 5);
+            frame.add(statusPanel, c);
+        }
 
         // Initialising the input enable panel
         initialiseInputEnablePanel();
@@ -715,9 +724,9 @@ public class MainGUI {
         }
 
         c.gridy++;
-        c.weighty = 1;
+        c.weighty = 100;
         JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0, 0));
+        separator.setPreferredSize(new Dimension(10, 15));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();
@@ -832,10 +841,6 @@ public class MainGUI {
         return viewMenu;
     }
 
-    public int getLastModuleEval() {
-        return lastModuleEval;
-    }
-
     public boolean isBasicGUI() {
         return basicGUI;
     }
@@ -852,28 +857,19 @@ public class MainGUI {
         return analysis.getModules();
     }
 
+    @Override
+    public void updateModules() {
+        updateEvalButtonStates();
+        if (!isBasicGUI()) {
+            populateModuleParameters();
+        } else {
+            populateBasicModules();
+        }
+        populateModuleList();
+    }
+
     public void setActiveModule(HCModule activeModule) {
         this.activeModule = activeModule;
     }
 
-    public void setLastModuleEval(int lastModuleEval) {
-        this.lastModuleEval = lastModuleEval;
-    }
-
-    void evaluateModule(HCModule module) throws GenericMIAException {
-        module.execute(testWorkspace, true);
-        lastModuleEval = getModules().indexOf(module);
-
-        if (basicGUI) {
-            populateBasicModules();
-
-        } else {
-            populateModuleList();
-
-        }
-    }
-
-    public void setTestWorkspace(Workspace testWorkspace) {
-        this.testWorkspace = testWorkspace;
-    }
 }

@@ -49,7 +49,7 @@ public class ImageFileLoaderTest {
         assertEquals("Test_Output_Image",image.getName());
 
         // Checking there are no measurements associated with this image
-        assertEquals(0,image.getSingleMeasurements().size());
+        assertEquals(0,image.getMeasurements().size());
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());
@@ -96,7 +96,7 @@ public class ImageFileLoaderTest {
         assertEquals("Test_Output_Image",image.getName());
 
         // Checking there are no measurements associated with this image
-        assertEquals(0,image.getSingleMeasurements().size());
+        assertEquals(0,image.getMeasurements().size());
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());
@@ -143,7 +143,7 @@ public class ImageFileLoaderTest {
         assertEquals("Test_Output_Image",image.getName());
 
         // Checking there are no measurements associated with this image
-        assertEquals(0,image.getSingleMeasurements().size());
+        assertEquals(0,image.getMeasurements().size());
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());
@@ -190,7 +190,7 @@ public class ImageFileLoaderTest {
         assertEquals("Test_Output_Image",image.getName());
 
         // Checking there are no measurements associated with this image
-        assertEquals(0,image.getSingleMeasurements().size());
+        assertEquals(0,image.getMeasurements().size());
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());

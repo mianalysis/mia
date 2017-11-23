@@ -4,9 +4,9 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.1.4</version>
-    <packaging>jar</packaging>
 
+    <version>0.1.5</version>
+    <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>http://maven.apache.org</url>
 
@@ -112,6 +112,13 @@
         </dependency>
 
         <dependency>
+           <groupId>de.biomedical-imaging.imagej</groupId>
+           <artifactId>ij_ridge_detect</artifactId>
+           <version>1.4.0</version>
+            <scope>${myscope}</scope>
+       </dependency>
+
+        <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
             <version>1.2.9</version>
@@ -125,7 +132,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/${name}-${version}/plugins/WBIF_Bristol</outputDirectory>
+                    <outputDirectory>${project.build.directory}/${project.name}-${project.version}/plugins/WBIF_Bristol</outputDirectory>
                     <finalName>Modular_Image_Analysis-${project.version}</finalName>
                     <archive>
                         <manifest>
@@ -152,7 +159,7 @@
 
                             <excludeArtifactIds>commons-codec,commons-collections,commons-io,guava,jama,javassist,junit,MorphoLibJ_</excludeArtifactIds>
 
-                            <outputDirectory>${project.build.directory}/${name}-${version}/jars/WBIF_Bristol</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${project.name}-${project.version}/jars/WBIF_Bristol</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
