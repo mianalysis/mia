@@ -12,10 +12,10 @@ import java.util.LinkedHashSet;
  * Created by sc13967 on 23/06/2017.
  */
 class ComponentFactory {
-    private MainGUI gui;
+    private GUI gui;
     private int elementHeight;
 
-    ComponentFactory(MainGUI gui, int elementHeight) {
+    ComponentFactory(GUI gui, int elementHeight) {
         this.gui = gui;
         this.elementHeight = elementHeight;
 

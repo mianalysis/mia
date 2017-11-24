@@ -4,8 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
-import ij.plugin.frame.ThresholdAdjuster;
-import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;

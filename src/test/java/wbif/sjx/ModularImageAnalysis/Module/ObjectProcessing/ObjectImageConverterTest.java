@@ -121,7 +121,6 @@ public class ObjectImageConverterTest {
         assertEquals(0.02,testImagePlus.getCalibration().getX(1),tolerance);
         assertEquals(0.02,testImagePlus.getCalibration().getY(1),tolerance);
         assertEquals(0.1,testImagePlus.getCalibration().getZ(1),tolerance);
-        new ImageJ();
 
         // Running through each image, comparing the bytes to those of an expected image
         for (int z = 0;z<12;z++) {

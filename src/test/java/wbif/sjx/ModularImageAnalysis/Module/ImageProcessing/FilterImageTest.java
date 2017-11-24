@@ -4,7 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.InputOutput.ImageSaver;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 

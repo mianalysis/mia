@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.Prefs;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.*;
@@ -12,8 +13,6 @@ import wbif.sjx.ModularImageAnalysis.GUI.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
-import wbif.sjx.common.FileConditions.FileCondition;
-import wbif.sjx.common.FileConditions.NameContainsString;
 
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -74,14 +73,14 @@ public class AnalysisHandler {
 
         File analysisFile = fileDialog.getFiles()[0];
 
-        return loadAnalysis(analysisFile);
+        return loadAnalysis(new FileInputStream(analysisFile));
 
     }
 
-    public Analysis loadAnalysis(File analysisFile) throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
+    public Analysis loadAnalysis(InputStream analysisFileStream) throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document doc = documentBuilder.parse(analysisFile);
+        Document doc = documentBuilder.parse(analysisFileStream);
         doc.getDocumentElement().normalize();
 
         Analysis analysis = new GUIAnalysis();
@@ -229,7 +228,7 @@ public class AnalysisHandler {
     }
 
     public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
-        String inputFilePath = Prefs.get("ModularImageAnalysis.inputFilePath","");
+        String inputFilePath = Prefs.get("MIA.inputFilePath","");
 
         JFileChooser fileChooser = new JFileChooser(inputFilePath);
         fileChooser.setDialogTitle("Select file to run");
@@ -238,7 +237,7 @@ public class AnalysisHandler {
         fileChooser.showDialog(null,"Open");
 
         File inputFile = fileChooser.getSelectedFile();
-        Prefs.set("ModularImageAnalysis.inputFilePath",inputFile.getParentFile().getAbsolutePath());
+        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
         Prefs.savePreferences();
 
         // Getting input options

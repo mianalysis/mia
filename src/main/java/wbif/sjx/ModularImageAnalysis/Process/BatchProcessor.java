@@ -68,6 +68,8 @@ public class BatchProcessor extends FileCrawler {
 
         File next = getNextValidFileInStructure();
 
+        System.out.println("Starting batch processor");
+
         // Setting up the ExecutorService, which will manage the threads
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
@@ -83,7 +85,6 @@ public class BatchProcessor extends FileCrawler {
                 fileDepth++;
             }
             workspace.getMetadata().put("FILE_DEPTH",fileDepth);
-
 
             Runnable task = () -> {
                 try {
