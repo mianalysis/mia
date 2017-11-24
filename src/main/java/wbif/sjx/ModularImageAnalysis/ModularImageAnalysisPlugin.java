@@ -1,3 +1,6 @@
+// TODO: Add input/output parameters to .mia file (and condition to avoid problems if this isn't present in files)
+// TODO: Set "Run" button to simply start processing.  File path should be set at input options
+
 package wbif.sjx.ModularImageAnalysis;
 
 import ij.IJ;

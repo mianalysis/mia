@@ -46,11 +46,13 @@ public class InputOutputButton extends JButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (getText()) {
             case INPUT_OPTIONS:
-                gui.populateInputMode();
+                gui.setActiveModule(gui.getAnalysis().getInputControl());
+                gui.populateModuleParameters();
                 break;
 
             case OUTPUT_OPTIONS:
-                gui.populateOutputMode();
+                gui.setActiveModule(gui.getAnalysis().getOutputControl());
+                gui.populateModuleParameters();
                 break;
 
         }

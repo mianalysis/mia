@@ -26,6 +26,7 @@ public class MainGUI extends GUI {
     private int bigButtonSize = 40;
     private int moduleButtonWidth = 300;
 
+    private GUIAnalysis analysis = new GUIAnalysis();
     private ComponentFactory componentFactory;
     private HCModule activeModule = null;
     private JFrame frame = new JFrame();
@@ -35,7 +36,6 @@ public class MainGUI extends GUI {
     private JPanel inputEnablePanel = new JPanel();
     private JPanel outputEnablePanel = new JPanel();
     private JPanel modulesPanel = new JPanel();
-    private InputControl inputControl = new InputControl();
     private JScrollPane modulesScrollPane = new JScrollPane(modulesPanel);
     private JPanel paramsPanel = new JPanel();
     private JScrollPane paramsScrollPane = new JScrollPane(paramsPanel);
@@ -48,12 +48,10 @@ public class MainGUI extends GUI {
     private boolean basicGUI = true;
     private boolean debugOn = false;
 
-
-
     public MainGUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
         this.debugOn = debugOn;
 
-        inputControl.initialiseParameters();
+        analysis.getInputControl().initialiseParameters();
 
         componentFactory = new ComponentFactory(this, elementHeight);
 
@@ -104,10 +102,12 @@ public class MainGUI extends GUI {
         menuBar.add(viewMenu);
         ButtonGroup group = new ButtonGroup();
         ViewControlButton rbMenuItem = new ViewControlButton(this, ViewControlButton.BASIC_MODE);
+        rbMenuItem.setSelected(!debugOn);
         group.add(rbMenuItem);
         viewMenu.add(rbMenuItem);
 
         rbMenuItem = new ViewControlButton(this, ViewControlButton.EDITING_MODE);
+        rbMenuItem.setSelected(debugOn);
         group.add(rbMenuItem);
         viewMenu.add(rbMenuItem);
 
@@ -312,9 +312,8 @@ public class MainGUI extends GUI {
         c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.PAGE_START;
 
-        InputOutputButton.setButtonHeight(bigButtonSize);
-        InputOutputButton.setButtonWidth(moduleButtonWidth);
-        InputOutputButton inputButton = new InputOutputButton(this, InputOutputButton.INPUT_OPTIONS);
+        ModuleButton inputButton = new ModuleButton(this,analysis.getInputControl());
+        inputButton.setPreferredSize(new Dimension(moduleButtonWidth,bigButtonSize));
         inputEnablePanel.add(inputButton, c);
 
         inputEnablePanel.validate();
@@ -337,7 +336,8 @@ public class MainGUI extends GUI {
         c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.PAGE_START;
 
-        InputOutputButton outputButton = new InputOutputButton(this, InputOutputButton.OUTPUT_OPTIONS);
+        ModuleButton outputButton = new ModuleButton(this,analysis.getOutputControl());
+        outputButton.setPreferredSize(new Dimension(moduleButtonWidth,bigButtonSize));
         outputEnablePanel.add(outputButton, c);
 
         outputEnablePanel.validate();
@@ -479,78 +479,6 @@ public class MainGUI extends GUI {
 
     }
 
-    void populateInputMode() {
-        paramsPanel.removeAll();
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridy = 0;
-        c.weightx = 0;
-        c.weighty = 0;
-        c.insets = new Insets(0, 0, 0, 5);
-        c.fill = GridBagConstraints.HORIZONTAL;
-
-        // If the active module hasn't got parameters enabled, skip it
-        Iterator<Parameter> iterator = inputControl.getActiveParameters().values().iterator();
-        ModuleCollection modules = getModules();
-        while (iterator.hasNext()) {
-            Parameter parameter = iterator.next();
-
-            c.gridx = 0;
-            JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, inputControl, 635);
-            paramsPanel.add(paramPanel, c);
-
-            // Adding a checkbox to determine if the parameter should be visible to the user
-            c.gridx++;
-            VisibleCheck visibleCheck = new VisibleCheck(parameter);
-            paramsPanel.add(visibleCheck, c);
-
-            c.gridy++;
-
-        }
-
-        // Creating the notes/help field at the bottom of the panel
-        JTabbedPane notesHelpPane = new JTabbedPane();
-        notesHelpPane.setPreferredSize(new Dimension(-1, elementHeight * 3));
-
-        String help = inputControl.getHelp();
-        JTextArea helpArea = new JTextArea(help);
-        helpArea.setEditable(false);
-        notesHelpPane.addTab("Help", null, helpArea);
-
-        String notes = inputControl.getNotes();
-        NotesArea notesArea = new NotesArea(this, notes);
-        notesHelpPane.addTab("Notes", null, notesArea);
-
-        c.anchor = GridBagConstraints.LAST_LINE_START;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.weighty = 1;
-        c.gridwidth = 3;
-        c.insets = new Insets(5, 5, 5, 5);
-        paramsPanel.add(notesHelpPane, c);
-
-        paramsPanel.validate();
-        paramsPanel.repaint();
-
-        paramsScrollPane.validate();
-        paramsScrollPane.repaint();
-    }
-
-    void populateOutputMode() {
-        paramsPanel.removeAll();
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridy = 0;
-        c.weightx = 0;
-        c.weighty = 0;
-        c.insets = new Insets(0, 0, 0, 5);
-        c.fill = GridBagConstraints.HORIZONTAL;
-
-        paramsPanel.validate();
-        paramsPanel.repaint();
-
-    }
-
     void populateModuleList() {
         modulesPanel.removeAll();
 
@@ -589,32 +517,42 @@ public class MainGUI extends GUI {
         c.gridy = 0;
         c.weightx = 0;
         c.weighty = 0;
-        c.insets = new Insets(5,5,20,5);
+        c.insets = new Insets(5, 5, 20, 5);
         c.anchor = GridBagConstraints.WEST;
 
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
-        if (activeModule == null) {
-            return;
-        }
+        if (activeModule == null) return;
+
+        boolean isInputOutput = activeModule.getClass().isInstance(new InputControl())
+                || activeModule.getClass().isInstance(new OutputControl());
 
         // Adding the nickname control to the top of the panel
-        ModuleName moduleName = new ModuleName(this,activeModule);
-        paramsPanel.add(moduleName,c);
+        if (!isInputOutput) {
+            ModuleName moduleName = new ModuleName(this, activeModule);
+            paramsPanel.add(moduleName, c);
 
-        ResetModuleName resetModuleName = new ResetModuleName(this,activeModule);
-        c.gridx++;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.EAST;
-        paramsPanel.add(resetModuleName,c);
+            ResetModuleName resetModuleName = new ResetModuleName(this, activeModule);
+            c.gridx++;
+            c.weightx = 1;
+            c.anchor = GridBagConstraints.EAST;
+            paramsPanel.add(resetModuleName, c);
+
+        }
 
         // If the active module hasn't got parameters enabled, skip it
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0, 0, 0, 5);
+        c.anchor = GridBagConstraints.SOUTH;
         c.gridwidth = 2;
+        c.insets = new Insets(0, 0, 0, 5);
         if (activeModule.getActiveParameters() != null) {
             Iterator<Parameter> iterator = activeModule.getActiveParameters().values().iterator();
             while (iterator.hasNext()) {
                 Parameter parameter = iterator.next();
+
+                if (isInputOutput &! iterator.hasNext()) {
+                    c.weighty = 1;
+                    c.anchor = GridBagConstraints.NORTH;
+                }
 
                 c.gridx = 0;
                 c.gridy++;
@@ -622,33 +560,37 @@ public class MainGUI extends GUI {
                 paramsPanel.add(paramPanel, c);
 
                 // Adding a checkbox to determine if the parameter should be visible to the user
-                c.gridx++;
-                paramsPanel.add(new VisibleCheck(parameter), c);
-
+                if (!isInputOutput) {
+                    c.gridx++;
+                    paramsPanel.add(new VisibleCheck(parameter), c);
+                }
             }
         }
 
         // Creating the notes/help field at the bottom of the panel
-        JTabbedPane notesHelpPane = new JTabbedPane();
-        notesHelpPane.setPreferredSize(new Dimension(-1, elementHeight * 3));
+        if (!isInputOutput) {
+            JTabbedPane notesHelpPane = new JTabbedPane();
+            notesHelpPane.setPreferredSize(new Dimension(-1, elementHeight * 3));
 
-        String help = activeModule.getHelp();
-        JTextArea helpArea = new JTextArea(help);
-        helpArea.setEditable(false);
-        notesHelpPane.addTab("Help", null, helpArea);
+            String help = activeModule.getHelp();
+            JTextArea helpArea = new JTextArea(help);
+            helpArea.setEditable(false);
+            notesHelpPane.addTab("Help", null, helpArea);
 
-        String notes = activeModule.getNotes();
-        NotesArea notesArea = new NotesArea(this, notes);
-        notesHelpPane.addTab("Notes", null, notesArea);
+            String notes = activeModule.getNotes();
+            NotesArea notesArea = new NotesArea(this, notes);
+            notesHelpPane.addTab("Notes", null, notesArea);
 
-        c.anchor = GridBagConstraints.LAST_LINE_START;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy++;
-        c.weighty = 1;
-        c.gridwidth = 3;
-        c.insets = new Insets(5, 5, 5, 5);
-        paramsPanel.add(notesHelpPane, c);
+            c.anchor = GridBagConstraints.LAST_LINE_START;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridx = 0;
+            c.gridy++;
+            c.weighty = 1;
+            c.gridwidth = 3;
+            c.insets = new Insets(5, 5, 5, 5);
+            paramsPanel.add(notesHelpPane, c);
+
+        }
 
         paramsPanel.validate();
         paramsPanel.repaint();
@@ -726,7 +668,7 @@ public class MainGUI extends GUI {
         c.gridy++;
         c.weighty = 100;
         JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(10, 15));
+        separator.setPreferredSize(new Dimension(0, 15));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();
@@ -823,10 +765,6 @@ public class MainGUI extends GUI {
 
     public JFrame getFrame() {
         return frame;
-    }
-
-    public HCModule getInputControl() {
-        return inputControl;
     }
 
     HCModule getActiveModule() {
