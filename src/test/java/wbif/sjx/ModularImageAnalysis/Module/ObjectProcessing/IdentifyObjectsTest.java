@@ -4,7 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectShape;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjSet;

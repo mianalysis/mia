@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.ChannelExtractor;
 
 import static org.junit.Assert.*;
 
