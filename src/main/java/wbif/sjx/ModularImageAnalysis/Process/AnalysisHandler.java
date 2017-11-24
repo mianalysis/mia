@@ -10,6 +10,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
+import wbif.sjx.ModularImageAnalysis.GUI.InputControl;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
@@ -213,6 +214,9 @@ public class AnalysisHandler {
         Prefs.set("ModularImageAnalysis.inputFilePath",inputFile.getParentFile().getAbsolutePath());
         Prefs.savePreferences();
 
+        // Getting input options
+        String extension = analysis.getInputControl().getParameterValue(InputControl.FILE_EXTENSION);
+
         String exportName;
         if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
         else exportName = inputFile.getAbsolutePath() + "\\output";
@@ -220,7 +224,7 @@ public class AnalysisHandler {
         Exporter exporter = new Exporter(exportName, Exporter.XLSX_EXPORT);
         batchProcessor = new BatchProcessor(inputFile);
 //        batchProcessor.addFileCondition(new NameContainsString("ALX", FileCondition.INC_PARTIAL));
-        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{"flex"}));
+        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
         batchProcessor.runAnalysisOnStructure(analysis,exporter);
 
         Runtime.getRuntime().gc();
