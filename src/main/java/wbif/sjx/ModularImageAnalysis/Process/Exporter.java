@@ -191,27 +191,20 @@ public class Exporter {
         for (HCModule module:modules) {
             LinkedHashMap<String,Parameter> parameters = module.getActiveParameters();
 
-            boolean first = true;
             Element moduleElement =  doc.createElement("MODULE");
+            Attr nameAttr = doc.createAttribute("NAME");
+            nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
+            moduleElement.setAttributeNode(nameAttr);
+
+            Attr nicknameAttr = doc.createAttribute("NICKNAME");
+            nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
+            moduleElement.setAttributeNode(nicknameAttr);
+
             for (Parameter currParam:parameters.values()) {
-                // For the first parameter in a module, adding the name
-                if (first) {
-                    Attr nameAttr = doc.createAttribute("NAME");
-                    nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
-                    moduleElement.setAttributeNode(nameAttr);
-
-                    Attr nicknameAttr = doc.createAttribute("NICKNAME");
-                    nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
-                    moduleElement.setAttributeNode(nicknameAttr);
-
-                    first = false;
-
-                }
-
                 // Adding the name and value of the current parameter
                 Element parameterElement =  doc.createElement("PARAMETER");
 
-                Attr nameAttr = doc.createAttribute("NAME");
+                nameAttr = doc.createAttribute("NAME");
                 nameAttr.appendChild(doc.createTextNode(currParam.getName()));
                 parameterElement.setAttributeNode(nameAttr);
 

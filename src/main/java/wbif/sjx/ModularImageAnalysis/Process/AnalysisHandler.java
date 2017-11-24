@@ -3,14 +3,12 @@ package wbif.sjx.ModularImageAnalysis.Process;
 import ij.IJ;
 import ij.Prefs;
 import org.apache.commons.io.FilenameUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.GUI.InputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
@@ -45,9 +43,17 @@ public class AnalysisHandler {
             outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
         }
 
+        // Creating a module collection holding the input and output
+        ModuleCollection inOutModules = new ModuleCollection();
+        inOutModules.add(analysis.getInputControl());
+        inOutModules.add(analysis.getOutputControl());
+
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        doc.appendChild(Exporter.prepareParametersXML(doc,analysis.getModules()));
+        Element root = doc.createElement("ROOT");
+        root.appendChild(Exporter.prepareParametersXML(doc,inOutModules));
+        root.appendChild(Exporter.prepareParametersXML(doc,analysis.getModules()));
+        doc.appendChild(root);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
 
@@ -91,6 +97,22 @@ public class AnalysisHandler {
                 Class<?> clazz = Class.forName(moduleName);
                 HCModule module = (HCModule) clazz.newInstance();
 
+                // If the module is an input or output control, treat it differently
+                if (module.getClass().isInstance(new InputControl())) {
+                    populateModuleParameters(moduleNode,module);
+                    analysis.setInputControl((InputControl) module);
+
+                    continue;
+
+                } else if (module.getClass().isInstance(new OutputControl())) {
+                    populateModuleParameters(moduleNode,module);
+                    analysis.setOutputControl((OutputControl) module);
+
+                    continue;
+
+                }
+
+                // Loading all standard HCModules
                 if (moduleAttributes.getNamedItem("NICKNAME") != null) {
                     String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
                     module.setNickname(moduleNickname);
@@ -98,92 +120,8 @@ public class AnalysisHandler {
                     module.setNickname(module.getTitle());
                 }
 
-                NodeList parameterNodes = moduleNode.getChildNodes();
-                for (int j = 0; j < parameterNodes.getLength(); j++) {
-                    Node parameterNode = parameterNodes.item(j);
-                    if (parameterNode.getNodeName().equals("PARAMETER")) {
-                        NamedNodeMap parameterAttributes = parameterNode.getAttributes();
-                        String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
-                        String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
-
-                        boolean parameterVisible = false;
-                        if (parameterAttributes.getNamedItem("VISIBLE") != null) {
-                            parameterVisible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
-                        }
-
-                        try {
-                            int parameterType = module.getParameterType(parameterName);
-                            switch (parameterType) {
-                                case Parameter.INPUT_IMAGE:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.OUTPUT_IMAGE:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.INPUT_OBJECTS:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.OUTPUT_OBJECTS:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.REMOVED_IMAGE:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.INTEGER:
-                                    module.updateParameterValue(parameterName, Integer.parseInt(parameterValue));
-                                    break;
-
-                                case Parameter.DOUBLE:
-                                    module.updateParameterValue(parameterName, Double.parseDouble(parameterValue));
-                                    break;
-
-                                case Parameter.STRING:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.CHOICE_ARRAY:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.CHOICE_MAP:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.BOOLEAN:
-                                    module.updateParameterValue(parameterName, Boolean.parseBoolean(parameterValue));
-                                    break;
-
-                                case Parameter.FILE_PATH:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.MEASUREMENT:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.CHILD_OBJECTS:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                                case Parameter.PARENT_OBJECTS:
-                                    module.updateParameterValue(parameterName, parameterValue);
-                                    break;
-
-                            }
-
-                            module.setParameterVisibility(parameterName,parameterVisible);
-
-                        } catch (NullPointerException e) {
-                            IJ.showMessage("Module "+moduleName+", parameter \""+parameterName + "\" not set");
-
-                        }
-                    }
-                }
+                // Populating parameters
+                populateModuleParameters(moduleNode,module);
 
                 modules.add(module);
 
@@ -196,9 +134,98 @@ public class AnalysisHandler {
         }
 
         System.out.println("File loaded ("+FilenameUtils.getName(analysisFile.getName())+")");
-
+        
         return analysis;
 
+    }
+
+    private void populateModuleParameters(Node moduleNode, HCModule module) {
+        NodeList parameterNodes = moduleNode.getChildNodes();
+        for (int j = 0; j < parameterNodes.getLength(); j++) {
+            Node parameterNode = parameterNodes.item(j);
+            if (parameterNode.getNodeName().equals("PARAMETER")) {
+                NamedNodeMap parameterAttributes = parameterNode.getAttributes();
+                String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
+                String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
+
+                boolean parameterVisible = false;
+                if (parameterAttributes.getNamedItem("VISIBLE") != null) {
+                    parameterVisible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
+                }
+
+                try {
+                    int parameterType = module.getParameterType(parameterName);
+                    switch (parameterType) {
+                        case Parameter.INPUT_IMAGE:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.OUTPUT_IMAGE:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.INPUT_OBJECTS:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.OUTPUT_OBJECTS:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.REMOVED_IMAGE:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.INTEGER:
+                            module.updateParameterValue(parameterName, Integer.parseInt(parameterValue));
+                            break;
+
+                        case Parameter.DOUBLE:
+                            module.updateParameterValue(parameterName, Double.parseDouble(parameterValue));
+                            break;
+
+                        case Parameter.STRING:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.CHOICE_ARRAY:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.CHOICE_MAP:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.BOOLEAN:
+                            module.updateParameterValue(parameterName, Boolean.parseBoolean(parameterValue));
+                            break;
+
+                        case Parameter.FILE_PATH:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.MEASUREMENT:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.CHILD_OBJECTS:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                        case Parameter.PARENT_OBJECTS:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
+                    }
+
+                    module.setParameterVisibility(parameterName,parameterVisible);
+
+                } catch (NullPointerException e) {
+                    IJ.showMessage("Module "+module.getTitle()+", parameter \""+parameterName + "\" not set");
+
+                }
+            }
+        }
     }
 
     public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
