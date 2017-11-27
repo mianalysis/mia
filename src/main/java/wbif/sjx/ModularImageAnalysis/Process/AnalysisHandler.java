@@ -13,6 +13,8 @@ import wbif.sjx.ModularImageAnalysis.GUI.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
+import wbif.sjx.common.FileConditions.FileCondition;
+import wbif.sjx.common.FileConditions.NameContainsString;
 
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -133,7 +135,7 @@ public class AnalysisHandler {
         }
 
         System.out.println("File loaded");
-        
+
         return analysis;
 
     }
@@ -228,39 +230,105 @@ public class AnalysisHandler {
     }
 
     public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
-//        String inputFilePath = Prefs.get("MIA.inputFilePath","");
-//
-//        JFileChooser fileChooser = new JFileChooser(inputFilePath);
-//        fileChooser.setDialogTitle("Select file to run");
-//        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-//        fileChooser.setMultiSelectionEnabled(false);
-//        fileChooser.showDialog(null,"Open");
-//
-//        File inputFile = fileChooser.getSelectedFile();
-//        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
-//        Prefs.savePreferences();
-
         // Getting input options
         InputControl inputControl = analysis.getInputControl();
         String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
         String singleFile = inputControl.getParameterValue(InputControl.SINGLE_FILE_PATH);
         String batchFolder = inputControl.getParameterValue(InputControl.BATCH_FOLDER_PATH);
         String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
+        boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
+        String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
+        String filenameFilterType1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_1);
+        boolean useFilenameFilter2 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_2);
+        String filenameFilter2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_2);
+        String filenameFilterType2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_2);
+        boolean useFilenameFilter3 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_3);
+        String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
+        String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
 
-        File inputFile = new File(singleFile);
+
+        // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
+        String inputFilePath = Prefs.get("MIA.inputFilePath","");
+
+        JFileChooser fileChooser = new JFileChooser(inputFilePath);
+        fileChooser.setDialogTitle("Select file to run");
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        fileChooser.setMultiSelectionEnabled(false);
+        fileChooser.showDialog(null,"Open");
+
+        File inputFile = fileChooser.getSelectedFile();
+        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
+        Prefs.savePreferences();
 
         String exportName;
         if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
         else exportName = inputFile.getAbsolutePath() + "\\output";
+        // END OLD SECTION
+
+
+//        File inputFile = null;
+//        String exportName = null;
+//        switch (inputMode) {
+//            case InputControl.InputModes.SINGLE_FILE:
+//                if (singleFile == null) {
+//                    IJ.runMacro("waitForUser","Select an image first");
+//                    return;
+//                }
+//
+//                inputFile = new File(singleFile);
+//                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+//                break;
+//
+//            case InputControl.InputModes.BATCH:
+//                if (batchFolder == null) {
+//                    IJ.runMacro("waitForUser","Select a folder first");
+//                    return;
+//                }
+//
+//                inputFile = new File(batchFolder);
+//                exportName = inputFile.getAbsolutePath() + "\\output";
+//                break;
+//        }
 
         Exporter exporter = new Exporter(exportName, Exporter.XLSX_EXPORT);
+
+        // Initialising BatchProcessor
         batchProcessor = new BatchProcessor(inputFile);
-//        batchProcessor.addFileCondition(new NameContainsString("ALX", FileCondition.INC_PARTIAL));
+
+        // Adding extension filter
         batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
+
+        // Adding filename filters
+        if (useFilenameFilter1) addFilenameFilter(filenameFilterType1,filenameFilter1);
+        if (useFilenameFilter2) addFilenameFilter(filenameFilterType2,filenameFilter2);
+        if (useFilenameFilter3) addFilenameFilter(filenameFilterType3,filenameFilter3);
+
+        // Running the analysis
         batchProcessor.runAnalysisOnStructure(analysis,exporter);
 
+        // Cleaning up
         Runtime.getRuntime().gc();
 
+    }
+
+    private void addFilenameFilter(String filenameFilterType, String filenameFilter) {
+        switch (filenameFilterType) {
+            case InputControl.FilterTypes.INCLUDE_MATCHES_PARTIALLY:
+                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                break;
+
+            case InputControl.FilterTypes.INCLUDE_MATCHES_COMPLETELY:
+                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                break;
+
+            case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
+                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                break;
+
+            case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
+                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                break;
+        }
     }
 
     public void stopAnalysis() {
