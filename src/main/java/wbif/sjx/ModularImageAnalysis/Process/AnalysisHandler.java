@@ -132,7 +132,7 @@ public class AnalysisHandler {
             }
         }
 
-        System.out.println("File loaded ("+FilenameUtils.getName(analysisFile.getName())+")");
+        System.out.println("File loaded");
         
         return analysis;
 
@@ -228,20 +228,26 @@ public class AnalysisHandler {
     }
 
     public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
-        String inputFilePath = Prefs.get("MIA.inputFilePath","");
-
-        JFileChooser fileChooser = new JFileChooser(inputFilePath);
-        fileChooser.setDialogTitle("Select file to run");
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.showDialog(null,"Open");
-
-        File inputFile = fileChooser.getSelectedFile();
-        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
-        Prefs.savePreferences();
+//        String inputFilePath = Prefs.get("MIA.inputFilePath","");
+//
+//        JFileChooser fileChooser = new JFileChooser(inputFilePath);
+//        fileChooser.setDialogTitle("Select file to run");
+//        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+//        fileChooser.setMultiSelectionEnabled(false);
+//        fileChooser.showDialog(null,"Open");
+//
+//        File inputFile = fileChooser.getSelectedFile();
+//        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
+//        Prefs.savePreferences();
 
         // Getting input options
-        String extension = analysis.getInputControl().getParameterValue(InputControl.FILE_EXTENSION);
+        InputControl inputControl = analysis.getInputControl();
+        String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
+        String singleFile = inputControl.getParameterValue(InputControl.SINGLE_FILE_PATH);
+        String batchFolder = inputControl.getParameterValue(InputControl.BATCH_FOLDER_PATH);
+        String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
+
+        File inputFile = new File(singleFile);
 
         String exportName;
         if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());

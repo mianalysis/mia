@@ -77,26 +77,32 @@ public class Parameter implements Serializable {
     public final static int FILE_PATH = 11;
 
     /**
+     * System file parameter.  These are displayed as buttons for loading file open dialog.  This is stored as an
+     * absolute path String.
+     */
+    public final static int FOLDER_PATH = 12;
+
+    /**
      * HCMeasurement input to the module.  This could be used as a parameter for plotting, or as a value for another
      * parameter
      */
-    public final static int MEASUREMENT = 12;
+    public final static int MEASUREMENT = 13;
 
     /**
      * Child object of the given parent object.
      */
-    public final static int CHILD_OBJECTS = 13;
+    public final static int CHILD_OBJECTS = 14;
 
     /**
      * Parent object of the given child object.
      */
-    public final static int PARENT_OBJECTS = 14;
+    public final static int PARENT_OBJECTS = 15;
 
     /**
      * Miscellaneous object class parameter.  These can be anything not fitting the other categories.  These can't be
      * set using ParameterWindow.
      */
-    public final static int OBJECT = 15;
+    public final static int OBJECT = 16;
 
 
     private final String name;
@@ -120,6 +126,7 @@ public class Parameter implements Serializable {
         this.type = type;
         this.name = name;
         this.value = value;
+        this.valueSource = null;
 
     }
 

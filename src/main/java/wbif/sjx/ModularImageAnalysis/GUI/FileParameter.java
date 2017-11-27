@@ -16,11 +16,20 @@ public class FileParameter extends JButton implements ActionListener {
     private GUI gui;
     private HCModule module;
     private Parameter parameter;
+    private String fileType = FileTypes.EITHER_TYPE;
 
-    FileParameter(GUI gui, HCModule module, Parameter parameter) {
+    public interface FileTypes {
+        String FILE_TYPE = "Global";
+        String FOLDER_TYPE = "Local";
+        String EITHER_TYPE = "Either";
+
+    }
+
+    FileParameter(GUI gui, HCModule module, Parameter parameter, String fileType) {
         this.gui = gui;
         this.module = module;
         this.parameter = parameter;
+        this.fileType = fileType;
 
         setText(FilenameUtils.getName(parameter.getValue()));
         addActionListener(this);
@@ -40,8 +49,22 @@ public class FileParameter extends JButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Select file");
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(false);
+
+        switch (fileType) {
+            case FileTypes.EITHER_TYPE:
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                break;
+
+            case FileTypes.FILE_TYPE:
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                break;
+
+            case FileTypes.FOLDER_TYPE:
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                break;
+        }
+
         fileChooser.showDialog(null,"Open");
 
         parameter.setValue(fileChooser.getSelectedFile().getAbsolutePath());

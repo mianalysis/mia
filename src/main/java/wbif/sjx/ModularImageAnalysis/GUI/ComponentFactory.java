@@ -84,7 +84,10 @@ class ComponentFactory {
             parameterControl = new BooleanParameter(gui,module,parameter);
 
         } else if (parameter.getType() == Parameter.FILE_PATH) {
-            parameterControl = new FileParameter(gui, module, parameter);
+            parameterControl = new FileParameter(gui, module, parameter, FileParameter.FileTypes.FILE_TYPE);
+
+        } else if (parameter.getType() == Parameter.FOLDER_PATH) {
+            parameterControl = new FileParameter(gui, module, parameter, FileParameter.FileTypes.FOLDER_TYPE);
 
         } else if (parameter.getType() == Parameter.CHOICE_ARRAY) {
             String[] valueSource = parameter.getValueSource();
