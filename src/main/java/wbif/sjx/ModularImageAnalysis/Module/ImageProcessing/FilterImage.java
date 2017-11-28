@@ -8,9 +8,7 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.*;
-import ij.plugin.filter.Filters;
 import ij.plugin.filter.RankFilters;
-import loci.formats.ChannelMerger;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
@@ -79,7 +77,6 @@ public class FilterImage extends HCModule {
         for (int i=0;i<inputImagePlus.getNChannels();i++) {
             new ImagePlus("fdf",ChannelSplitter.getChannel(inputImagePlus,i+1)).show();
             ImageStack ist = Filters3D.filter(ChannelSplitter.getChannel(inputImagePlus,i+1), Filters3D.MEDIAN, filterRadius, filterRadius, filterRadius);
-//            new ImagePlus(("C"+i+1),ist).show();
             ipls[i].setStack(ist);
         }
 
