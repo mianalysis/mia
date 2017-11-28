@@ -539,6 +539,10 @@ public class MainGUI extends GUI {
 
         }
 
+        // If it's an input/output control, get the current version
+        if (activeModule.getClass().isInstance(new InputControl())) activeModule = analysis.getInputControl();
+        if (activeModule.getClass().isInstance(new OutputControl())) activeModule = analysis.getOutputControl();
+
         // If the active module hasn't got parameters enabled, skip it
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.SOUTH;

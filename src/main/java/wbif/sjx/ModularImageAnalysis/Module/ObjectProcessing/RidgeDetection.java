@@ -1,11 +1,10 @@
 // TODO: Check "frame" from RidgeDetection is 0-indexed
+// TODO: Add junction linking (could be just for objects with a single shared junction)
+// TODO: Add multitimepoint analysis (LineDetector only works on a single image in 2D)
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
-import de.biomedical_imaging.ij.steger.Line;
-import de.biomedical_imaging.ij.steger.LineDetector;
-import de.biomedical_imaging.ij.steger.Lines;
-import ij.IJ;
+import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -15,6 +14,8 @@ import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.util.*;
+
 /**
  * Created by sc13967 on 30/05/2017.
  */
@@ -23,9 +24,10 @@ public class RidgeDetection extends HCModule {
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String LOWER_THRESHOLD = "Lower threshold";
     public static final String UPPER_THRESHOLD = "Upper threshold";
-    public static final String SIGMA = "Sigma (px)";
+    public static final String SIGMA = "Sigma";
     public static final String MIN_LENGTH = "Minimum length (px)";
     public static final String MAX_LENGTH = "Maximum length (px)";
+    public static final String LINK_CONTOURS = "Link contours";
     public static final String SHOW_OBJECTS = "Show objects";
 
     private interface Measurements {
@@ -63,6 +65,7 @@ public class RidgeDetection extends HCModule {
         double sigma = parameters.getValue(SIGMA);
         double minLength = parameters.getValue(MIN_LENGTH);
         double maxLength = parameters.getValue(MAX_LENGTH);
+        boolean linkContours = parameters.getValue(LINK_CONTOURS);
 
         // Storing the image calibration
         Calibration calibration = inputImagePlus.getCalibration();
@@ -71,29 +74,66 @@ public class RidgeDetection extends HCModule {
         String calibrationUnits = calibration.getUnits();
 
         // Running ridge detection
-        if (verbose) System.out.println("["+moduleName+"] Running RidgeDetection plugin (plugin by Thorsten Wagner)");
-        Lines lines = new LineDetector().detectLines(inputImagePlus.getProcessor(),sigma,upperThreshold,lowerThreshold,minLength,maxLength,false,true,false,false);
+        if (verbose) System.out.println("[" + moduleName + "] Running RidgeDetection plugin (plugin by Thorsten Wagner)");
+        LineDetector lineDetector = new LineDetector();
+        Lines lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold, lowerThreshold, minLength, maxLength, false, true, false, false);
+        Junctions junctions = lineDetector.getJunctions();
 
         // Iterating over each object, adding it to the nascent ObjSet
         ObjSet outputObjects = new ObjSet(outputObjectsName);
 
+        // If linking contours, adding all to a HashSet.  This prevents the same contours being added to the same set
+        HashMap<Line, HashSet<Line>> groups = new HashMap<>(); // Stored as <Line,LineGroup>
         for (Line line:lines) {
-            float[] x = line.getXCoordinates();
-            float[] y = line.getYCoordinates();
-            int frame = line.getFrame();
+            HashSet<Line> lineGroup = new HashSet<>();
+            lineGroup.add(line);
+            groups.put(line,lineGroup);
+        }
 
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits);
-            outputObject.setT(frame);
+        if (linkContours) {
+            if (verbose) System.out.println("[" + moduleName + "] Linking contours");
 
-            for (int i=0;i<x.length;i++) {
-                outputObject.addCoord(Math.round(x[i]),Math.round(y[i]),0);
+            for (Junction junction : junctions) {
+                // Getting the LineGroup associated with Line1.  If there isn't one already, creating a new one.
+                Line line1 = junction.getLine1();
+                HashSet<Line> group1 = groups.get(line1);
+
+                // Getting the LineGroup associated with Line2.  If there isn't one already, creating a new one.
+                Line line2 = junction.getLine2();
+                HashSet<Line> group2 = groups.get(line2);
+
+                // Adding all entries from the second LineGroup into the first
+                group1.addAll(group2);
+
+                // Removing the second Line from the HashMap, then re-adding it with the first LineGroup
+                groups.remove(line2);
+                groups.put(line2,group1);
+
+            }
+        }
+
+        // Getting the unique LineGroups
+        Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
+        for (HashSet<Line> lineGroup:uniqueLineGroup) {
+            Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ, calibrationUnits);
+            double estLength = 0;
+            for (Line line : lineGroup) {
+                // Adding coordinates for the current line
+                float[] x = line.getXCoordinates();
+                float[] y = line.getYCoordinates();
+                for (int i = 0; i < x.length; i++) {
+                    outputObject.addCoord(Math.round(x[i]), Math.round(y[i]), 0);
+                }
+
+                // Adding the estimated length to the current length
+                estLength += line.estimateLength();
+
             }
 
-            double estLength = line.estimateLength();
-            outputObject.addMeasurement(new MIAMeasurement(Measurements.LENGTH_PX,estLength));
-
+            // Setting single values for the current contour
+            outputObject.setT(lineGroup.iterator().next().getFrame());
+            outputObject.addMeasurement(new MIAMeasurement(Measurements.LENGTH_PX, estLength));
             outputObjects.add(outputObject);
-
         }
 
         workspace.addObjects(outputObjects);
@@ -119,14 +159,15 @@ public class RidgeDetection extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(LOWER_THRESHOLD, Parameter.DOUBLE,0.5));
-        parameters.addParameter(new Parameter(UPPER_THRESHOLD, Parameter.DOUBLE,0.85));
-        parameters.addParameter(new Parameter(SIGMA, Parameter.DOUBLE,3d));
-        parameters.addParameter(new Parameter(MIN_LENGTH, Parameter.DOUBLE,0d));
-        parameters.addParameter(new Parameter(MAX_LENGTH, Parameter.DOUBLE,0d));
-        parameters.addParameter(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
+        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
+        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
+        parameters.addParameter(new Parameter(LOWER_THRESHOLD, Parameter.DOUBLE, 0.5));
+        parameters.addParameter(new Parameter(UPPER_THRESHOLD, Parameter.DOUBLE, 0.85));
+        parameters.addParameter(new Parameter(SIGMA, Parameter.DOUBLE, 3d));
+        parameters.addParameter(new Parameter(MIN_LENGTH, Parameter.DOUBLE, 0d));
+        parameters.addParameter(new Parameter(MAX_LENGTH, Parameter.DOUBLE, 0d));
+        parameters.addParameter(new Parameter(LINK_CONTOURS, Parameter.BOOLEAN, false));
+        parameters.addParameter(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN, false));
 
     }
 
@@ -139,7 +180,7 @@ public class RidgeDetection extends HCModule {
     public void addMeasurements(MeasurementCollection measurements) {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        measurements.addMeasurement(outputObjectsName,Measurements.LENGTH_PX);
+        measurements.addMeasurement(outputObjectsName, Measurements.LENGTH_PX);
 
     }
 
