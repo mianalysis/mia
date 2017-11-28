@@ -44,6 +44,5 @@ public class ChoiceArrayParameter extends WiderDropDownCombo implements ActionLi
         if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);
 
         gui.updateModules();
-
     }
 }

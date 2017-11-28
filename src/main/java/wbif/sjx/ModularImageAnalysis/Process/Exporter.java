@@ -79,7 +79,7 @@ public class Exporter {
         try {
             // Initialising the document
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-            Element root = doc.createElement("ROOT");
+            Element root = doc.createElement("MIA");
             doc.appendChild(root);
 
             // Getting parameters as Element and adding to the main file
@@ -191,27 +191,20 @@ public class Exporter {
         for (HCModule module:modules) {
             LinkedHashMap<String,Parameter> parameters = module.getActiveParameters();
 
-            boolean first = true;
             Element moduleElement =  doc.createElement("MODULE");
+            Attr nameAttr = doc.createAttribute("NAME");
+            nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
+            moduleElement.setAttributeNode(nameAttr);
+
+            Attr nicknameAttr = doc.createAttribute("NICKNAME");
+            nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
+            moduleElement.setAttributeNode(nicknameAttr);
+
             for (Parameter currParam:parameters.values()) {
-                // For the first parameter in a module, adding the name
-                if (first) {
-                    Attr nameAttr = doc.createAttribute("NAME");
-                    nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
-                    moduleElement.setAttributeNode(nameAttr);
-
-                    Attr nicknameAttr = doc.createAttribute("NICKNAME");
-                    nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
-                    moduleElement.setAttributeNode(nicknameAttr);
-
-                    first = false;
-
-                }
-
                 // Adding the name and value of the current parameter
                 Element parameterElement =  doc.createElement("PARAMETER");
 
-                Attr nameAttr = doc.createAttribute("NAME");
+                nameAttr = doc.createAttribute("NAME");
                 nameAttr.appendChild(doc.createTextNode(currParam.getName()));
                 parameterElement.setAttributeNode(nameAttr);
 
@@ -569,7 +562,7 @@ public class Exporter {
                 // Adding parent IDs
                 RelationshipCollection relationships = modules.getRelationships();
                 String[] parents = relationships.getParentNames(objectName);
-                if (parents != null) {
+                if (parents.length != 1 && !parents[0].equals("")) {
                     for (String parent : parents) {
                         parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
                         parentNames.get(objectName).put(col, parent);
@@ -581,7 +574,7 @@ public class Exporter {
 
                 // Adding number of children for each child type
                 String[] children = relationships.getChildNames(objectName);
-                if (children != null) {
+                if (children.length != 1 && !children[0].equals("")) {
                     for (String child : children) {
                         childNames.putIfAbsent(objectName, new LinkedHashMap<>());
                         childNames.get(objectName).put(col, child);

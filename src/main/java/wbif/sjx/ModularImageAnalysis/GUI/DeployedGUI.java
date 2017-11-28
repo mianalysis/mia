@@ -27,7 +27,7 @@ import java.net.URL;
  */
 public class DeployedGUI extends GUI implements ActionListener {
     private int frameWidth = 350;
-    private int frameHeight = 550;
+    private int frameHeight = 600;
     private int elementHeight = 25;
 
     private JFrame frame = new JFrame();
