@@ -68,7 +68,7 @@ public class AnalysisHandler {
     }
 
     public Analysis loadAnalysis() throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.LOAD);
+        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to load", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setFile("*.mia");
         fileDialog.setVisible(true);
@@ -205,6 +205,10 @@ public class AnalysisHandler {
                             module.updateParameterValue(parameterName, parameterValue);
                             break;
 
+                        case Parameter.FOLDER_PATH:
+                            module.updateParameterValue(parameterName, parameterValue);
+                            break;
+
                         case Parameter.MEASUREMENT:
                             module.updateParameterValue(parameterName, parameterValue);
                             break;
@@ -248,52 +252,55 @@ public class AnalysisHandler {
 
 
         // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
-        String inputFilePath = Prefs.get("MIA.inputFilePath","");
-
-        JFileChooser fileChooser = new JFileChooser(inputFilePath);
-        fileChooser.setDialogTitle("Select file to run");
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.showDialog(null,"Open");
-
-        File inputFile = fileChooser.getSelectedFile();
-        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
-        Prefs.savePreferences();
-
-        String exportName;
-        if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
-        else exportName = inputFile.getAbsolutePath() + "\\output";
+//        String inputFilePath = Prefs.get("MIA.inputFilePath","");
+//
+//        JFileChooser fileChooser = new JFileChooser(inputFilePath);
+//        fileChooser.setDialogTitle("Select file to run");
+//        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+//        fileChooser.setMultiSelectionEnabled(false);
+//        fileChooser.showDialog(null,"Open");
+//
+//        File inputFile = fileChooser.getSelectedFile();
+//        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
+//        Prefs.savePreferences();
+//
+//        String exportName;
+//        if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+//        else exportName = inputFile.getAbsolutePath() + "\\output";
         // END OLD SECTION
 
+        File inputFile = null;
+        String exportName = null;
+        int nThreads = 1;
 
-//        File inputFile = null;
-//        String exportName = null;
-//        switch (inputMode) {
-//            case InputControl.InputModes.SINGLE_FILE:
-//                if (singleFile == null) {
-//                    IJ.runMacro("waitForUser","Select an image first");
-//                    return;
-//                }
-//
-//                inputFile = new File(singleFile);
-//                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
-//                break;
-//
-//            case InputControl.InputModes.BATCH:
-//                if (batchFolder == null) {
-//                    IJ.runMacro("waitForUser","Select a folder first");
-//                    return;
-//                }
-//
-//                inputFile = new File(batchFolder);
-//                exportName = inputFile.getAbsolutePath() + "\\output";
-//                break;
-//        }
+        switch (inputMode) {
+            case InputControl.InputModes.SINGLE_FILE:
+                if (singleFile == null) {
+                    IJ.runMacro("waitForUser","Select an image first");
+                    return;
+                }
+
+                inputFile = new File(singleFile);
+                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+                break;
+
+            case InputControl.InputModes.BATCH:
+                if (batchFolder == null) {
+                    IJ.runMacro("waitForUser","Select a folder first");
+                    return;
+                }
+
+                inputFile = new File(batchFolder);
+                exportName = inputFile.getAbsolutePath() + "\\output";
+                nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS);
+                break;
+        }
 
         Exporter exporter = new Exporter(exportName, Exporter.XLSX_EXPORT);
 
         // Initialising BatchProcessor
         batchProcessor = new BatchProcessor(inputFile);
+        batchProcessor.setnThreads(nThreads);
 
         // Adding extension filter
         batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));

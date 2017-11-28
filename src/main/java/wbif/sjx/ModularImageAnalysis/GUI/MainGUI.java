@@ -391,6 +391,10 @@ public class MainGUI extends GUI {
         paramsScrollPane.validate();
         paramsScrollPane.repaint();
 
+        // Displaying the input controls
+        activeModule = analysis.getInputControl();
+        updateModules();
+
     }
 
     private void initialiseStatusPanel(int width) {
