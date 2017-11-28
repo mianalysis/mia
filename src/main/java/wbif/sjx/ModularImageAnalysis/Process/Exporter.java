@@ -189,7 +189,7 @@ public class Exporter {
 
         // Running through each parameter set (one for each module
         for (HCModule module:modules) {
-            LinkedHashMap<String,Parameter> parameters = module.getActiveParameters();
+            LinkedHashMap<String,Parameter> parameters = module.getAllParameters();
 
             Element moduleElement =  doc.createElement("MODULE");
             Attr nameAttr = doc.createAttribute("NAME");

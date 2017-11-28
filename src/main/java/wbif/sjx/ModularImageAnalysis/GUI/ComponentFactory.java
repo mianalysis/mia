@@ -195,4 +195,45 @@ class ComponentFactory {
         return modulePanel;
 
     }
+
+    JPanel createBasicModuleControl(HCModule module, int panelWidth) {
+        // Only show if the module is enabled
+        if (!module.isEnabled()) return null;
+
+        // Only displaying the module title if it has at least one visible parameter
+        boolean hasVisibleParameters = false;
+        for (Parameter parameter : module.getActiveParameters().values()) {
+            if (parameter.isVisible()) hasVisibleParameters = true;
+        }
+        if (!hasVisibleParameters) return null;
+
+        JPanel modulePanel = new JPanel(new GridBagLayout());
+        JPanel titlePanel = createBasicModuleHeading(module, panelWidth);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weighty = 0;
+
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        modulePanel.add(titlePanel, c);
+
+        for (Parameter parameter : module.getActiveParameters().values()) {
+            if (parameter.isVisible()) {
+                JPanel paramPanel = createParameterControl(parameter, gui.getModules(), module, panelWidth);
+
+                c.gridy++;
+                modulePanel.add(paramPanel, c);
+
+            }
+        }
+
+        c.gridy++;
+        JSeparator separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0, 15));
+        modulePanel.add(separator, c);
+
+        return modulePanel;
+
+    }
 }

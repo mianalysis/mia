@@ -67,6 +67,10 @@ public abstract class HCModule implements Serializable {
      */
     public abstract ParameterCollection getActiveParameters();
 
+    public ParameterCollection getAllParameters() {
+        return parameters;
+    }
+
     /**
      * Takes an existing collection of measurements and adds any created
      * @param measurements

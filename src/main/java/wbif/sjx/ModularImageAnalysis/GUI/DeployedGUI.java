@@ -153,49 +153,27 @@ public class DeployedGUI extends GUI implements ActionListener {
         c.gridy = 0;
         c.weighty = 0;
 
+        // Adding input control options
+        c.gridy++;
+        JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(),frameWidth-40);
+        if (inputPanel != null) basicModulesPanel.add(inputPanel,c);
+
         // Adding module buttons
         ModuleCollection modules = analysis.getModules();
         for (HCModule module : modules) {
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
-
-            // Only show if the module is enabled
-            if (!module.isEnabled()) continue;
-
-            // Only displaying the module title if it has at least one visible parameter
-            boolean hasVisibleParameters = false;
-            for (Parameter parameter : module.getActiveParameters().values()) {
-                if (parameter.isVisible()) hasVisibleParameters = true;
-            }
-            if (!hasVisibleParameters) continue;
-
-            JPanel titlePanel = componentFactory.createBasicModuleHeading(module, frameWidth-40);
-
             c.gridy++;
-            c.anchor = GridBagConstraints.FIRST_LINE_START;
-            basicModulesPanel.add(titlePanel, c);
 
-            for (Parameter parameter : module.getActiveParameters().values()) {
-                if (parameter.isVisible()) {
-                    JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, module, frameWidth-40);
-
-                    c.gridy++;
-                    basicModulesPanel.add(paramPanel, c);
-
-                }
-            }
-
-            c.gridy++;
-            JSeparator separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(0, 15));
-            basicModulesPanel.add(separator, c);
+            JPanel modulePanel = componentFactory.createBasicModuleControl(module,frameWidth-40);
+            if (modulePanel!=null) basicModulesPanel.add(modulePanel,c);
 
         }
 
         c.gridy++;
         c.weighty = 100;
         JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0, 0));
+        separator.setPreferredSize(new Dimension(0, 15));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();
