@@ -85,15 +85,16 @@ public class MeasureSpotIntensity extends HCModule {
         }
 
         // Getting local object region (this overwrites the original inputObjects)
-        inputObjects = GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
+        ObjSet spotObjects = new ObjSet("test");
+        spotObjects.add(new Obj("dsf",1,1d,1d,"sdf"));//GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
 
         // Running through each object's timepoints, getting intensity measurements
-        for (Obj inputObject:inputObjects.values()) {
+        for (Obj spotObject:spotObjects.values()) {
             // Getting pixel coordinates
-            ArrayList<Integer> x = inputObject.getXCoords();
-            ArrayList<Integer> y = inputObject.getYCoords();
-            ArrayList<Integer> z = inputObject.getZCoords();
-            Integer t = inputObject.getT();
+            ArrayList<Integer> x = spotObject.getXCoords();
+            ArrayList<Integer> y = spotObject.getYCoords();
+            ArrayList<Integer> z = spotObject.getZCoords();
+            Integer t = spotObject.getT();
 
             // Initialising the cumulative statistics object to store pixel intensities.  Unlike MeasureObjectIntensity,
             // this uses a multi-element MultiCumStat where each element corresponds to a different frame
@@ -109,17 +110,20 @@ public class MeasureSpotIntensity extends HCModule {
             // Calculating mean, std, min and max intensity and adding to the parent (we will discard the expanded
             // objects after this module has run)
             if (parameters.getValue(MEASURE_MEAN))
-                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MEAN), cs.getMean()));
+                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MEAN), cs.getMean()));
             if (parameters.getValue(MEASURE_MIN))
-                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MIN), cs.getMin()));
+                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MIN), cs.getMin()));
             if (parameters.getValue(MEASURE_MAX))
-                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MAX), cs.getMax()));
+                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MAX), cs.getMax()));
             if (parameters.getValue(MEASURE_STDEV))
-                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
+                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
             if (parameters.getValue(MEASURE_SUM))
-                inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.SUM), cs.getSum()));
+                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.SUM), cs.getSum()));
 
         }
+
+        spotObjects = null;
+
     }
 
     @Override

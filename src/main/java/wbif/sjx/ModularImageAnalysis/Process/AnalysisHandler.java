@@ -295,7 +295,8 @@ public class AnalysisHandler {
                 nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS);
 
                 // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
-                Prefs.setThreads(1);
+                Prefs.setThreads(3);
+                Prefs.savePreferences();
 
                 break;
         }
