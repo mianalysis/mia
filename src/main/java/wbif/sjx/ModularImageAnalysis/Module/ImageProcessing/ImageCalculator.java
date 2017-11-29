@@ -30,9 +30,10 @@ public class ImageCalculator extends HCModule {
 
     public interface CalculationMethods {
         String ADD = "Add image 1 and image 2";
+        String MULTIPLY = "Multiply image 1 and image";
         String SUBTRACT = "Subtract image 2 from image 1";
 
-        String[] ALL = new String[]{ADD,SUBTRACT};
+        String[] ALL = new String[]{ADD,MULTIPLY,SUBTRACT};
 
     }
 
@@ -90,6 +91,10 @@ public class ImageCalculator extends HCModule {
                             switch (calculationMethod) {
                                 case CalculationMethods.ADD:
                                     val = imageProcessor1.getPixelValue(x,y) + imageProcessor2.getPixelValue(x,y);
+                                    break;
+
+                                case CalculationMethods.MULTIPLY:
+                                    val = imageProcessor1.getPixelValue(x,y)*imageProcessor2.getPixelValue(x,y);
                                     break;
 
                                 case CalculationMethods.SUBTRACT:

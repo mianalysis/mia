@@ -21,10 +21,12 @@ public class ImageMath extends HCModule {
 
     public interface CalculationTypes {
         String ADD = "Add";
+        String DIVIDE = "Divide";
+        String INVERT = "Invert";
         String MULTIPLY = "Multiply";
         String SUBTRACT = "Subtract";
 
-        String[] ALL = new String[]{ADD,MULTIPLY,SUBTRACT};
+        String[] ALL = new String[]{ADD,DIVIDE,INVERT,MULTIPLY,SUBTRACT};
 
     }
 
@@ -68,6 +70,14 @@ public class ImageMath extends HCModule {
                     switch (calculationType) {
                         case CalculationTypes.ADD:
                             inputImagePlus.getProcessor().add(mathValue);
+                            break;
+
+                        case CalculationTypes.DIVIDE:
+                            inputImagePlus.getProcessor().multiply(1/mathValue);
+                            break;
+
+                        case CalculationTypes.INVERT:
+                            inputImagePlus.getProcessor().invert();
                             break;
 
                         case CalculationTypes.MULTIPLY:

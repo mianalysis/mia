@@ -20,14 +20,20 @@ import ome.xml.meta.IMetadata;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
+import wbif.sjx.common.MetadataExtractors.NameExtractor;
+import wbif.sjx.common.Object.HCMetadata;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
  * Created by sc13967 on 15/05/2017.
  */
-public class ImageFileLoader extends HCModule {
+public class ImageLoader extends HCModule {
     public static final String IMPORT_MODE = "Import mode";
+    public static final String NAME_FORMAT = "Name format";
+    public static final String COMMENT = "Comment";
     public static final String FILE_PATH = "File path";
     public static final String USE_BIOFORMATS = "Use Bio-formats importer";
     public static final String SERIES_NUMBER = "Series number (>= 1)";
@@ -36,12 +42,38 @@ public class ImageFileLoader extends HCModule {
 
     public interface ImportModes {
         String CURRENT_FILE = "Current file";
+        String IMAGEJ = "From ImageJ";
+        String MATCHING_FORMAT = "Matching format";
         String SPECIFIC_FILE = "Specific file";
 
-        String[] ALL = new String[]{CURRENT_FILE, SPECIFIC_FILE};
+        String[] ALL = new String[]{CURRENT_FILE, IMAGEJ, MATCHING_FORMAT, SPECIFIC_FILE};
 
     }
 
+    public interface NameFormats {
+        String INCUCYTE_SHORT = "Incucyte short filename";
+
+        String[] ALL = new String[]{INCUCYTE_SHORT};
+
+    }
+
+    private static ImagePlus getFile(String filePath, boolean useBioformats, int seriesNumber) {
+        ImagePlus ipl;
+        // Importing the file
+        if (useBioformats) {
+            DebugTools.enableLogging("off");
+            DebugTools.setRootLevel("off");
+            ipl = getBFImage(filePath,seriesNumber);
+
+        } else {
+            ipl = IJ.openImage(filePath);
+
+        }
+
+        // If the image is an RGB, converting to composite
+        return new CompositeImage(ipl);
+
+    }
 
     private static ImagePlus getBFImage(String path, int seriesNumber) {
         ImagePlus ipl = null;
@@ -121,9 +153,30 @@ public class ImageFileLoader extends HCModule {
 
     }
 
+    private static ImagePlus getFormattedNameImage(String nameFormat, HCMetadata metadata, String comment,
+                                                   boolean useBioformats, int seriesNumber) {
+
+        String filename = null;
+        switch (nameFormat) {
+            case NameFormats.INCUCYTE_SHORT:
+                // First, running metadata extraction on the input file
+                NameExtractor filenameExtractor = new IncuCyteShortFilenameExtractor();
+                filenameExtractor.extract(metadata, metadata.getFile().getName());
+
+                // Constructing a new name using the same name format
+                filename = metadata.getFile().getParent()+"\\"+IncuCyteShortFilenameExtractor
+                        .generate(comment,metadata.getWell(),metadata.getAsString(HCMetadata.FIELD),metadata.getExt());
+
+                break;
+        }
+
+        return getFile(filename,useBioformats,seriesNumber);
+
+    }
+
     @Override
     public String getTitle() {
-        return "Load image from file";
+        return "Load image";
 
     }
 
@@ -137,36 +190,40 @@ public class ImageFileLoader extends HCModule {
         // Getting parameters
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String nameFormat = parameters.getValue(NAME_FORMAT);
+        String comment = parameters.getValue(COMMENT);
+        boolean useBioformats = parameters.getValue(USE_BIOFORMATS);
         int seriesNumber = parameters.getValue(SERIES_NUMBER);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
-        // If the file currently in the workspace is to be used, update the file path accordingly
-        if (importMode.equals(ImportModes.CURRENT_FILE)) {
-            if (workspace.getMetadata().getFile() == null) throw new GenericMIAException("Load file using Analysis > Set file to analyse");
-            filePath = workspace.getMetadata().getFile().getAbsolutePath();
+        ImagePlus ipl = null;
+        switch (importMode) {
+            case ImportModes.CURRENT_FILE:
+                File file = workspace.getMetadata().getFile();
+                if (file == null) throw new GenericMIAException("Load file using Analysis > Set file to analyse");
+                ipl = getFile(workspace.getMetadata().getFile().getAbsolutePath(),useBioformats,seriesNumber);
+                break;
+
+            case ImportModes.IMAGEJ:
+                ipl = IJ.getImage();
+                break;
+
+            case ImportModes.MATCHING_FORMAT:
+                ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),comment,useBioformats,seriesNumber);
+                break;
+
+            case ImportModes.SPECIFIC_FILE:
+                ipl = getFile(filePath,useBioformats,seriesNumber);
+                break;
         }
-
-        ImagePlus ipl;
-        // Importing the file
-        if (parameters.getValue(USE_BIOFORMATS)) {
-            DebugTools.enableLogging("off");
-            DebugTools.setRootLevel("off");
-            ipl = getBFImage(filePath,seriesNumber);
-
-        } else {
-            ipl = IJ.openImage(filePath);
-
-        }
-
-        // If the image is an RGB, converting to composite
-        ipl = new CompositeImage(ipl);
 
         // Adding image to workspace
         if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
         workspace.addImage(new Image(outputImageName,ipl));
 
         // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if (showImage && ipl != null) {
             ipl = new Duplicator().run(ipl);
             ipl.show();
         }
@@ -174,7 +231,11 @@ public class ImageFileLoader extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
+        parameters.addParameter(
+                new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
+        parameters.addParameter(
+                new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
+        parameters.addParameter(new Parameter(COMMENT,Parameter.STRING,""));
         parameters.addParameter(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.addParameter(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
@@ -187,11 +248,22 @@ public class ImageFileLoader extends HCModule {
     public ParameterCollection getActiveParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(IMPORT_MODE));
-        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)) {
-            returnedParameters.addParameter(parameters.getParameter(FILE_PATH));
+        switch((String) parameters.getValue(IMPORT_MODE)) {
+            case ImportModes.CURRENT_FILE:
+                break;
 
+            case ImportModes.IMAGEJ:
+                break;
+
+            case ImportModes.MATCHING_FORMAT:
+                returnedParameters.addParameter(parameters.getParameter(NAME_FORMAT));
+                returnedParameters.addParameter(parameters.getParameter(COMMENT));
+                break;
+
+            case ImportModes.SPECIFIC_FILE:
+                returnedParameters.addParameter(parameters.getParameter(FILE_PATH));
+                break;
         }
 
         returnedParameters.addParameter(parameters.getParameter(USE_BIOFORMATS));
@@ -200,6 +272,7 @@ public class ImageFileLoader extends HCModule {
 
         }
 
+        returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;

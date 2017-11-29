@@ -119,8 +119,8 @@ public class ImageSaver extends HCModule {
         parameters.addParameter(new Parameter(SAVE_IMAGE,Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.MIRRORED_DIRECTORY,SaveLocations.ALL));
-        parameters.addParameter(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FILE_PATH,""));
-        parameters.addParameter(new Parameter(SAVE_FILE_PATH, Parameter.FILE_PATH,""));
+        parameters.addParameter(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FOLDER_PATH,""));
+        parameters.addParameter(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
         parameters.addParameter(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
         parameters.addParameter(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
 

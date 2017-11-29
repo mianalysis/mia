@@ -35,8 +35,9 @@ public class FilterImage extends HCModule {
         String MEDIAN2D = "Median 2D";
         String MEDIAN3D = "Median 3D";
         String ROLLING_FRAME = "Rolling frame";
+        String VARIANCE2D = "Variance 2D";
 
-        String[] ALL = new String[]{DOG2D,GAUSSIAN2D,GAUSSIAN3D,MEDIAN2D,MEDIAN3D,ROLLING_FRAME};
+        String[] ALL = new String[]{DOG2D,GAUSSIAN2D,GAUSSIAN3D,MEDIAN2D,MEDIAN3D,ROLLING_FRAME,VARIANCE2D};
 
     }
 
@@ -119,7 +120,8 @@ public class FilterImage extends HCModule {
             int lastFrame = Math.min(nFrames,f+windowHalfWidth);
 
             // Creating a local substack
-            ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,"1-"+nChannels,"1-"+nSlices,firstFrame+"-"+lastFrame);
+            ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,"1-"+nChannels,
+                    "1-"+nSlices,firstFrame+"-"+lastFrame);
 
             // Switching T and Z, so time (not Z) is averaged
             currentSubstack = Hyperstack_rearranger.reorderHyperstack(currentSubstack,"CTZ",true,false);
@@ -160,7 +162,7 @@ public class FilterImage extends HCModule {
 
     @Override
     public String getHelp() {
-        return "+++INCOMPLETE+++";
+        return "";
     }
 
     @Override
@@ -188,27 +190,32 @@ public class FilterImage extends HCModule {
         // Applying smoothing filter
         switch (filterMode) {
             case FilterModes.DOG2D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
                 DoG.run(inputImagePlus,filterRadius,true);
                 break;
 
             case FilterModes.GAUSSIAN2D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 2D Gaussian filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 2D Gaussian filter (radius = " + filterRadius + " px)");
                 runGaussian2DFilter(inputImagePlus,filterRadius);
                 break;
 
             case FilterModes.GAUSSIAN3D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 3D Gaussian filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 3D Gaussian filter (radius = " + filterRadius + " px)");
                 GaussianBlur3D.blur(inputImagePlus,filterRadius,filterRadius,filterRadius);
                 break;
 
             case FilterModes.MEDIAN2D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 2D median filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 2D median filter (radius = " + filterRadius + " px)");
                 applyRankFilterToStack(inputImagePlus,RankFilters.MEDIAN,filterRadius);
                 break;
 
             case FilterModes.MEDIAN3D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 3D median filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 3D median filter (radius = " + filterRadius + " px)");
                 runMedian3DFilter(inputImagePlus,(float) filterRadius);
                 new ImageJ();
 
@@ -217,8 +224,15 @@ public class FilterImage extends HCModule {
                 break;
 
             case FilterModes.ROLLING_FRAME:
-                if (verbose) System.out.println("[" + moduleName + "] Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
                 inputImagePlus = runRollingFrameFilter(inputImagePlus,windowHalfWidth);
+                break;
+
+            case FilterModes.VARIANCE2D:
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 2D variance filter (radius = " + filterRadius + " px)");
+                applyRankFilterToStack(inputImagePlus,RankFilters.VARIANCE,filterRadius);
                 break;
 
         }

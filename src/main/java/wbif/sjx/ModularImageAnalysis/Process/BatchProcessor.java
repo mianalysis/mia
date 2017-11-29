@@ -2,6 +2,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.System.FileCrawler;
@@ -100,13 +101,16 @@ public class BatchProcessor extends FileCrawler {
                     String string = "Completed "+dfInt.format(nComplete)+"/"+dfInt.format(nTotal)
                             +" ("+dfDec.format(percentageComplete)+"%), "+ finalNext.getName();
                     System.out.println(string);
-                    System.out.println(workspace.getObjectSet("Nuclei").size());
-                    System.out.println(workspace.getObjectSet("GreenSpots").size());
 
                 } catch (GenericMIAException e) {
                     e.printStackTrace();
                 }
             };
+
+            // Displaying the current progress
+            double nTotal = pool.getTaskCount();
+            String string = "Started processing "+dfInt.format(nTotal)+" jobs";
+            System.out.println(string);
 
             pool.submit(task);
 
