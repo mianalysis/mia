@@ -19,8 +19,7 @@ public class BatchProcessor extends FileCrawler {
     private boolean parallel = true;
     private int nThreads = Runtime.getRuntime().availableProcessors()/2;//4;
 
-//    private ExecutorService pool;
-    ThreadPoolExecutor pool;
+    private ThreadPoolExecutor pool;
 
     private boolean shutdownEarly;
     private int counter = 0;
@@ -71,7 +70,7 @@ public class BatchProcessor extends FileCrawler {
         System.out.println("Starting batch processor");
 
         // Setting up the ExecutorService, which will manage the threads
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+        pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         while (next != null) {
             Workspace workspace = workspaces.getNewWorkspace(next);
@@ -101,6 +100,8 @@ public class BatchProcessor extends FileCrawler {
                     String string = "Completed "+dfInt.format(nComplete)+"/"+dfInt.format(nTotal)
                             +" ("+dfDec.format(percentageComplete)+"%), "+ finalNext.getName();
                     System.out.println(string);
+                    System.out.println(workspace.getObjectSet("Nuclei").size());
+                    System.out.println(workspace.getObjectSet("GreenSpots").size());
 
                 } catch (GenericMIAException e) {
                     e.printStackTrace();

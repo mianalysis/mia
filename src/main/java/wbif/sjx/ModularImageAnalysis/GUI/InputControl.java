@@ -11,6 +11,7 @@ public class InputControl extends HCModule {
     public static final String INPUT_MODE = "Input mode";
     public static final String SINGLE_FILE_PATH = "Single file path";
     public static final String BATCH_FOLDER_PATH = "Batch folder path";
+    public static final String NUMBER_OF_THREADS = "Number of CPU threads";
     public static final String FILE_EXTENSION = "File extension";
     public static final String USE_FILENAME_FILTER_1 = "Use filename filter 1";
     public static final String USE_FILENAME_FILTER_2 = "Use filename filter 2";
@@ -61,6 +62,8 @@ public class InputControl extends HCModule {
         parameters.addParameter(new Parameter(INPUT_MODE, Parameter.CHOICE_ARRAY,InputModes.SINGLE_FILE,InputModes.ALL));
         parameters.addParameter(new Parameter(SINGLE_FILE_PATH, Parameter.FILE_PATH,null));
         parameters.addParameter(new Parameter(BATCH_FOLDER_PATH, Parameter.FOLDER_PATH,null));
+        int nThreads = Runtime.getRuntime().availableProcessors()/2;
+        parameters.addParameter(new Parameter(NUMBER_OF_THREADS,Parameter.INTEGER,nThreads));
         parameters.addParameter(new Parameter(FILE_EXTENSION, Parameter.STRING,"flex"));
         parameters.addParameter(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
         parameters.addParameter(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
@@ -87,6 +90,7 @@ public class InputControl extends HCModule {
 
             case InputModes.BATCH:
                 returnedParameters.addParameter(parameters.getParameter(BATCH_FOLDER_PATH));
+                returnedParameters.addParameter(parameters.getParameter(NUMBER_OF_THREADS));
                 break;
 
         }

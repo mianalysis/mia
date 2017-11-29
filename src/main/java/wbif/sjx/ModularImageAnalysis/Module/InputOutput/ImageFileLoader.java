@@ -88,6 +88,8 @@ public class ImageFileLoader extends HCModule {
                 }
             }
 
+            ipl.setPosition(1, 1, 1);
+
             // Add spatial calibration
             if (meta != null) {
                 if (meta.getPixelsPhysicalSizeX(0) != null) {

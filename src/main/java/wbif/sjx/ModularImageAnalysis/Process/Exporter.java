@@ -189,7 +189,7 @@ public class Exporter {
 
         // Running through each parameter set (one for each module
         for (HCModule module:modules) {
-            LinkedHashMap<String,Parameter> parameters = module.getActiveParameters();
+            LinkedHashMap<String,Parameter> parameters = module.getAllParameters();
 
             Element moduleElement =  doc.createElement("MODULE");
             Attr nameAttr = doc.createAttribute("NAME");
@@ -209,7 +209,11 @@ public class Exporter {
                 parameterElement.setAttributeNode(nameAttr);
 
                 Attr valueAttr = doc.createAttribute("VALUE");
-                valueAttr.appendChild(doc.createTextNode(currParam.getValue().toString()));
+                if (currParam.getValue() == null) {
+                    valueAttr.appendChild(doc.createTextNode(""));
+                } else {
+                    valueAttr.appendChild(doc.createTextNode(currParam.getValue().toString()));
+                }
                 parameterElement.setAttributeNode(valueAttr);
 
                 Attr visibleAttr = doc.createAttribute("VISIBLE");
@@ -451,65 +455,6 @@ public class Exporter {
                     summaryCell = summaryValueRow.createCell(colNum);
                     summaryCell.setCellValue(cs.getSum());
 
-                }
-            }
-        }
-    }
-
-    private void prepareImagesXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
-        // Basing column names on the first workspace in the WorkspaceCollection
-        Workspace exampleWorkspace = workspaces.iterator().next();
-
-        if (exampleWorkspace.getImages() != null) {
-            // Creating a new sheet for each image.  Each analysed file will have its own row.
-            HashMap<String, Sheet> imageSheets = new HashMap<>();
-            HashMap<String, Integer> imageRows = new HashMap<>();
-
-            // Using the first workspace in the WorkspaceCollection to initialise column headers
-            for (String imageName : exampleWorkspace.getImages().keySet()) {
-                Image image = exampleWorkspace.getImages().get(imageName);
-
-                if (image.getMeasurements().size() != 0) {
-                    // Creating relevant sheet prefixed with "IM"
-                    imageSheets.put(imageName, workbook.createSheet("IM_" + imageName));
-
-                    // Adding headers to each column
-                    int col = 0;
-
-                    imageRows.put(imageName, 1);
-                    Row imageHeaderRow = imageSheets.get(imageName).createRow(0);
-
-                    String[] measurementNames = modules.getMeasurements().getMeasurementNames(imageName);
-                    // Adding measurement headers
-                    for (String measurementName : measurementNames) {
-                        Cell measHeaderCell = imageHeaderRow.createCell(col++);
-                        measHeaderCell.setCellValue(measurementName);
-
-                    }
-                }
-            }
-
-            // Running through each Workspace, adding rows
-            for (Workspace workspace : workspaces) {
-                for (String imageName : workspace.getImages().keySet()) {
-                    Image image = workspace.getImages().get(imageName);
-
-                    if (image.getMeasurements().size() != 0) {
-                        // Adding the measurements from this image
-                        int col = 0;
-
-                        Row imageValueRow = imageSheets.get(imageName).createRow(imageRows.get(imageName));
-                        imageRows.compute(imageName, (k, v) -> v = v + 1);
-
-                        for (MIAMeasurement measurement : image.getMeasurements().values()) {
-                            Cell measValueCell = imageValueRow.createCell(col++);
-                            if (Double.isNaN(measurement.getValue())) {
-                                measValueCell.setCellValue("");
-                            } else {
-                                measValueCell.setCellValue(measurement.getValue());
-                            }
-                        }
-                    }
                 }
             }
         }

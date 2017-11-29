@@ -391,6 +391,10 @@ public class MainGUI extends GUI {
         paramsScrollPane.validate();
         paramsScrollPane.repaint();
 
+        // Displaying the input controls
+        activeModule = analysis.getInputControl();
+        updateModules();
+
     }
 
     private void initialiseStatusPanel(int width) {
@@ -527,17 +531,14 @@ public class MainGUI extends GUI {
                 || activeModule.getClass().isInstance(new OutputControl());
 
         // Adding the nickname control to the top of the panel
-        if (!isInputOutput) {
-            ModuleName moduleName = new ModuleName(this, activeModule);
-            paramsPanel.add(moduleName, c);
+        ModuleName moduleName = new ModuleName(this, activeModule);
+        paramsPanel.add(moduleName, c);
 
-            ResetModuleName resetModuleName = new ResetModuleName(this, activeModule);
-            c.gridx++;
-            c.weightx = 1;
-            c.anchor = GridBagConstraints.EAST;
-            paramsPanel.add(resetModuleName, c);
-
-        }
+        ResetModuleName resetModuleName = new ResetModuleName(this, activeModule);
+        c.gridx++;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.EAST;
+        paramsPanel.add(resetModuleName, c);
 
         // If it's an input/output control, get the current version
         if (activeModule.getClass().isInstance(new InputControl())) activeModule = analysis.getInputControl();
@@ -563,11 +564,11 @@ public class MainGUI extends GUI {
                 JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule, 635);
                 paramsPanel.add(paramPanel, c);
 
-                // Adding a checkbox to determine if the parameter should be visible to the user
-                if (!isInputOutput) {
-                    c.gridx++;
-                    paramsPanel.add(new VisibleCheck(parameter), c);
-                }
+//                 Adding a checkbox to determine if the parameter should be visible to the user
+//                if (!isInputOutput) {
+                c.gridx++;
+                paramsPanel.add(new VisibleCheck(parameter), c);
+//                }
             }
         }
 
@@ -630,42 +631,20 @@ public class MainGUI extends GUI {
         c.gridy = 0;
         c.weighty = 0;
 
+        // Adding input control options
+        c.gridy++;
+        JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(),460);
+        if (inputPanel != null) basicModulesPanel.add(inputPanel,c);
+
         // Adding module buttons
         ModuleCollection modules = getModules();
         for (HCModule module : modules) {
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
-
-            // Only show if the module is enabled
-            if (!module.isEnabled()) continue;
-
-            // Only displaying the module title if it has at least one visible parameter
-            boolean hasVisibleParameters = false;
-            for (Parameter parameter : module.getActiveParameters().values()) {
-                if (parameter.isVisible()) hasVisibleParameters = true;
-            }
-            if (!hasVisibleParameters) continue;
-
-            JPanel titlePanel = componentFactory.createBasicModuleHeading(module, 460);
-
             c.gridy++;
-            c.anchor = GridBagConstraints.FIRST_LINE_START;
-            basicModulesPanel.add(titlePanel, c);
 
-            for (Parameter parameter : module.getActiveParameters().values()) {
-                if (parameter.isVisible()) {
-                    JPanel paramPanel = componentFactory.createParameterControl(parameter, modules, module, 460);
-
-                    c.gridy++;
-                    basicModulesPanel.add(paramPanel, c);
-
-                }
-            }
-
-            c.gridy++;
-            JSeparator separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(0, 15));
-            basicModulesPanel.add(separator, c);
+            JPanel modulePanel = componentFactory.createBasicModuleControl(module,460);
+            if (modulePanel!=null) basicModulesPanel.add(modulePanel,c);
 
         }
 
