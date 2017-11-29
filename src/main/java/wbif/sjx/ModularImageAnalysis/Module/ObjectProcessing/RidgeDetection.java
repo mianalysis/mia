@@ -139,6 +139,7 @@ public class RidgeDetection extends HCModule {
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
                         Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ,
                                 calibrationUnits);
+                        outputObject.setT(t);
 
                         double estLength = 0;
                         for (Line line : lineGroup) {
