@@ -71,7 +71,9 @@ public class ImageLoader extends HCModule {
         }
 
         // If the image is an RGB, converting to composite
-        return new CompositeImage(ipl);
+        ipl = new CompositeImage(ipl);
+
+        return ipl;
 
     }
 

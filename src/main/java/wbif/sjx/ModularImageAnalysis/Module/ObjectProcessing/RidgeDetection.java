@@ -139,7 +139,6 @@ public class RidgeDetection extends HCModule {
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
                         Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ,
                                 calibrationUnits);
-                        outputObject.setT(t);
 
                         double estLength = 0;
                         for (Line line : lineGroup) {
@@ -156,7 +155,7 @@ public class RidgeDetection extends HCModule {
                         }
 
                         // Setting single values for the current contour
-                        outputObject.setT(lineGroup.iterator().next().getFrame());
+                        outputObject.setT(t);
                         outputObject.addMeasurement(new MIAMeasurement(Measurements.LENGTH_PX, estLength));
                         outputObjects.add(outputObject);
                     }

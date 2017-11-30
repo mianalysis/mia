@@ -5,11 +5,13 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
 import org.reflections.Reflections;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
@@ -20,7 +22,8 @@ import java.util.*;
  * Created by Stephen on 20/05/2017.
  */
 public class MainGUI extends GUI {
-    private int frameWidth = 1100;
+    private int mainFrameWidth = 1100;
+    private int basicFrameWidth = 400;
     private int frameHeight = 750;
     private int elementHeight = 25;
     private int bigButtonSize = 40;
@@ -57,8 +60,7 @@ public class MainGUI extends GUI {
 
         // Setting location of panel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation((screenSize.width - frameWidth) / 2, (screenSize.height - frameHeight) / 2);
-
+        frame.setLocation((screenSize.width - mainFrameWidth) / 2, (screenSize.height - frameHeight) / 2);
         frame.setLayout(new GridBagLayout());
         frame.setTitle("Modular image analysis (version " + getClass().getPackage().getImplementationVersion() + ")");
 
@@ -67,6 +69,7 @@ public class MainGUI extends GUI {
         frame.setJMenuBar(menuBar);
 
         if (debugOn) {
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             renderEditingMode();
         } else {
             renderBasicMode();
@@ -148,7 +151,7 @@ public class MainGUI extends GUI {
 
         // Initialising the status panel
         if (!debugOn) {
-            initialiseStatusPanel(500);
+            initialiseStatusPanel(basicFrameWidth);
             c.gridx = 0;
             c.gridy++;
             c.gridwidth = 1;
@@ -424,9 +427,10 @@ public class MainGUI extends GUI {
         int buttonSize = 50;
 
         basicControlPanel = new JPanel();
-        basicControlPanel.setPreferredSize(new Dimension(500, buttonSize + 15));
+        basicControlPanel.setPreferredSize(new Dimension(basicFrameWidth, buttonSize + 15));
         basicControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicControlPanel.setLayout(new GridBagLayout());
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -436,25 +440,29 @@ public class MainGUI extends GUI {
 
         // Load analysis protocol button
         AnalysisControlButton.setButtonSize(buttonSize);
-        AnalysisControlButton loadAnalysisButton = new AnalysisControlButton(this, AnalysisControlButton.LOAD_ANALYSIS);
+        AnalysisControlButton loadAnalysisButton
+                = new AnalysisControlButton(this, AnalysisControlButton.LOAD_ANALYSIS);
         c.gridx++;
         c.anchor = GridBagConstraints.PAGE_END;
         basicControlPanel.add(loadAnalysisButton, c);
 
         // Save analysis protocol button
-        AnalysisControlButton saveAnalysisButton = new AnalysisControlButton(this, AnalysisControlButton.SAVE_ANALYSIS);
+        AnalysisControlButton saveAnalysisButton
+                = new AnalysisControlButton(this, AnalysisControlButton.SAVE_ANALYSIS);
         c.gridx++;
         basicControlPanel.add(saveAnalysisButton, c);
 
         // Start analysis button
-        AnalysisControlButton startAnalysisButton = new AnalysisControlButton(this, AnalysisControlButton.START_ANALYSIS);
+        AnalysisControlButton startAnalysisButton
+                = new AnalysisControlButton(this, AnalysisControlButton.START_ANALYSIS);
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         basicControlPanel.add(startAnalysisButton, c);
 
         // Stop analysis button
-        AnalysisControlButton stopAnalysisButton = new AnalysisControlButton(this, AnalysisControlButton.STOP_ANALYSIS);
+        AnalysisControlButton stopAnalysisButton
+                = new AnalysisControlButton(this, AnalysisControlButton.STOP_ANALYSIS);
         c.gridx++;
         c.weightx = 0;
         basicControlPanel.add(stopAnalysisButton, c);
@@ -465,11 +473,13 @@ public class MainGUI extends GUI {
     }
 
     private void initialiseBasicModulesPanel() {
-        int elementWidth = 500;
+        int elementWidth = basicFrameWidth;
 
         // Initialising the scroll panel
         basicModulesScrollPane.setPreferredSize(new Dimension(elementWidth, frameHeight - 165));
-        basicModulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        Border margin = new EmptyBorder(0,0,5,0);
+        Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
+        basicModulesScrollPane.setBorder(new CompoundBorder(margin,border));
         basicModulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         basicModulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -497,11 +507,17 @@ public class MainGUI extends GUI {
 
         // Adding module buttons
         ModuleCollection modules = getModules();
-        for (HCModule module : modules) {
+        for (int i=0;i<modules.size();i++) {
+        HCModule module = modules.get(i);
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
 
-            JPanel modulePanel = componentFactory.createAdvancedModuleControl(module, group, activeModule, moduleButtonWidth - 25);
+            JPanel modulePanel = componentFactory
+                    .createAdvancedModuleControl(module, group, activeModule, moduleButtonWidth - 25);
+
+            // If this is the final module, add a gap at the bottom
+            if (i==modules.size()-1) modulePanel.setBorder(new EmptyBorder(0,0,5,0));
+
             modulesPanel.add(modulePanel, c);
             c.gridy++;
 
@@ -626,6 +642,7 @@ public class MainGUI extends GUI {
     void populateBasicModules() {
         basicModulesPanel.removeAll();
 
+        JSeparator separator;
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -633,8 +650,19 @@ public class MainGUI extends GUI {
 
         // Adding input control options
         c.gridy++;
-        JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(),460);
-        if (inputPanel != null) basicModulesPanel.add(inputPanel,c);
+        JPanel inputPanel =
+                componentFactory.createBasicModuleControl(analysis.getInputControl(),basicFrameWidth-40);
+
+        if (inputPanel != null) {
+            basicModulesPanel.add(inputPanel,c);
+
+            // Adding a separator between the input and main modules
+            c.gridy++;
+            separator = new JSeparator();
+            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 15));
+            basicModulesPanel.add(separator,c);
+
+        }
 
         // Adding module buttons
         ModuleCollection modules = getModules();
@@ -643,14 +671,30 @@ public class MainGUI extends GUI {
             if (idx == modules.size() - 1) c.weighty = 1;
             c.gridy++;
 
-            JPanel modulePanel = componentFactory.createBasicModuleControl(module,460);
+            JPanel modulePanel = componentFactory.createBasicModuleControl(module,basicFrameWidth-40);
             if (modulePanel!=null) basicModulesPanel.add(modulePanel,c);
 
         }
 
         c.gridy++;
+        JPanel outputPanel =
+                componentFactory.createBasicModuleControl(analysis.getOutputControl(),basicFrameWidth-40);
+
+        if (outputPanel != null) {
+            // Adding a separator between the input and main modules
+            c.gridy++;
+            separator = new JSeparator();
+            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 15));
+            basicModulesPanel.add(separator,c);
+
+            c.gridy++;
+            basicModulesPanel.add(outputPanel,c);
+
+        }
+
+        c.gridy++;
         c.weighty = 100;
-        JSeparator separator = new JSeparator();
+        separator = new JSeparator();
         separator.setPreferredSize(new Dimension(0, 15));
         basicModulesPanel.add(separator, c);
 

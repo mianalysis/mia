@@ -16,6 +16,7 @@ public class ImageCalculator extends HCModule {
     public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OVERWRITE_MODE = "Overwrite mode";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String OUTPUT_32BIT = "Output 32-bit image";
     public static final String CALCULATION_METHOD = "Calculation method";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -30,10 +31,11 @@ public class ImageCalculator extends HCModule {
 
     public interface CalculationMethods {
         String ADD = "Add image 1 and image 2";
+        String DIVIDE = "Divide image 1 by image 2";
         String MULTIPLY = "Multiply image 1 and image";
         String SUBTRACT = "Subtract image 2 from image 1";
 
-        String[] ALL = new String[]{ADD,MULTIPLY,SUBTRACT};
+        String[] ALL = new String[]{ADD,DIVIDE,MULTIPLY,SUBTRACT};
 
     }
 
@@ -61,12 +63,29 @@ public class ImageCalculator extends HCModule {
         // Getting parameters
         String overwriteMode = parameters.getValue(OVERWRITE_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean output32Bit = parameters.getValue(OUTPUT_32BIT);
         String calculationMethod = parameters.getValue(CALCULATION_METHOD);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // If applying to a new image, the input image is duplicated
-        if (overwriteMode.equals(OverwriteModes.CREATE_NEW)) {
-            inputImagePlus1 = new Duplicator().run(inputImagePlus1);
+        switch (overwriteMode) {
+            case OverwriteModes.CREATE_NEW:
+                inputImagePlus1 = new Duplicator().run(inputImagePlus1);
+                break;
+        }
+
+        // If necessary, converting to 32-bit image
+        if (output32Bit) {
+            switch (overwriteMode) {
+                case OverwriteModes.CREATE_NEW:
+                case OverwriteModes.OVERWRITE_IMAGE1:
+                    IJ.run(inputImagePlus1, "32-bit", null);
+                    break;
+
+                case OverwriteModes.OVERWRITE_IMAGE2:
+                    IJ.run(inputImagePlus2, "32-bit", null);
+                    break;
+            }
         }
 
         int width = inputImagePlus1.getWidth();
@@ -93,6 +112,10 @@ public class ImageCalculator extends HCModule {
                                     val = imageProcessor1.getPixelValue(x,y) + imageProcessor2.getPixelValue(x,y);
                                     break;
 
+                                case CalculationMethods.DIVIDE:
+                                    val = imageProcessor1.getPixelValue(x,y)/imageProcessor2.getPixelValue(x,y);
+                                    break;
+
                                 case CalculationMethods.MULTIPLY:
                                     val = imageProcessor1.getPixelValue(x,y)*imageProcessor2.getPixelValue(x,y);
                                     break;
@@ -105,9 +128,6 @@ public class ImageCalculator extends HCModule {
 
                             switch (overwriteMode) {
                                 case OverwriteModes.CREATE_NEW:
-                                    imageProcessor1.putPixelValue(x,y,val);
-                                    break;
-
                                 case OverwriteModes.OVERWRITE_IMAGE1:
                                     imageProcessor1.putPixelValue(x,y,val);
                                     break;
@@ -150,6 +170,7 @@ public class ImageCalculator extends HCModule {
         parameters.addParameter(new Parameter(INPUT_IMAGE2,Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(OVERWRITE_MODE,Parameter.CHOICE_ARRAY,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
         parameters.addParameter(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
+        parameters.addParameter(new Parameter(OUTPUT_32BIT,Parameter.BOOLEAN,false));
         parameters.addParameter(new Parameter(CALCULATION_METHOD,Parameter.CHOICE_ARRAY,CalculationMethods.ADD,CalculationMethods.ALL));
         parameters.addParameter(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
@@ -167,6 +188,7 @@ public class ImageCalculator extends HCModule {
             returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.addParameter(parameters.getParameter(OUTPUT_32BIT));
         returnedParameters.addParameter(parameters.getParameter(CALCULATION_METHOD));
         returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
 
