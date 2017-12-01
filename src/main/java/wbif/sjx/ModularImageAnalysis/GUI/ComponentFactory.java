@@ -191,7 +191,7 @@ public class ComponentFactory {
         // Adding the state/evaluate button
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.insets = new Insets(0, 5, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 //        EvalButton evalButton = new EvalButton(gui,module);
 //        evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
@@ -246,7 +246,7 @@ public class ComponentFactory {
 
         c.gridy++;
         JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0, 15));
+        separator.setPreferredSize(new Dimension(0, 10));
         modulePanel.add(separator, c);
 
         return modulePanel;

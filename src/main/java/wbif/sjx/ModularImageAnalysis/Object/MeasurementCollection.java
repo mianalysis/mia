@@ -46,11 +46,11 @@ public class MeasurementCollection {
     }
 
     public String[] getObjectMeasurementNames(String objectName) {
-        if (imageMeasurements.get(objectName) == null) {
+        if (objectMeasurements.get(objectName) == null) {
             return null;
         } else {
             String[] measurements = new String[objectMeasurements.get(objectName).size()];
-            return imageMeasurements.get(objectName).stream().map(MeasurementReference::getMeasurementName)
+            return objectMeasurements.get(objectName).stream().map(MeasurementReference::getMeasurementName)
                     .collect(Collectors.toList()).toArray(measurements);
         }
     }

@@ -15,6 +15,7 @@ public class IdentifyObjects extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
+    public static final String SHOW_OBJECTS = "Show objects";
 
     @Override
     public String getTitle() {
@@ -40,11 +41,14 @@ public class IdentifyObjects extends HCModule {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         ObjSet outputObjects = new ObjSet(outputObjectsName);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
+        boolean showObjects = parameters.getValue(SHOW_OBJECTS);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            if (verbose) System.out.println("[" + moduleName + "] Processing frame "+t+" of "+inputImagePlus.getNFrames());
+            if (verbose)
+                System.out.println("[" + moduleName + "] Processing frame "+t+" of "+inputImagePlus.getNFrames());
             // Creating a copy of the input image
-            ImagePlus currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,1+"-"+inputImagePlus.getNChannels(),1+"-"+inputImagePlus.getNSlices(),t+"-"+t);
+            ImagePlus currStack = SubHyperstackMaker.makeSubhyperstack(
+                    inputImagePlus,1+"-"+inputImagePlus.getNChannels(),1+"-"+inputImagePlus.getNSlices(),t+"-"+t);
 
             if (whiteBackground) {
                 for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
@@ -83,6 +87,10 @@ public class IdentifyObjects extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
+        // Showing objects
+        if (showObjects) ObjectImageConverter.convertObjectsToImage(outputObjects, outputObjectsName, inputImage,
+                    ObjectImageConverter.ColourModes.RANDOM_COLOUR, "", false).getImagePlus().show();
+
     }
 
     @Override
@@ -90,6 +98,7 @@ public class IdentifyObjects extends HCModule {
         parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
+        parameters.addParameter(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
 
     }
 

@@ -212,6 +212,10 @@ public class AnalysisHandler {
         String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
         String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
 
+        // Getting output options
+        OutputControl outputControl = analysis.getOutputControl();
+        boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
+        boolean selectMeasurements = outputControl.getParameterValue(OutputControl.SELECT_MEASUREMENTS);
 
         // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
 //        String inputFilePath = Prefs.get("MIA.inputFilePath","");
@@ -263,7 +267,8 @@ public class AnalysisHandler {
                 break;
         }
 
-        Exporter exporter = new Exporter(exportName, Exporter.XLSX_EXPORT);
+        // Initialising the exporter (if one was requested)
+        Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
 
         // Initialising BatchProcessor
         batchProcessor = new BatchProcessor(inputFile);

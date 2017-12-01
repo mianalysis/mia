@@ -11,8 +11,8 @@ import wbif.sjx.ModularImageAnalysis.Object.Workspace;
  */
 public abstract class GUI {
     protected GUIAnalysis analysis = new GUIAnalysis();
+    HCModule activeModule = null;
     private int lastModuleEval = -1;
-    private HCModule activeModule = null;
     private Workspace testWorkspace = new Workspace(1, null);
 
     public ModuleCollection getModules() {

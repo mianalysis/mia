@@ -28,7 +28,7 @@ import java.util.*;
  */
 public class MainGUI extends GUI {
     private int mainFrameWidth = 1100;
-    private int basicFrameWidth = 400;
+    private int basicFrameWidth = 375;
     private int frameHeight = 750;
     private int elementHeight = 25;
     private int bigButtonSize = 40;
@@ -36,7 +36,6 @@ public class MainGUI extends GUI {
 
     private GUIAnalysis analysis = new GUIAnalysis();
     private ComponentFactory componentFactory;
-    private HCModule activeModule = null;
     private JFrame frame = new JFrame();
     private JMenuBar menuBar = new JMenuBar();
     private JMenu viewMenu = new JMenu("View");
@@ -432,7 +431,7 @@ public class MainGUI extends GUI {
         int buttonSize = 50;
 
         basicControlPanel = new JPanel();
-        basicControlPanel.setPreferredSize(new Dimension(basicFrameWidth, buttonSize + 15));
+        basicControlPanel.setPreferredSize(new Dimension(basicFrameWidth, bigButtonSize + 15));
         basicControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicControlPanel.setLayout(new GridBagLayout());
 
@@ -444,7 +443,7 @@ public class MainGUI extends GUI {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         // Load analysis protocol button
-        AnalysisControlButton.setButtonSize(buttonSize);
+        AnalysisControlButton.setButtonSize(bigButtonSize);
         AnalysisControlButton loadAnalysisButton
                 = new AnalysisControlButton(this, AnalysisControlButton.LOAD_ANALYSIS);
         c.gridx++;
@@ -481,7 +480,7 @@ public class MainGUI extends GUI {
         int elementWidth = basicFrameWidth;
 
         // Initialising the scroll panel
-        basicModulesScrollPane.setPreferredSize(new Dimension(elementWidth, frameHeight - 165));
+        basicModulesScrollPane.setPreferredSize(new Dimension(elementWidth, frameHeight-105));
         Border margin = new EmptyBorder(0,0,5,0);
         Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         basicModulesScrollPane.setBorder(new CompoundBorder(margin,border));
@@ -664,7 +663,7 @@ public class MainGUI extends GUI {
             // Adding a separator between the input and main modules
             c.gridy++;
             separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 15));
+            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 10));
             basicModulesPanel.add(separator,c);
 
         }
@@ -689,7 +688,7 @@ public class MainGUI extends GUI {
             // Adding a separator between the input and main modules
             c.gridy++;
             separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 15));
+            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 10));
             basicModulesPanel.add(separator,c);
 
             c.gridy++;
@@ -700,7 +699,7 @@ public class MainGUI extends GUI {
         c.gridy++;
         c.weighty = 100;
         separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0, 15));
+        separator.setPreferredSize(new Dimension(0, 1));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();
@@ -833,9 +832,4 @@ public class MainGUI extends GUI {
         }
         populateModuleList();
     }
-
-    public void setActiveModule(HCModule activeModule) {
-        this.activeModule = activeModule;
-    }
-
 }
