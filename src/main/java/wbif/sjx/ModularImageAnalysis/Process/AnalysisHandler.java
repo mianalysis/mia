@@ -156,22 +156,18 @@ public class AnalysisHandler {
                     int parameterType = module.getParameterType(parameterName);
                     switch (parameterType) {
                         case Parameter.INPUT_IMAGE:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.OUTPUT_IMAGE:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.INPUT_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.OUTPUT_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.REMOVED_IMAGE:
+                        case Parameter.STRING:
+                        case Parameter.CHOICE_ARRAY:
+                        case Parameter.FILE_PATH:
+                        case Parameter.FOLDER_PATH:
+                        case Parameter.IMAGE_MEASUREMENT:
+                        case Parameter.OBJECT_MEASUREMENT:
+                        case Parameter.CHILD_OBJECTS:
+                        case Parameter.PARENT_OBJECTS:
                             module.updateParameterValue(parameterName, parameterValue);
                             break;
 
@@ -183,40 +179,8 @@ public class AnalysisHandler {
                             module.updateParameterValue(parameterName, Double.parseDouble(parameterValue));
                             break;
 
-                        case Parameter.STRING:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.CHOICE_ARRAY:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.CHOICE_MAP:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.BOOLEAN:
                             module.updateParameterValue(parameterName, Boolean.parseBoolean(parameterValue));
-                            break;
-
-                        case Parameter.FILE_PATH:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.FOLDER_PATH:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.MEASUREMENT:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.CHILD_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.PARENT_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
                             break;
 
                     }

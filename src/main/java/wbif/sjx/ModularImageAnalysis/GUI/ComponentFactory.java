@@ -14,8 +14,8 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -102,9 +102,16 @@ public class ComponentFactory {
             String[] valueSource = parameter.getValueSource();
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
 
-        } else if (parameter.getType() == Parameter.MEASUREMENT) {
+        } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
             MeasurementCollection measurements = modules.getMeasurements(module);
-            String[] measurementChoices = measurements.getMeasurementNames(parameter.getValueSource());
+            String[] measurementChoices = measurements.getImageMeasurementNames(parameter.getValueSource());
+            Arrays.sort(measurementChoices);
+
+            parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
+
+        } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
+            MeasurementCollection measurements = modules.getMeasurements(module);
+            String[] measurementChoices = measurements.getObjectMeasurementNames(parameter.getValueSource());
             Arrays.sort(measurementChoices);
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
@@ -250,17 +257,22 @@ public class ComponentFactory {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
         JScrollPane measurementScrollPane = new JScrollPane(measurementPanel);
 
+        MeasurementCollection measurementCollection = gui.getModules().getMeasurements();
         // Getting the image and object measurements
-        LinkedHashMap<String, LinkedHashSet<String>> imageMeasurements = gui.getModules().getMeasurements().getImageMeasurements();
-        LinkedHashMap<String, LinkedHashSet<String>> objectMeasurements = gui.getModules().getMeasurements().getObjectMeasurements();
+
+        Set<String> imageNames = measurementCollection.getImageMeasurements().keySet();
+        Set<String> objectNames = measurementCollection.getObjectMeasurements().keySet();
 
         // Iterating over the images
-        for (String imageName:imageMeasurements.keySet()) {
+        for (String imageName:imageNames) {
             // Iterating over the measurements for the current image, adding a control for each
-            for (String imageMeasurementName:imageMeasurements.get(imageName)) {
+            for (MeasurementReference measurementReference:measurementCollection.getImageMeasurements(imageName)) {
+                System.out.println(imageName+"_"+measurementReference.getMeasurementName()+"_"+measurementReference.isExportable());
 
             }
         }
+
+        // Iterating over the objects
 
         return measurementPanel;
 

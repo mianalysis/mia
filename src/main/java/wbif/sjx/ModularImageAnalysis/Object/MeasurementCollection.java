@@ -2,39 +2,64 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by sc13967 on 19/05/2017.
  */
-public class MeasurementCollection extends LinkedHashMap<String,LinkedHashSet<String>> {
-    // PUBLIC METHODS
+public class MeasurementCollection {
+    private LinkedHashMap<String, LinkedHashSet<MeasurementReference>> imageMeasurements = new LinkedHashMap<>();
+    private LinkedHashMap<String, LinkedHashSet<MeasurementReference>> objectMeasurements = new LinkedHashMap<>();
 
-    public void addMeasurement(String imageObjectName, String measurementName) {
-        computeIfAbsent(imageObjectName,k -> new LinkedHashSet<>());
-        get(imageObjectName).add(measurementName);
+    // PUBLIC METHODS
+    public void addImageMeasurement(String imageName, String measurementName) {
+        MeasurementReference measurementReference = new MeasurementReference(measurementName);
+        imageMeasurements.computeIfAbsent(imageName,k -> new LinkedHashSet<>());
+        imageMeasurements.get(imageName).add(measurementReference);
 
     }
 
-    public LinkedHashMap<String, LinkedHashSet<String>> getImageMeasurements() {
+    public String[] getImageMeasurementNames(String imageName) {
+        if (imageMeasurements.get(imageName) == null) {
+            return null;
+        } else {
+            String[] measurements = new String[imageMeasurements.get(imageName).size()];
+            return imageMeasurements.get(imageName).stream().map(MeasurementReference::getMeasurementName)
+                    .collect(Collectors.toList()).toArray(measurements);
+        }
+    }
+
+    public LinkedHashSet<MeasurementReference> getImageMeasurements(String imageName) {
+        return imageMeasurements.get(imageName);
+    }
+
+    public LinkedHashMap<String, LinkedHashSet<MeasurementReference>> getImageMeasurements() {
         return imageMeasurements;
     }
 
     public void addObjectMeasurement(String objectName, String measurementName) {
+        MeasurementReference measurementReference = new MeasurementReference(measurementName);
         objectMeasurements.computeIfAbsent(objectName,k -> new LinkedHashSet<>());
-        objectMeasurements.get(objectName).add(measurementName);
+        objectMeasurements.get(objectName).add(measurementReference);
 
     }
 
     public String[] getObjectMeasurementNames(String objectName) {
-        if (objectMeasurements.get(objectName) == null) {
-            return new String[]{""};
+        if (imageMeasurements.get(objectName) == null) {
+            return null;
         } else {
             String[] measurements = new String[objectMeasurements.get(objectName).size()];
-            return objectMeasurements.get(objectName).toArray(measurements);
+            return imageMeasurements.get(objectName).stream().map(MeasurementReference::getMeasurementName)
+                    .collect(Collectors.toList()).toArray(measurements);
         }
     }
 
-    public LinkedHashMap<String, LinkedHashSet<String>> getObjectMeasurements() {
+    public LinkedHashSet<MeasurementReference> getObjectMeasurements(String objectName) {
+        return objectMeasurements.get(objectName);
+    }
+
+    public LinkedHashMap<String, LinkedHashSet<MeasurementReference>> getObjectMeasurements() {
         return objectMeasurements;
     }
 }

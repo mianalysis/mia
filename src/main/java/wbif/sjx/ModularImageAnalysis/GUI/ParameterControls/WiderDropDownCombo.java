@@ -4,6 +4,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class WiderDropDownCombo extends JComboBox {
 
@@ -18,6 +19,11 @@ public class WiderDropDownCombo extends JComboBox {
 
     public WiderDropDownCombo(Object[] objs) {
         super(objs);
+    }
+
+    public WiderDropDownCombo(List<Object> objs) {
+        super(new Object[]{0});
+        addItem(objs);
     }
 
     public boolean isWide() {

@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  */
 public class OutputControl extends HCModule {
 
+
     @Override
     public String getTitle() {
         return "Output control";
