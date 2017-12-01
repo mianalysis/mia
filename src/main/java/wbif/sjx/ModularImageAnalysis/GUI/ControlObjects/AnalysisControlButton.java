@@ -1,9 +1,10 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Process.Analysis;
+import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
 
 import javax.swing.*;
@@ -18,15 +19,15 @@ import java.io.IOException;
  * Created by steph on 28/07/2017.
  */
 public class AnalysisControlButton extends JButton implements ActionListener {
-    static final String LOAD_ANALYSIS = "Load";
-    static final String SAVE_ANALYSIS = "Save";
-    static final String START_ANALYSIS = "Run";
-    static final String STOP_ANALYSIS = "Stop";
+    public static final String LOAD_ANALYSIS = "Load";
+    public static final String SAVE_ANALYSIS = "Save";
+    public static final String START_ANALYSIS = "Run";
+    public static final String STOP_ANALYSIS = "Stop";
 
     private MainGUI gui;
     private static int buttonSize = 50;
 
-    AnalysisControlButton(MainGUI gui, String command) {
+    public AnalysisControlButton(MainGUI gui, String command) {
         this.gui = gui;
 
         addActionListener(this);

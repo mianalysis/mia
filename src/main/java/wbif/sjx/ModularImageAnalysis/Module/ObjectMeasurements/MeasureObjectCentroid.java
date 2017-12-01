@@ -131,15 +131,15 @@ public class MeasureObjectCentroid extends HCModule {
 
 
         if (useMean) {
-            measurements.addMeasurement(inputObjectsName,Measurements.MEAN_X);
-            measurements.addMeasurement(inputObjectsName,Measurements.MEAN_Y);
-            measurements.addMeasurement(inputObjectsName,Measurements.MEAN_Z);
+            measurements.addObjectMeasurement(inputObjectsName,Measurements.MEAN_X);
+            measurements.addObjectMeasurement(inputObjectsName,Measurements.MEAN_Y);
+            measurements.addObjectMeasurement(inputObjectsName,Measurements.MEAN_Z);
         }
 
         if (useMedian) {
-            measurements.addMeasurement(inputObjectsName, Measurements.MEDIAN_X);
-            measurements.addMeasurement(inputObjectsName, Measurements.MEDIAN_X);
-            measurements.addMeasurement(inputObjectsName, Measurements.MEDIAN_Z);
+            measurements.addObjectMeasurement(inputObjectsName, Measurements.MEDIAN_X);
+            measurements.addObjectMeasurement(inputObjectsName, Measurements.MEDIAN_X);
+            measurements.addObjectMeasurement(inputObjectsName, Measurements.MEDIAN_Z);
         }
     }
 

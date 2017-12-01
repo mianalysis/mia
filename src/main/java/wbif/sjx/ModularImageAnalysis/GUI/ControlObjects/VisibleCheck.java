@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 public class VisibleCheck extends JCheckBox implements ActionListener {
     private Parameter parameter;
 
-    VisibleCheck(Parameter parameter) {
+    public VisibleCheck(Parameter parameter) {
         this.parameter = parameter;
 
         setSelected(parameter.isVisible());

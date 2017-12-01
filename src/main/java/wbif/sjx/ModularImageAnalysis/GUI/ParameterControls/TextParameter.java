@@ -1,11 +1,10 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -17,7 +16,7 @@ public class TextParameter extends JTextField implements FocusListener {
     private HCModule module;
     private Parameter parameter;
 
-    TextParameter(GUI gui, HCModule module, Parameter parameter) {
+    public TextParameter(GUI gui, HCModule module, Parameter parameter) {
         this.gui = gui;
         this.module = module;
         this.parameter = parameter;

@@ -159,10 +159,10 @@ public class PlotMeasurementsScatter extends HCModule {
     public void initialiseParameters() {
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(EXCLUDE_NAN, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(MEASUREMENT1, Parameter.MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(MEASUREMENT2, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(MEASUREMENT1, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(MEASUREMENT2, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(INCLUDE_COLOUR, Parameter.BOOLEAN,false,null));
-        parameters.addParameter(new Parameter(MEASUREMENT3, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(MEASUREMENT3, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(COLOURMAP, Parameter.CHOICE_ARRAY,ColourMaps.RED_TO_BLUE,ColourMaps.ALL));
 
     }

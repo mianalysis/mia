@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.gui.GenericDialog;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;

@@ -15,8 +15,26 @@ public class MeasurementCollection extends LinkedHashMap<String,LinkedHashSet<St
 
     }
 
-    public String[] getMeasurementNames(String imageObjectName) {
-        return get(imageObjectName) == null ? new String[]{""} : get(imageObjectName).toArray(new String[get(imageObjectName).size()]);
+    public LinkedHashMap<String, LinkedHashSet<String>> getImageMeasurements() {
+        return imageMeasurements;
+    }
 
+    public void addObjectMeasurement(String objectName, String measurementName) {
+        objectMeasurements.computeIfAbsent(objectName,k -> new LinkedHashSet<>());
+        objectMeasurements.get(objectName).add(measurementName);
+
+    }
+
+    public String[] getObjectMeasurementNames(String objectName) {
+        if (objectMeasurements.get(objectName) == null) {
+            return new String[]{""};
+        } else {
+            String[] measurements = new String[objectMeasurements.get(objectName).size()];
+            return objectMeasurements.get(objectName).toArray(measurements);
+        }
+    }
+
+    public LinkedHashMap<String, LinkedHashSet<String>> getObjectMeasurements() {
+        return objectMeasurements;
     }
 }

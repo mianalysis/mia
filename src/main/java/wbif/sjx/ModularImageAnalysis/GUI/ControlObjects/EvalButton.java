@@ -1,9 +1,9 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,7 @@ public class EvalButton extends JButton implements ActionListener {
 
     // CONSTRUCTOR
 
-    EvalButton(GUI gui, HCModule module) {
+    public EvalButton(GUI gui, HCModule module) {
         this.gui = gui;
         this.module = module;
 

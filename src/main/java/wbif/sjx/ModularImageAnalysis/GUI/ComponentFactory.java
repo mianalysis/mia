@@ -1,7 +1,16 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.EvalButton;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleButton;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleEnabledCheck;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.BooleanParameter;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ChoiceArrayParameter;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.FileParameter;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.TextParameter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,17 +20,17 @@ import java.util.LinkedHashSet;
 /**
  * Created by sc13967 on 23/06/2017.
  */
-class ComponentFactory {
+public class ComponentFactory {
     private GUI gui;
     private int elementHeight;
 
-    ComponentFactory(GUI gui, int elementHeight) {
+    public ComponentFactory(GUI gui, int elementHeight) {
         this.gui = gui;
         this.elementHeight = elementHeight;
 
     }
 
-    JPanel createParameterControl(Parameter parameter, ModuleCollection modules, HCModule module, int panelWidth) {
+    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, HCModule module, int panelWidth) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -128,7 +137,7 @@ class ComponentFactory {
 
     }
 
-    JPanel createAdvancedModuleControl(HCModule module, ButtonGroup group, HCModule activeModule, int panelWidth) {
+    public JPanel createAdvancedModuleControl(HCModule module, ButtonGroup group, HCModule activeModule, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -168,7 +177,7 @@ class ComponentFactory {
 
     }
 
-    JPanel createBasicModuleHeading(HCModule module, int panelWidth) {
+    public JPanel createBasicModuleHeading(HCModule module, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -196,7 +205,7 @@ class ComponentFactory {
 
     }
 
-    JPanel createBasicModuleControl(HCModule module, int panelWidth) {
+    public JPanel createBasicModuleControl(HCModule module, int panelWidth) {
         // Only show if the module is enabled
         if (!module.isEnabled()) return null;
 
@@ -234,6 +243,26 @@ class ComponentFactory {
         modulePanel.add(separator, c);
 
         return modulePanel;
+
+    }
+
+    public JPanel createMeasurementSelector(Workspace workspace) {
+        JPanel measurementPanel = new JPanel(new GridBagLayout());
+        JScrollPane measurementScrollPane = new JScrollPane(measurementPanel);
+
+        // Getting the image and object measurements
+        LinkedHashMap<String, LinkedHashSet<String>> imageMeasurements = gui.getModules().getMeasurements().getImageMeasurements();
+        LinkedHashMap<String, LinkedHashSet<String>> objectMeasurements = gui.getModules().getMeasurements().getObjectMeasurements();
+
+        // Iterating over the images
+        for (String imageName:imageMeasurements.keySet()) {
+            // Iterating over the measurements for the current image, adding a control for each
+            for (String imageMeasurementName:imageMeasurements.get(imageName)) {
+
+            }
+        }
+
+        return measurementPanel;
 
     }
 }

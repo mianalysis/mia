@@ -172,27 +172,27 @@ public class MeasureObjectIntensity extends HCModule {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         if (parameters.getValue(MEASURE_MEAN))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MEAN));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MEAN));
 
         if (parameters.getValue(MEASURE_MIN))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MIN));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MIN));
 
         if (parameters.getValue(MEASURE_MAX))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MAX));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MAX));
 
         if (parameters.getValue(MEASURE_STDEV))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.STDEV));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.STDEV));
 
         if (parameters.getValue(MEASURE_SUM))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.SUM));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.SUM));
 
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.X_CENT_MEAN));
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.X_CENT_STD));
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Y_CENT_MEAN));
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Y_CENT_STD));
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Z_CENT_MEAN));
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Z_CENT_STD));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.X_CENT_MEAN));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.X_CENT_STD));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Y_CENT_MEAN));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Y_CENT_STD));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Z_CENT_MEAN));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.Z_CENT_STD));
 
         }
     }

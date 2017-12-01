@@ -7,15 +7,9 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.Prefs;
 import ij.plugin.PlugIn;
-import wbif.sjx.ModularImageAnalysis.GUI.ChoiceArrayParameter;
-import wbif.sjx.ModularImageAnalysis.GUI.MainGUI;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.RunTrackMate;
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
-import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 
 import javax.swing.*;
-import java.util.HashSet;
 
 /**
  * Created by sc13967 on 14/07/2017.

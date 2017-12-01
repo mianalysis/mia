@@ -464,14 +464,14 @@ public class RunTrackMate extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         if (parameters.getValue(OUTPUT_SPOT_OBJECTS) != null) {
-            measurements.addMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.RADIUS);
-            measurements.addMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.ESTIMATED_DIAMETER);
+            measurements.addObjectMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.RADIUS);
+            measurements.addObjectMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.ESTIMATED_DIAMETER);
         }
 
         if (parameters.getValue(CREATE_TRACK_OBJECTS)) {
             if (parameters.getValue(OUTPUT_TRACK_OBJECTS) != null) {
-                measurements.addMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.RADIUS);
-                measurements.addMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.ESTIMATED_DIAMETER);
+                measurements.addObjectMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.RADIUS);
+                measurements.addObjectMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.ESTIMATED_DIAMETER);
             }
         }
     }

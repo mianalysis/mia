@@ -2,9 +2,14 @@
 // TODO: If an assigned image/object name is no longer available, flag up the module button in red
 // TODO: Output panel could allow the user to select which objects and images to output to the spreadsheet
 
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import org.reflections.Reflections;
+import wbif.sjx.ModularImageAnalysis.GUI.*;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ModuleName;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -130,7 +135,7 @@ public class MainGUI extends GUI {
 
     }
 
-    void renderBasicMode() {
+    public void renderBasicMode() {
         basicGUI = true;
 
         clearFrame();
@@ -167,7 +172,7 @@ public class MainGUI extends GUI {
 
     }
 
-    void renderEditingMode() throws InstantiationException, IllegalAccessException {
+    public void renderEditingMode() throws InstantiationException, IllegalAccessException {
         basicGUI = false;
 
         clearFrame();
@@ -493,7 +498,7 @@ public class MainGUI extends GUI {
 
     }
 
-    void populateModuleList() {
+    public void populateModuleList() {
         modulesPanel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
@@ -530,7 +535,7 @@ public class MainGUI extends GUI {
 
     }
 
-    void populateModuleParameters() {
+    public void populateModuleParameters() {
         paramsPanel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
@@ -639,7 +644,7 @@ public class MainGUI extends GUI {
         }
     }
 
-    void populateBasicModules() {
+    public void populateBasicModules() {
         basicModulesPanel.removeAll();
 
         JSeparator separator;
@@ -739,13 +744,13 @@ public class MainGUI extends GUI {
         }
     }
 
-    void addModule() {
+    public void addModule() {
         moduleListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
         moduleListMenu.setVisible(true);
 
     }
 
-    void removeModule() {
+    public void removeModule() {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             // Removing a module resets all the current evaluation
@@ -761,7 +766,7 @@ public class MainGUI extends GUI {
         }
     }
 
-    void moveModuleUp() {
+    public void moveModuleUp() {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
@@ -776,7 +781,7 @@ public class MainGUI extends GUI {
         }
     }
 
-    void moveModuleDown() {
+    public void moveModuleDown() {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
@@ -792,10 +797,6 @@ public class MainGUI extends GUI {
 
     public JFrame getFrame() {
         return frame;
-    }
-
-    HCModule getActiveModule() {
-        return activeModule;
     }
 
     public JPopupMenu getModuleListMenu() {

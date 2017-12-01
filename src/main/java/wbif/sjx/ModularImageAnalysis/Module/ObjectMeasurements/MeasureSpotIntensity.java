@@ -152,19 +152,19 @@ public class MeasureSpotIntensity extends HCModule {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         if (parameters.getValue(MEASURE_MEAN))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MEAN));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MEAN));
 
         if (parameters.getValue(MEASURE_MIN))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MIN));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MIN));
 
         if (parameters.getValue(MEASURE_MAX))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MAX));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MAX));
 
         if (parameters.getValue(MEASURE_STDEV))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.STDEV));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.STDEV));
 
         if (parameters.getValue(MEASURE_SUM))
-            measurements.addMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.SUM));
+            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.SUM));
 
     }
 

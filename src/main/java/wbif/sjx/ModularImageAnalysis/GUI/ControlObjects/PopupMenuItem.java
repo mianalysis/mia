@@ -1,5 +1,6 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
     private MainGUI gui;
     private HCModule module;
 
-    PopupMenuItem(MainGUI gui, HCModule module) {
+    public PopupMenuItem(MainGUI gui, HCModule module) {
         this.gui = gui;
         this.module = module;
         if (module != null) setText(module.getTitle());
