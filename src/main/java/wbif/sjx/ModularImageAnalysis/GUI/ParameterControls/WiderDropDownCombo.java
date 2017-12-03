@@ -1,9 +1,10 @@
 // Taken from https://stackoverflow.com/questions/11278209/how-can-i-make-comboboxs-list-wider (Accessed 29-06-2017)
 
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class WiderDropDownCombo extends JComboBox {
 
@@ -18,6 +19,11 @@ public class WiderDropDownCombo extends JComboBox {
 
     public WiderDropDownCombo(Object[] objs) {
         super(objs);
+    }
+
+    public WiderDropDownCombo(List<Object> objs) {
+        super(new Object[]{0});
+        addItem(objs);
     }
 
     public boolean isWide() {

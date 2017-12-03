@@ -212,7 +212,7 @@ public class RidgeDetection extends HCModule {
     public void addMeasurements(MeasurementCollection measurements) {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        measurements.addMeasurement(outputObjectsName, Measurements.LENGTH_PX);
+        measurements.addObjectMeasurement(outputObjectsName, Measurements.LENGTH_PX);
 
     }
 

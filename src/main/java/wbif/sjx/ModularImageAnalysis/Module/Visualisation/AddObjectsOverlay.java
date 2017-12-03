@@ -282,11 +282,11 @@ public class AddObjectsOverlay extends HCModule {
         parameters.addParameter(new Parameter(USE_PARENT_ID, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
         parameters.addParameter(new Parameter(POSITION_MODE, Parameter.CHOICE_ARRAY,PositionModes.CENTROID,PositionModes.ALL));
-        parameters.addParameter(new Parameter(X_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(Y_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(Z_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(X_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(Y_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(Z_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
-        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 

@@ -1,5 +1,6 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 
 import javax.swing.*;

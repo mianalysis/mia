@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import javax.swing.*;
 import java.io.IOException;

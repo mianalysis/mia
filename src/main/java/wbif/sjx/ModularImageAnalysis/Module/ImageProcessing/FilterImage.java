@@ -1,4 +1,5 @@
 // TODO: Could move rolling frame filter to Common library's filters package
+// TODO: MedianFilter3D isn't currently working for multiple channels
 
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
@@ -72,20 +73,24 @@ public class FilterImage extends HCModule {
      * channels, then recombine them.
      */
     public static void runMedian3DFilter(ImagePlus inputImagePlus, float filterRadius) {
-        ImagePlus[] ipls = ChannelSplitter.split(inputImagePlus);
-        new ImageJ();
-        // Running Median3D on each channel
-        for (int i=0;i<inputImagePlus.getNChannels();i++) {
-            new ImagePlus("fdf",ChannelSplitter.getChannel(inputImagePlus,i+1)).show();
-            ImageStack ist = Filters3D.filter(ChannelSplitter.getChannel(inputImagePlus,i+1), Filters3D.MEDIAN, filterRadius, filterRadius, filterRadius);
-            ipls[i].setStack(ist);
-        }
+//        ImagePlus[] ipls = ChannelSplitter.split(inputImagePlus);
+//
+//        // Running Median3D on each channel
+//        for (int i=0;i<inputImagePlus.getNChannels();i++) {
+//            new ImagePlus("fdf",ChannelSplitter.getChannel(inputImagePlus,i+1)).show();
+//            ImageStack ist = Filters3D.filter(ChannelSplitter.getChannel(inputImagePlus,i+1),Filters3D.MEDIAN,
+//                    filterRadius, filterRadius, filterRadius);
+//            ipls[i].setStack(ist);
+//        }
+//
+//        // Re-combining the channels
+//        inputImagePlus.setProcessor(RGBStackMerge.mergeChannels(inputImagePlus,false).getProcessor());
 
+//        inputImagePlus.setPosition(1,1,1);
 
-        // Re-combining the channels
-        inputImagePlus.setProcessor(RGBStackMerge.mergeChannels(ipls,false).getProcessor());
+        inputImagePlus.setStack(Filters3D.filter(inputImagePlus.getImageStack(), Filters3D.MEDIAN,
+                filterRadius,filterRadius, filterRadius));
 
-        inputImagePlus.setPosition(1,1,1);
 
     }
 
@@ -217,10 +222,6 @@ public class FilterImage extends HCModule {
                 if (verbose) System.out.println("[" + moduleName + "] " +
                         "Applying 3D median filter (radius = " + filterRadius + " px)");
                 runMedian3DFilter(inputImagePlus,(float) filterRadius);
-                new ImageJ();
-
-                inputImagePlus.show();
-                IJ.runMacro("waitForUser");
                 break;
 
             case FilterModes.ROLLING_FRAME:
@@ -246,7 +247,6 @@ public class FilterImage extends HCModule {
             if (parameters.getValue(SHOW_IMAGE)) {
                 ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
                 IntensityMinMax.run(dispIpl,true);
-                dispIpl.show();
             }
 
         } else {
@@ -254,7 +254,6 @@ public class FilterImage extends HCModule {
             if (parameters.getValue(SHOW_IMAGE)) {
                 ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
                 IntensityMinMax.run(dispIpl,true);
-                dispIpl.show();
             }
         }
     }

@@ -56,7 +56,7 @@ public class MeasureObjectShape extends HCModule {
     public void addMeasurements(MeasurementCollection measurements) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        measurements.addMeasurement(inputObjectsName,N_VOXELS);
+        measurements.addObjectMeasurement(inputObjectsName,N_VOXELS);
 
     }
 

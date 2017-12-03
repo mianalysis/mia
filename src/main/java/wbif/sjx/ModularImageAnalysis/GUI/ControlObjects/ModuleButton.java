@@ -1,5 +1,6 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ public class ModuleButton extends JToggleButton implements ActionListener {
 
     // CONSTRUCTOR
 
-    ModuleButton(GUI gui, HCModule module) {
+    public ModuleButton(GUI gui, HCModule module) {
         this.gui = gui;
         this.module = module;
         setFocusPainted(false);

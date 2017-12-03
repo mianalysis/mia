@@ -1,11 +1,11 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
+import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
-import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
 
 import javax.swing.*;
@@ -20,16 +20,16 @@ import java.io.IOException;
  * Created by steph on 28/07/2017.
  */
 public class AnalysisMenuItem extends JMenuItem implements ActionListener {
-    static final String LOAD_ANALYSIS = "Load pipeline";
-    static final String SAVE_ANALYSIS = "Save pipeline";
-    static final String SET_FILE_TO_ANALYSE = "Set file to analyse";
-    static final String START_ANALYSIS = "Run analysis";
-    static final String STOP_ANALYSIS = "Stop analysis";
-    static final String CLEAR_PIPELINE = "Remove all modules";
+    public static final String LOAD_ANALYSIS = "Load pipeline";
+    public static final String SAVE_ANALYSIS = "Save pipeline";
+    public static final String SET_FILE_TO_ANALYSE = "Set file to analyse";
+    public static final String START_ANALYSIS = "Run analysis";
+    public static final String STOP_ANALYSIS = "Stop analysis";
+    public static final String CLEAR_PIPELINE = "Remove all modules";
 
     private MainGUI gui;
 
-    AnalysisMenuItem(MainGUI gui, String command) {
+    public AnalysisMenuItem(MainGUI gui, String command) {
         this.gui = gui;
 
         setText(command);

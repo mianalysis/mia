@@ -164,10 +164,10 @@ public class MeasureObjectTexture extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         if (parameters.getValue(INPUT_OBJECTS) != null) {
-            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_ASM");
-            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_CONTRAST");
-            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_CORRELATION");
-            measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_ENTROPY");
+            measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_ASM");
+            measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_CONTRAST");
+            measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_CORRELATION");
+            measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_ENTROPY");
         }
     }
 

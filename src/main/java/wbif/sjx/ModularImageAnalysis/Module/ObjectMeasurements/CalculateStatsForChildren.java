@@ -186,27 +186,27 @@ public class CalculateStatsForChildren extends HCModule {
         if (parameters.getValue(PARENT_OBJECTS) != null & parameters.getValue(CHILD_OBJECTS) != null) {
             String childName = parameters.getValue(CHILD_OBJECTS);
 
-            String[] names = measurements.getMeasurementNames(parameters.getValue(CHILD_OBJECTS));
+            String[] names = measurements.getObjectMeasurementNames(parameters.getValue(CHILD_OBJECTS));
 
             for (String name:names) {
                 if (parameters.getValue(CALCULATE_MEAN)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MEAN_OF_"+childName);
+                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MEAN_OF_"+childName);
                 }
 
                 if (parameters.getValue(CALCULATE_STD)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_STD_OF_"+childName);
+                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_STD_OF_"+childName);
                 }
 
                 if (parameters.getValue(CALCULATE_MIN)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MIN_OF_"+childName);
+                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MIN_OF_"+childName);
                 }
 
                 if (parameters.getValue(CALCULATE_MAX)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MAX_OF_"+childName);
+                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MAX_OF_"+childName);
                 }
 
                 if (parameters.getValue(CALCULATE_SUM)) {
-                    measurements.addMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_SUM_OF_"+childName);
+                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_SUM_OF_"+childName);
                 }
 
             }

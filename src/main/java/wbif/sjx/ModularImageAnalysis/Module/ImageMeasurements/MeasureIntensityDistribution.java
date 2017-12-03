@@ -301,18 +301,26 @@ public class MeasureIntensityDistribution extends HCModule {
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
-                measurements.addMeasurement(inputImageName,getFullName(inputObjectsName, Measurements.N_PX_INRANGE));
-                measurements.addMeasurement(inputImageName,getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE));
-                measurements.addMeasurement(inputImageName,getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE));
-                measurements.addMeasurement(inputImageName,getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE));
-                measurements.addMeasurement(inputImageName,getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE));
-                measurements.addMeasurement(inputImageName,getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE));
+                measurements.addImageMeasurement(inputImageName,
+                        getFullName(inputObjectsName, Measurements.N_PX_INRANGE));
+                measurements.addImageMeasurement(inputImageName,
+                        getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE));
+                measurements.addImageMeasurement(inputImageName,
+                        getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE));
+                measurements.addImageMeasurement(inputImageName,
+                        getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE));
+                measurements.addImageMeasurement(inputImageName,
+                        getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE));
+                measurements.addImageMeasurement(inputImageName,
+                        getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE));
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
-                measurements.addMeasurement(inputImageName,getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY));
-                measurements.addMeasurement(inputImageName,getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY));
+                measurements.addImageMeasurement(inputImageName,
+                        getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY));
+                measurements.addImageMeasurement(inputImageName,
+                        getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY));
 
                 break;
 

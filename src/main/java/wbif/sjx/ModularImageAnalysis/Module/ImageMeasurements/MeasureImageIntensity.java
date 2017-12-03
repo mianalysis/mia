@@ -84,19 +84,19 @@ public class MeasureImageIntensity extends HCModule {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         if (parameters.getValue(MEASURE_MEAN))
-            measurements.addMeasurement(inputImageName,Measurements.MEAN);
+            measurements.addImageMeasurement(inputImageName,Measurements.MEAN);
 
         if (parameters.getValue(MEASURE_MIN))
-            measurements.addMeasurement(inputImageName,Measurements.MIN);
+            measurements.addImageMeasurement(inputImageName,Measurements.MIN);
 
         if (parameters.getValue(MEASURE_MAX))
-            measurements.addMeasurement(inputImageName,Measurements.MAX);
+            measurements.addImageMeasurement(inputImageName,Measurements.MAX);
 
         if (parameters.getValue(MEASURE_STDEV))
-            measurements.addMeasurement(inputImageName,Measurements.STDEV);
+            measurements.addImageMeasurement(inputImageName,Measurements.STDEV);
 
         if (parameters.getValue(MEASURE_SUM))
-            measurements.addMeasurement(inputImageName,Measurements.SUM);
+            measurements.addImageMeasurement(inputImageName,Measurements.SUM);
 
     }
 

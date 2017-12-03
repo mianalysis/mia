@@ -1,5 +1,7 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.PopupMenuItem;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 
 import javax.swing.*;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 public class ModuleListMenu extends JMenu implements MouseListener {
     private MainGUI gui;
 
-    ModuleListMenu(MainGUI gui, String name, ArrayList<HCModule> modules) {
+    public ModuleListMenu(MainGUI gui, String name, ArrayList<HCModule> modules) {
         this.gui = gui;
 
         setText(name);

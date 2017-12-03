@@ -246,8 +246,8 @@ public class ObjectClusterer extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        measurements.addMeasurement(clusterObjectsName,N_POINTS_IN_CLUSTER);
-        measurements.addMeasurement(clusterObjectsName,CLUSTER_AREA_XY);
+        measurements.addObjectMeasurement(clusterObjectsName,N_POINTS_IN_CLUSTER);
+        measurements.addObjectMeasurement(clusterObjectsName,CLUSTER_AREA_XY);
 
     }
 

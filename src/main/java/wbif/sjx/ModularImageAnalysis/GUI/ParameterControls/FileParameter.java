@@ -1,11 +1,11 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import org.apache.commons.io.FilenameUtils;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,7 +25,7 @@ public class FileParameter extends JButton implements ActionListener {
 
     }
 
-    FileParameter(GUI gui, HCModule module, Parameter parameter, String fileType) {
+    public FileParameter(GUI gui, HCModule module, Parameter parameter, String fileType) {
         this.gui = gui;
         this.module = module;
         this.parameter = parameter;

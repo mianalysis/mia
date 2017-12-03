@@ -1,6 +1,7 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -10,40 +11,41 @@ import wbif.sjx.ModularImageAnalysis.Object.Workspace;
  */
 public abstract class GUI {
     protected GUIAnalysis analysis = new GUIAnalysis();
+    HCModule activeModule = null;
     private int lastModuleEval = -1;
-    private HCModule activeModule = null;
     private Workspace testWorkspace = new Workspace(1, null);
 
-    ModuleCollection getModules() {
+    public ModuleCollection getModules() {
         return analysis.getModules();
     }
 
-    abstract void updateModules();
+    public abstract void updateModules();
 
-    int getLastModuleEval(){
+    public int getLastModuleEval(){
            return lastModuleEval;
     }
 
-    void setLastModuleEval(int lastModuleEval) {
+    public void setLastModuleEval(int lastModuleEval) {
         this.lastModuleEval = lastModuleEval;
     }
 
-    HCModule getActiveModule() {
+    public HCModule getActiveModule() {
         return activeModule;
     }
 
-    void setActiveModule(HCModule activeModule) {
+    public void setActiveModule(HCModule activeModule) {
         this.activeModule = activeModule;
     }
 
-    void evaluateModule(HCModule module) throws GenericMIAException {
+    public void evaluateModule(HCModule module) throws GenericMIAException {
         module.execute(testWorkspace, true);
         lastModuleEval = getModules().indexOf(module);
 
         updateModules();
     }
 
-    void setTestWorkspace(Workspace testWorkspace) {
+    public void setTestWorkspace(Workspace testWorkspace) {
         this.testWorkspace = testWorkspace;
     }
+
 }

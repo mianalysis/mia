@@ -1,4 +1,6 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
+
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,15 +11,15 @@ import java.awt.event.ActionListener;
  * Created by steph on 28/07/2017.
  */
 public class ModuleControlButton extends JButton implements ActionListener {
-    static final String ADD_MODULE = "+";
-    static final String REMOVE_MODULE = "-";
-    static final String MOVE_MODULE_UP = "▲";
-    static final String MOVE_MODULE_DOWN = "▼";
+    public static final String ADD_MODULE = "+";
+    public static final String REMOVE_MODULE = "-";
+    public static final String MOVE_MODULE_UP = "▲";
+    public static final String MOVE_MODULE_DOWN = "▼";
 
     private MainGUI gui;
     private static int buttonSize = 50;
 
-    ModuleControlButton(MainGUI gui, String command) {
+    public ModuleControlButton(MainGUI gui, String command) {
         this.gui = gui;
 
         setText(command);

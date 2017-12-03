@@ -1,4 +1,6 @@
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
+
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 
 import javax.swing.*;
 import java.awt.event.FocusEvent;
@@ -10,7 +12,7 @@ import java.awt.event.FocusListener;
 public class NotesArea extends JTextArea implements FocusListener {
     private MainGUI gui;
 
-    NotesArea(MainGUI gui, String text) {
+    public NotesArea(MainGUI gui, String text) {
         this.gui = gui;
         setText(text);
         addFocusListener(this);

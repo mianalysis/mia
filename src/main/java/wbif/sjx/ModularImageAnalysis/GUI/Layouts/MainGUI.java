@@ -2,9 +2,14 @@
 // TODO: If an assigned image/object name is no longer available, flag up the module button in red
 // TODO: Output panel could allow the user to select which objects and images to output to the spreadsheet
 
-package wbif.sjx.ModularImageAnalysis.GUI;
+package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import org.reflections.Reflections;
+import wbif.sjx.ModularImageAnalysis.GUI.*;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ModuleName;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -23,7 +28,7 @@ import java.util.*;
  */
 public class MainGUI extends GUI {
     private int mainFrameWidth = 1100;
-    private int basicFrameWidth = 400;
+    private int basicFrameWidth = 375;
     private int frameHeight = 750;
     private int elementHeight = 25;
     private int bigButtonSize = 40;
@@ -31,7 +36,6 @@ public class MainGUI extends GUI {
 
     private GUIAnalysis analysis = new GUIAnalysis();
     private ComponentFactory componentFactory;
-    private HCModule activeModule = null;
     private JFrame frame = new JFrame();
     private JMenuBar menuBar = new JMenuBar();
     private JMenu viewMenu = new JMenu("View");
@@ -130,7 +134,7 @@ public class MainGUI extends GUI {
 
     }
 
-    void renderBasicMode() {
+    public void renderBasicMode() {
         basicGUI = true;
 
         clearFrame();
@@ -167,7 +171,7 @@ public class MainGUI extends GUI {
 
     }
 
-    void renderEditingMode() throws InstantiationException, IllegalAccessException {
+    public void renderEditingMode() throws InstantiationException, IllegalAccessException {
         basicGUI = false;
 
         clearFrame();
@@ -427,7 +431,7 @@ public class MainGUI extends GUI {
         int buttonSize = 50;
 
         basicControlPanel = new JPanel();
-        basicControlPanel.setPreferredSize(new Dimension(basicFrameWidth, buttonSize + 15));
+        basicControlPanel.setPreferredSize(new Dimension(basicFrameWidth, bigButtonSize + 15));
         basicControlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicControlPanel.setLayout(new GridBagLayout());
 
@@ -439,7 +443,7 @@ public class MainGUI extends GUI {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         // Load analysis protocol button
-        AnalysisControlButton.setButtonSize(buttonSize);
+        AnalysisControlButton.setButtonSize(bigButtonSize);
         AnalysisControlButton loadAnalysisButton
                 = new AnalysisControlButton(this, AnalysisControlButton.LOAD_ANALYSIS);
         c.gridx++;
@@ -476,7 +480,7 @@ public class MainGUI extends GUI {
         int elementWidth = basicFrameWidth;
 
         // Initialising the scroll panel
-        basicModulesScrollPane.setPreferredSize(new Dimension(elementWidth, frameHeight - 165));
+        basicModulesScrollPane.setPreferredSize(new Dimension(elementWidth, frameHeight-105));
         Border margin = new EmptyBorder(0,0,5,0);
         Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         basicModulesScrollPane.setBorder(new CompoundBorder(margin,border));
@@ -493,7 +497,7 @@ public class MainGUI extends GUI {
 
     }
 
-    void populateModuleList() {
+    public void populateModuleList() {
         modulesPanel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
@@ -530,7 +534,7 @@ public class MainGUI extends GUI {
 
     }
 
-    void populateModuleParameters() {
+    public void populateModuleParameters() {
         paramsPanel.removeAll();
 
         GridBagConstraints c = new GridBagConstraints();
@@ -639,7 +643,7 @@ public class MainGUI extends GUI {
         }
     }
 
-    void populateBasicModules() {
+    public void populateBasicModules() {
         basicModulesPanel.removeAll();
 
         JSeparator separator;
@@ -659,7 +663,7 @@ public class MainGUI extends GUI {
             // Adding a separator between the input and main modules
             c.gridy++;
             separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 15));
+            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 10));
             basicModulesPanel.add(separator,c);
 
         }
@@ -684,7 +688,7 @@ public class MainGUI extends GUI {
             // Adding a separator between the input and main modules
             c.gridy++;
             separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 15));
+            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 10));
             basicModulesPanel.add(separator,c);
 
             c.gridy++;
@@ -695,7 +699,7 @@ public class MainGUI extends GUI {
         c.gridy++;
         c.weighty = 100;
         separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0, 15));
+        separator.setPreferredSize(new Dimension(0, 1));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();
@@ -739,13 +743,13 @@ public class MainGUI extends GUI {
         }
     }
 
-    void addModule() {
+    public void addModule() {
         moduleListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
         moduleListMenu.setVisible(true);
 
     }
 
-    void removeModule() {
+    public void removeModule() {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             // Removing a module resets all the current evaluation
@@ -761,7 +765,7 @@ public class MainGUI extends GUI {
         }
     }
 
-    void moveModuleUp() {
+    public void moveModuleUp() {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
@@ -776,7 +780,7 @@ public class MainGUI extends GUI {
         }
     }
 
-    void moveModuleDown() {
+    public void moveModuleDown() {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
@@ -792,10 +796,6 @@ public class MainGUI extends GUI {
 
     public JFrame getFrame() {
         return frame;
-    }
-
-    HCModule getActiveModule() {
-        return activeModule;
     }
 
     public JPopupMenu getModuleListMenu() {
@@ -832,9 +832,4 @@ public class MainGUI extends GUI {
         }
         populateModuleList();
     }
-
-    public void setActiveModule(HCModule activeModule) {
-        this.activeModule = activeModule;
-    }
-
 }

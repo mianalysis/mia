@@ -356,13 +356,13 @@ public class RelateObjects extends HCModule {
             case RelateModes.PROXIMITY:
                 switch ((String) parameters.getValue(REFERENCE_POINT)) {
                     case ReferencePoints.CENTROID:
-                        measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_PX_MEAS);
-                        measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_CAL_MEAS);
+                        measurements.addObjectMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_PX_MEAS);
+                        measurements.addObjectMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_CAL_MEAS);
                         break;
 
                     case ReferencePoints.SURFACE:
-                        measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_PX_MEAS);
-                        measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_CAL_MEAS);
+                        measurements.addObjectMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_PX_MEAS);
+                        measurements.addObjectMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_CAL_MEAS);
                         break;
                 }
                 break;

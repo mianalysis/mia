@@ -1,22 +1,20 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.Prefs;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
-import wbif.sjx.ModularImageAnalysis.GUI.InputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 
-import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -158,22 +156,18 @@ public class AnalysisHandler {
                     int parameterType = module.getParameterType(parameterName);
                     switch (parameterType) {
                         case Parameter.INPUT_IMAGE:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.OUTPUT_IMAGE:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.INPUT_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.OUTPUT_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.REMOVED_IMAGE:
+                        case Parameter.STRING:
+                        case Parameter.CHOICE_ARRAY:
+                        case Parameter.FILE_PATH:
+                        case Parameter.FOLDER_PATH:
+                        case Parameter.IMAGE_MEASUREMENT:
+                        case Parameter.OBJECT_MEASUREMENT:
+                        case Parameter.CHILD_OBJECTS:
+                        case Parameter.PARENT_OBJECTS:
                             module.updateParameterValue(parameterName, parameterValue);
                             break;
 
@@ -185,40 +179,8 @@ public class AnalysisHandler {
                             module.updateParameterValue(parameterName, Double.parseDouble(parameterValue));
                             break;
 
-                        case Parameter.STRING:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.CHOICE_ARRAY:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.CHOICE_MAP:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
                         case Parameter.BOOLEAN:
                             module.updateParameterValue(parameterName, Boolean.parseBoolean(parameterValue));
-                            break;
-
-                        case Parameter.FILE_PATH:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.FOLDER_PATH:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.MEASUREMENT:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.CHILD_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.PARENT_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
                             break;
 
                     }
@@ -250,6 +212,10 @@ public class AnalysisHandler {
         String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
         String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
 
+        // Getting output options
+        OutputControl outputControl = analysis.getOutputControl();
+        boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
+        boolean selectMeasurements = outputControl.getParameterValue(OutputControl.SELECT_MEASUREMENTS);
 
         // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
 //        String inputFilePath = Prefs.get("MIA.inputFilePath","");
@@ -301,7 +267,8 @@ public class AnalysisHandler {
                 break;
         }
 
-        Exporter exporter = new Exporter(exportName, Exporter.XLSX_EXPORT);
+        // Initialising the exporter (if one was requested)
+        Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
 
         // Initialising BatchProcessor
         batchProcessor = new BatchProcessor(inputFile);
