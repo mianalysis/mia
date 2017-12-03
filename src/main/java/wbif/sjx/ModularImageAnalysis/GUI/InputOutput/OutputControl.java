@@ -9,7 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  */
 public class OutputControl extends HCModule {
     public static final String EXPORT_XLSX = "Export results to Excel file";
-    public static final String SELECT_MEASUREMENTS = "Select measurements";
+//    public static final String SELECT_MEASUREMENTS = "Select measurements";
 
 
     @Override
@@ -30,7 +30,7 @@ public class OutputControl extends HCModule {
     @Override
     public void initialiseParameters() {
         parameters.addParameter(new Parameter(EXPORT_XLSX,Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(SELECT_MEASUREMENTS,Parameter.BOOLEAN,false));
+//        parameters.addParameter(new Parameter(SELECT_MEASUREMENTS,Parameter.BOOLEAN,false));
 
     }
 
