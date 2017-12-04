@@ -389,11 +389,6 @@ public class ObjectImageConverter extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-
-    }
-
-    @Override
     public void addRelationships(RelationshipCollection relationships) {
 
     }

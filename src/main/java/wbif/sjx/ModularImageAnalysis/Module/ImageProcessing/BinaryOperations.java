@@ -207,11 +207,6 @@ public class BinaryOperations extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-
-    }
-
-    @Override
     public void addRelationships(RelationshipCollection relationships) {
 
     }

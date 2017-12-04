@@ -131,11 +131,6 @@ public class IdentifySecondaryObjects extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-
-    }
-
-    @Override
     public void addRelationships(RelationshipCollection relationships) {
         relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
 

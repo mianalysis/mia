@@ -26,6 +26,8 @@ public class TrackObjects extends HCModule {
     private static final String TRACK_PREV_ID = "PREVIOUS_OBJECT_IN_TRACK_ID";
     private static final String TRACK_NEXT_ID = "NEXT_OBJECT_IN_TRACK_ID";
 
+    private Reference inputObjects;
+
     public interface LinkingMethods {
         String ABSOLUTE_OVERLAP = "Absolute overlap";
         String CENTROID = "Centroid";
@@ -33,6 +35,7 @@ public class TrackObjects extends HCModule {
         String[] ALL = new String[]{ABSOLUTE_OVERLAP,CENTROID};
 
     }
+
 
     private static float getCentroidSeparation(Obj prevObj, Obj currObj) {
         double prevXCent = prevObj.getXMean(true);
@@ -278,6 +281,11 @@ public class TrackObjects extends HCModule {
 
     @Override
     public void initialiseReferences() {
+        inputObjects = new Reference();
+        objectReferences.add(inputObjects);
+
+        inputObjects.addMeasurementReference(new MeasurementReference(TRACK_PREV_ID));
+        inputObjects.addMeasurementReference(new MeasurementReference(TRACK_NEXT_ID));
 
     }
 
@@ -288,14 +296,9 @@ public class TrackObjects extends HCModule {
 
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
-        return null;
-    }
+        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
 
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        measurements.addObjectMeasurement(inputObjectsName,TRACK_PREV_ID);
-        measurements.addObjectMeasurement(inputObjectsName, TRACK_NEXT_ID);
+        return objectReferences;
 
     }
 

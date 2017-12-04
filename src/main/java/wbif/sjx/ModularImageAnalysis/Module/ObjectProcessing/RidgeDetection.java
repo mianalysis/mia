@@ -31,6 +31,8 @@ public class RidgeDetection extends HCModule {
     public static final String LINK_CONTOURS = "Link contours";
     public static final String SHOW_OBJECTS = "Show objects";
 
+    private Reference outputObjects;
+
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT//LENGTH_(PX)";
 
@@ -43,6 +45,7 @@ public class RidgeDetection extends HCModule {
         String[] ALL = new String[]{DARK_LINE,LIGHT_LINE};
 
     }
+
 
     @Override
     public String getTitle() {
@@ -210,6 +213,10 @@ public class RidgeDetection extends HCModule {
 
     @Override
     public void initialiseReferences() {
+        outputObjects = new Reference();
+        objectReferences.add(outputObjects);
+
+        outputObjects.addMeasurementReference(new MeasurementReference(Measurements.LENGTH_PX));
 
     }
 
@@ -220,15 +227,9 @@ public class RidgeDetection extends HCModule {
 
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
-        return null;
-    }
+        outputObjects.setName(parameters.getValue(OUTPUT_OBJECTS));
 
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-
-        measurements.addObjectMeasurement(outputObjectsName, Measurements.LENGTH_PX);
-
+        return objectReferences;
     }
 
     @Override

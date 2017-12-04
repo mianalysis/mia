@@ -81,12 +81,12 @@ public abstract class HCModule implements Serializable {
 
     public abstract ReferenceCollection updateAndGetObjectReferences();
 
-    /**
+    /*
      * Takes an existing collection of measurements and adds any created
      * @param measurements
      * @return
      */
-    public abstract void addMeasurements(MeasurementCollection measurements);
+//    public abstract void addMeasurements(MeasurementCollection measurements);
 
     /**
      * Returns a LinkedHashMap containing the parents (key) and their children (value)

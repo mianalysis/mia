@@ -14,6 +14,8 @@ public class CalculateNearestNeighbour extends HCModule {
     private static final String NN_DISTANCE = "NN_DISTANCE";
     private static final String NN_ID = "NN_ID";
 
+    private Reference inputObjects;
+
     @Override
     public String getTitle() {
         return "Calculate nearest neighbour";
@@ -132,6 +134,11 @@ public class CalculateNearestNeighbour extends HCModule {
 
     @Override
     public void initialiseReferences() {
+        inputObjects = new Reference();
+        objectReferences.add(inputObjects);
+
+        inputObjects.addMeasurementReference(new MeasurementReference(NN_DISTANCE));
+        inputObjects.addMeasurementReference(new MeasurementReference(NN_ID));
 
     }
 
@@ -142,16 +149,7 @@ public class CalculateNearestNeighbour extends HCModule {
 
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
-        return null;
-    }
-
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-
-        measurements.addObjectMeasurement(inputObjectsName,NN_DISTANCE);
-        measurements.addObjectMeasurement(inputObjectsName,NN_ID);
-
+        return objectReferences;
     }
 
     @Override

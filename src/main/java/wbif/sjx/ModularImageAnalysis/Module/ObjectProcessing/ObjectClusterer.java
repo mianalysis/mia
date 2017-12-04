@@ -28,6 +28,8 @@ public class ObjectClusterer extends HCModule {
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
 
+    private Reference outputObjects;
+
     public interface ClusteringAlgorithms {
         String KMEANSPLUSPLUS = "KMeans++";
         String DBSCAN = "DBSCAN";
@@ -36,8 +38,11 @@ public class ObjectClusterer extends HCModule {
 
     }
 
-    private static final String N_POINTS_IN_CLUSTER = "N_POINTS_IN_CLUSTER";
-    private static final String CLUSTER_AREA_XY = "CLUSTER_AREA_2D";
+    public interface Measurements {
+        String N_POINTS_IN_CLUSTER = "CLUSTER//N_POINTS_IN_CLUSTER";
+        String CLUSTER_AREA_XY = "CLUSTER//CLUSTER_AREA_2D";
+
+    }
 
 
     private static ObjSet runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, double dppXY, double dppZ, String calibratedUnits, int kClusters, int maxIterations) {
@@ -159,7 +164,7 @@ public class ObjectClusterer extends HCModule {
             ObjSet children = outputObject.getChildren(inputObjectsName);
 
             // The number of children per cluster
-            MIAMeasurement measurement = new MIAMeasurement(N_POINTS_IN_CLUSTER,children.size(),this);
+            MIAMeasurement measurement = new MIAMeasurement(Measurements.N_POINTS_IN_CLUSTER,children.size(),this);
             outputObject.addMeasurement(measurement);
 
             // Coordinates are stored as integers, so converting eps into an integer too
@@ -191,7 +196,7 @@ public class ObjectClusterer extends HCModule {
             }
 
             int area = points.size();
-            outputObject.addMeasurement(new MIAMeasurement(CLUSTER_AREA_XY, area, this));
+            outputObject.addMeasurement(new MIAMeasurement(Measurements.CLUSTER_AREA_XY, area, this));
 
             // Adding coordinates
             for (int idx : points) {
@@ -245,6 +250,11 @@ public class ObjectClusterer extends HCModule {
 
     @Override
     public void initialiseReferences() {
+        outputObjects = new Reference();
+        objectReferences.add(outputObjects);
+
+        outputObjects.addMeasurementReference(new MeasurementReference(Measurements.CLUSTER_AREA_XY));
+        outputObjects.addMeasurementReference(new MeasurementReference(Measurements.N_POINTS_IN_CLUSTER));
 
     }
 
@@ -256,14 +266,6 @@ public class ObjectClusterer extends HCModule {
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
         return null;
-    }
-
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        measurements.addObjectMeasurement(clusterObjectsName,N_POINTS_IN_CLUSTER);
-        measurements.addObjectMeasurement(clusterObjectsName,CLUSTER_AREA_XY);
-
     }
 
     @Override

@@ -12,9 +12,6 @@ public class MIAMeasurement {
     public static final String TOTAL_PATH_LENGTH = "Total path length";
     public static final String EUCLIDEAN_DISTANCE = "Euclidean distance";
 
-    // Other measures
-    public static final String CLASS = "Class";
-
     private String name;
     private double value = Double.NaN;
     private HCModule source = null;

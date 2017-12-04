@@ -24,18 +24,25 @@ public class MeasureSpotIntensity extends HCModule {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
+    private Reference inputObjects;
+    private MeasurementReference mean;
+    private MeasurementReference min;
+    private MeasurementReference max;
+    private MeasurementReference stdev;
+    private MeasurementReference sum;
+
     private interface Measurements {
         String MEAN = "MEAN";
         String MIN = "MIN";
         String MAX = "MAX";
-        String SUM = "SUM";
         String STDEV = "STDEV";
+        String SUM = "SUM";
 
     }
     
     
     private String getFullName(String imageName, String measurement) {
-        return "INTENSITY//"+imageName+"_"+measurement;
+        return "SPOT_INTENSITY//"+imageName+"_"+measurement;
     }
     
     @Override
@@ -148,6 +155,19 @@ public class MeasureSpotIntensity extends HCModule {
 
     @Override
     public void initialiseReferences() {
+        inputObjects = new Reference();
+        objectReferences.add(inputObjects);
+
+        mean = new MeasurementReference(Measurements.MEAN);
+        min = new MeasurementReference(Measurements.MIN);
+        max = new MeasurementReference(Measurements.MAX);
+        stdev = new MeasurementReference(Measurements.STDEV);
+        sum = new MeasurementReference(Measurements.SUM);
+        inputObjects.addMeasurementReference(mean);
+        inputObjects.addMeasurementReference(min);
+        inputObjects.addMeasurementReference(max);
+        inputObjects.addMeasurementReference(stdev);
+        inputObjects.addMeasurementReference(sum);
 
     }
 
@@ -158,29 +178,42 @@ public class MeasureSpotIntensity extends HCModule {
 
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
-        return null;
-    }
+        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
 
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        if (parameters.getValue(MEASURE_MEAN))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MEAN));
+        mean.setCalculated(false);
+        min.setCalculated(false);
+        max.setCalculated(false);
+        stdev.setCalculated(false);
+        sum.setCalculated(false);
 
-        if (parameters.getValue(MEASURE_MIN))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MIN));
+        if (parameters.getValue(MEASURE_MEAN)) {
+            mean.setCalculated(true);
+            mean.setMeasurementName(getFullName(inputImageName, Measurements.MEAN));
+        }
 
-        if (parameters.getValue(MEASURE_MAX))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MAX));
+        if (parameters.getValue(MEASURE_MIN)) {
+            min.setCalculated(true);
+            min.setMeasurementName(getFullName(inputImageName, Measurements.MIN));
+        }
 
-        if (parameters.getValue(MEASURE_STDEV))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.STDEV));
+        if (parameters.getValue(MEASURE_MAX)) {
+            max.setCalculated(true);
+            max.setMeasurementName(getFullName(inputImageName, Measurements.MAX));
+        }
 
-        if (parameters.getValue(MEASURE_SUM))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.SUM));
+        if (parameters.getValue(MEASURE_STDEV)) {
+            stdev.setCalculated(true);
+            stdev.setMeasurementName(getFullName(inputImageName, Measurements.STDEV));
+        }
 
+        if (parameters.getValue(MEASURE_SUM)) {
+            sum.setCalculated(true);
+            sum.setMeasurementName(getFullName(inputImageName, Measurements.SUM));
+        }
+
+        return objectReferences;
     }
 
     @Override

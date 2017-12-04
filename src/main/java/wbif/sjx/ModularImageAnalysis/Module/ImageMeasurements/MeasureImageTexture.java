@@ -17,6 +17,13 @@ public class MeasureImageTexture extends HCModule {
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
 
+    private Reference inputImage;
+
+    private MeasurementReference asmMeasurement;
+    private MeasurementReference contrastMeasurement;
+    private MeasurementReference correlationMeasurement;
+    private MeasurementReference entropyMeasurement;
+
     private interface Measurements {
         String ASM = "TEXTURE//ASM";
         String CONTRAST = "TEXTURE//CONTRAST";
@@ -101,27 +108,32 @@ public class MeasureImageTexture extends HCModule {
 
     @Override
     public void initialiseReferences() {
+        inputImage = new Reference();
+        imageReferences.add(inputImage);
+
+        asmMeasurement = new MeasurementReference(Measurements.ASM);
+        contrastMeasurement = new MeasurementReference(Measurements.CONTRAST);
+        correlationMeasurement = new MeasurementReference(Measurements.CORRELATION);
+        entropyMeasurement = new MeasurementReference(Measurements.ENTROPY);
+        inputImage.addMeasurementReference(asmMeasurement);
+        inputImage.addMeasurementReference(contrastMeasurement);
+        inputImage.addMeasurementReference(correlationMeasurement);
+        inputImage.addMeasurementReference(entropyMeasurement);
 
     }
 
     @Override
     public ReferenceCollection updateAndGetImageReferences() {
-        return null;
+        // Updating image name
+        inputImage.setName(parameters.getValue(INPUT_IMAGE));
+
+        return imageReferences;
+
     }
 
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
         return null;
-    }
-
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String imageName = parameters.getValue(INPUT_IMAGE);
-        measurements.addImageMeasurement(imageName,Measurements.ASM);
-        measurements.addImageMeasurement(imageName,Measurements.CONTRAST);
-        measurements.addImageMeasurement(imageName,Measurements.CORRELATION);
-        measurements.addImageMeasurement(imageName,Measurements.ENTROPY);
-
     }
 
     @Override

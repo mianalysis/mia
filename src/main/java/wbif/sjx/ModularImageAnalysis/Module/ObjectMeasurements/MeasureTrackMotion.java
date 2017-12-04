@@ -13,6 +13,9 @@ public class MeasureTrackMotion extends HCModule {
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
 
+    private Reference inputTrackObjects;
+
+
     @Override
     public String getTitle() {
         return "Measure track motion";
@@ -124,6 +127,13 @@ public class MeasureTrackMotion extends HCModule {
 
     @Override
     public void initialiseReferences() {
+        inputTrackObjects = new Reference();
+        objectReferences.add(inputTrackObjects);
+
+        inputTrackObjects.addMeasurementReference(new MeasurementReference(MIAMeasurement.DIRECTIONALITY_RATIO));
+        inputTrackObjects.addMeasurementReference(new MeasurementReference(MIAMeasurement.EUCLIDEAN_DISTANCE));
+        inputTrackObjects.addMeasurementReference(new MeasurementReference(MIAMeasurement.TOTAL_PATH_LENGTH));
+        inputTrackObjects.addMeasurementReference(new MeasurementReference(MIAMeasurement.DURATION));
 
     }
 
@@ -134,18 +144,10 @@ public class MeasureTrackMotion extends HCModule {
 
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
-        return null;
-    }
+        inputTrackObjects.setName(parameters.getValue(INPUT_TRACK_OBJECTS));
 
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        if (parameters.getValue(INPUT_TRACK_OBJECTS) != null & parameters.getValue(INPUT_SPOT_OBJECTS) != null) {
-            measurements.addObjectMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DIRECTIONALITY_RATIO);
-            measurements.addObjectMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.EUCLIDEAN_DISTANCE);
-            measurements.addObjectMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.TOTAL_PATH_LENGTH);
-            measurements.addObjectMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DURATION);
+        return objectReferences;
 
-        }
     }
 
     @Override

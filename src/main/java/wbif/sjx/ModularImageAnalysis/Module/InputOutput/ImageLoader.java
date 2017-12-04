@@ -287,7 +287,6 @@ public class ImageLoader extends HCModule {
     @Override
     public void initialiseReferences() {
         outputImageRef = new Reference();
-
         imageReferences.add(outputImageRef);
 
     }
@@ -303,11 +302,6 @@ public class ImageLoader extends HCModule {
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
         return null;
-    }
-
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-
     }
 
     @Override

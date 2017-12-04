@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.EvalButton;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.MeasurementExportCheck;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleButton;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleEnabledCheck;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
@@ -103,16 +104,18 @@ public class ComponentFactory {
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
 
         } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
-//            Reference reference = modules.getImageReferences(module).get((String) parameter.getValueSource());
-//            String[] measurementChoices = reference.getActiveMeasurementNames();
-            MeasurementCollection measurements = modules.getMeasurements(module);
-            String[] measurementChoices = measurements.getImageMeasurementNames(parameter.getValueSource());
+            Reference reference = modules.getImageReferences(module).get((String) parameter.getValueSource());
+            String[] measurementChoices = reference.getActiveMeasurementNames();
+//            MeasurementCollection measurements = modules.getMeasurements(module);
+//            String[] measurementChoices = measurements.getImageMeasurementNames(parameter.getValueSource());
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
         } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
-            MeasurementCollection measurements = modules.getMeasurements(module);
-            String[] measurementChoices = measurements.getObjectMeasurementNames(parameter.getValueSource());
+            Reference reference = modules.getObjectReferences(module).get((String) parameter.getValueSource());
+            String[] measurementChoices = reference.getActiveMeasurementNames();
+//            MeasurementCollection measurements = modules.getMeasurements(module);
+//            String[] measurementChoices = measurements.getObjectMeasurementNames(parameter.getValueSource());
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
@@ -253,28 +256,43 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createMeasurementSelector(Workspace workspace) {
+    public JPanel createMeasurementHeader(String name, int panelWidth) {
+        JPanel headerPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(5,0,0,0);
+        c.anchor = GridBagConstraints.WEST;
+
+        JTextField headerName = new JTextField("      "+name);
+        headerName.setPreferredSize(new Dimension(panelWidth, elementHeight));
+        headerName.setEditable(false);
+        headerName.setBorder(null);
+        headerPanel.add(headerName, c);
+
+        return headerPanel;
+    }
+
+    public JPanel createMeasurementControl(MeasurementReference measurement, int panelWidth) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
-        JScrollPane measurementScrollPane = new JScrollPane(measurementPanel);
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(5,5,0,0);
 
-        MeasurementCollection measurementCollection = gui.getModules().getMeasurements();
-        // Getting the image and object measurements
+        JTextField measurementName = new JTextField("            "+measurement.getMeasurementName());
+        measurementName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
+        measurementName.setEditable(false);
+        measurementName.setBorder(null);
+        measurementPanel.add(measurementName, c);
 
-        Set<String> imageNames = measurementCollection.getImageMeasurements().keySet();
-        Set<String> objectNames = measurementCollection.getObjectMeasurements().keySet();
-
-        // Iterating over the images
-        for (String imageName:imageNames) {
-            // Iterating over the measurements for the current image, adding a control for each
-            for (MeasurementReference measurementReference:measurementCollection.getImageMeasurements(imageName)) {
-                System.out.println(imageName+"_"+measurementReference.getMeasurementName()+"_"+measurementReference.isExportable());
-
-            }
-        }
-
-        // Iterating over the objects
+        MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement);
+        exportCheck.setPreferredSize(new Dimension(panelWidth/3, elementHeight));
+        c.gridx++;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.EAST;
+        measurementPanel.add(exportCheck,c);
 
         return measurementPanel;
-
     }
 }

@@ -1,13 +1,14 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 04/12/2017.
  */
 public class Reference {
     private String name = "";
-    private HashSet<MeasurementReference> measurementReferences = new HashSet<>();
+    private LinkedHashSet<MeasurementReference> measurementReferences = new LinkedHashSet<>();
 
     public void addMeasurementReference(MeasurementReference measurementReference) {
         measurementReferences.add(measurementReference);
@@ -50,7 +51,7 @@ public class Reference {
         this.name = name;
     }
 
-    public HashSet<MeasurementReference> getMeasurementReferences() {
+    public LinkedHashSet<MeasurementReference> getMeasurementReferences() {
         return measurementReferences;
     }
 }

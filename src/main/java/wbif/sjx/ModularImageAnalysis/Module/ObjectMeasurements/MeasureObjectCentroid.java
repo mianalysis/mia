@@ -16,6 +16,14 @@ public class MeasureObjectCentroid extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CENTROID_METHOD = "Centroid method";
 
+    private Reference inputObjects;
+    private MeasurementReference meanX;
+    private MeasurementReference meanY;
+    private MeasurementReference meanZ;
+    private MeasurementReference medianX;
+    private MeasurementReference medianY;
+    private MeasurementReference medianZ;
+
     public interface Methods {
         String MEAN = "Mean";
         String MEDIAN = "Median";
@@ -123,6 +131,22 @@ public class MeasureObjectCentroid extends HCModule {
 
     @Override
     public void initialiseReferences() {
+        inputObjects = new Reference();
+        objectReferences.add(inputObjects);
+
+        meanX = new MeasurementReference(Measurements.MEAN_X);
+        meanY = new MeasurementReference(Measurements.MEAN_Y);
+        meanZ = new MeasurementReference(Measurements.MEAN_Z);
+        medianX = new MeasurementReference(Measurements.MEDIAN_X);
+        medianY = new MeasurementReference(Measurements.MEDIAN_Y);
+        medianZ = new MeasurementReference(Measurements.MEDIAN_Z);
+
+        inputObjects.addMeasurementReference(meanX);
+        inputObjects.addMeasurementReference(meanY);
+        inputObjects.addMeasurementReference(meanZ);
+        inputObjects.addMeasurementReference(medianX);
+        inputObjects.addMeasurementReference(medianY);
+        inputObjects.addMeasurementReference(medianZ);
 
     }
 
@@ -133,29 +157,33 @@ public class MeasureObjectCentroid extends HCModule {
 
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
-        return null;
-    }
-
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
 
         String choice = parameters.getValue(CENTROID_METHOD);
         boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
         boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
 
+        meanX.setCalculated(false);
+        meanY.setCalculated(false);
+        meanZ.setCalculated(false);
+        medianX.setCalculated(false);
+        medianY.setCalculated(false);
+        medianZ.setCalculated(false);
 
         if (useMean) {
-            measurements.addObjectMeasurement(inputObjectsName,Measurements.MEAN_X);
-            measurements.addObjectMeasurement(inputObjectsName,Measurements.MEAN_Y);
-            measurements.addObjectMeasurement(inputObjectsName,Measurements.MEAN_Z);
+            meanX.setCalculated(true);
+            meanY.setCalculated(true);
+            meanZ.setCalculated(true);
         }
 
         if (useMedian) {
-            measurements.addObjectMeasurement(inputObjectsName, Measurements.MEDIAN_X);
-            measurements.addObjectMeasurement(inputObjectsName, Measurements.MEDIAN_X);
-            measurements.addObjectMeasurement(inputObjectsName, Measurements.MEDIAN_Z);
+            medianX.setCalculated(true);
+            medianY.setCalculated(true);
+            medianZ.setCalculated(true);
         }
+
+        return objectReferences;
+
     }
 
     @Override

@@ -49,6 +49,8 @@ public class RunTrackMate extends HCModule {
     public static final String SHOW_ID = "Show ID";
     public static final String ID_MODE = "ID source";
 
+    private Reference spotObjects;
+
     public interface IDModes {
         String USE_SPOT_ID = "Use spot ID";
         String USE_TRACK_ID = "Use track ID";
@@ -286,12 +288,6 @@ public class RunTrackMate extends HCModule {
                 return t1 > t2 ? 1 : t1 == t2 ? 0 : -1;
             });
 
-            // Creating an array to store the radius measurements for the summary object
-            CumStat radiusAv = null;
-            if (createTracks) radiusAv = new CumStat();
-            CumStat estDiaAv = null;
-            if (createTracks) estDiaAv = new CumStat();
-
             // Getting x,y,f and 2-channel spot intensities from TrackMate results
             for (Spot spot:spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
@@ -314,17 +310,6 @@ public class RunTrackMate extends HCModule {
 
                 }
 
-                // Adding radius measurement using the same coordinate system as HCObject (XYCZT)
-                MIAMeasurement radiusMeasure = new MIAMeasurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS));
-                radiusMeasure.setSource(this);
-                spotObject.addMeasurement(radiusMeasure);
-                if (createTracks) radiusAv.addMeasure(spot.getFeature(Spot.RADIUS));
-
-                MIAMeasurement estDiaMeasure = new MIAMeasurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER));
-                estDiaMeasure.setSource(this);
-                spotObject.addMeasurement(estDiaMeasure);
-                if (createTracks) estDiaAv.addMeasure(spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER));
-
                 // Adding the connection between instance and summary objects
                 if (createTracks) {
                     spotObject.addParent(trackObject);
@@ -334,20 +319,6 @@ public class RunTrackMate extends HCModule {
 
                 // Adding the instance object to the relevant collection
                 spotObjects.put(spotObject.getID(),spotObject);
-
-            }
-
-            // Taking average measurements for the summary object
-            if (createTracks) {
-                MIAMeasurement radiusMeasure = new MIAMeasurement(Measurements.RADIUS,radiusAv.getMean());
-                radiusMeasure.setSource(this);
-                trackObject.addMeasurement(radiusMeasure);
-
-                MIAMeasurement estDiaMeasure = new MIAMeasurement(Measurements.ESTIMATED_DIAMETER,estDiaAv.getMean());
-                estDiaMeasure.setSource(this);
-                trackObject.addMeasurement(estDiaMeasure);
-
-                trackObjects.put(trackObject.getID(), trackObject);
 
             }
         }
@@ -463,6 +434,11 @@ public class RunTrackMate extends HCModule {
 
     @Override
     public void initialiseReferences() {
+        spotObjects = new Reference();
+        objectReferences.add(spotObjects);
+
+        spotObjects.addMeasurementReference(new MeasurementReference(Measurements.RADIUS));
+        spotObjects.addMeasurementReference(new MeasurementReference(Measurements.ESTIMATED_DIAMETER));
 
     }
 
@@ -473,22 +449,10 @@ public class RunTrackMate extends HCModule {
 
     @Override
     public ReferenceCollection updateAndGetObjectReferences() {
-        return null;
-    }
+        spotObjects.setName(parameters.getValue(OUTPUT_SPOT_OBJECTS));
 
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        if (parameters.getValue(OUTPUT_SPOT_OBJECTS) != null) {
-            measurements.addObjectMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.RADIUS);
-            measurements.addObjectMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.ESTIMATED_DIAMETER);
-        }
+        return objectReferences;
 
-        if (parameters.getValue(CREATE_TRACK_OBJECTS)) {
-            if (parameters.getValue(OUTPUT_TRACK_OBJECTS) != null) {
-                measurements.addObjectMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.RADIUS);
-                measurements.addObjectMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.ESTIMATED_DIAMETER);
-            }
-        }
     }
 
     @Override

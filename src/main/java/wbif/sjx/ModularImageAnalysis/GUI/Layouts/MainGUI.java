@@ -512,7 +512,7 @@ public class MainGUI extends GUI {
         // Adding module buttons
         ModuleCollection modules = getModules();
         for (int i=0;i<modules.size();i++) {
-        HCModule module = modules.get(i);
+            HCModule module = modules.get(i);
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
 
@@ -547,8 +547,8 @@ public class MainGUI extends GUI {
         // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
         if (activeModule == null) return;
 
-        boolean isInputOutput = activeModule.getClass().isInstance(new InputControl())
-                || activeModule.getClass().isInstance(new OutputControl());
+        boolean isInput = activeModule.getClass().isInstance(new InputControl());
+        boolean isOutput = activeModule.getClass().isInstance(new OutputControl());
 
         // Adding the nickname control to the top of the panel
         ModuleName moduleName = new ModuleName(this, activeModule);
@@ -566,7 +566,7 @@ public class MainGUI extends GUI {
 
         // If the active module hasn't got parameters enabled, skip it
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.SOUTH;
+        c.anchor = GridBagConstraints.NORTHWEST;
         c.gridwidth = 2;
         c.insets = new Insets(0, 0, 0, 5);
         if (activeModule.getActiveParameters() != null) {
@@ -574,26 +574,64 @@ public class MainGUI extends GUI {
             while (iterator.hasNext()) {
                 Parameter parameter = iterator.next();
 
-                if (isInputOutput &! iterator.hasNext()) {
-                    c.weighty = 1;
-                    c.anchor = GridBagConstraints.NORTH;
-                }
-
+                c.insets = new Insets(0, 0, 0, 5);
                 c.gridx = 0;
                 c.gridy++;
                 JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule, 635);
                 paramsPanel.add(paramPanel, c);
 
-//                 Adding a checkbox to determine if the parameter should be visible to the user
-//                if (!isInputOutput) {
                 c.gridx++;
+                c.insets = new Insets(5,0,0,5);
                 paramsPanel.add(new VisibleCheck(parameter), c);
-//                }
+
+            }
+        }
+
+        // If selected, adding the measurement selector for output control
+        if (activeModule.getClass().isInstance(new OutputControl())
+                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
+
+            LinkedHashMap<String,Reference> imageReferences = getModules().getImageReferences();
+            for (String imageName:imageReferences.keySet()) {
+                JPanel measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)",635);
+                c.gridx = 0;
+                c.gridy++;
+                paramsPanel.add(measurementHeader,c);
+
+                // Iterating over the measurements for the current image, adding a control for each
+                for (MeasurementReference measurementReference:imageReferences.get(imageName).getMeasurementReferences()) {
+                    if (!measurementReference.isCalculated()) continue;
+
+                    // Adding measurement control
+                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference,635);
+                    c.gridy++;
+                    paramsPanel.add(currentMeasurementPanel,c);
+
+                }
+            }
+
+            LinkedHashMap<String,Reference> objectReferences = getModules().getObjectReferences();
+            for (String objectName:objectReferences.keySet()) {
+                JPanel measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)",635);
+                c.gridx = 0;
+                c.gridy++;
+                paramsPanel.add(measurementHeader,c);
+
+                // Iterating over the measurements for the current object, adding a control for each
+                for (MeasurementReference measurementReference:objectReferences.get(objectName).getMeasurementReferences()) {
+                    if (!measurementReference.isCalculated()) continue;
+
+                    // Adding measurement control
+                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference,635);
+                    c.gridy++;
+                    paramsPanel.add(currentMeasurementPanel,c);
+
+                }
             }
         }
 
         // Creating the notes/help field at the bottom of the panel
-        if (!isInputOutput) {
+        if (!isInput &! isOutput) {
             JTabbedPane notesHelpPane = new JTabbedPane();
             notesHelpPane.setPreferredSize(new Dimension(-1, elementHeight * 3));
 
@@ -615,6 +653,11 @@ public class MainGUI extends GUI {
             c.insets = new Insets(5, 5, 5, 5);
             paramsPanel.add(notesHelpPane, c);
 
+        } else {
+            JSeparator separator = new JSeparator();
+            separator.setSize(new Dimension(0,15));
+            c.weighty = 1;
+            paramsPanel.add(separator,c);
         }
 
         paramsPanel.validate();
@@ -718,7 +761,7 @@ public class MainGUI extends GUI {
         // Creating new instances of these classes and adding to ArrayList
         TreeMap<String, ArrayList<HCModule>> availableModulesList = new TreeMap<>();
         for (Class clazz : availableModules) {
-            if (clazz != InputControl.class && clazz !=OutputControl.class) {
+            if (clazz != InputControl.class) {
                 String[] names = clazz.getPackage().getName().split("\\.");
                 String pkg = names[names.length - 1];
 

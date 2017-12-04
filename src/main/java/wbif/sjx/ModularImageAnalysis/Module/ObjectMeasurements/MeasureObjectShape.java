@@ -67,13 +67,13 @@ public class MeasureObjectShape extends HCModule {
         return null;
     }
 
-    @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-
-        measurements.addObjectMeasurement(inputObjectsName,N_VOXELS);
-
-    }
+//    @Override
+//    public void addMeasurements(MeasurementCollection measurements) {
+//        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+//
+//        measurements.addObjectMeasurement(inputObjectsName,N_VOXELS);
+//
+//    }
 
     @Override
     public void addRelationships(RelationshipCollection relationships) {

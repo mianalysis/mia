@@ -56,11 +56,6 @@ public class OutputControl extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-
-    }
-
-    @Override
     public void addRelationships(RelationshipCollection relationships) {
 
     }

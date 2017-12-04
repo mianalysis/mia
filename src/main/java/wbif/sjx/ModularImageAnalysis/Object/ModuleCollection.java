@@ -5,18 +5,19 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<HCModule> implements Serializable {
-    public HashMap<String,Reference> getImageReferences() {
+    public LinkedHashMap<String,Reference> getImageReferences() {
         return getImageReferences(null);
     }
 
-    public HashMap<String,Reference> getImageReferences(HCModule cutoffModule) {
-        HashMap<String,Reference> superReferences = new HashMap<>();
+    public LinkedHashMap<String,Reference> getImageReferences(HCModule cutoffModule) {
+        LinkedHashMap<String,Reference> superReferences = new LinkedHashMap<>();
 
         for (HCModule module:this) {
             if (module == cutoffModule) break;
@@ -27,25 +28,23 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
             if (currentReferences == null) continue;
 
             for (Reference currentReference:currentReferences) {
-                superReferences.put(currentReference.getName(),new Reference());
+                superReferences.putIfAbsent(currentReference.getName(),new Reference());
 
                 superReferences.get(currentReference.getName()).addMeasurementReferences(currentReference);
 
             }
         }
 
-        System.out.println(superReferences.size());
-
         return superReferences;
 
     }
 
-    public HashMap<String,Reference> getObjectReferences() {
+    public LinkedHashMap<String,Reference> getObjectReferences() {
         return getObjectReferences(null);
     }
 
-    public HashMap<String,Reference> getObjectReferences(HCModule cutoffModule) {
-        HashMap<String,Reference> superReferences = new HashMap<>();
+    public LinkedHashMap<String,Reference> getObjectReferences(HCModule cutoffModule) {
+        LinkedHashMap<String,Reference> superReferences = new LinkedHashMap<>();
 
         for (HCModule module:this) {
             if (module == cutoffModule) break;
@@ -53,8 +52,10 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
 
             // Getting references from the current module, then adding them to the super references
             ReferenceCollection currentReferences = module.updateAndGetObjectReferences();
+            if (currentReferences == null) continue;
+
             for (Reference currentReference:currentReferences) {
-                superReferences.put(currentReference.getName(),new Reference());
+                superReferences.putIfAbsent(currentReference.getName(),new Reference());
 
                 superReferences.get(currentReference.getName()).addMeasurementReferences(currentReference);
 
@@ -65,26 +66,26 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
 
     }
 
-    public MeasurementCollection getMeasurements(HCModule cutoffModule) {
-        MeasurementCollection measurements = new MeasurementCollection();
+//    public MeasurementCollection getMeasurements(HCModule cutoffModule) {
+//        MeasurementCollection measurements = new MeasurementCollection();
+//
+//        for (HCModule module:this) {
+//            if (module == cutoffModule) {
+//                break;
+//            }
+//
+//            if (module.isEnabled()) module.addMeasurements(measurements);
+//
+//        }
+//
+//        return measurements;
+//
+//    }
 
-        for (HCModule module:this) {
-            if (module == cutoffModule) {
-                break;
-            }
-
-            if (module.isEnabled()) module.addMeasurements(measurements);
-
-        }
-
-        return measurements;
-
-    }
-
-    public MeasurementCollection getMeasurements() {
-        return getMeasurements(null);
-
-    }
+//    public MeasurementCollection getMeasurements() {
+//        return getMeasurements(null);
+//
+//    }
 
     /**
      * Returns an ArrayList of all parameters of a specific type
