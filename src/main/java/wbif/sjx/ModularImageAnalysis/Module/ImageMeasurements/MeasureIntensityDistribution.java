@@ -295,6 +295,21 @@ public class MeasureIntensityDistribution extends HCModule {
     }
 
     @Override
+    public void initialiseReferences() {
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
+    }
+
+    @Override
     public void addMeasurements(MeasurementCollection measurements) {
         String inputImageName = parameters.getParameter(INPUT_IMAGE).getName();
         String inputObjectsName = parameters.getParameter(INPUT_OBJECTS).getName();

@@ -105,6 +105,21 @@ public class ApplyManualClassification extends HCModule {
 
     }
 
+    @Override
+    public void initialiseReferences() {
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
+    }
+
     /**
      * Adds measurements from the current module to the measurement collection
      */

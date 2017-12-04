@@ -40,6 +40,8 @@ public class ImageLoader extends HCModule {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
 
+    private Reference outputImageRef;
+
     public interface ImportModes {
         String CURRENT_FILE = "Current file";
         String IMAGEJ = "From ImageJ";
@@ -56,6 +58,7 @@ public class ImageLoader extends HCModule {
         String[] ALL = new String[]{INCUCYTE_SHORT};
 
     }
+
 
     private static ImagePlus getFile(String filePath, boolean useBioformats, int seriesNumber) {
         ImagePlus ipl;
@@ -279,6 +282,27 @@ public class ImageLoader extends HCModule {
 
         return returnedParameters;
 
+    }
+
+    @Override
+    public void initialiseReferences() {
+        outputImageRef = new Reference();
+
+        imageReferences.add(outputImageRef);
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        outputImageRef.setName(parameters.getValue(OUTPUT_IMAGE));
+
+        return imageReferences;
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

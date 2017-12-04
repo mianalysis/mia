@@ -131,6 +131,21 @@ public class CalculateNearestNeighbour extends HCModule {
     }
 
     @Override
+    public void initialiseReferences() {
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
+    }
+
+    @Override
     public void addMeasurements(MeasurementCollection measurements) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 

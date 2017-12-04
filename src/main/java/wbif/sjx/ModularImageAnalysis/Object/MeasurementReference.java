@@ -5,6 +5,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
  */
 public class MeasurementReference {
     private String measurementName;
+    private boolean calculated = true;
     private boolean exportable = true;
 
     public MeasurementReference(String measurementName) {
@@ -13,6 +14,18 @@ public class MeasurementReference {
 
     public String getMeasurementName() {
         return measurementName;
+    }
+
+    public void setMeasurementName(String measurementName) {
+        this.measurementName = measurementName;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
+    public void setCalculated(boolean calculated) {
+        this.calculated = calculated;
     }
 
     public boolean isExportable() {

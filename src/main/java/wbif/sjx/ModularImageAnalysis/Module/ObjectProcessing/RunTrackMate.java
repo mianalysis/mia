@@ -462,6 +462,21 @@ public class RunTrackMate extends HCModule {
     }
 
     @Override
+    public void initialiseReferences() {
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
+    }
+
+    @Override
     public void addMeasurements(MeasurementCollection measurements) {
         if (parameters.getValue(OUTPUT_SPOT_OBJECTS) != null) {
             measurements.addObjectMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.RADIUS);

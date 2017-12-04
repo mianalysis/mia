@@ -93,6 +93,21 @@ public class ProjectObjects extends HCModule {
     }
 
     @Override
+    public void initialiseReferences() {
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
+    }
+
+    @Override
     public void addMeasurements(MeasurementCollection measurements) {
 
     }

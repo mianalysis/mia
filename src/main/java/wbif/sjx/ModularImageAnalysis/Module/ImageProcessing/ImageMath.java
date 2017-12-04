@@ -157,6 +157,11 @@ public class ImageMath extends HCModule {
 
         if (parameters.getValue(VALUE_SOURCE).equals(ValueSources.MEASUREMENT)) {
             returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
+
+            if (parameters.getValue(INPUT_IMAGE) != null) {
+                parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_IMAGE));
+
+            }
         }
 
         returnedParameters.addParameter(parameters.getParameter(MATH_VALUE));
@@ -164,6 +169,21 @@ public class ImageMath extends HCModule {
 
         return returnedParameters;
 
+    }
+
+    @Override
+    public void initialiseReferences() {
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

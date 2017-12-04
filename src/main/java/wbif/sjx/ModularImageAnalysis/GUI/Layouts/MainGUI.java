@@ -718,7 +718,7 @@ public class MainGUI extends GUI {
         // Creating new instances of these classes and adding to ArrayList
         TreeMap<String, ArrayList<HCModule>> availableModulesList = new TreeMap<>();
         for (Class clazz : availableModules) {
-            if (clazz != InputControl.class) {
+            if (clazz != InputControl.class && clazz !=OutputControl.class) {
                 String[] names = clazz.getPackage().getName().split("\\.");
                 String pkg = names[names.length - 1];
 

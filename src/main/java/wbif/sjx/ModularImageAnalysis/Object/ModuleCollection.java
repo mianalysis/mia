@@ -4,12 +4,67 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<HCModule> implements Serializable {
+    public HashMap<String,Reference> getImageReferences() {
+        return getImageReferences(null);
+    }
+
+    public HashMap<String,Reference> getImageReferences(HCModule cutoffModule) {
+        HashMap<String,Reference> superReferences = new HashMap<>();
+
+        for (HCModule module:this) {
+            if (module == cutoffModule) break;
+            if (!module.isEnabled()) continue;
+
+            // Getting references from the current module, then adding them to the super references
+            ReferenceCollection currentReferences = module.updateAndGetImageReferences();
+            if (currentReferences == null) continue;
+
+            for (Reference currentReference:currentReferences) {
+                superReferences.put(currentReference.getName(),new Reference());
+
+                superReferences.get(currentReference.getName()).addMeasurementReferences(currentReference);
+
+            }
+        }
+
+        System.out.println(superReferences.size());
+
+        return superReferences;
+
+    }
+
+    public HashMap<String,Reference> getObjectReferences() {
+        return getObjectReferences(null);
+    }
+
+    public HashMap<String,Reference> getObjectReferences(HCModule cutoffModule) {
+        HashMap<String,Reference> superReferences = new HashMap<>();
+
+        for (HCModule module:this) {
+            if (module == cutoffModule) break;
+            if (!module.isEnabled()) continue;
+
+            // Getting references from the current module, then adding them to the super references
+            ReferenceCollection currentReferences = module.updateAndGetObjectReferences();
+            for (Reference currentReference:currentReferences) {
+                superReferences.put(currentReference.getName(),new Reference());
+
+                superReferences.get(currentReference.getName()).addMeasurementReferences(currentReference);
+
+            }
+        }
+
+        return superReferences;
+
+    }
+
     public MeasurementCollection getMeasurements(HCModule cutoffModule) {
         MeasurementCollection measurements = new MeasurementCollection();
 
@@ -90,4 +145,5 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
         return getRelationships(null);
 
     }
+
 }

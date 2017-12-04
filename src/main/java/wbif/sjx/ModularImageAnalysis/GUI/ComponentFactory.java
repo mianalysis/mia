@@ -103,16 +103,16 @@ public class ComponentFactory {
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
 
         } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
+//            Reference reference = modules.getImageReferences(module).get((String) parameter.getValueSource());
+//            String[] measurementChoices = reference.getActiveMeasurementNames();
             MeasurementCollection measurements = modules.getMeasurements(module);
             String[] measurementChoices = measurements.getImageMeasurementNames(parameter.getValueSource());
-            Arrays.sort(measurementChoices);
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
         } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
             MeasurementCollection measurements = modules.getMeasurements(module);
             String[] measurementChoices = measurements.getObjectMeasurementNames(parameter.getValueSource());
-            Arrays.sort(measurementChoices);
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 

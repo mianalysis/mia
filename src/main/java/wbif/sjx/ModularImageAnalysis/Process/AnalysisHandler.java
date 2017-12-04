@@ -215,7 +215,6 @@ public class AnalysisHandler {
         // Getting output options
         OutputControl outputControl = analysis.getOutputControl();
         boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
-        boolean selectMeasurements = outputControl.getParameterValue(OutputControl.SELECT_MEASUREMENTS);
 
         // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
 //        String inputFilePath = Prefs.get("MIA.inputFilePath","");

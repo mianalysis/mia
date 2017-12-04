@@ -123,6 +123,21 @@ public class MeasureTrackMotion extends HCModule {
     }
 
     @Override
+    public void initialiseReferences() {
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
+    }
+
+    @Override
     public void addMeasurements(MeasurementCollection measurements) {
         if (parameters.getValue(INPUT_TRACK_OBJECTS) != null & parameters.getValue(INPUT_SPOT_OBJECTS) != null) {
             measurements.addObjectMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DIRECTIONALITY_RATIO);

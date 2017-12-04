@@ -244,6 +244,21 @@ public class ObjectClusterer extends HCModule {
     }
 
     @Override
+    public void initialiseReferences() {
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
+    }
+
+    @Override
     public void addMeasurements(MeasurementCollection measurements) {
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         measurements.addObjectMeasurement(clusterObjectsName,N_POINTS_IN_CLUSTER);

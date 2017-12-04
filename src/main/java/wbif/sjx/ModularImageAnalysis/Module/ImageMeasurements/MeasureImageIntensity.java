@@ -17,6 +17,14 @@ public class MeasureImageIntensity extends HCModule {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
+    private Reference inputImage;
+
+    private MeasurementReference meanMeasurement;
+    private MeasurementReference minMeasurement;
+    private MeasurementReference maxMeasurement;
+    private MeasurementReference stdevMeasurement;
+    private MeasurementReference sumMeasurement;
+
     private interface Measurements {
         String MEAN = "INTENSITY//MEAN";
         String MIN = "INTENSITY//MIN";
@@ -77,6 +85,45 @@ public class MeasureImageIntensity extends HCModule {
     @Override
     public ParameterCollection getActiveParameters() {
         return parameters;
+    }
+
+    @Override
+    public void initialiseReferences() {
+        inputImage = new Reference();
+        imageReferences.add(inputImage);
+
+        meanMeasurement = new MeasurementReference(Measurements.MEAN);
+        minMeasurement = new MeasurementReference(Measurements.MIN);
+        maxMeasurement = new MeasurementReference(Measurements.MAX);
+        stdevMeasurement = new MeasurementReference(Measurements.STDEV);
+        sumMeasurement = new MeasurementReference(Measurements.SUM);
+        inputImage.addMeasurementReference(meanMeasurement);
+        inputImage.addMeasurementReference(minMeasurement);
+        inputImage.addMeasurementReference(maxMeasurement);
+        inputImage.addMeasurementReference(stdevMeasurement);
+        inputImage.addMeasurementReference(sumMeasurement);
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        // Updating image name
+        inputImage.setName(parameters.getValue(INPUT_IMAGE));
+
+        // Updating measurements
+        meanMeasurement.setCalculated(parameters.getValue(MEASURE_MEAN));
+        minMeasurement.setCalculated(parameters.getValue(MEASURE_MIN));
+        maxMeasurement.setCalculated(parameters.getValue(MEASURE_MAX));
+        stdevMeasurement.setCalculated(parameters.getValue(MEASURE_STDEV));
+        sumMeasurement.setCalculated(parameters.getValue(MEASURE_SUM));
+
+        return imageReferences;
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

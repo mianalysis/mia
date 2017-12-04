@@ -346,6 +346,21 @@ public class RelateObjects extends HCModule {
     }
 
     @Override
+    public void initialiseReferences() {
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
+    }
+
+    @Override
     public void addMeasurements(MeasurementCollection measurements) {
         switch ((String) parameters.getValue(RELATE_MODE)) {
 //            case RelateModes.SPATIAL_OVERLAP:
