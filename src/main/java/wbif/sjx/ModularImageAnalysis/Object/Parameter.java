@@ -60,43 +60,43 @@ public class Parameter implements Serializable {
     public final static int CHOICE_ARRAY = 8;
 
     /**
-     * HashMap containing numeric values to be set in ParameterWindow.  ParameterWindow iterates through each of these
-     * and displays it in its own numeric field
-     */
-    public final static int CHOICE_MAP = 9;
-
-    /**
      * Boolean class parameter.  These are displayed by ParameterWindow as checkboxes.
      */
-    public final static int BOOLEAN = 10;
+    public final static int BOOLEAN = 9;
 
     /**
      * System file parameter.  These are displayed as buttons for loading file open dialog.  This is stored as an
      * absolute path String.
      */
-    public final static int FILE_PATH = 11;
+    public final static int FILE_PATH = 10;
+
+    /**
+     * System file parameter.  These are displayed as buttons for loading file open dialog.  This is stored as an
+     * absolute path String.
+     */
+    public final static int FOLDER_PATH = 11;
 
     /**
      * HCMeasurement input to the module.  This could be used as a parameter for plotting, or as a value for another
      * parameter
      */
-    public final static int MEASUREMENT = 12;
+    public final static int IMAGE_MEASUREMENT = 12;
+
+    /**
+     * HCMeasurement input to the module.  This could be used as a parameter for plotting, or as a value for another
+     * parameter
+     */
+    public final static int OBJECT_MEASUREMENT = 13;
 
     /**
      * Child object of the given parent object.
      */
-    public final static int CHILD_OBJECTS = 13;
+    public final static int CHILD_OBJECTS = 14;
 
     /**
      * Parent object of the given child object.
      */
-    public final static int PARENT_OBJECTS = 14;
-
-    /**
-     * Miscellaneous object class parameter.  These can be anything not fitting the other categories.  These can't be
-     * set using ParameterWindow.
-     */
-    public final static int OBJECT = 15;
+    public final static int PARENT_OBJECTS = 15;
 
 
     private final String name;
@@ -120,6 +120,7 @@ public class Parameter implements Serializable {
         this.type = type;
         this.name = name;
         this.value = value;
+        this.valueSource = null;
 
     }
 
@@ -176,26 +177,8 @@ public class Parameter implements Serializable {
         } else if (type == CHOICE_ARRAY) {
             return (String) value;
 
-        } else if (type == CHOICE_MAP) {
-            HashMap<String,Double> vals = (HashMap<String, Double>) value;
-
-            StringBuilder stringBuilder = new StringBuilder();
-            for (String key:vals.keySet()) {
-                stringBuilder.append("(");
-                stringBuilder.append(key);
-                stringBuilder.append("/");
-                stringBuilder.append(vals.get(key));
-                stringBuilder.append(")");
-
-            }
-
-            return stringBuilder.toString();
-
         } else if (type == BOOLEAN) {
             return String.valueOf(value);
-
-        } else if (type == OBJECT) {
-            return value.getClass().getName();
 
         }
 

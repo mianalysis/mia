@@ -26,7 +26,6 @@ public class ImageTypeConverter extends HCModule {
 
     }
 
-
     @Override
     public String getTitle() {
         return "Image type converter";

@@ -125,10 +125,10 @@ public class MeasureTrackMotion extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         if (parameters.getValue(INPUT_TRACK_OBJECTS) != null & parameters.getValue(INPUT_SPOT_OBJECTS) != null) {
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DIRECTIONALITY_RATIO);
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.EUCLIDEAN_DISTANCE);
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.TOTAL_PATH_LENGTH);
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DURATION);
+            measurements.addObjectMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DIRECTIONALITY_RATIO);
+            measurements.addObjectMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.EUCLIDEAN_DISTANCE);
+            measurements.addObjectMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.TOTAL_PATH_LENGTH);
+            measurements.addObjectMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DURATION);
 
         }
     }

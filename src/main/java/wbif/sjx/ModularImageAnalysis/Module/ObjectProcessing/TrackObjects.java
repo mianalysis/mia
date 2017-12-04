@@ -1,5 +1,3 @@
-// TODO: Currently calculates centroid separation.  In the future could also calculate based on overlap (or others)
-
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import org.apache.hadoop.hbase.util.MunkresAssignment;
@@ -281,8 +279,8 @@ public class TrackObjects extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        measurements.addMeasurement(inputObjectsName,TRACK_PREV_ID);
-        measurements.addMeasurement(inputObjectsName, TRACK_NEXT_ID);
+        measurements.addObjectMeasurement(inputObjectsName,TRACK_PREV_ID);
+        measurements.addObjectMeasurement(inputObjectsName, TRACK_NEXT_ID);
 
     }
 

@@ -209,7 +209,7 @@ public class GaussianFitter2D extends HCModule {
         parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.addParameter(new Parameter(RADIUS_MODE, Parameter.CHOICE_ARRAY,RadiusModes.FIXED_VALUE,RadiusModes.ALL));
         parameters.addParameter(new Parameter(RADIUS, Parameter.DOUBLE,null));
-        parameters.addParameter(new Parameter(RADIUS_MEASUREMENT, Parameter.MEASUREMENT,null));
+        parameters.addParameter(new Parameter(RADIUS_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null));
         parameters.addParameter(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
         parameters.addParameter(new Parameter(MAX_EVALUATIONS, Parameter.INTEGER,1000));
         parameters.addParameter(new Parameter(REMOVE_UNFIT, Parameter.BOOLEAN,false));
@@ -244,15 +244,15 @@ public class GaussianFitter2D extends HCModule {
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        measurements.addMeasurement(inputObjectsName,X_0);
-        measurements.addMeasurement(inputObjectsName,Y_0);
-        measurements.addMeasurement(inputObjectsName,Z_0);
-        measurements.addMeasurement(inputObjectsName,SIGMA_X);
-        measurements.addMeasurement(inputObjectsName,SIGMA_Y);
-        measurements.addMeasurement(inputObjectsName,A_0);
-        measurements.addMeasurement(inputObjectsName,A_BG);
-        measurements.addMeasurement(inputObjectsName,THETA);
-        measurements.addMeasurement(inputObjectsName,ELLIPTICITY);
+        measurements.addObjectMeasurement(inputObjectsName,X_0);
+        measurements.addObjectMeasurement(inputObjectsName,Y_0);
+        measurements.addObjectMeasurement(inputObjectsName,Z_0);
+        measurements.addObjectMeasurement(inputObjectsName,SIGMA_X);
+        measurements.addObjectMeasurement(inputObjectsName,SIGMA_Y);
+        measurements.addObjectMeasurement(inputObjectsName,A_0);
+        measurements.addObjectMeasurement(inputObjectsName,A_BG);
+        measurements.addObjectMeasurement(inputObjectsName,THETA);
+        measurements.addObjectMeasurement(inputObjectsName,ELLIPTICITY);
 
     }
 

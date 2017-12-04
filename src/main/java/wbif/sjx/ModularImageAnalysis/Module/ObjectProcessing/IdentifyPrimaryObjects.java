@@ -61,7 +61,8 @@ public class IdentifyPrimaryObjects extends HCModule {
 
         // Applying smoothing filter
         if (verbose) System.out.println("["+moduleName+"] Applying filter (radius = "+medFiltR+" px)");
-        ipl.setStack(Filters3D.filter(ipl.getImageStack(), Filters3D.MEDIAN, (float) medFiltR, (float) medFiltR, (float) medFiltR));
+        ipl.setStack(Filters3D.filter(ipl.getImageStack(), Filters3D.MEDIAN,
+                (float) medFiltR, (float) medFiltR, (float) medFiltR));
 
         // Converting to 8-bit object
         IntensityMinMax.run(ipl,true);

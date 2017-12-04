@@ -110,7 +110,7 @@ public class ApplyManualClassification extends HCModule {
      */
     @Override
     public void addMeasurements(MeasurementCollection measurements) {
-        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), MIAMeasurement.CLASS);
+        measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS), MIAMeasurement.CLASS);
     }
 
     @Override

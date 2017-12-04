@@ -40,10 +40,11 @@ public class AddObjectsOverlay extends HCModule {
     public static final String SHOW_IMAGE = "Show image";
 
     public interface PositionModes {
+        String ALL_POINTS = "All points";
         String CENTROID = "Centroid";
         String POSITION_MEASUREMENTS = "Position measurements";
 
-        String[] ALL = new String[]{CENTROID, POSITION_MEASUREMENTS};
+        String[] ALL = new String[]{ALL_POINTS, CENTROID, POSITION_MEASUREMENTS};
 
     }
 
@@ -57,46 +58,10 @@ public class AddObjectsOverlay extends HCModule {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Add objects as overlay";
-    }
-
-    @Override
-    public String getHelp() {
-        return null;
-    }
-
-    @Override
-    public void run(Workspace workspace, boolean verbose) {
-        // Getting parameters
-        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
-        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean showID = parameters.getValue(SHOW_LABEL);
-        int labelSize = parameters.getValue(LABEL_SIZE);
-        boolean useParentID = parameters.getValue(USE_PARENT_ID);
-        String parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
-        String positionMode = parameters.getValue(POSITION_MODE);
-        String colourMode = parameters.getValue(COLOUR_MODE);
-        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
-        String measurement = parameters.getValue(MEASUREMENT);
-        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
-        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
-        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
-
-        // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
-
-        // Getting input image
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus ipl = inputImage.getImagePlus();
-
-        // Duplicating the image, so the original isn't altered
-        if (!applyToInput) ipl = new Duplicator().run(ipl);
+    public static void createOverlay(ImagePlus ipl, ObjSet inputObjects, String measurement, String colourMode,
+                                     String parentObjectsForColourName, String positionMode, String xPosMeas,
+                                     String yPosMeas, String zPosMeas, boolean useParentID, boolean showID,
+                                     int labelSize, String parentObjectsForIDName) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
@@ -145,34 +110,88 @@ public class AddObjectsOverlay extends HCModule {
 
             Color colour = Color.getHSBColor(H, 1, 1);
 
-            double xMean; double yMean; double zMean;
-            if (positionMode.equals(PositionModes.CENTROID)) {
-                xMean = object.getXMean(true);
-                yMean = object.getYMean(true);
-                zMean = object.getZMean(true,false);
+            double xMean = 0;
+            double yMean = 0;
+            double zMean;
+            int z = 0;
+            int t = 0;
 
-            } else {
-                xMean = object.getMeasurement(xPosMeas).getValue();
-                yMean = object.getMeasurement(yPosMeas).getValue();
-                zMean = object.getMeasurement(zPosMeas).getValue();
+            switch (positionMode) {
+                case PositionModes.ALL_POINTS:
+                    // Still need to get mean coords for label
+                    xMean = object.getXMean(true);
+                    yMean = object.getYMean(true);
+
+                    // Adding each point
+                    double[] xx = object.getX(false);
+                    double[] yy = object.getY(false);
+                    double[] zz = object.getZ(false,false);
+
+                    t = object.getT()+1;
+
+                    for (int i=0;i<xx.length;i++) {
+                        PointRoi roi = new PointRoi(xx[i]+0.5,yy[i]+0.5);
+                        roi.setPointType(PointRoi.NORMAL);
+
+                        if (ipl.isHyperStack()) {
+                            roi.setPosition(1, (int) zz[i], t);
+                        } else {
+                            int pos = Math.max(Math.max(1,(int) zz[i]),t);
+                            roi.setPosition(pos);
+                        }
+                        roi.setStrokeColor(colour);
+                        ovl.addElement(roi);
+                    }
+
+                    break;
+
+                case PositionModes.CENTROID:
+                    xMean = object.getXMean(true);
+                    yMean = object.getYMean(true);
+                    zMean = object.getZMean(true,false);
+
+                    // Getting coordinates to plot
+                    z = (int) Math.round(zMean+1);
+                    t = object.getT()+1;
+
+                    // Adding circles where the object centroids are
+                    PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
+                    roi.setPointType(PointRoi.NORMAL);
+                    if (ipl.isHyperStack()) {
+                        roi.setPosition(1, z, t);
+                    } else {
+                        int pos = Math.max(Math.max(1,z),t);
+                        roi.setPosition(pos);
+                    }
+                    roi.setStrokeColor(colour);
+                    ovl.addElement(roi);
+
+                    break;
+
+                case PositionModes.POSITION_MEASUREMENTS:
+                    xMean = object.getMeasurement(xPosMeas).getValue();
+                    yMean = object.getMeasurement(yPosMeas).getValue();
+                    zMean = object.getMeasurement(zPosMeas).getValue();
+
+                    // Getting coordinates to plot
+                    z = (int) Math.round(zMean+1);
+                    t = object.getT()+1;
+
+                    // Adding circles where the object centroids are
+                    roi = new PointRoi(xMean+0.5,yMean+0.5);
+                    roi.setPointType(PointRoi.NORMAL);
+                    if (ipl.isHyperStack()) {
+                        roi.setPosition(1, z, t);
+                    } else {
+                        int pos = Math.max(Math.max(1,z),t);
+                        roi.setPosition(pos);
+                    }
+                    roi.setStrokeColor(colour);
+                    ovl.addElement(roi);
+
+                    break;
 
             }
-
-            // Getting coordinates to plot
-            int z = (int) Math.round(zMean+1);
-            int t = object.getT()+1;
-
-            // Adding circles where the object centroids are
-            PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
-            roi.setPointType(3);
-            if (ipl.isHyperStack()) {
-                roi.setPosition(1, z, t);
-            } else {
-                int pos = Math.max(Math.max(1,z),t);
-                roi.setPosition(pos);
-            }
-            roi.setStrokeColor(colour);
-            ovl.addElement(roi);
 
             if (showID) {
                 // Adding text label
@@ -193,6 +212,51 @@ public class AddObjectsOverlay extends HCModule {
 
             }
         }
+    }
+
+    @Override
+    public String getTitle() {
+        return "Add objects as overlay";
+    }
+
+    @Override
+    public String getHelp() {
+        return null;
+    }
+
+    @Override
+    public void run(Workspace workspace, boolean verbose) {
+        // Getting parameters
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean showID = parameters.getValue(SHOW_LABEL);
+        int labelSize = parameters.getValue(LABEL_SIZE);
+        boolean useParentID = parameters.getValue(USE_PARENT_ID);
+        String parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
+        String positionMode = parameters.getValue(POSITION_MODE);
+        String colourMode = parameters.getValue(COLOUR_MODE);
+        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+        String measurement = parameters.getValue(MEASUREMENT);
+        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
+        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
+        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
+        boolean showImage = parameters.getValue(SHOW_IMAGE);
+
+        // Getting input objects
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+
+        // Getting input image
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        Image inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus ipl = inputImage.getImagePlus();
+
+        // Duplicating the image, so the original isn't altered
+        if (!applyToInput) ipl = new Duplicator().run(ipl);
+
+        createOverlay(ipl, inputObjects, measurement, colourMode,  parentObjectsForColourName, positionMode, xPosMeas,
+                yPosMeas, zPosMeas, useParentID, showID, labelSize, parentObjectsForIDName);
 
         // If necessary, adding output image to workspace
         if (addOutputToWorkspace) {
@@ -218,11 +282,11 @@ public class AddObjectsOverlay extends HCModule {
         parameters.addParameter(new Parameter(USE_PARENT_ID, Parameter.BOOLEAN,true));
         parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
         parameters.addParameter(new Parameter(POSITION_MODE, Parameter.CHOICE_ARRAY,PositionModes.CENTROID,PositionModes.ALL));
-        parameters.addParameter(new Parameter(X_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(Y_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(Z_POSITION_MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(X_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(Y_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(Z_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
-        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
+        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
         parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 

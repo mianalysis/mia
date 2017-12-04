@@ -1,8 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import wbif.sjx.common.Object.HCMetadata;
+import wbif.sjx.common.Object.Point;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -72,6 +74,7 @@ public class Workspace {
             for (ObjSet objSet:objects.values()) {
                 for (Obj obj:objSet.values()) {
                     obj.setPoints(null);
+                    obj.clearSurface();
 
                 }
             }

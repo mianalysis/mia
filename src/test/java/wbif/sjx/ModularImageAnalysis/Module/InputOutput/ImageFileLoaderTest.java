@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class ImageFileLoaderTest {
     @Test
     public void testGetTitle() throws Exception {
-        assertNotNull(new ImageFileLoader().getTitle());
+        assertNotNull(new ImageLoader().getTitle());
 
     }
 
@@ -25,16 +25,16 @@ public class ImageFileLoaderTest {
         Workspace workspace = new Workspace(0,null);
 
         // Initialising ImageFileLoader
-        ImageFileLoader imageFileLoader = new ImageFileLoader();
+        ImageLoader imageFileLoader = new ImageLoader();
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.ImportModes.SPECIFIC_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.SPECIFIC_FILE);
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
-        imageFileLoader.updateParameterValue(ImageFileLoader.FILE_PATH,pathToImage);
-        imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
+        imageFileLoader.updateParameterValue(ImageLoader.FILE_PATH,pathToImage);
+        imageFileLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,false);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -49,7 +49,7 @@ public class ImageFileLoaderTest {
         assertEquals("Test_Output_Image",image.getName());
 
         // Checking there are no measurements associated with this image
-        assertEquals(0,image.getSingleMeasurements().size());
+        assertEquals(0,image.getMeasurements().size());
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());
@@ -74,14 +74,14 @@ public class ImageFileLoaderTest {
         Workspace workspace = new Workspace(0,new File(pathToImage));
 
         // Initialising the ImageFileLoader
-        ImageFileLoader imageFileLoader = new ImageFileLoader();
+        ImageLoader imageFileLoader = new ImageLoader();
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.ImportModes.CURRENT_FILE);
-        imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,false);
-        imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,false);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -96,7 +96,7 @@ public class ImageFileLoaderTest {
         assertEquals("Test_Output_Image",image.getName());
 
         // Checking there are no measurements associated with this image
-        assertEquals(0,image.getSingleMeasurements().size());
+        assertEquals(0,image.getMeasurements().size());
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());
@@ -121,14 +121,14 @@ public class ImageFileLoaderTest {
         Workspace workspace = new Workspace(0,new File(pathToImage));
 
         // Initialising the ImageFileLoader
-        ImageFileLoader imageFileLoader = new ImageFileLoader();
+        ImageLoader imageFileLoader = new ImageLoader();
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.ImportModes.CURRENT_FILE);
-        imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,true);
-        imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,true);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -143,7 +143,7 @@ public class ImageFileLoaderTest {
         assertEquals("Test_Output_Image",image.getName());
 
         // Checking there are no measurements associated with this image
-        assertEquals(0,image.getSingleMeasurements().size());
+        assertEquals(0,image.getMeasurements().size());
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());
@@ -168,14 +168,14 @@ public class ImageFileLoaderTest {
         Workspace workspace = new Workspace(0,new File(pathToImage));
 
         // Initialising the ImageFileLoader
-        ImageFileLoader imageFileLoader = new ImageFileLoader();
+        ImageLoader imageFileLoader = new ImageLoader();
         imageFileLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageFileLoader.IMPORT_MODE,ImageFileLoader.ImportModes.CURRENT_FILE);
-        imageFileLoader.updateParameterValue(ImageFileLoader.USE_BIOFORMATS,true);
-        imageFileLoader.updateParameterValue(ImageFileLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageFileLoader.SHOW_IMAGE,false);
+        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
+        imageFileLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,true);
+        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace,false);
@@ -190,7 +190,7 @@ public class ImageFileLoaderTest {
         assertEquals("Test_Output_Image",image.getName());
 
         // Checking there are no measurements associated with this image
-        assertEquals(0,image.getSingleMeasurements().size());
+        assertEquals(0,image.getMeasurements().size());
 
         // Checking the dimensions of the image
         assertEquals(64,image.getImagePlus().getWidth());

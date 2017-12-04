@@ -1,6 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -13,6 +15,8 @@ import java.io.Serializable;
  *
  */
 public abstract class Analysis implements Serializable {
+    public InputControl inputControl = new InputControl();
+    public OutputControl outputControl = new OutputControl();
     public ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
 
@@ -81,6 +85,22 @@ public abstract class Analysis implements Serializable {
 
         return true;
 
+    }
+
+    public InputControl getInputControl() {
+        return inputControl;
+    }
+
+    public void setInputControl(InputControl inputControl) {
+        this.inputControl = inputControl;
+    }
+
+    public OutputControl getOutputControl() {
+        return outputControl;
+    }
+
+    public void setOutputControl(OutputControl outputControl) {
+        this.outputControl = outputControl;
     }
 
     public ModuleCollection getModules() {
