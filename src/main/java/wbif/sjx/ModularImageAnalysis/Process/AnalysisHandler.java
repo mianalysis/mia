@@ -50,8 +50,8 @@ public class AnalysisHandler {
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element root = doc.createElement("ROOT");
-        root.appendChild(Exporter.prepareParametersXML(doc,inOutModules));
-        root.appendChild(Exporter.prepareParametersXML(doc,analysis.getModules()));
+        root.appendChild(Exporter.prepareModulesXML(doc,inOutModules));
+        root.appendChild(Exporter.prepareModulesXML(doc,analysis.getModules()));
         doc.appendChild(root);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
@@ -120,7 +120,13 @@ public class AnalysisHandler {
                 }
 
                 // Populating parameters
-                populateModuleParameters(moduleNode,module);
+                NodeList moduleChildNodes = moduleNode.getChildNodes();
+                for (int j=0;j<moduleChildNodes.getLength();j++) {
+                    if (moduleChildNodes.item(j).getNodeName().equals("PARAMETERS")) {
+                        Node parametersNode = moduleChildNodes.item(j);
+                        populateModuleParameters(parametersNode, module);
+                    }
+                }
 
                 modules.add(module);
 

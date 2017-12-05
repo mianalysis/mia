@@ -29,6 +29,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -84,7 +85,7 @@ public class Exporter {
             doc.appendChild(root);
 
             // Getting parameters as Element and adding to the main file
-            Element parametersElement = prepareParametersXML(doc,modules);
+            Element parametersElement = prepareModulesXML(doc,modules);
             root.appendChild(parametersElement);
 
             // Running through each workspace (each corresponds to a file) adding file information
@@ -185,13 +186,11 @@ public class Exporter {
         }
     }
 
-    public static Element prepareParametersXML(Document doc, ModuleCollection modules) {
-        Element parametersElement =  doc.createElement("PARAMETERS");
+    public static Element prepareModulesXML(Document doc, ModuleCollection modules) {
+        Element modulesElement =  doc.createElement("MODULES");
 
         // Running through each parameter set (one for each module
         for (HCModule module:modules) {
-            LinkedHashMap<String,Parameter> parameters = module.getAllParameters();
-
             Element moduleElement =  doc.createElement("MODULE");
             Attr nameAttr = doc.createAttribute("NAME");
             nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
@@ -201,44 +200,113 @@ public class Exporter {
             nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
             moduleElement.setAttributeNode(nicknameAttr);
 
-            for (Parameter currParam:parameters.values()) {
-                // Adding the name and value of the current parameter
-                Element parameterElement =  doc.createElement("PARAMETER");
+            Element parametersElement = prepareParametersXML(doc,module);
+            moduleElement.appendChild(parametersElement);
 
-                nameAttr = doc.createAttribute("NAME");
-                nameAttr.appendChild(doc.createTextNode(currParam.getName()));
-                parameterElement.setAttributeNode(nameAttr);
+            // Adding references from this module
+            Element referencesElement = doc.createElement("REFERENCES");
 
-                Attr valueAttr = doc.createAttribute("VALUE");
-                if (currParam.getValue() == null) {
-                    valueAttr.appendChild(doc.createTextNode(""));
-                } else {
-                    valueAttr.appendChild(doc.createTextNode(currParam.getValue().toString()));
+            ReferenceCollection imageReferences = module.updateAndGetImageReferences();
+            Element imageReferencesElement = prepareReferencesXML(doc,imageReferences,"IMAGE_REF");
+            referencesElement.appendChild(imageReferencesElement);
+
+            ReferenceCollection objectReferences = module.updateAndGetObjectReferences();
+            Element objectsReferencesElement = prepareReferencesXML(doc,objectReferences,"OBJECTS_REF");
+            referencesElement.appendChild(objectsReferencesElement);
+
+            moduleElement.appendChild(referencesElement);
+
+            // Adding current module to modules
+            modulesElement.appendChild(moduleElement);
+
+        }
+
+        return modulesElement;
+
+    }
+
+    public static Element prepareParametersXML(Document doc, HCModule module) {
+        // Adding parameters from this module
+        Element parametersElement = doc.createElement("PARAMETERS");
+
+        LinkedHashMap<String,Parameter> parameters = module.getAllParameters();
+        for (Parameter currParam:parameters.values()) {
+            // Adding the name and value of the current parameter
+            Element parameterElement =  doc.createElement("PARAMETER");
+
+            Attr nameAttr = doc.createAttribute("NAME");
+            nameAttr.appendChild(doc.createTextNode(currParam.getName()));
+            parameterElement.setAttributeNode(nameAttr);
+
+            Attr valueAttr = doc.createAttribute("VALUE");
+            if (currParam.getValue() == null) {
+                valueAttr.appendChild(doc.createTextNode(""));
+            } else {
+                valueAttr.appendChild(doc.createTextNode(currParam.getValue().toString()));
+            }
+            parameterElement.setAttributeNode(valueAttr);
+
+            Attr visibleAttr = doc.createAttribute("VISIBLE");
+            visibleAttr.appendChild(doc.createTextNode(Boolean.toString(currParam.isVisible())));
+            parameterElement.setAttributeNode(visibleAttr);
+
+            if (currParam.getType() == Parameter.CHILD_OBJECTS | currParam.getType() == Parameter.PARENT_OBJECTS) {
+                if (currParam.getValueSource() != null) {
+                    Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+                    valueSourceAttr.appendChild(doc.createTextNode(currParam.getValueSource().toString()));
+                    parameterElement.setAttributeNode(valueSourceAttr);
                 }
-                parameterElement.setAttributeNode(valueAttr);
-
-                Attr visibleAttr = doc.createAttribute("VISIBLE");
-                visibleAttr.appendChild(doc.createTextNode(Boolean.toString(currParam.isVisible())));
-                parameterElement.setAttributeNode(visibleAttr);
-
-                if (currParam.getType() == Parameter.CHILD_OBJECTS | currParam.getType() == Parameter.PARENT_OBJECTS) {
-                    if (currParam.getValueSource() != null) {
-                        Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
-                        valueSourceAttr.appendChild(doc.createTextNode(currParam.getValueSource().toString()));
-                        parameterElement.setAttributeNode(valueSourceAttr);
-                    }
-                }
-
-                moduleElement.appendChild(parameterElement);
-
             }
 
-            // Adding current module to parameters
-            parametersElement.appendChild(moduleElement);
+            parametersElement.appendChild(parameterElement);
 
         }
 
         return parametersElement;
+
+    }
+
+    public static Element prepareReferencesXML(Document doc, ReferenceCollection references, String type) {
+        Element referencesElement = doc.createElement(type+"S");
+
+        // If there are no references, return the empty element
+        if (references==null) return referencesElement;
+
+        for (Reference reference:references) {
+            Element referenceElement = doc.createElement(type);
+
+            referenceElement.setAttribute("NAME",reference.getName());
+
+            // Adding measurements to this reference
+            LinkedHashSet<MeasurementReference> measurementReferences = reference.getMeasurementReferences();
+            Element measurementReferencesElement = prepareMeasurementReferencesXML(doc, measurementReferences);
+            referenceElement.appendChild(measurementReferencesElement);
+
+            referencesElement.appendChild(referenceElement);
+
+        }
+
+        return referencesElement;
+
+    }
+
+    public static Element prepareMeasurementReferencesXML(Document doc, LinkedHashSet<MeasurementReference> measurementReferences) {
+        Element measurementReferencesElement = doc.createElement("MEASUREMENTS");
+
+        if (measurementReferences == null) return measurementReferencesElement;
+
+        for (MeasurementReference measurementReference:measurementReferences) {
+            Element measurementReferenceElement = doc.createElement("MEASUREMENT");
+
+            measurementReferenceElement.setAttribute("NAME",measurementReference.getMeasurementName());
+            measurementReferenceElement.setAttribute("IS_CALCULATED",String.valueOf(measurementReference.isCalculated()));
+            measurementReferenceElement.setAttribute("IS_EXPORTABLE",String.valueOf(measurementReference.isExportable()));
+
+            measurementReferencesElement.appendChild(measurementReferenceElement);
+
+        }
+
+        return measurementReferencesElement;
 
     }
 
