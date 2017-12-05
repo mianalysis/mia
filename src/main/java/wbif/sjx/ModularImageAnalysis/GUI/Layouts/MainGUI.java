@@ -589,10 +589,13 @@ public class MainGUI extends GUI {
 
         // If selected, adding the measurement selector for output control
         if (activeModule.getClass().isInstance(new OutputControl())
+                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_XLSX)
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
 
             LinkedHashMap<String,Reference> imageReferences = getModules().getImageReferences();
             for (String imageName:imageReferences.keySet()) {
+                if (imageReferences.get(imageName).getMeasurementReferences().isEmpty()) continue;
+
                 JPanel measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)",635);
                 c.gridx = 0;
                 c.gridy++;
@@ -612,6 +615,8 @@ public class MainGUI extends GUI {
 
             LinkedHashMap<String,Reference> objectReferences = getModules().getObjectReferences();
             for (String objectName:objectReferences.keySet()) {
+                if (objectReferences.get(objectName).getMeasurementReferences().isEmpty()) continue;
+
                 JPanel measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)",635);
                 c.gridx = 0;
                 c.gridy++;

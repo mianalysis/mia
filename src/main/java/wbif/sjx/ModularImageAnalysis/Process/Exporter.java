@@ -43,6 +43,8 @@ public class Exporter {
 
     private String exportFilePath;
     private boolean verbose = false;
+    private boolean exportSummary = true;
+    private boolean exportIndividualObjects = true;
 
     private boolean addMetadataToObjects = true;
 
@@ -113,7 +115,7 @@ public class Exporter {
                         nameAttr.appendChild(doc.createTextNode(String.valueOf(imageName)));
                         imageElement.setAttributeNode(nameAttr);
 
-                        for (MIAMeasurement measurement : image.getMeasurements().values()) {
+                        for (Measurement measurement : image.getMeasurements().values()) {
                             String attrName = measurement.getName().toUpperCase().replaceAll(" ", "_");
                             Attr measAttr = doc.createAttribute(attrName);
                             String attrValue = df.format(measurement.getValue());
@@ -144,7 +146,7 @@ public class Exporter {
                         positionAttr.appendChild(doc.createTextNode(String.valueOf(object.getT())));
                         objectElement.setAttributeNode(positionAttr);
 
-                        for (MIAMeasurement measurement:object.getMeasurements().values()) {
+                        for (Measurement measurement:object.getMeasurements().values()) {
                             Element measElement = doc.createElement("MEAS");
 
                             String name = measurement.getName().toUpperCase().replaceAll(" ", "_");
@@ -319,8 +321,8 @@ public class Exporter {
 
         // Adding relevant sheets
         prepareParametersXLSX(workbook,modules);
-        prepareSummaryXLSX(workbook,workspaces,modules);
-        prepareObjectsXLSX(workbook,workspaces,modules);
+        if (exportSummary) prepareSummaryXLSX(workbook,workspaces,modules);
+        if (exportIndividualObjects) prepareObjectsXLSX(workbook,workspaces,modules);
 
         // Writing the workbook to file
         String outPath = FilenameUtils.removeExtension(exportFilePath) +".xlsx";
@@ -409,7 +411,7 @@ public class Exporter {
                 String exampleImageName = exampleImage.getName();
 
                 // Running through all the image measurement values, adding them as new columns
-                HashMap<String, MIAMeasurement> exampleMeasurements = exampleImage.getMeasurements();
+                HashMap<String, Measurement> exampleMeasurements = exampleImage.getMeasurements();
                 for (String measurementName : exampleMeasurements.keySet()) {
                     Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                     String summaryDataName = getImageString(exampleImageName,measurementName);
@@ -421,11 +423,11 @@ public class Exporter {
         }
 
         // Adding object headers
-        HashMap<String, ObjSet> exampleObjSets = exampleWorkspace.getObjects();
+        HashMap<String, ObjCollection> exampleObjSets = exampleWorkspace.getObjects();
         if (exampleObjSets.size() != 0) {
 
-            for (ObjSet exampleObjSet : exampleObjSets.values()) {
-                String exampleObjSetName = exampleObjSet.getName();
+            for (ObjCollection exampleObjCollection : exampleObjSets.values()) {
+                String exampleObjSetName = exampleObjCollection.getName();
 
                 // Adding the number of objects
                 Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
@@ -477,7 +479,7 @@ public class Exporter {
             HashMap<String,Image> images = workspace.getImages();
             for (Image image:images.values()) {
                 String imageName = image.getName();
-                HashMap<String,MIAMeasurement> measurements = image.getMeasurements();
+                HashMap<String,Measurement> measurements = image.getMeasurements();
 
                 for (String measurementName : measurements.keySet()) {
                     String headerName = getImageString(imageName,measurementName);
@@ -490,14 +492,14 @@ public class Exporter {
             }
 
             // Adding object measurements
-            HashMap<String, ObjSet> objSets = workspace.getObjects();
-            for (ObjSet objSet:objSets.values()) {
-                String objSetName = objSet.getName();
+            HashMap<String, ObjCollection> objSets = workspace.getObjects();
+            for (ObjCollection objCollection :objSets.values()) {
+                String objSetName = objCollection.getName();
 
                 String headerName = getObjectString(objSetName,"","NUMBER");
                 int colNum = colNumbers.get(headerName);
                 Cell summaryCell = summaryValueRow.createCell(colNum);
-                summaryCell.setCellValue(objSet.size());
+                summaryCell.setCellValue(objCollection.size());
 
                 HashSet<MeasurementReference> objectReferences = modules.getObjectReferences().get(objSetName).getMeasurementReferences();
                 for (MeasurementReference objectMeasurement : objectReferences) {
@@ -506,8 +508,8 @@ public class Exporter {
 
                     // Running through all objects in this set, adding measurements to a CumStat object
                     CumStat cs = new CumStat();
-                    for (Obj obj:objSet.values()) {
-                        MIAMeasurement measurement = obj.getMeasurement(objectMeasurement.getMeasurementName());
+                    for (Obj obj: objCollection.values()) {
+                        Measurement measurement = obj.getMeasurement(objectMeasurement.getMeasurementName());
                         cs.addMeasure(measurement.getValue());
                     }
 
@@ -621,7 +623,7 @@ public class Exporter {
             // Running through each Workspace, adding rows
             for (Workspace workspace : workspaces) {
                 for (String objectName : workspace.getObjects().keySet()) {
-                    ObjSet objects = workspace.getObjects().get(objectName);
+                    ObjCollection objects = workspace.getObjects().get(objectName);
 
                     if (objects.values().iterator().hasNext()) {
                         for (Obj object : objects.values()) {
@@ -664,7 +666,7 @@ public class Exporter {
                                 for (int column : childNames.get(objectName).keySet()) {
                                     Cell childValueCell = objectValueRow.createCell(column);
                                     String childName = childNames.get(objectName).get(column);
-                                    ObjSet children = object.getChildren(childName);
+                                    ObjCollection children = object.getChildren(childName);
                                     if (children != null) {
                                         childValueCell.setCellValue(children.size());
                                     } else {
@@ -683,7 +685,7 @@ public class Exporter {
                             for (int column : measurementNames.get(objectName).keySet()) {
                                 Cell measValueCell = objectValueRow.createCell(column);
                                 String measurementName = measurementNames.get(objectName).get(column);
-                                MIAMeasurement measurement = object.getMeasurement(measurementName);
+                                Measurement measurement = object.getMeasurement(measurementName);
 
                                 // If there isn't a corresponding value for this object, set a blank cell
                                 if (measurement == null) {
@@ -746,4 +748,19 @@ public class Exporter {
         this.verbose = verbose;
     }
 
+    public boolean isExportSummary() {
+        return exportSummary;
+    }
+
+    public void setExportSummary(boolean exportSummary) {
+        this.exportSummary = exportSummary;
+    }
+
+    public boolean isExportIndividualObjects() {
+        return exportIndividualObjects;
+    }
+
+    public void setExportIndividualObjects(boolean exportIndividualObjects) {
+        this.exportIndividualObjects = exportIndividualObjects;
+    }
 }

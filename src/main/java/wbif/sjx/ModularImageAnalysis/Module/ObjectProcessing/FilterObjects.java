@@ -46,7 +46,7 @@ public class FilterObjects extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         String method = parameters.getValue(FILTER_METHOD);
@@ -120,7 +120,7 @@ public class FilterObjects extends HCModule {
                 iterator = inputObjects.values().iterator();
                 while (iterator.hasNext()) {
                     Obj inputObject = iterator.next();
-                    ObjSet childObjects = inputObject.getChildren(childObjectsName);
+                    ObjCollection childObjects = inputObject.getChildren(childObjectsName);
 
                     // Removing the object if it has no children
                     if (childObjects == null) {

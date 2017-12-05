@@ -33,7 +33,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting file to save to
         String exportFilePath = parameters.getValue(OUTPUT_FILE);
@@ -75,7 +75,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
             timepointHeaderCell.setCellValue("TIMEPOINT");
 
             // Adding measurement headers
-            for (MIAMeasurement measurement : object.getMeasurements().values()) {
+            for (Measurement measurement : object.getMeasurements().values()) {
                 Cell measHeaderCell = objectHeaderRow.createCell(col++);
                 String measurementName = measurement.getName().toUpperCase().replaceAll(" ", "_");
                 measHeaderCell.setCellValue(measurementName);
@@ -103,7 +103,7 @@ public class SaveObjectsToSpreadsheet extends HCModule {
                 Cell timepointValueCell = objectValueRow.createCell(col++);
                 timepointValueCell.setCellValue(inputObject.getT());
 
-                for (MIAMeasurement measurement : inputObject.getMeasurements().values()) {
+                for (Measurement measurement : inputObject.getMeasurements().values()) {
                     Cell measValueCell = objectValueRow.createCell(col++);
                     measValueCell.setCellValue(measurement.getValue());
                 }

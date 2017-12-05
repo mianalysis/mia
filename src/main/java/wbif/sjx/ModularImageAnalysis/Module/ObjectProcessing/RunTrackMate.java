@@ -19,7 +19,6 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.NormaliseIntensity;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
@@ -65,7 +64,7 @@ public class RunTrackMate extends HCModule {
 
     }
 
-    private static void createOverlay(ObjSet inputObjects, ImagePlus ipl, boolean showID, boolean useParentID, String parentObjectsName) {
+    private static void createOverlay(ObjCollection inputObjects, ImagePlus ipl, boolean showID, boolean useParentID, String parentObjectsName) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -167,13 +166,13 @@ public class RunTrackMate extends HCModule {
 
         // Getting name of output objects
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        ObjSet spotObjects = new ObjSet(spotObjectsName);
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
 
         // Getting name of output summary objects (if required)
         boolean createTracks = parameters.getValue(CREATE_TRACK_OBJECTS);
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
-        ObjSet trackObjects = null;
-        if (createTracks) trackObjects = new ObjSet(trackObjectsName);
+        ObjCollection trackObjects = null;
+        if (createTracks) trackObjects = new ObjCollection(trackObjectsName);
 
         // If image should be normalised
         if (normaliseIntensity) {
@@ -227,8 +226,8 @@ public class RunTrackMate extends HCModule {
                 spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
                 spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
-                spotObject.addMeasurement(new MIAMeasurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
-                spotObject.addMeasurement(new MIAMeasurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
+                spotObject.addMeasurement(new Measurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
+                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
 
                 spotObjects.put(spotObject.getID(),spotObject);
 

@@ -38,7 +38,7 @@ public class ApplyManualClassification extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting classification file and storing classifications as HashMap that can be easily read later on
         String classificationFilePath = parameters.getValue(CLASSIFICATION_FILE);
@@ -59,7 +59,7 @@ public class ApplyManualClassification extends HCModule {
                     int timepoint = object.getT();
 
                     if (xCent==x & yCent==y & timepoint == f) {
-                        MIAMeasurement objClass = new MIAMeasurement(Measurements.CLASS,currClass);
+                        Measurement objClass = new Measurement(Measurements.CLASS,currClass);
                         objClass.setSource(this);
                         object.addMeasurement(objClass);
 
@@ -81,7 +81,7 @@ public class ApplyManualClassification extends HCModule {
             } else {
                 for (Obj object : inputObjects.values()) {
                     if (object.getMeasurement(Measurements.CLASS) == null) {
-                        MIAMeasurement objClass = new MIAMeasurement(Measurements.CLASS,Double.NaN);
+                        Measurement objClass = new Measurement(Measurements.CLASS,Double.NaN);
                         objClass.setSource(this);
                         object.addMeasurement(objClass);
                     }

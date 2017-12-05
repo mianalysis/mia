@@ -1,10 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import wbif.sjx.common.Object.HCMetadata;
-import wbif.sjx.common.Object.Point;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -12,7 +10,7 @@ import java.util.LinkedHashMap;
  * Created by sc13967 on 02/05/2017.
  */
 public class Workspace {
-    private LinkedHashMap<String, ObjSet> objects = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjCollection> objects = new LinkedHashMap<>();
     private LinkedHashMap<String, Image> images = new LinkedHashMap<>();
     private HCMetadata metadata = new HCMetadata();
     private int ID;
@@ -27,7 +25,7 @@ public class Workspace {
 
     // PUBLIC METHODS
 
-    public void addObjects(ObjSet object) {
+    public void addObjects(ObjCollection object) {
         objects.put(object.getName(), object);
     }
 
@@ -71,8 +69,8 @@ public class Workspace {
     public void clearAllObjects(boolean retainMeasurements) {
         if (retainMeasurements) {
             // Sets the ImagePlus to null, but leaves measurements
-            for (ObjSet objSet:objects.values()) {
-                for (Obj obj:objSet.values()) {
+            for (ObjCollection objCollection :objects.values()) {
+                for (Obj obj: objCollection.values()) {
                     obj.setPoints(null);
                     obj.clearSurface();
 
@@ -90,7 +88,7 @@ public class Workspace {
 
     }
 
-    public ObjSet getObjectSet(String name) {
+    public ObjCollection getObjectSet(String name) {
         return objects.get(name);
 
     }
@@ -98,11 +96,11 @@ public class Workspace {
 
     // GETTERS AND SETTERS
 
-    public HashMap<String, ObjSet> getObjects() {
+    public HashMap<String, ObjCollection> getObjects() {
         return objects;
     }
 
-    public void setObjects(LinkedHashMap<String, ObjSet> objects) {
+    public void setObjects(LinkedHashMap<String, ObjCollection> objects) {
         this.objects = objects;
     }
 

@@ -68,7 +68,7 @@ public class MeasureIntensityDistribution extends HCModule {
         return "INT_DISTR//"+objectsName+"_"+measurement;
     }
 
-    public CumStat[] measureFractionProximal(ObjSet inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {
+    public CumStat[] measureFractionProximal(ObjCollection inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
@@ -131,7 +131,7 @@ public class MeasureIntensityDistribution extends HCModule {
 
     }
 
-    public CumStat measureIntensityWeightedProximity(ObjSet inputObjects, Image inputImage, boolean ignoreOnObjects) {
+    public CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, boolean ignoreOnObjects) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
@@ -216,27 +216,27 @@ public class MeasureIntensityDistribution extends HCModule {
 
         switch (measurementType) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
-                ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+                ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
                 // Checking if there are any objects to measure
                 if (inputObjects.size() == 0) {
-                    inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.N_PX_INRANGE), Double.NaN));
-                    inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE), Double.NaN));
-                    inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), Double.NaN));
-                    inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), Double.NaN));
-                    inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), Double.NaN));
-                    inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), Double.NaN));
+                    inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.N_PX_INRANGE), Double.NaN));
+                    inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE), Double.NaN));
+                    inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), Double.NaN));
+                    inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), Double.NaN));
+                    inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), Double.NaN));
+                    inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), Double.NaN));
                     return;
                 }
 
                 CumStat[] css = measureFractionProximal(inputObjects, inputImage, proximalDistance, ignoreOnObjects);
 
-                inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.N_PX_INRANGE), css[0].getN()));
-                inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE), css[1].getN()));
-                inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), css[0].getMean()));
-                inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), css[1].getMean()));
-                inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), css[0].getSum()));
-                inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), css[1].getSum()));
+                inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.N_PX_INRANGE), css[0].getN()));
+                inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE), css[1].getN()));
+                inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), css[0].getMean()));
+                inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), css[1].getMean()));
+                inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), css[0].getSum()));
+                inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), css[1].getSum()));
 
                 if (verbose) System.out.println("[" + moduleName + "] Number of pixels inside range = " + css[0].getN());
                 if (verbose) System.out.println("[" + moduleName + "] Number of pixels outside range = " + css[1].getN());
@@ -252,15 +252,15 @@ public class MeasureIntensityDistribution extends HCModule {
 
                 // Checking if there are any objects to measure
                 if (inputObjects.size() == 0) {
-                    inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), Double.NaN));
-                    inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), Double.NaN));
+                    inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), Double.NaN));
+                    inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), Double.NaN));
                     return;
                 }
 
                 CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage, ignoreOnObjects);
 
-                inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), cs.getMean()));
-                inputImage.addMeasurement(new MIAMeasurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), cs.getStd()));
+                inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), cs.getMean()));
+                inputImage.addMeasurement(new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), cs.getStd()));
 
                 if (verbose) System.out.println("[" + moduleName + "] Mean intensity proximity = " + cs.getMean() + " +/- "+cs.getStd());
 

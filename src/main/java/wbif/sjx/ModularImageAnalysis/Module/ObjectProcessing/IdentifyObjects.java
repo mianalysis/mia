@@ -39,7 +39,7 @@ public class IdentifyObjects extends HCModule {
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjSet outputObjects = new ObjSet(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS);
 
@@ -66,7 +66,7 @@ public class IdentifyObjects extends HCModule {
 
             // Converting image to objects
             Image tempImage = new Image("Temp image", currStack);
-            ObjSet currOutputObjects = ObjectImageConverter.convertImageToObjects(tempImage, outputObjectsName);
+            ObjCollection currOutputObjects = ObjectImageConverter.convertImageToObjects(tempImage, outputObjectsName);
 
             // Updating the current objects (setting the real frame number and offsetting the ID)
             int maxID = 0;

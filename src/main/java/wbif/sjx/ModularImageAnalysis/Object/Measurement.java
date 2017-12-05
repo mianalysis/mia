@@ -5,7 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 /**
  * Measurement that holds a single value for an object
  */
-public class MIAMeasurement {
+public class Measurement {
     // Spatial measures
     public static final String DIRECTIONALITY_RATIO = "Directionality ratio";
     public static final String DURATION = "Duration";
@@ -19,24 +19,24 @@ public class MIAMeasurement {
 
     // CONSTRUCTOR
 
-    public MIAMeasurement(String name) {
+    public Measurement(String name) {
         this.name = name;
 
     }
 
-    public MIAMeasurement(String name, HCModule source) {
+    public Measurement(String name, HCModule source) {
         this.name = name;
         this.source = source;
 
     }
 
-    public MIAMeasurement(String name, double value) {
+    public Measurement(String name, double value) {
         this.name = name;
         this.value = value;
 
     }
 
-    public MIAMeasurement(String name, double value, HCModule source) {
+    public Measurement(String name, double value, HCModule source) {
         this.name = name;
         this.value = value;
         this.source = source;

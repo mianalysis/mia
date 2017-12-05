@@ -8,7 +8,7 @@ import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
+import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class ObjectImageConverterTest {
         String calibratedUnits = "um";
 
         // Initialising object store
-        ObjSet testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_16bit.tif").getPath(),"UTF-8");
@@ -99,7 +99,7 @@ public class ObjectImageConverterTest {
         String calibratedUnits = "um";
 
         // Initialising object store
-        ObjSet testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_16bit_NoRef.tif").getPath(),"UTF-8");
@@ -136,7 +136,7 @@ public class ObjectImageConverterTest {
     }
 
     /**
-     * Tests the ability to take an image containing labelled pixels and turn it into an ObjSet.
+     * Tests the ability to take an image containing labelled pixels and turn it into an ObjCollection.
      * @throws Exception
      */
     @Test
@@ -150,7 +150,7 @@ public class ObjectImageConverterTest {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        ObjSet testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
+        ObjCollection testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
 
         // Checking objects have been assigned
         assertNotNull("Testing converted objects are not null",testObjects);
@@ -190,7 +190,7 @@ public class ObjectImageConverterTest {
     }
 
     /**
-     * Tests the ability to take an image containing labelled pixels and turn it into an ObjSet.
+     * Tests the ability to take an image containing labelled pixels and turn it into an ObjCollection.
      * @throws Exception
      */
     @Test
@@ -204,7 +204,7 @@ public class ObjectImageConverterTest {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        ObjSet testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
+        ObjCollection testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
 
         // Checking objects have been assigned
         assertNotNull("Testing converted objects are not null",testObjects);

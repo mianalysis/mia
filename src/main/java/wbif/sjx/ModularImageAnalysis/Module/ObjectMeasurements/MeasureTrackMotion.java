@@ -4,8 +4,6 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Track;
 
-import java.util.ArrayList;
-
 /**
  * Created by steph on 24/05/2017.
  */
@@ -30,7 +28,7 @@ public class MeasureTrackMotion extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
-        ObjSet inputTrackObjects = workspace.getObjects().get(inputTrackObjectsName);
+        ObjCollection inputTrackObjects = workspace.getObjects().get(inputTrackObjectsName);
 
         // Getting input spot objects
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS);
@@ -60,37 +58,37 @@ public class MeasureTrackMotion extends HCModule {
 
             if (x.length == 0) {
                 // Adding measurements to track objects
-                MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.DIRECTIONALITY_RATIO, Double.NaN);
+                Measurement measurement = new Measurement(Measurement.DIRECTIONALITY_RATIO, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.EUCLIDEAN_DISTANCE, Double.NaN);
+                measurement = new Measurement(Measurement.EUCLIDEAN_DISTANCE, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.TOTAL_PATH_LENGTH, Double.NaN);
+                measurement = new Measurement(Measurement.TOTAL_PATH_LENGTH, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.DURATION, Double.NaN);
+                measurement = new Measurement(Measurement.DURATION, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
             } else {
                 // Adding measurements to track objects
-                MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
+                Measurement measurement = new Measurement(Measurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
+                measurement = new Measurement(Measurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
+                measurement = new Measurement(Measurement.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.DURATION, track.getDuration());
+                measurement = new Measurement(Measurement.DURATION, track.getDuration());
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
@@ -130,10 +128,10 @@ public class MeasureTrackMotion extends HCModule {
         inputTrackObjects = new Reference();
         objectReferences.add(inputTrackObjects);
 
-        inputTrackObjects.addMeasurementReference(new MeasurementReference(MIAMeasurement.DIRECTIONALITY_RATIO));
-        inputTrackObjects.addMeasurementReference(new MeasurementReference(MIAMeasurement.EUCLIDEAN_DISTANCE));
-        inputTrackObjects.addMeasurementReference(new MeasurementReference(MIAMeasurement.TOTAL_PATH_LENGTH));
-        inputTrackObjects.addMeasurementReference(new MeasurementReference(MIAMeasurement.DURATION));
+        inputTrackObjects.addMeasurementReference(new MeasurementReference(Measurement.DIRECTIONALITY_RATIO));
+        inputTrackObjects.addMeasurementReference(new MeasurementReference(Measurement.EUCLIDEAN_DISTANCE));
+        inputTrackObjects.addMeasurementReference(new MeasurementReference(Measurement.TOTAL_PATH_LENGTH));
+        inputTrackObjects.addMeasurementReference(new MeasurementReference(Measurement.DURATION));
 
     }
 

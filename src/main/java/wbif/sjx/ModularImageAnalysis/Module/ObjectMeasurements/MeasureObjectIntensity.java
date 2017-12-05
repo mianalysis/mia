@@ -78,15 +78,15 @@ public class MeasureObjectIntensity extends HCModule {
 
         // Calculating mean, std, min and max intensity
         if (parameters.getValue(MEASURE_MEAN))
-            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.MEAN), cs.getMean()));
+            object.addMeasurement(new Measurement(getFullName(imageName,Measurements.MEAN), cs.getMean()));
         if (parameters.getValue(MEASURE_MIN))
-            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.MIN), cs.getMin()));
+            object.addMeasurement(new Measurement(getFullName(imageName,Measurements.MIN), cs.getMin()));
         if (parameters.getValue(MEASURE_MAX))
-            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.MAX), cs.getMax()));
+            object.addMeasurement(new Measurement(getFullName(imageName,Measurements.MAX), cs.getMax()));
         if (parameters.getValue(MEASURE_STDEV))
-            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
+            object.addMeasurement(new Measurement(getFullName(imageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
         if (parameters.getValue(MEASURE_SUM))
-            object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.SUM), cs.getSum()));
+            object.addMeasurement(new Measurement(getFullName(imageName,Measurements.SUM), cs.getSum()));
 
     }
 
@@ -114,12 +114,12 @@ public class MeasureObjectIntensity extends HCModule {
 
         }
 
-        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.X_CENT_MEAN), csX.getMean()));
-        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.X_CENT_STD), csX.getStd()));
-        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.Y_CENT_MEAN), csY.getMean()));
-        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.Y_CENT_STD), csY.getStd()));
-        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.Z_CENT_MEAN), csZ.getMean()));
-        object.addMeasurement(new MIAMeasurement(getFullName(imageName,Measurements.Z_CENT_STD), csZ.getStd()));
+        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.X_CENT_MEAN), csX.getMean()));
+        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.X_CENT_STD), csX.getStd()));
+        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Y_CENT_MEAN), csY.getMean()));
+        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Y_CENT_STD), csY.getStd()));
+        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Z_CENT_MEAN), csZ.getMean()));
+        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Z_CENT_STD), csZ.getStd()));
 
     }
 
@@ -141,7 +141,7 @@ public class MeasureObjectIntensity extends HCModule {
 
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet objects = workspace.getObjects().get(objectName);
+        ObjCollection objects = workspace.getObjects().get(objectName);
 
         // Getting input image
         String imageName = parameters.getValue(INPUT_IMAGE);

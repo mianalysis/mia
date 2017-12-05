@@ -69,7 +69,7 @@ public class RidgeDetection extends HCModule {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjSet outputObjects = new ObjSet(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Getting parameters (RidgeDetection plugin wants to use pixel units only)
         double lowerThreshold = parameters.getValue(LOWER_THRESHOLD);
@@ -114,7 +114,7 @@ public class RidgeDetection extends HCModule {
                         groups.put(line, lineGroup);
                     }
 
-                    // Iterating over each object, adding it to the nascent ObjSet
+                    // Iterating over each object, adding it to the nascent ObjCollection
                     if (linkContours) {
                         if (verbose) System.out.println("[" + moduleName + "] Linking contours");
 
@@ -159,7 +159,7 @@ public class RidgeDetection extends HCModule {
 
                         // Setting single values for the current contour
                         outputObject.setT(t);
-                        outputObject.addMeasurement(new MIAMeasurement(Measurements.LENGTH_PX, estLength));
+                        outputObject.addMeasurement(new Measurement(Measurements.LENGTH_PX, estLength));
                         outputObjects.add(outputObject);
                     }
                 }

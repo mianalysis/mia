@@ -60,7 +60,7 @@ public class MeasureObjectTexture extends HCModule {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
@@ -107,7 +107,7 @@ public class MeasureObjectTexture extends HCModule {
             textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs,c,t,coords);
 
             // Acquiring measurements
-            MIAMeasurement ASMMeasurement = new MIAMeasurement(getFullName(inputImageName, Measurements.ASM),textureCalculator.getASM());
+            Measurement ASMMeasurement = new Measurement(getFullName(inputImageName, Measurements.ASM),textureCalculator.getASM());
             ASMMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(ASMMeasurement);
@@ -115,7 +115,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(ASMMeasurement);
             }
 
-            MIAMeasurement contrastMeasurement = new MIAMeasurement(getFullName(inputImageName, Measurements.CONTRAST),textureCalculator.getContrast());
+            Measurement contrastMeasurement = new Measurement(getFullName(inputImageName, Measurements.CONTRAST),textureCalculator.getContrast());
             contrastMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(contrastMeasurement);
@@ -123,7 +123,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(contrastMeasurement);
             }
 
-            MIAMeasurement correlationMeasurement = new MIAMeasurement(getFullName(inputImageName, Measurements.CORRELATION),textureCalculator.getCorrelation());
+            Measurement correlationMeasurement = new Measurement(getFullName(inputImageName, Measurements.CORRELATION),textureCalculator.getCorrelation());
             correlationMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(correlationMeasurement);
@@ -131,7 +131,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(correlationMeasurement);
             }
 
-            MIAMeasurement entropyMeasurement = new MIAMeasurement(getFullName(inputImageName, Measurements.ENTROPY),textureCalculator.getEntropy());
+            Measurement entropyMeasurement = new Measurement(getFullName(inputImageName, Measurements.ENTROPY),textureCalculator.getEntropy());
             entropyMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(entropyMeasurement);

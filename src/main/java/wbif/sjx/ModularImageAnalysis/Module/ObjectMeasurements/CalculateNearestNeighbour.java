@@ -30,7 +30,7 @@ public class CalculateNearestNeighbour extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         boolean calculateWithinParent = parameters.getValue(CALCULATE_WITHIN_PARENT);
@@ -51,7 +51,7 @@ public class CalculateNearestNeighbour extends HCModule {
 
                 // Some objects may not have a parent
                 if (parentObject != null) {
-                    ObjSet neighbourObjects = parentObject.getChildren(inputObjectsName);
+                    ObjCollection neighbourObjects = parentObject.getChildren(inputObjectsName);
 
                     for (Obj testObject : neighbourObjects.values()) {
                         if (testObject != inputObject) {
@@ -94,12 +94,12 @@ public class CalculateNearestNeighbour extends HCModule {
 
             // Adding details of the nearest neighbour to the input object's measurements
             if (nearestNeighbour != null) {
-                inputObject.addMeasurement(new MIAMeasurement(NN_ID, nearestNeighbour.getID()));
-                inputObject.addMeasurement(new MIAMeasurement(NN_DISTANCE, minDist));
+                inputObject.addMeasurement(new Measurement(NN_ID, nearestNeighbour.getID()));
+                inputObject.addMeasurement(new Measurement(NN_DISTANCE, minDist));
 
             } else {
-                inputObject.addMeasurement(new MIAMeasurement(NN_ID, Double.NaN));
-                inputObject.addMeasurement(new MIAMeasurement(NN_DISTANCE, Double.NaN));
+                inputObject.addMeasurement(new Measurement(NN_ID, Double.NaN));
+                inputObject.addMeasurement(new Measurement(NN_DISTANCE, Double.NaN));
 
             }
         }

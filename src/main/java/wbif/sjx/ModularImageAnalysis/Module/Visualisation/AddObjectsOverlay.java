@@ -9,7 +9,6 @@ import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -58,7 +57,7 @@ public class AddObjectsOverlay extends HCModule {
 
     }
 
-    public static void createOverlay(ImagePlus ipl, ObjSet inputObjects, String measurement, String colourMode,
+    public static void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String measurement, String colourMode,
                                      String parentObjectsForColourName, String positionMode, String xPosMeas,
                                      String yPosMeas, String zPosMeas, boolean useParentID, boolean showID,
                                      int labelSize, String parentObjectsForIDName) {
@@ -245,7 +244,7 @@ public class AddObjectsOverlay extends HCModule {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);

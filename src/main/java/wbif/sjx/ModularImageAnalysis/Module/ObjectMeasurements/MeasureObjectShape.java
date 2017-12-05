@@ -29,14 +29,14 @@ public class MeasureObjectShape extends HCModule {
     public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Running through each object, making the measurements
         for (Obj inputObject:inputObjects.values()) {
             ArrayList<Integer> x = inputObject.getXCoords();
 
             // Adding the relevant measurements
-            inputObject.addMeasurement(new MIAMeasurement(N_VOXELS,x.size(),this));
+            inputObject.addMeasurement(new Measurement(N_VOXELS,x.size(),this));
 
         }
     }

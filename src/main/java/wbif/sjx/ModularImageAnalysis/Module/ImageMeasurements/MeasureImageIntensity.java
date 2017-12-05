@@ -59,15 +59,15 @@ public class MeasureImageIntensity extends HCModule {
 
         // Adding measurements to image
         if (parameters.getValue(MEASURE_MEAN))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.MEAN, cs.getMean()));
+            inputImage.addMeasurement(new Measurement(Measurements.MEAN, cs.getMean()));
         if (parameters.getValue(MEASURE_MIN))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.MIN, cs.getMin()));
+            inputImage.addMeasurement(new Measurement(Measurements.MIN, cs.getMin()));
         if (parameters.getValue(MEASURE_MAX))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.MAX, cs.getMax()));
+            inputImage.addMeasurement(new Measurement(Measurements.MAX, cs.getMax()));
         if (parameters.getValue(MEASURE_STDEV))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.STDEV, cs.getStd(CumStat.SAMPLE)));
+            inputImage.addMeasurement(new Measurement(Measurements.STDEV, cs.getStd(CumStat.SAMPLE)));
         if (parameters.getValue(MEASURE_SUM))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.SUM, cs.getSum()));
+            inputImage.addMeasurement(new Measurement(Measurements.SUM, cs.getSum()));
 
     }
 

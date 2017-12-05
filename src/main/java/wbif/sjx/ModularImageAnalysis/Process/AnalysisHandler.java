@@ -121,12 +121,17 @@ public class AnalysisHandler {
 
                 // Populating parameters
                 NodeList moduleChildNodes = moduleNode.getChildNodes();
+                boolean foundParameters = false;
                 for (int j=0;j<moduleChildNodes.getLength();j++) {
                     if (moduleChildNodes.item(j).getNodeName().equals("PARAMETERS")) {
                         Node parametersNode = moduleChildNodes.item(j);
                         populateModuleParameters(parametersNode, module);
+                        foundParameters = true;
                     }
                 }
+
+                // Old file formats had parameters loose within MODULE
+                if (!foundParameters) populateModuleParameters(moduleNode, module);
 
                 modules.add(module);
 
@@ -221,6 +226,8 @@ public class AnalysisHandler {
         // Getting output options
         OutputControl outputControl = analysis.getOutputControl();
         boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
+        boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
+        boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
 
         // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
 //        String inputFilePath = Prefs.get("MIA.inputFilePath","");
@@ -274,6 +281,10 @@ public class AnalysisHandler {
 
         // Initialising the exporter (if one was requested)
         Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
+        if (exporter != null) {
+            exporter.setExportSummary(exportSummary);
+            exporter.setExportIndividualObjects(exportIndividualObjects);
+        }
 
         // Initialising BatchProcessor
         batchProcessor = new BatchProcessor(inputFile);

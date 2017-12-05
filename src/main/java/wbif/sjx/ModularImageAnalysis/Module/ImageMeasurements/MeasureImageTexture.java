@@ -4,9 +4,6 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
-
-import java.util.HashMap;
 
 /**
  * Created by Stephen on 09/05/2017.
@@ -70,22 +67,22 @@ public class MeasureImageTexture extends HCModule {
         }
 
         // Acquiring measurements
-        MIAMeasurement ASMMeasurement = new MIAMeasurement(Measurements.ASM,textureCalculator.getASM());
+        Measurement ASMMeasurement = new Measurement(Measurements.ASM,textureCalculator.getASM());
         ASMMeasurement.setSource(this);
         inputImage.addMeasurement(ASMMeasurement);
         if (verbose) System.out.println("["+moduleName+"] ASM = "+ASMMeasurement.getValue());
 
-        MIAMeasurement contrastMeasurement = new MIAMeasurement(Measurements.CONTRAST,textureCalculator.getContrast());
+        Measurement contrastMeasurement = new Measurement(Measurements.CONTRAST,textureCalculator.getContrast());
         contrastMeasurement.setSource(this);
         inputImage.addMeasurement(contrastMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Contrast = "+contrastMeasurement.getValue());
 
-        MIAMeasurement correlationMeasurement = new MIAMeasurement(Measurements.CORRELATION,textureCalculator.getCorrelation());
+        Measurement correlationMeasurement = new Measurement(Measurements.CORRELATION,textureCalculator.getCorrelation());
         correlationMeasurement.setSource(this);
         inputImage.addMeasurement(correlationMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Correlation = "+correlationMeasurement.getValue());
 
-        MIAMeasurement entropyMeasurement = new MIAMeasurement(Measurements.ENTROPY,textureCalculator.getEntropy());
+        Measurement entropyMeasurement = new Measurement(Measurements.ENTROPY,textureCalculator.getEntropy());
         entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Entropy = "+entropyMeasurement.getValue());

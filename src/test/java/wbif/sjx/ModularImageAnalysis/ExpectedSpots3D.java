@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis;
 
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
+import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 
 /**
  * Created by Stephen Cross on 10/09/2017.
@@ -36,9 +36,9 @@ public class ExpectedSpots3D {
 
     }
 
-    public static ObjSet getObjects(String objectName, double dppXY, double dppZ, String calibratedUnits) {
+    public static ObjCollection getObjects(String objectName, double dppXY, double dppZ, String calibratedUnits) {
         // Initialising object store
-        ObjSet testObjects = new ObjSet(objectName);
+        ObjCollection testObjects = new ObjCollection(objectName);
 
         // Adding all provided coordinates to each object
         int[][] coordinates = getCoordinates3D();

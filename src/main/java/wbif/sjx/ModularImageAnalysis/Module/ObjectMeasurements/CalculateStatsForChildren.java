@@ -37,7 +37,7 @@
 //    public void run(Workspace workspace, boolean verbose) {
 //        // Getting input objects
 //        String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
-//        ObjSet parentObjects = workspace.getObjects().get(parentObjectsName);
+//        ObjCollection parentObjects = workspace.getObjects().get(parentObjectsName);
 //
 //        // Getting child objects to calculate statistics for
 //        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
@@ -46,7 +46,7 @@
 //        if (!parentObjects.values().iterator().hasNext()) return;
 //
 //        Iterator<Obj> iterator = parentObjects.values().iterator();
-//        ObjSet children = iterator.next().getChildren(childObjectsName);
+//        ObjCollection children = iterator.next().getChildren(childObjectsName);
 //        while (children == null) {
 //            if (!iterator.hasNext()) {
 //                return;
@@ -59,7 +59,7 @@
 //
 //        // Running through objects, calculating statistics for selected children
 //        for (Obj parentObject:parentObjects.values()) {
-//            ObjSet childObjects = parentObject.getChildren(childObjectsName);
+//            ObjCollection childObjects = parentObject.getChildren(childObjectsName);
 //
 //            for (String measurement : exampleMeasurements) {
 //                // For each measurement type, calculating the mean, standard deviation, etc. (unless the value is NaN)
@@ -75,68 +75,68 @@
 //                // Checking at least one measurement was taken
 //                if (cs.getN() == 0) {
 //                    // Adding measurements to parent object
-//                    MIAMeasurement summaryMeasurement;
+//                    Measurement summaryMeasurement;
 //
 //                    if (parameters.getValue(CALCULATE_MEAN)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_MEAN_OF_"+childObjectsName, Double.NaN);
+//                        summaryMeasurement = new Measurement(measurement + "_MEAN_OF_"+childObjectsName, Double.NaN);
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }
 //
 //                    if (parameters.getValue(CALCULATE_STD)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_STD_OF_"+childObjectsName, Double.NaN);
+//                        summaryMeasurement = new Measurement(measurement + "_STD_OF_"+childObjectsName, Double.NaN);
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }
 //
 //                    if (parameters.getValue(CALCULATE_MIN)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_MIN_OF_"+childObjectsName, Double.NaN);
+//                        summaryMeasurement = new Measurement(measurement + "_MIN_OF_"+childObjectsName, Double.NaN);
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }
 //
 //                    if (parameters.getValue(CALCULATE_MAX)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_MAX_OF_"+childObjectsName, Double.NaN);
+//                        summaryMeasurement = new Measurement(measurement + "_MAX_OF_"+childObjectsName, Double.NaN);
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }
 //
 //                    if (parameters.getValue(CALCULATE_SUM)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_SUM_OF_"+childObjectsName, Double.NaN);
+//                        summaryMeasurement = new Measurement(measurement + "_SUM_OF_"+childObjectsName, Double.NaN);
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }
 //
 //                } else {
 //                    // Adding measurements to parent object
-//                    MIAMeasurement summaryMeasurement;
+//                    Measurement summaryMeasurement;
 //
 //                    if (parameters.getValue(CALCULATE_MEAN)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_MEAN_OF_"+childObjectsName, cs.getMean());
+//                        summaryMeasurement = new Measurement(measurement + "_MEAN_OF_"+childObjectsName, cs.getMean());
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }
 //
 //                    if (parameters.getValue(CALCULATE_STD)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_STD_OF_"+childObjectsName, cs.getStd());
+//                        summaryMeasurement = new Measurement(measurement + "_STD_OF_"+childObjectsName, cs.getStd());
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }
 //
 //                    if (parameters.getValue(CALCULATE_MIN)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_MIN_OF_"+childObjectsName, cs.getMin());
+//                        summaryMeasurement = new Measurement(measurement + "_MIN_OF_"+childObjectsName, cs.getMin());
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }
 //
 //                    if (parameters.getValue(CALCULATE_MAX)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_MAX_OF_"+childObjectsName, cs.getMax());
+//                        summaryMeasurement = new Measurement(measurement + "_MAX_OF_"+childObjectsName, cs.getMax());
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }
 //
 //                    if (parameters.getValue(CALCULATE_SUM)) {
-//                        summaryMeasurement = new MIAMeasurement(measurement + "_SUM_OF_"+childObjectsName, cs.getSum());
+//                        summaryMeasurement = new Measurement(measurement + "_SUM_OF_"+childObjectsName, cs.getSum());
 //                        summaryMeasurement.setSource(this);
 //                        parentObject.addMeasurement(summaryMeasurement);
 //                    }

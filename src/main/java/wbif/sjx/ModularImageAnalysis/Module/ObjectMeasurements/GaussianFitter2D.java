@@ -8,7 +8,6 @@ import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import static wbif.sjx.common.MathFunc.GaussianFitter.fitGaussian2D;
@@ -68,7 +67,7 @@ public class GaussianFitter2D extends HCModule {
 
         // Getting input objects to refine (if selected by used)
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjectSet(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
         String radiusMode = parameters.getValue(RADIUS_MODE);
@@ -183,15 +182,15 @@ public class GaussianFitter2D extends HCModule {
             }
 
             // Storing the results as measurements
-            inputObject.addMeasurement(new MIAMeasurement(X_0,x0,this));
-            inputObject.addMeasurement(new MIAMeasurement(Y_0,y0,this));
-            inputObject.addMeasurement(new MIAMeasurement(Z_0,z0,this));
-            inputObject.addMeasurement(new MIAMeasurement(SIGMA_X,sx,this));
-            inputObject.addMeasurement(new MIAMeasurement(SIGMA_Y,sy,this));
-            inputObject.addMeasurement(new MIAMeasurement(A_0,A0,this));
-            inputObject.addMeasurement(new MIAMeasurement(A_BG,ABG,this));
-            inputObject.addMeasurement(new MIAMeasurement(THETA,th,this));
-            inputObject.addMeasurement(new MIAMeasurement(ELLIPTICITY,ellipticity,this));
+            inputObject.addMeasurement(new Measurement(X_0,x0,this));
+            inputObject.addMeasurement(new Measurement(Y_0,y0,this));
+            inputObject.addMeasurement(new Measurement(Z_0,z0,this));
+            inputObject.addMeasurement(new Measurement(SIGMA_X,sx,this));
+            inputObject.addMeasurement(new Measurement(SIGMA_Y,sy,this));
+            inputObject.addMeasurement(new Measurement(A_0,A0,this));
+            inputObject.addMeasurement(new Measurement(A_BG,ABG,this));
+            inputObject.addMeasurement(new Measurement(THETA,th,this));
+            inputObject.addMeasurement(new Measurement(ELLIPTICITY,ellipticity,this));
 
             // If selected, any objects that weren't fit are removed
             if (removeUnfit & pOut == null) {

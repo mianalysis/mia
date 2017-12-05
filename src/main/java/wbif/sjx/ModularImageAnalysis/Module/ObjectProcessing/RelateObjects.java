@@ -2,14 +2,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
-import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by sc13967 on 04/05/2017.
@@ -56,7 +52,7 @@ public class RelateObjects extends HCModule {
     }
 
 
-    public static void linkMatchingIDs(ObjSet parentObjects, ObjSet childObjects) {
+    public static void linkMatchingIDs(ObjCollection parentObjects, ObjCollection childObjects) {
         for (Obj parentObject:parentObjects.values()) {
             int ID = parentObject.getID();
 
@@ -77,7 +73,7 @@ public class RelateObjects extends HCModule {
      * @param childObjects
      * @param linkingDistance
      */
-    public static void proximity(ObjSet parentObjects, ObjSet childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame, boolean verbose) {
+    public static void proximity(ObjCollection parentObjects, ObjCollection childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame, boolean verbose) {
         String moduleName = RelateObjects.class.getSimpleName();
 
         int iter = 1;
@@ -144,23 +140,23 @@ public class RelateObjects extends HCModule {
                 currentLink.addChild(childObject);
 
                 if (referencePoint.equals(ReferencePoints.CENTROID)) {
-                    childObject.addMeasurement(new MIAMeasurement(Measurements.DIST_CENTROID_PX_MEAS,minDist));
-                    childObject.addMeasurement(new MIAMeasurement(Measurements.DIST_CENTROID_CAL_MEAS,minDist*dpp));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX_MEAS,minDist));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_CAL_MEAS,minDist*dpp));
 
                 } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
-                    childObject.addMeasurement(new MIAMeasurement(Measurements.DIST_SURFACE_PX_MEAS,minDist));
-                    childObject.addMeasurement(new MIAMeasurement(Measurements.DIST_SURFACE_CAL_MEAS,minDist*dpp));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX_MEAS,minDist));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_CAL_MEAS,minDist*dpp));
 
                 }
             }
         }
     }
 
-    public static void proximityToChildren(ObjSet parentObjects, ObjSet childObjects, String testChildObjectsName, double linkingDistance) {
+    public static void proximityToChildren(ObjCollection parentObjects, ObjCollection childObjects, String testChildObjectsName, double linkingDistance) {
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
             // Getting children of the parent to be used as references
-            ObjSet testChildren = parentObject.getChildren(testChildObjectsName);
+            ObjCollection testChildren = parentObject.getChildren(testChildObjectsName);
 
             // Running through all proximal children
             for (Obj testChild : testChildren.values()) {
@@ -187,7 +183,7 @@ public class RelateObjects extends HCModule {
         }
     }
 
-    public static void spatialLinking(ObjSet parentObjects, ObjSet childObjects) {
+    public static void spatialLinking(ObjCollection parentObjects, ObjCollection childObjects) {
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
             // Getting parent coordinates
@@ -245,10 +241,10 @@ public class RelateObjects extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
-        ObjSet parentObjects = workspace.getObjects().get(parentObjectName);
+        ObjCollection parentObjects = workspace.getObjects().get(parentObjectName);
 
         String childObjectName = parameters.getValue(CHILD_OBJECTS);
-        ObjSet childObjects = workspace.getObjects().get(childObjectName);
+        ObjCollection childObjects = workspace.getObjects().get(childObjectName);
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE);
