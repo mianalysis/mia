@@ -114,6 +114,13 @@ public abstract class HCModule implements Serializable {
 
     }
 
+    public void addImageReference(Reference reference) {
+        imageReferences.add(reference);
+    }
+
+    public void addObjectReference(Reference reference) {
+        objectReferences.add(reference);
+    }
 
     // PRIVATE METHODS
 
