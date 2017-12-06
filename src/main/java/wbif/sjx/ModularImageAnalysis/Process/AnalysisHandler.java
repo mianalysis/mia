@@ -392,11 +392,11 @@ public class AnalysisHandler {
                 break;
 
             case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
                 break;
 
             case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
                 break;
         }
     }

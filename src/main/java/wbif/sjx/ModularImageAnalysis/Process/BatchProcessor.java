@@ -8,6 +8,8 @@ import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.System.FileCrawler;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -93,7 +95,7 @@ public class BatchProcessor extends FileCrawler {
             Runnable task = () -> {
                 try {
                     // Running the current analysis
-                    analysis.execute(workspace, false);
+                    analysis.execute(workspace, true);
 
                     // Getting the number of completed and total tasks
                     incrementCounter();
@@ -108,8 +110,14 @@ public class BatchProcessor extends FileCrawler {
 
                     if (continuousExport && nComplete%saveNFiles==0) exporter.exportResults(workspaces,analysis);
 
-                } catch (GenericMIAException | IOException e) {
+                } catch (GenericMIAException | IOException e ) {
                     e.printStackTrace();
+
+                } catch (Throwable t) {
+                    JOptionPane.showMessageDialog(new Frame(), "Execution failed", "Error", JOptionPane.ERROR_MESSAGE);
+
+                    pool.shutdownNow();
+
                 }
             };
 
