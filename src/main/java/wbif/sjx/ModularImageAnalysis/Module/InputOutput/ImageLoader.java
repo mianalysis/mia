@@ -61,7 +61,6 @@ public class ImageLoader extends HCModule {
 
 
     private static ImagePlus getFile(String filePath, boolean useBioformats, int seriesNumber) {
-        System.out.println(filePath);
         ImagePlus ipl;
         // Importing the file
         if (useBioformats) {

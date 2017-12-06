@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -91,8 +92,8 @@ public class MeasureSpotIntensity extends HCModule {
         }
 
         // Getting local object region (this overwrites the original inputObjects)
-        ObjCollection spotObjects = new ObjCollection("test");
-        spotObjects.add(new Obj("dsf",1,1d,1d,"sdf"));//GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
+        ObjCollection spotObjects =
+                GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
 
         // Running through each object's timepoints, getting intensity measurements
         for (Obj spotObject:spotObjects.values()) {

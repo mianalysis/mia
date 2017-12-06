@@ -83,7 +83,7 @@ public class BatchProcessor extends FileCrawler {
             Workspace workspace = workspaces.getNewWorkspace(next);
             File finalNext = next;
 
-            // Adding a parameter to the metadata structure indicating the depth of the current file in the folder structure
+            // Adding a parameter to the metadata structure indicating the depth of the current file
             int fileDepth = 0;
             File parent = next.getParentFile();
             while (parent != rootFolder.getFolderAsFile() && parent != null) {
@@ -95,7 +95,7 @@ public class BatchProcessor extends FileCrawler {
             Runnable task = () -> {
                 try {
                     // Running the current analysis
-                    analysis.execute(workspace, true);
+                    analysis.execute(workspace, false);
 
                     // Getting the number of completed and total tasks
                     incrementCounter();
@@ -109,6 +109,9 @@ public class BatchProcessor extends FileCrawler {
                     System.out.println(string);
 
                     if (continuousExport && nComplete%saveNFiles==0) exporter.exportResults(workspaces,analysis);
+
+                    workspace.empty();
+                    System.gc();
 
                 } catch (GenericMIAException | IOException e ) {
                     e.printStackTrace();
