@@ -71,9 +71,9 @@ public class AnalysisHandler {
         fileDialog.setFile("*.mia");
         fileDialog.setVisible(true);
 
-        File analysisFile = fileDialog.getFiles()[0];
+        if (fileDialog.getFiles().length==0) return null;
 
-        return loadAnalysis(new FileInputStream(analysisFile));
+        return loadAnalysis(new FileInputStream(fileDialog.getFiles()[0]));
 
     }
 

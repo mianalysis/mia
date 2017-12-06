@@ -5,6 +5,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import de.biomedical_imaging.ij.steger.*;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -101,8 +102,19 @@ public class RidgeDetection extends HCModule {
                     inputImagePlus.setPosition(c+1,z+1,t+1);
 
                     // Running the ridge detection
-                    Lines lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
-                            lowerThreshold,minLength, maxLength, darkLine, true, false, false);
+                    Lines lines;
+                    try {
+                         lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
+                                lowerThreshold, minLength, maxLength, darkLine, true, false, false);
+                    } catch (NegativeArraySizeException e) {
+                        String errorMessage = "Ridge detection failed for file "+workspace.getMetadata().getFile().getName()
+                                +" at position (C="+c+", Z="+z+", T="+t+")";
+                        System.err.println(errorMessage);
+
+                        continue;
+
+                    }
+
                     Junctions junctions = lineDetector.getJunctions();
 
                     // If linking contours, adding all to a HashSet.  This prevents the same contours being added to

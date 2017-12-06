@@ -480,8 +480,8 @@ public class MainGUI extends GUI {
         int elementWidth = basicFrameWidth;
 
         // Initialising the scroll panel
-        basicModulesScrollPane.setPreferredSize(new Dimension(elementWidth, frameHeight-105));
-        Border margin = new EmptyBorder(0,0,5,0);
+        basicModulesScrollPane.setPreferredSize(new Dimension(elementWidth, frameHeight-110));
+        Border margin = new EmptyBorder(0,0,0,0);
         Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         basicModulesScrollPane.setBorder(new CompoundBorder(margin,border));
         basicModulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

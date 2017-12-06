@@ -110,26 +110,24 @@ public class BatchProcessor extends FileCrawler {
 
                     if (continuousExport && nComplete%saveNFiles==0) exporter.exportResults(workspaces,analysis);
 
-                    workspace.empty();
-                    System.gc();
-
                 } catch (GenericMIAException | IOException e ) {
                     e.printStackTrace();
 
                 } catch (Throwable t) {
-                    JOptionPane.showMessageDialog(new Frame(), "Execution failed", "Error", JOptionPane.ERROR_MESSAGE);
+                    String errorMessage = "Failed for file "+finalNext.getName();
+                    JOptionPane.showMessageDialog(new Frame(), errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
 
                     pool.shutdownNow();
 
                 }
             };
 
+            pool.submit(task);
+
             // Displaying the current progress
             double nTotal = pool.getTaskCount();
             String string = "Started processing "+dfInt.format(nTotal)+" jobs";
             System.out.println(string);
-
-            pool.submit(task);
 
             next = getNextValidFileInStructure();
 

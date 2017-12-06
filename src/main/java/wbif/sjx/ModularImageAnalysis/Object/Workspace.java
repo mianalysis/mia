@@ -94,9 +94,9 @@ public class Workspace {
     }
 
     public void empty() {
-        images = null;
-        objects = null;
-        metadata = null;
+//        images = null;
+//        objects = null;
+//        metadata = null;
     }
 
 
