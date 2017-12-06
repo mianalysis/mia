@@ -9,7 +9,7 @@ import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
+import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.net.URLDecoder;
@@ -39,7 +39,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjSet testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -114,7 +114,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjSet testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -189,7 +189,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjSet testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace

@@ -22,6 +22,23 @@ public class MeasureObjectTexture extends HCModule {
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
 
+    private Reference inputObjects;
+    private MeasurementReference asmMeasurement;
+    private MeasurementReference contrastMeasurement;
+    private MeasurementReference correlationMeasurement;
+    private MeasurementReference entropyMeasurement;
+
+    public interface Measurements {
+        String ASM = "ASM";
+        String CONTRAST = "CONTRAST";
+        String CORRELATION = "CORRELATION";
+        String ENTROPY = "ENTROPY";
+
+    }
+
+    private String getFullName(String imageName, String measurement) {
+        return "TEXTURE//"+imageName+"_"+measurement;
+    }
 
     @Override
     public String getTitle() {
@@ -43,7 +60,7 @@ public class MeasureObjectTexture extends HCModule {
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
@@ -90,7 +107,7 @@ public class MeasureObjectTexture extends HCModule {
             textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs,c,t,coords);
 
             // Acquiring measurements
-            MIAMeasurement ASMMeasurement = new MIAMeasurement(inputImageName+"_ASM",textureCalculator.getASM());
+            Measurement ASMMeasurement = new Measurement(getFullName(inputImageName, Measurements.ASM),textureCalculator.getASM());
             ASMMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(ASMMeasurement);
@@ -98,7 +115,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(ASMMeasurement);
             }
 
-            MIAMeasurement contrastMeasurement = new MIAMeasurement(inputImageName+"_CONTRAST",textureCalculator.getContrast());
+            Measurement contrastMeasurement = new Measurement(getFullName(inputImageName, Measurements.CONTRAST),textureCalculator.getContrast());
             contrastMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(contrastMeasurement);
@@ -106,7 +123,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(contrastMeasurement);
             }
 
-            MIAMeasurement correlationMeasurement = new MIAMeasurement(inputImageName+"_CORRELATION",textureCalculator.getCorrelation());
+            Measurement correlationMeasurement = new Measurement(getFullName(inputImageName, Measurements.CORRELATION),textureCalculator.getCorrelation());
             correlationMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(correlationMeasurement);
@@ -114,7 +131,7 @@ public class MeasureObjectTexture extends HCModule {
                 object.addMeasurement(correlationMeasurement);
             }
 
-            MIAMeasurement entropyMeasurement = new MIAMeasurement(inputImageName+"_ENTROPY",textureCalculator.getEntropy());
+            Measurement entropyMeasurement = new Measurement(getFullName(inputImageName, Measurements.ENTROPY),textureCalculator.getEntropy());
             entropyMeasurement.setSource(this);
             if (centroidMeasurement) {
                 object.getParent(inputObjectsName).addMeasurement(entropyMeasurement);
@@ -162,13 +179,40 @@ public class MeasureObjectTexture extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        if (parameters.getValue(INPUT_OBJECTS) != null) {
-            measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_ASM");
-            measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_CONTRAST");
-            measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_CORRELATION");
-            measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS), (parameters.getValue(INPUT_IMAGE)) + "_ENTROPY");
-        }
+    public void initialiseReferences() {
+        inputObjects = new Reference();
+        objectReferences.add(inputObjects);
+
+        asmMeasurement = new MeasurementReference(Measurements.ASM);
+        contrastMeasurement = new MeasurementReference(Measurements.CONTRAST);
+        correlationMeasurement = new MeasurementReference(Measurements.CORRELATION);
+        entropyMeasurement = new MeasurementReference(Measurements.ENTROPY);
+
+        inputObjects.addMeasurementReference(asmMeasurement);
+        inputObjects.addMeasurementReference(contrastMeasurement);
+        inputObjects.addMeasurementReference(correlationMeasurement);
+        inputObjects.addMeasurementReference(entropyMeasurement);
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
+
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+
+        asmMeasurement.setMeasurementName(getFullName(inputImageName, Measurements.ASM));
+        contrastMeasurement.setMeasurementName(getFullName(inputImageName, Measurements.CONTRAST));
+        correlationMeasurement.setMeasurementName(getFullName(inputImageName, Measurements.CORRELATION));
+        entropyMeasurement.setMeasurementName(getFullName(inputImageName, Measurements.ENTROPY));
+
+        return objectReferences;
+
     }
 
     @Override

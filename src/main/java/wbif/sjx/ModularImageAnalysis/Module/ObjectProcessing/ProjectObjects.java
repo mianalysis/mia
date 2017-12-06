@@ -6,7 +6,6 @@ import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Projects xy coordinates into a single plane.  Duplicates of xy coordinates at different heights are removed.
@@ -32,8 +31,8 @@ public class ProjectObjects extends HCModule {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjSet outputObjects = new ObjSet(outputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
         double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
@@ -93,8 +92,18 @@ public class ProjectObjects extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public void initialiseReferences() {
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

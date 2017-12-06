@@ -4,9 +4,12 @@ package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.System.FileCrawler;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -50,8 +53,8 @@ public class BatchProcessor extends FileCrawler {
 
         } else {
             // The system can run multiple files in parallel or one at a time
-            if (parallel) runParallel(workspaces, analysis);
-            else runLinear(workspaces, analysis);
+            if (parallel) runParallel(workspaces, analysis, exporter);
+            else runLinear(workspaces, analysis, exporter);
 
         }
 
@@ -62,11 +65,14 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    private void runParallel(WorkspaceCollection workspaces, Analysis analysis) throws InterruptedException {
+    private void runParallel(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws InterruptedException {
         DecimalFormat dfInt = new DecimalFormat("0");
         DecimalFormat dfDec = new DecimalFormat("0.00");
 
         File next = getNextValidFileInStructure();
+
+        boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
+        int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
 
         System.out.println("Starting batch processor");
 
@@ -77,7 +83,7 @@ public class BatchProcessor extends FileCrawler {
             Workspace workspace = workspaces.getNewWorkspace(next);
             File finalNext = next;
 
-            // Adding a parameter to the metadata structure indicating the depth of the current file in the folder structure
+            // Adding a parameter to the metadata structure indicating the depth of the current file
             int fileDepth = 0;
             File parent = next.getParentFile();
             while (parent != rootFolder.getFolderAsFile() && parent != null) {
@@ -102,17 +108,26 @@ public class BatchProcessor extends FileCrawler {
                             +" ("+dfDec.format(percentageComplete)+"%), "+ finalNext.getName();
                     System.out.println(string);
 
-                } catch (GenericMIAException e) {
+                    if (continuousExport && nComplete%saveNFiles==0) exporter.exportResults(workspaces,analysis);
+
+                } catch (GenericMIAException | IOException e ) {
                     e.printStackTrace();
+
+                } catch (Throwable t) {
+                    String errorMessage = "Failed for file "+finalNext.getName();
+                    JOptionPane.showMessageDialog(new Frame(), errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+
+                    pool.shutdownNow();
+
                 }
             };
+
+            pool.submit(task);
 
             // Displaying the current progress
             double nTotal = pool.getTaskCount();
             String string = "Started processing "+dfInt.format(nTotal)+" jobs";
             System.out.println(string);
-
-            pool.submit(task);
 
             next = getNextValidFileInStructure();
 
@@ -124,9 +139,13 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    private void runLinear(WorkspaceCollection workspaces, Analysis analysis) throws GenericMIAException {
+    private void runLinear(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws GenericMIAException, IOException {
         File next = getNextValidFileInStructure();
 
+        boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
+        int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
+
+        int fileCounter = 0;
         while (next != null) {
             // Running the analysis
             Workspace workspace = workspaces.getNewWorkspace(next);
@@ -136,6 +155,9 @@ public class BatchProcessor extends FileCrawler {
             workspace.clearAllImages(true);
 
             next = getNextValidFileInStructure();
+
+            fileCounter++;
+            if (continuousExport && fileCounter%saveNFiles==0) exporter.exportResults(workspaces,analysis);
 
             // Adding a blank line to the output
             if (verbose) System.out.println(" ");

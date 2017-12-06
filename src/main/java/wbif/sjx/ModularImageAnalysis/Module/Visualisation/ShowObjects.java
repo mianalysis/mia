@@ -28,7 +28,7 @@ public class ShowObjects extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Loading objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
 
         Image templateImage;
         if (parameters.getParameter(TEMPLATE_IMAGE) == null) {
@@ -66,8 +66,18 @@ public class ShowObjects extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public void initialiseReferences() {
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

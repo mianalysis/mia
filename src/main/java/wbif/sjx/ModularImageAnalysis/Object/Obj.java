@@ -22,8 +22,8 @@ public class Obj extends Volume {
     private int T = 0;
 
     private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
-    private LinkedHashMap<String, ObjSet> children = new LinkedHashMap<>();
-    private LinkedHashMap<String, MIAMeasurement> measurements = new LinkedHashMap<>();
+    private LinkedHashMap<String, ObjCollection> children = new LinkedHashMap<>();
+    private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
 
 
     // CONSTRUCTORS
@@ -57,12 +57,12 @@ public class Obj extends Volume {
 
     }
 
-    public void addMeasurement(MIAMeasurement measurement) {
+    public void addMeasurement(Measurement measurement) {
         measurements.put(measurement.getName(), measurement);
 
     }
 
-    public MIAMeasurement getMeasurement(String name) {
+    public Measurement getMeasurement(String name) {
         if (measurements.get(name) == null) return null;
         return measurements.get(name);
 
@@ -146,19 +146,19 @@ public class Obj extends Volume {
 
     }
 
-    public LinkedHashMap<String, ObjSet> getChildren() {
+    public LinkedHashMap<String, ObjCollection> getChildren() {
         return children;
     }
 
-    public ObjSet getChildren(String name) {
+    public ObjCollection getChildren(String name) {
         return children.get(name);
     }
 
-    public void setChildren(LinkedHashMap<String, ObjSet> children) {
+    public void setChildren(LinkedHashMap<String, ObjCollection> children) {
         this.children = children;
     }
 
-    public void addChildren(ObjSet childSet) {
+    public void addChildren(ObjCollection childSet) {
         children.put(childSet.getName(), childSet);
     }
 
@@ -169,7 +169,7 @@ public class Obj extends Volume {
     public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjSet(childName));
+        children.computeIfAbsent(childName, k -> new ObjCollection(childName));
         children.get(childName).put(child.getID(), child);
 
     }
@@ -194,7 +194,7 @@ public class Obj extends Volume {
 
         // Removing itself as a parent from any children
         if (children != null) {
-            for (ObjSet childSet:children.values()) {
+            for (ObjCollection childSet:children.values()) {
                 for (Obj child:childSet.values()) {
                     child.removeParent(name);
 
@@ -203,11 +203,11 @@ public class Obj extends Volume {
         }
     }
 
-    public LinkedHashMap<String, MIAMeasurement> getMeasurements() {
+    public LinkedHashMap<String, Measurement> getMeasurements() {
         return measurements;
     }
 
-    public void setMeasurements(LinkedHashMap<String, MIAMeasurement> measurements) {
+    public void setMeasurements(LinkedHashMap<String, Measurement> measurements) {
         this.measurements = measurements;
 
     }

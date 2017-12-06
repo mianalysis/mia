@@ -47,10 +47,6 @@ public class ImageSaver extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-
-        // Getting parameters
         boolean saveImage = parameters.getValue(SAVE_IMAGE);
         String saveLocation = parameters.getValue(SAVE_LOCATION);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT);
@@ -60,6 +56,10 @@ public class ImageSaver extends HCModule {
 
         // The save image option is there so users can toggle it
         if (!saveImage) return;
+
+        // Loading the image to save
+        Image inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         if (flattenOverlay) {
             // Flattening overlay onto image for saving
@@ -157,8 +157,18 @@ public class ImageSaver extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public void initialiseReferences() {
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

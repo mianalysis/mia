@@ -4,9 +4,6 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
-
-import java.util.HashMap;
 
 /**
  * Created by Stephen on 09/05/2017.
@@ -16,6 +13,13 @@ public class MeasureImageTexture extends HCModule {
     public static final String X_OFFSET = "X-offset";
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
+
+    private Reference inputImage;
+
+    private MeasurementReference asmMeasurement;
+    private MeasurementReference contrastMeasurement;
+    private MeasurementReference correlationMeasurement;
+    private MeasurementReference entropyMeasurement;
 
     private interface Measurements {
         String ASM = "TEXTURE//ASM";
@@ -63,22 +67,22 @@ public class MeasureImageTexture extends HCModule {
         }
 
         // Acquiring measurements
-        MIAMeasurement ASMMeasurement = new MIAMeasurement(Measurements.ASM,textureCalculator.getASM());
+        Measurement ASMMeasurement = new Measurement(Measurements.ASM,textureCalculator.getASM());
         ASMMeasurement.setSource(this);
         inputImage.addMeasurement(ASMMeasurement);
         if (verbose) System.out.println("["+moduleName+"] ASM = "+ASMMeasurement.getValue());
 
-        MIAMeasurement contrastMeasurement = new MIAMeasurement(Measurements.CONTRAST,textureCalculator.getContrast());
+        Measurement contrastMeasurement = new Measurement(Measurements.CONTRAST,textureCalculator.getContrast());
         contrastMeasurement.setSource(this);
         inputImage.addMeasurement(contrastMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Contrast = "+contrastMeasurement.getValue());
 
-        MIAMeasurement correlationMeasurement = new MIAMeasurement(Measurements.CORRELATION,textureCalculator.getCorrelation());
+        Measurement correlationMeasurement = new Measurement(Measurements.CORRELATION,textureCalculator.getCorrelation());
         correlationMeasurement.setSource(this);
         inputImage.addMeasurement(correlationMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Correlation = "+correlationMeasurement.getValue());
 
-        MIAMeasurement entropyMeasurement = new MIAMeasurement(Measurements.ENTROPY,textureCalculator.getEntropy());
+        Measurement entropyMeasurement = new Measurement(Measurements.ENTROPY,textureCalculator.getEntropy());
         entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Entropy = "+entropyMeasurement.getValue());
@@ -100,13 +104,33 @@ public class MeasureImageTexture extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String imageName = parameters.getValue(INPUT_IMAGE);
-        measurements.addImageMeasurement(imageName,Measurements.ASM);
-        measurements.addImageMeasurement(imageName,Measurements.CONTRAST);
-        measurements.addImageMeasurement(imageName,Measurements.CORRELATION);
-        measurements.addImageMeasurement(imageName,Measurements.ENTROPY);
+    public void initialiseReferences() {
+        inputImage = new Reference();
+        imageReferences.add(inputImage);
 
+        asmMeasurement = new MeasurementReference(Measurements.ASM);
+        contrastMeasurement = new MeasurementReference(Measurements.CONTRAST);
+        correlationMeasurement = new MeasurementReference(Measurements.CORRELATION);
+        entropyMeasurement = new MeasurementReference(Measurements.ENTROPY);
+        inputImage.addMeasurementReference(asmMeasurement);
+        inputImage.addMeasurementReference(contrastMeasurement);
+        inputImage.addMeasurementReference(correlationMeasurement);
+        inputImage.addMeasurementReference(entropyMeasurement);
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        // Updating image name
+        inputImage.setName(parameters.getValue(INPUT_IMAGE));
+
+        return imageReferences;
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

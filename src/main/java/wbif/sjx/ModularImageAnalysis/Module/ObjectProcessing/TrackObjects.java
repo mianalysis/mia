@@ -9,8 +9,6 @@ import wbif.sjx.common.Object.Point;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by sc13967 on 20/09/2017.
@@ -26,6 +24,8 @@ public class TrackObjects extends HCModule {
     private static final String TRACK_PREV_ID = "PREVIOUS_OBJECT_IN_TRACK_ID";
     private static final String TRACK_NEXT_ID = "NEXT_OBJECT_IN_TRACK_ID";
 
+    private Reference inputObjects;
+
     public interface LinkingMethods {
         String ABSOLUTE_OVERLAP = "Absolute overlap";
         String CENTROID = "Centroid";
@@ -33,6 +33,7 @@ public class TrackObjects extends HCModule {
         String[] ALL = new String[]{ABSOLUTE_OVERLAP,CENTROID};
 
     }
+
 
     private static float getCentroidSeparation(Obj prevObj, Obj currObj) {
         double prevXCent = prevObj.getXMean(true);
@@ -90,11 +91,11 @@ public class TrackObjects extends HCModule {
     protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
-        ObjSet trackObjects = new ObjSet(trackObjectsName);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
         String linkingMethod = parameters.getValue(LINKING_METHOD);
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
         double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
@@ -205,8 +206,8 @@ public class TrackObjects extends HCModule {
                             // If a new track wasn't created
                             if (track == null) {
                                 // Adding references to each other
-                                prevObj.addMeasurement(new MIAMeasurement(TRACK_NEXT_ID, currObj.getID()));
-                                currObj.addMeasurement(new MIAMeasurement(TRACK_PREV_ID, prevObj.getID()));
+                                prevObj.addMeasurement(new Measurement(TRACK_NEXT_ID, currObj.getID()));
+                                currObj.addMeasurement(new Measurement(TRACK_PREV_ID, prevObj.getID()));
 
                                 // Getting the track object from the previous-frame object
                                 track = prevObj.getParent(trackObjectsName);
@@ -277,10 +278,25 @@ public class TrackObjects extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        measurements.addObjectMeasurement(inputObjectsName,TRACK_PREV_ID);
-        measurements.addObjectMeasurement(inputObjectsName, TRACK_NEXT_ID);
+    public void initialiseReferences() {
+        inputObjects = new Reference();
+        objectReferences.add(inputObjects);
+
+        inputObjects.addMeasurementReference(new MeasurementReference(TRACK_PREV_ID));
+        inputObjects.addMeasurementReference(new MeasurementReference(TRACK_NEXT_ID));
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
+
+        return objectReferences;
 
     }
 

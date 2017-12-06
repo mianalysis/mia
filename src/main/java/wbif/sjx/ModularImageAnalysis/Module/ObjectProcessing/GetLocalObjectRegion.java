@@ -1,11 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 
 /**
@@ -17,9 +13,9 @@ public class GetLocalObjectRegion extends HCModule {
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String CALIBRATED_RADIUS = "Calibrated radius";
 
-    public static ObjSet getLocalRegions(ObjSet inputObjects, String outputObjectsName, double radius, boolean calibrated) {
+    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated) {
         // Creating store for output objects
-        ObjSet outputObjects = new ObjSet(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
         double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
@@ -91,7 +87,7 @@ public class GetLocalObjectRegion extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -103,7 +99,7 @@ public class GetLocalObjectRegion extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Using local radius of "+radius+" ");
 
         // Getting local region
-        ObjSet outputObjects = getLocalRegions(inputObjects, outputObjectsName, radius, calibrated);
+        ObjCollection outputObjects = getLocalRegions(inputObjects, outputObjectsName, radius, calibrated);
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
@@ -126,8 +122,18 @@ public class GetLocalObjectRegion extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public void initialiseReferences() {
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

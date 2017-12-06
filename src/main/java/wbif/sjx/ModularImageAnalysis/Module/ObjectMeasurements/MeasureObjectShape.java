@@ -29,14 +29,14 @@ public class MeasureObjectShape extends HCModule {
     public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Running through each object, making the measurements
         for (Obj inputObject:inputObjects.values()) {
             ArrayList<Integer> x = inputObject.getXCoords();
 
             // Adding the relevant measurements
-            inputObject.addMeasurement(new MIAMeasurement(N_VOXELS,x.size(),this));
+            inputObject.addMeasurement(new Measurement(N_VOXELS,x.size(),this));
 
         }
     }
@@ -53,12 +53,27 @@ public class MeasureObjectShape extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-
-        measurements.addObjectMeasurement(inputObjectsName,N_VOXELS);
+    public void initialiseReferences() {
 
     }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
+    }
+
+//    @Override
+//    public void addMeasurements(MeasurementCollection measurements) {
+//        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+//
+//        measurements.addObjectMeasurement(inputObjectsName,N_VOXELS);
+//
+//    }
 
     @Override
     public void addRelationships(RelationshipCollection relationships) {

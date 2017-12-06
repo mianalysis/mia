@@ -15,7 +15,10 @@ import java.io.Serializable;
  * Created by sc13967 on 02/05/2017.
  */
 public abstract class HCModule implements Serializable {
-    public ParameterCollection parameters = new ParameterCollection();
+    protected ParameterCollection parameters = new ParameterCollection();
+    protected ReferenceCollection imageReferences = new ReferenceCollection();
+    protected ReferenceCollection objectReferences = new ReferenceCollection();
+
     private String nickname;
     private String notes = "";
     private boolean enabled = true;
@@ -25,6 +28,7 @@ public abstract class HCModule implements Serializable {
     // CONSTRUCTOR
 
     public HCModule() {
+        initialiseReferences();
         initialiseParameters();
         moduleName = getTitle();
         nickname = moduleName;
@@ -71,12 +75,18 @@ public abstract class HCModule implements Serializable {
         return parameters;
     }
 
-    /**
+    public abstract void initialiseReferences();
+
+    public abstract ReferenceCollection updateAndGetImageReferences();
+
+    public abstract ReferenceCollection updateAndGetObjectReferences();
+
+    /*
      * Takes an existing collection of measurements and adds any created
      * @param measurements
      * @return
      */
-    public abstract void addMeasurements(MeasurementCollection measurements);
+//    public abstract void addMeasurements(MeasurementCollection measurements);
 
     /**
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
@@ -104,6 +114,13 @@ public abstract class HCModule implements Serializable {
 
     }
 
+    public void addImageReference(Reference reference) {
+        imageReferences.add(reference);
+    }
+
+    public void addObjectReference(Reference reference) {
+        objectReferences.add(reference);
+    }
 
     // PRIVATE METHODS
 

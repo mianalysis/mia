@@ -5,6 +5,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import de.biomedical_imaging.ij.steger.*;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -31,6 +32,8 @@ public class RidgeDetection extends HCModule {
     public static final String LINK_CONTOURS = "Link contours";
     public static final String SHOW_OBJECTS = "Show objects";
 
+    private Reference outputObjects;
+
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT//LENGTH_(PX)";
 
@@ -43,6 +46,7 @@ public class RidgeDetection extends HCModule {
         String[] ALL = new String[]{DARK_LINE,LIGHT_LINE};
 
     }
+
 
     @Override
     public String getTitle() {
@@ -66,7 +70,7 @@ public class RidgeDetection extends HCModule {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjSet outputObjects = new ObjSet(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Getting parameters (RidgeDetection plugin wants to use pixel units only)
         double lowerThreshold = parameters.getValue(LOWER_THRESHOLD);
@@ -98,8 +102,19 @@ public class RidgeDetection extends HCModule {
                     inputImagePlus.setPosition(c+1,z+1,t+1);
 
                     // Running the ridge detection
-                    Lines lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
-                            lowerThreshold,minLength, maxLength, darkLine, true, false, false);
+                    Lines lines;
+                    try {
+                         lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
+                                lowerThreshold, minLength, maxLength, darkLine, true, false, false);
+                    } catch (NegativeArraySizeException e) {
+                        String errorMessage = "Ridge detection failed for file "+workspace.getMetadata().getFile().getName()
+                                +" at position (C="+c+", Z="+z+", T="+t+")";
+                        System.err.println(errorMessage);
+
+                        continue;
+
+                    }
+
                     Junctions junctions = lineDetector.getJunctions();
 
                     // If linking contours, adding all to a HashSet.  This prevents the same contours being added to
@@ -111,7 +126,7 @@ public class RidgeDetection extends HCModule {
                         groups.put(line, lineGroup);
                     }
 
-                    // Iterating over each object, adding it to the nascent ObjSet
+                    // Iterating over each object, adding it to the nascent ObjCollection
                     if (linkContours) {
                         if (verbose) System.out.println("[" + moduleName + "] Linking contours");
 
@@ -156,7 +171,7 @@ public class RidgeDetection extends HCModule {
 
                         // Setting single values for the current contour
                         outputObject.setT(t);
-                        outputObject.addMeasurement(new MIAMeasurement(Measurements.LENGTH_PX, estLength));
+                        outputObject.addMeasurement(new Measurement(Measurements.LENGTH_PX, estLength));
                         outputObjects.add(outputObject);
                     }
                 }
@@ -209,11 +224,24 @@ public class RidgeDetection extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+    public void initialiseReferences() {
+        outputObjects = new Reference();
+        objectReferences.add(outputObjects);
 
-        measurements.addObjectMeasurement(outputObjectsName, Measurements.LENGTH_PX);
+        outputObjects.addMeasurementReference(new MeasurementReference(Measurements.LENGTH_PX));
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        outputObjects.setName(parameters.getValue(OUTPUT_OBJECTS));
+
+        return objectReferences;
     }
 
     @Override

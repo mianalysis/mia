@@ -2,14 +2,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
-import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by sc13967 on 04/05/2017.
@@ -22,6 +18,12 @@ public class RelateObjects extends HCModule {
     public final static String TEST_CHILD_OBJECTS = "Child objects to test against";
     public final static String LINKING_DISTANCE = "Maximum linking distance (px)";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
+
+    private Reference childObjects;
+    private MeasurementReference distSurfPx;
+    private MeasurementReference distCentPx;
+    private MeasurementReference distSurfCal;
+    private MeasurementReference distCentCal;
 
     public interface RelateModes {
         String MATCHING_IDS = "Matching IDs";
@@ -41,15 +43,16 @@ public class RelateObjects extends HCModule {
 
     }
 
-    private final static String DIST_EDGE_PX_MEAS = "Distance from parent edge (px)";
-    private final static String DIST_SURFACE_PX_MEAS = "Distance to parent surface (px)";
-    private final static String DIST_CENTROID_PX_MEAS = "Distance to parent centroid (px)";
-//    private final static String DIST_EDGE_CAL_MEAS = "Distance from parent edge (cal)";
-    private final static String DIST_SURFACE_CAL_MEAS = "Distance to parent surface (cal)";
-    private final static String DIST_CENTROID_CAL_MEAS = "Distance to parent centroid (cal)";
+    public interface Measurements {
+        String DIST_SURFACE_PX_MEAS = "RELATE_OBJ//DIST_TO_PARENT_SURF_PX";
+        String DIST_CENTROID_PX_MEAS = "RELATE_OBJ//DIST_TO_PARENT_CENT_PX";
+        String DIST_SURFACE_CAL_MEAS = "RELATE_OBJ//DIST_TO_PARENT_SURF_CAL";
+        String DIST_CENTROID_CAL_MEAS = "RELATE_OBJ//DIST_TO_PARENT_CENT_CAL";
+
+    }
 
 
-    public static void linkMatchingIDs(ObjSet parentObjects, ObjSet childObjects) {
+    public static void linkMatchingIDs(ObjCollection parentObjects, ObjCollection childObjects) {
         for (Obj parentObject:parentObjects.values()) {
             int ID = parentObject.getID();
 
@@ -70,7 +73,7 @@ public class RelateObjects extends HCModule {
      * @param childObjects
      * @param linkingDistance
      */
-    public static void proximity(ObjSet parentObjects, ObjSet childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame, boolean verbose) {
+    public static void proximity(ObjCollection parentObjects, ObjCollection childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame, boolean verbose) {
         String moduleName = RelateObjects.class.getSimpleName();
 
         int iter = 1;
@@ -137,23 +140,23 @@ public class RelateObjects extends HCModule {
                 currentLink.addChild(childObject);
 
                 if (referencePoint.equals(ReferencePoints.CENTROID)) {
-                    childObject.addMeasurement(new MIAMeasurement(DIST_CENTROID_PX_MEAS,minDist));
-                    childObject.addMeasurement(new MIAMeasurement(DIST_CENTROID_CAL_MEAS,minDist*dpp));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX_MEAS,minDist));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_CAL_MEAS,minDist*dpp));
 
                 } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
-                    childObject.addMeasurement(new MIAMeasurement(DIST_SURFACE_PX_MEAS,minDist));
-                    childObject.addMeasurement(new MIAMeasurement(DIST_SURFACE_CAL_MEAS,minDist*dpp));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX_MEAS,minDist));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_CAL_MEAS,minDist*dpp));
 
                 }
             }
         }
     }
 
-    public static void proximityToChildren(ObjSet parentObjects, ObjSet childObjects, String testChildObjectsName, double linkingDistance) {
+    public static void proximityToChildren(ObjCollection parentObjects, ObjCollection childObjects, String testChildObjectsName, double linkingDistance) {
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
             // Getting children of the parent to be used as references
-            ObjSet testChildren = parentObject.getChildren(testChildObjectsName);
+            ObjCollection testChildren = parentObject.getChildren(testChildObjectsName);
 
             // Running through all proximal children
             for (Obj testChild : testChildren.values()) {
@@ -180,7 +183,7 @@ public class RelateObjects extends HCModule {
         }
     }
 
-    public static void spatialLinking(ObjSet parentObjects, ObjSet childObjects) {
+    public static void spatialLinking(ObjCollection parentObjects, ObjCollection childObjects) {
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
             // Getting parent coordinates
@@ -200,11 +203,6 @@ public class RelateObjects extends HCModule {
 
             }
 
-//            // Creating distance map using MorphoLibJ
-//            short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
-//            DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights,true);
-//            ImageStack distanceMap = distTransform.distanceMap(ipl.getStack());
-
             for (Obj childObject:childObjects.values()) {
                 // Only testing if the child is present in the same timepoint as the parent
                 if (parentObject.getT() != childObject.getT()) continue;
@@ -220,34 +218,10 @@ public class RelateObjects extends HCModule {
                         parentObject.addChild(childObject);
                         childObject.addParent(parentObject);
 
-                        // Getting position within current parent object
-//                        MIAMeasurement absDistanceFromEdge = new MIAMeasurement(DIST_EDGE_PX_MEAS);
-//                        int xPos = xCent-range[0][0];
-//                        int yPos = yCent-range[1][0];
-//                        int zPos = zCent-range[2][0];
-//
-//                        if (xPos < 0 | xPos > distanceMap.getWidth() | yPos < 0 | yPos > distanceMap.getHeight() | zPos < 0 | zPos >= distanceMap.size()) {
-//                            absDistanceFromEdge.setValue(Double.NaN);
-//                        } else {
-//                            absDistanceFromEdge.setValue(distanceMap.getVoxel(xCent - range[0][0], yCent - range[1][0], zCent - range[2][0]));
-//                        }
-//                        childObject.addMeasurement(absDistanceFromEdge);
-
                         break;
 
                     }
                 }
-            }
-        }
-
-        // Applying a blank measurement to any children missing one
-        for (Obj childObject:childObjects.values()) {
-            if (childObject.getParent(parentObjects.getName()) == null) {
-                MIAMeasurement absDistanceFromEdge = new MIAMeasurement(DIST_EDGE_PX_MEAS);
-                absDistanceFromEdge.setValue(Double.NaN);
-                childObject.addMeasurement(absDistanceFromEdge);
-                childObject.addParent(parentObjects.getName(),null);
-
             }
         }
     }
@@ -267,10 +241,10 @@ public class RelateObjects extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
-        ObjSet parentObjects = workspace.getObjects().get(parentObjectName);
+        ObjCollection parentObjects = workspace.getObjects().get(parentObjectName);
 
         String childObjectName = parameters.getValue(CHILD_OBJECTS);
-        ObjSet childObjects = workspace.getObjects().get(childObjectName);
+        ObjCollection childObjects = workspace.getObjects().get(childObjectName);
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE);
@@ -346,27 +320,55 @@ public class RelateObjects extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        switch ((String) parameters.getValue(RELATE_MODE)) {
-//            case RelateModes.SPATIAL_OVERLAP:
-//                measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_EDGE_PX_MEAS);
-//                measurements.addMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_EDGE_CAL_MEAS);
-//                break;
+    public void initialiseReferences() {
+        childObjects = new Reference();
+        objectReferences.add(childObjects);
 
+        distSurfPx = new MeasurementReference(Measurements.DIST_SURFACE_PX_MEAS);
+        distCentPx = new MeasurementReference(Measurements.DIST_CENTROID_PX_MEAS);
+        distSurfCal = new MeasurementReference(Measurements.DIST_SURFACE_CAL_MEAS);
+        distCentCal = new MeasurementReference(Measurements.DIST_CENTROID_CAL_MEAS);
+
+        childObjects.addMeasurementReference(distSurfPx);
+        childObjects.addMeasurementReference(distCentPx);
+        childObjects.addMeasurementReference(distSurfCal);
+        childObjects.addMeasurementReference(distCentCal);
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        childObjects.setName(parameters.getValue(CHILD_OBJECTS));
+
+        switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
                 switch ((String) parameters.getValue(REFERENCE_POINT)) {
                     case ReferencePoints.CENTROID:
-                        measurements.addObjectMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_PX_MEAS);
-                        measurements.addObjectMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_CENTROID_CAL_MEAS);
+                        distCentPx.setCalculated(true);
+                        distCentCal.setCalculated(true);
+                        distSurfPx.setCalculated(false);
+                        distSurfCal.setCalculated(false);
+
                         break;
 
                     case ReferencePoints.SURFACE:
-                        measurements.addObjectMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_PX_MEAS);
-                        measurements.addObjectMeasurement(parameters.getValue(CHILD_OBJECTS), DIST_SURFACE_CAL_MEAS);
+                        distCentPx.setCalculated(false);
+                        distCentCal.setCalculated(false);
+                        distSurfPx.setCalculated(true);
+                        distSurfCal.setCalculated(true);
+
                         break;
                 }
                 break;
         }
+
+        return objectReferences;
+
     }
 
     @Override
