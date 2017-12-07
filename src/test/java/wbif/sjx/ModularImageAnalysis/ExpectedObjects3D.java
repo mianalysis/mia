@@ -9,17 +9,58 @@ import java.util.HashMap;
  * Created by Stephen Cross on 29/08/2017.
  */
 public class ExpectedObjects3D {
-    public enum Measures {ID_8BIT,
-        ID_16BIT, X_MIN, X_MEAN, X_MEDIAN, X_MAX, Y_MIN, Y_MEAN, Y_MEDIAN, Y_MAX, Z_MIN, Z_MEAN, Z_MEDIAN, Z_MAX, C, F,
-        N_VOXELS, N_VOXELS_PROJ, I_MEAN_8BIT, I_MIN_8BIT, I_MAX_8BIT, I_STD_8BIT, I_SUM_8BIT, I_MEAN_16BIT, I_MIN_16BIT,
-        I_MAX_16BIT, I_STD_16BIT, I_SUM_16BIT, I_MEAN_32BIT, I_MIN_32BIT, I_MAX_32BIT, I_STD_32BIT, I_SUM_32BIT,
-        SPOT_ID_X, SPOT_ID_Y, SPOT_ID_Z, SPOT_PROX_CENT_X, SPOT_PROX_CENT_Y, SPOT_PROX_CENT_Z, SPOT_PROX_CENT_DIST,
-        SPOT_PROX_CENT_20PX_X, SPOT_PROX_CENT_20PX_Y, SPOT_PROX_CENT_20PX_Z, SPOT_PROX_CENT_20PX_DIST}
-    
-    public static HashMap<Integer,HashMap<Measures,Object>> getExpectedValues3D() {
-        HashMap<Integer,HashMap<Measures,Object>> expectedValues = new HashMap<>();
 
-        HashMap<Measures,Object> obj = new HashMap<>();
+    public interface Measures {
+        String ID_8BIT = "ID_8BIT";
+        String ID_16BIT = "ID_16BIT";
+        String X_MIN = "X_MIN";
+        String X_MEAN = "X_MEAN";
+        String X_MEDIAN = "X_MEDIAN";
+        String X_MAX = "X_MAX";
+        String Y_MIN = "Y_MIN";
+        String Y_MEAN = "Y_MEAN";
+        String Y_MEDIAN = "Y_MEDIAN";
+        String Y_MAX = "Y_MAX";
+        String Z_MIN = "Z_MIN";
+        String Z_MEAN = "Z_MEAN";
+        String Z_MEDIAN = "Z_MEDIAN";
+        String Z_MAX = "Z_MAX";
+        String C = "C";
+        String F = "F";
+        String N_VOXELS = "N_VOXELS";
+        String N_VOXELS_PROJ = "N_VOXELS_PROJ";
+        String I_MEAN_8BIT = "I_MEAN_8BIT";
+        String I_MIN_8BIT = "I_MIN_8BIT";
+        String I_MAX_8BIT = "I_MAX_8BIT";
+        String I_STD_8BIT = "I_STD_8BIT";
+        String I_SUM_8BIT = "I_SUM_8BIT";
+        String I_MEAN_16BIT = "I_MEAN_16BIT";
+        String I_MIN_16BIT = "I_MIN_16BIT";
+        String I_MAX_16BIT = "I_MAX_16BIT";
+        String I_STD_16BIT = "I_STD_16BIT";
+        String I_SUM_16BIT = "I_SUM_16BIT";
+        String I_MEAN_32BIT = "I_MEAN_32BIT";
+        String I_MIN_32BIT = "I_MIN_32BIT";
+        String I_MAX_32BIT = "I_MAX_32BIT";
+        String I_STD_32BIT = "I_STD_32BIT";
+        String I_SUM_32BIT = "I_SUM_32BIT";
+        String SPOT_ID_X = "SPOT_ID_X";
+        String SPOT_ID_Y = "SPOT_ID_Y";
+        String SPOT_ID_Z = "SPOT_ID_Z;";
+        String SPOT_PROX_CENT_X = "SPOT_PROX_CENT_X";
+        String SPOT_PROX_CENT_Y = "SPOT_PROX_CENT_Y";
+        String SPOT_PROX_CENT_Z = "SPOT_PROX_CENT_Z";
+        String SPOT_PROX_CENT_DIST = "SPOT_PROX_CENT_DIST";
+        String SPOT_PROX_CENT_20PX_X = "SPOT_PROX_CENT_20PX_X";
+        String SPOT_PROX_CENT_20PX_Y = "SPOT_PROX_CENT_20PX_Y";
+        String SPOT_PROX_CENT_20PX_Z = "SPOT_PROX_CENT_20PX_Z";
+        String SPOT_PROX_CENT_20PX_DIST = "SPOT_PROX_CENT_20PX_DIST";
+    }
+
+    public static HashMap<Integer,HashMap<String,Object>> getExpectedValues3D() {
+        HashMap<Integer,HashMap<String,Object>> expectedValues = new HashMap<>();
+
+        HashMap<String,Object> obj = new HashMap<>();
         obj.put(Measures.ID_8BIT,3);
         obj.put(Measures.ID_16BIT, 3);
         obj.put(Measures.X_MIN, 7);
