@@ -24,18 +24,25 @@ public class MeasureSpotIntensity extends HCModule {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
+    private Reference inputObjects;
+    private MeasurementReference mean;
+    private MeasurementReference min;
+    private MeasurementReference max;
+    private MeasurementReference stdev;
+    private MeasurementReference sum;
+
     private interface Measurements {
         String MEAN = "MEAN";
         String MIN = "MIN";
         String MAX = "MAX";
-        String SUM = "SUM";
         String STDEV = "STDEV";
+        String SUM = "SUM";
 
     }
     
     
     private String getFullName(String imageName, String measurement) {
-        return "INTENSITY//"+imageName+"_"+measurement;
+        return "SPOT_INTENSITY//"+imageName+"_"+measurement;
     }
     
     @Override
@@ -58,7 +65,7 @@ public class MeasureSpotIntensity extends HCModule {
 
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         double radius = parameters.getValue(MEASUREMENT_RADIUS);
@@ -68,15 +75,15 @@ public class MeasureSpotIntensity extends HCModule {
         if (inputObjects.size() == 0) {
             for (Obj inputObject:inputObjects.values()) {
                 if (parameters.getValue(MEASURE_MEAN))
-                    inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MEAN), Double.NaN));
+                    inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MEAN), Double.NaN));
                 if (parameters.getValue(MEASURE_MIN))
-                    inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MIN), Double.NaN));
+                    inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MIN), Double.NaN));
                 if (parameters.getValue(MEASURE_MAX))
-                    inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MAX), Double.NaN));
+                    inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MAX), Double.NaN));
                 if (parameters.getValue(MEASURE_STDEV))
-                    inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.STDEV), Double.NaN));
+                    inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.STDEV), Double.NaN));
                 if (parameters.getValue(MEASURE_SUM))
-                    inputObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.SUM), Double.NaN));
+                    inputObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.SUM), Double.NaN));
 
             }
 
@@ -85,8 +92,8 @@ public class MeasureSpotIntensity extends HCModule {
         }
 
         // Getting local object region (this overwrites the original inputObjects)
-        ObjSet spotObjects = new ObjSet("test");
-        spotObjects.add(new Obj("dsf",1,1d,1d,"sdf"));//GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
+        ObjCollection spotObjects =
+                GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
 
         // Running through each object's timepoints, getting intensity measurements
         for (Obj spotObject:spotObjects.values()) {
@@ -110,15 +117,15 @@ public class MeasureSpotIntensity extends HCModule {
             // Calculating mean, std, min and max intensity and adding to the parent (we will discard the expanded
             // objects after this module has run)
             if (parameters.getValue(MEASURE_MEAN))
-                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MEAN), cs.getMean()));
+                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MEAN), cs.getMean()));
             if (parameters.getValue(MEASURE_MIN))
-                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MIN), cs.getMin()));
+                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MIN), cs.getMin()));
             if (parameters.getValue(MEASURE_MAX))
-                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.MAX), cs.getMax()));
+                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MAX), cs.getMax()));
             if (parameters.getValue(MEASURE_STDEV))
-                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
+                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.STDEV), cs.getStd(CumStat.SAMPLE)));
             if (parameters.getValue(MEASURE_SUM))
-                spotObject.getParent(inputObjectsName).addMeasurement(new MIAMeasurement(getFullName(inputImageName,Measurements.SUM), cs.getSum()));
+                spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.SUM), cs.getSum()));
 
         }
 
@@ -147,25 +154,66 @@ public class MeasureSpotIntensity extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public void initialiseReferences() {
+        inputObjects = new Reference();
+        objectReferences.add(inputObjects);
+
+        mean = new MeasurementReference(Measurements.MEAN);
+        min = new MeasurementReference(Measurements.MIN);
+        max = new MeasurementReference(Measurements.MAX);
+        stdev = new MeasurementReference(Measurements.STDEV);
+        sum = new MeasurementReference(Measurements.SUM);
+        inputObjects.addMeasurementReference(mean);
+        inputObjects.addMeasurementReference(min);
+        inputObjects.addMeasurementReference(max);
+        inputObjects.addMeasurementReference(stdev);
+        inputObjects.addMeasurementReference(sum);
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
+
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        if (parameters.getValue(MEASURE_MEAN))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MEAN));
+        mean.setCalculated(false);
+        min.setCalculated(false);
+        max.setCalculated(false);
+        stdev.setCalculated(false);
+        sum.setCalculated(false);
 
-        if (parameters.getValue(MEASURE_MIN))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MIN));
+        if (parameters.getValue(MEASURE_MEAN)) {
+            mean.setCalculated(true);
+            mean.setMeasurementName(getFullName(inputImageName, Measurements.MEAN));
+        }
 
-        if (parameters.getValue(MEASURE_MAX))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.MAX));
+        if (parameters.getValue(MEASURE_MIN)) {
+            min.setCalculated(true);
+            min.setMeasurementName(getFullName(inputImageName, Measurements.MIN));
+        }
 
-        if (parameters.getValue(MEASURE_STDEV))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.STDEV));
+        if (parameters.getValue(MEASURE_MAX)) {
+            max.setCalculated(true);
+            max.setMeasurementName(getFullName(inputImageName, Measurements.MAX));
+        }
 
-        if (parameters.getValue(MEASURE_SUM))
-            measurements.addObjectMeasurement(inputObjectsName,getFullName(inputImageName,Measurements.SUM));
+        if (parameters.getValue(MEASURE_STDEV)) {
+            stdev.setCalculated(true);
+            stdev.setMeasurementName(getFullName(inputImageName, Measurements.STDEV));
+        }
 
+        if (parameters.getValue(MEASURE_SUM)) {
+            sum.setCalculated(true);
+            sum.setMeasurementName(getFullName(inputImageName, Measurements.SUM));
+        }
+
+        return objectReferences;
     }
 
     @Override

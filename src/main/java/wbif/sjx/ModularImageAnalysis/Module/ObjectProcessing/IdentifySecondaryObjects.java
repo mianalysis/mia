@@ -56,7 +56,7 @@ public class IdentifySecondaryObjects extends HCModule {
         ImagePlus image2 = inputImage2.getImagePlus();
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet objects1 = workspace.getObjects().get(inputObjectsName);
+        ObjCollection objects1 = workspace.getObjects().get(inputObjectsName);
 
         // Initialising the output objects ArrayList
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
@@ -88,7 +88,7 @@ public class IdentifySecondaryObjects extends HCModule {
         // Converting the labelled cell image to objects
         if (verbose) System.out.println("["+moduleName+"] Converting image to objects");
         Image tempImage = new Image("Temp image",im2);
-        ObjSet objects2 = ObjectImageConverter.convertImageToObjects(tempImage,outputObjectsName);
+        ObjCollection objects2 = ObjectImageConverter.convertImageToObjects(tempImage,outputObjectsName);
 
         // Watershed will give one cell per nucleus and these should already have the same labelling number.
         if (verbose) System.out.println("["+moduleName+"] Linking primary and secondary objects by ID number");
@@ -116,8 +116,18 @@ public class IdentifySecondaryObjects extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public void initialiseReferences() {
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

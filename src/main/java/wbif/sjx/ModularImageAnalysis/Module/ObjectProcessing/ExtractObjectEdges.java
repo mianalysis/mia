@@ -2,17 +2,13 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.ZProjector;
-import ij.process.LUT;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Object.LUTs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by sc13967 on 01/08/2017.
@@ -49,7 +45,7 @@ public class ExtractObjectEdges extends HCModule {
     public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         boolean createEdgeObjects = parameters.getValue(CREATE_EDGE_OBJECTS);
@@ -75,18 +71,18 @@ public class ExtractObjectEdges extends HCModule {
 
         // Initialising output edge objects
         String outputEdgeObjectName = null;
-        ObjSet outputEdgeObjects = null;
+        ObjCollection outputEdgeObjects = null;
         if (createEdgeObjects) {
             outputEdgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            outputEdgeObjects = new ObjSet(outputEdgeObjectName);
+            outputEdgeObjects = new ObjCollection(outputEdgeObjectName);
         }
 
         // Initialising output interior objects
         String outputInteriorObjectName = null;
-        ObjSet outputInteriorObjects = null;
+        ObjCollection outputInteriorObjects = null;
         if (createInteriorObjects) {
             outputInteriorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
-            outputInteriorObjects = new ObjSet(outputInteriorObjectName);
+            outputInteriorObjects = new ObjCollection(outputInteriorObjectName);
         }
 
         for (Obj inputObject:inputObjects.values()) {
@@ -218,8 +214,18 @@ public class ExtractObjectEdges extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public void initialiseReferences() {
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

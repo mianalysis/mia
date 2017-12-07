@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis;
 
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
+import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 
 import java.util.HashMap;
 
@@ -1901,9 +1901,9 @@ public class ExpectedObjects3D {
 
     }
 
-    public static ObjSet getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits) {
+    public static ObjCollection getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits) {
         // Initialising object store
-        ObjSet testObjects = new ObjSet(objectName);
+        ObjCollection testObjects = new ObjCollection(objectName);
 
         // Adding all provided coordinates to each object
         int[][] coordinates = getCoordinates3D();

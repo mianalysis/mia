@@ -6,7 +6,7 @@ import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
+import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.net.URLDecoder;
@@ -50,7 +50,7 @@ public class IdentifyObjectsTest {
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
         // Getting the object set
-        ObjSet objects = workspace.getObjectSet("Test_output_objects");
+        ObjCollection objects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects",objects.getName());
@@ -116,7 +116,7 @@ public class IdentifyObjectsTest {
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
         // Getting the object set
-        ObjSet objects = workspace.getObjectSet("Test_output_objects");
+        ObjCollection objects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects",objects.getName());
@@ -178,7 +178,7 @@ public class IdentifyObjectsTest {
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
         // Getting the object set
-        ObjSet objects = workspace.getObjectSet("Test_output_objects");
+        ObjCollection objects = workspace.getObjectSet("Test_output_objects");
 
         // Checking the expected object set is present
         assertEquals("Test_output_objects",objects.getName());

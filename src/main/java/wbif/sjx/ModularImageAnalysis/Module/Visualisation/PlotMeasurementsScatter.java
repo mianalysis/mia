@@ -61,7 +61,7 @@ public class PlotMeasurementsScatter extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
         boolean excludeNaN = parameters.getValue(EXCLUDE_NAN);
@@ -207,8 +207,18 @@ public class PlotMeasurementsScatter extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public void initialiseReferences() {
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

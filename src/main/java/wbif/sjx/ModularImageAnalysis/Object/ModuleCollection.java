@@ -4,32 +4,88 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<HCModule> implements Serializable {
-    public MeasurementCollection getMeasurements(HCModule cutoffModule) {
-        MeasurementCollection measurements = new MeasurementCollection();
+    public LinkedHashMap<String,Reference> getImageReferences() {
+        return getImageReferences(null);
+    }
+
+    public LinkedHashMap<String,Reference> getImageReferences(HCModule cutoffModule) {
+        LinkedHashMap<String,Reference> superReferences = new LinkedHashMap<>();
 
         for (HCModule module:this) {
-            if (module == cutoffModule) {
-                break;
+            if (module == cutoffModule) break;
+            if (!module.isEnabled()) continue;
+
+            // Getting references from the current module, then adding them to the super references
+            ReferenceCollection currentReferences = module.updateAndGetImageReferences();
+            if (currentReferences == null) continue;
+
+            for (Reference currentReference:currentReferences) {
+                superReferences.putIfAbsent(currentReference.getName(),new Reference());
+
+                superReferences.get(currentReference.getName()).addMeasurementReferences(currentReference);
+
             }
-
-            if (module.isEnabled()) module.addMeasurements(measurements);
-
         }
 
-        return measurements;
+        return superReferences;
 
     }
 
-    public MeasurementCollection getMeasurements() {
-        return getMeasurements(null);
+    public LinkedHashMap<String,Reference> getObjectReferences() {
+        return getObjectReferences(null);
+    }
+
+    public LinkedHashMap<String,Reference> getObjectReferences(HCModule cutoffModule) {
+        LinkedHashMap<String,Reference> superReferences = new LinkedHashMap<>();
+
+        for (HCModule module:this) {
+            if (module == cutoffModule) break;
+            if (!module.isEnabled()) continue;
+
+            // Getting references from the current module, then adding them to the super references
+            ReferenceCollection currentReferences = module.updateAndGetObjectReferences();
+            if (currentReferences == null) continue;
+
+            for (Reference currentReference:currentReferences) {
+                superReferences.putIfAbsent(currentReference.getName(),new Reference());
+
+                superReferences.get(currentReference.getName()).addMeasurementReferences(currentReference);
+
+            }
+        }
+
+        return superReferences;
 
     }
+
+//    public MeasurementCollection getMeasurements(HCModule cutoffModule) {
+//        MeasurementCollection measurements = new MeasurementCollection();
+//
+//        for (HCModule module:this) {
+//            if (module == cutoffModule) {
+//                break;
+//            }
+//
+//            if (module.isEnabled()) module.addMeasurements(measurements);
+//
+//        }
+//
+//        return measurements;
+//
+//    }
+
+//    public MeasurementCollection getMeasurements() {
+//        return getMeasurements(null);
+//
+//    }
 
     /**
      * Returns an ArrayList of all parameters of a specific type
@@ -90,4 +146,5 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
         return getRelationships(null);
 
     }
+
 }

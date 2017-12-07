@@ -6,7 +6,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -52,7 +51,7 @@ public class ObjectImageConverter extends HCModule {
 
     }
 
-    public static Image convertObjectsToImage(ObjSet objects, String outputImageName, Image templateImage, String colourMode, String colourSource, boolean hideMissing) {
+    public static Image convertObjectsToImage(ObjCollection objects, String outputImageName, Image templateImage, String colourMode, String colourSource, boolean hideMissing) {
         ImagePlus ipl;
 
         int bitDepth = 8;
@@ -70,11 +69,26 @@ public class ObjectImageConverter extends HCModule {
                 break;
 
             case ColourModes.ID:
-                bitDepth = 16;
+                int nextID = objects.getLargestID();
+                if (nextID <= 256) {
+                    bitDepth = 8;
+                } else if (nextID > 256 && nextID <= 65536) {
+                    bitDepth = 16;
+                } else if (nextID > 65535) {
+                    bitDepth = 32;
+                }
+
                 break;
 
             case ColourModes.PARENT_ID:
-                bitDepth = 16;
+                nextID = objects.getLargestID();
+                if (nextID <= 256) {
+                    bitDepth = 8;
+                } else if (nextID > 256 && nextID <= 65536) {
+                    bitDepth = 16;
+                } else if (nextID > 65535) {
+                    bitDepth = 32;
+                }
                 break;
 
         }
@@ -205,12 +219,12 @@ public class ObjectImageConverter extends HCModule {
 
     }
 
-    public static ObjSet convertImageToObjects(Image image, String outputObjectsName) {
+    public static ObjCollection convertImageToObjects(Image image, String outputObjectsName) {
         // Converting to ImagePlus for this operation
         ImagePlus ipl = image.getImagePlus();
 
         // Need to get coordinates and convert to a HCObject
-        ObjSet outputObjects = new ObjSet(outputObjectsName); //Local ArrayList of objects
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
 
         // Getting spatial calibration
         double dppXY = ipl.getCalibration().getX(1);
@@ -277,7 +291,7 @@ public class ObjectImageConverter extends HCModule {
 
             Image inputImage = workspace.getImages().get(inputImageName);
 
-            ObjSet objects = convertImageToObjects(inputImage, outputObjectsName);
+            ObjCollection objects = convertImageToObjects(inputImage, outputObjectsName);
 
             workspace.addObjects(objects);
 
@@ -298,7 +312,7 @@ public class ObjectImageConverter extends HCModule {
 
             }
 
-            ObjSet inputObjects = workspace.getObjects().get(objectName);
+            ObjCollection inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
 
             Image outputImage = convertObjectsToImage(inputObjects,outputImageName,templateImage,colourMode,colourSource,hideMissing);
@@ -374,8 +388,18 @@ public class ObjectImageConverter extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public void initialiseReferences() {
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override

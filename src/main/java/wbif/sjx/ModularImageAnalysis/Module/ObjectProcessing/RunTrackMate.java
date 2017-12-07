@@ -19,7 +19,6 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.NormaliseIntensity;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
@@ -49,6 +48,8 @@ public class RunTrackMate extends HCModule {
     public static final String SHOW_ID = "Show ID";
     public static final String ID_MODE = "ID source";
 
+    private Reference spotObjects;
+
     public interface IDModes {
         String USE_SPOT_ID = "Use spot ID";
         String USE_TRACK_ID = "Use track ID";
@@ -63,7 +64,7 @@ public class RunTrackMate extends HCModule {
 
     }
 
-    private static void createOverlay(ObjSet inputObjects, ImagePlus ipl, boolean showID, boolean useParentID, String parentObjectsName) {
+    private static void createOverlay(ObjCollection inputObjects, ImagePlus ipl, boolean showID, boolean useParentID, String parentObjectsName) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -165,13 +166,13 @@ public class RunTrackMate extends HCModule {
 
         // Getting name of output objects
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        ObjSet spotObjects = new ObjSet(spotObjectsName);
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
 
         // Getting name of output summary objects (if required)
         boolean createTracks = parameters.getValue(CREATE_TRACK_OBJECTS);
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
-        ObjSet trackObjects = null;
-        if (createTracks) trackObjects = new ObjSet(trackObjectsName);
+        ObjCollection trackObjects = null;
+        if (createTracks) trackObjects = new ObjCollection(trackObjectsName);
 
         // If image should be normalised
         if (normaliseIntensity) {
@@ -225,8 +226,8 @@ public class RunTrackMate extends HCModule {
                 spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
                 spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
-                spotObject.addMeasurement(new MIAMeasurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
-                spotObject.addMeasurement(new MIAMeasurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
+                spotObject.addMeasurement(new Measurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
+                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
 
                 spotObjects.put(spotObject.getID(),spotObject);
 
@@ -286,12 +287,6 @@ public class RunTrackMate extends HCModule {
                 return t1 > t2 ? 1 : t1 == t2 ? 0 : -1;
             });
 
-            // Creating an array to store the radius measurements for the summary object
-            CumStat radiusAv = null;
-            if (createTracks) radiusAv = new CumStat();
-            CumStat estDiaAv = null;
-            if (createTracks) estDiaAv = new CumStat();
-
             // Getting x,y,f and 2-channel spot intensities from TrackMate results
             for (Spot spot:spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
@@ -314,17 +309,6 @@ public class RunTrackMate extends HCModule {
 
                 }
 
-                // Adding radius measurement using the same coordinate system as HCObject (XYCZT)
-                MIAMeasurement radiusMeasure = new MIAMeasurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS));
-                radiusMeasure.setSource(this);
-                spotObject.addMeasurement(radiusMeasure);
-                if (createTracks) radiusAv.addMeasure(spot.getFeature(Spot.RADIUS));
-
-                MIAMeasurement estDiaMeasure = new MIAMeasurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER));
-                estDiaMeasure.setSource(this);
-                spotObject.addMeasurement(estDiaMeasure);
-                if (createTracks) estDiaAv.addMeasure(spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER));
-
                 // Adding the connection between instance and summary objects
                 if (createTracks) {
                     spotObject.addParent(trackObject);
@@ -334,20 +318,6 @@ public class RunTrackMate extends HCModule {
 
                 // Adding the instance object to the relevant collection
                 spotObjects.put(spotObject.getID(),spotObject);
-
-            }
-
-            // Taking average measurements for the summary object
-            if (createTracks) {
-                MIAMeasurement radiusMeasure = new MIAMeasurement(Measurements.RADIUS,radiusAv.getMean());
-                radiusMeasure.setSource(this);
-                trackObject.addMeasurement(radiusMeasure);
-
-                MIAMeasurement estDiaMeasure = new MIAMeasurement(Measurements.ESTIMATED_DIAMETER,estDiaAv.getMean());
-                estDiaMeasure.setSource(this);
-                trackObject.addMeasurement(estDiaMeasure);
-
-                trackObjects.put(trackObject.getID(), trackObject);
 
             }
         }
@@ -462,18 +432,26 @@ public class RunTrackMate extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        if (parameters.getValue(OUTPUT_SPOT_OBJECTS) != null) {
-            measurements.addObjectMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.RADIUS);
-            measurements.addObjectMeasurement(parameters.getValue(OUTPUT_SPOT_OBJECTS), Measurements.ESTIMATED_DIAMETER);
-        }
+    public void initialiseReferences() {
+        spotObjects = new Reference();
+        objectReferences.add(spotObjects);
 
-        if (parameters.getValue(CREATE_TRACK_OBJECTS)) {
-            if (parameters.getValue(OUTPUT_TRACK_OBJECTS) != null) {
-                measurements.addObjectMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.RADIUS);
-                measurements.addObjectMeasurement(parameters.getValue(OUTPUT_TRACK_OBJECTS), Measurements.ESTIMATED_DIAMETER);
-            }
-        }
+        spotObjects.addMeasurementReference(new MeasurementReference(Measurements.RADIUS));
+        spotObjects.addMeasurementReference(new MeasurementReference(Measurements.ESTIMATED_DIAMETER));
+
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        return null;
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        spotObjects.setName(parameters.getValue(OUTPUT_SPOT_OBJECTS));
+
+        return objectReferences;
+
     }
 
     @Override

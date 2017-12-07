@@ -17,6 +17,14 @@ public class MeasureImageIntensity extends HCModule {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
+    private Reference inputImage;
+
+    private MeasurementReference meanMeasurement;
+    private MeasurementReference minMeasurement;
+    private MeasurementReference maxMeasurement;
+    private MeasurementReference stdevMeasurement;
+    private MeasurementReference sumMeasurement;
+
     private interface Measurements {
         String MEAN = "INTENSITY//MEAN";
         String MIN = "INTENSITY//MIN";
@@ -51,15 +59,15 @@ public class MeasureImageIntensity extends HCModule {
 
         // Adding measurements to image
         if (parameters.getValue(MEASURE_MEAN))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.MEAN, cs.getMean()));
+            inputImage.addMeasurement(new Measurement(Measurements.MEAN, cs.getMean()));
         if (parameters.getValue(MEASURE_MIN))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.MIN, cs.getMin()));
+            inputImage.addMeasurement(new Measurement(Measurements.MIN, cs.getMin()));
         if (parameters.getValue(MEASURE_MAX))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.MAX, cs.getMax()));
+            inputImage.addMeasurement(new Measurement(Measurements.MAX, cs.getMax()));
         if (parameters.getValue(MEASURE_STDEV))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.STDEV, cs.getStd(CumStat.SAMPLE)));
+            inputImage.addMeasurement(new Measurement(Measurements.STDEV, cs.getStd(CumStat.SAMPLE)));
         if (parameters.getValue(MEASURE_SUM))
-            inputImage.addMeasurement(new MIAMeasurement(Measurements.SUM, cs.getSum()));
+            inputImage.addMeasurement(new Measurement(Measurements.SUM, cs.getSum()));
 
     }
 
@@ -80,24 +88,42 @@ public class MeasureImageIntensity extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
+    public void initialiseReferences() {
+        inputImage = new Reference();
+        imageReferences.add(inputImage);
 
-        if (parameters.getValue(MEASURE_MEAN))
-            measurements.addImageMeasurement(inputImageName,Measurements.MEAN);
+        meanMeasurement = new MeasurementReference(Measurements.MEAN);
+        minMeasurement = new MeasurementReference(Measurements.MIN);
+        maxMeasurement = new MeasurementReference(Measurements.MAX);
+        stdevMeasurement = new MeasurementReference(Measurements.STDEV);
+        sumMeasurement = new MeasurementReference(Measurements.SUM);
+        inputImage.addMeasurementReference(meanMeasurement);
+        inputImage.addMeasurementReference(minMeasurement);
+        inputImage.addMeasurementReference(maxMeasurement);
+        inputImage.addMeasurementReference(stdevMeasurement);
+        inputImage.addMeasurementReference(sumMeasurement);
 
-        if (parameters.getValue(MEASURE_MIN))
-            measurements.addImageMeasurement(inputImageName,Measurements.MIN);
+    }
 
-        if (parameters.getValue(MEASURE_MAX))
-            measurements.addImageMeasurement(inputImageName,Measurements.MAX);
+    @Override
+    public ReferenceCollection updateAndGetImageReferences() {
+        // Updating image name
+        inputImage.setName(parameters.getValue(INPUT_IMAGE));
 
-        if (parameters.getValue(MEASURE_STDEV))
-            measurements.addImageMeasurement(inputImageName,Measurements.STDEV);
+        // Updating measurements
+        meanMeasurement.setCalculated(parameters.getValue(MEASURE_MEAN));
+        minMeasurement.setCalculated(parameters.getValue(MEASURE_MIN));
+        maxMeasurement.setCalculated(parameters.getValue(MEASURE_MAX));
+        stdevMeasurement.setCalculated(parameters.getValue(MEASURE_STDEV));
+        sumMeasurement.setCalculated(parameters.getValue(MEASURE_SUM));
 
-        if (parameters.getValue(MEASURE_SUM))
-            measurements.addImageMeasurement(inputImageName,Measurements.SUM);
+        return imageReferences;
 
+    }
+
+    @Override
+    public ReferenceCollection updateAndGetObjectReferences() {
+        return null;
     }
 
     @Override
