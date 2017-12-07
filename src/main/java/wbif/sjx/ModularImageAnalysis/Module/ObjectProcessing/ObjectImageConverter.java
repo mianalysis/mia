@@ -69,26 +69,11 @@ public class ObjectImageConverter extends HCModule {
                 break;
 
             case ColourModes.ID:
-                int nextID = objects.getLargestID();
-                if (nextID <= 256) {
-                    bitDepth = 8;
-                } else if (nextID > 256 && nextID <= 65536) {
-                    bitDepth = 16;
-                } else if (nextID > 65535) {
-                    bitDepth = 32;
-                }
-
+                bitDepth = 32;
                 break;
 
             case ColourModes.PARENT_ID:
-                nextID = objects.getLargestID();
-                if (nextID <= 256) {
-                    bitDepth = 8;
-                } else if (nextID > 256 && nextID <= 65536) {
-                    bitDepth = 16;
-                } else if (nextID > 65535) {
-                    bitDepth = 32;
-                }
+                bitDepth = 32;
                 break;
 
         }
@@ -132,7 +117,7 @@ public class ObjectImageConverter extends HCModule {
         }
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (bitDepth == 32) {
+        if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
             for (int z = 1; z <= ipl.getNSlices(); z++) {
                 for (int c = 1; c <= ipl.getNChannels(); c++) {
                     for (int t = 1; t <= ipl.getNFrames(); t++) {
@@ -170,17 +155,17 @@ public class ObjectImageConverter extends HCModule {
                     break;
 
                 case ColourModes.ID:
-                    valInt = object.getID();
+                    valDouble = object.getID();
                     break;
 
                 case ColourModes.PARENT_ID:
                     if (object.getParent(colourSource) == null) {
                         if (hideMissing) {
-                            valInt = 0;
+                            valDouble = 0;
                             break;
 
                         } else {
-                            valInt = Integer.MAX_VALUE;
+                            valDouble = Integer.MAX_VALUE;
                             break;
 
                         }
@@ -196,10 +181,11 @@ public class ObjectImageConverter extends HCModule {
 
                 ipl.setPosition(1,zPos+1,tPos+1);
 
-                if (colourMode.equals(ColourModes.SINGLE_COLOUR) | colourMode.equals(ColourModes.RANDOM_COLOUR) | colourMode.equals(ColourModes.ID) | colourMode.equals(ColourModes.PARENT_ID)) {
+                if (colourMode.equals(ColourModes.SINGLE_COLOUR) | colourMode.equals(ColourModes.RANDOM_COLOUR)) {
                     ipl.getProcessor().putPixel(x.get(i), y.get(i), valInt);
 
-                } else if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
+                } else if (colourMode.equals(ColourModes.MEASUREMENT_VALUE) | colourMode.equals(ColourModes.ID)
+                        | colourMode.equals(ColourModes.PARENT_ID)) {
                     ipl.getProcessor().putPixelValue(x.get(i), y.get(i), valDouble);
 
                 }
