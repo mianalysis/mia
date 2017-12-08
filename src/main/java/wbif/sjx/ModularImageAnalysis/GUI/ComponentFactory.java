@@ -283,6 +283,7 @@ public class ComponentFactory {
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.EAST;
+        exportCheck.setSelected(measurement.isExportable());
         measurementPanel.add(exportCheck,c);
 
         return measurementPanel;

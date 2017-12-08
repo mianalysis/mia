@@ -93,11 +93,11 @@ public class MeasureImageIntensity extends HCModule {
     protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
         MeasurementReferenceCollection references = new MeasurementReferenceCollection();
 
-        references.add(new MeasurementReference(Measurements.MEAN,""));
-        references.add(new MeasurementReference(Measurements.MIN,""));
-        references.add(new MeasurementReference(Measurements.MAX,""));
-        references.add(new MeasurementReference(Measurements.STDEV,""));
-        references.add(new MeasurementReference(Measurements.SUM,""));
+        references.add(new MeasurementReference(Measurements.MEAN));
+        references.add(new MeasurementReference(Measurements.MIN));
+        references.add(new MeasurementReference(Measurements.MAX));
+        references.add(new MeasurementReference(Measurements.STDEV));
+        references.add(new MeasurementReference(Measurements.SUM));
 
         return references;
 
@@ -107,11 +107,25 @@ public class MeasureImageIntensity extends HCModule {
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        imageMeasurementReferences.updateImageObjectName(MEASURE_MEAN,inputImageName);
-        imageMeasurementReferences.updateImageObjectName(MEASURE_MIN,inputImageName);
-        imageMeasurementReferences.updateImageObjectName(MEASURE_MAX,inputImageName);
-        imageMeasurementReferences.updateImageObjectName(MEASURE_STDEV,inputImageName);
-        imageMeasurementReferences.updateImageObjectName(MEASURE_SUM,inputImageName);
+        MeasurementReference mean = imageMeasurementReferences.get(Measurements.MEAN);
+        mean.setImageObjName(inputImageName);
+        mean.setExportable(parameters.getValue(MEASURE_MEAN));
+
+        MeasurementReference min = imageMeasurementReferences.get(Measurements.MIN);
+        min.setImageObjName(inputImageName);
+        min.setExportable(parameters.getValue(MEASURE_MIN));
+
+        MeasurementReference max = imageMeasurementReferences.get(Measurements.MAX);
+        max.setImageObjName(inputImageName);
+        max.setExportable(parameters.getValue(MEASURE_MAX));
+
+        MeasurementReference stdev = imageMeasurementReferences.get(Measurements.STDEV);
+        stdev.setImageObjName(inputImageName);
+        stdev.setExportable(parameters.getValue(MEASURE_STDEV));
+
+        MeasurementReference sum = imageMeasurementReferences.get(Measurements.SUM);
+        sum.setImageObjName(inputImageName);
+        sum.setExportable(parameters.getValue(MEASURE_SUM));
 
         return imageMeasurementReferences;
 

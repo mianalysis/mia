@@ -22,9 +22,13 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
         for (HCModule module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
+            MeasurementReferenceCollection currentMeasurementReferences = module.updateAndGetImageMeasurementReferences();
 
-            for (MeasurementReference measurementReference:module.updateAndGetImageMeasurementReferences()) {
-                if (measurementReference.getImageObjName().equals(imageName))
+            if (currentMeasurementReferences == null) continue;
+
+            for (MeasurementReference measurementReference:currentMeasurementReferences) {
+                if (measurementReference.getImageObjName().equals(imageName)
+                        & measurementReference.isCalculated())
                     measurementReferences.add(measurementReference);
 
             }
@@ -42,13 +46,17 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
     public MeasurementReferenceCollection getObjectReferences(String objectName, HCModule cutoffModule) {
         MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
 
-        // Iterating over all modules, collecting any measurements for the current image
+        // Iterating over all modules, collecting any measurements for the current objects
         for (HCModule module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
+            MeasurementReferenceCollection currentMeasurementReferences =
+                    module.updateAndGetObjectMeasurementReferences();
+            if (currentMeasurementReferences == null) continue;
 
-            for (MeasurementReference measurementReference:module.updateAndGetObjectMeasurementReferences()) {
-                if (measurementReference.getImageObjName().equals(objectName))
+            for (MeasurementReference measurementReference:currentMeasurementReferences) {
+                if (measurementReference.getImageObjName().equals(objectName)
+                        & measurementReference.isCalculated())
                     measurementReferences.add(measurementReference);
 
             }

@@ -6,11 +6,10 @@ package wbif.sjx.ModularImageAnalysis.Object;
 public class MeasurementReference extends Reference {
     private boolean calculated = true;
     private boolean exportable = true;
-    private String imageObjName;
+    private String imageObjName = "";
 
-    public MeasurementReference(String name, String imageObjName) {
+    public MeasurementReference(String name) {
         this.name = name;
-        this.imageObjName = imageObjName;
 
     }
 
@@ -36,5 +35,10 @@ public class MeasurementReference extends Reference {
 
     public void setImageObjName(String imageObjName) {
         this.imageObjName = imageObjName;
+    }
+
+    @Override
+    public String toString() {
+        return "Measurement reference ("+name+")";
     }
 }

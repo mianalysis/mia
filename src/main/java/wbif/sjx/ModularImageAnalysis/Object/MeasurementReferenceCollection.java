@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 public class MeasurementReferenceCollection extends LinkedHashSet<MeasurementReference> {
     public MeasurementReference get(String name) {
         for (MeasurementReference measurementReference:this) {
-            if (measurementReference.name.equals(name)) return measurementReference;
+            if (measurementReference.getName().equals(name)) return measurementReference;
         }
 
         return null;
@@ -14,7 +14,9 @@ public class MeasurementReferenceCollection extends LinkedHashSet<MeasurementRef
 
     public void updateImageObjectName(String measurementName, String imageObjectName) {
         for (MeasurementReference measurementReference:this) {
-            if (measurementReference.getName().equals(measurementName)) measurementReference.setImageObjName(imageObjectName);
+            if (measurementReference.getName().equals(measurementName)) {
+                measurementReference.setImageObjName(imageObjectName);
+            }
         }
     }
 
@@ -23,7 +25,7 @@ public class MeasurementReferenceCollection extends LinkedHashSet<MeasurementRef
 
         int i = 0;
         for (MeasurementReference measurementReference:this) {
-            measurementNames[i++] = measurementReference.name;
+            measurementNames[i++] = measurementReference.getName();
         }
 
         return measurementNames;

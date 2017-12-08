@@ -202,19 +202,17 @@ public class MeasureObjectIntensity extends HCModule {
     protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         MeasurementReferenceCollection references = new MeasurementReferenceCollection();
 
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-
-        references.add(new MeasurementReference(Measurements.MEAN,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.MIN,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.MAX,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.STDEV,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.SUM,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.X_CENT_MEAN,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.X_CENT_STD,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.Y_CENT_MEAN,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.Y_CENT_STD,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.Z_CENT_MEAN,inputObjectsName));
-        references.add(new MeasurementReference(Measurements.Z_CENT_STD,inputObjectsName));
+        references.add(new MeasurementReference(Measurements.MEAN));
+        references.add(new MeasurementReference(Measurements.MIN));
+        references.add(new MeasurementReference(Measurements.MAX));
+        references.add(new MeasurementReference(Measurements.STDEV));
+        references.add(new MeasurementReference(Measurements.SUM));
+        references.add(new MeasurementReference(Measurements.X_CENT_MEAN));
+        references.add(new MeasurementReference(Measurements.X_CENT_STD));
+        references.add(new MeasurementReference(Measurements.Y_CENT_MEAN));
+        references.add(new MeasurementReference(Measurements.Y_CENT_STD));
+        references.add(new MeasurementReference(Measurements.Z_CENT_MEAN));
+        references.add(new MeasurementReference(Measurements.Z_CENT_STD));
 
         return references;
     }
