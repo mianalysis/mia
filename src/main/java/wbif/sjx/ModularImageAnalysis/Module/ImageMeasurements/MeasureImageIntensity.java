@@ -109,23 +109,23 @@ public class MeasureImageIntensity extends HCModule {
 
         MeasurementReference mean = imageMeasurementReferences.get(Measurements.MEAN);
         mean.setImageObjName(inputImageName);
-        mean.setExportable(parameters.getValue(MEASURE_MEAN));
+        mean.setCalculated(parameters.getValue(MEASURE_MEAN));
 
         MeasurementReference min = imageMeasurementReferences.get(Measurements.MIN);
         min.setImageObjName(inputImageName);
-        min.setExportable(parameters.getValue(MEASURE_MIN));
+        min.setCalculated(parameters.getValue(MEASURE_MIN));
 
         MeasurementReference max = imageMeasurementReferences.get(Measurements.MAX);
         max.setImageObjName(inputImageName);
-        max.setExportable(parameters.getValue(MEASURE_MAX));
+        max.setCalculated(parameters.getValue(MEASURE_MAX));
 
         MeasurementReference stdev = imageMeasurementReferences.get(Measurements.STDEV);
         stdev.setImageObjName(inputImageName);
-        stdev.setExportable(parameters.getValue(MEASURE_STDEV));
+        stdev.setCalculated(parameters.getValue(MEASURE_STDEV));
 
         MeasurementReference sum = imageMeasurementReferences.get(Measurements.SUM);
         sum.setImageObjName(inputImageName);
-        sum.setExportable(parameters.getValue(MEASURE_SUM));
+        sum.setCalculated(parameters.getValue(MEASURE_SUM));
 
         return imageMeasurementReferences;
 

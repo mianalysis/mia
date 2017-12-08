@@ -16,10 +16,8 @@ import java.io.Serializable;
  */
 public abstract class HCModule implements Serializable {
     protected ParameterCollection parameters = new ParameterCollection();
-//    protected ImageObjectReferenceCollection imageReferences = new ImageObjectReferenceCollection();
-//    protected ImageObjectReferenceCollection objectReferences = new ImageObjectReferenceCollection();
-    protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
-    protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
+    protected MeasurementReferenceCollection imageMeasurementReferences;
+    protected MeasurementReferenceCollection objectMeasurementReferences;
 
     private String nickname;
     private String notes = "";
@@ -33,8 +31,6 @@ public abstract class HCModule implements Serializable {
         moduleName = getTitle();
         nickname = moduleName;
 
-//        this.imageReferences = initialiseImageReferences();
-//        this.objectReferences = initialiseObjectReferences();
         this.imageMeasurementReferences = initialiseImageMeasurementReferences();
         this.objectMeasurementReferences = initialiseObjectMeasurementReferences();
         this.parameters = initialiseParameters();
@@ -81,45 +77,13 @@ public abstract class HCModule implements Serializable {
         return parameters;
     }
 
-//    protected abstract ImageObjectReferenceCollection initialiseImageReferences();
-//
-//    protected abstract ImageObjectReferenceCollection initialiseObjectReferences();
-
     protected abstract MeasurementReferenceCollection initialiseImageMeasurementReferences();
-
-//    public abstract ImageObjectReferenceCollection updateAndGetImageReferences();
-//
-//    public abstract ImageObjectReferenceCollection updateAndGetObjectReferences();
 
     public abstract MeasurementReferenceCollection updateAndGetImageMeasurementReferences();
 
     protected abstract MeasurementReferenceCollection initialiseObjectMeasurementReferences();
 
     public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
-
-//    public ImageObjReference getImageReference(String name) {
-//        // Updating image references, so the image to be retrieved is assigned its correct name
-//        updateAndGetImageReferences();
-//
-//        for (ImageObjReference imageObjReference :imageReferences) {
-//            if (imageObjReference.getName().equals(name)) return imageObjReference;
-//        }
-//
-//        return null;
-//
-//    }
-//
-//    public ImageObjReference getObjectReference(String name) {
-//        // Updating image references, so the object to be retrieved is assigned its correct name
-//        updateAndGetObjectReferences();
-//
-//        for (ImageObjReference imageObjReference :objectReferences) {
-//            if (imageObjReference.getName().equals(name)) return imageObjReference;
-//        }
-//
-//        return null;
-//
-//    }
 
     public MeasurementReference getImageMeasurementReference(String name) {
         for (MeasurementReference measurementReference : imageMeasurementReferences) {
@@ -164,14 +128,6 @@ public abstract class HCModule implements Serializable {
         parameters.updateVisible(name,visible);
 
     }
-//
-//    public void addImageReference(ImageObjReference imageObjReference) {
-//        imageReferences.add(imageObjReference);
-//    }
-//
-//    public void addObjectReference(ImageObjReference imageObjReference) {
-//        objectReferences.add(imageObjReference);
-//    }
 
 
     // PRIVATE METHODS

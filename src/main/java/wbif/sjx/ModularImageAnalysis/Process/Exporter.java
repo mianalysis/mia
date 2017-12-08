@@ -213,12 +213,10 @@ public class Exporter {
             Element measurementsElement = doc.createElement("MEASUREMENTS");
 
             MeasurementReferenceCollection imageReferences = module.updateAndGetImageMeasurementReferences();
-            Element imageReferencesElement = prepareMeasurementReferencesXML(doc,imageReferences,"IMAGE");
-            measurementsElement.appendChild(imageReferencesElement);
+            prepareMeasurementReferencesXML(doc, measurementsElement,imageReferences,"IMAGE");
 
             MeasurementReferenceCollection objectReferences = module.updateAndGetObjectMeasurementReferences();
-            Element objectsReferencesElement = prepareMeasurementReferencesXML(doc,objectReferences,"OBJECTS");
-            measurementsElement.appendChild(objectsReferencesElement);
+            prepareMeasurementReferencesXML(doc, measurementsElement,objectReferences,"OBJECTS");
 
             moduleElement.appendChild(measurementsElement);
 
@@ -295,9 +293,7 @@ public class Exporter {
 //
 //    }
 
-    public static Element prepareMeasurementReferencesXML(Document doc, MeasurementReferenceCollection measurementReferences, String type) {
-        Element measurementReferencesElement = doc.createElement("MEASUREMENTS");
-
+    public static Element prepareMeasurementReferencesXML(Document doc, Element measurementReferencesElement, MeasurementReferenceCollection measurementReferences, String type) {
         if (measurementReferences == null) return measurementReferencesElement;
 
         for (MeasurementReference measurementReference:measurementReferences) {
@@ -307,6 +303,7 @@ public class Exporter {
             measurementReferenceElement.setAttribute("IS_CALCULATED",String.valueOf(measurementReference.isCalculated()));
             measurementReferenceElement.setAttribute("IS_EXPORTABLE",String.valueOf(measurementReference.isExportable()));
             measurementReferenceElement.setAttribute("TYPE",type);
+            measurementReferenceElement.setAttribute("IMAGE_OBJECT_NAME",measurementReference.getImageObjName());
 
             measurementReferencesElement.appendChild(measurementReferenceElement);
 
