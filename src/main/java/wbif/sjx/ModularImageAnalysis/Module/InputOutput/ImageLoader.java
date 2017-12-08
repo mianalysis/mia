@@ -40,7 +40,7 @@ public class ImageLoader extends HCModule {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
 
-    private Reference outputImageRef;
+    private ImageObjReference outputImageRef;
 
     public interface ImportModes {
         String CURRENT_FILE = "Current file";
@@ -235,22 +235,26 @@ public class ImageLoader extends HCModule {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.addParameter(
+    public ParameterCollection initialiseParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.addParameter(
                 new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
-        parameters.addParameter(
+        returnedParameters.addParameter(
                 new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
-        parameters.addParameter(new Parameter(COMMENT,Parameter.STRING,""));
-        parameters.addParameter(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
-        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
-        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        returnedParameters.addParameter(new Parameter(COMMENT,Parameter.STRING,""));
+        returnedParameters.addParameter(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
+        returnedParameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        returnedParameters.addParameter(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
+        returnedParameters.addParameter(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
+        returnedParameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+
+        return returnedParameters;
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.addParameter(parameters.getParameter(IMPORT_MODE));
@@ -285,17 +289,22 @@ public class ImageLoader extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

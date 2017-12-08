@@ -41,20 +41,24 @@ public class OutputControl extends HCModule {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.addParameter(new Parameter(EXPORT_XLSX,Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(EXPORT_SUMMARY,Parameter.BOOLEAN,true));
-        parameters.addParameter(
+    public ParameterCollection initialiseParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.addParameter(new Parameter(EXPORT_XLSX,Parameter.BOOLEAN,true));
+        returnedParameters.addParameter(new Parameter(EXPORT_SUMMARY,Parameter.BOOLEAN,true));
+        returnedParameters.addParameter(
                 new Parameter(SUMMARY_TYPE,Parameter.CHOICE_ARRAY,SummaryTypes.ONE_AVERAGE_PER_FILE,SummaryTypes.ALL));
-        parameters.addParameter(new Parameter(EXPORT_INDIVIDUAL_OBJECTS,Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(CONTINUOUS_DATA_EXPORT,Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(SAVE_EVERY_N,Parameter.INTEGER,10));
-        parameters.addParameter(new Parameter(SELECT_MEASUREMENTS,Parameter.BOOLEAN,false));
+        returnedParameters.addParameter(new Parameter(EXPORT_INDIVIDUAL_OBJECTS,Parameter.BOOLEAN,true));
+        returnedParameters.addParameter(new Parameter(CONTINUOUS_DATA_EXPORT,Parameter.BOOLEAN,false));
+        returnedParameters.addParameter(new Parameter(SAVE_EVERY_N,Parameter.INTEGER,10));
+        returnedParameters.addParameter(new Parameter(SELECT_MEASUREMENTS,Parameter.BOOLEAN,false));
+
+        return returnedParameters;
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.addParameter(parameters.getParameter(EXPORT_XLSX));
@@ -80,17 +84,22 @@ public class OutputControl extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

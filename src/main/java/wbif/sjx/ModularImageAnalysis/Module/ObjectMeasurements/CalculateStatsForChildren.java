@@ -159,7 +159,7 @@
 //    }
 //
 //    @Override
-//    public ParameterCollection getActiveParameters() {
+//    public ParameterCollection updateAndGetParameters() {
 //        ParameterCollection returnedParameters = new ParameterCollection();
 //        returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECTS));
 //        returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
@@ -184,7 +184,7 @@
 //    }
 //
 //    @Override
-//    public void initialiseReferences() {
+//    public void initialiseImageReferences() {
 //
 //    }
 //

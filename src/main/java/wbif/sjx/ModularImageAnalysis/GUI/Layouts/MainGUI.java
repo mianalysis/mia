@@ -569,8 +569,8 @@ public class MainGUI extends GUI {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridwidth = 2;
         c.insets = new Insets(0, 0, 0, 5);
-        if (activeModule.getActiveParameters() != null) {
-            Iterator<Parameter> iterator = activeModule.getActiveParameters().values().iterator();
+        if (activeModule.updateAndGetParameters() != null) {
+            Iterator<Parameter> iterator = activeModule.updateAndGetParameters().values().iterator();
             while (iterator.hasNext()) {
                 Parameter parameter = iterator.next();
 
@@ -587,53 +587,53 @@ public class MainGUI extends GUI {
             }
         }
 
-        // If selected, adding the measurement selector for output control
-        if (activeModule.getClass().isInstance(new OutputControl())
-                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_XLSX)
-                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
-
-            LinkedHashMap<String,Reference> imageReferences = getModules().getImageReferences();
-            for (String imageName:imageReferences.keySet()) {
-                if (imageReferences.get(imageName).getMeasurementReferences().isEmpty()) continue;
-
-                JPanel measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)",635);
-                c.gridx = 0;
-                c.gridy++;
-                paramsPanel.add(measurementHeader,c);
-
-                // Iterating over the measurements for the current image, adding a control for each
-                for (MeasurementReference measurementReference:imageReferences.get(imageName).getMeasurementReferences()) {
-                    if (!measurementReference.isCalculated()) continue;
-
-                    // Adding measurement control
-                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference,635);
-                    c.gridy++;
-                    paramsPanel.add(currentMeasurementPanel,c);
-
-                }
-            }
-
-            LinkedHashMap<String,Reference> objectReferences = getModules().getObjectReferences();
-            for (String objectName:objectReferences.keySet()) {
-                if (objectReferences.get(objectName).getMeasurementReferences().isEmpty()) continue;
-
-                JPanel measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)",635);
-                c.gridx = 0;
-                c.gridy++;
-                paramsPanel.add(measurementHeader,c);
-
-                // Iterating over the measurements for the current object, adding a control for each
-                for (MeasurementReference measurementReference:objectReferences.get(objectName).getMeasurementReferences()) {
-                    if (!measurementReference.isCalculated()) continue;
-
-                    // Adding measurement control
-                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference,635);
-                    c.gridy++;
-                    paramsPanel.add(currentMeasurementPanel,c);
-
-                }
-            }
-        }
+//        // If selected, adding the measurement selector for output control
+//        if (activeModule.getClass().isInstance(new OutputControl())
+//                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_XLSX)
+//                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
+//
+//            LinkedHashMap<String,ImageObjReference> imageReferences = getModules().getImageReferences();
+//            for (String imageName:imageReferences.keySet()) {
+//                if (imageReferences.get(imageName).getMeasurementReferences().isEmpty()) continue;
+//
+//                JPanel measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)",635);
+//                c.gridx = 0;
+//                c.gridy++;
+//                paramsPanel.add(measurementHeader,c);
+//
+//                // Iterating over the measurements for the current image, adding a control for each
+//                for (MeasurementReference measurementReference:imageReferences.get(imageName).getMeasurementReferences()) {
+//                    if (!measurementReference.isCalculated()) continue;
+//
+//                    // Adding measurement control
+//                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference,635);
+//                    c.gridy++;
+//                    paramsPanel.add(currentMeasurementPanel,c);
+//
+//                }
+//            }
+//
+//            LinkedHashMap<String,ImageObjReference> objectReferences = getModules().getObjectReferences();
+//            for (String objectName:objectReferences.keySet()) {
+//                if (objectReferences.get(objectName).getMeasurementReferences().isEmpty()) continue;
+//
+//                JPanel measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)",635);
+//                c.gridx = 0;
+//                c.gridy++;
+//                paramsPanel.add(measurementHeader,c);
+//
+//                // Iterating over the measurements for the current object, adding a control for each
+//                for (MeasurementReference measurementReference:objectReferences.get(objectName).getMeasurementReferences()) {
+//                    if (!measurementReference.isCalculated()) continue;
+//
+//                    // Adding measurement control
+//                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference,635);
+//                    c.gridy++;
+//                    paramsPanel.add(currentMeasurementPanel,c);
+//
+//                }
+//            }
+//        }
 
         // Creating the notes/help field at the bottom of the panel
         if (!isInput &! isOutput) {

@@ -16,8 +16,10 @@ import java.io.Serializable;
  */
 public abstract class HCModule implements Serializable {
     protected ParameterCollection parameters = new ParameterCollection();
-    protected ReferenceCollection imageReferences = new ReferenceCollection();
-    protected ReferenceCollection objectReferences = new ReferenceCollection();
+//    protected ImageObjectReferenceCollection imageReferences = new ImageObjectReferenceCollection();
+//    protected ImageObjectReferenceCollection objectReferences = new ImageObjectReferenceCollection();
+    protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
+    protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
 
     private String nickname;
     private String notes = "";
@@ -28,10 +30,14 @@ public abstract class HCModule implements Serializable {
     // CONSTRUCTOR
 
     public HCModule() {
-        initialiseReferences();
-        initialiseParameters();
         moduleName = getTitle();
         nickname = moduleName;
+
+//        this.imageReferences = initialiseImageReferences();
+//        this.objectReferences = initialiseObjectReferences();
+        this.imageMeasurementReferences = initialiseImageMeasurementReferences();
+        this.objectMeasurementReferences = initialiseObjectMeasurementReferences();
+        this.parameters = initialiseParameters();
 
     }
 
@@ -60,7 +66,7 @@ public abstract class HCModule implements Serializable {
      * operation is included in the method.
      * @return
      */
-    public abstract void initialiseParameters();
+    protected abstract ParameterCollection initialiseParameters();
 
     /**
      * Return a ParameterCollection of the currently active parameters.  This is run each time a parameter is changed.
@@ -69,48 +75,69 @@ public abstract class HCModule implements Serializable {
      * an appropriate GUI panel.
      * @return
      */
-    public abstract ParameterCollection getActiveParameters();
+    public abstract ParameterCollection updateAndGetParameters();
 
     public ParameterCollection getAllParameters() {
         return parameters;
     }
 
-    public abstract void initialiseReferences();
+//    protected abstract ImageObjectReferenceCollection initialiseImageReferences();
+//
+//    protected abstract ImageObjectReferenceCollection initialiseObjectReferences();
 
-    public abstract ReferenceCollection updateAndGetImageReferences();
+    protected abstract MeasurementReferenceCollection initialiseImageMeasurementReferences();
 
-    public abstract ReferenceCollection updateAndGetObjectReferences();
+//    public abstract ImageObjectReferenceCollection updateAndGetImageReferences();
+//
+//    public abstract ImageObjectReferenceCollection updateAndGetObjectReferences();
 
-    public Reference getImageReference(String name) {
-        // Updating image references, so the image to be retrieved is assigned its correct name
-        updateAndGetImageReferences();
+    public abstract MeasurementReferenceCollection updateAndGetImageMeasurementReferences();
 
-        for (Reference reference:imageReferences) {
-            if (reference.getName().equals(name)) return reference;
+    protected abstract MeasurementReferenceCollection initialiseObjectMeasurementReferences();
+
+    public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
+
+//    public ImageObjReference getImageReference(String name) {
+//        // Updating image references, so the image to be retrieved is assigned its correct name
+//        updateAndGetImageReferences();
+//
+//        for (ImageObjReference imageObjReference :imageReferences) {
+//            if (imageObjReference.getName().equals(name)) return imageObjReference;
+//        }
+//
+//        return null;
+//
+//    }
+//
+//    public ImageObjReference getObjectReference(String name) {
+//        // Updating image references, so the object to be retrieved is assigned its correct name
+//        updateAndGetObjectReferences();
+//
+//        for (ImageObjReference imageObjReference :objectReferences) {
+//            if (imageObjReference.getName().equals(name)) return imageObjReference;
+//        }
+//
+//        return null;
+//
+//    }
+
+    public MeasurementReference getImageMeasurementReference(String name) {
+        for (MeasurementReference measurementReference : imageMeasurementReferences) {
+            if (measurementReference.getName().equals(name)) return measurementReference;
         }
 
         return null;
 
     }
 
-    public Reference getObjectReference(String name) {
-        // Updating image references, so the object to be retrieved is assigned its correct name
-        updateAndGetObjectReferences();
-
-        for (Reference reference:objectReferences) {
-            if (reference.getName().equals(name)) return reference;
+    public MeasurementReference getObjectMeasurementReference(String name) {
+        for (MeasurementReference measurementReference : objectMeasurementReferences) {
+            if (measurementReference.getName().equals(name)) return measurementReference;
         }
 
         return null;
 
     }
-
-    /*
-     * Takes an existing collection of measurements and adds any created
-     * @param measurements
-     * @return
-     */
-//    public abstract void addMeasurements(MeasurementCollection measurements);
 
     /**
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
@@ -137,14 +164,15 @@ public abstract class HCModule implements Serializable {
         parameters.updateVisible(name,visible);
 
     }
+//
+//    public void addImageReference(ImageObjReference imageObjReference) {
+//        imageReferences.add(imageObjReference);
+//    }
+//
+//    public void addObjectReference(ImageObjReference imageObjReference) {
+//        objectReferences.add(imageObjReference);
+//    }
 
-    public void addImageReference(Reference reference) {
-        imageReferences.add(reference);
-    }
-
-    public void addObjectReference(Reference reference) {
-        objectReferences.add(reference);
-    }
 
     // PRIVATE METHODS
 

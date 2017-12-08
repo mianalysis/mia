@@ -58,27 +58,31 @@ public class InputControl extends HCModule {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_MODE, Parameter.CHOICE_ARRAY,InputModes.SINGLE_FILE,InputModes.ALL));
-        parameters.addParameter(new Parameter(SINGLE_FILE_PATH, Parameter.FILE_PATH,null));
-        parameters.addParameter(new Parameter(BATCH_FOLDER_PATH, Parameter.FOLDER_PATH,null));
+    public ParameterCollection initialiseParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.addParameter(new Parameter(INPUT_MODE, Parameter.CHOICE_ARRAY,InputModes.SINGLE_FILE,InputModes.ALL));
+        returnedParameters.addParameter(new Parameter(SINGLE_FILE_PATH, Parameter.FILE_PATH,null));
+        returnedParameters.addParameter(new Parameter(BATCH_FOLDER_PATH, Parameter.FOLDER_PATH,null));
         int nThreads = Runtime.getRuntime().availableProcessors()/2;
-        parameters.addParameter(new Parameter(NUMBER_OF_THREADS,Parameter.INTEGER,nThreads));
-        parameters.addParameter(new Parameter(FILE_EXTENSION, Parameter.STRING,"flex"));
-        parameters.addParameter(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.addParameter(new Parameter(USE_FILENAME_FILTER_2,Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_2,Parameter.STRING,""));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_TYPE_2,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.addParameter(new Parameter(USE_FILENAME_FILTER_3,Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_3,Parameter.STRING,""));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        returnedParameters.addParameter(new Parameter(NUMBER_OF_THREADS,Parameter.INTEGER,nThreads));
+        returnedParameters.addParameter(new Parameter(FILE_EXTENSION, Parameter.STRING,"flex"));
+        returnedParameters.addParameter(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
+        returnedParameters.addParameter(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
+        returnedParameters.addParameter(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        returnedParameters.addParameter(new Parameter(USE_FILENAME_FILTER_2,Parameter.BOOLEAN,false));
+        returnedParameters.addParameter(new Parameter(FILENAME_FILTER_2,Parameter.STRING,""));
+        returnedParameters.addParameter(new Parameter(FILENAME_FILTER_TYPE_2,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        returnedParameters.addParameter(new Parameter(USE_FILENAME_FILTER_3,Parameter.BOOLEAN,false));
+        returnedParameters.addParameter(new Parameter(FILENAME_FILTER_3,Parameter.STRING,""));
+        returnedParameters.addParameter(new Parameter(FILENAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+
+        return returnedParameters;
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.addParameter(parameters.getParameter(INPUT_MODE));
@@ -120,17 +124,22 @@ public class InputControl extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

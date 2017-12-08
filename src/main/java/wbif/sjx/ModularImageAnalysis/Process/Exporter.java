@@ -210,17 +210,17 @@ public class Exporter {
             moduleElement.appendChild(parametersElement);
 
             // Adding references from this module
-            Element referencesElement = doc.createElement("REFERENCES");
+            Element measurementsElement = doc.createElement("MEASUREMENTS");
 
-            ReferenceCollection imageReferences = module.updateAndGetImageReferences();
-            Element imageReferencesElement = prepareReferencesXML(doc,imageReferences,"IMAGE_REF");
-            referencesElement.appendChild(imageReferencesElement);
+            MeasurementReferenceCollection imageReferences = module.updateAndGetImageMeasurementReferences();
+            Element imageReferencesElement = prepareMeasurementReferencesXML(doc,imageReferences,"IMAGE");
+            measurementsElement.appendChild(imageReferencesElement);
 
-            ReferenceCollection objectReferences = module.updateAndGetObjectReferences();
-            Element objectsReferencesElement = prepareReferencesXML(doc,objectReferences,"OBJECTS_REF");
-            referencesElement.appendChild(objectsReferencesElement);
+            MeasurementReferenceCollection objectReferences = module.updateAndGetObjectMeasurementReferences();
+            Element objectsReferencesElement = prepareMeasurementReferencesXML(doc,objectReferences,"OBJECTS");
+            measurementsElement.appendChild(objectsReferencesElement);
 
-            moduleElement.appendChild(referencesElement);
+            moduleElement.appendChild(measurementsElement);
 
             // Adding current module to modules
             modulesElement.appendChild(moduleElement);
@@ -272,31 +272,30 @@ public class Exporter {
 
     }
 
-    public static Element prepareReferencesXML(Document doc, ReferenceCollection references, String type) {
-        Element referencesElement = doc.createElement(type+"S");
+//    public static Element prepareMeasurementsXML(Document doc, MeasurementReferenceCollection references, String type) {
+//        Element measurementsElement = doc.createElement(type+"S");
+//
+//        // If there are no references, return the empty element
+//        if (references==null) return null;
+//        for (MeasurementReference reference :references) {
+//            Element referenceElement = doc.createElement(type);
+//
+//            referenceElement.setAttribute("NAME", reference.getName());
+//
+//            // Adding measurements to this imageObjReference
+//            LinkedHashSet<MeasurementReference> measurementReferences = reference.getMeasurementReferences();
+//            Element measurementReferencesElement = prepareMeasurementReferencesXML(doc, measurementReferences);
+//            referenceElement.appendChild(measurementReferencesElement);
+//
+//            measurementsElement.appendChild(referenceElement);
+//
+//        }
+//
+//        return measurementsElement;
+//
+//    }
 
-        // If there are no references, return the empty element
-        if (references==null) return referencesElement;
-
-        for (Reference reference:references) {
-            Element referenceElement = doc.createElement(type);
-
-            referenceElement.setAttribute("NAME",reference.getName());
-
-            // Adding measurements to this reference
-            LinkedHashSet<MeasurementReference> measurementReferences = reference.getMeasurementReferences();
-            Element measurementReferencesElement = prepareMeasurementReferencesXML(doc, measurementReferences);
-            referenceElement.appendChild(measurementReferencesElement);
-
-            referencesElement.appendChild(referenceElement);
-
-        }
-
-        return referencesElement;
-
-    }
-
-    public static Element prepareMeasurementReferencesXML(Document doc, LinkedHashSet<MeasurementReference> measurementReferences) {
+    public static Element prepareMeasurementReferencesXML(Document doc, MeasurementReferenceCollection measurementReferences, String type) {
         Element measurementReferencesElement = doc.createElement("MEASUREMENTS");
 
         if (measurementReferences == null) return measurementReferencesElement;
@@ -304,9 +303,10 @@ public class Exporter {
         for (MeasurementReference measurementReference:measurementReferences) {
             Element measurementReferenceElement = doc.createElement("MEASUREMENT");
 
-            measurementReferenceElement.setAttribute("NAME",measurementReference.getMeasurementName());
+            measurementReferenceElement.setAttribute("NAME",measurementReference.getName());
             measurementReferenceElement.setAttribute("IS_CALCULATED",String.valueOf(measurementReference.isCalculated()));
             measurementReferenceElement.setAttribute("IS_EXPORTABLE",String.valueOf(measurementReference.isExportable()));
+            measurementReferenceElement.setAttribute("TYPE",type);
 
             measurementReferencesElement.appendChild(measurementReferenceElement);
 
@@ -358,7 +358,7 @@ public class Exporter {
 
         // Adding a new parameter to each row
         for (HCModule module:modules) {
-            LinkedHashMap<String,Parameter> parameters = module.getActiveParameters();
+            LinkedHashMap<String,Parameter> parameters = module.updateAndGetParameters();
 
             paramRow++;
 
@@ -448,25 +448,28 @@ public class Exporter {
                 summaryHeaderCell.setCellValue(summaryDataName);
                 colNumbers.put(summaryDataName, headerCol++);
 
+                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(exampleObjSetName);
+
+                // If the current object hasn't got any assigned measurements, skip it
+                if (objectMeasurementReferences == null) continue;
+
                 // Running through all the object measurement values, adding them as new columns
-                HashSet<MeasurementReference> objectReferences =
-                        modules.getObjectReferences().get(exampleObjSetName).getMeasurementReferences();
-                for (MeasurementReference objectMeasurement : objectReferences) {
+                for (MeasurementReference objectMeasurement : objectMeasurementReferences) {
                     if (!objectMeasurement.isCalculated()) continue;
                     if (!objectMeasurement.isExportable()) continue;
 
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName,"MEAN",objectMeasurement.getMeasurementName());
+                    summaryDataName = getObjectString(exampleObjSetName,"MEAN",objectMeasurement.getName());
                     summaryHeaderCell.setCellValue(summaryDataName);
                     colNumbers.put(summaryDataName, headerCol++);
 
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName,"STD",objectMeasurement.getMeasurementName());
+                    summaryDataName = getObjectString(exampleObjSetName,"STD",objectMeasurement.getName());
                     summaryHeaderCell.setCellValue(summaryDataName);
                     colNumbers.put(summaryDataName, headerCol++);
 
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName,"SUM",objectMeasurement.getMeasurementName());
+                    summaryDataName = getObjectString(exampleObjSetName,"SUM",objectMeasurement.getName());
                     summaryHeaderCell.setCellValue(summaryDataName);
                     colNumbers.put(summaryDataName, headerCol++);
 
@@ -544,30 +547,34 @@ public class Exporter {
             Cell summaryCell = summaryValueRow.createCell(colNum);
             summaryCell.setCellValue(objCollection.size());
 
-            HashSet<MeasurementReference> objectReferences =
-                    modules.getObjectReferences().get(objSetName).getMeasurementReferences();
-            for (MeasurementReference objectMeasurement : objectReferences) {
+            MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(objSetName);
+
+            // If the current object hasn't got any assigned measurements, skip it
+            if (objectMeasurementReferences == null) continue;
+
+            // Running through all the object measurement values, adding them as new columns
+            for (MeasurementReference objectMeasurement : objectMeasurementReferences) {
                 if (!objectMeasurement.isCalculated()) continue;
                 if (!objectMeasurement.isExportable()) continue;
 
                 // Running through all objects in this set, adding measurements to a CumStat object
                 CumStat cs = new CumStat();
                 for (Obj obj: objCollection.values()) {
-                    Measurement measurement = obj.getMeasurement(objectMeasurement.getMeasurementName());
+                    Measurement measurement = obj.getMeasurement(objectMeasurement.getName());
                     cs.addMeasure(measurement.getValue());
                 }
 
-                headerName = getObjectString(objSetName,"MEAN",objectMeasurement.getMeasurementName());
+                headerName = getObjectString(objSetName,"MEAN",objectMeasurement.getName());
                 colNum = colNumbers.get(headerName);
                 summaryCell = summaryValueRow.createCell(colNum);
                 summaryCell.setCellValue(cs.getMean());
 
-                headerName = getObjectString(objSetName,"STD",objectMeasurement.getMeasurementName());
+                headerName = getObjectString(objSetName,"STD",objectMeasurement.getName());
                 colNum = colNumbers.get(headerName);
                 summaryCell = summaryValueRow.createCell(colNum);
                 summaryCell.setCellValue(cs.getStd());
 
-                headerName = getObjectString(objSetName,"SUM",objectMeasurement.getMeasurementName());
+                headerName = getObjectString(objSetName,"SUM",objectMeasurement.getName());
                 colNum = colNumbers.get(headerName);
                 summaryCell = summaryValueRow.createCell(colNum);
                 summaryCell.setCellValue(cs.getSum());
@@ -649,16 +656,21 @@ public class Exporter {
                 Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
                 timepointHeaderCell.setCellValue("TIMEPOINT");
 
-                // Adding object measurement headers
-                HashSet<MeasurementReference> objectReferences = modules.getObjectReferences().get(objectName).getMeasurementReferences();
-                for (MeasurementReference objectMeasurement : objectReferences) {
+
+                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(objectName);
+
+                // If the current object hasn't got any assigned measurements, skip it
+                if (objectMeasurementReferences == null) continue;
+
+                // Running through all the object measurement values, adding them as new columns
+                for (MeasurementReference objectMeasurement : objectMeasurementReferences) {
                     if (!objectMeasurement.isCalculated()) continue;
                     if (!objectMeasurement.isExportable()) continue;
 
                     measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
-                    measurementNames.get(objectName).put(col, objectMeasurement.getMeasurementName());
+                    measurementNames.get(objectName).put(col, objectMeasurement.getName());
                     Cell measHeaderCell = objectHeaderRow.createCell(col++);
-                    measHeaderCell.setCellValue(objectMeasurement.getMeasurementName());
+                    measHeaderCell.setCellValue(objectMeasurement.getName());
 
                 }
             }

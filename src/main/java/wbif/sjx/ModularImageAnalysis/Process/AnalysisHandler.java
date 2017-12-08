@@ -244,32 +244,8 @@ public class AnalysisHandler {
             // Iterating over all references of this type
             for (int j=0;j<currentReferenceNodes.getLength();j++) {
                 Node currentReferenceNode = currentReferenceNodes.item(j);
-                // Creating the reference object and adding to the relevant collection
-                Reference reference = null;
 
-                switch (currentReferenceNode.getNodeName()) {
-                    case "IMAGE_REF":
-                        String imageName = currentReferenceNode.getAttributes().getNamedItem("NAME").getNodeValue();
-                        reference = module.getImageReference(imageName);
-
-                        if (reference == null) continue;
-
-                        module.addImageReference(reference);
-                        break;
-
-                    case "OBJECT_REF":
-                        String objectName = currentReferenceNode.getAttributes().getNamedItem("NAME").getNodeValue();
-                        reference = module.getImageReference(objectName);
-
-                        if (reference == null) continue;
-
-                        module.addObjectReference(reference);
-                        break;
-                }
-
-                if (reference == null) continue;
-
-                // Adding measurements to the reference object
+                // Adding measurements to the imageObjReference object
                 NodeList measurementNodes = currentReferenceNode.getChildNodes().item(0).getChildNodes();
 
                 if (measurementNodes == null) continue;
@@ -282,11 +258,28 @@ public class AnalysisHandler {
                     String measurementName = attributes.getNamedItem("NAME").getNodeValue();
                     boolean isCalulated = Boolean.parseBoolean(attributes.getNamedItem("IS_CALCULATED").getNodeValue());
                     boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
-                    MeasurementReference measurementReference = new MeasurementReference(measurementName);
+                    String type = attributes.getNamedItem("TYPE").getNodeValue();
+                    String imageObjectName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
+
+                    // Acquiring the relevant reference
+                    MeasurementReference measurementReference = null;
+                    switch (type) {
+                        case "IMAGE":
+                            measurementReference = module.getImageMeasurementReference(measurementName);
+                            break;
+
+                        case "OBJECTS":
+                            measurementReference = module.getObjectMeasurementReference(measurementName);
+                            break;
+
+                    }
+
+                    if (measurementReference == null) continue;
+
+                    // Updating the reference's parameters
                     measurementReference.setCalculated(isCalulated);
                     measurementReference.setExportable(isExportable);
-
-                    reference.addMeasurementReference(measurementReference);
+                    measurementReference.setImageObjName(imageObjectName);
 
                 }
             }
