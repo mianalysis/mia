@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.FilterImage;
@@ -18,7 +19,7 @@ public class FilterObjectsTest {
     }
 
     @Test
-    public void run() throws Exception {
+    public void testRunMeasurementsLargerThan() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
 
@@ -36,7 +37,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_LARGER_THAN);
         filterObjects.updateParameterValue(FilterObjects.MEASUREMENT,ExpectedObjects3D.Measures.N_VOXELS);
-        filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200);
+        filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
         filterObjects.run(workspace,false);

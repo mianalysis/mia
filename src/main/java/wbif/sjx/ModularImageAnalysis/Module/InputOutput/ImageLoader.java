@@ -64,7 +64,6 @@ public class ImageLoader extends HCModule {
         ImagePlus ipl;
         // Importing the file
         if (useBioformats) {
-            DebugTools.enableLogging("off");
             DebugTools.setRootLevel("off");
             ipl = getBFImage(filePath,seriesNumber);
 

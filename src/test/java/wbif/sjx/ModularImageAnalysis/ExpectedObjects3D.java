@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis;
 
+import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 
@@ -1962,6 +1963,8 @@ public class ExpectedObjects3D {
             testObject.setT(t);
 
         }
+
+        // Adding measurements to each Obj.  Run through each collection of measurements and add it to the Obj with the same ID number.  Use the measurement names from the interface in this class.
 
         return testObjects;
 

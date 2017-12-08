@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 /**
  * Created by steph on 29/08/2017.
  */
-public class ImageFileLoaderTest {
+public class ImageLoaderTest {
     @Test
     public void testGetTitle() throws Exception {
         assertNotNull(new ImageLoader().getTitle());
@@ -25,19 +25,19 @@ public class ImageFileLoaderTest {
         Workspace workspace = new Workspace(0,null);
 
         // Initialising ImageFileLoader
-        ImageLoader imageFileLoader = new ImageLoader();
-        imageFileLoader.initialiseParameters();
+        ImageLoader imageLoader = new ImageLoader();
+        imageLoader.initialiseParameters();
 
         // Setting parameters
-        imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.SPECIFIC_FILE);
+        imageLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.SPECIFIC_FILE);
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
-        imageFileLoader.updateParameterValue(ImageLoader.FILE_PATH,pathToImage);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,false);
-        imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
+        imageLoader.updateParameterValue(ImageLoader.FILE_PATH,pathToImage);
+        imageLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,false);
+        imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+        imageLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageLoader.run(workspace,false);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
