@@ -245,17 +245,29 @@ public class AnalysisHandler {
             for (int j=0;j<currentReferenceNodes.getLength();j++) {
                 Node currentReferenceNode = currentReferenceNodes.item(j);
                 // Creating the reference object and adding to the relevant collection
-                Reference reference = new Reference();
+                Reference reference = null;
 
                 switch (currentReferenceNode.getNodeName()) {
                     case "IMAGE_REF":
+                        String imageName = currentReferenceNode.getAttributes().getNamedItem("NAME").getNodeValue();
+                        reference = module.getImageReference(imageName);
+
+                        if (reference == null) continue;
+
                         module.addImageReference(reference);
                         break;
 
                     case "OBJECT_REF":
+                        String objectName = currentReferenceNode.getAttributes().getNamedItem("NAME").getNodeValue();
+                        reference = module.getImageReference(objectName);
+
+                        if (reference == null) continue;
+
                         module.addObjectReference(reference);
                         break;
                 }
+
+                if (reference == null) continue;
 
                 // Adding measurements to the reference object
                 NodeList measurementNodes = currentReferenceNode.getChildNodes().item(0).getChildNodes();
@@ -302,6 +314,7 @@ public class AnalysisHandler {
         OutputControl outputControl = analysis.getOutputControl();
         boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
+        String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
 
         // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
@@ -359,6 +372,16 @@ public class AnalysisHandler {
         if (exporter != null) {
             exporter.setExportSummary(exportSummary);
             exporter.setExportIndividualObjects(exportIndividualObjects);
+
+            switch (summaryType) {
+                case OutputControl.SummaryTypes.ONE_AVERAGE_PER_FILE:
+                    exporter.setSummaryType(Exporter.SummaryType.PER_FILE);
+                    break;
+
+                case OutputControl.SummaryTypes.AVERAGE_PER_TIMEPOINT:
+                    exporter.setSummaryType(Exporter.SummaryType.PER_TIMEPOINT_PER_FILE);
+                    break;
+            }
         }
 
         // Initialising BatchProcessor

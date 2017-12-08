@@ -81,6 +81,30 @@ public abstract class HCModule implements Serializable {
 
     public abstract ReferenceCollection updateAndGetObjectReferences();
 
+    public Reference getImageReference(String name) {
+        // Updating image references, so the image to be retrieved is assigned its correct name
+        updateAndGetImageReferences();
+
+        for (Reference reference:imageReferences) {
+            if (reference.getName().equals(name)) return reference;
+        }
+
+        return null;
+
+    }
+
+    public Reference getObjectReference(String name) {
+        // Updating image references, so the object to be retrieved is assigned its correct name
+        updateAndGetObjectReferences();
+
+        for (Reference reference:objectReferences) {
+            if (reference.getName().equals(name)) return reference;
+        }
+
+        return null;
+
+    }
+
     /*
      * Takes an existing collection of measurements and adds any created
      * @param measurements

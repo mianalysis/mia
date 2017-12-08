@@ -3,8 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 import wbif.sjx.common.Object.HCMetadata;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 /**
  * Created by sc13967 on 02/05/2017.
@@ -27,6 +26,18 @@ public class Workspace {
 
     public void addObjects(ObjCollection object) {
         objects.put(object.getName(), object);
+    }
+
+    /**
+     * Adds the provided Obj to the relevant ObjCollection.
+     * If there isn't already such a collection, one is created.
+     * @param obj
+     */
+    public void addObject(Obj obj) {
+        String objectName = obj.getName();
+        objects.putIfAbsent(objectName,new ObjCollection(objectName));
+        objects.get(objectName).add(obj);
+
     }
 
     public void removeObject(String name) {
@@ -93,10 +104,33 @@ public class Workspace {
 
     }
 
-    public void empty() {
-//        images = null;
-//        objects = null;
-//        metadata = null;
+    /**
+     * Creates a structure containing new Workspaces, each of which represent a different time point
+     * @return
+     */
+    public HashMap<Integer,Workspace> getSingleTimepointWorkspaces() {
+        HashMap<Integer,Workspace> workspaces = new HashMap<>();
+
+        for (ObjCollection collection:objects.values()) {
+            for (Obj obj:collection.values()) {
+                int t = obj.getT();
+
+                // If there isn't already a Workspace for this time point, add one
+                if (!workspaces.containsKey(t)) {
+                    Workspace workspace = new Workspace(ID,null);
+                    workspace.setMetadata(metadata);
+                    workspace.setImages(images);
+                    workspaces.put(t,workspace);
+                }
+
+                // Adding the current Obj to the new Workspace
+                workspaces.get(t).addObject(obj);
+
+            }
+        }
+
+        return workspaces;
+
     }
 
 

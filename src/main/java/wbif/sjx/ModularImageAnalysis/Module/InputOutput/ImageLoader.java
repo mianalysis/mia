@@ -286,17 +286,12 @@ public class ImageLoader extends HCModule {
 
     @Override
     public void initialiseReferences() {
-        outputImageRef = new Reference();
-        imageReferences.add(outputImageRef);
 
     }
 
     @Override
     public ReferenceCollection updateAndGetImageReferences() {
-        outputImageRef.setName(parameters.getValue(OUTPUT_IMAGE));
-
-        return imageReferences;
-
+        return null;
     }
 
     @Override

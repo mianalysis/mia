@@ -52,11 +52,13 @@ public class ThresholdImage extends HCModule {
 
     public interface LocalAlgorithms {
         String BERNSEN_3D = "Bersen (3D)";
+        String CONTRAST_3D = "Contrast (3D)";
         String MEAN_3D = "Mean (3D)";
+        String MEDIAN_3D = "Median (3D)";
         String PHANSALKAR_3D = "Phansalkar (3D)";
         String PHANSALKAR_SLICE = "Phansalkar (slice-by-slice)";
 
-        String[] ALL = new String[]{BERNSEN_3D,MEAN_3D,PHANSALKAR_3D,PHANSALKAR_SLICE};
+        String[] ALL = new String[]{BERNSEN_3D,CONTRAST_3D,MEAN_3D,MEDIAN_3D,PHANSALKAR_3D,PHANSALKAR_SLICE};
 
     }
 
@@ -122,8 +124,6 @@ public class ThresholdImage extends HCModule {
             localRadiusZ = inputImagePlus.getCalibration().getX(1) / inputImagePlus.getCalibration().getZ(1);
         }
 
-        System.out.println("Local radius Z "+localRadiusZ);
-
         AutoLocalThreshold3D alt3D = new AutoLocalThreshold3D();
         if (useLowerLim) alt3D.setLowerThreshold((int) lowerLim);
         if (useUpperLim) alt3D.setUpperThreshold((int) upperLim);
@@ -172,8 +172,8 @@ public class ThresholdImage extends HCModule {
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
         // Image must be 8-bit
-        IntensityMinMax.run(inputImagePlus,true);
-        IJ.run(inputImagePlus,"8-bit",null);
+//        IntensityMinMax.run(inputImagePlus,true);
+//        IJ.run(inputImagePlus,"8-bit",null);
 
         // Calculating the threshold based on the selected algorithm
         switch (thresholdType) {
@@ -212,10 +212,24 @@ public class ThresholdImage extends HCModule {
                                 useLowerLim,lowerLim,useUpperLim,upperLim,useGlobalZ);
                         break;
 
+                    case LocalAlgorithms.CONTRAST_3D:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying local Contrast threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.CONTRAST,localRadius,thrMult,
+                                useLowerLim,lowerLim,useUpperLim,upperLim,useGlobalZ);
+                        break;
+
                     case LocalAlgorithms.MEAN_3D:
                         if (verbose) System.out.println(
                                 "["+moduleName+"] Applying local Mean threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEAN,localRadius,thrMult,useLowerLim,
+                                lowerLim,useUpperLim,upperLim,useGlobalZ);
+                        break;
+
+                    case LocalAlgorithms.MEDIAN_3D:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying local Median threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEDIAN,localRadius,thrMult,useLowerLim,
                                 lowerLim,useUpperLim,upperLim,useGlobalZ);
                         break;
 
@@ -316,7 +330,7 @@ public class ThresholdImage extends HCModule {
                 returnedParameters.addParameter(parameters.getParameter(LOCAL_ALGORITHM));
                 returnedParameters.addParameter(parameters.getParameter(LOCAL_RADIUS));
                 returnedParameters.addParameter(parameters.getParameter(SPATIAL_UNITS));
-                returnedParameters.addParameter(parameters.getParameter(USE_GLOBAL_Z));
+//                returnedParameters.addParameter(parameters.getParameter(USE_GLOBAL_Z));
 
                 break;
 
