@@ -148,26 +148,26 @@
 //
 //    @Override
 //    public void initialiseParameters() {
-//        parameters.addParameter(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-//        parameters.addParameter(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
-//        parameters.addParameter(new Parameter(CALCULATE_MEAN, Parameter.BOOLEAN,true));
-//        parameters.addParameter(new Parameter(CALCULATE_STD, Parameter.BOOLEAN,true));
-//        parameters.addParameter(new Parameter(CALCULATE_MIN, Parameter.BOOLEAN,true));
-//        parameters.addParameter(new Parameter(CALCULATE_MAX, Parameter.BOOLEAN,true));
-//        parameters.addParameter(new Parameter(CALCULATE_SUM, Parameter.BOOLEAN,true));
+//        parameters.add(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+//        parameters.add(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
+//        parameters.add(new Parameter(CALCULATE_MEAN, Parameter.BOOLEAN,true));
+//        parameters.add(new Parameter(CALCULATE_STD, Parameter.BOOLEAN,true));
+//        parameters.add(new Parameter(CALCULATE_MIN, Parameter.BOOLEAN,true));
+//        parameters.add(new Parameter(CALCULATE_MAX, Parameter.BOOLEAN,true));
+//        parameters.add(new Parameter(CALCULATE_SUM, Parameter.BOOLEAN,true));
 //
 //    }
 //
 //    @Override
 //    public ParameterCollection updateAndGetParameters() {
 //        ParameterCollection returnedParameters = new ParameterCollection();
-//        returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECTS));
-//        returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
-//        returnedParameters.addParameter(parameters.getParameter(CALCULATE_MEAN));
-//        returnedParameters.addParameter(parameters.getParameter(CALCULATE_STD));
-//        returnedParameters.addParameter(parameters.getParameter(CALCULATE_MIN));
-//        returnedParameters.addParameter(parameters.getParameter(CALCULATE_MAX));
-//        returnedParameters.addParameter(parameters.getParameter(CALCULATE_SUM));
+//        returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
+//        returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
+//        returnedParameters.add(parameters.getParameter(CALCULATE_MEAN));
+//        returnedParameters.add(parameters.getParameter(CALCULATE_STD));
+//        returnedParameters.add(parameters.getParameter(CALCULATE_MIN));
+//        returnedParameters.add(parameters.getParameter(CALCULATE_MAX));
+//        returnedParameters.add(parameters.getParameter(CALCULATE_SUM));
 //
 //        // Updating measurements with measurement choices from currently-selected object
 //        String objectName = parameters.getValue(PARENT_OBJECTS);

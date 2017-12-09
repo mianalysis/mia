@@ -5,9 +5,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.plugin.*;
 import ij.plugin.filter.RankFilters;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -247,6 +245,7 @@ public class FilterImage extends HCModule {
             if (parameters.getValue(SHOW_IMAGE)) {
                 ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
                 IntensityMinMax.run(dispIpl,true);
+                dispIpl.show();
             }
 
         } else {
@@ -254,66 +253,57 @@ public class FilterImage extends HCModule {
             if (parameters.getValue(SHOW_IMAGE)) {
                 ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
                 IntensityMinMax.run(dispIpl,true);
+                dispIpl.show();
             }
         }
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FilterModes.DOG2D,FilterModes.ALL));
+        parameters.add(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
+        parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        returnedParameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+    }
 
-        returnedParameters.addParameter(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FilterModes.DOG2D,FilterModes.ALL));
-        returnedParameters.addParameter(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
-        returnedParameters.addParameter(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
-        returnedParameters.addParameter(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
-        returnedParameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(FILTER_MODE));
+        returnedParameters.add(parameters.getParameter(FILTER_MODE));
         if (!parameters.getValue(FILTER_MODE).equals(FilterModes.ROLLING_FRAME)) {
-            returnedParameters.addParameter(parameters.getParameter(FILTER_RADIUS));
-            returnedParameters.addParameter(parameters.getParameter(CALIBRATED_UNITS));
+            returnedParameters.add(parameters.getParameter(FILTER_RADIUS));
+            returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         } else {
-            returnedParameters.addParameter(parameters.getParameter(WINDOW_HALF_WIDTH));
+            returnedParameters.add(parameters.getParameter(WINDOW_HALF_WIDTH));
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         return null;
     }
 

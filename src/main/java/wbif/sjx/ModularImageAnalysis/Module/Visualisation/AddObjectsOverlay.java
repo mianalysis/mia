@@ -270,55 +270,56 @@ public class AddObjectsOverlay extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(ADD_OUTPUT_TO_WORKSPACE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(SHOW_LABEL, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
+        parameters.add(new Parameter(USE_PARENT_ID, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(POSITION_MODE, Parameter.CHOICE_ARRAY,PositionModes.CENTROID,PositionModes.ALL));
+        parameters.add(new Parameter(X_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(Y_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(Z_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
+        parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,false));
-        returnedParameters.addParameter(new Parameter(ADD_OUTPUT_TO_WORKSPACE, Parameter.BOOLEAN,false));
-        returnedParameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(SHOW_LABEL, Parameter.BOOLEAN,false));
-        returnedParameters.addParameter(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
-        returnedParameters.addParameter(new Parameter(USE_PARENT_ID, Parameter.BOOLEAN,true));
-        returnedParameters.addParameter(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
-        returnedParameters.addParameter(new Parameter(POSITION_MODE, Parameter.CHOICE_ARRAY,PositionModes.CENTROID,PositionModes.ALL));
-        returnedParameters.addParameter(new Parameter(X_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        returnedParameters.addParameter(new Parameter(Y_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        returnedParameters.addParameter(new Parameter(Z_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        returnedParameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
-        returnedParameters.addParameter(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        returnedParameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
-        returnedParameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
+            returnedParameters.add(parameters.getParameter(ADD_OUTPUT_TO_WORKSPACE));
 
             if (parameters.getValue(ADD_OUTPUT_TO_WORKSPACE)) {
-                returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+                returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             }
         }
 
-        returnedParameters.addParameter(parameters.getParameter(SHOW_LABEL));
+        returnedParameters.add(parameters.getParameter(SHOW_LABEL));
 
         if (parameters.getValue(SHOW_LABEL)) {
-            returnedParameters.addParameter(parameters.getParameter(LABEL_SIZE));
-            returnedParameters.addParameter(parameters.getParameter(USE_PARENT_ID));
+            returnedParameters.add(parameters.getParameter(LABEL_SIZE));
+            returnedParameters.add(parameters.getParameter(USE_PARENT_ID));
 
             if (parameters.getValue(USE_PARENT_ID)) {
-                returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_ID));
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_ID));
 
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 parameters.updateValueSource(PARENT_OBJECT_FOR_ID,inputObjectsName);
@@ -326,11 +327,11 @@ public class AddObjectsOverlay extends HCModule {
             }
         }
 
-        returnedParameters.addParameter(parameters.getParameter(POSITION_MODE));
+        returnedParameters.add(parameters.getParameter(POSITION_MODE));
         if (parameters.getValue(POSITION_MODE).equals(PositionModes.POSITION_MEASUREMENTS)) {
-            returnedParameters.addParameter(parameters.getParameter(X_POSITION_MEASUREMENT));
-            returnedParameters.addParameter(parameters.getParameter(Y_POSITION_MEASUREMENT));
-            returnedParameters.addParameter(parameters.getParameter(Z_POSITION_MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(X_POSITION_MEASUREMENT,inputObjectsName);
@@ -339,10 +340,10 @@ public class AddObjectsOverlay extends HCModule {
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(COLOUR_MODE));
+        returnedParameters.add(parameters.getParameter(COLOUR_MODE));
         if (parameters.getValue(COLOUR_MODE).equals(ColourModes.MEASUREMENT_VALUE)) {
             // Use measurement
-            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
             if (parameters.getValue(INPUT_OBJECTS) != null) {
                 parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
@@ -351,31 +352,21 @@ public class AddObjectsOverlay extends HCModule {
 
         } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
             // Use Parent ID
-            returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+            returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         return null;
     }
 

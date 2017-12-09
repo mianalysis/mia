@@ -1,14 +1,15 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
 public class Reference {
-    protected String name = "";
+    protected final String name;
+
+    public Reference(String name) {
+        this.name = name;
+
+    }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
 }

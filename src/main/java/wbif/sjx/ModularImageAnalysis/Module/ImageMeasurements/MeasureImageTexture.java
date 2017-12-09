@@ -83,34 +83,26 @@ public class MeasureImageTexture extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(X_OFFSET, Parameter.INTEGER,1));
+        parameters.add(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
+        parameters.add(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
 
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(X_OFFSET, Parameter.INTEGER,1));
-        returnedParameters.addParameter(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
-        returnedParameters.addParameter(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        MeasurementReferenceCollection references = new MeasurementReferenceCollection();
-
-        references.add(new MeasurementReference(Measurements.ASM));
-        references.add(new MeasurementReference(Measurements.CONTRAST));
-        references.add(new MeasurementReference(Measurements.CORRELATION));
-        references.add(new MeasurementReference(Measurements.ENTROPY));
-
-        return references;
-
     }
 
     @Override
@@ -131,11 +123,6 @@ public class MeasureImageTexture extends HCModule {
 
         return imageMeasurementReferences;
 
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
-        return null;
     }
 
     @Override

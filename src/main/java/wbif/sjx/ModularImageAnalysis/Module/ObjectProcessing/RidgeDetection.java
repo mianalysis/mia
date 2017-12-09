@@ -31,8 +31,6 @@ public class RidgeDetection extends HCModule {
     public static final String LINK_CONTOURS = "Link contours";
     public static final String SHOW_OBJECTS = "Show objects";
 
-    private ImageObjReference outputObjects;
-
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT//LENGTH_(PX)";
 
@@ -202,22 +200,24 @@ public class RidgeDetection extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
-        returnedParameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
-        returnedParameters.addParameter(new Parameter(LOWER_THRESHOLD, Parameter.DOUBLE, 0.5));
-        returnedParameters.addParameter(new Parameter(UPPER_THRESHOLD, Parameter.DOUBLE, 0.85));
-        returnedParameters.addParameter(new Parameter(SIGMA, Parameter.DOUBLE, 3d));
-        returnedParameters.addParameter(
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
+        parameters.add(new Parameter(LOWER_THRESHOLD, Parameter.DOUBLE, 0.5));
+        parameters.add(new Parameter(UPPER_THRESHOLD, Parameter.DOUBLE, 0.85));
+        parameters.add(new Parameter(SIGMA, Parameter.DOUBLE, 3d));
+        parameters.add(
                 new Parameter(CONTOUR_CONTRAST,Parameter.CHOICE_ARRAY,ContourContrast.DARK_LINE,ContourContrast.ALL));
-        returnedParameters.addParameter(new Parameter(MIN_LENGTH, Parameter.DOUBLE, 0d));
-        returnedParameters.addParameter(new Parameter(MAX_LENGTH, Parameter.DOUBLE, 0d));
-        returnedParameters.addParameter(new Parameter(LINK_CONTOURS, Parameter.BOOLEAN, false));
-        returnedParameters.addParameter(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MIN_LENGTH, Parameter.DOUBLE, 0d));
+        parameters.add(new Parameter(MAX_LENGTH, Parameter.DOUBLE, 0d));
+        parameters.add(new Parameter(LINK_CONTOURS, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN, false));
 
-        return returnedParameters;
+    }
+
+    @Override
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.LENGTH_PX));
 
     }
 
@@ -227,23 +227,8 @@ public class RidgeDetection extends HCModule {
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
-        MeasurementReferenceCollection references = new MeasurementReferenceCollection();
-
-        references.add(new MeasurementReference(Measurements.LENGTH_PX));
-
-        return references;
-
     }
 
     @Override

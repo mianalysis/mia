@@ -102,12 +102,12 @@ public class ComponentFactory {
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
 
         } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
-            String[] measurementChoices = modules.getImageReferences((String) parameter.getValueSource(),module).getMeasurementNames();
+            String[] measurementChoices = modules.getImageReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
         } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
-            String[] measurementChoices = modules.getObjectReferences((String) parameter.getValueSource(),module).getMeasurementNames();
+            String[] measurementChoices = modules.getObjectReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 

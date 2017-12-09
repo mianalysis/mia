@@ -108,15 +108,16 @@ public class GetLocalObjectRegion extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE,10.0));
+        parameters.add(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
 
-        returnedParameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE,10.0));
-        returnedParameters.addParameter(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
 
     }
 
@@ -126,17 +127,7 @@ public class GetLocalObjectRegion extends HCModule {
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         return null;
     }
 

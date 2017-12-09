@@ -40,8 +40,6 @@ public class ImageLoader extends HCModule {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
 
-    private ImageObjReference outputImageRef;
-
     public interface ImportModes {
         String CURRENT_FILE = "Current file";
         String IMAGEJ = "From ImageJ";
@@ -235,21 +233,22 @@ public class ImageLoader extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
-        returnedParameters.addParameter(
+    public void initialiseParameters() {
+        parameters.add(
                 new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
-        returnedParameters.addParameter(
+        parameters.add(
                 new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
-        returnedParameters.addParameter(new Parameter(COMMENT,Parameter.STRING,""));
-        returnedParameters.addParameter(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
-        returnedParameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
-        returnedParameters.addParameter(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
-        returnedParameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
+        parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
-        return returnedParameters;
+    }
+
+    @Override
+    protected void initialiseMeasurementReferences() {
 
     }
 
@@ -257,7 +256,7 @@ public class ImageLoader extends HCModule {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addParameter(parameters.getParameter(IMPORT_MODE));
+        returnedParameters.add(parameters.getParameter(IMPORT_MODE));
         switch((String) parameters.getValue(IMPORT_MODE)) {
             case ImportModes.CURRENT_FILE:
                 break;
@@ -266,40 +265,30 @@ public class ImageLoader extends HCModule {
                 break;
 
             case ImportModes.MATCHING_FORMAT:
-                returnedParameters.addParameter(parameters.getParameter(NAME_FORMAT));
-                returnedParameters.addParameter(parameters.getParameter(COMMENT));
+                returnedParameters.add(parameters.getParameter(NAME_FORMAT));
+                returnedParameters.add(parameters.getParameter(COMMENT));
                 break;
 
             case ImportModes.SPECIFIC_FILE:
-                returnedParameters.addParameter(parameters.getParameter(FILE_PATH));
+                returnedParameters.add(parameters.getParameter(FILE_PATH));
                 break;
         }
 
-        returnedParameters.addParameter(parameters.getParameter(USE_BIOFORMATS));
+        returnedParameters.add(parameters.getParameter(USE_BIOFORMATS));
         if (parameters.getValue(USE_BIOFORMATS)) {
-                returnedParameters.addParameter(parameters.getParameter(SERIES_NUMBER));
+                returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         return null;
     }
 

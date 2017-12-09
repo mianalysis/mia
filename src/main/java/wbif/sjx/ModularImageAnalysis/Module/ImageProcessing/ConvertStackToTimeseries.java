@@ -2,12 +2,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import fiji.stacks.Hyperstack_rearranger;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.SwitchTAndZ;
 
 /**
  * Created by sc13967 on 19/06/2017.
@@ -64,25 +62,26 @@ public class ConvertStackToTimeseries extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
 
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        returnedParameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
         return returnedParameters;
@@ -90,17 +89,7 @@ public class ConvertStackToTimeseries extends HCModule {
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         return null;
     }
 

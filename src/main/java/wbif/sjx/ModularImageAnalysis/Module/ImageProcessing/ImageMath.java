@@ -127,21 +127,22 @@ public class ImageMath extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        returnedParameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        returnedParameters.addParameter(
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(
                 new Parameter(CALCULATION_TYPE,Parameter.CHOICE_ARRAY,CalculationTypes.ADD,CalculationTypes.ALL));
-        returnedParameters.addParameter(
+        parameters.add(
                 new Parameter(VALUE_SOURCE,Parameter.CHOICE_ARRAY, ValueSources.FIXED, ValueSources.ALL));
-        returnedParameters.addParameter(new Parameter(MEASUREMENT,Parameter.IMAGE_MEASUREMENT,null));
-        returnedParameters.addParameter(new Parameter(MATH_VALUE,Parameter.DOUBLE,1.0));
-        returnedParameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MEASUREMENT,Parameter.IMAGE_MEASUREMENT,null));
+        parameters.add(new Parameter(MATH_VALUE,Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
-        return returnedParameters;
+    }
+
+    @Override
+    protected void initialiseMeasurementReferences() {
 
     }
 
@@ -149,18 +150,18 @@ public class ImageMath extends HCModule {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(CALCULATION_TYPE));
-        returnedParameters.addParameter(parameters.getParameter(VALUE_SOURCE));
+        returnedParameters.add(parameters.getParameter(CALCULATION_TYPE));
+        returnedParameters.add(parameters.getParameter(VALUE_SOURCE));
 
         if (parameters.getValue(VALUE_SOURCE).equals(ValueSources.MEASUREMENT)) {
-            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
             if (parameters.getValue(INPUT_IMAGE) != null) {
                 parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_IMAGE));
@@ -168,25 +169,15 @@ public class ImageMath extends HCModule {
             }
         }
 
-        returnedParameters.addParameter(parameters.getParameter(MATH_VALUE));
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(MATH_VALUE));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         return null;
     }
 

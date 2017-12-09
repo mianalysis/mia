@@ -24,8 +24,6 @@ public class TrackObjects extends HCModule {
     private static final String TRACK_PREV_ID = "PREVIOUS_OBJECT_IN_TRACK_ID";
     private static final String TRACK_NEXT_ID = "NEXT_OBJECT_IN_TRACK_ID";
 
-    private ImageObjReference inputObjects;
-
     public interface LinkingMethods {
         String ABSOLUTE_OVERLAP = "Absolute overlap";
         String CENTROID = "Centroid";
@@ -243,17 +241,20 @@ public class TrackObjects extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(TRACK_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(LINKING_METHOD,Parameter.CHOICE_ARRAY,LinkingMethods.CENTROID,LinkingMethods.ALL));
+        parameters.add(new Parameter(MINIMUM_OVERLAP,Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
+        parameters.add(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
 
-        returnedParameters.addParameter(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(TRACK_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(LINKING_METHOD,Parameter.CHOICE_ARRAY,LinkingMethods.CENTROID,LinkingMethods.ALL));
-        returnedParameters.addParameter(new Parameter(MINIMUM_OVERLAP,Parameter.DOUBLE,1.0));
-        returnedParameters.addParameter(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
-        returnedParameters.addParameter(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(TRACK_PREV_ID));
+        objectMeasurementReferences.add(new MeasurementReference(TRACK_NEXT_ID));
 
     }
 
@@ -261,45 +262,29 @@ public class TrackObjects extends HCModule {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 
-        returnedParamters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParamters.addParameter(parameters.getParameter(TRACK_OBJECTS));
-        returnedParamters.addParameter(parameters.getParameter(LINKING_METHOD));
+        returnedParamters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParamters.add(parameters.getParameter(TRACK_OBJECTS));
+        returnedParamters.add(parameters.getParameter(LINKING_METHOD));
 
         switch ((String) parameters.getValue(LINKING_METHOD)) {
             case LinkingMethods.ABSOLUTE_OVERLAP:
-                returnedParamters.addParameter(parameters.getParameter(MINIMUM_OVERLAP));
+                returnedParamters.add(parameters.getParameter(MINIMUM_OVERLAP));
                 break;
 
             case LinkingMethods.CENTROID:
-                returnedParamters.addParameter(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
+                returnedParamters.add(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
                 break;
         }
 
-        returnedParamters.addParameter(parameters.getParameter(MAXIMUM_MISSING_FRAMES));
+        returnedParamters.add(parameters.getParameter(MAXIMUM_MISSING_FRAMES));
 
         return returnedParamters;
 
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
-        MeasurementReferenceCollection references = new MeasurementReferenceCollection();
-
-        references.add(new MeasurementReference(TRACK_PREV_ID));
-        references.add(new MeasurementReference(TRACK_NEXT_ID));
-
-        return references;
-
     }
 
     @Override

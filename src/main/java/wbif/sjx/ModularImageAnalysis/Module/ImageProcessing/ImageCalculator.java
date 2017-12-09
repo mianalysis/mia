@@ -165,18 +165,19 @@ public class ImageCalculator extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_IMAGE1,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_IMAGE2,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(OVERWRITE_MODE,Parameter.CHOICE_ARRAY,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
+        parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(OUTPUT_32BIT,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(CALCULATION_METHOD,Parameter.CHOICE_ARRAY,CalculationMethods.ADD,CalculationMethods.ALL));
+        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE1,Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE2,Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(OVERWRITE_MODE,Parameter.CHOICE_ARRAY,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
-        returnedParameters.addParameter(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(OUTPUT_32BIT,Parameter.BOOLEAN,false));
-        returnedParameters.addParameter(new Parameter(CALCULATION_METHOD,Parameter.CHOICE_ARRAY,CalculationMethods.ADD,CalculationMethods.ALL));
-        returnedParameters.addParameter(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
 
     }
 
@@ -184,34 +185,24 @@ public class ImageCalculator extends HCModule {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE1));
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE2));
-        returnedParameters.addParameter(parameters.getParameter(OVERWRITE_MODE));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE1));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
+        returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
 
         if (parameters.getValue(OVERWRITE_MODE).equals(OverwriteModes.CREATE_NEW)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(OUTPUT_32BIT));
-        returnedParameters.addParameter(parameters.getParameter(CALCULATION_METHOD));
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_32BIT));
+        returnedParameters.add(parameters.getParameter(CALCULATION_METHOD));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         return null;
     }
 

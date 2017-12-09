@@ -271,18 +271,23 @@ public class RelateObjects extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CHILD_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(RELATE_MODE, Parameter.CHOICE_ARRAY,RelateModes.MATCHING_IDS,RelateModes.ALL));
+        parameters.add(new Parameter(TEST_CHILD_OBJECTS,Parameter.CHILD_OBJECTS,null));
+        parameters.add(new Parameter(LINKING_DISTANCE,Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(REFERENCE_POINT,Parameter.CHOICE_ARRAY,ReferencePoints.CENTROID,ReferencePoints.ALL));
+        parameters.add(new Parameter(LINK_IN_SAME_FRAME,Parameter.BOOLEAN,true));
 
-        returnedParameters.addParameter(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(CHILD_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(RELATE_MODE, Parameter.CHOICE_ARRAY,RelateModes.MATCHING_IDS,RelateModes.ALL));
-        returnedParameters.addParameter(new Parameter(TEST_CHILD_OBJECTS,Parameter.CHILD_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(LINKING_DISTANCE,Parameter.DOUBLE,1.0));
-        returnedParameters.addParameter(new Parameter(REFERENCE_POINT,Parameter.CHOICE_ARRAY,ReferencePoints.CENTROID,ReferencePoints.ALL));
-        returnedParameters.addParameter(new Parameter(LINK_IN_SAME_FRAME,Parameter.BOOLEAN,true));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_PX_MEAS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_PX_MEAS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_CAL_MEAS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_CAL_MEAS));
 
     }
 
@@ -290,20 +295,20 @@ public class RelateObjects extends HCModule {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(RELATE_MODE));
+        returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
+        returnedParameters.add(parameters.getParameter(RELATE_MODE));
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
-                returnedParameters.addParameter(parameters.getParameter(REFERENCE_POINT));
-                returnedParameters.addParameter(parameters.getParameter(LINKING_DISTANCE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_POINT));
+                returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
 
                 break;
 
             case RelateModes.PROXIMITY_TO_CHILDREN:
-                returnedParameters.addParameter(parameters.getParameter(TEST_CHILD_OBJECTS));
-                returnedParameters.addParameter(parameters.getParameter(LINKING_DISTANCE));
+                returnedParameters.add(parameters.getParameter(TEST_CHILD_OBJECTS));
+                returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
 
                 String parentObjectNames = parameters.getValue(PARENT_OBJECTS);
                 parameters.updateValueSource(TEST_CHILD_OBJECTS,parentObjectNames);
@@ -311,33 +316,15 @@ public class RelateObjects extends HCModule {
                 break;
         }
 
-        returnedParameters.addParameter(parameters.getParameter(LINK_IN_SAME_FRAME));
+        returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
 
         return returnedParameters;
 
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
-        MeasurementReferenceCollection references = new MeasurementReferenceCollection();
-
-        references.add(new MeasurementReference(Measurements.DIST_SURFACE_PX_MEAS));
-        references.add(new MeasurementReference(Measurements.DIST_CENTROID_PX_MEAS));
-        references.add(new MeasurementReference(Measurements.DIST_SURFACE_CAL_MEAS));
-        references.add(new MeasurementReference(Measurements.DIST_CENTROID_CAL_MEAS));
-
-        return references;
-
     }
 
     @Override

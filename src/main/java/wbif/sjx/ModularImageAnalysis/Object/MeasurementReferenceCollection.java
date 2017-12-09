@@ -1,31 +1,24 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 
-public class MeasurementReferenceCollection extends LinkedHashSet<MeasurementReference> {
-    public MeasurementReference get(String name) {
-        for (MeasurementReference measurementReference:this) {
-            if (measurementReference.getName().equals(name)) return measurementReference;
-        }
-
-        return null;
+public class MeasurementReferenceCollection extends LinkedHashMap<String,MeasurementReference> {
+    public void add(MeasurementReference measurementReference) {
+        put(measurementReference.getName(),measurementReference);
 
     }
 
     public void updateImageObjectName(String measurementName, String imageObjectName) {
-        for (MeasurementReference measurementReference:this) {
-            if (measurementReference.getName().equals(measurementName)) {
-                measurementReference.setImageObjName(imageObjectName);
-            }
-        }
+        get(measurementName).setImageObjName(imageObjectName);
+
     }
 
-    public String[] getMeasurementNames() {
+    public String[] getMeasurementNickNames() {
         String[] measurementNames = new String[size()];
 
         int i = 0;
-        for (MeasurementReference measurementReference:this) {
-            measurementNames[i++] = measurementReference.getName();
+        for (MeasurementReference measurementReference:this.values()) {
+            measurementNames[i++] = measurementReference.getNickName();
         }
 
         return measurementNames;

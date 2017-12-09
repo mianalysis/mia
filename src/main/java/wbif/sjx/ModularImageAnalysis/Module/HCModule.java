@@ -16,8 +16,8 @@ import java.io.Serializable;
  */
 public abstract class HCModule implements Serializable {
     protected ParameterCollection parameters = new ParameterCollection();
-    protected MeasurementReferenceCollection imageMeasurementReferences;
-    protected MeasurementReferenceCollection objectMeasurementReferences;
+    protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
+    protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
 
     private String nickname;
     private String notes = "";
@@ -31,9 +31,8 @@ public abstract class HCModule implements Serializable {
         moduleName = getTitle();
         nickname = moduleName;
 
-        this.imageMeasurementReferences = initialiseImageMeasurementReferences();
-        this.objectMeasurementReferences = initialiseObjectMeasurementReferences();
-        this.parameters = initialiseParameters();
+        initialiseParameters();
+        initialiseMeasurementReferences();
 
     }
 
@@ -62,7 +61,9 @@ public abstract class HCModule implements Serializable {
      * operation is included in the method.
      * @return
      */
-    protected abstract ParameterCollection initialiseParameters();
+    protected abstract void initialiseParameters();
+
+    protected abstract void initialiseMeasurementReferences();
 
     /**
      * Return a ParameterCollection of the currently active parameters.  This is run each time a parameter is changed.
@@ -73,20 +74,12 @@ public abstract class HCModule implements Serializable {
      */
     public abstract ParameterCollection updateAndGetParameters();
 
-    public ParameterCollection getAllParameters() {
-        return parameters;
-    }
-
-    protected abstract MeasurementReferenceCollection initialiseImageMeasurementReferences();
-
     public abstract MeasurementReferenceCollection updateAndGetImageMeasurementReferences();
-
-    protected abstract MeasurementReferenceCollection initialiseObjectMeasurementReferences();
 
     public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
 
     public MeasurementReference getImageMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : imageMeasurementReferences) {
+        for (MeasurementReference measurementReference : imageMeasurementReferences.values()) {
             if (measurementReference.getName().equals(name)) return measurementReference;
         }
 
@@ -95,7 +88,7 @@ public abstract class HCModule implements Serializable {
     }
 
     public MeasurementReference getObjectMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : objectMeasurementReferences) {
+        for (MeasurementReference measurementReference : objectMeasurementReferences.values()) {
             if (measurementReference.getName().equals(name)) return measurementReference;
         }
 
@@ -127,6 +120,10 @@ public abstract class HCModule implements Serializable {
     public void setParameterVisibility(String name, boolean visible) {
         parameters.updateVisible(name,visible);
 
+    }
+
+    public ParameterCollection getAllParameters() {
+        return parameters;
     }
 
 

@@ -78,48 +78,39 @@ public class ImageTypeConverter extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(OUTPUT_TYPE, Parameter.CHOICE_ARRAY,OutputTypes.INT8,OutputTypes.ALL));
+        parameters.add(new Parameter(SCALE_INTENSITIES, Parameter.BOOLEAN,false));
 
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        returnedParameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(OUTPUT_TYPE, Parameter.CHOICE_ARRAY,OutputTypes.INT8,OutputTypes.ALL));
-        returnedParameters.addParameter(new Parameter(SCALE_INTENSITIES, Parameter.BOOLEAN,false));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(OUTPUT_TYPE));
-        returnedParameters.addParameter(parameters.getParameter(SCALE_INTENSITIES));
+        returnedParameters.add(parameters.getParameter(OUTPUT_TYPE));
+        returnedParameters.add(parameters.getParameter(SCALE_INTENSITIES));
 
         return returnedParameters;
 
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         return null;
     }
 

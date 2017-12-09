@@ -70,37 +70,29 @@ public class MeasureImageIntensity extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(MEASURE_MEAN, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_MIN, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_MAX, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
 
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(MEASURE_MEAN, Parameter.BOOLEAN, true));
-        returnedParameters.addParameter(new Parameter(MEASURE_MIN, Parameter.BOOLEAN, true));
-        returnedParameters.addParameter(new Parameter(MEASURE_MAX, Parameter.BOOLEAN, true));
-        returnedParameters.addParameter(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
-        returnedParameters.addParameter(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        MeasurementReferenceCollection references = new MeasurementReferenceCollection();
-
-        references.add(new MeasurementReference(Measurements.MEAN));
-        references.add(new MeasurementReference(Measurements.MIN));
-        references.add(new MeasurementReference(Measurements.MAX));
-        references.add(new MeasurementReference(Measurements.STDEV));
-        references.add(new MeasurementReference(Measurements.SUM));
-
-        return references;
-
     }
 
     @Override
@@ -129,11 +121,6 @@ public class MeasureImageIntensity extends HCModule {
 
         return imageMeasurementReferences;
 
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
-        return null;
     }
 
     @Override

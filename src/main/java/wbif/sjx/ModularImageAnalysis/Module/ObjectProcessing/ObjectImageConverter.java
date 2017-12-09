@@ -317,43 +317,44 @@ public class ObjectImageConverter extends HCModule {
     }
 
     @Override
-    public ParameterCollection initialiseParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
+    public void initialiseParameters() {
+        parameters.add(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,ConversionModes.IMAGE_TO_OBJECTS,ConversionModes.ALL));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
+        parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(HIDE_IF_MISSING_PARENT,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
-        returnedParameters.addParameter(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,ConversionModes.IMAGE_TO_OBJECTS,ConversionModes.ALL));
-        returnedParameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        returnedParameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        returnedParameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
-        returnedParameters.addParameter(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        returnedParameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
-        returnedParameters.addParameter(new Parameter(HIDE_IF_MISSING_PARENT,Parameter.BOOLEAN,true));
-        returnedParameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
+    }
 
-        return returnedParameters;
+    @Override
+    protected void initialiseMeasurementReferences() {
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(CONVERSION_MODE));
+        returnedParameters.add(parameters.getParameter(CONVERSION_MODE));
 
         if (parameters.getValue(CONVERSION_MODE).equals(ConversionModes.IMAGE_TO_OBJECTS)) {
-            returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_OBJECTS));
+            returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
 
         } else if(parameters.getValue(CONVERSION_MODE).equals(ConversionModes.OBJECTS_TO_IMAGE)) {
-            returnedParameters.addParameter(parameters.getParameter(TEMPLATE_IMAGE));
-            returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
+            returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
-            returnedParameters.addParameter(parameters.getParameter(COLOUR_MODE));
+            returnedParameters.add(parameters.getParameter(COLOUR_MODE));
             if (parameters.getValue(COLOUR_MODE).equals(ColourModes.MEASUREMENT_VALUE)) {
                 // Use measurement
-                returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
                 if (parameters.getValue(INPUT_OBJECTS) != null) {
                     parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
@@ -362,15 +363,15 @@ public class ObjectImageConverter extends HCModule {
 
             } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
                 // Use Parent ID
-                returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                returnedParameters.addParameter(parameters.getParameter(HIDE_IF_MISSING_PARENT));
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                returnedParameters.add(parameters.getParameter(HIDE_IF_MISSING_PARENT));
 
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
             }
 
-            returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+            returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         }
 
@@ -378,17 +379,7 @@ public class ObjectImageConverter extends HCModule {
     }
 
     @Override
-    protected MeasurementReferenceCollection initialiseImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    protected MeasurementReferenceCollection initialiseObjectMeasurementReferences() {
         return null;
     }
 
