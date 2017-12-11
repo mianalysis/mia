@@ -13,11 +13,11 @@ import java.util.LinkedHashMap;
 public class FilterObjects extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_METHOD = "Method for filtering";
-    public static final String REFERENCE_IMAGE = "ImageObjReference image";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String MEASUREMENT = "Measurement to filter on";
     public static final String PARENT_OBJECT = "Parent object";
     public static final String CHILD_OBJECTS = "Child objects";
-    public static final String REFERENCE_VALUE = "ImageObjReference value";
+    public static final String REFERENCE_VALUE = "Reference value";
 
     public interface FilterMethods {
         String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)";

@@ -558,7 +558,7 @@ public class Exporter {
                 CumStat cs = new CumStat();
                 for (Obj obj: objCollection.values()) {
                     Measurement measurement = obj.getMeasurement(objectMeasurement.getName());
-                    cs.addMeasure(measurement.getValue());
+                    if (measurement != null) cs.addMeasure(measurement.getValue());
                 }
 
                 headerName = getObjectString(objSetName,"MEAN",objectMeasurement.getName());

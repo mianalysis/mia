@@ -14,7 +14,7 @@ public class RelateObjects extends HCModule {
     public final static String PARENT_OBJECTS = "Parent (larger) objects";
     public final static String CHILD_OBJECTS = "Child (smaller) objects";
     public final static String RELATE_MODE = "Method to relate objects";
-    public final static String REFERENCE_POINT = "ImageObjReference point";
+    public final static String REFERENCE_POINT = "Reference point";
     public final static String TEST_CHILD_OBJECTS = "Child objects to test against";
     public final static String LINKING_DISTANCE = "Maximum linking distance (px)";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
@@ -75,6 +75,9 @@ public class RelateObjects extends HCModule {
 
         for (Obj childObject:childObjects.values()) {
             if (verbose) System.out.println("["+moduleName+"] Processing object "+(iter++)+" of "+numberOfChildren);
+
+            // If no parent objects were detected
+            if (parentObjects.size() == 0) continue;
 
             double minDist = Double.MAX_VALUE;
             double dpp = parentObjects.values().iterator().next().getDistPerPxXY();

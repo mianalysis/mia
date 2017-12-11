@@ -71,6 +71,7 @@ public class MainGUI extends GUI {
         // Creating the menu bar
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
+        frame.setResizable(false);
 
         if (debugOn) {
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
