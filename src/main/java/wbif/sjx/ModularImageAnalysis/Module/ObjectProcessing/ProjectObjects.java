@@ -81,28 +81,28 @@ public class ProjectObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

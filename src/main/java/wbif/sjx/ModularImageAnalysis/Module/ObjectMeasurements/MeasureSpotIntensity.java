@@ -24,13 +24,6 @@ public class MeasureSpotIntensity extends HCModule {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
-    private Reference inputObjects;
-    private MeasurementReference mean;
-    private MeasurementReference min;
-    private MeasurementReference max;
-    private MeasurementReference stdev;
-    private MeasurementReference sum;
-
     private interface Measurements {
         String MEAN = "MEAN";
         String MIN = "MIN";
@@ -39,12 +32,12 @@ public class MeasureSpotIntensity extends HCModule {
         String SUM = "SUM";
 
     }
-    
-    
+
+
     private String getFullName(String imageName, String measurement) {
         return "SPOT_INTENSITY//"+imageName+"_"+measurement;
     }
-    
+
     @Override
     public String getTitle() {
         return "Measure spot intensity";
@@ -135,50 +128,46 @@ public class MeasureSpotIntensity extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(MEASUREMENT_RADIUS, Parameter.DOUBLE,2.0));
-        parameters.addParameter(new Parameter(MEASURE_MEAN, Parameter.BOOLEAN, true));
-        parameters.addParameter(new Parameter(MEASURE_MIN, Parameter.BOOLEAN, true));
-        parameters.addParameter(new Parameter(MEASURE_MAX, Parameter.BOOLEAN, true));
-        parameters.addParameter(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
-        parameters.addParameter(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MEASUREMENT_RADIUS, Parameter.DOUBLE,2.0));
+        parameters.add(new Parameter(MEASURE_MEAN, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_MIN, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_MAX, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-        inputObjects = new Reference();
-        objectReferences.add(inputObjects);
-
-        mean = new MeasurementReference(Measurements.MEAN);
-        min = new MeasurementReference(Measurements.MIN);
-        max = new MeasurementReference(Measurements.MAX);
-        stdev = new MeasurementReference(Measurements.STDEV);
-        sum = new MeasurementReference(Measurements.SUM);
-        inputObjects.addMeasurementReference(mean);
-        inputObjects.addMeasurementReference(min);
-        inputObjects.addMeasurementReference(max);
-        inputObjects.addMeasurementReference(stdev);
-        inputObjects.addMeasurementReference(sum);
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        MeasurementReference mean = objectMeasurementReferences.get(Measurements.MEAN);
+        MeasurementReference min = objectMeasurementReferences.get(Measurements.MIN);
+        MeasurementReference max = objectMeasurementReferences.get(Measurements.MAX);
+        MeasurementReference stdev = objectMeasurementReferences.get(Measurements.STDEV);
+        MeasurementReference sum = objectMeasurementReferences.get(Measurements.SUM);
 
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
@@ -190,30 +179,31 @@ public class MeasureSpotIntensity extends HCModule {
 
         if (parameters.getValue(MEASURE_MEAN)) {
             mean.setCalculated(true);
-            mean.setMeasurementName(getFullName(inputImageName, Measurements.MEAN));
+            mean.setNickName(getFullName(inputImageName, Measurements.MEAN));
         }
 
         if (parameters.getValue(MEASURE_MIN)) {
             min.setCalculated(true);
-            min.setMeasurementName(getFullName(inputImageName, Measurements.MIN));
+            min.setNickName(getFullName(inputImageName, Measurements.MIN));
         }
 
         if (parameters.getValue(MEASURE_MAX)) {
             max.setCalculated(true);
-            max.setMeasurementName(getFullName(inputImageName, Measurements.MAX));
+            max.setNickName(getFullName(inputImageName, Measurements.MAX));
         }
 
         if (parameters.getValue(MEASURE_STDEV)) {
             stdev.setCalculated(true);
-            stdev.setMeasurementName(getFullName(inputImageName, Measurements.STDEV));
+            stdev.setNickName(getFullName(inputImageName, Measurements.STDEV));
         }
 
         if (parameters.getValue(MEASURE_SUM)) {
             sum.setCalculated(true);
-            sum.setMeasurementName(getFullName(inputImageName, Measurements.SUM));
+            sum.setNickName(getFullName(inputImageName, Measurements.SUM));
         }
 
-        return objectReferences;
+        return objectMeasurementReferences;
+
     }
 
     @Override

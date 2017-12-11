@@ -19,12 +19,6 @@ public class RelateObjects extends HCModule {
     public final static String LINKING_DISTANCE = "Maximum linking distance (px)";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
-    private Reference childObjects;
-    private MeasurementReference distSurfPx;
-    private MeasurementReference distCentPx;
-    private MeasurementReference distSurfCal;
-    private MeasurementReference distCentCal;
-
     public interface RelateModes {
         String MATCHING_IDS = "Matching IDs";
         String PROXIMITY = "Proximity";
@@ -81,6 +75,9 @@ public class RelateObjects extends HCModule {
 
         for (Obj childObject:childObjects.values()) {
             if (verbose) System.out.println("["+moduleName+"] Processing object "+(iter++)+" of "+numberOfChildren);
+
+            // If no parent objects were detected
+            if (parentObjects.size() == 0) continue;
 
             double minDist = Double.MAX_VALUE;
             double dpp = parentObjects.values().iterator().next().getDistPerPxXY();
@@ -278,34 +275,43 @@ public class RelateObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CHILD_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(RELATE_MODE, Parameter.CHOICE_ARRAY,RelateModes.MATCHING_IDS,RelateModes.ALL));
-        parameters.addParameter(new Parameter(TEST_CHILD_OBJECTS,Parameter.CHILD_OBJECTS,null));
-        parameters.addParameter(new Parameter(LINKING_DISTANCE,Parameter.DOUBLE,1.0));
-        parameters.addParameter(new Parameter(REFERENCE_POINT,Parameter.CHOICE_ARRAY,ReferencePoints.CENTROID,ReferencePoints.ALL));
-        parameters.addParameter(new Parameter(LINK_IN_SAME_FRAME,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CHILD_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(RELATE_MODE, Parameter.CHOICE_ARRAY,RelateModes.MATCHING_IDS,RelateModes.ALL));
+        parameters.add(new Parameter(TEST_CHILD_OBJECTS,Parameter.CHILD_OBJECTS,null));
+        parameters.add(new Parameter(LINKING_DISTANCE,Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(REFERENCE_POINT,Parameter.CHOICE_ARRAY,ReferencePoints.CENTROID,ReferencePoints.ALL));
+        parameters.add(new Parameter(LINK_IN_SAME_FRAME,Parameter.BOOLEAN,true));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_PX_MEAS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_PX_MEAS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_CAL_MEAS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_CAL_MEAS));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(RELATE_MODE));
+        returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
+        returnedParameters.add(parameters.getParameter(RELATE_MODE));
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
-                returnedParameters.addParameter(parameters.getParameter(REFERENCE_POINT));
-                returnedParameters.addParameter(parameters.getParameter(LINKING_DISTANCE));
+                returnedParameters.add(parameters.getParameter(REFERENCE_POINT));
+                returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
 
                 break;
 
             case RelateModes.PROXIMITY_TO_CHILDREN:
-                returnedParameters.addParameter(parameters.getParameter(TEST_CHILD_OBJECTS));
-                returnedParameters.addParameter(parameters.getParameter(LINKING_DISTANCE));
+                returnedParameters.add(parameters.getParameter(TEST_CHILD_OBJECTS));
+                returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
 
                 String parentObjectNames = parameters.getValue(PARENT_OBJECTS);
                 parameters.updateValueSource(TEST_CHILD_OBJECTS,parentObjectNames);
@@ -313,37 +319,30 @@ public class RelateObjects extends HCModule {
                 break;
         }
 
-        returnedParameters.addParameter(parameters.getParameter(LINK_IN_SAME_FRAME));
+        returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-        childObjects = new Reference();
-        objectReferences.add(childObjects);
-
-        distSurfPx = new MeasurementReference(Measurements.DIST_SURFACE_PX_MEAS);
-        distCentPx = new MeasurementReference(Measurements.DIST_CENTROID_PX_MEAS);
-        distSurfCal = new MeasurementReference(Measurements.DIST_SURFACE_CAL_MEAS);
-        distCentCal = new MeasurementReference(Measurements.DIST_CENTROID_CAL_MEAS);
-
-        childObjects.addMeasurementReference(distSurfPx);
-        childObjects.addMeasurementReference(distCentPx);
-        childObjects.addMeasurementReference(distSurfCal);
-        childObjects.addMeasurementReference(distCentCal);
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        childObjects.setName(parameters.getValue(CHILD_OBJECTS));
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+
+        MeasurementReference distSurfPx = objectMeasurementReferences.get(Measurements.DIST_SURFACE_PX_MEAS);
+        MeasurementReference distCentPx = objectMeasurementReferences.get(Measurements.DIST_CENTROID_PX_MEAS);
+        MeasurementReference distSurfCal = objectMeasurementReferences.get(Measurements.DIST_SURFACE_CAL_MEAS);
+        MeasurementReference distCentCal = objectMeasurementReferences.get(Measurements.DIST_CENTROID_CAL_MEAS);
+
+        distSurfPx.setImageObjName(childObjectsName);
+        distCentPx.setImageObjName(childObjectsName);
+        distSurfCal.setImageObjName(childObjectsName);
+        distCentCal.setImageObjName(childObjectsName);
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
@@ -367,7 +366,7 @@ public class RelateObjects extends HCModule {
                 break;
         }
 
-        return objectReferences;
+        return objectMeasurementReferences;
 
     }
 

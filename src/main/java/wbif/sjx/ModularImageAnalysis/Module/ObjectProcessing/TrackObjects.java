@@ -24,8 +24,6 @@ public class TrackObjects extends HCModule {
     private static final String TRACK_PREV_ID = "PREVIOUS_OBJECT_IN_TRACK_ID";
     private static final String TRACK_NEXT_ID = "NEXT_OBJECT_IN_TRACK_ID";
 
-    private Reference inputObjects;
-
     public interface LinkingMethods {
         String ABSOLUTE_OVERLAP = "Absolute overlap";
         String CENTROID = "Centroid";
@@ -244,59 +242,62 @@ public class TrackObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(TRACK_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(LINKING_METHOD,Parameter.CHOICE_ARRAY,LinkingMethods.CENTROID,LinkingMethods.ALL));
-        parameters.addParameter(new Parameter(MINIMUM_OVERLAP,Parameter.DOUBLE,1.0));
-        parameters.addParameter(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
-        parameters.addParameter(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
+        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(TRACK_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(LINKING_METHOD,Parameter.CHOICE_ARRAY,LinkingMethods.CENTROID,LinkingMethods.ALL));
+        parameters.add(new Parameter(MINIMUM_OVERLAP,Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
+        parameters.add(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(TRACK_PREV_ID));
+        objectMeasurementReferences.add(new MeasurementReference(TRACK_NEXT_ID));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 
-        returnedParamters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParamters.addParameter(parameters.getParameter(TRACK_OBJECTS));
-        returnedParamters.addParameter(parameters.getParameter(LINKING_METHOD));
+        returnedParamters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParamters.add(parameters.getParameter(TRACK_OBJECTS));
+        returnedParamters.add(parameters.getParameter(LINKING_METHOD));
 
         switch ((String) parameters.getValue(LINKING_METHOD)) {
             case LinkingMethods.ABSOLUTE_OVERLAP:
-                returnedParamters.addParameter(parameters.getParameter(MINIMUM_OVERLAP));
+                returnedParamters.add(parameters.getParameter(MINIMUM_OVERLAP));
                 break;
 
             case LinkingMethods.CENTROID:
-                returnedParamters.addParameter(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
+                returnedParamters.add(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
                 break;
         }
 
-        returnedParamters.addParameter(parameters.getParameter(MAXIMUM_MISSING_FRAMES));
+        returnedParamters.add(parameters.getParameter(MAXIMUM_MISSING_FRAMES));
 
         return returnedParamters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-        inputObjects = new Reference();
-        objectReferences.add(inputObjects);
-
-        inputObjects.addMeasurementReference(new MeasurementReference(TRACK_PREV_ID));
-        inputObjects.addMeasurementReference(new MeasurementReference(TRACK_NEXT_ID));
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        return objectReferences;
+        MeasurementReference trackPrevID = objectMeasurementReferences.get(TRACK_PREV_ID);
+        MeasurementReference trackNextID = objectMeasurementReferences.get(TRACK_NEXT_ID);
+
+        trackPrevID.setImageObjName(inputObjectsName);
+        trackNextID.setImageObjName(inputObjectsName);
+
+        return objectMeasurementReferences;
 
     }
 

@@ -14,14 +14,6 @@ public class MeasureObjectCentroid extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CENTROID_METHOD = "Centroid method";
 
-    private Reference inputObjects;
-    private MeasurementReference meanX;
-    private MeasurementReference meanY;
-    private MeasurementReference meanZ;
-    private MeasurementReference medianX;
-    private MeasurementReference medianY;
-    private MeasurementReference medianZ;
-
     public interface Methods {
         String MEAN = "Mean";
         String MEDIAN = "Median";
@@ -117,45 +109,42 @@ public class MeasureObjectCentroid extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CENTROID_METHOD, Parameter.CHOICE_ARRAY,Methods.MEAN,Methods.ALL));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CENTROID_METHOD, Parameter.CHOICE_ARRAY,Methods.MEAN,Methods.ALL));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public void initialiseReferences() {
-        inputObjects = new Reference();
-        objectReferences.add(inputObjects);
-
-        meanX = new MeasurementReference(Measurements.MEAN_X);
-        meanY = new MeasurementReference(Measurements.MEAN_Y);
-        meanZ = new MeasurementReference(Measurements.MEAN_Z);
-        medianX = new MeasurementReference(Measurements.MEDIAN_X);
-        medianY = new MeasurementReference(Measurements.MEDIAN_Y);
-        medianZ = new MeasurementReference(Measurements.MEDIAN_Z);
-
-        inputObjects.addMeasurementReference(meanX);
-        inputObjects.addMeasurementReference(meanY);
-        inputObjects.addMeasurementReference(meanZ);
-        inputObjects.addMeasurementReference(medianX);
-        inputObjects.addMeasurementReference(medianY);
-        inputObjects.addMeasurementReference(medianZ);
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
+        MeasurementReference meanX = objectMeasurementReferences.get(Measurements.MEAN_X);
+        MeasurementReference meanY = objectMeasurementReferences.get(Measurements.MEAN_Y);
+        MeasurementReference meanZ = objectMeasurementReferences.get(Measurements.MEAN_Z);
+        MeasurementReference medianX = objectMeasurementReferences.get(Measurements.MEDIAN_X);
+        MeasurementReference medianY = objectMeasurementReferences.get(Measurements.MEDIAN_Y);
+        MeasurementReference medianZ = objectMeasurementReferences.get(Measurements.MEDIAN_Z);
 
         String choice = parameters.getValue(CENTROID_METHOD);
         boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
@@ -180,7 +169,7 @@ public class MeasureObjectCentroid extends HCModule {
             medianZ.setCalculated(true);
         }
 
-        return objectReferences;
+        return objectMeasurementReferences;
 
     }
 

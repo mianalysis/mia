@@ -4,7 +4,6 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
@@ -12,78 +11,112 @@ import java.util.LinkedHashSet;
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<HCModule> implements Serializable {
-    public LinkedHashMap<String,Reference> getImageReferences() {
-        return getImageReferences(null);
+    public MeasurementReferenceCollection getImageReferences(String imageName) {
+        return getImageReferences(imageName,null);
     }
 
-    public LinkedHashMap<String,Reference> getImageReferences(HCModule cutoffModule) {
-        LinkedHashMap<String,Reference> superReferences = new LinkedHashMap<>();
+    public MeasurementReferenceCollection getImageReferences(String imageName, HCModule cutoffModule) {
+        MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
 
+        // Iterating over all modules, collecting any measurements for the current image
         for (HCModule module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
+            MeasurementReferenceCollection currentMeasurementReferences = module.updateAndGetImageMeasurementReferences();
 
-            // Getting references from the current module, then adding them to the super references
-            ReferenceCollection currentReferences = module.updateAndGetImageReferences();
-            if (currentReferences == null) continue;
+            if (currentMeasurementReferences == null) continue;
 
-            for (Reference currentReference:currentReferences) {
-                superReferences.putIfAbsent(currentReference.getName(),new Reference());
-
-                superReferences.get(currentReference.getName()).addMeasurementReferences(currentReference);
+            for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
+                if (measurementReference.getImageObjName().equals(imageName)
+                        & measurementReference.isCalculated())
+                    measurementReferences.add(measurementReference);
 
             }
         }
 
-        return superReferences;
+        return measurementReferences;
 
     }
 
-    public LinkedHashMap<String,Reference> getObjectReferences() {
-        return getObjectReferences(null);
+    public MeasurementReferenceCollection getObjectReferences(String objectName) {
+        return getObjectReferences(objectName,null);
+
     }
 
-    public LinkedHashMap<String,Reference> getObjectReferences(HCModule cutoffModule) {
-        LinkedHashMap<String,Reference> superReferences = new LinkedHashMap<>();
+    public MeasurementReferenceCollection getObjectReferences(String objectName, HCModule cutoffModule) {
+        MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
 
+        // Iterating over all modules, collecting any measurements for the current objects
         for (HCModule module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
+            MeasurementReferenceCollection currentMeasurementReferences =
+                    module.updateAndGetObjectMeasurementReferences();
+            if (currentMeasurementReferences == null) continue;
 
-            // Getting references from the current module, then adding them to the super references
-            ReferenceCollection currentReferences = module.updateAndGetObjectReferences();
-            if (currentReferences == null) continue;
-
-            for (Reference currentReference:currentReferences) {
-                superReferences.putIfAbsent(currentReference.getName(),new Reference());
-
-                superReferences.get(currentReference.getName()).addMeasurementReferences(currentReference);
+            for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
+                if (measurementReference.getImageObjName().equals(objectName)
+                        & measurementReference.isCalculated())
+                    measurementReferences.add(measurementReference);
 
             }
         }
 
-        return superReferences;
+        return measurementReferences;
 
     }
 
-//    public MeasurementCollection getMeasurements(HCModule cutoffModule) {
-//        MeasurementCollection measurements = new MeasurementCollection();
+//    public LinkedHashMap<String,ImageObjReference> getImageReferences() {
+//        return getImageReferences(null);
+//    }
+//
+//    public LinkedHashMap<String,ImageObjReference> getImageReferences(HCModule cutoffModule) {
+//        LinkedHashMap<String,ImageObjReference> superReferences = new LinkedHashMap<>();
 //
 //        for (HCModule module:this) {
-//            if (module == cutoffModule) {
-//                break;
+//            if (module == cutoffModule) break;
+//            if (!module.isEnabled()) continue;
+//
+//            // Getting references from the current module, then adding them to the super references
+//            ReferenceCollection currentReferences = module.updateAndGetImageReferences();
+//            if (currentReferences == null) continue;
+//
+//            for (ImageObjReference currentImageObjReference :currentReferences) {
+//                superReferences.putIfAbsent(currentImageObjReference.getName(),new ImageObjReference());
+//
+//                superReferences.get(currentImageObjReference.getName()).addMeasurementReferences(currentImageObjReference);
+//
 //            }
-//
-//            if (module.isEnabled()) module.addMeasurements(measurements);
-//
 //        }
 //
-//        return measurements;
+//        return superReferences;
 //
 //    }
-
-//    public MeasurementCollection getMeasurements() {
-//        return getMeasurements(null);
+//
+//    public LinkedHashMap<String,ImageObjReference> getObjectReferences() {
+//        return getObjectReferences(null);
+//    }
+//
+//    public LinkedHashMap<String,ImageObjReference> getObjectReferences(HCModule cutoffModule) {
+//        LinkedHashMap<String,ImageObjReference> superReferences = new LinkedHashMap<>();
+//
+//        for (HCModule module:this) {
+//            if (module == cutoffModule) break;
+//            if (!module.isEnabled()) continue;
+//
+//            // Getting references from the current module, then adding them to the super references
+//            ReferenceCollection currentReferences = module.updateAndGetObjectReferences();
+//            if (currentReferences == null) continue;
+//
+//            for (ImageObjReference currentImageObjReference :currentReferences) {
+//                superReferences.putIfAbsent(currentImageObjReference.getName(),new ImageObjReference());
+//
+//                superReferences.get(currentImageObjReference.getName()).addMeasurementReferences(currentImageObjReference);
+//
+//            }
+//        }
+//
+//        return superReferences;
 //
 //    }
 
@@ -107,7 +140,7 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
             }
 
             // Running through all parameters, adding all images to the list
-            ParameterCollection currParameters = module.getActiveParameters();
+            ParameterCollection currParameters = module.updateAndGetParameters();
             if (currParameters != null) {
                 for (Parameter currParameter : currParameters.values()) {
                     if (currParameter.getType() == type) {

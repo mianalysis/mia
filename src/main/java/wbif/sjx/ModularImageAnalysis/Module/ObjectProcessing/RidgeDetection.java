@@ -5,7 +5,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import de.biomedical_imaging.ij.steger.*;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -31,8 +30,6 @@ public class RidgeDetection extends HCModule {
     public static final String CONTOUR_CONTRAST = "Contour contrast";
     public static final String LINK_CONTOURS = "Link contours";
     public static final String SHOW_OBJECTS = "Show objects";
-
-    private Reference outputObjects;
 
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT//LENGTH_(PX)";
@@ -204,44 +201,43 @@ public class RidgeDetection extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
-        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
-        parameters.addParameter(new Parameter(LOWER_THRESHOLD, Parameter.DOUBLE, 0.5));
-        parameters.addParameter(new Parameter(UPPER_THRESHOLD, Parameter.DOUBLE, 0.85));
-        parameters.addParameter(new Parameter(SIGMA, Parameter.DOUBLE, 3d));
-        parameters.addParameter(
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
+        parameters.add(new Parameter(LOWER_THRESHOLD, Parameter.DOUBLE, 0.5));
+        parameters.add(new Parameter(UPPER_THRESHOLD, Parameter.DOUBLE, 0.85));
+        parameters.add(new Parameter(SIGMA, Parameter.DOUBLE, 3d));
+        parameters.add(
                 new Parameter(CONTOUR_CONTRAST,Parameter.CHOICE_ARRAY,ContourContrast.DARK_LINE,ContourContrast.ALL));
-        parameters.addParameter(new Parameter(MIN_LENGTH, Parameter.DOUBLE, 0d));
-        parameters.addParameter(new Parameter(MAX_LENGTH, Parameter.DOUBLE, 0d));
-        parameters.addParameter(new Parameter(LINK_CONTOURS, Parameter.BOOLEAN, false));
-        parameters.addParameter(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MIN_LENGTH, Parameter.DOUBLE, 0d));
+        parameters.add(new Parameter(MAX_LENGTH, Parameter.DOUBLE, 0d));
+        parameters.add(new Parameter(LINK_CONTOURS, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN, false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.LENGTH_PX));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public void initialiseReferences() {
-        outputObjects = new Reference();
-        objectReferences.add(outputObjects);
-
-        outputObjects.addMeasurementReference(new MeasurementReference(Measurements.LENGTH_PX));
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        outputObjects.setName(parameters.getValue(OUTPUT_OBJECTS));
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        MeasurementReference lengthPx = objectMeasurementReferences.get(Measurements.LENGTH_PX);
+        lengthPx.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
 
-        return objectReferences;
+        return objectMeasurementReferences;
+
     }
 
     @Override

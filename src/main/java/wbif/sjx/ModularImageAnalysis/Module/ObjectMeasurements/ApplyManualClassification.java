@@ -16,8 +16,6 @@ public class ApplyManualClassification extends HCModule {
     public static final String CLASSIFICATION_FILE = "Classification file";
     public static final String REMOVE_MISSING = "Remove objects without classification";
 
-    private Reference inputObjects;
-
     public interface Measurements {
         String CLASS = "CLASSIFIER//CLASS";
 
@@ -95,41 +93,42 @@ public class ApplyManualClassification extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CLASSIFICATION_FILE, Parameter.FILE_PATH,null));
-        parameters.addParameter(new Parameter(REMOVE_MISSING, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CLASSIFICATION_FILE, Parameter.FILE_PATH,null));
+        parameters.add(new Parameter(REMOVE_MISSING, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.CLASS));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(CLASSIFICATION_FILE));
-        returnedParameters.addParameter(parameters.getParameter(REMOVE_MISSING));
+
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CLASSIFICATION_FILE));
+        returnedParameters.add(parameters.getParameter(REMOVE_MISSING));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-        inputObjects = new Reference();
-        objectReferences.add(inputObjects);
-        inputObjects.addMeasurementReference(new MeasurementReference(Measurements.CLASS));
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        MeasurementReference classMeas = objectMeasurementReferences.get(Measurements.CLASS);
+        classMeas.setImageObjName(parameters.getValue(INPUT_OBJECTS));
 
-        return objectReferences;
+        return objectMeasurementReferences;
+
     }
 
     @Override

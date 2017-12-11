@@ -59,60 +59,65 @@ public class InputControl extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_MODE, Parameter.CHOICE_ARRAY,InputModes.SINGLE_FILE,InputModes.ALL));
-        parameters.addParameter(new Parameter(SINGLE_FILE_PATH, Parameter.FILE_PATH,null));
-        parameters.addParameter(new Parameter(BATCH_FOLDER_PATH, Parameter.FOLDER_PATH,null));
+        parameters.add(new Parameter(INPUT_MODE, Parameter.CHOICE_ARRAY,InputModes.SINGLE_FILE,InputModes.ALL));
+        parameters.add(new Parameter(SINGLE_FILE_PATH, Parameter.FILE_PATH,null));
+        parameters.add(new Parameter(BATCH_FOLDER_PATH, Parameter.FOLDER_PATH,null));
         int nThreads = Runtime.getRuntime().availableProcessors()/2;
-        parameters.addParameter(new Parameter(NUMBER_OF_THREADS,Parameter.INTEGER,nThreads));
-        parameters.addParameter(new Parameter(FILE_EXTENSION, Parameter.STRING,"flex"));
-        parameters.addParameter(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.addParameter(new Parameter(USE_FILENAME_FILTER_2,Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_2,Parameter.STRING,""));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_TYPE_2,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.addParameter(new Parameter(USE_FILENAME_FILTER_3,Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_3,Parameter.STRING,""));
-        parameters.addParameter(new Parameter(FILENAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new Parameter(NUMBER_OF_THREADS,Parameter.INTEGER,nThreads));
+        parameters.add(new Parameter(FILE_EXTENSION, Parameter.STRING,"flex"));
+        parameters.add(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
+        parameters.add(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new Parameter(USE_FILENAME_FILTER_2,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(FILENAME_FILTER_2,Parameter.STRING,""));
+        parameters.add(new Parameter(FILENAME_FILTER_TYPE_2,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new Parameter(USE_FILENAME_FILTER_3,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(FILENAME_FILTER_3,Parameter.STRING,""));
+        parameters.add(new Parameter(FILENAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addParameter(parameters.getParameter(INPUT_MODE));
+        returnedParameters.add(parameters.getParameter(INPUT_MODE));
 
         switch ((String) parameters.getValue(INPUT_MODE)) {
             case InputModes.SINGLE_FILE:
-                returnedParameters.addParameter(parameters.getParameter(SINGLE_FILE_PATH));
+                returnedParameters.add(parameters.getParameter(SINGLE_FILE_PATH));
                 break;
 
             case InputModes.BATCH:
-                returnedParameters.addParameter(parameters.getParameter(BATCH_FOLDER_PATH));
-                returnedParameters.addParameter(parameters.getParameter(NUMBER_OF_THREADS));
+                returnedParameters.add(parameters.getParameter(BATCH_FOLDER_PATH));
+                returnedParameters.add(parameters.getParameter(NUMBER_OF_THREADS));
                 break;
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(FILE_EXTENSION));
+        returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
 
-        returnedParameters.addParameter(parameters.getParameter(USE_FILENAME_FILTER_1));
+        returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_1));
         if (returnedParameters.getValue(USE_FILENAME_FILTER_1)) {
-            returnedParameters.addParameter(parameters.getParameter(FILENAME_FILTER_1));
-            returnedParameters.addParameter(parameters.getParameter(FILENAME_FILTER_TYPE_1));
+            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_1));
+            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_1));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(USE_FILENAME_FILTER_2));
+        returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_2));
         if (returnedParameters.getValue(USE_FILENAME_FILTER_2)) {
-            returnedParameters.addParameter(parameters.getParameter(FILENAME_FILTER_2));
-            returnedParameters.addParameter(parameters.getParameter(FILENAME_FILTER_TYPE_2));
+            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_2));
+            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_2));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(USE_FILENAME_FILTER_3));
+        returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_3));
         if (returnedParameters.getValue(USE_FILENAME_FILTER_3)) {
-            returnedParameters.addParameter(parameters.getParameter(FILENAME_FILTER_3));
-            returnedParameters.addParameter(parameters.getParameter(FILENAME_FILTER_TYPE_3));
+            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_3));
+            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_3));
         }
 
         return returnedParameters;
@@ -120,17 +125,12 @@ public class InputControl extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

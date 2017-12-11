@@ -11,8 +11,6 @@ public class MeasureTrackMotion extends HCModule {
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
 
-    private Reference inputTrackObjects;
-
 
     @Override
     public String getTitle() {
@@ -99,16 +97,25 @@ public class MeasureTrackMotion extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter( INPUT_TRACK_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter( INPUT_SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null));
+        parameters.add(new Parameter( INPUT_TRACK_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter( INPUT_SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurement.DIRECTIONALITY_RATIO));
+        objectMeasurementReferences.add(new MeasurementReference(Measurement.EUCLIDEAN_DISTANCE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurement.TOTAL_PATH_LENGTH));
+        objectMeasurementReferences.add(new MeasurementReference(Measurement.DURATION));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_TRACK_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(INPUT_SPOT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
         // Updating measurements with measurement choices from currently-selected object
         String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
@@ -124,27 +131,20 @@ public class MeasureTrackMotion extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-        inputTrackObjects = new Reference();
-        objectReferences.add(inputTrackObjects);
-
-        inputTrackObjects.addMeasurementReference(new MeasurementReference(Measurement.DIRECTIONALITY_RATIO));
-        inputTrackObjects.addMeasurementReference(new MeasurementReference(Measurement.EUCLIDEAN_DISTANCE));
-        inputTrackObjects.addMeasurementReference(new MeasurementReference(Measurement.TOTAL_PATH_LENGTH));
-        inputTrackObjects.addMeasurementReference(new MeasurementReference(Measurement.DURATION));
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        inputTrackObjects.setName(parameters.getValue(INPUT_TRACK_OBJECTS));
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
 
-        return objectReferences;
+        objectMeasurementReferences.updateImageObjectName(Measurement.DIRECTIONALITY_RATIO,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurement.EUCLIDEAN_DISTANCE,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurement.TOTAL_PATH_LENGTH,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurement.DURATION,inputTrackObjects);
+
+        return objectMeasurementReferences;
 
     }
 

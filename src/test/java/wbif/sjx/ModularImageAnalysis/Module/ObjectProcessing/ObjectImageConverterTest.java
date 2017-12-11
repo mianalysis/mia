@@ -50,7 +50,7 @@ public class ObjectImageConverterTest {
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image referenceImage = new Image("Reference image",ipl);
+        Image referenceImage = new Image("ImageObjReference image",ipl);
 
         // Converting objects to image
         Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);
@@ -104,7 +104,7 @@ public class ObjectImageConverterTest {
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit_NoRef.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image referenceImage = new Image("Reference image",ipl);
+        Image referenceImage = new Image("ImageObjReference image",ipl);
 
         // Converting objects to image
         Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);

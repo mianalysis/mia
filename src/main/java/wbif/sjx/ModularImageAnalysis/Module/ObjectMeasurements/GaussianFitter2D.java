@@ -25,8 +25,6 @@ public class GaussianFitter2D extends HCModule {
     public static final String MAX_EVALUATIONS = "Maximum number of evaluations";
     public static final String REMOVE_UNFIT = "Remove objects with failed fitting";
 
-    private Reference inputObjects;
-
     public interface RadiusModes {
         String FIXED_VALUE = "Fixed value";
         String MEASUREMENT = "Measurement";
@@ -34,17 +32,20 @@ public class GaussianFitter2D extends HCModule {
         String[] ALL = new String[]{FIXED_VALUE, MEASUREMENT};
 
     }
+    
+    public interface Measurements {
+        String X_0 = "GAUSSFIT2D//X_0";
+        String Y_0 = "GAUSSFIT2D//Y_0";
+        String Z_0 = "GAUSSFIT2D//Z_0_(CENTROID)";
+        String SIGMA_X = "GAUSSFIT2D//SIGMA_X";
+        String SIGMA_Y = "GAUSSFIT2D//SIGMA_Y";
+        String A_0 = "GAUSSFIT2D//A_0";
+        String A_BG = "GAUSSFIT2D//A_BG";
+        String THETA = "GAUSSFIT2D//THETA";
+        String ELLIPTICITY = "GAUSSFIT2D//ELLIPTICITY";
 
-    private static final String X_0 = "GAUSSFIT2D//X_0";
-    private static final String Y_0 = "GAUSSFIT2D//Y_0";
-    private static final String Z_0 = "GAUSSFIT2D//Z_0_(CENTROID)";
-    private static final String SIGMA_X = "GAUSSFIT2D//SIGMA_X";
-    private static final String SIGMA_Y = "GAUSSFIT2D//SIGMA_Y";
-    private static final String A_0 = "GAUSSFIT2D//A_0";
-    private static final String A_BG = "GAUSSFIT2D//A_BG";
-    private static final String THETA = "GAUSSFIT2D//THETA";
-    private static final String ELLIPTICITY = "GAUSSFIT2D//ELLIPTICITY";
-
+    }
+    
 
     @Override
     public String getTitle() {
@@ -182,15 +183,15 @@ public class GaussianFitter2D extends HCModule {
             }
 
             // Storing the results as measurements
-            inputObject.addMeasurement(new Measurement(X_0,x0,this));
-            inputObject.addMeasurement(new Measurement(Y_0,y0,this));
-            inputObject.addMeasurement(new Measurement(Z_0,z0,this));
-            inputObject.addMeasurement(new Measurement(SIGMA_X,sx,this));
-            inputObject.addMeasurement(new Measurement(SIGMA_Y,sy,this));
-            inputObject.addMeasurement(new Measurement(A_0,A0,this));
-            inputObject.addMeasurement(new Measurement(A_BG,ABG,this));
-            inputObject.addMeasurement(new Measurement(THETA,th,this));
-            inputObject.addMeasurement(new Measurement(ELLIPTICITY,ellipticity,this));
+            inputObject.addMeasurement(new Measurement(Measurements.X_0,x0,this));
+            inputObject.addMeasurement(new Measurement(Measurements.Y_0,y0,this));
+            inputObject.addMeasurement(new Measurement(Measurements.Z_0,z0,this));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_X,sx,this));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_Y,sy,this));
+            inputObject.addMeasurement(new Measurement(Measurements.A_0,A0,this));
+            inputObject.addMeasurement(new Measurement(Measurements.A_BG,ABG,this));
+            inputObject.addMeasurement(new Measurement(Measurements.THETA,th,this));
+            inputObject.addMeasurement(new Measurement(Measurements.ELLIPTICITY,ellipticity,this));
 
             // If selected, any objects that weren't fit are removed
             if (removeUnfit & pOut == null) {
@@ -205,69 +206,76 @@ public class GaussianFitter2D extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(RADIUS_MODE, Parameter.CHOICE_ARRAY,RadiusModes.FIXED_VALUE,RadiusModes.ALL));
-        parameters.addParameter(new Parameter(RADIUS, Parameter.DOUBLE,null));
-        parameters.addParameter(new Parameter(RADIUS_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null));
-        parameters.addParameter(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
-        parameters.addParameter(new Parameter(MAX_EVALUATIONS, Parameter.INTEGER,1000));
-        parameters.addParameter(new Parameter(REMOVE_UNFIT, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(RADIUS_MODE, Parameter.CHOICE_ARRAY,RadiusModes.FIXED_VALUE,RadiusModes.ALL));
+        parameters.add(new Parameter(RADIUS, Parameter.DOUBLE,null));
+        parameters.add(new Parameter(RADIUS_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null));
+        parameters.add(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(MAX_EVALUATIONS, Parameter.INTEGER,1000));
+        parameters.add(new Parameter(REMOVE_UNFIT, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.X_0));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y_0));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z_0));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.A_0));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.A_BG));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.THETA));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.ELLIPTICITY));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(RADIUS_MODE));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(RADIUS_MODE));
 
         if (parameters.getValue(RADIUS_MODE).equals(RadiusModes.FIXED_VALUE)) {
-            returnedParameters.addParameter(parameters.getParameter(RADIUS));
+            returnedParameters.add(parameters.getParameter(RADIUS));
 
         } else if (parameters.getValue(RADIUS_MODE).equals(RadiusModes.MEASUREMENT)) {
-            returnedParameters.addParameter(parameters.getParameter(RADIUS_MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(RADIUS_MEASUREMENT));
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(RADIUS_MEASUREMENT,inputObjectsName);
-            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT_MULTIPLIER));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT_MULTIPLIER));
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(MAX_EVALUATIONS));
-        returnedParameters.addParameter(parameters.getParameter(REMOVE_UNFIT));
+        returnedParameters.add(parameters.getParameter(MAX_EVALUATIONS));
+        returnedParameters.add(parameters.getParameter(REMOVE_UNFIT));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-        inputObjects = new Reference();
-        objectReferences.add(inputObjects);
-
-        inputObjects.addMeasurementReference(new MeasurementReference(X_0));
-        inputObjects.addMeasurementReference(new MeasurementReference(Y_0));
-        inputObjects.addMeasurementReference(new MeasurementReference(Z_0));
-        inputObjects.addMeasurementReference(new MeasurementReference(SIGMA_X));
-        inputObjects.addMeasurementReference(new MeasurementReference(SIGMA_Y));
-        inputObjects.addMeasurementReference(new MeasurementReference(A_0));
-        inputObjects.addMeasurementReference(new MeasurementReference(A_BG));
-        inputObjects.addMeasurementReference(new MeasurementReference(THETA));
-        inputObjects.addMeasurementReference(new MeasurementReference(ELLIPTICITY));
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        return objectReferences;
+        objectMeasurementReferences.updateImageObjectName(Measurements.X_0,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.Y_0,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.Z_0,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_X,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_Y,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.A_0,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.A_BG,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.THETA,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.ELLIPTICITY,inputObjectsName);
+
+        return objectMeasurementReferences;
 
     }
 

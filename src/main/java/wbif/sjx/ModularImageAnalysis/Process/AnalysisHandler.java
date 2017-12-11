@@ -99,16 +99,14 @@ public class AnalysisHandler {
                 // If the module is an input or output control, treat it differently
                 if (module.getClass().isInstance(new InputControl())) {
                     NodeList moduleChildNodes = moduleNode.getChildNodes();
-                    boolean foundParameters = false;
                     for (int j=0;j<moduleChildNodes.getLength();j++) {
                         switch (moduleChildNodes.item(j).getNodeName()) {
                             case "PARAMETERS":
                                 populateModuleParameters(moduleChildNodes.item(j), module);
-                                foundParameters = true;
                                 break;
 
-                            case "REFERENCES":
-                                populateModuleReferences(moduleChildNodes.item(j), module);
+                            case "MEASUREMENTS":
+                                populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
                                 break;
                         }
                     }
@@ -118,16 +116,14 @@ public class AnalysisHandler {
 
                 } else if (module.getClass().isInstance(new OutputControl())) {
                     NodeList moduleChildNodes = moduleNode.getChildNodes();
-                    boolean foundParameters = false;
                     for (int j=0;j<moduleChildNodes.getLength();j++) {
                         switch (moduleChildNodes.item(j).getNodeName()) {
                             case "PARAMETERS":
                                 populateModuleParameters(moduleChildNodes.item(j), module);
-                                foundParameters = true;
                                 break;
 
-                            case "REFERENCES":
-                                populateModuleReferences(moduleChildNodes.item(j), module);
+                            case "MEASUREMENTS":
+                                populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
                                 break;
                         }
                     }
@@ -155,8 +151,8 @@ public class AnalysisHandler {
                             foundParameters = true;
                             break;
 
-                        case "REFERENCES":
-                            populateModuleReferences(moduleChildNodes.item(j), module);
+                        case "MEASUREMENTS":
+                            populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
                             break;
                     }
                 }
@@ -236,60 +232,41 @@ public class AnalysisHandler {
         }
     }
 
-    private void populateModuleReferences(Node moduleNode, HCModule module) {
+    private void populateModuleMeasurementReferences(Node moduleNode, HCModule module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
-        for (int i = 0; i < referenceNodes.getLength(); i++) {
-            NodeList currentReferenceNodes = referenceNodes.item(i).getChildNodes();
 
-            // Iterating over all references of this type
-            for (int j=0;j<currentReferenceNodes.getLength();j++) {
-                Node currentReferenceNode = currentReferenceNodes.item(j);
-                // Creating the reference object and adding to the relevant collection
-                Reference reference = null;
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
 
-                switch (currentReferenceNode.getNodeName()) {
-                    case "IMAGE_REF":
-                        String imageName = currentReferenceNode.getAttributes().getNamedItem("NAME").getNodeValue();
-                        reference = module.getImageReference(imageName);
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            String measurementName = attributes.getNamedItem("NAME").getNodeValue();
+            boolean isCalulated = Boolean.parseBoolean(attributes.getNamedItem("IS_CALCULATED").getNodeValue());
+            boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
+            String type = attributes.getNamedItem("TYPE").getNodeValue();
+            String imageObjectName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
 
-                        if (reference == null) continue;
+            // Acquiring the relevant reference
+            MeasurementReference measurementReference = null;
+            switch (type) {
+                case "IMAGE":
+                    measurementReference = module.getImageMeasurementReference(measurementName);
+                    break;
 
-                        module.addImageReference(reference);
-                        break;
+                case "OBJECTS":
+                    measurementReference = module.getObjectMeasurementReference(measurementName);
+                    break;
 
-                    case "OBJECT_REF":
-                        String objectName = currentReferenceNode.getAttributes().getNamedItem("NAME").getNodeValue();
-                        reference = module.getImageReference(objectName);
-
-                        if (reference == null) continue;
-
-                        module.addObjectReference(reference);
-                        break;
-                }
-
-                if (reference == null) continue;
-
-                // Adding measurements to the reference object
-                NodeList measurementNodes = currentReferenceNode.getChildNodes().item(0).getChildNodes();
-
-                if (measurementNodes == null) continue;
-
-                for (int k = 0; k < measurementNodes.getLength(); k++) {
-                    Node measurementNode = measurementNodes.item(k);
-
-                    // Getting measurement properties
-                    NamedNodeMap attributes = measurementNode.getAttributes();
-                    String measurementName = attributes.getNamedItem("NAME").getNodeValue();
-                    boolean isCalulated = Boolean.parseBoolean(attributes.getNamedItem("IS_CALCULATED").getNodeValue());
-                    boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
-                    MeasurementReference measurementReference = new MeasurementReference(measurementName);
-                    measurementReference.setCalculated(isCalulated);
-                    measurementReference.setExportable(isExportable);
-
-                    reference.addMeasurementReference(measurementReference);
-
-                }
             }
+
+            if (measurementReference == null) continue;
+
+            // Updating the reference's parameters
+            measurementReference.setCalculated(isCalulated);
+            measurementReference.setExportable(isExportable);
+            measurementReference.setImageObjName(imageObjectName);
+
         }
     }
 

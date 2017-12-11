@@ -4,13 +4,11 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import fiji.threshold.Auto_Local_Threshold;
 import fiji.threshold.Auto_Threshold;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -284,88 +282,88 @@ public class ThresholdImage extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(
                 new Parameter(THRESHOLD_TYPE,Parameter.CHOICE_ARRAY,ThresholdTypes.GLOBAL_TYPE,ThresholdTypes.ALL));
-        parameters.addParameter(
+        parameters.add(
                 new Parameter(GLOBAL_ALGORITHM,Parameter.CHOICE_ARRAY,GlobalAlgorithms.HUANG,GlobalAlgorithms.ALL));
-        parameters.addParameter(
+        parameters.add(
                 new Parameter(LOCAL_ALGORITHM,Parameter.CHOICE_ARRAY,LocalAlgorithms.PHANSALKAR_3D,LocalAlgorithms.ALL));
-        parameters.addParameter(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
-        parameters.addParameter(new Parameter(USE_LOWER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
-        parameters.addParameter(new Parameter(LOWER_THRESHOLD_LIMIT, Parameter.DOUBLE, 0.0));
-        parameters.addParameter(new Parameter(USE_UPPER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
-        parameters.addParameter(new Parameter(UPPER_THRESHOLD_LIMIT, Parameter.DOUBLE, 65535.0));
-        parameters.addParameter(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE, 1.0));
-        parameters.addParameter(
+        parameters.add(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(USE_LOWER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(LOWER_THRESHOLD_LIMIT, Parameter.DOUBLE, 0.0));
+        parameters.add(new Parameter(USE_UPPER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(UPPER_THRESHOLD_LIMIT, Parameter.DOUBLE, 65535.0));
+        parameters.add(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE, 1.0));
+        parameters.add(
                 new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
-        parameters.addParameter(new Parameter(USE_GLOBAL_Z,Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(USE_GLOBAL_Z,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(THRESHOLD_TYPE));
-        returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MULTIPLIER));
+        returnedParameters.add(parameters.getParameter(THRESHOLD_TYPE));
+        returnedParameters.add(parameters.getParameter(THRESHOLD_MULTIPLIER));
 
         switch ((String) parameters.getValue(THRESHOLD_TYPE)) {
             case ThresholdTypes.GLOBAL_TYPE:
-                returnedParameters.addParameter(parameters.getParameter(GLOBAL_ALGORITHM));
+                returnedParameters.add(parameters.getParameter(GLOBAL_ALGORITHM));
 
                 break;
 
             case ThresholdTypes.LOCAL_TYPE:
-                returnedParameters.addParameter(parameters.getParameter(LOCAL_ALGORITHM));
-                returnedParameters.addParameter(parameters.getParameter(LOCAL_RADIUS));
-                returnedParameters.addParameter(parameters.getParameter(SPATIAL_UNITS));
-//                returnedParameters.addParameter(parameters.getParameter(USE_GLOBAL_Z));
+                returnedParameters.add(parameters.getParameter(LOCAL_ALGORITHM));
+                returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
+                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+//                returnedParameters.add(parameters.getParameter(USE_GLOBAL_Z));
 
                 break;
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
+        returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
 
         if (parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
-            returnedParameters.addParameter(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
+            returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(USE_UPPER_THRESHOLD_LIMIT));
+        returnedParameters.add(parameters.getParameter(USE_UPPER_THRESHOLD_LIMIT));
         if (parameters.getValue(USE_UPPER_THRESHOLD_LIMIT)) {
-            returnedParameters.addParameter(parameters.getParameter(UPPER_THRESHOLD_LIMIT));
+            returnedParameters.add(parameters.getParameter(UPPER_THRESHOLD_LIMIT));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(WHITE_BACKGROUND));
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

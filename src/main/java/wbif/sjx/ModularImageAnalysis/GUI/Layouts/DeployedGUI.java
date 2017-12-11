@@ -62,6 +62,7 @@ public class DeployedGUI extends GUI implements ActionListener {
         // Setting location of panel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - frameWidth) / 2, (screenSize.height - frameHeight) / 2);
+        frame.setResizable(false);
 
         frame.setLayout(new GridBagLayout());
         frame.setTitle(name+" (version " + version + ")");

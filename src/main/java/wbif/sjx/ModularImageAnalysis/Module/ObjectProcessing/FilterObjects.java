@@ -181,41 +181,46 @@ public class FilterObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(FILTER_METHOD, Parameter.CHOICE_ARRAY,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
-        parameters.addParameter(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
-        parameters.addParameter(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
-        parameters.addParameter(new Parameter(REFERENCE_VALUE, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(FILTER_METHOD, Parameter.CHOICE_ARRAY,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
+        parameters.add(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
+        parameters.add(new Parameter(REFERENCE_VALUE, Parameter.DOUBLE,1.0));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(FILTER_METHOD));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(FILTER_METHOD));
 
         if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.MISSING_MEASUREMENTS)) {
-            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT));
             if (parameters.getValue(INPUT_OBJECTS) != null) {
                 parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
             }
 
         } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.REMOVE_ON_IMAGE_EDGE_2D)) {
-            returnedParameters.addParameter(parameters.getParameter(REFERENCE_IMAGE));
+            returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
 
         } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.NO_PARENT)) {
-            returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT));
+            returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(PARENT_OBJECT,inputObjectsName);
 
         } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.MIN_NUMBER_OF_CHILDREN)) {
-            returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
-            returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
+            returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
+            returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(CHILD_OBJECTS,inputObjectsName);
@@ -223,8 +228,8 @@ public class FilterObjects extends HCModule {
         } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.MEASUREMENTS_SMALLER_THAN) |
                 parameters.getValue(FILTER_METHOD).equals(FilterMethods.MEASUREMENTS_LARGER_THAN)) {
 
-            returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
-            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
             if (parameters.getValue(INPUT_OBJECTS) != null) {
                 parameters.updateValueSource(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
@@ -238,17 +243,12 @@ public class FilterObjects extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

@@ -21,20 +21,6 @@ public class MeasureIntensityDistribution extends HCModule {
     public static final String SPATIAL_UNITS = "Spatial units";
     public static final String IGNORE_ON_OBJECTS = "Ignore values on objects";
 
-    private Reference inputImage;
-    private MeasurementReference nPxInrange;
-    private MeasurementReference nPxOutrange;
-    private MeasurementReference meanIntInrange;
-    private MeasurementReference meanIntOutrange;
-    private MeasurementReference sumIntInrange;
-    private MeasurementReference sumIntOutrange;
-    private MeasurementReference meanProximity;
-    private MeasurementReference stdevProximity;
-
-    String inputImageName = parameters.getParameter(INPUT_IMAGE).getName();
-    String inputObjectsName = parameters.getParameter(INPUT_OBJECTS).getName();
-
-
     public interface MeasurementTypes {
         String FRACTION_PROXIMAL_TO_OBJECTS = "Fraction proximal to objects";
         String INTENSITY_WEIGHTED_PROXIMITY = "Intensity-weighted proximity";
@@ -63,7 +49,7 @@ public class MeasureIntensityDistribution extends HCModule {
 
     }
 
-    
+
     private String getFullName(String objectsName, String measurement) {
         return "INT_DISTR//"+objectsName+"_"+measurement;
     }
@@ -288,73 +274,71 @@ public class MeasureIntensityDistribution extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(MEASUREMENT_TYPE, Parameter.CHOICE_ARRAY,
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(MEASUREMENT_TYPE, Parameter.CHOICE_ARRAY,
                 MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS, MeasurementTypes.ALL));
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(PROXIMAL_DISTANCE, Parameter.DOUBLE,2d));
-        parameters.addParameter(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
-        parameters.addParameter(new Parameter(IGNORE_ON_OBJECTS, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(PROXIMAL_DISTANCE, Parameter.DOUBLE,2d));
+        parameters.add(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new Parameter(IGNORE_ON_OBJECTS, Parameter.BOOLEAN,true));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_OUTRANGE));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_INT_INRANGE));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_INT_OUTRANGE));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM_INT_INRANGE));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM_INT_OUTRANGE));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_PROXIMITY));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.STDEV_PROXIMITY));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(MEASUREMENT_TYPE));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_TYPE));
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
-                returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-                returnedParameters.addParameter(parameters.getParameter(PROXIMAL_DISTANCE));
-                returnedParameters.addParameter(parameters.getParameter(SPATIAL_UNITS));
+                returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(PROXIMAL_DISTANCE));
+                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
-                returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
                 break;
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(IGNORE_ON_OBJECTS));
+        returnedParameters.add(parameters.getParameter(IGNORE_ON_OBJECTS));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-        inputImage = new Reference();
-        imageReferences.add(inputImage);
-
-        nPxInrange = new MeasurementReference(Measurements.N_PX_INRANGE);
-        nPxOutrange = new MeasurementReference(Measurements.N_PX_OUTRANGE);
-        meanIntInrange = new MeasurementReference(Measurements.MEAN_INT_INRANGE);
-        meanIntOutrange = new MeasurementReference(Measurements.MEAN_INT_OUTRANGE);
-        sumIntInrange = new MeasurementReference(Measurements.SUM_INT_INRANGE);
-        sumIntOutrange = new MeasurementReference(Measurements.SUM_INT_OUTRANGE);
-        meanProximity = new MeasurementReference(Measurements.MEAN_PROXIMITY);
-        stdevProximity = new MeasurementReference(Measurements.STDEV_PROXIMITY);
-
-        inputImage.addMeasurementReference(nPxInrange);
-        inputImage.addMeasurementReference(nPxOutrange);
-        inputImage.addMeasurementReference(meanIntInrange);
-        inputImage.addMeasurementReference(meanIntOutrange);
-        inputImage.addMeasurementReference(sumIntInrange);
-        inputImage.addMeasurementReference(sumIntOutrange);
-        inputImage.addMeasurementReference(meanProximity);
-        inputImage.addMeasurementReference(stdevProximity);
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
-        inputImage.setName(parameters.getValue(INPUT_IMAGE));
-
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        String imageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
+        MeasurementReference nPxInrange = imageMeasurementReferences.get(Measurements.N_PX_INRANGE);
+        MeasurementReference nPxOutrange = imageMeasurementReferences.get(Measurements.N_PX_OUTRANGE);
+        MeasurementReference meanIntInrange = imageMeasurementReferences.get(Measurements.MEAN_INT_INRANGE);
+        MeasurementReference meanIntOutrange = imageMeasurementReferences.get(Measurements.MEAN_INT_OUTRANGE);
+        MeasurementReference sumIntInrange = imageMeasurementReferences.get(Measurements.SUM_INT_INRANGE);
+        MeasurementReference sumIntOutrange = imageMeasurementReferences.get(Measurements.SUM_INT_OUTRANGE);
+        MeasurementReference meanProximity = imageMeasurementReferences.get(Measurements.MEAN_PROXIMITY);
+        MeasurementReference stdevProximity = imageMeasurementReferences.get(Measurements.STDEV_PROXIMITY);
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
@@ -367,12 +351,12 @@ public class MeasureIntensityDistribution extends HCModule {
                 meanProximity.setCalculated(false);
                 stdevProximity.setCalculated(false);
 
-                nPxInrange.setMeasurementName(getFullName(inputObjectsName, Measurements.N_PX_INRANGE));
-                nPxOutrange.setMeasurementName(getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE));
-                meanIntInrange.setMeasurementName(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE));
-                meanIntOutrange.setMeasurementName( getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE));
-                sumIntInrange.setMeasurementName(getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE));
-                sumIntOutrange.setMeasurementName(getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE));
+                nPxInrange.setNickName(getFullName(inputObjectsName, Measurements.N_PX_INRANGE));
+                nPxOutrange.setNickName(getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE));
+                meanIntInrange.setNickName(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE));
+                meanIntOutrange.setNickName( getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE));
+                sumIntInrange.setNickName(getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE));
+                sumIntOutrange.setNickName(getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE));
 
                 break;
 
@@ -386,18 +370,18 @@ public class MeasureIntensityDistribution extends HCModule {
                 meanProximity.setCalculated(true);
                 stdevProximity.setCalculated(true);
 
-                meanProximity.setMeasurementName(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY));
-                stdevProximity.setMeasurementName(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY));
+                meanProximity.setNickName(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY));
+                stdevProximity.setNickName(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY));
 
                 break;
         }
 
-        return imageReferences;
+        return imageMeasurementReferences;
 
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 
