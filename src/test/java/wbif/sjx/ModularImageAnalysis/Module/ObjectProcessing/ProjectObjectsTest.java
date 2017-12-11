@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
+import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class ProjectObjectsTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjSet inputObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection inputObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(inputObjects);
 
         // Initialising ProjectObjects
@@ -60,7 +60,7 @@ public class ProjectObjectsTest {
 
         // Testing coordinate range for projected objects.  These are accessed via the number of voxels of the parent
         // (as this is how they are stored in the expected values HashMap)
-        ObjSet testObjects = workspace.getObjectSet(outputObjectsName);
+        ObjCollection testObjects = workspace.getObjectSet(outputObjectsName);
         for (Obj testObject:testObjects.values()) {
             // Checking the objects have a single parent object and that parent has the expected number of voxels
             assertEquals("Number of parents",1,testObject.getParents(true).size());

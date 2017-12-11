@@ -4,9 +4,6 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
-
-import java.util.HashMap;
 
 /**
  * Created by Stephen on 09/05/2017.
@@ -16,6 +13,15 @@ public class MeasureImageTexture extends HCModule {
     public static final String X_OFFSET = "X-offset";
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
+
+    private interface Measurements {
+        String ASM = "TEXTURE//ASM";
+        String CONTRAST = "TEXTURE//CONTRAST";
+        String CORRELATION = "TEXTURE//CORRELATION";
+        String ENTROPY = "TEXTURE//ENTROPY";
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -46,12 +52,6 @@ public class MeasureImageTexture extends HCModule {
         if (verbose) System.out.println("["+moduleName+"] Y-offset: "+yOffs);
         if (verbose) System.out.println("["+moduleName+"] Z-offset: "+zOffs);
 
-        HashMap<String,CumStat> textureMeasurements = new HashMap<>();
-        textureMeasurements.put("ASM",new CumStat());
-        textureMeasurements.put("CONTRAST",new CumStat());
-        textureMeasurements.put("CORRELATION",new CumStat());
-        textureMeasurements.put("ENTROPY",new CumStat());
-
         TextureCalculator textureCalculator = new TextureCalculator();
 
         for (int f=0;f<inputImagePlus.getNFrames();f++) {
@@ -60,22 +60,22 @@ public class MeasureImageTexture extends HCModule {
         }
 
         // Acquiring measurements
-        MIAMeasurement ASMMeasurement = new MIAMeasurement("ASM",textureCalculator.getASM());
+        Measurement ASMMeasurement = new Measurement(Measurements.ASM,textureCalculator.getASM());
         ASMMeasurement.setSource(this);
         inputImage.addMeasurement(ASMMeasurement);
         if (verbose) System.out.println("["+moduleName+"] ASM = "+ASMMeasurement.getValue());
 
-        MIAMeasurement contrastMeasurement = new MIAMeasurement("CONTRAST",textureCalculator.getContrast());
+        Measurement contrastMeasurement = new Measurement(Measurements.CONTRAST,textureCalculator.getContrast());
         contrastMeasurement.setSource(this);
         inputImage.addMeasurement(contrastMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Contrast = "+contrastMeasurement.getValue());
 
-        MIAMeasurement correlationMeasurement = new MIAMeasurement("CORRELATION",textureCalculator.getCorrelation());
+        Measurement correlationMeasurement = new Measurement(Measurements.CORRELATION,textureCalculator.getCorrelation());
         correlationMeasurement.setSource(this);
         inputImage.addMeasurement(correlationMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Correlation = "+correlationMeasurement.getValue());
 
-        MIAMeasurement entropyMeasurement = new MIAMeasurement("ENTROPY",textureCalculator.getEntropy());
+        Measurement entropyMeasurement = new Measurement(Measurements.ENTROPY,textureCalculator.getEntropy());
         entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement);
         if (verbose) System.out.println("["+moduleName+"] Entropy = "+entropyMeasurement.getValue());
@@ -84,21 +84,50 @@ public class MeasureImageTexture extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(X_OFFSET, Parameter.INTEGER,1));
-        parameters.addParameter(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
-        parameters.addParameter(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(X_OFFSET, Parameter.INTEGER,1));
+        parameters.add(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
+        parameters.add(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        String imageName = parameters.getValue(INPUT_IMAGE);
 
+        MeasurementReference asm = imageMeasurementReferences.get(Measurements.ASM);
+        asm.setImageObjName(imageName);
+
+        MeasurementReference contrast = imageMeasurementReferences.get(Measurements.CONTRAST);
+        contrast.setImageObjName(imageName);
+
+        MeasurementReference correlation = imageMeasurementReferences.get(Measurements.CORRELATION);
+        correlation.setImageObjName(imageName);
+
+        MeasurementReference entropy = imageMeasurementReferences.get(Measurements.ENTROPY);
+        entropy.setImageObjName(imageName);
+
+        return imageMeasurementReferences;
+
+    }
+
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
     }
 
     @Override

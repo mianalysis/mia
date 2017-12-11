@@ -4,14 +4,13 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Track;
 
-import java.util.ArrayList;
-
 /**
  * Created by steph on 24/05/2017.
  */
 public class MeasureTrackMotion extends HCModule {
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
+
 
     @Override
     public String getTitle() {
@@ -27,7 +26,7 @@ public class MeasureTrackMotion extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
-        ObjSet inputTrackObjects = workspace.getObjects().get(inputTrackObjectsName);
+        ObjCollection inputTrackObjects = workspace.getObjects().get(inputTrackObjectsName);
 
         // Getting input spot objects
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS);
@@ -57,37 +56,37 @@ public class MeasureTrackMotion extends HCModule {
 
             if (x.length == 0) {
                 // Adding measurements to track objects
-                MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.DIRECTIONALITY_RATIO, Double.NaN);
+                Measurement measurement = new Measurement(Measurement.DIRECTIONALITY_RATIO, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.EUCLIDEAN_DISTANCE, Double.NaN);
+                measurement = new Measurement(Measurement.EUCLIDEAN_DISTANCE, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.TOTAL_PATH_LENGTH, Double.NaN);
+                measurement = new Measurement(Measurement.TOTAL_PATH_LENGTH, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.DURATION, Double.NaN);
+                measurement = new Measurement(Measurement.DURATION, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
             } else {
                 // Adding measurements to track objects
-                MIAMeasurement measurement = new MIAMeasurement(MIAMeasurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
+                Measurement measurement = new Measurement(Measurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
+                measurement = new Measurement(Measurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
+                measurement = new Measurement(Measurement.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new MIAMeasurement(MIAMeasurement.DURATION, track.getDuration());
+                measurement = new Measurement(Measurement.DURATION, track.getDuration());
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
@@ -98,16 +97,25 @@ public class MeasureTrackMotion extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter( INPUT_TRACK_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter( INPUT_SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null));
+        parameters.add(new Parameter( INPUT_TRACK_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter( INPUT_SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurement.DIRECTIONALITY_RATIO));
+        objectMeasurementReferences.add(new MeasurementReference(Measurement.EUCLIDEAN_DISTANCE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurement.TOTAL_PATH_LENGTH));
+        objectMeasurementReferences.add(new MeasurementReference(Measurement.DURATION));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_TRACK_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(INPUT_SPOT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
 
         // Updating measurements with measurement choices from currently-selected object
         String objectName = parameters.getValue(INPUT_TRACK_OBJECTS);
@@ -123,14 +131,21 @@ public class MeasureTrackMotion extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        if (parameters.getValue(INPUT_TRACK_OBJECTS) != null & parameters.getValue(INPUT_SPOT_OBJECTS) != null) {
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DIRECTIONALITY_RATIO);
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.EUCLIDEAN_DISTANCE);
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.TOTAL_PATH_LENGTH);
-            measurements.addMeasurement(parameters.getValue(INPUT_TRACK_OBJECTS), MIAMeasurement.DURATION);
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
 
-        }
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
+
+        objectMeasurementReferences.updateImageObjectName(Measurement.DIRECTIONALITY_RATIO,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurement.EUCLIDEAN_DISTANCE,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurement.TOTAL_PATH_LENGTH,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurement.DURATION,inputTrackObjects);
+
+        return objectMeasurementReferences;
+
     }
 
     @Override

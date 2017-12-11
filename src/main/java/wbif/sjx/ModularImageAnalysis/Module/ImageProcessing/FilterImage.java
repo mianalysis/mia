@@ -1,16 +1,13 @@
 // TODO: Could move rolling frame filter to Common library's filters package
+// TODO: MedianFilter3D isn't currently working for multiple channels
 
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.plugin.*;
-import ij.plugin.filter.Filters;
 import ij.plugin.filter.RankFilters;
-import loci.formats.ChannelMerger;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
@@ -37,8 +34,9 @@ public class FilterImage extends HCModule {
         String MEDIAN2D = "Median 2D";
         String MEDIAN3D = "Median 3D";
         String ROLLING_FRAME = "Rolling frame";
+        String VARIANCE2D = "Variance 2D";
 
-        String[] ALL = new String[]{DOG2D,GAUSSIAN2D,GAUSSIAN3D,MEDIAN2D,MEDIAN3D,ROLLING_FRAME};
+        String[] ALL = new String[]{DOG2D,GAUSSIAN2D,GAUSSIAN3D,MEDIAN2D,MEDIAN3D,ROLLING_FRAME,VARIANCE2D};
 
     }
 
@@ -73,21 +71,24 @@ public class FilterImage extends HCModule {
      * channels, then recombine them.
      */
     public static void runMedian3DFilter(ImagePlus inputImagePlus, float filterRadius) {
-        ImagePlus[] ipls = ChannelSplitter.split(inputImagePlus);
-        new ImageJ();
-        // Running Median3D on each channel
-        for (int i=0;i<inputImagePlus.getNChannels();i++) {
-            new ImagePlus("fdf",ChannelSplitter.getChannel(inputImagePlus,i+1)).show();
-            ImageStack ist = Filters3D.filter(ChannelSplitter.getChannel(inputImagePlus,i+1), Filters3D.MEDIAN, filterRadius, filterRadius, filterRadius);
-//            new ImagePlus(("C"+i+1),ist).show();
-            ipls[i].setStack(ist);
-        }
+//        ImagePlus[] ipls = ChannelSplitter.split(inputImagePlus);
+//
+//        // Running Median3D on each channel
+//        for (int i=0;i<inputImagePlus.getNChannels();i++) {
+//            new ImagePlus("fdf",ChannelSplitter.getChannel(inputImagePlus,i+1)).show();
+//            ImageStack ist = Filters3D.filter(ChannelSplitter.getChannel(inputImagePlus,i+1),Filters3D.MEDIAN,
+//                    filterRadius, filterRadius, filterRadius);
+//            ipls[i].setStack(ist);
+//        }
+//
+//        // Re-combining the channels
+//        inputImagePlus.setProcessor(RGBStackMerge.mergeChannels(inputImagePlus,false).getProcessor());
 
+//        inputImagePlus.setPosition(1,1,1);
 
-        // Re-combining the channels
-        inputImagePlus.setProcessor(RGBStackMerge.mergeChannels(ipls,false).getProcessor());
+        inputImagePlus.setStack(Filters3D.filter(inputImagePlus.getImageStack(), Filters3D.MEDIAN,
+                filterRadius,filterRadius, filterRadius));
 
-        inputImagePlus.setPosition(1,1,1);
 
     }
 
@@ -122,7 +123,8 @@ public class FilterImage extends HCModule {
             int lastFrame = Math.min(nFrames,f+windowHalfWidth);
 
             // Creating a local substack
-            ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,"1-"+nChannels,"1-"+nSlices,firstFrame+"-"+lastFrame);
+            ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,"1-"+nChannels,
+                    "1-"+nSlices,firstFrame+"-"+lastFrame);
 
             // Switching T and Z, so time (not Z) is averaged
             currentSubstack = Hyperstack_rearranger.reorderHyperstack(currentSubstack,"CTZ",true,false);
@@ -163,7 +165,7 @@ public class FilterImage extends HCModule {
 
     @Override
     public String getHelp() {
-        return "+++INCOMPLETE+++";
+        return "";
     }
 
     @Override
@@ -191,37 +193,45 @@ public class FilterImage extends HCModule {
         // Applying smoothing filter
         switch (filterMode) {
             case FilterModes.DOG2D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
                 DoG.run(inputImagePlus,filterRadius,true);
                 break;
 
             case FilterModes.GAUSSIAN2D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 2D Gaussian filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 2D Gaussian filter (radius = " + filterRadius + " px)");
                 runGaussian2DFilter(inputImagePlus,filterRadius);
                 break;
 
             case FilterModes.GAUSSIAN3D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 3D Gaussian filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 3D Gaussian filter (radius = " + filterRadius + " px)");
                 GaussianBlur3D.blur(inputImagePlus,filterRadius,filterRadius,filterRadius);
                 break;
 
             case FilterModes.MEDIAN2D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 2D median filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 2D median filter (radius = " + filterRadius + " px)");
                 applyRankFilterToStack(inputImagePlus,RankFilters.MEDIAN,filterRadius);
                 break;
 
             case FilterModes.MEDIAN3D:
-                if (verbose) System.out.println("[" + moduleName + "] Applying 3D median filter (radius = " + filterRadius + " px)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 3D median filter (radius = " + filterRadius + " px)");
                 runMedian3DFilter(inputImagePlus,(float) filterRadius);
-                new ImageJ();
-
-                inputImagePlus.show();
-                IJ.runMacro("waitForUser");
                 break;
 
             case FilterModes.ROLLING_FRAME:
-                if (verbose) System.out.println("[" + moduleName + "] Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
                 inputImagePlus = runRollingFrameFilter(inputImagePlus,windowHalfWidth);
+                break;
+
+            case FilterModes.VARIANCE2D:
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 2D variance filter (radius = " + filterRadius + " px)");
+                applyRankFilterToStack(inputImagePlus,RankFilters.VARIANCE,filterRadius);
                 break;
 
         }
@@ -250,47 +260,56 @@ public class FilterImage extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-
-        parameters.addParameter(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FilterModes.DOG2D,FilterModes.ALL));
-        parameters.addParameter(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
-        parameters.addParameter(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
-        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FilterModes.DOG2D,FilterModes.ALL));
+        parameters.add(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
+        parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(FILTER_MODE));
+        returnedParameters.add(parameters.getParameter(FILTER_MODE));
         if (!parameters.getValue(FILTER_MODE).equals(FilterModes.ROLLING_FRAME)) {
-            returnedParameters.addParameter(parameters.getParameter(FILTER_RADIUS));
-            returnedParameters.addParameter(parameters.getParameter(CALIBRATED_UNITS));
+            returnedParameters.add(parameters.getParameter(FILTER_RADIUS));
+            returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         } else {
-            returnedParameters.addParameter(parameters.getParameter(WINDOW_HALF_WIDTH));
+            returnedParameters.add(parameters.getParameter(WINDOW_HALF_WIDTH));
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
 
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
     }
 
     @Override

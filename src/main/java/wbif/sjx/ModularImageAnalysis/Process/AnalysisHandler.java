@@ -1,22 +1,20 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.Prefs;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
-import wbif.sjx.ModularImageAnalysis.GUI.InputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 
-import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,8 +50,8 @@ public class AnalysisHandler {
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element root = doc.createElement("ROOT");
-        root.appendChild(Exporter.prepareParametersXML(doc,inOutModules));
-        root.appendChild(Exporter.prepareParametersXML(doc,analysis.getModules()));
+        root.appendChild(Exporter.prepareModulesXML(doc,inOutModules));
+        root.appendChild(Exporter.prepareModulesXML(doc,analysis.getModules()));
         doc.appendChild(root);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
@@ -68,14 +66,14 @@ public class AnalysisHandler {
     }
 
     public Analysis loadAnalysis() throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.LOAD);
+        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to load", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setFile("*.mia");
         fileDialog.setVisible(true);
 
-        File analysisFile = fileDialog.getFiles()[0];
+        if (fileDialog.getFiles().length==0) return null;
 
-        return loadAnalysis(new FileInputStream(analysisFile));
+        return loadAnalysis(new FileInputStream(fileDialog.getFiles()[0]));
 
     }
 
@@ -100,13 +98,35 @@ public class AnalysisHandler {
 
                 // If the module is an input or output control, treat it differently
                 if (module.getClass().isInstance(new InputControl())) {
-                    populateModuleParameters(moduleNode,module);
+                    NodeList moduleChildNodes = moduleNode.getChildNodes();
+                    for (int j=0;j<moduleChildNodes.getLength();j++) {
+                        switch (moduleChildNodes.item(j).getNodeName()) {
+                            case "PARAMETERS":
+                                populateModuleParameters(moduleChildNodes.item(j), module);
+                                break;
+
+                            case "MEASUREMENTS":
+                                populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
+                                break;
+                        }
+                    }
                     analysis.setInputControl((InputControl) module);
 
                     continue;
 
                 } else if (module.getClass().isInstance(new OutputControl())) {
-                    populateModuleParameters(moduleNode,module);
+                    NodeList moduleChildNodes = moduleNode.getChildNodes();
+                    for (int j=0;j<moduleChildNodes.getLength();j++) {
+                        switch (moduleChildNodes.item(j).getNodeName()) {
+                            case "PARAMETERS":
+                                populateModuleParameters(moduleChildNodes.item(j), module);
+                                break;
+
+                            case "MEASUREMENTS":
+                                populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
+                                break;
+                        }
+                    }
                     analysis.setOutputControl((OutputControl) module);
 
                     continue;
@@ -122,7 +142,23 @@ public class AnalysisHandler {
                 }
 
                 // Populating parameters
-                populateModuleParameters(moduleNode,module);
+                NodeList moduleChildNodes = moduleNode.getChildNodes();
+                boolean foundParameters = false;
+                for (int j=0;j<moduleChildNodes.getLength();j++) {
+                    switch (moduleChildNodes.item(j).getNodeName()) {
+                        case "PARAMETERS":
+                            populateModuleParameters(moduleChildNodes.item(j), module);
+                            foundParameters = true;
+                            break;
+
+                        case "MEASUREMENTS":
+                            populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
+                            break;
+                    }
+                }
+
+                // Old file formats had parameters loose within MODULE
+                if (!foundParameters) populateModuleParameters(moduleNode, module);
 
                 modules.add(module);
 
@@ -144,88 +180,93 @@ public class AnalysisHandler {
         NodeList parameterNodes = moduleNode.getChildNodes();
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
-            if (parameterNode.getNodeName().equals("PARAMETER")) {
-                NamedNodeMap parameterAttributes = parameterNode.getAttributes();
-                String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
-                String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
+            NamedNodeMap parameterAttributes = parameterNode.getAttributes();
+            String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
+            String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
 
-                boolean parameterVisible = false;
-                if (parameterAttributes.getNamedItem("VISIBLE") != null) {
-                    parameterVisible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
-                }
-
-                try {
-                    int parameterType = module.getParameterType(parameterName);
-                    switch (parameterType) {
-                        case Parameter.INPUT_IMAGE:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.OUTPUT_IMAGE:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.INPUT_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.OUTPUT_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.REMOVED_IMAGE:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.INTEGER:
-                            module.updateParameterValue(parameterName, Integer.parseInt(parameterValue));
-                            break;
-
-                        case Parameter.DOUBLE:
-                            module.updateParameterValue(parameterName, Double.parseDouble(parameterValue));
-                            break;
-
-                        case Parameter.STRING:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.CHOICE_ARRAY:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.CHOICE_MAP:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.BOOLEAN:
-                            module.updateParameterValue(parameterName, Boolean.parseBoolean(parameterValue));
-                            break;
-
-                        case Parameter.FILE_PATH:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.MEASUREMENT:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.CHILD_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                        case Parameter.PARENT_OBJECTS:
-                            module.updateParameterValue(parameterName, parameterValue);
-                            break;
-
-                    }
-
-                    module.setParameterVisibility(parameterName,parameterVisible);
-
-                } catch (NullPointerException e) {
-                    IJ.showMessage("Module "+module.getTitle()+", parameter \""+parameterName + "\" not set");
-
-                }
+            boolean parameterVisible = false;
+            if (parameterAttributes.getNamedItem("VISIBLE") != null) {
+                parameterVisible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
             }
+
+            try {
+                int parameterType = module.getParameterType(parameterName);
+                switch (parameterType) {
+                    case Parameter.INPUT_IMAGE:
+                    case Parameter.OUTPUT_IMAGE:
+                    case Parameter.INPUT_OBJECTS:
+                    case Parameter.OUTPUT_OBJECTS:
+                    case Parameter.REMOVED_IMAGE:
+                    case Parameter.STRING:
+                    case Parameter.CHOICE_ARRAY:
+                    case Parameter.FILE_PATH:
+                    case Parameter.FOLDER_PATH:
+                    case Parameter.IMAGE_MEASUREMENT:
+                    case Parameter.OBJECT_MEASUREMENT:
+                    case Parameter.CHILD_OBJECTS:
+                    case Parameter.PARENT_OBJECTS:
+                        module.updateParameterValue(parameterName, parameterValue);
+                        break;
+
+                    case Parameter.INTEGER:
+                        module.updateParameterValue(parameterName, Integer.parseInt(parameterValue));
+                        break;
+
+                    case Parameter.DOUBLE:
+                        module.updateParameterValue(parameterName, Double.parseDouble(parameterValue));
+                        break;
+
+                    case Parameter.BOOLEAN:
+                        module.updateParameterValue(parameterName, Boolean.parseBoolean(parameterValue));
+                        break;
+
+                }
+
+                module.setParameterVisibility(parameterName,parameterVisible);
+
+            } catch (NullPointerException e) {
+                IJ.showMessage("Module "+module.getTitle()
+                        +", parameter \""+parameterName + "\" not set");
+
+            }
+        }
+    }
+
+    private void populateModuleMeasurementReferences(Node moduleNode, HCModule module) {
+        NodeList referenceNodes = moduleNode.getChildNodes();
+
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
+
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            String measurementName = attributes.getNamedItem("NAME").getNodeValue();
+            boolean isCalulated = Boolean.parseBoolean(attributes.getNamedItem("IS_CALCULATED").getNodeValue());
+            boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
+            String type = attributes.getNamedItem("TYPE").getNodeValue();
+            String imageObjectName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
+
+            // Acquiring the relevant reference
+            MeasurementReference measurementReference = null;
+            switch (type) {
+                case "IMAGE":
+                    measurementReference = module.getImageMeasurementReference(measurementName);
+                    break;
+
+                case "OBJECTS":
+                    measurementReference = module.getObjectMeasurementReference(measurementName);
+                    break;
+
+            }
+
+            if (measurementReference == null) continue;
+
+            // Updating the reference's parameters
+            measurementReference.setCalculated(isCalulated);
+            measurementReference.setExportable(isExportable);
+            measurementReference.setImageObjName(imageObjectName);
+
         }
     }
 
@@ -246,54 +287,83 @@ public class AnalysisHandler {
         String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
         String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
 
+        // Getting output options
+        OutputControl outputControl = analysis.getOutputControl();
+        boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
+        boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
+        String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
+        boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
 
         // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
-        String inputFilePath = Prefs.get("MIA.inputFilePath","");
-
-        JFileChooser fileChooser = new JFileChooser(inputFilePath);
-        fileChooser.setDialogTitle("Select file to run");
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.showDialog(null,"Open");
-
-        File inputFile = fileChooser.getSelectedFile();
-        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
-        Prefs.savePreferences();
-
-        String exportName;
-        if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
-        else exportName = inputFile.getAbsolutePath() + "\\output";
+//        String inputFilePath = Prefs.get("MIA.inputFilePath","");
+//
+//        JFileChooser fileChooser = new JFileChooser(inputFilePath);
+//        fileChooser.setDialogTitle("Select file to run");
+//        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+//        fileChooser.setMultiSelectionEnabled(false);
+//        fileChooser.showDialog(null,"Open");
+//
+//        File inputFile = fileChooser.getSelectedFile();
+//        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
+//        Prefs.savePreferences();
+//
+//        String exportName;
+//        if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+//        else exportName = inputFile.getAbsolutePath() + "\\output";
         // END OLD SECTION
 
+        File inputFile = null;
+        String exportName = null;
+        int nThreads = 1;
 
-//        File inputFile = null;
-//        String exportName = null;
-//        switch (inputMode) {
-//            case InputControl.InputModes.SINGLE_FILE:
-//                if (singleFile == null) {
-//                    IJ.runMacro("waitForUser","Select an image first");
-//                    return;
-//                }
-//
-//                inputFile = new File(singleFile);
-//                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
-//                break;
-//
-//            case InputControl.InputModes.BATCH:
-//                if (batchFolder == null) {
-//                    IJ.runMacro("waitForUser","Select a folder first");
-//                    return;
-//                }
-//
-//                inputFile = new File(batchFolder);
-//                exportName = inputFile.getAbsolutePath() + "\\output";
-//                break;
-//        }
+        switch (inputMode) {
+            case InputControl.InputModes.SINGLE_FILE:
+                if (singleFile == null) {
+                    IJ.runMacro("waitForUser","Select an image first");
+                    return;
+                }
 
-        Exporter exporter = new Exporter(exportName, Exporter.XLSX_EXPORT);
+                inputFile = new File(singleFile);
+                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+                break;
+
+            case InputControl.InputModes.BATCH:
+                if (batchFolder == null) {
+                    IJ.runMacro("waitForUser","Select a folder first");
+                    return;
+                }
+
+                inputFile = new File(batchFolder);
+                exportName = inputFile.getAbsolutePath() + "\\output";
+                nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS);
+
+                // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
+                Prefs.setThreads(1);
+                Prefs.savePreferences();
+
+                break;
+        }
+
+        // Initialising the exporter (if one was requested)
+        Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
+        if (exporter != null) {
+            exporter.setExportSummary(exportSummary);
+            exporter.setExportIndividualObjects(exportIndividualObjects);
+
+            switch (summaryType) {
+                case OutputControl.SummaryTypes.ONE_AVERAGE_PER_FILE:
+                    exporter.setSummaryType(Exporter.SummaryType.PER_FILE);
+                    break;
+
+                case OutputControl.SummaryTypes.AVERAGE_PER_TIMEPOINT:
+                    exporter.setSummaryType(Exporter.SummaryType.PER_TIMEPOINT_PER_FILE);
+                    break;
+            }
+        }
 
         // Initialising BatchProcessor
         batchProcessor = new BatchProcessor(inputFile);
+        batchProcessor.setnThreads(nThreads);
 
         // Adding extension filter
         batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
@@ -322,11 +392,11 @@ public class AnalysisHandler {
                 break;
 
             case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
                 break;
 
             case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
                 break;
         }
     }

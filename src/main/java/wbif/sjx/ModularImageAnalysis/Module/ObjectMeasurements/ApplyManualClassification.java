@@ -16,6 +16,11 @@ public class ApplyManualClassification extends HCModule {
     public static final String CLASSIFICATION_FILE = "Classification file";
     public static final String REMOVE_MISSING = "Remove objects without classification";
 
+    public interface Measurements {
+        String CLASS = "CLASSIFIER//CLASS";
+
+    }
+
     @Override
     public String getTitle() {
         return "Apply manual classification";
@@ -31,7 +36,7 @@ public class ApplyManualClassification extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting classification file and storing classifications as HashMap that can be easily read later on
         String classificationFilePath = parameters.getValue(CLASSIFICATION_FILE);
@@ -52,7 +57,7 @@ public class ApplyManualClassification extends HCModule {
                     int timepoint = object.getT();
 
                     if (xCent==x & yCent==y & timepoint == f) {
-                        MIAMeasurement objClass = new MIAMeasurement(MIAMeasurement.CLASS,currClass);
+                        Measurement objClass = new Measurement(Measurements.CLASS,currClass);
                         objClass.setSource(this);
                         object.addMeasurement(objClass);
 
@@ -65,16 +70,16 @@ public class ApplyManualClassification extends HCModule {
             // Otherwise, the class measurement is set to Double.NaN
             if (parameters.getValue(REMOVE_MISSING)) {
                 for (Obj object : inputObjects.values()) {
-                    if (object.getMeasurement(MIAMeasurement.CLASS) == null) {
+                    if (object.getMeasurement(Measurements.CLASS) == null) {
                         object.removeRelationships();
                     }
                 }
-                inputObjects.entrySet().removeIf(entry -> entry.getValue().getMeasurement(MIAMeasurement.CLASS) == null);
+                inputObjects.entrySet().removeIf(entry -> entry.getValue().getMeasurement(Measurements.CLASS) == null);
 
             } else {
                 for (Obj object : inputObjects.values()) {
-                    if (object.getMeasurement(MIAMeasurement.CLASS) == null) {
-                        MIAMeasurement objClass = new MIAMeasurement(MIAMeasurement.CLASS,Double.NaN);
+                    if (object.getMeasurement(Measurements.CLASS) == null) {
+                        Measurement objClass = new Measurement(Measurements.CLASS,Double.NaN);
                         objClass.setSource(this);
                         object.addMeasurement(objClass);
                     }
@@ -88,29 +93,42 @@ public class ApplyManualClassification extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CLASSIFICATION_FILE, Parameter.FILE_PATH,null));
-        parameters.addParameter(new Parameter(REMOVE_MISSING, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CLASSIFICATION_FILE, Parameter.FILE_PATH,null));
+        parameters.add(new Parameter(REMOVE_MISSING, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.CLASS));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(CLASSIFICATION_FILE));
-        returnedParameters.addParameter(parameters.getParameter(REMOVE_MISSING));
+
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CLASSIFICATION_FILE));
+        returnedParameters.add(parameters.getParameter(REMOVE_MISSING));
 
         return returnedParameters;
 
     }
 
-    /**
-     * Adds measurements from the current module to the measurement collection
-     */
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
-        measurements.addMeasurement(parameters.getValue(INPUT_OBJECTS), MIAMeasurement.CLASS);
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        MeasurementReference classMeas = objectMeasurementReferences.get(Measurements.CLASS);
+        classMeas.setImageObjName(parameters.getValue(INPUT_OBJECTS));
+
+        return objectMeasurementReferences;
+
     }
 
     @Override

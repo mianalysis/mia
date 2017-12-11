@@ -15,7 +15,10 @@ import java.io.Serializable;
  * Created by sc13967 on 02/05/2017.
  */
 public abstract class HCModule implements Serializable {
-    public ParameterCollection parameters = new ParameterCollection();
+    protected ParameterCollection parameters = new ParameterCollection();
+    protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
+    protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
+
     private String nickname;
     private String notes = "";
     private boolean enabled = true;
@@ -25,9 +28,11 @@ public abstract class HCModule implements Serializable {
     // CONSTRUCTOR
 
     public HCModule() {
-        initialiseParameters();
         moduleName = getTitle();
         nickname = moduleName;
+
+        initialiseParameters();
+        initialiseMeasurementReferences();
 
     }
 
@@ -56,7 +61,9 @@ public abstract class HCModule implements Serializable {
      * operation is included in the method.
      * @return
      */
-    public abstract void initialiseParameters();
+    protected abstract void initialiseParameters();
+
+    protected abstract void initialiseMeasurementReferences();
 
     /**
      * Return a ParameterCollection of the currently active parameters.  This is run each time a parameter is changed.
@@ -65,14 +72,29 @@ public abstract class HCModule implements Serializable {
      * an appropriate GUI panel.
      * @return
      */
-    public abstract ParameterCollection getActiveParameters();
+    public abstract ParameterCollection updateAndGetParameters();
 
-    /**
-     * Takes an existing collection of measurements and adds any created
-     * @param measurements
-     * @return
-     */
-    public abstract void addMeasurements(MeasurementCollection measurements);
+    public abstract MeasurementReferenceCollection updateAndGetImageMeasurementReferences();
+
+    public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
+
+    public MeasurementReference getImageMeasurementReference(String name) {
+        for (MeasurementReference measurementReference : imageMeasurementReferences.values()) {
+            if (measurementReference.getName().equals(name)) return measurementReference;
+        }
+
+        return null;
+
+    }
+
+    public MeasurementReference getObjectMeasurementReference(String name) {
+        for (MeasurementReference measurementReference : objectMeasurementReferences.values()) {
+            if (measurementReference.getName().equals(name)) return measurementReference;
+        }
+
+        return null;
+
+    }
 
     /**
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
@@ -98,6 +120,10 @@ public abstract class HCModule implements Serializable {
     public void setParameterVisibility(String name, boolean visible) {
         parameters.updateVisible(name,visible);
 
+    }
+
+    public ParameterCollection getAllParameters() {
+        return parameters;
     }
 
 

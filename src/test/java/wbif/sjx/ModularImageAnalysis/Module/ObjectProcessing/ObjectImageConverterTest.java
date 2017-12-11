@@ -8,7 +8,7 @@ import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
+import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class ObjectImageConverterTest {
      * @throws Exception
      */
     @Test
-    public void testConvertObjectsToImage16bit3DWithRefImage() throws Exception {
+    public void testConvertObjectsToImagebit3DWithRefImage() throws Exception {
         // Initialising parameters
         String colourMode = ObjectImageConverter.ColourModes.ID;
         String colourSource = ""; // This isn't required for COLOUR_MODES[3] (ID)
@@ -45,12 +45,12 @@ public class ObjectImageConverterTest {
         String calibratedUnits = "um";
 
         // Initialising object store
-        ObjSet testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
 
         // Loading a reference image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image referenceImage = new Image("Reference image",ipl);
+        Image referenceImage = new Image("ImageObjReference image",ipl);
 
         // Converting objects to image
         Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);
@@ -73,8 +73,8 @@ public class ObjectImageConverterTest {
             referenceImage.getImagePlus().setPosition(1,z+1,1);
             testImage.getImagePlus().setPosition(1,z+1,1);
 
-            int[][] referenceArray = referenceImage.getImagePlus().getProcessor().getIntArray();
-            int[][] testArray = testImage.getImagePlus().getProcessor().getIntArray();
+            float[][] referenceArray = referenceImage.getImagePlus().getProcessor().getFloatArray();
+            float[][] testArray = testImage.getImagePlus().getProcessor().getFloatArray();
 
             assertArrayEquals(referenceArray, testArray);
 
@@ -86,7 +86,7 @@ public class ObjectImageConverterTest {
      * @throws Exception
      */
     @Test
-    public void testConvertObjectsToImage16bit3DWithNoRefImage() throws Exception {
+    public void testConvertObjectsToImagebit3DWithNoRefImage() throws Exception {
         // Initialising parameters
         String colourMode = ObjectImageConverter.ColourModes.ID;
         String colourSource = ""; // This isn't required for COLOUR_MODES[3] (ID)
@@ -99,12 +99,12 @@ public class ObjectImageConverterTest {
         String calibratedUnits = "um";
 
         // Initialising object store
-        ObjSet testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
 
         // Loading a reference image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_16bit_NoRef.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit_NoRef.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image referenceImage = new Image("Reference image",ipl);
+        Image referenceImage = new Image("ImageObjReference image",ipl);
 
         // Converting objects to image
         Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);
@@ -127,8 +127,8 @@ public class ObjectImageConverterTest {
             referenceImage.getImagePlus().setPosition(1,z+1,1);
             testImage.getImagePlus().setPosition(1,z+1,1);
 
-            int[][] referenceArray = referenceImage.getImagePlus().getProcessor().getIntArray();
-            int[][] testArray = testImage.getImagePlus().getProcessor().getIntArray();
+            float[][] referenceArray = referenceImage.getImagePlus().getProcessor().getFloatArray();
+            float[][] testArray = testImage.getImagePlus().getProcessor().getFloatArray();
 
             assertArrayEquals(referenceArray, testArray);
 
@@ -136,7 +136,7 @@ public class ObjectImageConverterTest {
     }
 
     /**
-     * Tests the ability to take an image containing labelled pixels and turn it into an ObjSet.
+     * Tests the ability to take an image containing labelled pixels and turn it into an ObjCollection.
      * @throws Exception
      */
     @Test
@@ -150,7 +150,7 @@ public class ObjectImageConverterTest {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        ObjSet testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
+        ObjCollection testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
 
         // Checking objects have been assigned
         assertNotNull("Testing converted objects are not null",testObjects);
@@ -190,7 +190,7 @@ public class ObjectImageConverterTest {
     }
 
     /**
-     * Tests the ability to take an image containing labelled pixels and turn it into an ObjSet.
+     * Tests the ability to take an image containing labelled pixels and turn it into an ObjCollection.
      * @throws Exception
      */
     @Test
@@ -204,7 +204,7 @@ public class ObjectImageConverterTest {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        ObjSet testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
+        ObjCollection testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
 
         // Checking objects have been assigned
         assertNotNull("Testing converted objects are not null",testObjects);

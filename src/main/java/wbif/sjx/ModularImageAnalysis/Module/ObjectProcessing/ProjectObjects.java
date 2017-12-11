@@ -6,7 +6,6 @@ import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Projects xy coordinates into a single plane.  Duplicates of xy coordinates at different heights are removed.
@@ -32,8 +31,8 @@ public class ProjectObjects extends HCModule {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjSet outputObjects = new ObjSet(outputObjectsName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
         double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
@@ -82,19 +81,29 @@ public class ProjectObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
 
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
     }
 
     @Override

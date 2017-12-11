@@ -6,7 +6,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -52,7 +51,7 @@ public class ObjectImageConverter extends HCModule {
 
     }
 
-    public static Image convertObjectsToImage(ObjSet objects, String outputImageName, Image templateImage, String colourMode, String colourSource, boolean hideMissing) {
+    public static Image convertObjectsToImage(ObjCollection objects, String outputImageName, Image templateImage, String colourMode, String colourSource, boolean hideMissing) {
         ImagePlus ipl;
 
         int bitDepth = 8;
@@ -70,11 +69,11 @@ public class ObjectImageConverter extends HCModule {
                 break;
 
             case ColourModes.ID:
-                bitDepth = 16;
+                bitDepth = 32;
                 break;
 
             case ColourModes.PARENT_ID:
-                bitDepth = 16;
+                bitDepth = 32;
                 break;
 
         }
@@ -118,7 +117,7 @@ public class ObjectImageConverter extends HCModule {
         }
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (bitDepth == 32) {
+        if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
             for (int z = 1; z <= ipl.getNSlices(); z++) {
                 for (int c = 1; c <= ipl.getNChannels(); c++) {
                     for (int t = 1; t <= ipl.getNFrames(); t++) {
@@ -156,17 +155,17 @@ public class ObjectImageConverter extends HCModule {
                     break;
 
                 case ColourModes.ID:
-                    valInt = object.getID();
+                    valDouble = object.getID();
                     break;
 
                 case ColourModes.PARENT_ID:
                     if (object.getParent(colourSource) == null) {
                         if (hideMissing) {
-                            valInt = 0;
+                            valDouble = 0;
                             break;
 
                         } else {
-                            valInt = Integer.MAX_VALUE;
+                            valDouble = Integer.MAX_VALUE;
                             break;
 
                         }
@@ -182,10 +181,11 @@ public class ObjectImageConverter extends HCModule {
 
                 ipl.setPosition(1,zPos+1,tPos+1);
 
-                if (colourMode.equals(ColourModes.SINGLE_COLOUR) | colourMode.equals(ColourModes.RANDOM_COLOUR) | colourMode.equals(ColourModes.ID) | colourMode.equals(ColourModes.PARENT_ID)) {
+                if (colourMode.equals(ColourModes.SINGLE_COLOUR) | colourMode.equals(ColourModes.RANDOM_COLOUR)) {
                     ipl.getProcessor().putPixel(x.get(i), y.get(i), valInt);
 
-                } else if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
+                } else if (colourMode.equals(ColourModes.MEASUREMENT_VALUE) | colourMode.equals(ColourModes.ID)
+                        | colourMode.equals(ColourModes.PARENT_ID)) {
                     ipl.getProcessor().putPixelValue(x.get(i), y.get(i), valDouble);
 
                 }
@@ -205,12 +205,12 @@ public class ObjectImageConverter extends HCModule {
 
     }
 
-    public static ObjSet convertImageToObjects(Image image, String outputObjectsName) {
+    public static ObjCollection convertImageToObjects(Image image, String outputObjectsName) {
         // Converting to ImagePlus for this operation
         ImagePlus ipl = image.getImagePlus();
 
         // Need to get coordinates and convert to a HCObject
-        ObjSet outputObjects = new ObjSet(outputObjectsName); //Local ArrayList of objects
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
 
         // Getting spatial calibration
         double dppXY = ipl.getCalibration().getX(1);
@@ -277,7 +277,7 @@ public class ObjectImageConverter extends HCModule {
 
             Image inputImage = workspace.getImages().get(inputImageName);
 
-            ObjSet objects = convertImageToObjects(inputImage, outputObjectsName);
+            ObjCollection objects = convertImageToObjects(inputImage, outputObjectsName);
 
             workspace.addObjects(objects);
 
@@ -298,7 +298,7 @@ public class ObjectImageConverter extends HCModule {
 
             }
 
-            ObjSet inputObjects = workspace.getObjects().get(objectName);
+            ObjCollection inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
 
             Image outputImage = convertObjectsToImage(inputObjects,outputImageName,templateImage,colourMode,colourSource,hideMissing);
@@ -318,38 +318,43 @@ public class ObjectImageConverter extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,ConversionModes.IMAGE_TO_OBJECTS,ConversionModes.ALL));
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
-        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
-        parameters.addParameter(new Parameter(HIDE_IF_MISSING_PARENT,Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,ConversionModes.IMAGE_TO_OBJECTS,ConversionModes.ALL));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
+        parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(HIDE_IF_MISSING_PARENT,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(CONVERSION_MODE));
+        returnedParameters.add(parameters.getParameter(CONVERSION_MODE));
 
         if (parameters.getValue(CONVERSION_MODE).equals(ConversionModes.IMAGE_TO_OBJECTS)) {
-            returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_OBJECTS));
+            returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
 
         } else if(parameters.getValue(CONVERSION_MODE).equals(ConversionModes.OBJECTS_TO_IMAGE)) {
-            returnedParameters.addParameter(parameters.getParameter(TEMPLATE_IMAGE));
-            returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
+            returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
-            returnedParameters.addParameter(parameters.getParameter(COLOUR_MODE));
+            returnedParameters.add(parameters.getParameter(COLOUR_MODE));
             if (parameters.getValue(COLOUR_MODE).equals(ColourModes.MEASUREMENT_VALUE)) {
                 // Use measurement
-                returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
                 if (parameters.getValue(INPUT_OBJECTS) != null) {
                     parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
@@ -358,15 +363,15 @@ public class ObjectImageConverter extends HCModule {
 
             } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
                 // Use Parent ID
-                returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                returnedParameters.addParameter(parameters.getParameter(HIDE_IF_MISSING_PARENT));
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                returnedParameters.add(parameters.getParameter(HIDE_IF_MISSING_PARENT));
 
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
             }
 
-            returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+            returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         }
 
@@ -374,8 +379,13 @@ public class ObjectImageConverter extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
 
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
     }
 
     @Override

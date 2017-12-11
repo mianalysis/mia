@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -47,10 +46,6 @@ public class ImageSaver extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-
-        // Getting parameters
         boolean saveImage = parameters.getValue(SAVE_IMAGE);
         String saveLocation = parameters.getValue(SAVE_LOCATION);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT);
@@ -60,6 +55,10 @@ public class ImageSaver extends HCModule {
 
         // The save image option is there so users can toggle it
         if (!saveImage) return;
+
+        // Loading the image to save
+        Image inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         if (flattenOverlay) {
             // Flattening overlay onto image for saving
@@ -116,39 +115,44 @@ public class ImageSaver extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(SAVE_IMAGE,Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.MIRRORED_DIRECTORY,SaveLocations.ALL));
-        parameters.addParameter(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FILE_PATH,""));
-        parameters.addParameter(new Parameter(SAVE_FILE_PATH, Parameter.FILE_PATH,""));
-        parameters.addParameter(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
-        parameters.addParameter(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SAVE_IMAGE,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.MIRRORED_DIRECTORY,SaveLocations.ALL));
+        parameters.add(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FOLDER_PATH,""));
+        parameters.add(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
+        parameters.add(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
+        parameters.add(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 
-        returnedParamters.addParameter(parameters.getParameter(SAVE_IMAGE));
+        returnedParamters.add(parameters.getParameter(SAVE_IMAGE));
 
         if (parameters.getValue(SAVE_IMAGE)) {
-            returnedParamters.addParameter(parameters.getParameter(INPUT_IMAGE));
-            returnedParamters.addParameter(parameters.getParameter(SAVE_LOCATION));
+            returnedParamters.add(parameters.getParameter(INPUT_IMAGE));
+            returnedParamters.add(parameters.getParameter(SAVE_LOCATION));
 
             switch ((String) parameters.getValue(SAVE_LOCATION)) {
                 case SaveLocations.SPECIFIC_LOCATION:
-                    returnedParamters.addParameter(parameters.getParameter(SAVE_FILE_PATH));
+                    returnedParamters.add(parameters.getParameter(SAVE_FILE_PATH));
                     break;
 
                 case SaveLocations.MIRRORED_DIRECTORY:
-                    returnedParamters.addParameter(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
+                    returnedParamters.add(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
                     break;
 
             }
 
-            returnedParamters.addParameter(parameters.getParameter(SAVE_SUFFIX));
-            returnedParamters.addParameter(parameters.getParameter(FLATTEN_OVERLAY));
+            returnedParamters.add(parameters.getParameter(SAVE_SUFFIX));
+            returnedParamters.add(parameters.getParameter(FLATTEN_OVERLAY));
 
         }
 
@@ -157,8 +161,13 @@ public class ImageSaver extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
 
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
     }
 
     @Override

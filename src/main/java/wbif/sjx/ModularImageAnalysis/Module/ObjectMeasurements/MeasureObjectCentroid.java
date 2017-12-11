@@ -4,10 +4,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.CumStat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Created by sc13967 on 11/05/2017.
@@ -51,7 +49,7 @@ public class MeasureObjectCentroid extends HCModule {
     public void run(Workspace workspace, boolean verbose) {
         // Getting current objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
-        ObjSet inputObjects = workspace.getObjects().get(inputObjectName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting which centroid measures to calculate
         String choice = parameters.getValue(CENTROID_METHOD);
@@ -68,19 +66,19 @@ public class MeasureObjectCentroid extends HCModule {
             if (useMean) {
                 if (x != null) {
                     double xMean = object.getXMean(true);
-                    MIAMeasurement measurement = new MIAMeasurement(Measurements.MEAN_X,xMean);
+                    Measurement measurement = new Measurement(Measurements.MEAN_X,xMean);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (y!= null) {
                     double yMean = object.getYMean(true);
-                    MIAMeasurement measurement = new MIAMeasurement(Measurements.MEAN_Y,yMean);
+                    Measurement measurement = new Measurement(Measurements.MEAN_Y,yMean);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (z!= null) {
                     double zMean = object.getZMean(true,false);
-                    MIAMeasurement measurement = new MIAMeasurement(Measurements.MEAN_Z,zMean);
+                    Measurement measurement = new Measurement(Measurements.MEAN_Z,zMean);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
@@ -89,19 +87,19 @@ public class MeasureObjectCentroid extends HCModule {
             if (useMedian) {
                 if (x != null) {
                     double xMedian = object.getXMedian(true);
-                    MIAMeasurement measurement = new MIAMeasurement(Measurements.MEDIAN_X,xMedian);
+                    Measurement measurement = new Measurement(Measurements.MEDIAN_X,xMedian);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (y!= null) {
                     double yMedian = object.getYMedian(true);
-                    MIAMeasurement measurement = new MIAMeasurement(Measurements.MEDIAN_Y,yMedian);
+                    Measurement measurement = new Measurement(Measurements.MEDIAN_Y,yMedian);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
                 if (z!= null) {
                     double zMedian = object.getZMedian(true,false);
-                    MIAMeasurement measurement = new MIAMeasurement(Measurements.MEDIAN_Z,zMedian);
+                    Measurement measurement = new Measurement(Measurements.MEDIAN_Z,zMedian);
                     measurement.setSource(this);
                     object.addMeasurement(measurement);
                 }
@@ -111,36 +109,68 @@ public class MeasureObjectCentroid extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CENTROID_METHOD, Parameter.CHOICE_ARRAY,Methods.MEAN,Methods.ALL));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CENTROID_METHOD, Parameter.CHOICE_ARRAY,Methods.MEAN,Methods.ALL));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
+        MeasurementReference meanX = objectMeasurementReferences.get(Measurements.MEAN_X);
+        MeasurementReference meanY = objectMeasurementReferences.get(Measurements.MEAN_Y);
+        MeasurementReference meanZ = objectMeasurementReferences.get(Measurements.MEAN_Z);
+        MeasurementReference medianX = objectMeasurementReferences.get(Measurements.MEDIAN_X);
+        MeasurementReference medianY = objectMeasurementReferences.get(Measurements.MEDIAN_Y);
+        MeasurementReference medianZ = objectMeasurementReferences.get(Measurements.MEDIAN_Z);
 
         String choice = parameters.getValue(CENTROID_METHOD);
         boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
         boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
 
+        meanX.setCalculated(false);
+        meanY.setCalculated(false);
+        meanZ.setCalculated(false);
+        medianX.setCalculated(false);
+        medianY.setCalculated(false);
+        medianZ.setCalculated(false);
 
         if (useMean) {
-            measurements.addMeasurement(inputObjectsName,Measurements.MEAN_X);
-            measurements.addMeasurement(inputObjectsName,Measurements.MEAN_Y);
-            measurements.addMeasurement(inputObjectsName,Measurements.MEAN_Z);
+            meanX.setCalculated(true);
+            meanY.setCalculated(true);
+            meanZ.setCalculated(true);
         }
 
         if (useMedian) {
-            measurements.addMeasurement(inputObjectsName, Measurements.MEDIAN_X);
-            measurements.addMeasurement(inputObjectsName, Measurements.MEDIAN_X);
-            measurements.addMeasurement(inputObjectsName, Measurements.MEDIAN_Z);
+            medianX.setCalculated(true);
+            medianY.setCalculated(true);
+            medianZ.setCalculated(true);
         }
+
+        return objectMeasurementReferences;
+
     }
 
     @Override

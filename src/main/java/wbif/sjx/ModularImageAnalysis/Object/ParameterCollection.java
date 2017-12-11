@@ -13,7 +13,7 @@ public class ParameterCollection extends LinkedHashMap<String,Parameter> impleme
 
     // PUBLIC METHODS
 
-    public void addParameter(Parameter parameter) {
+    public void add(Parameter parameter) {
         put(parameter.getName(),parameter);
 
     }

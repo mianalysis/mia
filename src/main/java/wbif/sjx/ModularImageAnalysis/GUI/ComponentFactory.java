@@ -1,27 +1,35 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.EvalButton;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.MeasurementExportCheck;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleButton;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleEnabledCheck;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.BooleanParameter;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ChoiceArrayParameter;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.FileParameter;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.TextParameter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
+import java.util.*;
 
 /**
  * Created by sc13967 on 23/06/2017.
  */
-class ComponentFactory {
+public class ComponentFactory {
     private GUI gui;
     private int elementHeight;
 
-    ComponentFactory(GUI gui, int elementHeight) {
+    public ComponentFactory(GUI gui, int elementHeight) {
         this.gui = gui;
         this.elementHeight = elementHeight;
 
     }
 
-    JPanel createParameterControl(Parameter parameter, ModuleCollection modules, HCModule module, int panelWidth) {
+    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, HCModule module, int panelWidth) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -93,10 +101,13 @@ class ComponentFactory {
             String[] valueSource = parameter.getValueSource();
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
 
-        } else if (parameter.getType() == Parameter.MEASUREMENT) {
-            MeasurementCollection measurements = modules.getMeasurements(module);
-            String[] measurementChoices = measurements.getMeasurementNames(parameter.getValueSource());
-            Arrays.sort(measurementChoices);
+        } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
+            String[] measurementChoices = modules.getImageReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
+
+            parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
+
+        } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
+            String[] measurementChoices = modules.getObjectReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
@@ -128,7 +139,7 @@ class ComponentFactory {
 
     }
 
-    JPanel createAdvancedModuleControl(HCModule module, ButtonGroup group, HCModule activeModule, int panelWidth) {
+    public JPanel createAdvancedModuleControl(HCModule module, ButtonGroup group, HCModule activeModule, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -168,14 +179,14 @@ class ComponentFactory {
 
     }
 
-    JPanel createBasicModuleHeading(HCModule module, int panelWidth) {
+    public JPanel createBasicModuleHeading(HCModule module, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
         // Adding the state/evaluate button
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.insets = new Insets(0, 5, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 //        EvalButton evalButton = new EvalButton(gui,module);
 //        evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
@@ -194,5 +205,87 @@ class ComponentFactory {
 
         return modulePanel;
 
+    }
+
+    public JPanel createBasicModuleControl(HCModule module, int panelWidth) {
+        // Only show if the module is enabled
+        if (!module.isEnabled()) return null;
+
+        // Only displaying the module title if it has at least one visible parameter
+        boolean hasVisibleParameters = false;
+        for (Parameter parameter : module.updateAndGetParameters().values()) {
+            if (parameter.isVisible()) hasVisibleParameters = true;
+        }
+        if (!hasVisibleParameters) return null;
+
+        JPanel modulePanel = new JPanel(new GridBagLayout());
+        JPanel titlePanel = createBasicModuleHeading(module, panelWidth);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weighty = 0;
+
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        modulePanel.add(titlePanel, c);
+
+        for (Parameter parameter : module.updateAndGetParameters().values()) {
+            if (parameter.isVisible()) {
+                JPanel paramPanel = createParameterControl(parameter, gui.getModules(), module, panelWidth);
+
+                c.gridy++;
+                modulePanel.add(paramPanel, c);
+
+            }
+        }
+
+        c.gridy++;
+        JSeparator separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0, 10));
+        modulePanel.add(separator, c);
+
+        return modulePanel;
+
+    }
+
+    public JPanel createMeasurementHeader(String name, int panelWidth) {
+        JPanel headerPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(5,0,0,0);
+        c.anchor = GridBagConstraints.WEST;
+
+        JTextField headerName = new JTextField("      "+name);
+        headerName.setPreferredSize(new Dimension(panelWidth, elementHeight));
+        headerName.setEditable(false);
+        headerName.setBorder(null);
+        headerPanel.add(headerName, c);
+
+        return headerPanel;
+    }
+
+    public JPanel createMeasurementControl(MeasurementReference measurement, int panelWidth) {
+        JPanel measurementPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(5,5,0,0);
+
+        JTextField measurementName = new JTextField("            "+measurement.getName());
+        measurementName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
+        measurementName.setEditable(false);
+        measurementName.setBorder(null);
+        measurementPanel.add(measurementName, c);
+
+        MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement);
+        exportCheck.setPreferredSize(new Dimension(panelWidth/3, elementHeight));
+        c.gridx++;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.EAST;
+        exportCheck.setSelected(measurement.isExportable());
+        measurementPanel.add(exportCheck,c);
+
+        return measurementPanel;
     }
 }

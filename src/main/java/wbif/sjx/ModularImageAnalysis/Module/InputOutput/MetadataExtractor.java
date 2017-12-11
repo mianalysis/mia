@@ -134,27 +134,32 @@ public class MetadataExtractor extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(EXTRACTOR_MODE,Parameter.CHOICE_ARRAY,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
-        parameters.addParameter(new Parameter(FILENAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FilenameExtractors.NONE,FilenameExtractors.ALL));
-        parameters.addParameter(new Parameter(FOLDERNAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
-        parameters.addParameter(new Parameter(METADATA_FILE_EXTRACTOR,Parameter.CHOICE_ARRAY,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
+        parameters.add(new Parameter(EXTRACTOR_MODE,Parameter.CHOICE_ARRAY,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
+        parameters.add(new Parameter(FILENAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FilenameExtractors.NONE,FilenameExtractors.ALL));
+        parameters.add(new Parameter(FOLDERNAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
+        parameters.add(new Parameter(METADATA_FILE_EXTRACTOR,Parameter.CHOICE_ARRAY,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addParameter(parameters.getParameter(EXTRACTOR_MODE));
+        returnedParameters.add(parameters.getParameter(EXTRACTOR_MODE));
 
         if (parameters.getValue(EXTRACTOR_MODE).equals(ExtractorModes.FILENAME_MODE)) {
-            returnedParameters.addParameter(parameters.getParameter(FILENAME_EXTRACTOR));
+            returnedParameters.add(parameters.getParameter(FILENAME_EXTRACTOR));
 
         } else if (parameters.getValue(EXTRACTOR_MODE).equals(ExtractorModes.FOLDERNAME_MODE)) {
-            returnedParameters.addParameter(parameters.getParameter(FOLDERNAME_EXTRACTOR));
+            returnedParameters.add(parameters.getParameter(FOLDERNAME_EXTRACTOR));
 
         }if (parameters.getValue(EXTRACTOR_MODE).equals(ExtractorModes.METADATA_FILE_MODE)) {
-            returnedParameters.addParameter(parameters.getParameter(METADATA_FILE_EXTRACTOR));
+            returnedParameters.add(parameters.getParameter(METADATA_FILE_EXTRACTOR));
 
         }
 
@@ -163,8 +168,13 @@ public class MetadataExtractor extends HCModule {
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
 
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
     }
 
     @Override

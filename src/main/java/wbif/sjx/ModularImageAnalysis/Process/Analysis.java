@@ -1,8 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.InputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -57,7 +57,7 @@ public abstract class Analysis implements Serializable {
 
         // Check that all available parameters have been set
         for (HCModule module:modules) {
-            ParameterCollection activeParameters = module.getActiveParameters();
+            ParameterCollection activeParameters = module.updateAndGetParameters();
 
             for (Parameter activeParameter:activeParameters.values()) {
                 if (activeParameter.getValue() == null) throw new GenericMIAException(

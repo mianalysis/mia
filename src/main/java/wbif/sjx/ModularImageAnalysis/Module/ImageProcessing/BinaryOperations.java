@@ -154,46 +154,56 @@ public class BinaryOperations extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE,OperationModes.ALL));
-        parameters.addParameter(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
-        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(DYNAMIC, Parameter.INTEGER,1));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE,OperationModes.ALL));
+        parameters.add(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(OPERATION_MODE));
+        returnedParameters.add(parameters.getParameter(OPERATION_MODE));
 
         if (parameters.getValue(OPERATION_MODE).equals(OperationModes.DILATE) | parameters.getValue(OPERATION_MODE).equals(OperationModes.ERODE)) {
-            returnedParameters.addParameter(parameters.getParameter(NUM_ITERATIONS));
+            returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
 
         } else if (parameters.getValue(OPERATION_MODE).equals(OperationModes.WATERSHED_3D)) {
-            returnedParameters.addParameter(parameters.getParameter(DYNAMIC));
+            returnedParameters.add(parameters.getParameter(DYNAMIC));
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
 
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
     }
 
     @Override

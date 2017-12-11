@@ -7,7 +7,7 @@ import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedSpots3D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjSet;
+import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.util.Arrays;
@@ -40,9 +40,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjSet testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testObjects);
-        ObjSet testSpots = ExpectedSpots3D.getObjects(inputSpotsName,dppXY,dppZ,calibratedUnits);
+        ObjCollection testSpots = ExpectedSpots3D.getObjects(inputSpotsName,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -69,7 +69,7 @@ public class RelateObjectsTest {
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
-            ObjSet childSpots = testObject.getChildren(inputSpotsName);
+            ObjCollection childSpots = testObject.getChildren(inputSpotsName);
 
             // Testing the number of children
             assertNotNull("Object has spot children",childSpots);
@@ -109,9 +109,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjSet testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testObjects);
-        ObjSet testSpots = ExpectedSpots3D.getObjects(inputSpotsName,dppXY,dppZ,calibratedUnits);
+        ObjCollection testSpots = ExpectedSpots3D.getObjects(inputSpotsName,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -139,7 +139,7 @@ public class RelateObjectsTest {
             double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_DIST);
 
             // Getting child objects (those linked here)
-            ObjSet childSpots = testObject.getChildren(inputSpotsName);
+            ObjCollection childSpots = testObject.getChildren(inputSpotsName);
 
             // Each object won't necessarily have any children
             if (childSpots == null) continue;
@@ -158,7 +158,7 @@ public class RelateObjectsTest {
                 actualX[iter] = (int) childSpot.getX(true)[0];
                 actualY[iter] = (int) childSpot.getY(true)[0];
                 actualZ[iter] = (int) childSpot.getZ(true,false)[0];
-                actualDist[iter++] = childSpot.getMeasurement("Distance to parent centroid (px)").getValue();
+                actualDist[iter++] = childSpot.getMeasurement(RelateObjects.Measurements.DIST_CENTROID_PX_MEAS).getValue();
 
             }
 
@@ -194,9 +194,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjSet testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testObjects);
-        ObjSet testSpots = ExpectedSpots3D.getObjects(inputSpotsName,dppXY,dppZ,calibratedUnits);
+        ObjCollection testSpots = ExpectedSpots3D.getObjects(inputSpotsName,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -224,7 +224,7 @@ public class RelateObjectsTest {
             double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_DIST);
 
             // Getting child objects (those linked here)
-            ObjSet childSpots = testObject.getChildren(inputSpotsName);
+            ObjCollection childSpots = testObject.getChildren(inputSpotsName);
 
             // Each object won't necessarily have any children
             if (childSpots == null) continue;
@@ -243,7 +243,7 @@ public class RelateObjectsTest {
                 actualX[iter] = (int) childSpot.getX(true)[0];
                 actualY[iter] = (int) childSpot.getY(true)[0];
                 actualZ[iter] = (int) childSpot.getZ(true,false)[0];
-                actualDist[iter++] = childSpot.getMeasurement("Distance to parent centroid (px)").getValue();
+                actualDist[iter++] = childSpot.getMeasurement(RelateObjects.Measurements.DIST_CENTROID_PX_MEAS).getValue();
 
             }
 

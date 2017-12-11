@@ -4,13 +4,11 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import fiji.threshold.Auto_Local_Threshold;
 import fiji.threshold.Auto_Threshold;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -20,8 +18,8 @@ public class ThresholdImage extends HCModule {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String THRESHOLD_TYPE = "Threshold type";
-    public static final String GLOBAL_THRESHOLD_ALGORITHM = "Global threshold algorithm";
-    public static final String LOCAL_THRESHOLD_ALGORITHM = "Local threshold algorithm";
+    public static final String GLOBAL_ALGORITHM = "Global threshold algorithm";
+    public static final String LOCAL_ALGORITHM = "Local threshold algorithm";
     public static final String THRESHOLD_MULTIPLIER = "Threshold multiplier";
     public static final String USE_LOWER_THRESHOLD_LIMIT = "Use lower threshold limit";
     public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
@@ -29,6 +27,7 @@ public class ThresholdImage extends HCModule {
     public static final String UPPER_THRESHOLD_LIMIT = "Upper threshold limit";
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -40,7 +39,7 @@ public class ThresholdImage extends HCModule {
 
     }
 
-    public interface GlobalThresholdAlgorithms {
+    public interface GlobalAlgorithms {
         String HUANG = "Huang";
         String OTSU = "Otsu";
         String TRIANGLE = "Triangle";
@@ -49,13 +48,15 @@ public class ThresholdImage extends HCModule {
 
     }
 
-    public interface LocalThresholdAlgorithms {
+    public interface LocalAlgorithms {
         String BERNSEN_3D = "Bersen (3D)";
+        String CONTRAST_3D = "Contrast (3D)";
         String MEAN_3D = "Mean (3D)";
+        String MEDIAN_3D = "Median (3D)";
         String PHANSALKAR_3D = "Phansalkar (3D)";
         String PHANSALKAR_SLICE = "Phansalkar (slice-by-slice)";
 
-        String[] ALL = new String[]{BERNSEN_3D,MEAN_3D,PHANSALKAR_3D,PHANSALKAR_SLICE};
+        String[] ALL = new String[]{BERNSEN_3D,CONTRAST_3D,MEAN_3D,MEDIAN_3D,PHANSALKAR_3D,PHANSALKAR_SLICE};
 
     }
 
@@ -111,9 +112,15 @@ public class ThresholdImage extends HCModule {
     }
 
     public void applyLocalThreshold3D(ImagePlus inputImagePlus, String algorithm, double localRadius, double thrMult,
-                                      boolean useLowerLim, double lowerLim, boolean useUpperLim, double upperLim) {
+                                      boolean useLowerLim, double lowerLim, boolean useUpperLim, double upperLim,
+                                      boolean globalZ) {
 
-        double localRadiusZ = inputImagePlus.getCalibration().getX(1)/inputImagePlus.getCalibration().getZ(1);
+        double localRadiusZ;
+        if (globalZ) {
+            localRadiusZ = inputImagePlus.getNSlices()/2;
+        } else {
+            localRadiusZ = inputImagePlus.getCalibration().getX(1) / inputImagePlus.getCalibration().getZ(1);
+        }
 
         AutoLocalThreshold3D alt3D = new AutoLocalThreshold3D();
         if (useLowerLim) alt3D.setLowerThreshold((int) lowerLim);
@@ -143,8 +150,8 @@ public class ThresholdImage extends HCModule {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String thresholdType = parameters.getValue(THRESHOLD_TYPE);
-        String globalThresholdAlgorithm = parameters.getValue(GLOBAL_THRESHOLD_ALGORITHM);
-        String localThresholdAlgorithm = parameters.getValue(LOCAL_THRESHOLD_ALGORITHM);
+        String globalThresholdAlgorithm = parameters.getValue(GLOBAL_ALGORITHM);
+        String localThresholdAlgorithm = parameters.getValue(LOCAL_ALGORITHM);
         double thrMult = parameters.getValue(THRESHOLD_MULTIPLIER);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
@@ -153,6 +160,7 @@ public class ThresholdImage extends HCModule {
         double upperLim = parameters.getValue(UPPER_THRESHOLD_LIMIT);
         double localRadius = parameters.getValue(LOCAL_RADIUS);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS);
+        boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z);
 
         if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
@@ -162,26 +170,32 @@ public class ThresholdImage extends HCModule {
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
         // Image must be 8-bit
-        IntensityMinMax.run(inputImagePlus,true);
-        IJ.run(inputImagePlus,"8-bit",null);
+//        IntensityMinMax.run(inputImagePlus,true);
+//        IJ.run(inputImagePlus,"8-bit",null);
 
         // Calculating the threshold based on the selected algorithm
         switch (thresholdType) {
             case ThresholdTypes.GLOBAL_TYPE:
                 switch (globalThresholdAlgorithm) {
-                    case GlobalThresholdAlgorithms.HUANG:
-                        if (verbose) System.out.println("["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
-                        applyGlobalThresholdToStack(inputImagePlus,"Huang",thrMult,useLowerLim,lowerLim,useUpperLim,upperLim);
+                    case GlobalAlgorithms.HUANG:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
+                        applyGlobalThresholdToStack(inputImagePlus,"Huang",thrMult,useLowerLim,lowerLim,useUpperLim,
+                                upperLim);
                         break;
 
-                    case GlobalThresholdAlgorithms.OTSU:
-                        if (verbose) System.out.println("["+moduleName+"] Applying global Otsu threshold (multplier = "+thrMult+" x)");
-                        applyGlobalThresholdToStack(inputImagePlus,"Otsu",thrMult,useLowerLim,lowerLim,useUpperLim,upperLim);
+                    case GlobalAlgorithms.OTSU:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying global Otsu threshold (multplier = "+thrMult+" x)");
+                        applyGlobalThresholdToStack(inputImagePlus,"Otsu",thrMult,useLowerLim,lowerLim,useUpperLim,
+                                upperLim);
                         break;
 
-                    case GlobalThresholdAlgorithms.TRIANGLE:
-                        if (verbose) System.out.println("["+moduleName+"] Applying global Triangle threshold (multplier = "+thrMult+" x)");
-                        applyGlobalThresholdToStack(inputImagePlus,"Triangle",thrMult,useLowerLim,lowerLim,useUpperLim,upperLim);
+                    case GlobalAlgorithms.TRIANGLE:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying global Triangle threshold (multplier = "+thrMult+" x)");
+                        applyGlobalThresholdToStack(inputImagePlus,"Triangle",thrMult,useLowerLim,lowerLim,useUpperLim,
+                                upperLim);
                         break;
 
                 }
@@ -189,23 +203,44 @@ public class ThresholdImage extends HCModule {
 
             case ThresholdTypes.LOCAL_TYPE:
                 switch (localThresholdAlgorithm) {
-                    case LocalThresholdAlgorithms.BERNSEN_3D:
-                        if (verbose) System.out.println("["+moduleName+"] Applying local Bernsen threshold (radius = "+localRadius+" px)");
-                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.BERNSEN,localRadius,thrMult,useLowerLim,lowerLim,useUpperLim,upperLim);
+                    case LocalAlgorithms.BERNSEN_3D:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying local Bernsen threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.BERNSEN,localRadius,thrMult,
+                                useLowerLim,lowerLim,useUpperLim,upperLim,useGlobalZ);
                         break;
 
-                    case LocalThresholdAlgorithms.MEAN_3D:
-                        if (verbose) System.out.println("["+moduleName+"] Applying local Mean threshold (radius = "+localRadius+" px)");
-                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEAN,localRadius,thrMult,useLowerLim,lowerLim,useUpperLim,upperLim);
+                    case LocalAlgorithms.CONTRAST_3D:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying local Contrast threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.CONTRAST,localRadius,thrMult,
+                                useLowerLim,lowerLim,useUpperLim,upperLim,useGlobalZ);
                         break;
 
-                    case LocalThresholdAlgorithms.PHANSALKAR_3D:
-                        if (verbose) System.out.println("["+moduleName+"] Applying local Phansalkar threshold (radius = "+localRadius+" px)");
-                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.PHANSALKAR,localRadius,thrMult,useLowerLim,lowerLim,useUpperLim,upperLim);
+                    case LocalAlgorithms.MEAN_3D:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying local Mean threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEAN,localRadius,thrMult,useLowerLim,
+                                lowerLim,useUpperLim,upperLim,useGlobalZ);
                         break;
 
-                    case LocalThresholdAlgorithms.PHANSALKAR_SLICE:
-                        if (verbose) System.out.println("["+moduleName+"] Applying local Phansalkar threshold (radius = "+localRadius+" px)");
+                    case LocalAlgorithms.MEDIAN_3D:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying local Median threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEDIAN,localRadius,thrMult,useLowerLim,
+                                lowerLim,useUpperLim,upperLim,useGlobalZ);
+                        break;
+
+                    case LocalAlgorithms.PHANSALKAR_3D:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying local Phansalkar threshold (radius = "+localRadius+" px)");
+                        applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.PHANSALKAR,localRadius,thrMult,
+                                useLowerLim,lowerLim,useUpperLim,upperLim,useGlobalZ);
+                        break;
+
+                    case LocalAlgorithms.PHANSALKAR_SLICE:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying local Phansalkar threshold (radius = "+localRadius+" px)");
                         applyLocalThresholdToStack(inputImagePlus,"Phansalkar",localRadius);
                         break;
 
@@ -247,73 +282,89 @@ public class ThresholdImage extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(THRESHOLD_TYPE, Parameter.CHOICE_ARRAY, ThresholdTypes.GLOBAL_TYPE, ThresholdTypes.ALL));
-        parameters.addParameter(new Parameter(GLOBAL_THRESHOLD_ALGORITHM, Parameter.CHOICE_ARRAY, GlobalThresholdAlgorithms.HUANG, GlobalThresholdAlgorithms.ALL));
-        parameters.addParameter(new Parameter(LOCAL_THRESHOLD_ALGORITHM, Parameter.CHOICE_ARRAY, LocalThresholdAlgorithms.PHANSALKAR_3D, LocalThresholdAlgorithms.ALL));
-        parameters.addParameter(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
-        parameters.addParameter(new Parameter(USE_LOWER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
-        parameters.addParameter(new Parameter(LOWER_THRESHOLD_LIMIT, Parameter.DOUBLE, 0.0));
-        parameters.addParameter(new Parameter(USE_UPPER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
-        parameters.addParameter(new Parameter(UPPER_THRESHOLD_LIMIT, Parameter.DOUBLE, 65535.0));
-        parameters.addParameter(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE, 1.0));
-        parameters.addParameter(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
-        parameters.addParameter(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(
+                new Parameter(THRESHOLD_TYPE,Parameter.CHOICE_ARRAY,ThresholdTypes.GLOBAL_TYPE,ThresholdTypes.ALL));
+        parameters.add(
+                new Parameter(GLOBAL_ALGORITHM,Parameter.CHOICE_ARRAY,GlobalAlgorithms.HUANG,GlobalAlgorithms.ALL));
+        parameters.add(
+                new Parameter(LOCAL_ALGORITHM,Parameter.CHOICE_ARRAY,LocalAlgorithms.PHANSALKAR_3D,LocalAlgorithms.ALL));
+        parameters.add(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(USE_LOWER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(LOWER_THRESHOLD_LIMIT, Parameter.DOUBLE, 0.0));
+        parameters.add(new Parameter(USE_UPPER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(UPPER_THRESHOLD_LIMIT, Parameter.DOUBLE, 65535.0));
+        parameters.add(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE, 1.0));
+        parameters.add(
+                new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new Parameter(USE_GLOBAL_Z,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(THRESHOLD_TYPE));
-        returnedParameters.addParameter(parameters.getParameter(THRESHOLD_MULTIPLIER));
+        returnedParameters.add(parameters.getParameter(THRESHOLD_TYPE));
+        returnedParameters.add(parameters.getParameter(THRESHOLD_MULTIPLIER));
 
         switch ((String) parameters.getValue(THRESHOLD_TYPE)) {
             case ThresholdTypes.GLOBAL_TYPE:
-                returnedParameters.addParameter(parameters.getParameter(GLOBAL_THRESHOLD_ALGORITHM));
+                returnedParameters.add(parameters.getParameter(GLOBAL_ALGORITHM));
 
                 break;
 
             case ThresholdTypes.LOCAL_TYPE:
-                returnedParameters.addParameter(parameters.getParameter(LOCAL_THRESHOLD_ALGORITHM));
-                returnedParameters.addParameter(parameters.getParameter(LOCAL_RADIUS));
-                returnedParameters.addParameter(parameters.getParameter(SPATIAL_UNITS));
+                returnedParameters.add(parameters.getParameter(LOCAL_ALGORITHM));
+                returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
+                returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+//                returnedParameters.add(parameters.getParameter(USE_GLOBAL_Z));
 
                 break;
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
+        returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
 
         if (parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
-            returnedParameters.addParameter(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
+            returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(USE_UPPER_THRESHOLD_LIMIT));
+        returnedParameters.add(parameters.getParameter(USE_UPPER_THRESHOLD_LIMIT));
         if (parameters.getValue(USE_UPPER_THRESHOLD_LIMIT)) {
-            returnedParameters.addParameter(parameters.getParameter(UPPER_THRESHOLD_LIMIT));
+            returnedParameters.add(parameters.getParameter(UPPER_THRESHOLD_LIMIT));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(WHITE_BACKGROUND));
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void addMeasurements(MeasurementCollection measurements) {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
 
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
     }
 
     @Override
