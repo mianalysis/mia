@@ -64,6 +64,7 @@ public class FilterImage extends HCModule {
                 }
             }
         }
+        imagePlus.setPosition(1,1,1);
     }
 
     /**
@@ -240,6 +241,8 @@ public class FilterImage extends HCModule {
         if (!applyToInput) {
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
+
+            outputImage.getImagePlus().setPosition(1,1,1);
 
             // If selected, displaying the image
             if (parameters.getValue(SHOW_IMAGE)) {

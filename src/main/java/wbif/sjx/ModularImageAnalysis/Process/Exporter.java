@@ -299,7 +299,7 @@ public class Exporter {
         for (MeasurementReference measurementReference:measurementReferences.values()) {
             Element measurementReferenceElement = doc.createElement("MEASUREMENT");
 
-            measurementReferenceElement.setAttribute("NAME",measurementReference.getName());
+            measurementReferenceElement.setAttribute("NAME",measurementReference.getNickName());
             measurementReferenceElement.setAttribute("IS_CALCULATED",String.valueOf(measurementReference.isCalculated()));
             measurementReferenceElement.setAttribute("IS_EXPORTABLE",String.valueOf(measurementReference.isExportable()));
             measurementReferenceElement.setAttribute("TYPE",type);
@@ -456,17 +456,17 @@ public class Exporter {
                     if (!objectMeasurement.isExportable()) continue;
 
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName,"MEAN",objectMeasurement.getName());
+                    summaryDataName = getObjectString(exampleObjSetName,"MEAN",objectMeasurement.getNickName());
                     summaryHeaderCell.setCellValue(summaryDataName);
                     colNumbers.put(summaryDataName, headerCol++);
 
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName,"STD",objectMeasurement.getName());
+                    summaryDataName = getObjectString(exampleObjSetName,"STD",objectMeasurement.getNickName());
                     summaryHeaderCell.setCellValue(summaryDataName);
                     colNumbers.put(summaryDataName, headerCol++);
 
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName,"SUM",objectMeasurement.getName());
+                    summaryDataName = getObjectString(exampleObjSetName,"SUM",objectMeasurement.getNickName());
                     summaryHeaderCell.setCellValue(summaryDataName);
                     colNumbers.put(summaryDataName, headerCol++);
 
@@ -557,21 +557,21 @@ public class Exporter {
                 // Running through all objects in this set, adding measurements to a CumStat object
                 CumStat cs = new CumStat();
                 for (Obj obj: objCollection.values()) {
-                    Measurement measurement = obj.getMeasurement(objectMeasurement.getName());
+                    Measurement measurement = obj.getMeasurement(objectMeasurement.getNickName());
                     if (measurement != null) cs.addMeasure(measurement.getValue());
                 }
 
-                headerName = getObjectString(objSetName,"MEAN",objectMeasurement.getName());
+                headerName = getObjectString(objSetName,"MEAN",objectMeasurement.getNickName());
                 colNum = colNumbers.get(headerName);
                 summaryCell = summaryValueRow.createCell(colNum);
                 summaryCell.setCellValue(cs.getMean());
 
-                headerName = getObjectString(objSetName,"STD",objectMeasurement.getName());
+                headerName = getObjectString(objSetName,"STD",objectMeasurement.getNickName());
                 colNum = colNumbers.get(headerName);
                 summaryCell = summaryValueRow.createCell(colNum);
                 summaryCell.setCellValue(cs.getStd());
 
-                headerName = getObjectString(objSetName,"SUM",objectMeasurement.getName());
+                headerName = getObjectString(objSetName,"SUM",objectMeasurement.getNickName());
                 colNum = colNumbers.get(headerName);
                 summaryCell = summaryValueRow.createCell(colNum);
                 summaryCell.setCellValue(cs.getSum());
@@ -665,9 +665,9 @@ public class Exporter {
                     if (!objectMeasurement.isExportable()) continue;
 
                     measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
-                    measurementNames.get(objectName).put(col, objectMeasurement.getName());
+                    measurementNames.get(objectName).put(col, objectMeasurement.getNickName());
                     Cell measHeaderCell = objectHeaderRow.createCell(col++);
-                    measHeaderCell.setCellValue(objectMeasurement.getName());
+                    measHeaderCell.setCellValue(objectMeasurement.getNickName());
 
                 }
             }

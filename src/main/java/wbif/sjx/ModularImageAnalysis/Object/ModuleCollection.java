@@ -29,7 +29,7 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
             for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
                 if (measurementReference.getImageObjName().equals(imageName)
                         & measurementReference.isCalculated())
-                    measurementReferences.add(measurementReference);
+                    measurementReferences.add(measurementReference.getNickName(),measurementReference);
 
             }
         }
@@ -57,7 +57,7 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
             for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
                 if (measurementReference.getImageObjName().equals(objectName)
                         & measurementReference.isCalculated())
-                    measurementReferences.add(measurementReference);
+                    measurementReferences.add(measurementReference.getNickName(),measurementReference);
 
             }
         }

@@ -3,6 +3,11 @@ package wbif.sjx.ModularImageAnalysis.Object;
 import java.util.LinkedHashMap;
 
 public class MeasurementReferenceCollection extends LinkedHashMap<String,MeasurementReference> {
+    public void add(String name, MeasurementReference measurementReference) {
+        put(name,measurementReference);
+
+    }
+
     public void add(MeasurementReference measurementReference) {
         put(measurementReference.getName(),measurementReference);
 

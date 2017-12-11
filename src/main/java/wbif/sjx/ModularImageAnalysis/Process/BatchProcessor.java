@@ -95,7 +95,7 @@ public class BatchProcessor extends FileCrawler {
             Runnable task = () -> {
                 try {
                     // Running the current analysis
-                    analysis.execute(workspace, false);
+                    analysis.execute(workspace, true);
 
                     // Getting the number of completed and total tasks
                     incrementCounter();
