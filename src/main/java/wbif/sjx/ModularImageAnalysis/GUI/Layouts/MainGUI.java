@@ -604,7 +604,7 @@ public class MainGUI extends GUI {
 
                 MeasurementReferenceCollection measurementReferences = getModules().getImageReferences(imageName);
                 // Iterating over the measurements for the current image, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences.values()) {
+                for (MeasurementReference measurementReference:measurementReferences) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -626,7 +626,7 @@ public class MainGUI extends GUI {
 
                 MeasurementReferenceCollection measurementReferences = getModules().getObjectReferences(objectName);
                 // Iterating over the measurements for the current object, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences.values()) {
+                for (MeasurementReference measurementReference:measurementReferences) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control

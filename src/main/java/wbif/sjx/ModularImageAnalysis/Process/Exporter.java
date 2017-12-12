@@ -296,7 +296,7 @@ public class Exporter {
     public static Element prepareMeasurementReferencesXML(Document doc, Element measurementReferencesElement, MeasurementReferenceCollection measurementReferences, String type) {
         if (measurementReferences == null) return measurementReferencesElement;
 
-        for (MeasurementReference measurementReference:measurementReferences.values()) {
+        for (MeasurementReference measurementReference:measurementReferences) {
             Element measurementReferenceElement = doc.createElement("MEASUREMENT");
 
             measurementReferenceElement.setAttribute("NAME",measurementReference.getNickName());
@@ -451,7 +451,7 @@ public class Exporter {
                 if (objectMeasurementReferences == null) continue;
 
                 // Running through all the object measurement values, adding them as new columns
-                for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
+                for (MeasurementReference objectMeasurement : objectMeasurementReferences) {
                     if (!objectMeasurement.isCalculated()) continue;
                     if (!objectMeasurement.isExportable()) continue;
 
@@ -550,7 +550,7 @@ public class Exporter {
             if (objectMeasurementReferences == null) continue;
 
             // Running through all the object measurement values, adding them as new columns
-            for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
+            for (MeasurementReference objectMeasurement : objectMeasurementReferences) {
                 if (!objectMeasurement.isCalculated()) continue;
                 if (!objectMeasurement.isExportable()) continue;
 
@@ -660,7 +660,7 @@ public class Exporter {
                 if (objectMeasurementReferences == null) continue;
 
                 // Running through all the object measurement values, adding them as new columns
-                for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
+                for (MeasurementReference objectMeasurement : objectMeasurementReferences) {
                     if (!objectMeasurement.isCalculated()) continue;
                     if (!objectMeasurement.isExportable()) continue;
 

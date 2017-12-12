@@ -26,10 +26,10 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
 
             if (currentMeasurementReferences == null) continue;
 
-            for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
+            for (MeasurementReference measurementReference:currentMeasurementReferences) {
                 if (measurementReference.getImageObjName().equals(imageName)
                         & measurementReference.isCalculated())
-                    measurementReferences.add(measurementReference.getNickName(),measurementReference);
+                    measurementReferences.add(measurementReference);
 
             }
         }
@@ -54,10 +54,10 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
                     module.updateAndGetObjectMeasurementReferences();
             if (currentMeasurementReferences == null) continue;
 
-            for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
+            for (MeasurementReference measurementReference:currentMeasurementReferences) {
                 if (measurementReference.getImageObjName().equals(objectName)
                         & measurementReference.isCalculated())
-                    measurementReferences.add(measurementReference.getNickName(),measurementReference);
+                    measurementReferences.add(measurementReference);
 
             }
         }
