@@ -189,9 +189,11 @@ public class MeasureObjectIntensity extends HCModule {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         MeasurementReference mean = objectMeasurementReferences.get(Measurements.MEAN);
+        mean.setImageObjName(inputObjectsName);
         mean.setCalculated(false);
         if (parameters.getValue(MEASURE_MEAN)) {
             mean.setCalculated(true);
@@ -199,6 +201,7 @@ public class MeasureObjectIntensity extends HCModule {
         }
 
         MeasurementReference min = objectMeasurementReferences.get(Measurements.MIN);
+        min.setImageObjName(inputObjectsName);
         min.setCalculated(false);
         if (parameters.getValue(MEASURE_MIN)) {
             min.setCalculated(true);
@@ -206,6 +209,7 @@ public class MeasureObjectIntensity extends HCModule {
         }
 
         MeasurementReference max = objectMeasurementReferences.get(Measurements.MAX);
+        max.setImageObjName(inputObjectsName);
         max.setCalculated(false);
         if (parameters.getValue(MEASURE_MAX)) {
             max.setCalculated(true);
@@ -214,6 +218,7 @@ public class MeasureObjectIntensity extends HCModule {
 
 
         MeasurementReference stdev = objectMeasurementReferences.get(Measurements.STDEV);
+        stdev.setImageObjName(inputObjectsName);
         stdev.setCalculated(false);
         if (parameters.getValue(MEASURE_STDEV)) {
             stdev.setCalculated(true);
@@ -221,6 +226,7 @@ public class MeasureObjectIntensity extends HCModule {
         }
 
         MeasurementReference sum = objectMeasurementReferences.get(Measurements.SUM);
+        sum.setImageObjName(inputObjectsName);
         sum.setCalculated(false);
         if (parameters.getValue(MEASURE_SUM)) {
             sum.setCalculated(true);
@@ -228,6 +234,7 @@ public class MeasureObjectIntensity extends HCModule {
         }
 
         MeasurementReference xCentMean = objectMeasurementReferences.get(Measurements.X_CENT_MEAN);
+        xCentMean.setImageObjName(inputObjectsName);
         xCentMean.setCalculated(false);
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             xCentMean.setCalculated(true);
@@ -235,6 +242,7 @@ public class MeasureObjectIntensity extends HCModule {
         }
 
         MeasurementReference xCentStdev = objectMeasurementReferences.get(Measurements.X_CENT_STD);
+        xCentStdev.setImageObjName(inputObjectsName);
         xCentStdev.setCalculated(false);
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             xCentStdev.setCalculated(true);
@@ -242,6 +250,7 @@ public class MeasureObjectIntensity extends HCModule {
         }
 
         MeasurementReference yCentMean = objectMeasurementReferences.get(Measurements.Y_CENT_MEAN);
+        yCentMean.setImageObjName(inputObjectsName);
         yCentMean.setCalculated(false);
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             yCentMean.setCalculated(true);
@@ -249,6 +258,7 @@ public class MeasureObjectIntensity extends HCModule {
         }
 
         MeasurementReference yCentStdev = objectMeasurementReferences.get(Measurements.Y_CENT_STD);
+        yCentStdev.setImageObjName(inputObjectsName);
         yCentStdev.setCalculated(false);
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             yCentStdev.setCalculated(true);
@@ -256,6 +266,7 @@ public class MeasureObjectIntensity extends HCModule {
         }
 
         MeasurementReference zCentMean = objectMeasurementReferences.get(Measurements.Z_CENT_MEAN);
+        zCentMean.setImageObjName(inputObjectsName);
         zCentMean.setCalculated(false);
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             zCentMean.setCalculated(true);
@@ -263,6 +274,7 @@ public class MeasureObjectIntensity extends HCModule {
         }
 
         MeasurementReference zCentStdev = objectMeasurementReferences.get(Measurements.Z_CENT_STD);
+        zCentStdev.setImageObjName(inputObjectsName);
         zCentStdev.setCalculated(false);
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             zCentStdev.setCalculated(true);

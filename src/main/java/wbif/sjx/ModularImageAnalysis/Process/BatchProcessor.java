@@ -114,8 +114,8 @@ public class BatchProcessor extends FileCrawler {
                     e.printStackTrace();
 
                 } catch (Throwable t) {
-                    String errorMessage = "Failed for file "+finalNext.getName();
-                    JOptionPane.showMessageDialog(new Frame(), errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+                    System.err.println("Failed for file "+finalNext.getName());
+                    t.printStackTrace(System.err);
 
                     pool.shutdownNow();
 

@@ -272,7 +272,7 @@ public class ComponentFactory {
         c.gridy = 0;
         c.insets = new Insets(5,5,0,0);
 
-        JTextField measurementName = new JTextField("            "+measurement.getName());
+        JTextField measurementName = new JTextField("            "+measurement.getNickName());
         measurementName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
         measurementName.setEditable(false);
         measurementName.setBorder(null);

@@ -79,7 +79,7 @@ public abstract class HCModule implements Serializable {
     public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
 
     public MeasurementReference getImageMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : imageMeasurementReferences.values()) {
+        for (MeasurementReference measurementReference : imageMeasurementReferences) {
             if (measurementReference.getName().equals(name)) return measurementReference;
         }
 
@@ -88,7 +88,7 @@ public abstract class HCModule implements Serializable {
     }
 
     public MeasurementReference getObjectMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : objectMeasurementReferences.values()) {
+        for (MeasurementReference measurementReference : objectMeasurementReferences) {
             if (measurementReference.getName().equals(name)) return measurementReference;
         }
 
