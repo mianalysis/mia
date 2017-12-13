@@ -95,7 +95,7 @@ public class BatchProcessor extends FileCrawler {
             Runnable task = () -> {
                 try {
                     // Running the current analysis
-                    analysis.execute(workspace, true);
+                    analysis.execute(workspace, false);
 
                     // Getting the number of completed and total tasks
                     incrementCounter();
@@ -114,8 +114,8 @@ public class BatchProcessor extends FileCrawler {
                     e.printStackTrace();
 
                 } catch (Throwable t) {
-                    String errorMessage = "Failed for file "+finalNext.getName();
-                    JOptionPane.showMessageDialog(new Frame(), errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+                    System.err.println("Failed for file "+finalNext.getName());
+                    t.printStackTrace(System.err);
 
                     pool.shutdownNow();
 
