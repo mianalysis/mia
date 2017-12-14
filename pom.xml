@@ -4,7 +4,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>http://maven.apache.org</url>
@@ -18,6 +18,8 @@
         <dependenciesDir>${project.build.directory}/${project.name}-${project.version}/jars/WBIF_Bristol</dependenciesDir>
         <addClasspathCnd>false</addClasspathCnd>
         <classpathPref></classpathPref>
+        <exclScope></exclScope>
+        <exclArtifactsID></exclArtifactsID>
     </properties>
 
     <profiles>
@@ -28,6 +30,8 @@
                 <dependenciesDir>${project.build.directory}/${project.name}-${project.version}/jars/WBIF_Bristol</dependenciesDir>
                 <addClasspathCnd>false</addClasspathCnd>
                 <classpathPref></classpathPref>
+                <exclScope>provided</exclScope>
+                <exclArtifactsID>commons-codec,commons-collections,commons-io,guava,jama,javassist,junit,MorphoLibJ_</exclArtifactsID>
             </properties>
         </profile>
         <profile>
@@ -37,6 +41,8 @@
                 <dependenciesDir>${project.build.directory}/MIA/lib</dependenciesDir>
                 <addClasspathCnd>true</addClasspathCnd>
                 <classpathPref>lib</classpathPref>
+                <exclScope></exclScope>
+                <exclArtifactsID></exclArtifactsID>
             </properties>
         </profile>
     </profiles>
@@ -188,6 +194,9 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
+                            <excludeScope>${exclScope}</excludeScope>
+                            <excludeArtifactIds>${exclArtifactsID}</excludeArtifactIds>
+
                             <outputDirectory>${dependenciesDir}</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
