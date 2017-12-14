@@ -131,7 +131,7 @@ public class RidgeDetection extends HCModule {
                     try {
                          lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
                                 lowerThreshold, minLength, maxLength, darkLine, true, false, false);
-                    } catch (NegativeArraySizeException e) {
+                    } catch (NegativeArraySizeException | ArrayIndexOutOfBoundsException e) {
                         String errorMessage = "Ridge detection failed for file "+workspace.getMetadata().getFile().getName()
                                 +" at position (C="+c+", Z="+z+", T="+t+")";
                         System.err.println(errorMessage);
