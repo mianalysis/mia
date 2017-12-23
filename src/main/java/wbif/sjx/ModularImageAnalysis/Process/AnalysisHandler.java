@@ -141,6 +141,20 @@ public class AnalysisHandler {
                     module.setNickname(module.getTitle());
                 }
 
+                if (moduleAttributes.getNamedItem("ENABLED") != null) {
+                    String isEnabled = moduleAttributes.getNamedItem("ENABLED").getNodeValue();
+                    module.setEnabled(Boolean.parseBoolean(isEnabled));
+                } else {
+                    module.setEnabled(true);
+                }
+
+                if (moduleAttributes.getNamedItem("NOTES") != null) {
+                    String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
+                    module.setNotes(notes);
+                } else {
+                    module.setNotes("");
+                }
+
                 // Populating parameters
                 NodeList moduleChildNodes = moduleNode.getChildNodes();
                 boolean foundParameters = false;

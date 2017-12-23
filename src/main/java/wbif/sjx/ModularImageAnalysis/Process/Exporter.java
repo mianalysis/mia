@@ -207,6 +207,14 @@ public class Exporter {
             nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
             moduleElement.setAttributeNode(nicknameAttr);
 
+            Attr enabledAttr = doc.createAttribute("ENABLED");
+            enabledAttr.appendChild(doc.createTextNode(String.valueOf(module.isEnabled())));
+            moduleElement.setAttributeNode(enabledAttr);
+
+            Attr notesAttr = doc.createAttribute("NOTES");
+            notesAttr.appendChild(doc.createTextNode(module.getNotes()));
+            moduleElement.setAttributeNode(notesAttr);
+
             Element parametersElement = prepareParametersXML(doc,module);
             moduleElement.appendChild(parametersElement);
 
