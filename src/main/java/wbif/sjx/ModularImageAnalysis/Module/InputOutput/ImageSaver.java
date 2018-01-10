@@ -2,9 +2,13 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
+import ij.process.LUT;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
@@ -20,6 +24,7 @@ public class ImageSaver extends HCModule {
     public static final String SAVE_FILE_PATH = "File path";
     public static final String SAVE_SUFFIX = "Add filename suffix";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
+    public static final String SHOW_IMAGE = "Show image";
 
     public interface SaveLocations {
         String MIRRORED_DIRECTORY = "Mirrored directory";
@@ -54,7 +59,19 @@ public class ImageSaver extends HCModule {
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
 
         // The save image option is there so users can toggle it
-        if (!saveImage) return;
+        if (!saveImage) {
+            // It's still possible to display the image
+            if (parameters.getValue(SHOW_IMAGE)) {
+                // Loading the image to save
+                Image inputImage = workspace.getImages().get(inputImageName);
+                ImagePlus dispIpl = new Duplicator().run(inputImage.getImagePlus());
+                IntensityMinMax.run(dispIpl,true);
+                dispIpl.setLut(LUTs.Random(true));
+                dispIpl.show();
+            }
+
+            return;
+        }
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -111,6 +128,13 @@ public class ImageSaver extends HCModule {
                 break;
 
         }
+
+        if (parameters.getValue(SHOW_IMAGE)) {
+            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+            IntensityMinMax.run(dispIpl,true);
+            dispIpl.setLut(LUTs.Random(true));
+            dispIpl.show();
+        }
     }
 
     @Override
@@ -122,6 +146,7 @@ public class ImageSaver extends HCModule {
         parameters.add(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
         parameters.add(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
         parameters.add(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
     }
 
@@ -155,6 +180,8 @@ public class ImageSaver extends HCModule {
             returnedParamters.add(parameters.getParameter(FLATTEN_OVERLAY));
 
         }
+
+        returnedParamters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParamters;
 

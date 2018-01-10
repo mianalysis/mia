@@ -646,7 +646,7 @@ public class Exporter {
                 // Adding parent IDs
                 RelationshipCollection relationships = modules.getRelationships();
                 String[] parents = relationships.getParentNames(objectName);
-                if (parents.length != 1 && !parents[0].equals("")) {
+                if (!parents[0].equals("")) {
                     for (String parent : parents) {
                         parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
                         parentNames.get(objectName).put(col, parent);

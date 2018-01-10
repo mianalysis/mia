@@ -127,6 +127,7 @@ public class ImageLoader extends HCModule {
 
             // Add spatial calibration
             if (meta != null) {
+                System.out.println(meta.getPixelsPhysicalSizeX(0).value());
                 if (meta.getPixelsPhysicalSizeX(0) != null) {
                     ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
                 } else {

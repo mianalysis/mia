@@ -81,7 +81,7 @@ public abstract class Analysis implements Serializable {
         workspace.clearAllImages(true);
         workspace.clearAllObjects(true);
 
-        if (verbose) System.out.println("Complete");
+        if (verbose) System.out.println("Analysis complete");
 
         return true;
 

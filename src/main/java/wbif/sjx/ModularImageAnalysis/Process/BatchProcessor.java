@@ -61,7 +61,6 @@ public class BatchProcessor extends FileCrawler {
         // Saving the results
         if (shutdownEarly) return;
         exporter.exportResults(workspaces,analysis);
-        System.out.println("Complete!");
 
     }
 

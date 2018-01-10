@@ -8,6 +8,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -65,6 +66,7 @@ public class FileParameter extends JButton implements ActionListener {
                 break;
         }
 
+        fileChooser.setCurrentDirectory(new File((String) parameter.getValue()));
         fileChooser.showDialog(null,"Open");
 
         if (fileChooser.getSelectedFile() == null) return;

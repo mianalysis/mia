@@ -96,35 +96,8 @@ public class RidgeDetection extends HCModule {
         for (int c=0;c<inputImagePlus.getNChannels();c++) {
             for (int z=0;z<inputImagePlus.getNSlices();z++) {
                 for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
-//                    if (verbose) System.out.println("[" + moduleName + "] Processing image "+(count++)+" of "+total);
+                    if (verbose) System.out.println("[" + moduleName + "] Processing image "+(count++)+" of "+total);
                     inputImagePlus.setPosition(c+1,z+1,t+1);
-
-                    calendar.setTimeInMillis(System.currentTimeMillis());
-                    String day = "";
-                    switch(calendar.get(Calendar.DAY_OF_WEEK)){
-                        case 1:
-                            day="Sunday";
-                            break;
-                        case 2:
-                            day="Monday";
-                            break;
-                        case 3:
-                            day="Tuesday";
-                            break;
-                        case 4:
-                            day="Wednesday";
-                            break;
-                        case 5:
-                            day="Thursday";
-                            break;
-                        case 6:
-                            day="Friday";
-                            break;
-                        case 7:
-                            day="Saturday";
-                            break;
-                    }
-                    System.out.println("Thread "+Thread.currentThread().getId()+" at "+calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+" on "+day+" processing point T="+t);
 
                     // Running the ridge detection
                     Lines lines;
@@ -153,7 +126,7 @@ public class RidgeDetection extends HCModule {
 
                     // Iterating over each object, adding it to the nascent ObjCollection
                     if (linkContours) {
-//                        if (verbose) System.out.println("[" + moduleName + "] Linking contours");
+                        if (verbose) System.out.println("[" + moduleName + "] Linking contours");
 
                         for (Junction junction : junctions) {
                             // Getting the LineGroup associated with Line1.  If there isn't one, creating a new one
