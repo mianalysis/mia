@@ -32,16 +32,7 @@ import java.io.*;
 public class AnalysisHandler {
     private BatchProcessor batchProcessor;
 
-    public void saveAnalysis(Analysis analysis) throws IOException, ParserConfigurationException, TransformerException {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
-        fileDialog.setMultipleMode(false);
-        fileDialog.setVisible(true);
-
-        String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
-        if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
-            outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
-        }
-
+    public void saveAnalysis(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
         // Creating a module collection holding the input and output
         ModuleCollection inOutModules = new ModuleCollection();
         inOutModules.add(analysis.getInputControl());
@@ -62,6 +53,19 @@ public class AnalysisHandler {
         transformer.transform(source, result);
 
         System.out.println("File saved ("+FilenameUtils.getName(outputFileName)+")");
+    }
+
+    public void saveAnalysis(Analysis analysis) throws IOException, ParserConfigurationException, TransformerException {
+        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
+        fileDialog.setMultipleMode(false);
+        fileDialog.setVisible(true);
+
+        String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
+        if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
+            outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
+        }
+
+        saveAnalysis(analysis,outputFileName);
 
     }
 
@@ -139,6 +143,20 @@ public class AnalysisHandler {
                     module.setNickname(moduleNickname);
                 } else {
                     module.setNickname(module.getTitle());
+                }
+
+                if (moduleAttributes.getNamedItem("ENABLED") != null) {
+                    String isEnabled = moduleAttributes.getNamedItem("ENABLED").getNodeValue();
+                    module.setEnabled(Boolean.parseBoolean(isEnabled));
+                } else {
+                    module.setEnabled(true);
+                }
+
+                if (moduleAttributes.getNamedItem("NOTES") != null) {
+                    String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
+                    module.setNotes(notes);
+                } else {
+                    module.setNotes("");
                 }
 
                 // Populating parameters

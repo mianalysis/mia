@@ -13,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,7 +27,7 @@ import java.net.URISyntaxException;
  */
 public class DeployedGUI extends GUI implements ActionListener {
     private int frameWidth = 350;
-    private int frameHeight = 600;
+    private int frameHeight = 700;
     private int elementHeight = 25;
 
     private JFrame frame = new JFrame();
@@ -39,23 +40,31 @@ public class DeployedGUI extends GUI implements ActionListener {
     private String name;
     private String version;
     private ComponentFactory componentFactory;
+    private boolean saveOnRun = false;
+    private String saveLocation = "";
 
     public static void main(String[] args) throws IllegalAccessException, ParserConfigurationException, IOException, InstantiationException, URISyntaxException, SAXException, ClassNotFoundException {
         new DeployedGUI("/2017-11-20 Cilia analysis.mia","t","1");
     }
 
     public DeployedGUI(String analysisResourcePath, String name, String version) throws URISyntaxException, SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
-        InputStream analysisResourceStream = DeployedGUI.class.getResourceAsStream(analysisResourcePath);
-        Analysis analysis = new AnalysisHandler().loadAnalysis(analysisResourceStream);
-
-        new DeployedGUI(analysis,name,version);
+        new DeployedGUI(analysis,name,version,frameHeight);
 
     }
 
-    public DeployedGUI(Analysis analysis, String name, String version) throws IllegalAccessException, InstantiationException {
+    public DeployedGUI(String analysisResourcePath, String name, String version, int height) throws URISyntaxException, SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
+        InputStream analysisResourceStream = DeployedGUI.class.getResourceAsStream(analysisResourcePath);
+        Analysis analysis = new AnalysisHandler().loadAnalysis(analysisResourceStream);
+
+        new DeployedGUI(analysis,name,version,height);
+
+    }
+
+    public DeployedGUI(Analysis analysis, String name, String version, int height) throws IllegalAccessException, InstantiationException {
         this.analysis = analysis;
         this.name = name;
         this.version = version;
+        this.frameHeight = height;
 
         componentFactory = new ComponentFactory(this, elementHeight);
 
@@ -205,6 +214,25 @@ public class DeployedGUI extends GUI implements ActionListener {
 
     }
 
+    public void enableSaveOnRun(String saveLocation) {
+        this.saveOnRun = true;
+        this.saveLocation = saveLocation;
+
+    }
+
+    public void disableSaveOnRun() {
+        this.saveOnRun = false;
+
+    }
+
+    public boolean isSaveOnRun() {
+        return saveOnRun;
+    }
+
+    public String getSaveLocation() {
+        return saveLocation;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Start")) {
@@ -218,6 +246,15 @@ public class DeployedGUI extends GUI implements ActionListener {
                 }
             });
             t.start();
+
+            // If selected, save the analysis when run
+            if (saveOnRun) {
+                try {
+                    new AnalysisHandler().saveAnalysis(analysis,saveLocation);
+                } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
     }
 }

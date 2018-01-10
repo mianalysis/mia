@@ -207,6 +207,14 @@ public class Exporter {
             nicknameAttr.appendChild(doc.createTextNode(module.getNickname()));
             moduleElement.setAttributeNode(nicknameAttr);
 
+            Attr enabledAttr = doc.createAttribute("ENABLED");
+            enabledAttr.appendChild(doc.createTextNode(String.valueOf(module.isEnabled())));
+            moduleElement.setAttributeNode(enabledAttr);
+
+            Attr notesAttr = doc.createAttribute("NOTES");
+            notesAttr.appendChild(doc.createTextNode(module.getNotes()));
+            moduleElement.setAttributeNode(notesAttr);
+
             Element parametersElement = prepareParametersXML(doc,module);
             moduleElement.appendChild(parametersElement);
 
@@ -638,7 +646,7 @@ public class Exporter {
                 // Adding parent IDs
                 RelationshipCollection relationships = modules.getRelationships();
                 String[] parents = relationships.getParentNames(objectName);
-                if (parents.length != 1 && !parents[0].equals("")) {
+                if (!parents[0].equals("")) {
                     for (String parent : parents) {
                         parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
                         parentNames.get(objectName).put(col, parent);

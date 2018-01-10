@@ -171,7 +171,8 @@ public class ObjectImageConverter extends HCModule {
                         }
                     }
 
-                    valInt = object.getParent(colourSource).getID();
+                    valDouble = object.getParent(colourSource).getID();
+
                     break;
 
             }
@@ -290,12 +291,14 @@ public class ObjectImageConverter extends HCModule {
             boolean showImage = parameters.getValue(SHOW_IMAGE);
             boolean hideMissing = parameters.getValue(HIDE_IF_MISSING_PARENT);
 
-            if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
-                colourSource = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+            switch (colourMode) {
+                case ColourModes.PARENT_ID:
+                    colourSource = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+                    break;
 
-            } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.MEASUREMENT_VALUE)) {
-                colourSource = parameters.getValue(MEASUREMENT);
-
+                case ColourModes.MEASUREMENT_VALUE:
+                    colourSource = parameters.getValue(MEASUREMENT);
+                    break;
             }
 
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
