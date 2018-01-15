@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
+import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanLinkingCostMatrixCreator;
+import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanSegmentCostMatrixCreator;
 import org.apache.hadoop.hbase.util.MunkresAssignment;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;

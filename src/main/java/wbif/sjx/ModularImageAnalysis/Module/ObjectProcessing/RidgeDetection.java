@@ -177,7 +177,6 @@ public class RidgeDetection extends HCModule {
         }
 
         inputImagePlus.setPosition(1,1,1);
-
         workspace.addObjects(outputObjects);
 
         if (parameters.getValue(SHOW_OBJECTS)) {
