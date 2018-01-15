@@ -41,7 +41,7 @@ public class HoughObjectDetection extends HCModule {
 
     @Override
     public String getHelp() {
-        return "CURRENTLY ONLY WORKS ON A SINGLE 2D IMAGE";
+        return null;
     }
 
     @Override
@@ -70,57 +70,72 @@ public class HoughObjectDetection extends HCModule {
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
 
-        // Initialising the Hough transform
-        int[][] parameterRanges =
-                new int[][]{{0,inputImagePlus.getWidth()-1},{0,inputImagePlus.getHeight()-1},{minRadius,maxRadius}};
-        CircleHoughTransform circleHoughTransform = new CircleHoughTransform(inputImagePlus.getProcessor(),parameterRanges);
+        // Iterating over all images in the ImagePlus
+        int count = 1;
+        int total = inputImagePlus.getNChannels()*inputImagePlus.getNSlices()*inputImagePlus.getNFrames();
 
-        // Running the transforms
-        if (verbose) System.out.println("[" + moduleName + "] Running transform");
-        circleHoughTransform.run();
+        for (int c=0;c<inputImagePlus.getNChannels();c++) {
+            for (int z = 0; z < inputImagePlus.getNSlices(); z++) {
+                for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
+                    if (verbose)
+                        System.out.println("[" + moduleName + "] Processing image " + (count++) + " of " + total);
+                    inputImagePlus.setPosition(c + 1, z + 1, t + 1);
 
-        // Normalising scores based on the number of points in that circle
-        if (normaliseScores) {
-            if (verbose) System.out.println("[" + moduleName + "] Normalising scores");
-            circleHoughTransform.normaliseScores();
-        }
+                    // Initialising the Hough transform
+                    int[][] parameterRanges =
+                            new int[][]{{0, inputImagePlus.getWidth() - 1}, {0, inputImagePlus.getHeight() - 1}, {minRadius, maxRadius}};
+                    CircleHoughTransform circleHoughTransform = new CircleHoughTransform(inputImagePlus.getProcessor(), parameterRanges);
 
-        // Getting the accumulator as an image
-        if (showTransformImage) circleHoughTransform.getAccumulatorAsImage().show();
+                    // Running the transforms
+                    if (verbose) System.out.println("[" + moduleName + "] Running transform");
+                    circleHoughTransform.run();
 
-        // Getting circle objects and adding to workspace
-        if (verbose) System.out.println("[" + moduleName + "] Detecting objects");
-        ArrayList<double[]> circles = circleHoughTransform.getObjects(35,50);
-        Indexer indexer = new Indexer(inputImagePlus.getWidth(),inputImagePlus.getHeight());
-        for (double[] circle:circles) {
-            // Initialising the object
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits);
+                    // Normalising scores based on the number of points in that circle
+                    if (normaliseScores) {
+                        if (verbose) System.out.println("[" + moduleName + "] Normalising scores");
+                        circleHoughTransform.normaliseScores();
+                    }
 
-            // Getting circle parameters
-            int x = (int) Math.round(circle[0]);
-            int y = (int) Math.round(circle[1]);
-            int r = (int) Math.round(circle[2]);
-            double score = circle[3];
+                    // Getting the accumulator as an image
+                    if (showTransformImage) circleHoughTransform.getAccumulatorAsImage().show();
 
-            // Getting coordinates corresponding to circle
-            MidpointCircle midpointCircle = new MidpointCircle(r);
-            int[] xx = midpointCircle.getXCircleFill();
-            int[] yy = midpointCircle.getYCircleFill();
+                    // Getting circle objects and adding to workspace
+                    if (verbose) System.out.println("[" + moduleName + "] Detecting objects");
+                    ArrayList<double[]> circles = circleHoughTransform.getObjects(35, 50);
+                    Indexer indexer = new Indexer(inputImagePlus.getWidth(), inputImagePlus.getHeight());
+                    for (double[] circle : circles) {
+                        // Initialising the object
+                        Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ, calibrationUnits);
 
-            for (int i=0;i<xx.length;i++) {
-                int idx = indexer.getIndex(new int[]{xx[i]+x,yy[i]+y});
-                if (idx == -1) continue;
+                        // Getting circle parameters
+                        int x = (int) Math.round(circle[0]);
+                        int y = (int) Math.round(circle[1]);
+                        int r = (int) Math.round(circle[2]);
+                        double score = circle[3];
 
-                outputObject.addCoord(xx[i]+x,yy[i]+y,0);
+                        // Getting coordinates corresponding to circle
+                        MidpointCircle midpointCircle = new MidpointCircle(r);
+                        int[] xx = midpointCircle.getXCircleFill();
+                        int[] yy = midpointCircle.getYCircleFill();
 
+                        for (int i = 0; i < xx.length; i++) {
+                            int idx = indexer.getIndex(new int[]{xx[i] + x, yy[i] + y});
+                            if (idx == -1) continue;
+
+                            outputObject.addCoord(xx[i] + x, yy[i] + y, z);
+
+                        }
+
+                        // Adding measurements
+                        outputObject.setT(t);
+                        outputObject.addMeasurement(new Measurement(Measurements.SCORE, score));
+
+                        // Adding object to object set
+                        outputObjects.add(outputObject);
+
+                    }
+                }
             }
-
-            // Adding measurements
-            outputObject.addMeasurement(new Measurement(Measurements.SCORE,score));
-
-            // Adding object to object set
-            outputObjects.add(outputObject);
-
         }
 
         inputImagePlus.setPosition(1,1,1);
