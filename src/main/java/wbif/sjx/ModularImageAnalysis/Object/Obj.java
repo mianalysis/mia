@@ -1,5 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import ij.IJ;
+import ij.gui.Roi;
+import ij.plugin.Selection;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ProjectObjects;
 import wbif.sjx.common.Object.Volume;
 
 import java.util.*;
@@ -212,6 +217,18 @@ public class Obj extends Volume {
 
     }
 
+    public Roi getRoi(Image templateImage) {
+        // Projecting object and converting to a binary 2D image
+        Obj projectedObject = ProjectObjects.createProjection(this,"Projected");
+        ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
+        objectCollection.add(projectedObject);
+        Image objectImage = ObjectImageConverter.convertObjectsToImage(objectCollection,"ProjectedImage",templateImage,ObjectImageConverter.ColourModes.SINGLE_COLOUR,null,false);
 
+        IJ.runPlugIn(objectImage.getImagePlus(),"ij.plugin.filter.ThresholdToSelection","");
+        objectImage.getImagePlus().show();
+
+        return null;
+
+    }
 }
 

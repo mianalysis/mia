@@ -1,4 +1,5 @@
 // TODO: Add option to leave overlay as objects (i.e. don't flatten)
+// TODO: Add option to plot tracks (will need to import track and spot objects as parent/child relationship)
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 

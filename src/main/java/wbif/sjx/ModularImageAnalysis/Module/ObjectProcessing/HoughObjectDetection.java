@@ -48,7 +48,7 @@ public class HoughObjectDetection extends HCModule {
     protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting output image name
