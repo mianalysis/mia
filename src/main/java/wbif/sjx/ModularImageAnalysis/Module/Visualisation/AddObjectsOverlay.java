@@ -6,6 +6,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
+import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
@@ -156,16 +157,16 @@ public class AddObjectsOverlay extends HCModule {
                     t = object.getT()+1;
 
                     // Adding circles where the object centroids are
-                    PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
-                    roi.setPointType(PointRoi.NORMAL);
+                    PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
+                    pointRoi.setPointType(PointRoi.NORMAL);
                     if (ipl.isHyperStack()) {
-                        roi.setPosition(1, z, t);
+                        pointRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-                        roi.setPosition(pos);
+                        pointRoi.setPosition(pos);
                     }
-                    roi.setStrokeColor(colour);
-                    ovl.addElement(roi);
+                    pointRoi.setStrokeColor(colour);
+                    ovl.addElement(pointRoi);
 
                     break;
 
@@ -174,27 +175,32 @@ public class AddObjectsOverlay extends HCModule {
                     xMean = object.getXMean(true);
                     yMean = object.getYMean(true);
 
-                    // Adding each point.  This requires the surface to be calculated in 2D first
-                    object.calculateSurface2D();
-                    double[] xSurf = object.getSurfaceX(true);
-                    double[] ySurf = object.getSurfaceY(true);
-                    double[] zSurf = object.getZ(false,false);
+                    Roi polyRoi = object.getRoi(new Image("Template",ipl));
+                    polyRoi.setStrokeColor(colour);
+                    ovl.addElement(polyRoi);
 
-                    t = object.getT()+1;
 
-                    for (int i=0;i<xSurf.length;i++) {
-                        roi = new PointRoi(xSurf[i]+0.5,ySurf[i]+0.5);
-                        roi.setPointType(PointRoi.NORMAL);
-
-                        if (ipl.isHyperStack()) {
-                            roi.setPosition(1, (int) zSurf[i], t);
-                        } else {
-                            int pos = Math.max(Math.max(1,(int) zSurf[i]),t);
-                            roi.setPosition(pos);
-                        }
-                        roi.setStrokeColor(colour);
-                        ovl.addElement(roi);
-                    }
+//                    // Adding each point.  This requires the surface to be calculated in 2D first
+//                    object.calculateSurface2D();
+//                    double[] xSurf = object.getSurfaceX(true);
+//                    double[] ySurf = object.getSurfaceY(true);
+//                    double[] zSurf = object.getZ(false,false);
+//
+//                    t = object.getT()+1;
+//
+//                    for (int i=0;i<xSurf.length;i++) {
+//                        roi = new PointRoi(xSurf[i]+0.5,ySurf[i]+0.5);
+//                        roi.setPointType(PointRoi.NORMAL);
+//
+//                        if (ipl.isHyperStack()) {
+//                            roi.setPosition(1, (int) zSurf[i], t);
+//                        } else {
+//                            int pos = Math.max(Math.max(1,(int) zSurf[i]),t);
+//                            roi.setPosition(pos);
+//                        }
+//                        roi.setStrokeColor(colour);
+//                        ovl.addElement(roi);
+//                    }
 
                     break;
 
@@ -208,16 +214,16 @@ public class AddObjectsOverlay extends HCModule {
                     t = object.getT()+1;
 
                     // Adding circles where the object centroids are
-                    roi = new PointRoi(xMean+0.5,yMean+0.5);
-                    roi.setPointType(PointRoi.NORMAL);
+                    pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
+                    pointRoi.setPointType(PointRoi.NORMAL);
                     if (ipl.isHyperStack()) {
-                        roi.setPosition(1, z, t);
+                        pointRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-                        roi.setPosition(pos);
+                        pointRoi.setPosition(pos);
                     }
-                    roi.setStrokeColor(colour);
-                    ovl.addElement(roi);
+                    pointRoi.setStrokeColor(colour);
+                    ovl.addElement(pointRoi);
 
                     break;
 

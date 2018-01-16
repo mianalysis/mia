@@ -1,9 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
+import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Roi;
 import ij.measure.Calibration;
+import ij.plugin.ZProjector;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -72,7 +76,10 @@ public class ActiveContourObjectDetection extends HCModule {
             if (verbose)
                 System.out.println("[" + moduleName + "] Processing object " + (count++) + " of " + total);
 
-                inputObject.g
+            // Getting the Roi for the current object
+            Roi roi = inputObject.getRoi(inputImage);
+
+
 
         }
 
