@@ -24,14 +24,79 @@ public class BinaryOperations extends HCModule {
     public static final String DYNAMIC = "Dynamic (Watershed)";
 
     public interface OperationModes {
-        String DILATE = "Dilate 2D";
+        String DILATE_2D = "Dilate 2D";
         String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
-        String ERODE = "Erode 2D";
+        String ERODE_2D = "Erode 2D";
         String FILL_HOLES_2D = "Fill holes 2D";
         String WATERSHED_3D = "Watershed 3D";
 
-        String[] ALL = new String[]{DILATE,MANHATTAN_DISTANCE_MAP_2D,ERODE,FILL_HOLES_2D,WATERSHED_3D};
+        String[] ALL = new String[]{DILATE_2D,MANHATTAN_DISTANCE_MAP_2D,ERODE_2D,FILL_HOLES_2D,WATERSHED_3D};
 
+    }
+
+    public static void applyBinaryTransform(ImagePlus ipl, String operationMode, int numIterations, int dynamic) {
+        // Applying process to stack
+        switch (operationMode) {
+            case OperationModes.DILATE_2D:
+                for (int i=0;i<numIterations;i++) {
+                    IJ.run(ipl, "Dilate", "stack");
+                }
+
+                break;
+
+            case OperationModes.ERODE_2D:
+                for (int i=0;i<numIterations;i++) {
+                    IJ.run(ipl, "Erode", "stack");
+                }
+
+                break;
+
+            case OperationModes.FILL_HOLES_2D:
+                IJ.run(ipl,"Fill Holes", "stack");
+
+                break;
+
+            case OperationModes.WATERSHED_3D:
+                IJ.run(ipl,"Invert", "stack");
+
+                // Creating a marker image
+                ImagePlus markerIpl = new Duplicator().run(ipl);
+
+                // Inverting the mask intensity
+                for (int z = 1; z <= markerIpl.getNSlices(); z++) {
+                    for (int c = 1; c <= markerIpl.getNChannels(); c++) {
+                        for (int t = 1; t <= markerIpl.getNFrames(); t++) {
+                            markerIpl.setPosition(c, z, t);
+                            markerIpl.getProcessor().invert();
+                        }
+                    }
+                }
+                markerIpl.setPosition(1,1,1);
+
+                // Calculating the distance map using MorphoLibJ
+                float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
+                ImagePlus distIpl = new GeodesicDistanceMap3D().process(markerIpl,ipl,"Dist",weights,false);
+
+                // Inverting the distance map, so the centres of objects have the smallest values
+                for (int z = 1; z <= distIpl.getNSlices(); z++) {
+                    for (int c = 1; c <= distIpl.getNChannels(); c++) {
+                        for (int t = 1; t <= distIpl.getNFrames(); t++) {
+                            distIpl.setPosition(c, z, t);
+                            distIpl.getProcessor().invert();
+                        }
+                    }
+                }
+                distIpl.setPosition(1,1,1);
+
+                ipl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(distIpl.getImageStack(),ipl.getImageStack(),dynamic,26,false));
+
+                IJ.setRawThreshold(ipl, 0, 0, null);
+                IJ.run(ipl, "Convert to Mask", "method=Default background=Light");
+                IJ.run(ipl, "Invert LUT", "");
+
+                break;
+
+        }
     }
 
 
@@ -60,81 +125,13 @@ public class BinaryOperations extends HCModule {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String operationMode = parameters.getValue(OPERATION_MODE);
+        int numIterations = parameters.getValue(NUM_ITERATIONS);
         int dynamic = parameters.getValue(DYNAMIC);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        // Applying process to stack
-        switch (operationMode) {
-            case OperationModes.DILATE:
-                int numIterations = parameters.getValue(NUM_ITERATIONS);
-                if (verbose) System.out.println("["+moduleName+"] Dilate ("+numIterations+"x)");
-                for (int i=0;i<numIterations;i++) {
-                    IJ.run(inputImagePlus, "Dilate", "stack");
-                }
-
-                break;
-
-            case OperationModes.ERODE:
-                numIterations = parameters.getValue(NUM_ITERATIONS);
-                if (verbose) System.out.println("["+moduleName+"] Erode ("+numIterations+"x)");
-                for (int i=0;i<numIterations;i++) {
-                    IJ.run(inputImagePlus, "Erode", "stack");
-                }
-
-                break;
-
-            case OperationModes.FILL_HOLES_2D:
-                if (verbose) System.out.println("["+moduleName+"] Filling binary holes");
-                IJ.run(inputImagePlus,"Fill Holes", "stack");
-
-                break;
-
-            case OperationModes.WATERSHED_3D:
-                if (verbose) System.out.println("["+moduleName+"] Calculating distance map");
-                IJ.run(inputImagePlus,"Invert", "stack");
-
-                // Creating a marker image
-                ImagePlus markerIpl = new Duplicator().run(inputImagePlus);
-
-                // Inverting the mask intensity
-                for (int z = 1; z <= markerIpl.getNSlices(); z++) {
-                    for (int c = 1; c <= markerIpl.getNChannels(); c++) {
-                        for (int t = 1; t <= markerIpl.getNFrames(); t++) {
-                            markerIpl.setPosition(c, z, t);
-                            markerIpl.getProcessor().invert();
-                        }
-                    }
-                }
-                markerIpl.setPosition(1,1,1);
-
-                // Calculating the distance map using MorphoLibJ
-                if (verbose) System.out.println("["+moduleName+"] Calculating distance map");
-                float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
-                ImagePlus distIpl = new GeodesicDistanceMap3D().process(markerIpl,inputImagePlus,"Dist",weights,false);
-
-                // Inverting the distance map, so the centres of objects have the smallest values
-                for (int z = 1; z <= distIpl.getNSlices(); z++) {
-                    for (int c = 1; c <= distIpl.getNChannels(); c++) {
-                        for (int t = 1; t <= distIpl.getNFrames(); t++) {
-                            distIpl.setPosition(c, z, t);
-                            distIpl.getProcessor().invert();
-                        }
-                    }
-                }
-                distIpl.setPosition(1,1,1);
-
-                if (verbose) System.out.println("["+moduleName+"] Applying watershed segmentation");
-                inputImagePlus.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(distIpl.getImageStack(),inputImagePlus.getImageStack(),dynamic,26,false));
-
-                IJ.setRawThreshold(inputImagePlus, 0, 0, null);
-                IJ.run(inputImagePlus, "Convert to Mask", "method=Default background=Light");
-                IJ.run(inputImagePlus, "Invert LUT", "");
-
-                break;
-
-        }
+        applyBinaryTransform(inputImagePlus,operationMode,numIterations,dynamic);
 
         // If selected, displaying the image
         if (parameters.getValue(SHOW_IMAGE)) {
@@ -157,7 +154,8 @@ public class BinaryOperations extends HCModule {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE,OperationModes.ALL));
+        parameters.add(
+                new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE_2D,OperationModes.ALL));
         parameters.add(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
@@ -182,7 +180,8 @@ public class BinaryOperations extends HCModule {
 
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));
 
-        if (parameters.getValue(OPERATION_MODE).equals(OperationModes.DILATE) | parameters.getValue(OPERATION_MODE).equals(OperationModes.ERODE)) {
+        if (parameters.getValue(OPERATION_MODE).equals(OperationModes.DILATE_2D)
+                | parameters.getValue(OPERATION_MODE).equals(OperationModes.ERODE_2D)) {
             returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
 
         } else if (parameters.getValue(OPERATION_MODE).equals(OperationModes.WATERSHED_3D)) {
