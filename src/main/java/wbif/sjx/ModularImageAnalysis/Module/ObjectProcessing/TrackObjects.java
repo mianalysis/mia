@@ -125,9 +125,10 @@ public class TrackObjects extends HCModule {
         int[] frameLimits = inputObjects.getTimepointLimits();
 
         for (int t2=frameLimits[0]+1;t2<=frameLimits[1];t2++) {
-            if (verbose) System.out.println("["+moduleName+"] Tracking to frame "+(t2+1)+" of "+frameLimits[1]);
+            if (verbose) System.out.println("["+moduleName+"] Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
 
             for (int t1 = t2-1;t1>=t2-1-maxMissingFrames;t1--) {
+                System.out.println("t1 = "+t1);
                 // Creating a pair of ArrayLists to store the current and previous objects
                 ArrayList<Obj> prevObjects = new ArrayList<>();
                 ArrayList<Obj> currObjects = new ArrayList<>();
@@ -148,6 +149,7 @@ public class TrackObjects extends HCModule {
                     // Creating the cost matrix
                     float[][] cost = new float[currObjects.size()][prevObjects.size()];
                     for (int curr = 0; curr < cost.length; curr++) {
+                        System.out.println("curr obj = "+curr);
                         for (int prev = 0; prev < cost[curr].length; prev++) {
                             switch (linkingMethod) {
                                 case LinkingMethods.CENTROID:
@@ -164,11 +166,14 @@ public class TrackObjects extends HCModule {
                         }
                     }
 
+                    System.out.println("Moving to Munkres "+cost.length+"_"+cost[0].length);
+
                     // Running the Munkres algorithm to assign matches
                     int[] assignment = new MunkresAssignment(cost).solve();
 
                     // Applying the calculated assignments as relationships
                     for (int curr = 0; curr < assignment.length; curr++) {
+                        System.out.println("    Assignment "+curr);
                         // Getting the object from the current frame
                         Obj track = null;
                         Obj currObj = currObjects.get(curr);

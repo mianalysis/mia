@@ -77,22 +77,24 @@ public class HoughObjectDetection extends HCModule {
         for (int c=0;c<inputImagePlus.getNChannels();c++) {
             for (int z = 0; z < inputImagePlus.getNSlices(); z++) {
                 for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
-                    if (verbose)
-                        System.out.println("[" + moduleName + "] Processing image " + (count++) + " of " + total);
                     inputImagePlus.setPosition(c + 1, z + 1, t + 1);
 
                     // Initialising the Hough transform
                     int[][] parameterRanges =
-                            new int[][]{{0, inputImagePlus.getWidth() - 1}, {0, inputImagePlus.getHeight() - 1}, {minRadius, maxRadius}};
-                    CircleHoughTransform circleHoughTransform = new CircleHoughTransform(inputImagePlus.getProcessor(), parameterRanges);
+                            new int[][]{{0, inputImagePlus.getWidth() - 1}, {0, inputImagePlus.getHeight() - 1},
+                                    {minRadius, maxRadius}};
+                    CircleHoughTransform circleHoughTransform =
+                            new CircleHoughTransform(inputImagePlus.getProcessor(), parameterRanges);
 
                     // Running the transforms
-                    if (verbose) System.out.println("[" + moduleName + "] Running transform");
+                    if (verbose) System.out.println(
+                            "[" + moduleName + "] Running transform (image " + (count) + " of " + total+")");
                     circleHoughTransform.run();
 
                     // Normalising scores based on the number of points in that circle
                     if (normaliseScores) {
-                        if (verbose) System.out.println("[" + moduleName + "] Normalising scores");
+                        if (verbose) System.out.println(
+                                "[" + moduleName + "] Normalising scores (image " + (count) + " of " + total+")");
                         circleHoughTransform.normaliseScores();
                     }
 
@@ -100,12 +102,14 @@ public class HoughObjectDetection extends HCModule {
                     if (showTransformImage) circleHoughTransform.getAccumulatorAsImage().show();
 
                     // Getting circle objects and adding to workspace
-                    if (verbose) System.out.println("[" + moduleName + "] Detecting objects");
-                    ArrayList<double[]> circles = circleHoughTransform.getObjects(35, 50);
+                    if (verbose) System.out.println(
+                            "[" + moduleName + "] Detecting objects (image " + (count++) + " of " + total+")");
+                    ArrayList<double[]> circles = circleHoughTransform.getObjects(detectionThreshold, exclusionRadius);
                     Indexer indexer = new Indexer(inputImagePlus.getWidth(), inputImagePlus.getHeight());
                     for (double[] circle : circles) {
                         // Initialising the object
-                        Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ, calibrationUnits);
+                        Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ,
+                                calibrationUnits);
 
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0]);
@@ -141,24 +145,15 @@ public class HoughObjectDetection extends HCModule {
         inputImagePlus.setPosition(1,1,1);
         workspace.addObjects(outputObjects);
 
-//        if (parameters.getValue(SHOW_OBJECTS)) {
-//            // Adding image to workspace
-//            if (verbose)
-//                System.out.println("[" + moduleName + "] Adding objects (" + outputObjectsName + ") to workspace");
-//
-//            // Creating a duplicate of the input image
-//            inputImagePlus = new Duplicator().run(inputImagePlus);
-//            IntensityMinMax.run(inputImagePlus, true);
-//
-//            // Creating the overlay
-//            AddObjectsOverlay.createOverlay(inputImagePlus, outputObjects, "",
-//                    AddObjectsOverlay.ColourModes.RANDOM_COLOUR,"", AddObjectsOverlay.PositionModes.ALL_POINTS, "",
-//                    "", "", false, false, 0, "");
-//
-//            // Displaying the overlay
-//            inputImagePlus.show();
-//
-//        }
+        if (showObjects) {
+            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+            IntensityMinMax.run(dispIpl,true);
+
+            AddObjectsOverlay.createOverlay(dispIpl, outputObjects, "", AddObjectsOverlay.ColourModes.RANDOM_COLOUR,
+                    "", AddObjectsOverlay.PositionModes.OUTLINE, "", "", "", false, false, 8, "");
+
+            dispIpl.show();
+        }
     }
 
     @Override

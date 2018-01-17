@@ -174,33 +174,21 @@ public class AddObjectsOverlay extends HCModule {
                     // Still need to get mean coords for label
                     xMean = object.getXMean(true);
                     yMean = object.getYMean(true);
+                    zMean = object.getZMean(true,false);
+
+                    // Getting coordinates to plot
+                    z = (int) Math.round(zMean+1);
+                    t = object.getT()+1;
 
                     Roi polyRoi = object.getRoi(new Image("Template",ipl));
+                    if (ipl.isHyperStack()) {
+                        polyRoi.setPosition(1, z, t);
+                    } else {
+                        int pos = Math.max(Math.max(1,z),t);
+                        polyRoi.setPosition(pos);
+                    }
                     polyRoi.setStrokeColor(colour);
                     ovl.addElement(polyRoi);
-
-
-//                    // Adding each point.  This requires the surface to be calculated in 2D first
-//                    object.calculateSurface2D();
-//                    double[] xSurf = object.getSurfaceX(true);
-//                    double[] ySurf = object.getSurfaceY(true);
-//                    double[] zSurf = object.getZ(false,false);
-//
-//                    t = object.getT()+1;
-//
-//                    for (int i=0;i<xSurf.length;i++) {
-//                        roi = new PointRoi(xSurf[i]+0.5,ySurf[i]+0.5);
-//                        roi.setPointType(PointRoi.NORMAL);
-//
-//                        if (ipl.isHyperStack()) {
-//                            roi.setPosition(1, (int) zSurf[i], t);
-//                        } else {
-//                            int pos = Math.max(Math.max(1,(int) zSurf[i]),t);
-//                            roi.setPosition(pos);
-//                        }
-//                        roi.setStrokeColor(colour);
-//                        ovl.addElement(roi);
-//                    }
 
                     break;
 

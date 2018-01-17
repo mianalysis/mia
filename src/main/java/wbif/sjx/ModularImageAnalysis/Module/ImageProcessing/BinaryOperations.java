@@ -114,8 +114,6 @@ public class BinaryOperations extends HCModule {
 
     @Override
     public void run(Workspace workspace, boolean verbose) {
-        Prefs.blackBackground = false;
-
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -157,8 +155,8 @@ public class BinaryOperations extends HCModule {
         parameters.add(
                 new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE_2D,OperationModes.ALL));
         parameters.add(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
