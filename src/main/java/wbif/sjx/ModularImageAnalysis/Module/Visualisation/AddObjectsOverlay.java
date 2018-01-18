@@ -1,10 +1,12 @@
 // TODO: Add option to leave overlay as objects (i.e. don't flatten)
+// TODO: Add option to plot tracks (will need to import track and spot objects as parent/child relationship)
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
+import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
@@ -41,9 +43,10 @@ public class AddObjectsOverlay extends HCModule {
     public interface PositionModes {
         String ALL_POINTS = "All points";
         String CENTROID = "Centroid";
+        String OUTLINE = "Outline";
         String POSITION_MEASUREMENTS = "Position measurements";
 
-        String[] ALL = new String[]{ALL_POINTS, CENTROID, POSITION_MEASUREMENTS};
+        String[] ALL = new String[]{ALL_POINTS, CENTROID, OUTLINE, POSITION_MEASUREMENTS};
 
     }
 
@@ -75,7 +78,6 @@ public class AddObjectsOverlay extends HCModule {
         CumStat cs = new CumStat();
         if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
             inputObjects.values().forEach(e -> cs.addMeasure(e.getMeasurement(measurement).getValue()));
-
         }
 
         // Running through each object, adding it to the overlay along with an ID label
@@ -154,16 +156,38 @@ public class AddObjectsOverlay extends HCModule {
                     t = object.getT()+1;
 
                     // Adding circles where the object centroids are
-                    PointRoi roi = new PointRoi(xMean+0.5,yMean+0.5);
-                    roi.setPointType(PointRoi.NORMAL);
+                    PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
+                    pointRoi.setPointType(PointRoi.NORMAL);
                     if (ipl.isHyperStack()) {
-                        roi.setPosition(1, z, t);
+                        pointRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-                        roi.setPosition(pos);
+                        pointRoi.setPosition(pos);
                     }
-                    roi.setStrokeColor(colour);
-                    ovl.addElement(roi);
+                    pointRoi.setStrokeColor(colour);
+                    ovl.addElement(pointRoi);
+
+                    break;
+
+                case PositionModes.OUTLINE:
+                    // Still need to get mean coords for label
+                    xMean = object.getXMean(true);
+                    yMean = object.getYMean(true);
+                    zMean = object.getZMean(true,false);
+
+                    // Getting coordinates to plot
+                    z = (int) Math.round(zMean+1);
+                    t = object.getT()+1;
+
+                    Roi polyRoi = object.getRoi(ipl);
+                    if (ipl.isHyperStack()) {
+                        polyRoi.setPosition(1, z, t);
+                    } else {
+                        int pos = Math.max(Math.max(1,z),t);
+                        polyRoi.setPosition(pos);
+                    }
+                    polyRoi.setStrokeColor(colour);
+                    ovl.addElement(polyRoi);
 
                     break;
 
@@ -177,16 +201,16 @@ public class AddObjectsOverlay extends HCModule {
                     t = object.getT()+1;
 
                     // Adding circles where the object centroids are
-                    roi = new PointRoi(xMean+0.5,yMean+0.5);
-                    roi.setPointType(PointRoi.NORMAL);
+                    pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
+                    pointRoi.setPointType(PointRoi.NORMAL);
                     if (ipl.isHyperStack()) {
-                        roi.setPosition(1, z, t);
+                        pointRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-                        roi.setPosition(pos);
+                        pointRoi.setPosition(pos);
                     }
-                    roi.setStrokeColor(colour);
-                    ovl.addElement(roi);
+                    pointRoi.setStrokeColor(colour);
+                    ovl.addElement(pointRoi);
 
                     break;
 

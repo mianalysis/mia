@@ -6,9 +6,14 @@
 
 package wbif.sjx.ModularImageAnalysis.Module;
 
+import ij.Prefs;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
+import loci.formats.FormatException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -49,6 +54,10 @@ public abstract class HCModule implements Serializable {
         String moduleName = getTitle();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
+        // By default all modules should use this format
+        Prefs.blackBackground = false;
+
+        // Running the main module code
         run(workspace,verbose);
 
         if (verbose) System.out.println("["+moduleName+"] Complete");

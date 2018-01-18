@@ -4,7 +4,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.2.3</version>
+    <version>0.2.4</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>http://maven.apache.org</url>
@@ -31,7 +31,7 @@
                 <addClasspathCnd>false</addClasspathCnd>
                 <classpathPref></classpathPref>
                 <exclScope>provided</exclScope>
-                <exclArtifactsID>commons-codec,commons-collections,commons-io,guava,jama,javassist,junit,MorphoLibJ_</exclArtifactsID>
+                <exclArtifactsID>commons-codec,commons-collections,commons-io,hamcrest-core,guava,jama,tools,jdk.tools,javassist,junit,MorphoLibJ_</exclArtifactsID>
             </properties>
         </profile>
         <profile>
@@ -116,17 +116,25 @@
             <version>3.5.1</version>
             <scope>${myscope}</scope>
         </dependency>
-
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>CorrectBleach_</artifactId>
             <version>2.0.2</version>
+            <scope>${myscope}</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.inra.ijpb</groupId>
             <artifactId>MorphoLibJ_</artifactId>
             <version>1.3.2</version>
+            <scope>${myscope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.biomedical-imaging.imagej</groupId>
+            <artifactId>ij_ridge_detect</artifactId>
+            <version>1.4.0</version>
+            <scope>${myscope}</scope>
         </dependency>
 
         <dependency>
@@ -148,16 +156,9 @@
         </dependency>
 
         <dependency>
-            <groupId>de.biomedical-imaging.imagej</groupId>
-            <artifactId>ij_ridge_detect</artifactId>
-            <version>1.4.0</version>
-            <scope>${myscope}</scope>
-        </dependency>
-
-        <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.2.12</version>
+            <version>1.3.1</version>
         </dependency>
     </dependencies>
 

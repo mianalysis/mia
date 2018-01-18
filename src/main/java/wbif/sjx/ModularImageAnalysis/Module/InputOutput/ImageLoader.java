@@ -35,8 +35,16 @@ public class ImageLoader extends HCModule {
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";
     public static final String FILE_PATH = "File path";
-    public static final String USE_BIOFORMATS = "Use Bio-formats importer";
     public static final String SERIES_NUMBER = "Series number (>= 1)";
+    public static final String USE_ALL_C = "Use all channels";
+    public static final String STARTING_C = "Starting channel";
+    public static final String ENDING_C = "Ending channel";
+    public static final String USE_ALL_Z = "Use all Z-slices";
+    public static final String STARTING_Z = "Starting Z-slice";
+    public static final String ENDING_Z = "Ending Z-slice";
+    public static final String USE_ALL_T = "Use all timepoints";
+    public static final String STARTING_T = "Starting timepoint";
+    public static final String ENDING_T = "Ending timepoint";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -57,108 +65,101 @@ public class ImageLoader extends HCModule {
 
     }
 
+    private static ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges) throws ServiceException, DependencyException, IOException, FormatException {
+        DebugTools.enableLogging("off");
+        DebugTools.setRootLevel("off");
 
-    private static ImagePlus getFile(String filePath, boolean useBioformats, int seriesNumber) {
-        ImagePlus ipl;
-        // Importing the file
-        if (useBioformats) {
-            DebugTools.enableLogging("off");
-            DebugTools.setRootLevel("off");
-            ipl = getBFImage(filePath,seriesNumber);
-
-        } else {
-            ipl = IJ.openImage(filePath);
-
-        }
-
-        // If the image is an RGB, converting to composite
-        ipl = new CompositeImage(ipl);
-
-        return ipl;
-
-    }
-
-    private static ImagePlus getBFImage(String path, int seriesNumber) {
         ImagePlus ipl = null;
-
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
 
         // Setting spatial calibration
         IMetadata meta = null;
-        try {
-            ServiceFactory factory = new ServiceFactory();
-            OMEXMLService service = factory.getInstance(OMEXMLService.class);
-            meta = service.createOMEXMLMetadata();
-            reader.setMetadataStore((MetadataStore) meta);
+        ServiceFactory factory = new ServiceFactory();
+        OMEXMLService service = factory.getInstance(OMEXMLService.class);
+        meta = service.createOMEXMLMetadata();
+        reader.setMetadataStore((MetadataStore) meta);
 
-        } catch (DependencyException | ServiceException e) {
-            e.printStackTrace();
+        reader.setGroupFiles(false);
+        reader.setId(path);
+        reader.setSeries(seriesNumber-1);
+
+        int width = reader.getSizeX();
+        int height = reader.getSizeY();
+        int sizeC = reader.getSizeC();
+        int sizeT = reader.getSizeT();
+        int sizeZ = reader.getSizeZ();
+        int bitDepth = reader.getBitsPerPixel();
+
+        int startingC = dimRanges[0][0];
+        int endingC = dimRanges[0][1];
+        int startingZ = dimRanges[1][0];
+        int endingZ = dimRanges[1][1];
+        int startingT = dimRanges[2][0];
+        int endingT = dimRanges[2][1];
+
+        // Updating ranges for full import dimensions
+        if (startingC == -1) {
+            startingC = 1;
+            endingC = sizeC;
+        }
+        if (startingZ == -1) {
+            startingZ = 1;
+            endingZ = sizeZ;
+        }
+        if (startingT == -1) {
+            startingT = 1;
+            endingT = sizeT;
         }
 
-        try {
-            reader.setGroupFiles(false);
-            reader.setId(path);
+        // Creating the new ImagePlus
+        ipl = IJ.createHyperStack("Image", width, height, endingC-startingC+1, endingZ-startingZ+1,
+                endingT-startingT+1, bitDepth);
 
-            reader.setSeries(seriesNumber-1);
+        // Iterating over all images in the stack, adding them to the output ImagePlus
+        for (int z = startingZ; z <= endingZ; z++) {
+            for (int c = startingC; c <= endingC; c++) {
+                for (int t = startingT; t <= endingT; t++) {
+                    int idx = reader.getIndex(z-1, c-1, t-1);
+                    ImageProcessor ip = reader.openProcessors(idx)[0];
 
-            int width = reader.getSizeX();
-            int height = reader.getSizeY();
-            int sizeC = reader.getSizeC();
-            int sizeT = reader.getSizeT();
-            int sizeZ = reader.getSizeZ();
-            int bitDepth = reader.getBitsPerPixel();
+                    ipl.setPosition(c-startingC+1, z-startingZ+1, t-startingT+1);
+                    ipl.setProcessor(ip);
 
-            ipl = IJ.createHyperStack("Image", width, height, sizeC, sizeZ, sizeT, bitDepth);
-
-            for (int z = 0; z < sizeZ; z++) {
-                for (int c = 0; c < sizeC; c++) {
-                    for (int t = 0; t < sizeT; t++) {
-                        int idx = reader.getIndex(z, c, t);
-                        ImageProcessor ip = reader.openProcessors(idx)[0];
-
-                        ipl.setPosition(c + 1, z + 1, t + 1);
-                        ipl.setProcessor(ip);
-
-                    }
                 }
             }
-
-            ipl.setPosition(1, 1, 1);
-
-            // Add spatial calibration
-            if (meta != null) {
-                System.out.println(meta.getPixelsPhysicalSizeX(0).value());
-                if (meta.getPixelsPhysicalSizeX(0) != null) {
-                    ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
-                } else {
-                    ipl.getCalibration().pixelWidth = 1.0;
-                }
-
-                if (meta.getPixelsPhysicalSizeX(0) != null) {
-                    ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeX(0).value();
-                } else {
-                    ipl.getCalibration().pixelHeight = 1.0;
-                }
-
-                if (ipl.getNSlices() > 1 && meta.getPixelsPhysicalSizeZ(0) != null) {
-                    ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(0).value();
-                } else {
-                    ipl.getCalibration().pixelDepth = 1.0;
-                }
-            }
-
-            reader.close();
-
-        } catch (FormatException | IOException e) {
-            e.printStackTrace();
         }
+
+        ipl.setPosition(1, 1, 1);
+
+        // Add spatial calibration
+        if (meta != null) {
+            if (meta.getPixelsPhysicalSizeX(0) != null) {
+                ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
+            } else {
+                ipl.getCalibration().pixelWidth = 1.0;
+            }
+
+            if (meta.getPixelsPhysicalSizeX(0) != null) {
+                ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeX(0).value();
+            } else {
+                ipl.getCalibration().pixelHeight = 1.0;
+            }
+
+            if (ipl.getNSlices() > 1 && meta.getPixelsPhysicalSizeZ(0) != null) {
+                ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(0).value();
+            } else {
+                ipl.getCalibration().pixelDepth = 1.0;
+            }
+        }
+
+        reader.close();
 
         return ipl;
 
     }
 
     private static ImagePlus getFormattedNameImage(String nameFormat, HCMetadata metadata, String comment,
-                                                   boolean useBioformats, int seriesNumber) {
+                                                   int seriesNumber,int[][] dimRanges) throws ServiceException, DependencyException, FormatException, IOException {
 
         String filename = null;
         switch (nameFormat) {
@@ -174,7 +175,7 @@ public class ImageLoader extends HCModule {
                 break;
         }
 
-        return getFile(filename,useBioformats,seriesNumber);
+        return getBFImage(filename,seriesNumber,dimRanges);
 
     }
 
@@ -196,110 +197,148 @@ public class ImageLoader extends HCModule {
         String filePath = parameters.getValue(FILE_PATH);
         String nameFormat = parameters.getValue(NAME_FORMAT);
         String comment = parameters.getValue(COMMENT);
-        boolean useBioformats = parameters.getValue(USE_BIOFORMATS);
         int seriesNumber = parameters.getValue(SERIES_NUMBER);
+        boolean useAllC = parameters.getValue(USE_ALL_C);
+        int startingC = parameters.getValue(STARTING_C);
+        int endingC = parameters.getValue(ENDING_C);
+        boolean useAllZ = parameters.getValue(USE_ALL_Z);
+        int startingZ = parameters.getValue(STARTING_Z);
+        int endingZ = parameters.getValue(ENDING_Z);
+        boolean useAllT = parameters.getValue(USE_ALL_T);
+        int startingT = parameters.getValue(STARTING_T);
+        int endingT = parameters.getValue(ENDING_T);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
+        if (useAllC) startingC = -1;
+        if (useAllZ) startingZ = -1;
+        if (useAllT) startingT = -1;
+        int[][] dimRanges = new int[][]{{startingC,endingC},{startingZ,endingZ},{startingT,endingT}};
+
         ImagePlus ipl = null;
-        switch (importMode) {
-            case ImportModes.CURRENT_FILE:
-                File file = workspace.getMetadata().getFile();
-                if (file == null) throw new GenericMIAException("Load file using Analysis > Set file to analyse");
-                ipl = getFile(workspace.getMetadata().getFile().getAbsolutePath(),useBioformats,seriesNumber);
-                break;
+        try {
+            switch (importMode) {
+                case ImportModes.CURRENT_FILE:
+                    File file = workspace.getMetadata().getFile();
+                    if (file == null) throw new GenericMIAException("Load file using Analysis > Set file to analyse");
+                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(),seriesNumber,dimRanges);
+                        break;
 
-            case ImportModes.IMAGEJ:
-                ipl = IJ.getImage();
-                break;
+                        case ImportModes.IMAGEJ:
+                            ipl = IJ.getImage();
+                            break;
 
-            case ImportModes.MATCHING_FORMAT:
-                ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),comment,useBioformats,seriesNumber);
-                break;
+                        case ImportModes.MATCHING_FORMAT:
+                            ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),comment,seriesNumber,dimRanges);
+                            break;
 
-            case ImportModes.SPECIFIC_FILE:
-                ipl = getFile(filePath,useBioformats,seriesNumber);
-                break;
+                        case ImportModes.SPECIFIC_FILE:
+                            ipl = getBFImage(filePath,seriesNumber,dimRanges);
+                            break;
+                    }
+            } catch (ServiceException | DependencyException | IOException | FormatException e) {
+                e.printStackTrace();
+            }
+
+            // Adding image to workspace
+            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
+            workspace.addImage(new Image(outputImageName,ipl));
+
+            // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
+            if (showImage && ipl != null) {
+                ipl = new Duplicator().run(ipl);
+                ipl.show();
+            }
         }
 
-        // Adding image to workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
-        workspace.addImage(new Image(outputImageName,ipl));
-
-        // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
-        if (showImage && ipl != null) {
-            ipl = new Duplicator().run(ipl);
-            ipl.show();
-        }
-    }
-
-    @Override
-    public void initialiseParameters() {
-        parameters.add(
-                new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
-        parameters.add(
-                new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
-        parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
-        parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(USE_BIOFORMATS, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
-    public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
-        returnedParameters.add(parameters.getParameter(IMPORT_MODE));
-        switch((String) parameters.getValue(IMPORT_MODE)) {
-            case ImportModes.CURRENT_FILE:
-                break;
-
-            case ImportModes.IMAGEJ:
-                break;
-
-            case ImportModes.MATCHING_FORMAT:
-                returnedParameters.add(parameters.getParameter(NAME_FORMAT));
-                returnedParameters.add(parameters.getParameter(COMMENT));
-                break;
-
-            case ImportModes.SPECIFIC_FILE:
-                returnedParameters.add(parameters.getParameter(FILE_PATH));
-                break;
-        }
-
-        returnedParameters.add(parameters.getParameter(USE_BIOFORMATS));
-        if (parameters.getValue(USE_BIOFORMATS)) {
-                returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
+        @Override
+        public void initialiseParameters() {
+            parameters.add(
+                    new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
+            parameters.add(
+                    new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
+            parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
+            parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
+            parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+            parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
+            parameters.add(new Parameter(USE_ALL_C, Parameter.BOOLEAN,true));
+            parameters.add(new Parameter(STARTING_C, Parameter.INTEGER,1));
+            parameters.add(new Parameter(ENDING_C, Parameter.INTEGER,1));
+            parameters.add(new Parameter(USE_ALL_Z, Parameter.BOOLEAN,true));
+            parameters.add(new Parameter(STARTING_Z, Parameter.INTEGER,1));
+            parameters.add(new Parameter(ENDING_Z, Parameter.INTEGER,1));
+            parameters.add(new Parameter(USE_ALL_T, Parameter.BOOLEAN,true));
+            parameters.add(new Parameter(STARTING_T, Parameter.INTEGER,1));
+            parameters.add(new Parameter(ENDING_T, Parameter.INTEGER,1));
+            parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
         }
 
-        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
+        @Override
+        protected void initialiseMeasurementReferences() {
 
-        return returnedParameters;
+        }
 
+        @Override
+        public ParameterCollection updateAndGetParameters() {
+            ParameterCollection returnedParameters = new ParameterCollection();
+
+            returnedParameters.add(parameters.getParameter(IMPORT_MODE));
+            switch((String) parameters.getValue(IMPORT_MODE)) {
+                case ImportModes.CURRENT_FILE:
+                    break;
+
+                case ImportModes.IMAGEJ:
+                    break;
+
+                case ImportModes.MATCHING_FORMAT:
+                    returnedParameters.add(parameters.getParameter(NAME_FORMAT));
+                    returnedParameters.add(parameters.getParameter(COMMENT));
+                    break;
+
+                case ImportModes.SPECIFIC_FILE:
+                    returnedParameters.add(parameters.getParameter(FILE_PATH));
+                    break;
+            }
+
+            returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
+            returnedParameters.add(parameters.getParameter(USE_ALL_C));
+            if (!(boolean) parameters.getValue(USE_ALL_C)) {
+                returnedParameters.add(parameters.getParameter(STARTING_C));
+                returnedParameters.add(parameters.getParameter(ENDING_C));
+            }
+
+            returnedParameters.add(parameters.getParameter(USE_ALL_Z));
+            if (!(boolean) parameters.getValue(USE_ALL_Z)) {
+                returnedParameters.add(parameters.getParameter(STARTING_Z));
+                returnedParameters.add(parameters.getParameter(ENDING_Z));
+            }
+
+            returnedParameters.add(parameters.getParameter(USE_ALL_T));
+            if (!(boolean) parameters.getValue(USE_ALL_T)) {
+                returnedParameters.add(parameters.getParameter(STARTING_T));
+                returnedParameters.add(parameters.getParameter(ENDING_T));
+            }
+
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
+
+            return returnedParameters;
+
+        }
+
+        @Override
+        public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+            return null;
+        }
+
+        @Override
+        public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+            return null;
+        }
+
+        @Override
+        public void addRelationships(RelationshipCollection relationships) {
+
+        }
     }
-
-    @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        return null;
-    }
-
-    @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
-    }
-}

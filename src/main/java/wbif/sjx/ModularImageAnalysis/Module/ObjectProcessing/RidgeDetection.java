@@ -159,7 +159,7 @@ public class RidgeDetection extends HCModule {
                             float[] x = line.getXCoordinates();
                             float[] y = line.getYCoordinates();
                             for (int i = 0; i < x.length; i++) {
-                                outputObject.addCoord(Math.round(x[i]), Math.round(y[i]), 0);
+                                outputObject.addCoord(Math.round(x[i]), Math.round(y[i]), z);
                             }
 
                             // Adding the estimated length to the current length
@@ -177,7 +177,6 @@ public class RidgeDetection extends HCModule {
         }
 
         inputImagePlus.setPosition(1,1,1);
-
         workspace.addObjects(outputObjects);
 
         if (parameters.getValue(SHOW_OBJECTS)) {

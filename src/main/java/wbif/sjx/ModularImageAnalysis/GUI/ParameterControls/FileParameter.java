@@ -66,7 +66,9 @@ public class FileParameter extends JButton implements ActionListener {
                 break;
         }
 
-        fileChooser.setCurrentDirectory(new File((String) parameter.getValue()));
+        if (parameter.getValue() != null) {
+            fileChooser.setCurrentDirectory(new File((String) parameter.getValue()));
+        }
         fileChooser.showDialog(null,"Open");
 
         if (fileChooser.getSelectedFile() == null) return;

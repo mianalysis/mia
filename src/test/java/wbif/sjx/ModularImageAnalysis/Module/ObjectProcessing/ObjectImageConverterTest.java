@@ -50,10 +50,9 @@ public class ObjectImageConverterTest {
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image referenceImage = new Image("ImageObjReference image",ipl);
 
         // Converting objects to image
-        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);
+        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",ipl,colourMode,colourSource,hideMissing);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -70,10 +69,10 @@ public class ObjectImageConverterTest {
 
         // Running through each image, comparing the bytes to those of an expected image
         for (int z = 0;z<12;z++) {
-            referenceImage.getImagePlus().setPosition(1,z+1,1);
+            ipl.setPosition(1,z+1,1);
             testImage.getImagePlus().setPosition(1,z+1,1);
 
-            float[][] referenceArray = referenceImage.getImagePlus().getProcessor().getFloatArray();
+            float[][] referenceArray = ipl.getProcessor().getFloatArray();
             float[][] testArray = testImage.getImagePlus().getProcessor().getFloatArray();
 
             assertArrayEquals(referenceArray, testArray);
@@ -104,10 +103,9 @@ public class ObjectImageConverterTest {
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit_NoRef.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image referenceImage = new Image("ImageObjReference image",ipl);
 
         // Converting objects to image
-        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);
+        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",ipl,colourMode,colourSource,hideMissing);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -124,10 +122,10 @@ public class ObjectImageConverterTest {
 
         // Running through each image, comparing the bytes to those of an expected image
         for (int z = 0;z<12;z++) {
-            referenceImage.getImagePlus().setPosition(1,z+1,1);
+            ipl.setPosition(1,z+1,1);
             testImage.getImagePlus().setPosition(1,z+1,1);
 
-            float[][] referenceArray = referenceImage.getImagePlus().getProcessor().getFloatArray();
+            float[][] referenceArray = ipl.getProcessor().getFloatArray();
             float[][] testArray = testImage.getImagePlus().getProcessor().getFloatArray();
 
             assertArrayEquals(referenceArray, testArray);
