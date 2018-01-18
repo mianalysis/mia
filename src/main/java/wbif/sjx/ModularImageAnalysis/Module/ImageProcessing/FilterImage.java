@@ -15,6 +15,7 @@ import inra.ijpb.plugins.MorphologicalFilterPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
+import wbif.sjx.common.Filters.RidgeEnhancement;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 
@@ -38,10 +39,12 @@ public class FilterImage extends HCModule {
         String GRADIENT2D = "Gradient 2D";
         String MEDIAN2D = "Median 2D";
         String MEDIAN3D = "Median 3D";
+        String RIDGE_ENHANCEMENT = "Ridge enhancement 2D";
         String ROLLING_FRAME = "Rolling frame";
         String VARIANCE2D = "Variance 2D";
 
-        String[] ALL = new String[]{DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MEDIAN2D,MEDIAN3D,ROLLING_FRAME,VARIANCE2D};
+        String[] ALL = new String[]{
+                DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MEDIAN2D,MEDIAN3D,RIDGE_ENHANCEMENT, ROLLING_FRAME,VARIANCE2D};
 
     }
 
@@ -245,6 +248,12 @@ public class FilterImage extends HCModule {
                 if (verbose) System.out.println("[" + moduleName + "] " +
                         "Applying 3D median filter (radius = " + filterRadius + " px)");
                 runMedian3DFilter(inputImagePlus,(float) filterRadius);
+                break;
+
+            case FilterModes.RIDGE_ENHANCEMENT:
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 3D median filter (radius = " + filterRadius + " px)");
+                RidgeEnhancement.run(inputImagePlus,(float) filterRadius, true);
                 break;
 
             case FilterModes.ROLLING_FRAME:
