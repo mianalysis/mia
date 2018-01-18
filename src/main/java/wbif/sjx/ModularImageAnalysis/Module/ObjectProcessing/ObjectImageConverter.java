@@ -51,7 +51,7 @@ public class ObjectImageConverter extends HCModule {
 
     }
 
-    public static Image convertObjectsToImage(ObjCollection objects, String outputImageName, Image templateImage, String colourMode, String colourSource, boolean hideMissing) {
+    public static Image convertObjectsToImage(ObjCollection objects, String outputImageName, ImagePlus templateIpl, String colourMode, String colourSource, boolean hideMissing) {
         ImagePlus ipl;
 
         int bitDepth = 8;
@@ -78,7 +78,7 @@ public class ObjectImageConverter extends HCModule {
 
         }
 
-        if (templateImage == null) {
+        if (templateIpl == null) {
             // Getting range of object pixels
             int[][] coordinateRange = new int[4][2];
 
@@ -111,9 +111,9 @@ public class ObjectImageConverter extends HCModule {
                     1, coordinateRange[2][1] + 1, coordinateRange[3][1] + 1,bitDepth);
 
         } else {
-            ImagePlus templateIpl = templateImage.getImagePlus();
             ipl = IJ.createHyperStack(objects.getName()+"Objects",templateIpl.getWidth(),templateIpl.getHeight(),
                     templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
+
         }
 
         // If it's a 32-bit image, set all background pixels to NaN
@@ -194,11 +194,11 @@ public class ObjectImageConverter extends HCModule {
         }
 
         // Assigning the spatial calibration from the template image
-        if (templateImage != null) {
-            ipl.getCalibration().pixelWidth = templateImage.getImagePlus().getCalibration().getX(1);
-            ipl.getCalibration().pixelHeight = templateImage.getImagePlus().getCalibration().getY(1);
-            ipl.getCalibration().pixelDepth = templateImage.getImagePlus().getCalibration().getZ(1);
-            ipl.getCalibration().setUnit(templateImage.getImagePlus().getCalibration().getUnit());
+        if (templateIpl != null) {
+            ipl.getCalibration().pixelWidth = templateIpl.getCalibration().getX(1);
+            ipl.getCalibration().pixelHeight = templateIpl.getCalibration().getY(1);
+            ipl.getCalibration().pixelDepth = templateIpl.getCalibration().getZ(1);
+            ipl.getCalibration().setUnit(templateIpl.getCalibration().getUnit());
 
         }
 
@@ -304,7 +304,8 @@ public class ObjectImageConverter extends HCModule {
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
 
-            Image outputImage = convertObjectsToImage(inputObjects,outputImageName,templateImage,colourMode,colourSource,hideMissing);
+            Image outputImage = convertObjectsToImage(inputObjects,outputImageName,templateImage.getImagePlus(),
+                    colourMode,colourSource,hideMissing);
 
             workspace.addImage(outputImage);
 

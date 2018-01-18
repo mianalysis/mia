@@ -221,24 +221,25 @@ public class Obj extends Volume {
 
     }
 
-    public Roi getRoi(Image templateImage) {
-        // If the template image isn't in 2D, convert it to this
-        ImagePlus templateIpl = templateImage.getImagePlus();
-        if (templateIpl.getNSlices() != 1 && templateIpl.getNFrames() != 1 && templateIpl.getNChannels() != 1) {
-            ImagePlus template2D = IJ.createImage("Template",templateIpl.getWidth(),templateIpl.getHeight(),1,8);
-            templateImage = new Image("Template",template2D);
-        }
-
+    public Roi getRoi(ImagePlus templateIpl) {
         // Projecting object and converting to a binary 2D image
         Obj projectedObject = ProjectObjects.createProjection(this,"Projected");
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(projectedObject);
-        Image objectImage = ObjectImageConverter.convertObjectsToImage(objectCollection,"ProjectedImage",templateImage,ObjectImageConverter.ColourModes.SINGLE_COLOUR,null,false);
+        Image objectImage = ObjectImageConverter.convertObjectsToImage(objectCollection,"ProjectedImage",
+                new ImagePlus("Template",templateIpl.getProcessor()), ObjectImageConverter.ColourModes.SINGLE_COLOUR,
+                null,false);
 
         // Getting the object as a Roi
         objectImage.getImagePlus().getProcessor().invert();
         IJ.runPlugIn(objectImage.getImagePlus(),"ij.plugin.Selection","from");
-        return objectImage.getImagePlus().getRoi();
+        Roi roi = objectImage.getImagePlus().getRoi();
+
+        // Clearing up some unwanted objects
+        objectCollection = null;
+        objectImage = null;
+
+        return roi;
 
     }
 

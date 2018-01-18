@@ -75,7 +75,8 @@ public class ExpandShrinkObjects extends HCModule {
             // Convert each object to an image, do the dilation/erosion, then convert back to an object
             ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
             objectCollection.add(inputObject);
-            Image objectImage = ObjectImageConverter.convertObjectsToImage(objectCollection,"ProjectedImage",templateImage,ObjectImageConverter.ColourModes.SINGLE_COLOUR,null,false);
+            Image objectImage = ObjectImageConverter.convertObjectsToImage(objectCollection,"ProjectedImage",
+                    templateImagePlus,ObjectImageConverter.ColourModes.SINGLE_COLOUR,null,false);
 
             Prefs.blackBackground = true;
 

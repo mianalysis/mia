@@ -78,7 +78,6 @@ public class AddObjectsOverlay extends HCModule {
         CumStat cs = new CumStat();
         if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
             inputObjects.values().forEach(e -> cs.addMeasure(e.getMeasurement(measurement).getValue()));
-
         }
 
         // Running through each object, adding it to the overlay along with an ID label
@@ -180,7 +179,7 @@ public class AddObjectsOverlay extends HCModule {
                     z = (int) Math.round(zMean+1);
                     t = object.getT()+1;
 
-                    Roi polyRoi = object.getRoi(new Image("Template",ipl));
+                    Roi polyRoi = object.getRoi(ipl);
                     if (ipl.isHyperStack()) {
                         polyRoi.setPosition(1, z, t);
                     } else {

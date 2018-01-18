@@ -26,7 +26,7 @@ import java.net.URISyntaxException;
  * Created by sc13967 on 21/11/2017.
  */
 public class DeployedGUI extends GUI implements ActionListener {
-    private int frameWidth = 350;
+    private int frameWidth = 400;
     private int frameHeight = 700;
     private int elementHeight = 25;
 
@@ -178,6 +178,11 @@ public class DeployedGUI extends GUI implements ActionListener {
             if (modulePanel!=null) basicModulesPanel.add(modulePanel,c);
 
         }
+
+        // Adding output control options
+        c.gridy++;
+        JPanel outputPanel = componentFactory.createBasicModuleControl(analysis.getOutputControl(),frameWidth-40);
+        if (outputPanel != null) basicModulesPanel.add(outputPanel,c);
 
         c.gridy++;
         c.weighty = 100;

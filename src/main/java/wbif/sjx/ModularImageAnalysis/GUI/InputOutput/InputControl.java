@@ -96,11 +96,10 @@ public class InputControl extends HCModule {
             case InputModes.BATCH:
                 returnedParameters.add(parameters.getParameter(BATCH_FOLDER_PATH));
                 returnedParameters.add(parameters.getParameter(NUMBER_OF_THREADS));
+                returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
                 break;
 
         }
-
-        returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
 
         returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_1));
         if (returnedParameters.getValue(USE_FILENAME_FILTER_1)) {

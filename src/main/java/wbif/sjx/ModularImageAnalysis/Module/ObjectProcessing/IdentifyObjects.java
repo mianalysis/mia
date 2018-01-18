@@ -88,7 +88,7 @@ public class IdentifyObjects extends HCModule {
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showObjects) ObjectImageConverter.convertObjectsToImage(outputObjects, outputObjectsName, inputImage,
+        if (showObjects) ObjectImageConverter.convertObjectsToImage(outputObjects, outputObjectsName, inputImagePlus,
                     ObjectImageConverter.ColourModes.RANDOM_COLOUR, "", false).getImagePlus().show();
 
     }

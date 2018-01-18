@@ -20,8 +20,8 @@ public class BinaryOperations extends HCModule {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
-    public static final String SHOW_IMAGE = "Show image";
     public static final String DYNAMIC = "Dynamic (Watershed)";
+    public static final String SHOW_IMAGE = "Show image";
 
     public interface OperationModes {
         String DILATE_2D = "Dilate 2D";
@@ -173,7 +173,6 @@ public class BinaryOperations extends HCModule {
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-
         }
 
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));

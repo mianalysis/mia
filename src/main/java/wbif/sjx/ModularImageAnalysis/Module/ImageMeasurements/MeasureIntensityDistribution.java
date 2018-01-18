@@ -58,7 +58,8 @@ public class MeasureIntensityDistribution extends HCModule {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        Image objectsImage = ObjectImageConverter.convertObjectsToImage(inputObjects, "Objects image", inputImage, ObjectImageConverter.ColourModes.SINGLE_COLOUR, "", true);
+        Image objectsImage = ObjectImageConverter.convertObjectsToImage(inputObjects, "Objects image", inputImagePlus,
+                ObjectImageConverter.ColourModes.SINGLE_COLOUR, "", true);
 
         // Calculating a 3D distance map for the binary image
         ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());
@@ -121,7 +122,8 @@ public class MeasureIntensityDistribution extends HCModule {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        Image objectsImage = ObjectImageConverter.convertObjectsToImage(inputObjects, "Objects image", inputImage, ObjectImageConverter.ColourModes.SINGLE_COLOUR, "", true);
+        Image objectsImage = ObjectImageConverter.convertObjectsToImage(inputObjects, "Objects image", inputImagePlus,
+                ObjectImageConverter.ColourModes.SINGLE_COLOUR, "", true);
 
         // Calculating a 3D distance map for the binary image
         ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());
