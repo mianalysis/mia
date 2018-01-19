@@ -413,12 +413,14 @@ public class MainGUI extends GUI {
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
 
-        JTextField textField = new JTextField();
+        StatusTextField textField = new StatusTextField();
         textField.setBackground(null);
         textField.setPreferredSize(new Dimension(width - 20, 25));
         textField.setBorder(null);
         textField.setText("Modular image analysis (version " + getClass().getPackage().getImplementationVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        textField.setEditable(false);
+        textField.setToolTipText(textField.getText());
         statusPanel.add(textField, c);
 
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);

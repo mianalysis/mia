@@ -135,9 +135,11 @@ public class AddObjectsOverlay extends HCModule {
                         roi.setPointType(PointRoi.NORMAL);
 
                         if (ipl.isHyperStack()) {
+                            ipl.setPosition(1, (int) zz[i], t);
                             roi.setPosition(1, (int) zz[i], t);
                         } else {
                             int pos = Math.max(Math.max(1,(int) zz[i]),t);
+                            ipl.setPosition(pos);
                             roi.setPosition(pos);
                         }
                         roi.setStrokeColor(colour);
@@ -159,9 +161,11 @@ public class AddObjectsOverlay extends HCModule {
                     PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
                     pointRoi.setPointType(PointRoi.NORMAL);
                     if (ipl.isHyperStack()) {
+                        ipl.setPosition(1, z, t);
                         pointRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
+                        ipl.setPosition(pos);
                         pointRoi.setPosition(pos);
                     }
                     pointRoi.setStrokeColor(colour);
@@ -181,9 +185,11 @@ public class AddObjectsOverlay extends HCModule {
 
                     Roi polyRoi = object.getRoi(ipl);
                     if (ipl.isHyperStack()) {
+                        ipl.setPosition(1, z, t);
                         polyRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
+                        ipl.setPosition(pos);
                         polyRoi.setPosition(pos);
                     }
                     polyRoi.setStrokeColor(colour);
@@ -204,9 +210,11 @@ public class AddObjectsOverlay extends HCModule {
                     pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
                     pointRoi.setPointType(PointRoi.NORMAL);
                     if (ipl.isHyperStack()) {
+                        ipl.setPosition(1, z, t);
                         pointRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
+                        ipl.setPosition(pos);
                         pointRoi.setPosition(pos);
                     }
                     pointRoi.setStrokeColor(colour);
