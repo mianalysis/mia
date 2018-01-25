@@ -28,9 +28,10 @@ public class BinaryOperations extends HCModule {
         String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
         String ERODE_2D = "Erode 2D";
         String FILL_HOLES_2D = "Fill holes 2D";
+        String SKELETONISE_2D = "Skeletonise 2D";
         String WATERSHED_3D = "Watershed 3D";
 
-        String[] ALL = new String[]{DILATE_2D,MANHATTAN_DISTANCE_MAP_2D,ERODE_2D,FILL_HOLES_2D,WATERSHED_3D};
+        String[] ALL = new String[]{DILATE_2D,MANHATTAN_DISTANCE_MAP_2D,ERODE_2D,FILL_HOLES_2D,SKELETONISE_2D,WATERSHED_3D};
 
     }
 
@@ -41,19 +42,20 @@ public class BinaryOperations extends HCModule {
                 for (int i=0;i<numIterations;i++) {
                     IJ.run(ipl, "Dilate", "stack");
                 }
-
                 break;
 
             case OperationModes.ERODE_2D:
                 for (int i=0;i<numIterations;i++) {
                     IJ.run(ipl, "Erode", "stack");
                 }
-
                 break;
 
             case OperationModes.FILL_HOLES_2D:
                 IJ.run(ipl,"Fill Holes", "stack");
+                break;
 
+            case OperationModes.SKELETONISE_2D:
+                IJ.run(ipl,"Skeletonize", "Stack");
                 break;
 
             case OperationModes.WATERSHED_3D:
