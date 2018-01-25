@@ -228,9 +228,9 @@ public class AddObjectsOverlay extends HCModule {
                 // Adding text label
                 TextRoi text;
                 if (useParentID) {
-                    text = new TextRoi(xMean, yMean, String.valueOf(object.getParent(parentObjectsForIDName).getID()));
+                    text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, String.valueOf(object.getParent(parentObjectsForIDName).getID()));
                 } else {
-                    text = new TextRoi(xMean, yMean, String.valueOf(object.getID()));
+                    text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, String.valueOf(object.getID()));
                 }
                 text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
                 if (ipl.isHyperStack()) {

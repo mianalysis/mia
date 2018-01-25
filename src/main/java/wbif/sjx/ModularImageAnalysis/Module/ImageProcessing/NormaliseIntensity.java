@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.process.ImageStatistics;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -16,9 +17,6 @@ public class NormaliseIntensity extends HCModule {
     public static final String SHOW_IMAGE = "Show image";
 
     public static void normaliseIntenisty(ImagePlus ipl) {
-        double minIntensity = ipl.getStatistics().min;
-        double maxIntensity = ipl.getStatistics().max;
-
         int bitDepth = ipl.getProcessor().getBitDepth();
 
         for (int z = 1; z <= ipl.getNSlices(); z++) {
@@ -28,8 +26,9 @@ public class NormaliseIntensity extends HCModule {
 
                     if (bitDepth == 8 | bitDepth == 16) ipl.setProcessor(ipl.getProcessor().convertToFloat());
 
-                    ipl.getProcessor().subtract(minIntensity);
-                    ipl.getProcessor().multiply(1 / (maxIntensity - minIntensity));
+                    ImageStatistics imageStatistics = ipl.getStatistics();
+                    ipl.getProcessor().subtract(imageStatistics.min);
+                    ipl.getProcessor().multiply(1 / (imageStatistics.max - imageStatistics.min));
 
                 }
             }
