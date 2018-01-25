@@ -96,7 +96,6 @@ public class MeasureObjectTexture extends HCModule {
 
             for (int i=0;i<x.size();i++) {
                 coords.add(new int[]{x.get(i),y.get(i),z.get(i)});
-
             }
 
             textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs,c,t,coords);

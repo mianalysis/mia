@@ -32,6 +32,7 @@ public class FileParameter extends JButton implements ActionListener {
         this.parameter = parameter;
         this.fileType = fileType;
 
+        setToolTipText(parameter.getValue());
         setText(FilenameUtils.getName(parameter.getValue()));
         addActionListener(this);
         setFocusPainted(false);
@@ -75,6 +76,7 @@ public class FileParameter extends JButton implements ActionListener {
 
         parameter.setValue(fileChooser.getSelectedFile().getAbsolutePath());
         setText(FilenameUtils.getName(parameter.getValue()));
+        setToolTipText(parameter.getValue());
 
         int idx = gui.getModules().indexOf(module);
         if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);

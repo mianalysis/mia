@@ -131,7 +131,10 @@ public class ActiveContourObjectDetection extends HCModule {
             // between frames, the loop is terminated.
             for (int i=0;i<maxInteractions;i++) {
                 greedy.evaluateGreedy(nodes);
-                if (showContoursRealtime) gridOverlay.drawOverlay(nodes, dispIpl);
+                if (showContoursRealtime) {
+                    dispIpl.setPosition(1,(int) inputObject.getZ(false,false)[0]+1,inputObject.getT()+1);
+                    gridOverlay.drawOverlay(nodes, dispIpl);
+                }
 
                 if (!nodes.anyNodesMoved()) break;
             }

@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.OutputStreamTextField;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.StatusTextField;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
@@ -26,7 +27,7 @@ import java.net.URISyntaxException;
  * Created by sc13967 on 21/11/2017.
  */
 public class DeployedGUI extends GUI implements ActionListener {
-    private int frameWidth = 400;
+    private int frameWidth = 375;
     private int frameHeight = 700;
     private int elementHeight = 25;
 
@@ -156,6 +157,7 @@ public class DeployedGUI extends GUI implements ActionListener {
 
     public void updateModules() {
         basicModulesPanel.removeAll();
+        JSeparator separator = new JSeparator();
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -166,6 +168,16 @@ public class DeployedGUI extends GUI implements ActionListener {
         c.gridy++;
         JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(),frameWidth-40);
         if (inputPanel != null) basicModulesPanel.add(inputPanel,c);
+
+        if (inputPanel != null) {
+            basicModulesPanel.add(inputPanel,c);
+
+            // Adding a separator between the input and main modules
+            c.gridy++;
+            separator.setPreferredSize(new Dimension(frameWidth-40, 10));
+            basicModulesPanel.add(separator,c);
+
+        }
 
         // Adding module buttons
         ModuleCollection modules = analysis.getModules();
@@ -179,14 +191,21 @@ public class DeployedGUI extends GUI implements ActionListener {
 
         }
 
-        // Adding output control options
-        c.gridy++;
         JPanel outputPanel = componentFactory.createBasicModuleControl(analysis.getOutputControl(),frameWidth-40);
-        if (outputPanel != null) basicModulesPanel.add(outputPanel,c);
+
+        if (outputPanel != null) {
+            // Adding a separator between the input and main modules
+            c.gridy++;
+            separator.setPreferredSize(new Dimension(frameWidth-40, 10));
+            basicModulesPanel.add(separator,c);
+
+            c.gridy++;
+            basicModulesPanel.add(outputPanel,c);
+
+        }
 
         c.gridy++;
         c.weighty = 100;
-        JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(0, 15));
         basicModulesPanel.add(separator, c);
 
@@ -205,12 +224,14 @@ public class DeployedGUI extends GUI implements ActionListener {
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
 
-        JTextField textField = new JTextField();
+        StatusTextField textField = new StatusTextField();
         textField.setBackground(null);
         textField.setPreferredSize(new Dimension(width - 20, 25));
         textField.setBorder(null);
         textField.setText(name+" (version " + version + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        textField.setEditable(false);
+        textField.setToolTipText(textField.getText());
         statusPanel.add(textField, c);
 
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
