@@ -1,13 +1,23 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import ij.ImagePlus;
+import org.apache.commons.math3.analysis.interpolation.DividedDifferenceInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionNewtonForm;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.SkeletonTools.PruneSkeleton;
+import wbif.sjx.common.Object.Vertex;
+import wbif.sjx.common.Process.SkeletonTools.Skeleton;
+import wbif.sjx.common.Process.SkeletonTools.SkeletonVisualiser;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 24/01/2018.
@@ -40,10 +50,12 @@ public class SplineAnalysis extends HCModule {
         BinaryOperations.applyBinaryTransform(objectIpl,BinaryOperations.OperationModes.SKELETONISE_2D,1,0);
         objectIpl.show();
 
-        // NEED TO REMOVE ALL BRANCHES, BUT THOSE THAT GIVE THE LONGEST END-TO-END PATH
+        // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
+        Skeleton skeleton = new Skeleton(objectIpl);
+        LinkedHashSet<Vertex> longestPath = skeleton.getLongestPath();
 
-        // Converting the skeleton to a linear sequence of coordinates
-
+        // Calculating local curvature along the path
+        
 
     }
 
