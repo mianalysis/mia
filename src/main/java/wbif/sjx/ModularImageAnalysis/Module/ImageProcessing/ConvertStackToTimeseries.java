@@ -1,7 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import fiji.stacks.Hyperstack_rearranger;
+import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -44,13 +46,9 @@ public class ConvertStackToTimeseries extends HCModule {
         int nFrames = inputImagePlus.getNFrames();
         int nSlices = inputImagePlus.getNSlices();
 
-        if (inputImagePlus.isComposite()) {
-            ImagePlus processedImagePlus = HyperStackConverter.toHyperStack(inputImagePlus,nChannels,nFrames,nSlices);
-            processedImagePlus = Hyperstack_rearranger.reorderHyperstack(processedImagePlus,"CTZ",true,false);
-
-            inputImagePlus.setStack(processedImagePlus.getStack());
-
-        }
+        ImagePlus processedImagePlus = HyperStackConverter.toHyperStack(inputImagePlus,nChannels,nFrames,nSlices);
+        processedImagePlus = Hyperstack_rearranger.reorderHyperstack(processedImagePlus,"CTZ",true,false);
+        inputImagePlus.setStack(processedImagePlus.getStack());
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {

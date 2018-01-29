@@ -39,10 +39,12 @@ public class ThresholdImage extends HCModule {
 
     public interface GlobalAlgorithms {
         String HUANG = "Huang";
+        String INTERMODES = "Intermodes";
+        String ISO_DATA = "IsoData";
         String OTSU = "Otsu";
         String TRIANGLE = "Triangle";
 
-        String[] ALL = new String[]{HUANG, OTSU, TRIANGLE};
+        String[] ALL = new String[]{HUANG, INTERMODES, ISO_DATA, OTSU, TRIANGLE};
 
     }
 
@@ -172,6 +174,18 @@ public class ThresholdImage extends HCModule {
                         if (verbose) System.out.println(
                                 "["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
                         applyGlobalThresholdToStack(inputImagePlus,"Huang",thrMult,useLowerLim,lowerLim);
+                        break;
+
+                    case GlobalAlgorithms.INTERMODES:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying global Intermodes threshold (multplier = "+thrMult+" x)");
+                        applyGlobalThresholdToStack(inputImagePlus,"Intermodes",thrMult,useLowerLim,lowerLim);
+                        break;
+
+                    case GlobalAlgorithms.ISO_DATA:
+                        if (verbose) System.out.println(
+                                "["+moduleName+"] Applying global IsoData threshold (multplier = "+thrMult+" x)");
+                        applyGlobalThresholdToStack(inputImagePlus,"IsoData",thrMult,useLowerLim,lowerLim);
                         break;
 
                     case GlobalAlgorithms.OTSU:

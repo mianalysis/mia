@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import org.apache.commons.math3.analysis.interpolation.DividedDifferenceInterpolator;
@@ -26,7 +27,22 @@ import java.util.LinkedHashSet;
  */
 public class SplineAnalysis extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String INPUT_IMAGE = "Input image";
+    public static final String REFERENCE_IMAGE = "Reference image";
+    public static final String SPLINE_FITTING_METHOD = "Spline fitting method";
+    public static final String N_NEIGHBOURS = "Number of neighbours (smoothing)";
+    public static final String ITERATIONS = "Iterations";
+    public static final String ACCURACY = "Accuracy";
+    public static final String SHOW_SPLINE = "Show spline";
+    public static final String MAX_CURVATURE = "Maximum curvature (for colour)";
+
+
+    interface SplineFittingMethods {
+        String LOESS = "LOESS (smooth fitting)";
+        String STANDARD = "Standard (fits all points)";
+
+        String[] ALL = new String[]{LOESS,STANDARD};
+
+    }
 
     @Override
     public String getTitle() {
@@ -44,41 +60,83 @@ public class SplineAnalysis extends HCModule {
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
 
-        String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImage(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
+        Image referenceImage = workspace.getImage(referenceImageName);
+        ImagePlus referenceImageImagePlus = referenceImage.getImagePlus();
 
-        // Converting object to image, then inverting, so we have a black object on a white background
-//        ImagePlus objectIpl = inputObjects.values().iterator().next().getAsImage("Object").getImagePlus();
-        ObjCollection tempObj = new ObjCollection("Backbone");
-        ImagePlus objectIpl = ObjectImageConverter.convertObjectsToImage(tempObj,"Temp",inputImagePlus,ObjectImageConverter.ColourModes.SINGLE_COLOUR,"",false).getImagePlus();
-        
+        // Getting parameters
+        String splineFittingMethod = parameters.getValue(SPLINE_FITTING_METHOD);
+        int nNeighbours = parameters.getValue(N_NEIGHBOURS);
+        int iterations = parameters.getValue(ITERATIONS);
+        double accuracy = parameters.getValue(ACCURACY);
+        boolean showSplines = parameters.getValue(SHOW_SPLINE);
+        double maxCurvature = parameters.getValue(MAX_CURVATURE);
 
-        InvertIntensity.process(objectIpl);
+        if (showSplines) {
+            referenceImageImagePlus = new Duplicator().run(referenceImageImagePlus);
+        }
 
-        // Skeletonise fish to get single backbone
-        BinaryOperations.applyBinaryTransform(objectIpl,BinaryOperations.OperationModes.SKELETONISE_2D,1,0);
+        ImagePlus templateImage = IJ.createImage("Template",referenceImageImagePlus.getWidth(),referenceImageImagePlus.getHeight(),1,8);
 
-        // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
-        Skeleton skeleton = new Skeleton(objectIpl);
-        LinkedHashSet<Vertex> longestPath = skeleton.getLongestPath();
+        int count = 1;
+        int total = inputObjects.size();
+        for (Obj inputObject:inputObjects.values()) {
+            if (verbose)
+                System.out.println("[" + moduleName + "] Processing object " + (count++) + " of " + total);
 
-        // Calculating local curvature along the path
-        CurvatureCalculator curvatureCalculator = new CurvatureCalculator(longestPath);
+            // Converting object to image, then inverting, so we have a black object on a white background
+            ObjCollection tempObjects = new ObjCollection("Backbone");
+            tempObjects.add(inputObject);
 
-        // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
-//        if (showImage && ipl != null) {
-        inputImagePlus = new Duplicator().run(inputImagePlus);
-        curvatureCalculator.showOverlay(inputImagePlus);
-        inputImagePlus.show();
-//        }
+            System.out.println(inputObject.getPoints().size());
+
+            ImagePlus objectIpl = ObjectImageConverter.convertObjectsToImage(tempObjects, "Temp", templateImage, ObjectImageConverter.ColourModes.SINGLE_COLOUR, "", false).getImagePlus();
+            InvertIntensity.process(objectIpl);
+
+            // Skeletonise fish to get single backbone
+            BinaryOperations.applyBinaryTransform(objectIpl, BinaryOperations.OperationModes.SKELETONISE_2D, 1, 0);
+
+            // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
+            Skeleton skeleton = new Skeleton(objectIpl);
+            LinkedHashSet<Vertex> longestPath = skeleton.getLongestPath();
+
+            // Calculating local curvature along the path
+            CurvatureCalculator curvatureCalculator = new CurvatureCalculator(longestPath);
+            switch (splineFittingMethod) {
+                case SplineFittingMethods.LOESS:
+                    curvatureCalculator.setLoessNNeighbours(nNeighbours);
+                    curvatureCalculator.setLoessIterations(iterations);
+                    curvatureCalculator.setLoessAccuracy(accuracy);
+                    curvatureCalculator.setFittingMethod(CurvatureCalculator.FittingMethod.LOESS);
+                    break;
+
+                case SplineFittingMethods.STANDARD:
+                    curvatureCalculator.setFittingMethod(CurvatureCalculator.FittingMethod.STANDARD);
+                    break;
+            }
+
+            // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
+            if (showSplines) {
+                int[] position = new int[]{1,(int) (inputObject.getZ(false,false)[0]+1),(inputObject.getT()+1)};
+                referenceImageImagePlus.setPosition(1,(int) (inputObject.getZ(false,false)[0]+1),inputObject.getT()+1);
+                curvatureCalculator.showOverlay(referenceImageImagePlus, maxCurvature, position);
+            }
+        }
+
+        if (showSplines) referenceImageImagePlus.show();
 
     }
 
     @Override
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(SPLINE_FITTING_METHOD, Parameter.CHOICE_ARRAY,SplineFittingMethods.LOESS,SplineFittingMethods.ALL));
+        parameters.add(new Parameter(N_NEIGHBOURS, Parameter.INTEGER,10));
+        parameters.add(new Parameter(ITERATIONS, Parameter.INTEGER,10));
+        parameters.add(new Parameter(ACCURACY, Parameter.DOUBLE,1d));
+        parameters.add(new Parameter(SHOW_SPLINE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MAX_CURVATURE,Parameter.DOUBLE,1d));
 
     }
 
@@ -89,7 +147,27 @@ public class SplineAnalysis extends HCModule {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+        returnedParameters.add(parameters.getParameter(SPLINE_FITTING_METHOD));
+
+        switch ((String) parameters.getValue(SPLINE_FITTING_METHOD)) {
+            case SplineFittingMethods.LOESS:
+                returnedParameters.add(parameters.getParameter(N_NEIGHBOURS));
+                returnedParameters.add(parameters.getParameter(ITERATIONS));
+                returnedParameters.add(parameters.getParameter(ACCURACY));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(SHOW_SPLINE));
+        if (parameters.getValue(SHOW_SPLINE)) {
+            returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
+        }
+
+        return returnedParameters;
+
     }
 
     @Override

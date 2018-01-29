@@ -32,7 +32,7 @@ public class ModularImageAnalysisPlugin implements PlugIn {
 
                 new ImageJ();
                 Prefs.setThreads(1);
-                new MainGUI(false);
+                new MainGUI(true);
 
             } else {
                 Prefs.setThreads(1);
