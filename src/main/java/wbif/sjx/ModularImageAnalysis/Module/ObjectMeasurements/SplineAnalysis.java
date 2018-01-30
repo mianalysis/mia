@@ -15,12 +15,14 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
+import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Vertex;
 import wbif.sjx.common.Process.SkeletonTools.Skeleton;
 import wbif.sjx.common.Process.SkeletonTools.SkeletonVisualiser;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.TreeMap;
 
 /**
  * Created by sc13967 on 24/01/2018.
@@ -41,6 +43,14 @@ public class SplineAnalysis extends HCModule {
         String STANDARD = "Standard (fits all points)";
 
         String[] ALL = new String[]{LOESS,STANDARD};
+
+    }
+
+    public interface Measurements {
+        String MEAN_CURVATURE = "SPLINE//MEAN_CURVATURE";
+        String MIN_CURVATURE = "SPLINE//MIN_CURVATURE";
+        String MAX_CURVATURE = "SPLINE//MAX_CURVATURE";
+        String STD_CURVATURE = "SPLINE//STD_CURVATURE";
 
     }
 
@@ -88,8 +98,6 @@ public class SplineAnalysis extends HCModule {
             ObjCollection tempObjects = new ObjCollection("Backbone");
             tempObjects.add(inputObject);
 
-            System.out.println(inputObject.getPoints().size());
-
             ImagePlus objectIpl = ObjectImageConverter.convertObjectsToImage(tempObjects, "Temp", templateImage, ObjectImageConverter.ColourModes.SINGLE_COLOUR, "", false).getImagePlus();
             InvertIntensity.process(objectIpl);
 
@@ -114,6 +122,18 @@ public class SplineAnalysis extends HCModule {
                     curvatureCalculator.setFittingMethod(CurvatureCalculator.FittingMethod.STANDARD);
                     break;
             }
+
+            TreeMap<Double,Double> curvature = curvatureCalculator.getCurvature();
+            CumStat cumStat = new CumStat();
+            for (double value:curvature.values()) {
+                cumStat.addMeasure(value);
+            }
+
+            // Adding measurements
+            inputObject.addMeasurement(new Measurement(Measurements.MEAN_CURVATURE,cumStat.getMean()));
+            inputObject.addMeasurement(new Measurement(Measurements.MIN_CURVATURE,cumStat.getMin()));
+            inputObject.addMeasurement(new Measurement(Measurements.MAX_CURVATURE,cumStat.getMax()));
+            inputObject.addMeasurement(new Measurement(Measurements.STD_CURVATURE,cumStat.getStd()));
 
             // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
             if (showSplines) {
@@ -142,6 +162,10 @@ public class SplineAnalysis extends HCModule {
 
     @Override
     protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_CURVATURE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MIN_CURVATURE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MAX_CURVATURE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.STD_CURVATURE));
 
     }
 
@@ -177,7 +201,15 @@ public class SplineAnalysis extends HCModule {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        return null;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
+        objectMeasurementReferences.get(Measurements.MEAN_CURVATURE).setImageObjName(inputObjectsName);
+        objectMeasurementReferences.get(Measurements.MIN_CURVATURE).setImageObjName(inputObjectsName);
+        objectMeasurementReferences.get(Measurements.MAX_CURVATURE).setImageObjName(inputObjectsName);
+        objectMeasurementReferences.get(Measurements.STD_CURVATURE).setImageObjName(inputObjectsName);
+
+        return objectMeasurementReferences;
+
     }
 
     @Override

@@ -6,12 +6,6 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
  * Measurement that holds a single value for an object
  */
 public class Measurement {
-    // Spatial measures
-    public static final String DIRECTIONALITY_RATIO = "Directionality ratio";
-    public static final String DURATION = "Duration";
-    public static final String TOTAL_PATH_LENGTH = "Total path length";
-    public static final String EUCLIDEAN_DISTANCE = "Euclidean distance";
-
     private String name;
     private double value = Double.NaN;
     private HCModule source = null;

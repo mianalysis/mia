@@ -12,6 +12,15 @@ public class MeasureTrackMotion extends HCModule {
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
 
 
+    private interface Measurements {
+        String DIRECTIONALITY_RATIO = "TRACK_ANALYSIS//DIRECTIONALITY_RATIO";
+        String DURATION = "TRACK_ANALYSIS//DURATION";
+        String TOTAL_PATH_LENGTH = "TRACK_ANALYSIS//TOTAL_PATH_LENGTH";
+        String EUCLIDEAN_DISTANCE = "TRACK_ANALYSIS//EUCLIDEAN_DISTANCE";
+
+    }
+
+
     @Override
     public String getTitle() {
         return "Measure track motion";
@@ -56,37 +65,37 @@ public class MeasureTrackMotion extends HCModule {
 
             if (x.length == 0) {
                 // Adding measurements to track objects
-                Measurement measurement = new Measurement(Measurement.DIRECTIONALITY_RATIO, Double.NaN);
+                Measurement measurement = new Measurement(Measurements.DIRECTIONALITY_RATIO, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new Measurement(Measurement.EUCLIDEAN_DISTANCE, Double.NaN);
+                measurement = new Measurement(Measurements.EUCLIDEAN_DISTANCE, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new Measurement(Measurement.TOTAL_PATH_LENGTH, Double.NaN);
+                measurement = new Measurement(Measurements.TOTAL_PATH_LENGTH, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new Measurement(Measurement.DURATION, Double.NaN);
+                measurement = new Measurement(Measurements.DURATION, Double.NaN);
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
             } else {
                 // Adding measurements to track objects
-                Measurement measurement = new Measurement(Measurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
+                Measurement measurement = new Measurement(Measurements.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new Measurement(Measurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
+                measurement = new Measurement(Measurements.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new Measurement(Measurement.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
+                measurement = new Measurement(Measurements.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
-                measurement = new Measurement(Measurement.DURATION, track.getDuration());
+                measurement = new Measurement(Measurements.DURATION, track.getDuration());
                 measurement.setSource(this);
                 inputTrackObject.addMeasurement(measurement);
 
@@ -104,10 +113,10 @@ public class MeasureTrackMotion extends HCModule {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurement.DIRECTIONALITY_RATIO));
-        objectMeasurementReferences.add(new MeasurementReference(Measurement.EUCLIDEAN_DISTANCE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurement.TOTAL_PATH_LENGTH));
-        objectMeasurementReferences.add(new MeasurementReference(Measurement.DURATION));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIRECTIONALITY_RATIO));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.EUCLIDEAN_DISTANCE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.TOTAL_PATH_LENGTH));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DURATION));
 
     }
 
@@ -139,10 +148,10 @@ public class MeasureTrackMotion extends HCModule {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
 
-        objectMeasurementReferences.updateImageObjectName(Measurement.DIRECTIONALITY_RATIO,inputTrackObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurement.EUCLIDEAN_DISTANCE,inputTrackObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurement.TOTAL_PATH_LENGTH,inputTrackObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurement.DURATION,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.DIRECTIONALITY_RATIO,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.EUCLIDEAN_DISTANCE,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.TOTAL_PATH_LENGTH,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.DURATION,inputTrackObjects);
 
         return objectMeasurementReferences;
 

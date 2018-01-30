@@ -4,19 +4,18 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.ImagePlus;
-import ij.gui.Overlay;
-import ij.gui.PointRoi;
-import ij.gui.Roi;
-import ij.gui.TextRoi;
+import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.TreeMap;
 
 /**
  * Created by sc13967 on 17/05/2017.
@@ -37,6 +36,7 @@ public class AddObjectsOverlay extends HCModule {
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT = "Measurement";
+    public static final String TRACK_OBJECTS = "Track objects";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -45,8 +45,9 @@ public class AddObjectsOverlay extends HCModule {
         String CENTROID = "Centroid";
         String OUTLINE = "Outline";
         String POSITION_MEASUREMENTS = "Position measurements";
+        String TRACKS = "Tracks";
 
-        String[] ALL = new String[]{ALL_POINTS, CENTROID, OUTLINE, POSITION_MEASUREMENTS};
+        String[] ALL = new String[]{ALL_POINTS, CENTROID, OUTLINE, POSITION_MEASUREMENTS, TRACKS};
 
     }
 
@@ -60,10 +61,9 @@ public class AddObjectsOverlay extends HCModule {
 
     }
 
-    public static void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String measurement, String colourMode,
-                                     String parentObjectsForColourName, String positionMode, String xPosMeas,
-                                     String yPosMeas, String zPosMeas, boolean useParentID, boolean showID,
-                                     int labelSize, String parentObjectsForIDName) {
+    public static void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode, String xPosMeas,
+                                     String yPosMeas, String zPosMeas, HashMap<Obj,Color> colours,
+                                     HashMap<Obj,String> IDs, int labelSize) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
@@ -74,42 +74,9 @@ public class AddObjectsOverlay extends HCModule {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
-        // Getting minimum and maximum values from measurement (if required)
-        CumStat cs = new CumStat();
-        if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
-            inputObjects.values().forEach(e -> cs.addMeasure(e.getMeasurement(measurement).getValue()));
-        }
-
         // Running through each object, adding it to the overlay along with an ID label
         for (Obj object:inputObjects.values()) {
-            // Default hue value in case none is assigned
-            float H = 0.2f;
-
-            switch (colourMode) {
-                case ColourModes.RANDOM_COLOUR:
-                    // Random colours
-                    H = new Random().nextFloat();
-                    break;
-
-                case ColourModes.MEASUREMENT_VALUE:
-                    double value = object.getMeasurement(measurement).getValue();
-                    double startH = 0;
-                    double endH = 120d / 255d;
-                    H = (float) ((value - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
-                    break;
-
-                case ColourModes.PARENT_ID:
-                    if (object.getParent(parentObjectsForColourName)==null) {
-                        H = 0.2f;
-                    } else {
-                        H = ((float) object.getParent(parentObjectsForColourName).getID() * 1048576 % 255) / 255;
-                    }
-
-                    break;
-
-            }
-
-            Color colour = Color.getHSBColor(H, 1, 1);
+            Color colour = colours.get(object);
 
             double xMean = 0;
             double yMean = 0;
@@ -224,14 +191,9 @@ public class AddObjectsOverlay extends HCModule {
 
             }
 
-            if (showID) {
+            if (IDs != null) {
                 // Adding text label
-                TextRoi text;
-                if (useParentID) {
-                    text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, String.valueOf(object.getParent(parentObjectsForIDName).getID()));
-                } else {
-                    text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, String.valueOf(object.getID()));
-                }
+                TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, IDs.get(object));
                 text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
                 if (ipl.isHyperStack()) {
                     text.setPosition(1, z, t);
@@ -243,6 +205,115 @@ public class AddObjectsOverlay extends HCModule {
 
             }
         }
+    }
+
+    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Obj,Color> colours) {
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+
+        }
+
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        Overlay ovl = ipl.getOverlay();
+
+        for (Obj trackObject:trackObjects.values()) {
+            ObjCollection pointObjects = trackObject.getChildren(inputObjectsName);
+
+            // Putting the current track points into a TreeMap stored by the frame
+            TreeMap<Integer,Obj> points = new TreeMap<>();
+            for (Obj pointObject:pointObjects.values()) {
+                points.put(pointObject.getT(),pointObject);
+            }
+
+            //  Iterating over all points in the track, drawing lines between them
+            int nFrames = ipl.getNFrames();
+            Obj p1 = null;
+            for (Obj p2:points.values()) {
+                Color color = colours.get(p2);
+
+                if (p1 != null) {
+                    int x1 = (int) Math.round(p1.getXMean(true));
+                    int y1 = (int) Math.round(p1.getYMean(true));
+                    int x2 = (int) Math.round(p2.getXMean(true));
+                    int y2 = (int) Math.round(p2.getYMean(true));
+
+                    int currentTime = p2.getT();
+                    System.out.println("Current time = "+currentTime);
+                    double r = 2;
+                    for (int t = currentTime;t<nFrames;t++) {
+                        Line line = new Line(x1, y1, x2, y2);
+                        line.setPosition(t+1);
+                        line.setStrokeWidth(2f);
+                        line.setStrokeColor(color);
+                        ovl.addElement(line);
+
+                    }
+                }
+
+                p1 = p2;
+
+            }
+        }
+    }
+
+    public static HashMap<Obj,Color> getColours(ObjCollection inputObjects, String colourMode, String measurement, String parentObjectsForColourName) {
+        HashMap<Obj,Color> colours = new HashMap<>();
+
+        // Getting minimum and maximum values from measurement (if required)
+        CumStat cs = new CumStat();
+        if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
+            inputObjects.values().forEach(e -> cs.addMeasure(e.getMeasurement(measurement).getValue()));
+        }
+
+        for (Obj object:inputObjects.values()) {
+            // Default hue value in case none is assigned
+            float H = 0.2f;
+
+            switch (colourMode) {
+                case ColourModes.RANDOM_COLOUR:
+                    // Random colours
+                    H = new Random().nextFloat();
+                    break;
+
+                case ColourModes.MEASUREMENT_VALUE:
+                    double value = object.getMeasurement(measurement).getValue();
+                    double startH = 0;
+                    double endH = 120d / 255d;
+                    H = (float) ((value - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
+                    break;
+
+                case ColourModes.PARENT_ID:
+                    if (object.getParent(parentObjectsForColourName) == null) {
+                        H = 0.2f;
+                    } else {
+                        H = ((float) object.getParent(parentObjectsForColourName).getID() * 1048576 % 255) / 255;
+                    }
+
+                    break;
+            }
+
+            colours.put(object,Color.getHSBColor(H, 1, 1));
+
+        }
+
+        return colours;
+
+    }
+
+    public static HashMap<Obj,String> getIDs(ObjCollection inputObjects, boolean useParentID, String parentObjectsForIDName) {
+        HashMap<Obj,String> IDs = new HashMap<>();
+
+        for (Obj object:inputObjects.values()) {
+            if (useParentID) {
+                IDs.put(object, String.valueOf(object.getParent(parentObjectsForIDName).getID()));
+            } else {
+                IDs.put(object,String.valueOf(object.getID()));
+            }
+        }
+
+        return IDs;
+
     }
 
     @Override
@@ -272,6 +343,7 @@ public class AddObjectsOverlay extends HCModule {
         String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
         String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
         String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
+        String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Getting input objects
@@ -286,8 +358,28 @@ public class AddObjectsOverlay extends HCModule {
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
-        createOverlay(ipl, inputObjects, measurement, colourMode,  parentObjectsForColourName, positionMode, xPosMeas,
-                yPosMeas, zPosMeas, useParentID, showID, labelSize, parentObjectsForIDName);
+        // Generating colours for each object
+        HashMap<Obj,Color> colours = getColours(inputObjects,colourMode,measurement,parentObjectsForColourName);
+        HashMap<Obj,String> IDs;
+        if (showID) {
+            IDs = getIDs(inputObjects,useParentID,parentObjectsForIDName);
+        } else {
+            IDs = null;
+        }
+
+        switch (positionMode) {
+            case PositionModes.ALL_POINTS:
+            case PositionModes.CENTROID:
+            case PositionModes.OUTLINE:
+            case PositionModes.POSITION_MEASUREMENTS:
+                createOverlay(ipl, inputObjects, positionMode, xPosMeas, yPosMeas, zPosMeas, colours, IDs, labelSize);
+                break;
+
+            case PositionModes.TRACKS:
+                ObjCollection tracks = workspace.getObjectSet(trackObjectsName);
+                createTrackOverlay(ipl,inputObjectsName,tracks,colours);
+                break;
+        }
 
         // If necessary, adding output image to workspace
         if (addOutputToWorkspace) {
@@ -318,6 +410,7 @@ public class AddObjectsOverlay extends HCModule {
         parameters.add(new Parameter(Z_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
         parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(TRACK_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
@@ -369,6 +462,14 @@ public class AddObjectsOverlay extends HCModule {
             parameters.updateValueSource(X_POSITION_MEASUREMENT,inputObjectsName);
             parameters.updateValueSource(Y_POSITION_MEASUREMENT,inputObjectsName);
             parameters.updateValueSource(Z_POSITION_MEASUREMENT,inputObjectsName);
+
+        }
+
+        if (parameters.getValue(POSITION_MODE).equals(PositionModes.TRACKS)) {
+            returnedParameters.add(parameters.getParameter(TRACK_OBJECTS));
+
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            parameters.updateValueSource(TRACK_OBJECTS,inputObjectsName);
 
         }
 

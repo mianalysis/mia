@@ -7,12 +7,15 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by sc13967 on 15/01/2018.
@@ -149,10 +152,13 @@ public class HoughObjectDetection extends HCModule {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
             IntensityMinMax.run(dispIpl,true);
 
-            AddObjectsOverlay.createOverlay(dispIpl, outputObjects, "", AddObjectsOverlay.ColourModes.RANDOM_COLOUR,
-                    "", AddObjectsOverlay.PositionModes.OUTLINE, "", "", "", false, false, 8, "");
+            String colourMode = AddObjectsOverlay.ColourModes.RANDOM_COLOUR;
+            HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(outputObjects,colourMode,"","");
+            String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
+            AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,"","","",colours,null,8);
 
             dispIpl.show();
+
         }
     }
 
