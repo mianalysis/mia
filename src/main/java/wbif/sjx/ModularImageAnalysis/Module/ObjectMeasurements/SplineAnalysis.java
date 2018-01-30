@@ -36,6 +36,7 @@ public class SplineAnalysis extends HCModule {
     public static final String ACCURACY = "Accuracy";
     public static final String SHOW_SPLINE = "Show spline";
     public static final String MAX_CURVATURE = "Maximum curvature (for colour)";
+    public static final String APPLY_TO_IMAGE = "Apply to image";
 
 
     interface SplineFittingMethods {
@@ -80,14 +81,14 @@ public class SplineAnalysis extends HCModule {
         int iterations = parameters.getValue(ITERATIONS);
         double accuracy = parameters.getValue(ACCURACY);
         boolean showSplines = parameters.getValue(SHOW_SPLINE);
+        boolean applyToImage = parameters.getValue(APPLY_TO_IMAGE);
         double maxCurvature = parameters.getValue(MAX_CURVATURE);
 
-        if (showSplines) {
+        if (showSplines &! applyToImage) {
             referenceImageImagePlus = new Duplicator().run(referenceImageImagePlus);
         }
 
         ImagePlus templateImage = IJ.createImage("Template",referenceImageImagePlus.getWidth(),referenceImageImagePlus.getHeight(),1,8);
-
         int count = 1;
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
@@ -143,8 +144,9 @@ public class SplineAnalysis extends HCModule {
             }
         }
 
-        if (showSplines) referenceImageImagePlus.show();
-
+        if (showSplines) {
+            new Duplicator().run(referenceImageImagePlus).show();
+        }
     }
 
     @Override
@@ -152,10 +154,11 @@ public class SplineAnalysis extends HCModule {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(SPLINE_FITTING_METHOD, Parameter.CHOICE_ARRAY,SplineFittingMethods.LOESS,SplineFittingMethods.ALL));
-        parameters.add(new Parameter(N_NEIGHBOURS, Parameter.INTEGER,10));
+        parameters.add(new Parameter(N_NEIGHBOURS, Parameter.INTEGER,20));
         parameters.add(new Parameter(ITERATIONS, Parameter.INTEGER,10));
         parameters.add(new Parameter(ACCURACY, Parameter.DOUBLE,1d));
         parameters.add(new Parameter(SHOW_SPLINE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(APPLY_TO_IMAGE, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MAX_CURVATURE,Parameter.DOUBLE,1d));
 
     }
@@ -187,6 +190,7 @@ public class SplineAnalysis extends HCModule {
 
         returnedParameters.add(parameters.getParameter(SHOW_SPLINE));
         if (parameters.getValue(SHOW_SPLINE)) {
+            returnedParameters.add(parameters.getParameter(APPLY_TO_IMAGE));
             returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
         }
 

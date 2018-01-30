@@ -238,10 +238,8 @@ public class AddObjectsOverlay extends HCModule {
                     int x2 = (int) Math.round(p2.getXMean(true));
                     int y2 = (int) Math.round(p2.getYMean(true));
 
-                    int currentTime = p2.getT();
-                    System.out.println("Current time = "+currentTime);
                     double r = 2;
-                    for (int t = currentTime;t<nFrames;t++) {
+                    for (int t = p2.getT();t<nFrames;t++) {
                         Line line = new Line(x1, y1, x2, y2);
                         line.setPosition(t+1);
                         line.setStrokeWidth(2f);

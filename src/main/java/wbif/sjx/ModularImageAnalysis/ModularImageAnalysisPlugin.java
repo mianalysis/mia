@@ -29,7 +29,6 @@ public class ModularImageAnalysisPlugin implements PlugIn {
             if (args.length == 0) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-
                 new ImageJ();
                 Prefs.setThreads(1);
                 new MainGUI(true);
