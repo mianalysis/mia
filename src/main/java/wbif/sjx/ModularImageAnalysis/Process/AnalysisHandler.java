@@ -215,6 +215,7 @@ public class AnalysisHandler {
                     case Parameter.INPUT_OBJECTS:
                     case Parameter.OUTPUT_OBJECTS:
                     case Parameter.REMOVED_IMAGE:
+                    case Parameter.REMOVED_OBJECTS:
                     case Parameter.STRING:
                     case Parameter.CHOICE_ARRAY:
                     case Parameter.FILE_PATH:
