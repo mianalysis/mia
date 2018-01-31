@@ -160,6 +160,7 @@ public class AddObjectsOverlay extends HCModule {
                         polyRoi.setPosition(pos);
                     }
                     polyRoi.setStrokeColor(colour);
+                    polyRoi.setStrokeWidth(2f);
                     ovl.addElement(polyRoi);
 
                     break;

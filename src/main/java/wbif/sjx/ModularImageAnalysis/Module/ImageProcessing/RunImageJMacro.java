@@ -1,35 +1,37 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
-import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
+import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
- * Created by sc13967 on 19/06/2017.
+ * Created by sc13967 on 31/01/2018.
  */
-public class ConvertStackToTimeseries extends HCModule {
+public class RunImageJMacro extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String MACRO_TITLE = "Macro title";
+    public static final String ARGUMENTS = "Parameters";
+    public static final String SHOW_IMAGE = "Show image";
+
 
     @Override
     public String getTitle() {
-        return "Convert stack to timeseries";
+        return "Run ImageJ macro";
     }
 
     @Override
     public String getHelp() {
-        return "Checks if there is only 1 frame, but multiple Z-sections.  " +
-                "In this case, the Z and T ordering will be switched";
+        return null;
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -38,19 +40,21 @@ public class ConvertStackToTimeseries extends HCModule {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String macroTitle = parameters.getValue(MACRO_TITLE);
+        String arguments = parameters.getValue(ARGUMENTS);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        int nChannels = inputImagePlus.getNChannels();
-        int nFrames = inputImagePlus.getNFrames();
-        int nSlices = inputImagePlus.getNSlices();
+        // Applying the macro
+        IJ.run(inputImagePlus,macroTitle,arguments);
 
-        if (inputImagePlus.getNSlices() == 1 || inputImagePlus.getNFrames() > 1) return;
-
-        ImagePlus processedImagePlus = HyperStackConverter.toHyperStack(inputImagePlus,nChannels,nFrames,nSlices);
-        processedImagePlus = Hyperstack_rearranger.reorderHyperstack(processedImagePlus,"CTZ",true,false);
-        inputImagePlus.setStack(processedImagePlus.getStack());
+        // If selected, displaying the image
+        if (parameters.getValue(SHOW_IMAGE)) {
+            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+            IntensityMinMax.run(dispIpl,true);
+            dispIpl.show();
+        }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
@@ -59,13 +63,17 @@ public class ConvertStackToTimeseries extends HCModule {
             workspace.addImage(outputImage);
 
         }
+
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(MACRO_TITLE, Parameter.STRING,""));
+        parameters.add(new Parameter(ARGUMENTS, Parameter.STRING,""));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -83,6 +91,10 @@ public class ConvertStackToTimeseries extends HCModule {
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
+
+        returnedParameters.add(parameters.getParameter(MACRO_TITLE));
+        returnedParameters.add(parameters.getParameter(ARGUMENTS));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
