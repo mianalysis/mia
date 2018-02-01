@@ -61,9 +61,9 @@ public class AddObjectsOverlay extends HCModule {
 
     }
 
-    public static void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode, String xPosMeas,
-                                     String yPosMeas, String zPosMeas, HashMap<Obj,Color> colours,
-                                     HashMap<Obj,String> IDs, int labelSize) {
+    public static void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
+                                     String[] posMeasurements,HashMap<Obj,Color> colours, HashMap<Obj,String> IDs,
+                                     int labelSize) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
@@ -166,9 +166,9 @@ public class AddObjectsOverlay extends HCModule {
                     break;
 
                 case PositionModes.POSITION_MEASUREMENTS:
-                    xMean = object.getMeasurement(xPosMeas).getValue();
-                    yMean = object.getMeasurement(yPosMeas).getValue();
-                    zMean = object.getMeasurement(zPosMeas).getValue();
+                    xMean = object.getMeasurement(posMeasurements[0]).getValue();
+                    yMean = object.getMeasurement(posMeasurements[1]).getValue();
+                    zMean = object.getMeasurement(posMeasurements[2]).getValue();
 
                     // Getting coordinates to plot
                     z = (int) Math.round(zMean+1);
@@ -371,7 +371,8 @@ public class AddObjectsOverlay extends HCModule {
             case PositionModes.CENTROID:
             case PositionModes.OUTLINE:
             case PositionModes.POSITION_MEASUREMENTS:
-                createOverlay(ipl, inputObjects, positionMode, xPosMeas, yPosMeas, zPosMeas, colours, IDs, labelSize);
+                String[] positionMeasurements = new String[]{xPosMeas,yPosMeas,zPosMeas};
+                createOverlay(ipl,inputObjects,positionMode,positionMeasurements,colours,IDs,labelSize);
                 break;
 
             case PositionModes.TRACKS:

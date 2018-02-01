@@ -167,10 +167,10 @@ public class ActiveContourObjectDetection extends HCModule {
 
             if (updateInputObjects) {
                 HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(inputObjects,colourMode,"","");
-                AddObjectsOverlay.createOverlay(dispIpl,inputObjects,positionMode,"","","",colours,null,8);
+                AddObjectsOverlay.createOverlay(dispIpl,inputObjects,positionMode,null,colours,null,8);
             } else {
                 HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(outputObjects,colourMode,"","");
-                AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,"","","",colours,null,8);
+                AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,colours,null,8);
             }
 
             dispIpl.show();

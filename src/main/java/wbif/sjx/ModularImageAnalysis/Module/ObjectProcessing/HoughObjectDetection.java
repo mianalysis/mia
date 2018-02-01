@@ -155,7 +155,7 @@ public class HoughObjectDetection extends HCModule {
             String colourMode = AddObjectsOverlay.ColourModes.RANDOM_COLOUR;
             HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(outputObjects,colourMode,"","");
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
-            AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,"","","",colours,null,8);
+            AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,colours,null,8);
 
             dispIpl.show();
 
