@@ -40,31 +40,29 @@ public class BinaryOperations extends HCModule {
         // Applying process to stack
         switch (operationMode) {
             case OperationModes.DILATE_2D:
-                for (int i=0;i<numIterations;i++) {
-                    IJ.run(ipl, "Dilate", "stack");
-                }
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Dilate stack");
                 break;
 
             case OperationModes.ERODE_2D:
-                for (int i=0;i<numIterations;i++) {
-                    IJ.run(ipl, "Erode", "stack");
-                }
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Erode stack");
                 break;
 
             case OperationModes.FILL_HOLES_2D:
-                IJ.run(ipl,"Fill Holes", "stack");
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=[Fill Holes] stack");
                 break;
 
             case OperationModes.SKELETONISE_2D:
-                IJ.run(ipl,"Skeletonize", "Stack");
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Skeletonize stack");
                 break;
 
             case OperationModes.WATERSHED_2D:
-                IJ.run(ipl,"Watershed", "Stack");
+                IJ.run(ipl,"Watershed", "stack");
+                Prefs.blackBackground = false;
                 break;
 
             case OperationModes.WATERSHED_3D:
                 IJ.run(ipl,"Invert", "stack");
+                Prefs.blackBackground = false;
 
                 // Creating a marker image
                 ImagePlus markerIpl = new Duplicator().run(ipl);
