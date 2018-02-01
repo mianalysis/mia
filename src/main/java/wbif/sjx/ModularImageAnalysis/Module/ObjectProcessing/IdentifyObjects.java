@@ -3,6 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -42,6 +43,9 @@ public class IdentifyObjects extends HCModule {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS);
+
+        // Creating a duplicate of the input image
+        inputImagePlus = new Duplicator().run(inputImagePlus);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             if (verbose)

@@ -86,7 +86,7 @@ public class MeasureSpotIntensity extends HCModule {
 
         // Getting local object region (this overwrites the original inputObjects)
         ObjCollection spotObjects =
-                GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
+                GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated, false, "");
 
         // Running through each object's timepoints, getting intensity measurements
         for (Obj spotObject:spotObjects.values()) {

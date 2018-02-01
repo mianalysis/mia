@@ -70,14 +70,28 @@ public class ComponentFactory {
 
             parameterControl = new ChoiceArrayParameter(gui,module,parameter,names);
 
-        } else if (parameter.getType() == Parameter.INPUT_OBJECTS) {
+        } else if (parameter.getType() == Parameter.INPUT_OBJECTS || parameter.getType() == Parameter.REMOVED_OBJECTS) {
             // Getting a list of available images
             LinkedHashSet<Parameter> objects = modules.getParametersMatchingType(Parameter.OUTPUT_OBJECTS,module);
+            LinkedHashSet<Parameter> removedObjects = modules.getParametersMatchingType(Parameter.REMOVED_OBJECTS,module);
 
-            String[] names = new String[objects.size()];
-            int i = 0;
+            // Adding any output images to the list
+            LinkedHashSet<String> namesSet = new LinkedHashSet<>();
+            namesSet.add(null);
             for (Parameter object : objects) {
-                names[i++] = object.getValue();
+                namesSet.add(object.getValue());
+
+            }
+
+            // Removing any images which have since been removed from the workspace
+            for (Parameter object : removedObjects) {
+                namesSet.remove(object.getValue());
+            }
+
+            String[] names = new String[namesSet.size()];
+            int i = 0;
+            for (String name:namesSet) {
+                names[i++] = name;
             }
 
             parameterControl = new ChoiceArrayParameter(gui,module,parameter,names);

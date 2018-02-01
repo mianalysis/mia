@@ -17,6 +17,7 @@ import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
+import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -34,6 +35,7 @@ public class ImageLoader extends HCModule {
     public static final String IMPORT_MODE = "Import mode";
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";
+    public static final String PREFIX = "Prefix";
     public static final String FILE_PATH = "File path";
     public static final String SERIES_NUMBER = "Series number (>= 1)";
     public static final String USE_ALL_C = "Use all channels";
@@ -60,8 +62,9 @@ public class ImageLoader extends HCModule {
 
     public interface NameFormats {
         String INCUCYTE_SHORT = "Incucyte short filename";
+        String INPUT_FILE_PREFIX= "Input filename with prefix";
 
-        String[] ALL = new String[]{INCUCYTE_SHORT};
+        String[] ALL = new String[]{INCUCYTE_SHORT,INPUT_FILE_PREFIX};
 
     }
 
@@ -173,6 +176,13 @@ public class ImageLoader extends HCModule {
                         .generate(comment,metadata.getWell(),metadata.getAsString(HCMetadata.FIELD),metadata.getExt());
 
                 break;
+
+            case NameFormats.INPUT_FILE_PREFIX:
+                String absolutePath = metadata.getFile().getAbsolutePath();
+                String path = FilenameUtils.getFullPath(absolutePath);
+                String name = FilenameUtils.getName(absolutePath);
+                filename = path+comment+name;
+                break;
         }
 
         return getBFImage(filename,seriesNumber,dimRanges);
@@ -197,6 +207,7 @@ public class ImageLoader extends HCModule {
         String filePath = parameters.getValue(FILE_PATH);
         String nameFormat = parameters.getValue(NAME_FORMAT);
         String comment = parameters.getValue(COMMENT);
+        String prefix = parameters.getValue(PREFIX);
         int seriesNumber = parameters.getValue(SERIES_NUMBER);
         boolean useAllC = parameters.getValue(USE_ALL_C);
         int startingC = parameters.getValue(STARTING_C);
@@ -229,7 +240,15 @@ public class ImageLoader extends HCModule {
                             break;
 
                         case ImportModes.MATCHING_FORMAT:
-                            ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),comment,seriesNumber,dimRanges);
+                            switch (nameFormat) {
+                                case NameFormats.INCUCYTE_SHORT:
+                                    ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),comment,seriesNumber,dimRanges);
+                                    break;
+
+                                case NameFormats.INPUT_FILE_PREFIX:
+                                    ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),prefix,seriesNumber,dimRanges);
+                                    break;
+                            }
                             break;
 
                         case ImportModes.SPECIFIC_FILE:
@@ -258,6 +277,7 @@ public class ImageLoader extends HCModule {
             parameters.add(
                     new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
             parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
+            parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
             parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
             parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
             parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
@@ -293,7 +313,14 @@ public class ImageLoader extends HCModule {
 
                 case ImportModes.MATCHING_FORMAT:
                     returnedParameters.add(parameters.getParameter(NAME_FORMAT));
-                    returnedParameters.add(parameters.getParameter(COMMENT));
+                    switch ((String) parameters.getValue(NAME_FORMAT)) {
+                        case NameFormats.INCUCYTE_SHORT:
+                            returnedParameters.add(parameters.getParameter(COMMENT));
+                            break;
+                        case NameFormats.INPUT_FILE_PREFIX:
+                            returnedParameters.add(parameters.getParameter(PREFIX));
+                            break;
+                    }
                     break;
 
                 case ImportModes.SPECIFIC_FILE:

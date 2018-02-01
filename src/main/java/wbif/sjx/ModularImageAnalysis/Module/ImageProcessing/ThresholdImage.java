@@ -39,10 +39,13 @@ public class ThresholdImage extends HCModule {
 
     public interface GlobalAlgorithms {
         String HUANG = "Huang";
+        String INTERMODES = "Intermodes";
+        String ISO_DATA = "IsoData";
+        String MAX_ENTROPY = "MaxEntropy";
         String OTSU = "Otsu";
         String TRIANGLE = "Triangle";
 
-        String[] ALL = new String[]{HUANG, OTSU, TRIANGLE};
+        String[] ALL = new String[]{HUANG, INTERMODES, ISO_DATA, MAX_ENTROPY, OTSU, TRIANGLE};
 
     }
 
@@ -167,27 +170,9 @@ public class ThresholdImage extends HCModule {
         // Calculating the threshold based on the selected algorithm
         switch (thresholdType) {
             case ThresholdTypes.GLOBAL_TYPE:
-                switch (globalThresholdAlgorithm) {
-                    case GlobalAlgorithms.HUANG:
-                        if (verbose) System.out.println(
-                                "["+moduleName+"] Applying global Huang threshold (multplier = "+thrMult+" x)");
-                        applyGlobalThresholdToStack(inputImagePlus,"Huang",thrMult,useLowerLim,lowerLim);
-                        break;
-
-                    case GlobalAlgorithms.OTSU:
-                        if (verbose) System.out.println(
-                                "["+moduleName+"] Applying global Otsu threshold (multplier = "+thrMult+" x)");
-                        applyGlobalThresholdToStack(inputImagePlus,"Otsu",thrMult,useLowerLim,lowerLim);
-                        break;
-
-                    case GlobalAlgorithms.TRIANGLE:
-                        if (verbose) System.out.println(
-                                "["+moduleName+"] Applying global Triangle threshold (multplier = "+thrMult+" x)");
-                        applyGlobalThresholdToStack(inputImagePlus,"Triangle",thrMult,useLowerLim,lowerLim);
-                        break;
-
-                }
-                break;
+                if (verbose) System.out.println(
+                        "["+moduleName+"] Applying global "+globalThresholdAlgorithm+" threshold (multplier = "+thrMult+" x)");
+                applyGlobalThresholdToStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
 
             case ThresholdTypes.LOCAL_TYPE:
                 switch (localThresholdAlgorithm) {

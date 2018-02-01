@@ -28,9 +28,11 @@ public class BinaryOperations extends HCModule {
         String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
         String ERODE_2D = "Erode 2D";
         String FILL_HOLES_2D = "Fill holes 2D";
+        String SKELETONISE_2D = "Skeletonise 2D";
+        String WATERSHED_2D = "Watershed 2D";
         String WATERSHED_3D = "Watershed 3D";
 
-        String[] ALL = new String[]{DILATE_2D,MANHATTAN_DISTANCE_MAP_2D,ERODE_2D,FILL_HOLES_2D,WATERSHED_3D};
+        String[] ALL = new String[]{DILATE_2D,MANHATTAN_DISTANCE_MAP_2D,ERODE_2D,FILL_HOLES_2D,SKELETONISE_2D,WATERSHED_2D,WATERSHED_3D};
 
     }
 
@@ -38,26 +40,29 @@ public class BinaryOperations extends HCModule {
         // Applying process to stack
         switch (operationMode) {
             case OperationModes.DILATE_2D:
-                for (int i=0;i<numIterations;i++) {
-                    IJ.run(ipl, "Dilate", "stack");
-                }
-
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Dilate stack");
                 break;
 
             case OperationModes.ERODE_2D:
-                for (int i=0;i<numIterations;i++) {
-                    IJ.run(ipl, "Erode", "stack");
-                }
-
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Erode stack");
                 break;
 
             case OperationModes.FILL_HOLES_2D:
-                IJ.run(ipl,"Fill Holes", "stack");
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=[Fill Holes] stack");
+                break;
 
+            case OperationModes.SKELETONISE_2D:
+                IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Skeletonize stack");
+                break;
+
+            case OperationModes.WATERSHED_2D:
+                IJ.run(ipl,"Watershed", "stack");
+                Prefs.blackBackground = false;
                 break;
 
             case OperationModes.WATERSHED_3D:
                 IJ.run(ipl,"Invert", "stack");
+                Prefs.blackBackground = false;
 
                 // Creating a marker image
                 ImagePlus markerIpl = new Duplicator().run(ipl);

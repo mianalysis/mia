@@ -20,6 +20,7 @@ import wbif.sjx.common.Process.ActiveContour.Visualisation.GridOverlay;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
+import java.util.HashMap;
 
 /**
  * Created by sc13967 on 16/01/2018.
@@ -161,13 +162,15 @@ public class ActiveContourObjectDetection extends HCModule {
         if (showContoursEnd) {
             // Removing old overlay
             dispIpl.setOverlay(null);
+            String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
+            String colourMode = AddObjectsOverlay.ColourModes.RANDOM_COLOUR;
 
             if (updateInputObjects) {
-                AddObjectsOverlay.createOverlay(dispIpl, inputObjects, "", AddObjectsOverlay.ColourModes.RANDOM_COLOUR,
-                        "", AddObjectsOverlay.PositionModes.OUTLINE, "", "", "", false, false, 8, "");
+                HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(inputObjects,colourMode,"","");
+                AddObjectsOverlay.createOverlay(dispIpl,inputObjects,positionMode,null,colours,null,8);
             } else {
-                AddObjectsOverlay.createOverlay(dispIpl, outputObjects, "", AddObjectsOverlay.ColourModes.RANDOM_COLOUR,
-                        "", AddObjectsOverlay.PositionModes.OUTLINE, "", "", "", false, false, 8, "");
+                HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(outputObjects,colourMode,"","");
+                AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,colours,null,8);
             }
 
             dispIpl.show();

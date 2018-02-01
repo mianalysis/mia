@@ -23,8 +23,6 @@ public class TrackObjects extends HCModule {
     public static final String MINIMUM_OVERLAP = "Minimum overlap";
     public static final String MAXIMUM_MISSING_FRAMES = "Maximum number of missing frames";
 
-    private static final String TRACK_PREV_ID = "PREVIOUS_OBJECT_IN_TRACK_ID";
-    private static final String TRACK_NEXT_ID = "NEXT_OBJECT_IN_TRACK_ID";
 
     public interface LinkingMethods {
         String ABSOLUTE_OVERLAP = "Absolute overlap";
@@ -34,6 +32,11 @@ public class TrackObjects extends HCModule {
 
     }
 
+    public interface Measurements {
+        String TRACK_PREV_ID = "TRACKING//PREVIOUS_OBJECT_IN_TRACK_ID";
+        String TRACK_NEXT_ID = "TRACKING//NEXT_OBJECT_IN_TRACK_ID";
+
+    }
 
     private static float getCentroidSeparation(Obj prevObj, Obj currObj) {
         double prevXCent = prevObj.getXMean(true);
@@ -114,8 +117,8 @@ public class TrackObjects extends HCModule {
 
         // Clearing previous relationships and measurements (in case module has been run before)
         for (Obj inputObj:inputObjects.values()) {
-            inputObj.removeMeasurement(TRACK_NEXT_ID);
-            inputObj.removeMeasurement(TRACK_PREV_ID);
+            inputObj.removeMeasurement(Measurements.TRACK_NEXT_ID);
+            inputObj.removeMeasurement(Measurements.TRACK_PREV_ID);
             inputObj.removeParent(trackObjectsName);
 
         }
@@ -134,10 +137,10 @@ public class TrackObjects extends HCModule {
 
                 // Include objects from the previous and current frames that haven't been linked
                 for (Obj inputObject:inputObjects.values()) {
-                    if (inputObject.getT() == t1 && inputObject.getMeasurement(TRACK_NEXT_ID) == null) {
+                    if (inputObject.getT() == t1 && inputObject.getMeasurement(Measurements.TRACK_NEXT_ID) == null) {
                         prevObjects.add(inputObject);
 
-                    } else if (inputObject.getT() == t2 && inputObject.getMeasurement(TRACK_PREV_ID) == null) {
+                    } else if (inputObject.getT() == t2 && inputObject.getMeasurement(Measurements.TRACK_PREV_ID) == null) {
                         currObjects.add(inputObject);
 
                     }
@@ -206,8 +209,8 @@ public class TrackObjects extends HCModule {
                             // If a new track wasn't created
                             if (track == null) {
                                 // Adding references to each other
-                                prevObj.addMeasurement(new Measurement(TRACK_NEXT_ID, currObj.getID()));
-                                currObj.addMeasurement(new Measurement(TRACK_PREV_ID, prevObj.getID()));
+                                prevObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, currObj.getID()));
+                                currObj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, prevObj.getID()));
 
                                 // Getting the track object from the previous-frame object
                                 track = prevObj.getParent(trackObjectsName);
@@ -255,8 +258,8 @@ public class TrackObjects extends HCModule {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(TRACK_PREV_ID));
-        objectMeasurementReferences.add(new MeasurementReference(TRACK_NEXT_ID));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.TRACK_PREV_ID));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.TRACK_NEXT_ID));
 
     }
 
@@ -293,8 +296,8 @@ public class TrackObjects extends HCModule {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference trackPrevID = objectMeasurementReferences.get(TRACK_PREV_ID);
-        MeasurementReference trackNextID = objectMeasurementReferences.get(TRACK_NEXT_ID);
+        MeasurementReference trackPrevID = objectMeasurementReferences.get(Measurements.TRACK_PREV_ID);
+        MeasurementReference trackNextID = objectMeasurementReferences.get(Measurements.TRACK_NEXT_ID);
 
         trackPrevID.setImageObjName(inputObjectsName);
         trackNextID.setImageObjName(inputObjectsName);

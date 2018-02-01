@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
@@ -8,29 +9,20 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
- * Created by sc13967 on 17/01/2018.
+ * Created by sc13967 on 31/01/2018.
  */
-public class InvertIntensity extends HCModule {
+public class RunImageJMacro extends HCModule {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String MACRO_TITLE = "Macro title";
+    public static final String ARGUMENTS = "Parameters";
     public static final String SHOW_IMAGE = "Show image";
 
-    public static void process(ImagePlus inputImagePlus) {
-        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    inputImagePlus.setPosition(c, z, t);
-                    inputImagePlus.getProcessor().invert();
-                }
-            }
-        }
-        inputImagePlus.setPosition(1,1,1);
-    }
 
     @Override
     public String getTitle() {
-        return "Invert image intensity";
+        return "Run ImageJ macro";
     }
 
     @Override
@@ -48,12 +40,14 @@ public class InvertIntensity extends HCModule {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String macroTitle = parameters.getValue(MACRO_TITLE);
+        String arguments = parameters.getValue(ARGUMENTS);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        // Applying intensity inversion
-        process(inputImagePlus);
+        // Applying the macro
+        IJ.run(inputImagePlus,macroTitle,arguments);
 
         // If selected, displaying the image
         if (parameters.getValue(SHOW_IMAGE)) {
@@ -69,6 +63,7 @@ public class InvertIntensity extends HCModule {
             workspace.addImage(outputImage);
 
         }
+
     }
 
     @Override
@@ -76,6 +71,8 @@ public class InvertIntensity extends HCModule {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(MACRO_TITLE, Parameter.STRING,""));
+        parameters.add(new Parameter(ARGUMENTS, Parameter.STRING,""));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
@@ -95,6 +92,8 @@ public class InvertIntensity extends HCModule {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
+        returnedParameters.add(parameters.getParameter(MACRO_TITLE));
+        returnedParameters.add(parameters.getParameter(ARGUMENTS));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;

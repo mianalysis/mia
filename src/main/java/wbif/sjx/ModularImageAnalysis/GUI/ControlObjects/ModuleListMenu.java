@@ -19,7 +19,9 @@ public class ModuleListMenu extends JMenu implements MouseListener {
         this.gui = gui;
 
         setText(name);
-        for (HCModule module : modules) add(new PopupMenuItem(gui,module));
+        for (HCModule module : modules) {
+            add(new PopupMenuItem(gui,module));
+        }
         addMouseListener(this);
 
     }

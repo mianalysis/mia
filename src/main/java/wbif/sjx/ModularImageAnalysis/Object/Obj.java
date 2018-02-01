@@ -270,5 +270,27 @@ public class Obj extends Volume {
             }
         }
     }
+
+    public Image getAsImage(String imageName) {
+        int[][] range = getCoordinateRange();
+        int width = range[0][1]-range[0][0]+1;
+        int height = range[1][1]-range[1][0]+1;
+        int depth = range[2][1]-range[2][0]+1;
+
+        ImagePlus ipl = IJ.createImage(imageName,width,height,depth,8);
+
+        for (Point<Integer> point:getPoints()) {
+            int x = point.getX()-range[0][0];
+            int y = point.getY()-range[1][0];
+            int z = point.getZ()-range[2][0];
+
+            ipl.setPosition(z+1);
+            ipl.getProcessor().putPixel(x,y,255);
+
+        }
+
+        return new Image(imageName,ipl);
+
+    }
 }
 

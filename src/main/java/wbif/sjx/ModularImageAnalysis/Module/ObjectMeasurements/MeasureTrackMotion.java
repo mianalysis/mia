@@ -4,12 +4,27 @@ import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Track;
 
+import java.util.TreeMap;
+
 /**
  * Created by steph on 24/05/2017.
  */
 public class MeasureTrackMotion extends HCModule {
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
+
+
+    private interface Measurements {
+        String DURATION = "TRACK_ANALYSIS//DURATION";
+        String TOTAL_PATH_LENGTH = "TRACK_ANALYSIS//TOTAL_PATH_LENGTH";
+        String EUCLIDEAN_DISTANCE = "TRACK_ANALYSIS//EUCLIDEAN_DISTANCE";
+        String DIRECTIONALITY_RATIO = "TRACK_ANALYSIS//DIRECTIONALITY_RATIO";
+        String INSTANTANEOUS_VELOCITY = "TRACK_ANALYSIS//INSTANTANEOUS_VELOCITY";
+        String CUMULATIVE_PATH_LENGTH = "TRACK_ANALYSIS//CUMULATIVE_PATH_LENGTH";
+        String ROLLING_EUCLIDEAN_DISTANCE = "TRACK_ANALYSIS//ROLLING_EUCLIDEAN_DISTANCE";
+        String ROLLING_DIRECTIONALITY_RATIO = "TRACK_ANALYSIS//ROLLING_DIRECTIONALITY_RATIO";
+
+    }
 
 
     @Override
@@ -33,7 +48,6 @@ public class MeasureTrackMotion extends HCModule {
 
         // Converting objects to Track class object
         for (Obj inputTrackObject:inputTrackObjects.values()) {
-
             // Initialising stores for coordinates
             double[] x = new double[inputTrackObject.getChildren(inputSpotObjectsName).size()];
             double[] y = new double[inputTrackObject.getChildren(inputSpotObjectsName).size()];
@@ -56,58 +70,52 @@ public class MeasureTrackMotion extends HCModule {
 
             if (x.length == 0) {
                 // Adding measurements to track objects
-                Measurement measurement = new Measurement(Measurement.DIRECTIONALITY_RATIO, Double.NaN);
-                measurement.setSource(this);
-                inputTrackObject.addMeasurement(measurement);
-
-                measurement = new Measurement(Measurement.EUCLIDEAN_DISTANCE, Double.NaN);
-                measurement.setSource(this);
-                inputTrackObject.addMeasurement(measurement);
-
-                measurement = new Measurement(Measurement.TOTAL_PATH_LENGTH, Double.NaN);
-                measurement.setSource(this);
-                inputTrackObject.addMeasurement(measurement);
-
-                measurement = new Measurement(Measurement.DURATION, Double.NaN);
-                measurement.setSource(this);
-                inputTrackObject.addMeasurement(measurement);
+                inputTrackObject.addMeasurement(new Measurement(Measurements.DURATION, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.TOTAL_PATH_LENGTH, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.DIRECTIONALITY_RATIO, Double.NaN));
 
             } else {
                 // Adding measurements to track objects
-                Measurement measurement = new Measurement(Measurement.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false));
-                measurement.setSource(this);
-                inputTrackObject.addMeasurement(measurement);
-
-                measurement = new Measurement(Measurement.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false));
-                measurement.setSource(this);
-                inputTrackObject.addMeasurement(measurement);
-
-                measurement = new Measurement(Measurement.TOTAL_PATH_LENGTH, track.getTotalPathLength(false));
-                measurement.setSource(this);
-                inputTrackObject.addMeasurement(measurement);
-
-                measurement = new Measurement(Measurement.DURATION, track.getDuration());
-                measurement.setSource(this);
-                inputTrackObject.addMeasurement(measurement);
-
+                inputTrackObject.addMeasurement(new Measurement(Measurements.DURATION, track.getDuration()));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE, track.getEuclideanDistance(false)));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.TOTAL_PATH_LENGTH, track.getTotalPathLength(false)));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(false)));
             }
 
+            // Calculating rolling values
+            TreeMap<Integer, Double> velocity = track.getInstantaneousVelocity(false);
+            TreeMap<Integer, Double> pathLength = track.getRollingTotalPathLength(false);
+            TreeMap<Integer, Double> euclidean = track.getRollingEuclideanDistance(false);
+            TreeMap<Integer, Double> dirRatio = track.getRollingDirectionalityRatio(false);
+
+            for (Obj spotObject : inputTrackObject.getChildren(inputSpotObjectsName).values()) {
+                int t = spotObject.getT();
+                spotObject.addMeasurement(new Measurement(Measurements.INSTANTANEOUS_VELOCITY, velocity.get(t)));
+                spotObject.addMeasurement(new Measurement(Measurements.CUMULATIVE_PATH_LENGTH, pathLength.get(t)));
+                spotObject.addMeasurement(new Measurement(Measurements.ROLLING_EUCLIDEAN_DISTANCE, euclidean.get(t)));
+                spotObject.addMeasurement(new Measurement(Measurements.ROLLING_DIRECTIONALITY_RATIO, dirRatio.get(t)));
+            }
         }
     }
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new Parameter( INPUT_TRACK_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter( INPUT_SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null));
+        parameters.add(new Parameter(INPUT_TRACK_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(INPUT_SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null));
 
     }
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurement.DIRECTIONALITY_RATIO));
-        objectMeasurementReferences.add(new MeasurementReference(Measurement.EUCLIDEAN_DISTANCE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurement.TOTAL_PATH_LENGTH));
-        objectMeasurementReferences.add(new MeasurementReference(Measurement.DURATION));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIRECTIONALITY_RATIO));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.EUCLIDEAN_DISTANCE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.TOTAL_PATH_LENGTH));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DURATION));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.INSTANTANEOUS_VELOCITY));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.CUMULATIVE_PATH_LENGTH));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.ROLLING_EUCLIDEAN_DISTANCE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.ROLLING_DIRECTIONALITY_RATIO));
 
     }
 
@@ -138,11 +146,16 @@ public class MeasureTrackMotion extends HCModule {
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
+        objectMeasurementReferences.updateImageObjectName(Measurements.DIRECTIONALITY_RATIO,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.EUCLIDEAN_DISTANCE,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.TOTAL_PATH_LENGTH,inputTrackObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.DURATION,inputTrackObjects);
 
-        objectMeasurementReferences.updateImageObjectName(Measurement.DIRECTIONALITY_RATIO,inputTrackObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurement.EUCLIDEAN_DISTANCE,inputTrackObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurement.TOTAL_PATH_LENGTH,inputTrackObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurement.DURATION,inputTrackObjects);
+        String inputSpotObjects  = parameters.getValue(INPUT_SPOT_OBJECTS);
+        objectMeasurementReferences.updateImageObjectName(Measurements.INSTANTANEOUS_VELOCITY,inputSpotObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.CUMULATIVE_PATH_LENGTH,inputSpotObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.ROLLING_EUCLIDEAN_DISTANCE,inputSpotObjects);
+        objectMeasurementReferences.updateImageObjectName(Measurements.ROLLING_DIRECTIONALITY_RATIO,inputSpotObjects);
 
         return objectMeasurementReferences;
 
