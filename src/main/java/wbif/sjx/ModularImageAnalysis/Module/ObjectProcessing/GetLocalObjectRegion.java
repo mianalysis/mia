@@ -135,13 +135,18 @@ public class GetLocalObjectRegion extends HCModule {
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
-        returnedParameters.add(parameters.getParameter(CALIBRATED_RADIUS));
         returnedParameters.add(parameters.getParameter(USE_MEASUREMENT));
 
         if (parameters.getValue(USE_MEASUREMENT)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME));
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            parameters.updateValueSource(MEASUREMENT_NAME,inputObjectsName);
+        } else {
+            returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
+
         }
+
+        returnedParameters.add(parameters.getParameter(CALIBRATED_RADIUS));
 
         return returnedParameters;
 

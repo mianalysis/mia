@@ -173,6 +173,7 @@ public class ThresholdImage extends HCModule {
                 if (verbose) System.out.println(
                         "["+moduleName+"] Applying global "+globalThresholdAlgorithm+" threshold (multplier = "+thrMult+" x)");
                 applyGlobalThresholdToStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
+                break;
 
             case ThresholdTypes.LOCAL_TYPE:
                 switch (localThresholdAlgorithm) {

@@ -38,10 +38,10 @@ public class RelateObjects extends HCModule {
     }
 
     public interface Measurements {
-        String DIST_SURFACE_PX_MEAS = "RELATE_OBJ//DIST_TO_PARENT_SURF_PX";
-        String DIST_CENTROID_PX_MEAS = "RELATE_OBJ//DIST_TO_PARENT_CENT_PX";
-        String DIST_SURFACE_CAL_MEAS = "RELATE_OBJ//DIST_TO_PARENT_SURF_CAL";
-        String DIST_CENTROID_CAL_MEAS = "RELATE_OBJ//DIST_TO_PARENT_CENT_CAL";
+        String DIST_SURFACE_PX = "RELATE_OBJ//DIST_TO_PARENT_SURF_PX";
+        String DIST_CENTROID_PX = "RELATE_OBJ//DIST_TO_PARENT_CENT_PX";
+        String DIST_SURFACE_CAL = "RELATE_OBJ//DIST_TO_PARENT_SURF_CAL";
+        String DIST_CENTROID_CAL = "RELATE_OBJ//DIST_TO_PARENT_CENT_CAL";
 
     }
 
@@ -137,12 +137,12 @@ public class RelateObjects extends HCModule {
                 currentLink.addChild(childObject);
 
                 if (referencePoint.equals(ReferencePoints.CENTROID)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX_MEAS,minDist));
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_CAL_MEAS,minDist*dpp));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX,minDist));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_CAL,minDist*dpp));
 
                 } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX_MEAS,minDist));
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_CAL_MEAS,minDist*dpp));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX,minDist));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_CAL,minDist*dpp));
 
                 }
             }
@@ -287,10 +287,10 @@ public class RelateObjects extends HCModule {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_PX_MEAS));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_PX_MEAS));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_CAL_MEAS));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_CAL_MEAS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_CAL));
 
     }
 
@@ -334,15 +334,20 @@ public class RelateObjects extends HCModule {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
 
-        MeasurementReference distSurfPx = objectMeasurementReferences.get(Measurements.DIST_SURFACE_PX_MEAS);
-        MeasurementReference distCentPx = objectMeasurementReferences.get(Measurements.DIST_CENTROID_PX_MEAS);
-        MeasurementReference distSurfCal = objectMeasurementReferences.get(Measurements.DIST_SURFACE_CAL_MEAS);
-        MeasurementReference distCentCal = objectMeasurementReferences.get(Measurements.DIST_CENTROID_CAL_MEAS);
+        MeasurementReference distSurfPx = objectMeasurementReferences.get(Measurements.DIST_SURFACE_PX);
+        MeasurementReference distCentPx = objectMeasurementReferences.get(Measurements.DIST_CENTROID_PX);
+        MeasurementReference distSurfCal = objectMeasurementReferences.get(Measurements.DIST_SURFACE_CAL);
+        MeasurementReference distCentCal = objectMeasurementReferences.get(Measurements.DIST_CENTROID_CAL);
 
         distSurfPx.setImageObjName(childObjectsName);
         distCentPx.setImageObjName(childObjectsName);
         distSurfCal.setImageObjName(childObjectsName);
         distCentCal.setImageObjName(childObjectsName);
+
+        distCentPx.setCalculated(false);
+        distCentCal.setCalculated(false);
+        distSurfPx.setCalculated(false);
+        distSurfCal.setCalculated(false);
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
@@ -350,14 +355,10 @@ public class RelateObjects extends HCModule {
                     case ReferencePoints.CENTROID:
                         distCentPx.setCalculated(true);
                         distCentCal.setCalculated(true);
-                        distSurfPx.setCalculated(false);
-                        distSurfCal.setCalculated(false);
 
                         break;
 
                     case ReferencePoints.SURFACE:
-                        distCentPx.setCalculated(false);
-                        distCentCal.setCalculated(false);
                         distSurfPx.setCalculated(true);
                         distSurfCal.setCalculated(true);
 
