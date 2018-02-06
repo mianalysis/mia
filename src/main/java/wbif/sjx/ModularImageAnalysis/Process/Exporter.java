@@ -3,6 +3,8 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -111,7 +113,7 @@ public class Exporter {
 
                 // Creating new elements for each image in the current workspace with at least one measurement
                 for (String imageName:workspace.getImages().keySet()) {
-                    Image image = workspace.getImages().get(imageName);
+                    Image<?> image = workspace.getImages().get(imageName);
 
                     if (image.getMeasurements() != null) {
                         Element imageElement = doc.createElement("IMAGE");

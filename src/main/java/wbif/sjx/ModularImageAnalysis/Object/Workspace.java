@@ -69,6 +69,7 @@ public class Workspace {
             // Sets the ImagePlus to null, but leaves measurements
             for (Image image:images.values()) {
                 image.setImagePlus(null);
+
             }
 
         } else {
