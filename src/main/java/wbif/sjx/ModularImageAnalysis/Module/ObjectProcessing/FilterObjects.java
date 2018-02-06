@@ -28,8 +28,8 @@ public class FilterObjects extends HCModule {
         String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
         String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
 
-        String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT, MIN_NUMBER_OF_CHILDREN,
-                MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
+        String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT,
+                MIN_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
 
     }
 

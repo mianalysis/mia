@@ -1,15 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import net.imglib2.Interval;
-import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.View;
+import net.imglib2.*;
 import net.imglib2.img.Img;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.IterableRandomAccessibleInterval;
 import net.imglib2.view.RandomAccessiblePair;
+import net.imglib2.view.Views;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -57,7 +55,14 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
 
         switch (positionMode) {
             case PositionModes.INTENSITY_PROJECTION:
-                RandomAccess randomAccess = inputImg.randomAccess();
+                long dimX = inputImg.dimension(0);
+                long dimY = inputImg.dimension(1);
+                long dimZ = inputImg.dimension(2);
+
+                RandomAccessibleInterval<T> view = Views.interval(inputImg,new long[]{dimX/2,dimY/2,0},new long[]{dimX/2,dimY/2,dimZ});
+                ImageJFunctions.show(view);
+
+                IterableInterval<T> interval = Views.iterable(view);
 
 
                 break;
