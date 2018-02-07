@@ -2,12 +2,12 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import net.imglib2.*;
 import net.imglib2.img.Img;
+import net.imglib2.img.ImgFactory;
+import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import net.imglib2.view.IterableRandomAccessibleInterval;
-import net.imglib2.view.RandomAccessiblePair;
-import net.imglib2.view.Views;
+import net.imglib2.view.*;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -55,23 +55,46 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
 
         switch (positionMode) {
             case PositionModes.INTENSITY_PROJECTION:
-                long dimX = inputImg.dimension(0);
-                long dimY = inputImg.dimension(1);
-                long dimZ = inputImg.dimension(2);
-
-                RandomAccessibleInterval<T> view = Views.interval(inputImg,new long[]{dimX/2,dimY/2,0},new long[]{dimX/2,dimY/2,dimZ});
-                ImageJFunctions.show(view);
-
-                IterableInterval<T> interval = Views.iterable(view);
-
 
                 break;
 
             case PositionModes.LARGEST_OBJ_CENTROID:
+                // Get centre of object
+                long dimX = inputImg.dimension(0);
+                long dimY = inputImg.dimension(1);
+                long dimZ = inputImg.dimension(2);
+
+                // Get orthogonal views through centre point
+                IntervalView<T> viewXY = Views.hyperSlice(inputImg,2,(dimZ/2));
+                IntervalView<T> viewXZ = Views.hyperSlice(inputImg,1,(dimY/2));
+                IntervalView<T> viewYZ = Views.hyperSlice(inputImg,0,(dimX/2));
+                viewYZ = Views.rotate(viewYZ,0,1);
+
+                // Combine three views into a single image
+                // Creating a single image, large enough to hold all images
+                final ImgFactory< T > factory = new ArrayImgFactory< T >();
+                final long[] dimensions = new long[] { viewXY.dimension(0)+viewYZ.dimension(0), viewXY.dimension(1)+viewXZ.dimension(1) };
+                final Img< T > viewOrtho = factory.create( dimensions, viewXY.firstElement() );
+
+                // Place XY plane pixels in orthogonal view
+                Cursor<T> cursorXY = viewXY.cursor();
+                Cursor<T> cursorXZ = viewXZ.cursor();
+                Cursor<T> cursorYZ = viewYZ.cursor();
+
+                IntervalView<T> orthoViewXY = Views.offsetInterval(viewOrtho,new long[]{0,0},new long[]{dimX,dimY});
+                IntervalView<T> orthoViewXZ = Views.offsetInterval(viewOrtho,new long[]{dimX,0},new long[]{dimZ,dimY});
+                IntervalView<T> orthoViewYZ = Views.offsetInterval(viewOrtho,new long[]{0,dimY},new long[]{dimX,dimZ});
+                Cursor<T> cursorOrthoXY = orthoViewXY.cursor();
+
+                while (cursorXY.hasNext()) {
+                    cursorOrthoXY.next().set(cursorXY.next());
+                }
+
+                ImageJFunctions.show(viewOrtho);
 
                 break;
-        }
 
+        }
     }
 
     @Override
