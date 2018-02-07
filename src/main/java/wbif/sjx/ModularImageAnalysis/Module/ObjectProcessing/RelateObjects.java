@@ -355,13 +355,11 @@ public class RelateObjects extends HCModule {
                     case ReferencePoints.CENTROID:
                         distCentPx.setCalculated(true);
                         distCentCal.setCalculated(true);
-
                         break;
 
                     case ReferencePoints.SURFACE:
                         distSurfPx.setCalculated(true);
                         distSurfCal.setCalculated(true);
-
                         break;
                 }
                 break;
