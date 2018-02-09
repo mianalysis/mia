@@ -16,6 +16,7 @@ import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;

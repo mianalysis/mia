@@ -30,6 +30,8 @@ public class HoughObjectDetection extends HCModule {
     public static final String EXCLUSION_RADIUS = "Exclusion radius (px)";
     public static final String SHOW_TRANSFORM_IMAGE = "Show transform image";
     public static final String SHOW_OBJECTS = "Show detected objects";
+    public static final String SHOW_HOUGH_SCORE = "Show detection score";
+    public static final String LABEL_SIZE = "Label size";
 
 
     private interface Measurements {
@@ -66,6 +68,8 @@ public class HoughObjectDetection extends HCModule {
         int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
         boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS);
+        boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE);
+        int labelSize = parameters.getValue(LABEL_SIZE);
 
         // Storing the image calibration
         Calibration calibration = inputImagePlus.getCalibration();
@@ -154,8 +158,15 @@ public class HoughObjectDetection extends HCModule {
 
             String colourMode = AddObjectsOverlay.ColourModes.RANDOM_COLOUR;
             HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(outputObjects,colourMode,"","");
+
+            HashMap<Obj, String> IDs = null;
+            if (showHoughScore) {
+                String labelMode = AddObjectsOverlay.LabelModes.MEASUREMENT_VALUE;
+                IDs = AddObjectsOverlay.getIDs(outputObjects, labelMode, Measurements.SCORE, "",0);
+            }
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
-            AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,colours,null,8);
+
+            AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,colours,IDs,labelSize);
 
             dispIpl.show();
 
@@ -173,6 +184,8 @@ public class HoughObjectDetection extends HCModule {
         parameters.add(new Parameter(EXCLUSION_RADIUS,Parameter.INTEGER,10));
         parameters.add(new Parameter(SHOW_TRANSFORM_IMAGE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SHOW_HOUGH_SCORE,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(LABEL_SIZE,Parameter.INTEGER,12));
 
     }
 
@@ -183,7 +196,28 @@ public class HoughObjectDetection extends HCModule {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(MIN_RADIUS));
+        returnedParameters.add(parameters.getParameter(MAX_RADIUS));
+        returnedParameters.add(parameters.getParameter(NORMALISE_SCORES));
+        returnedParameters.add(parameters.getParameter(DETECTION_THRESHOLD));
+        returnedParameters.add(parameters.getParameter(EXCLUSION_RADIUS));
+        returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));
+        returnedParameters.add(parameters.getParameter(SHOW_OBJECTS));
+
+        if (parameters.getValue(SHOW_OBJECTS)) {
+            returnedParameters.add(parameters.getParameter(SHOW_HOUGH_SCORE));
+
+            if (parameters.getValue(SHOW_HOUGH_SCORE)) {
+                returnedParameters.add(parameters.getParameter(LABEL_SIZE));
+            }
+        }
+
+        return returnedParameters;
+
     }
 
     @Override

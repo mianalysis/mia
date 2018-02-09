@@ -30,7 +30,7 @@ import java.io.*;
  * Created by sc13967 on 23/06/2017.
  */
 public class AnalysisHandler {
-    private BatchProcessor batchProcessor;
+    private static BatchProcessor batchProcessor;
 
     public void saveAnalysis(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
         // Creating a module collection holding the input and output
@@ -423,5 +423,9 @@ public class AnalysisHandler {
     public void stopAnalysis() {
         batchProcessor.stopAnalysis();
 
+    }
+
+    public static BatchProcessor getBatchProcessor() {
+        return batchProcessor;
     }
 }

@@ -138,47 +138,73 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    private void runLinear(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws GenericMIAException, IOException {
-        File next = getNextValidFileInStructure();
+    private void runLinear(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) {
+        Thread t = new Thread(() -> {
+            File next = getNextValidFileInStructure();
 
-        boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
-        int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
+            boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
+            int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
 
-        int fileCounter = 0;
-        while (next != null) {
+            int fileCounter = 0;
+            while (next != null) {
+                // Running the analysis
+                Workspace workspace = workspaces.getNewWorkspace(next);
+                try {
+                    analysis.execute(workspace, verbose);
+                } catch (GenericMIAException e) {
+                    e.printStackTrace();
+                }
+
+                // Clearing images from the workspace to prevent memory leak
+                workspace.clearAllImages(true);
+
+                next = getNextValidFileInStructure();
+
+                fileCounter++;
+                if (continuousExport && fileCounter % saveNFiles == 0) try {
+                    exporter.exportResults(workspaces, analysis);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                // Adding a blank line to the output
+                if (verbose) System.out.println(" ");
+
+            }
+        });
+
+        t.start();
+
+    }
+
+    private void runSingle(WorkspaceCollection workspaces, Analysis analysis) {
+        Thread t = new Thread(() -> {
             // Running the analysis
-            Workspace workspace = workspaces.getNewWorkspace(next);
-            analysis.execute(workspace, verbose);
+            Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
+            try {
+                analysis.execute(workspace, verbose);
+            } catch (GenericMIAException e) {
+                e.printStackTrace();
+            }
 
             // Clearing images from the workspace to prevent memory leak
             workspace.clearAllImages(true);
 
-            next = getNextValidFileInStructure();
-
-            fileCounter++;
-            if (continuousExport && fileCounter%saveNFiles==0) exporter.exportResults(workspaces,analysis);
-
             // Adding a blank line to the output
             if (verbose) System.out.println(" ");
 
-        }
-    }
+        });
 
-    private void runSingle(WorkspaceCollection workspaces, Analysis analysis) throws GenericMIAException {
-        // Running the analysis
-        Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
-        analysis.execute(workspace, verbose);
-
-        // Clearing images from the workspace to prevent memory leak
-        workspace.clearAllImages(true);
-
-        // Adding a blank line to the output
-        if (verbose) System.out.println(" ");
+        t.start();
 
     }
 
     public void stopAnalysis() {
-        pool.shutdownNow();
+        if (pool == null) {
+            Thread.currentThread().interrupt();
+        } else {
+            pool.shutdownNow();
+        }
         shutdownEarly = true;
 
         System.out.println("Shutdown complete!");
