@@ -674,7 +674,6 @@ public class Exporter {
                 Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
                 timepointHeaderCell.setCellValue("TIMEPOINT");
 
-
                 MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(objectName);
 
                 // If the current object hasn't got any assigned measurements, skip it

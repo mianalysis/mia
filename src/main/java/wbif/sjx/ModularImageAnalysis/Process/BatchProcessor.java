@@ -20,7 +20,6 @@ import java.util.concurrent.*;
  */
 public class BatchProcessor extends FileCrawler {
     private boolean verbose = true;
-    private boolean parallel = true;
     private int nThreads = Runtime.getRuntime().availableProcessors()/2;
 
     private ThreadPoolExecutor pool;
@@ -53,8 +52,7 @@ public class BatchProcessor extends FileCrawler {
 
         } else {
             // The system can run multiple files in parallel or one at a time
-            if (parallel) runParallel(workspaces, analysis, exporter);
-            else runLinear(workspaces, analysis, exporter);
+            runParallel(workspaces, analysis, exporter);
 
         }
 
@@ -138,47 +136,11 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    private void runLinear(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) {
-        Thread t = new Thread(() -> {
-            File next = getNextValidFileInStructure();
+    private void runSingle(WorkspaceCollection workspaces, Analysis analysis) throws InterruptedException {
+        // Setting up the ExecutorService, which will manage the threads
+        pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
-            boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
-            int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
-
-            int fileCounter = 0;
-            while (next != null) {
-                // Running the analysis
-                Workspace workspace = workspaces.getNewWorkspace(next);
-                try {
-                    analysis.execute(workspace, verbose);
-                } catch (GenericMIAException e) {
-                    e.printStackTrace();
-                }
-
-                // Clearing images from the workspace to prevent memory leak
-                workspace.clearAllImages(true);
-
-                next = getNextValidFileInStructure();
-
-                fileCounter++;
-                if (continuousExport && fileCounter % saveNFiles == 0) try {
-                    exporter.exportResults(workspaces, analysis);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                // Adding a blank line to the output
-                if (verbose) System.out.println(" ");
-
-            }
-        });
-
-        t.start();
-
-    }
-
-    private void runSingle(WorkspaceCollection workspaces, Analysis analysis) {
-        Thread t = new Thread(() -> {
+        Runnable task = () -> {
             // Running the analysis
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
             try {
@@ -193,9 +155,13 @@ public class BatchProcessor extends FileCrawler {
             // Adding a blank line to the output
             if (verbose) System.out.println(" ");
 
-        });
+        };
 
-        t.start();
+        // Submit the one job, then telling the pool not to accept any more jobs and to wait until all queued jobs have
+        // completed
+        pool.submit(task);
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 
@@ -220,14 +186,6 @@ public class BatchProcessor extends FileCrawler {
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
-    }
-
-    public boolean isParallel() {
-        return parallel;
-    }
-
-    public void setParallel(boolean parallel) {
-        this.parallel = parallel;
     }
 
     public int getnThreads() {
