@@ -67,21 +67,14 @@ public abstract class Analysis implements Serializable {
 
         // Running through modules
         for (HCModule module:modules) {
+            if (Thread.currentThread().isInterrupted()) break;
             if (module.isEnabled()) module.execute(workspace,verbose);
 
-            if (shutdown) {
-                shutdown = false;
-                System.out.println("Shutdown successful");
-                return false;
-
-            }
         }
 
         // We're only interested in the measurements now, so clearing images and object coordinates
         workspace.clearAllImages(true);
         workspace.clearAllObjects(true);
-
-        if (verbose) System.out.println("Analysis complete");
 
         return true;
 
@@ -117,5 +110,4 @@ public abstract class Analysis implements Serializable {
         shutdown = true;
 
     }
-
 }

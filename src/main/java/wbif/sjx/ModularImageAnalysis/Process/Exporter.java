@@ -3,6 +3,8 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -111,7 +113,7 @@ public class Exporter {
 
                 // Creating new elements for each image in the current workspace with at least one measurement
                 for (String imageName:workspace.getImages().keySet()) {
-                    Image image = workspace.getImages().get(imageName);
+                    Image<?> image = workspace.getImages().get(imageName);
 
                     if (image.getMeasurements() != null) {
                         Element imageElement = doc.createElement("IMAGE");
@@ -283,7 +285,7 @@ public class Exporter {
         if (measurementReferences == null) return measurementReferencesElement;
 
         for (MeasurementReference measurementReference:measurementReferences) {
-            Element measurementReferenceElement = doc.createElement("MEASUREMENT");
+            Element measurementReferenceElement = doc.createElement("MEASUREMENT_FOR_COLOUR");
 
             measurementReferenceElement.setAttribute("NAME",measurementReference.getNickName());
             measurementReferenceElement.setAttribute("IS_CALCULATED",String.valueOf(measurementReference.isCalculated()));
@@ -671,7 +673,6 @@ public class Exporter {
                 // Adding timepoint header
                 Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
                 timepointHeaderCell.setCellValue("TIMEPOINT");
-
 
                 MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(objectName);
 

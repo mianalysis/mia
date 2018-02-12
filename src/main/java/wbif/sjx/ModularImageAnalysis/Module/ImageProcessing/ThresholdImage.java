@@ -173,6 +173,7 @@ public class ThresholdImage extends HCModule {
                 if (verbose) System.out.println(
                         "["+moduleName+"] Applying global "+globalThresholdAlgorithm+" threshold (multplier = "+thrMult+" x)");
                 applyGlobalThresholdToStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
+                break;
 
             case ThresholdTypes.LOCAL_TYPE:
                 switch (localThresholdAlgorithm) {
@@ -235,7 +236,14 @@ public class ThresholdImage extends HCModule {
         }
 
         // If the image is being saved as a new image, adding it to the workspace
-        if (!applyToInput) {
+        if (applyToInput) {
+            inputImage.setImagePlus(inputImagePlus);
+            // If selected, displaying the image
+            if (parameters.getValue(SHOW_IMAGE)) {
+                new Duplicator().run(inputImagePlus).show();
+            }
+
+        } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
@@ -243,12 +251,6 @@ public class ThresholdImage extends HCModule {
             // If selected, displaying the image
             if (parameters.getValue(SHOW_IMAGE)) {
                 new Duplicator().run(outputImage.getImagePlus()).show();
-            }
-
-        } else {
-            // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(inputImagePlus).show();
             }
         }
     }

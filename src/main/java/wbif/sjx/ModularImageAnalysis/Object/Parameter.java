@@ -107,7 +107,7 @@ public class Parameter implements Serializable {
 
     private final String name;
     private int type;
-    private Object valueSource; // Where the possible values come from (used for CHOICE_ARRAY and MEASUREMENT)
+    private Object valueSource; // Where the possible values come from (used for CHOICE_ARRAY and MEASUREMENT_FOR_COLOUR)
     private Object value;
     private boolean visible = false;
 

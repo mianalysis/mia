@@ -158,7 +158,7 @@ public class RelateObjectsTest {
                 actualX[iter] = (int) childSpot.getX(true)[0];
                 actualY[iter] = (int) childSpot.getY(true)[0];
                 actualZ[iter] = (int) childSpot.getZ(true,false)[0];
-                actualDist[iter++] = childSpot.getMeasurement(RelateObjects.Measurements.DIST_CENTROID_PX_MEAS).getValue();
+                actualDist[iter++] = childSpot.getMeasurement(RelateObjects.Measurements.DIST_CENTROID_PX).getValue();
 
             }
 
@@ -243,7 +243,7 @@ public class RelateObjectsTest {
                 actualX[iter] = (int) childSpot.getX(true)[0];
                 actualY[iter] = (int) childSpot.getY(true)[0];
                 actualZ[iter] = (int) childSpot.getZ(true,false)[0];
-                actualDist[iter++] = childSpot.getMeasurement(RelateObjects.Measurements.DIST_CENTROID_PX_MEAS).getValue();
+                actualDist[iter++] = childSpot.getMeasurement(RelateObjects.Measurements.DIST_CENTROID_PX).getValue();
 
             }
 
