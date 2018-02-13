@@ -35,7 +35,7 @@ public class ProjectObjectsTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection inputObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection inputObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(inputObjects);
 
         // Initialising ProjectObjects
