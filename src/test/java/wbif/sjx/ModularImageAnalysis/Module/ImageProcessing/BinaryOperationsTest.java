@@ -1,7 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -44,7 +46,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,1);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -109,7 +112,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,1);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -175,7 +179,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,1);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE);
+        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -241,7 +245,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,1);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -306,7 +311,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,true);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,1);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -369,7 +375,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,0);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -433,7 +440,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,5);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -498,7 +506,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,5);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -564,7 +573,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,5);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -630,7 +640,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,5);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -699,7 +710,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,100);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -768,7 +780,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,100);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -838,7 +851,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,100);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);
@@ -908,7 +922,8 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.APPLY_TO_INPUT,false);
         binaryOperations.updateParameterValue(BinaryOperations.NUM_ITERATIONS,100);
         binaryOperations.updateParameterValue(BinaryOperations.OUTPUT_IMAGE,"Test_output");
-        binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE);
+        binaryOperations.updateParameterValue(
+                BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
         binaryOperations.run(workspace,false);

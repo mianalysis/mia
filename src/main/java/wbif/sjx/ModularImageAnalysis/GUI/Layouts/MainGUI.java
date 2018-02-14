@@ -71,6 +71,7 @@ public class MainGUI extends GUI {
         // Creating the menu bar
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
+        frame.setResizable(false);
 
         if (debugOn) {
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -412,12 +413,14 @@ public class MainGUI extends GUI {
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
 
-        JTextField textField = new JTextField();
+        StatusTextField textField = new StatusTextField();
         textField.setBackground(null);
         textField.setPreferredSize(new Dimension(width - 20, 25));
         textField.setBorder(null);
         textField.setText("Modular image analysis (version " + getClass().getPackage().getImplementationVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        textField.setEditable(false);
+        textField.setToolTipText(textField.getText());
         statusPanel.add(textField, c);
 
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
@@ -569,8 +572,8 @@ public class MainGUI extends GUI {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridwidth = 2;
         c.insets = new Insets(0, 0, 0, 5);
-        if (activeModule.getActiveParameters() != null) {
-            Iterator<Parameter> iterator = activeModule.getActiveParameters().values().iterator();
+        if (activeModule.updateAndGetParameters() != null) {
+            Iterator<Parameter> iterator = activeModule.updateAndGetParameters().values().iterator();
             while (iterator.hasNext()) {
                 Parameter parameter = iterator.next();
 
@@ -592,17 +595,18 @@ public class MainGUI extends GUI {
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_XLSX)
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
 
-            LinkedHashMap<String,Reference> imageReferences = getModules().getImageReferences();
-            for (String imageName:imageReferences.keySet()) {
-                if (imageReferences.get(imageName).getMeasurementReferences().isEmpty()) continue;
+            LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);
+            for (Parameter imageNameParameter:imageNameParameters) {
+                String imageName = imageNameParameter.getValue();
 
                 JPanel measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)",635);
                 c.gridx = 0;
                 c.gridy++;
                 paramsPanel.add(measurementHeader,c);
 
+                MeasurementReferenceCollection measurementReferences = getModules().getImageReferences(imageName);
                 // Iterating over the measurements for the current image, adding a control for each
-                for (MeasurementReference measurementReference:imageReferences.get(imageName).getMeasurementReferences()) {
+                for (MeasurementReference measurementReference:measurementReferences) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -613,17 +617,18 @@ public class MainGUI extends GUI {
                 }
             }
 
-            LinkedHashMap<String,Reference> objectReferences = getModules().getObjectReferences();
-            for (String objectName:objectReferences.keySet()) {
-                if (objectReferences.get(objectName).getMeasurementReferences().isEmpty()) continue;
+            LinkedHashSet<Parameter> objectNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_OBJECTS);
+            for (Parameter objectNameParameter:objectNameParameters) {
+                String objectName = objectNameParameter.getValue();
 
                 JPanel measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)",635);
                 c.gridx = 0;
                 c.gridy++;
                 paramsPanel.add(measurementHeader,c);
 
+                MeasurementReferenceCollection measurementReferences = getModules().getObjectReferences(objectName);
                 // Iterating over the measurements for the current object, adding a control for each
-                for (MeasurementReference measurementReference:objectReferences.get(objectName).getMeasurementReferences()) {
+                for (MeasurementReference measurementReference:measurementReferences) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control

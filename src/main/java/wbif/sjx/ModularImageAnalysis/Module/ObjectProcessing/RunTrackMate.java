@@ -15,14 +15,17 @@ import ij.gui.TextRoi;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import net.imglib2.type.operators.Add;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.NormaliseIntensity;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
 
@@ -41,14 +44,13 @@ public class RunTrackMate extends HCModule {
     public static final String LINKING_MAX_DISTANCE = "Max linking distance";
     public static final String GAP_CLOSING_MAX_DISTANCE = "Gap closing max distance";
     public static final String MAX_FRAME_GAP = "Max frame gap";
+    public static final String ESTIMATE_SIZE = "Estimate spot size";
     public static final String DO_TRACKING = "Run tracking";
     public static final String CREATE_TRACK_OBJECTS = "Create track objects";
     public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
     public static final String SHOW_OBJECTS = "Show objects";
     public static final String SHOW_ID = "Show ID";
     public static final String ID_MODE = "ID source";
-
-    private Reference spotObjects;
 
     public interface IDModes {
         String USE_SPOT_ID = "Use spot ID";
@@ -64,60 +66,33 @@ public class RunTrackMate extends HCModule {
 
     }
 
-    private static void createOverlay(ObjCollection inputObjects, ImagePlus ipl, boolean showID, boolean useParentID, String parentObjectsName) {
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
-            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-
-        }
-
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
-        Overlay ovl = ipl.getOverlay();
-
-        // Running through each object, adding it to the overlay along with an ID label
-        for (Obj object:inputObjects.values()) {
-            float H = new Random().nextFloat();
-            Color colour = Color.getHSBColor(H, 1, 1);
-
-            double xMean = object.getXMean(true);
-            double yMean = object.getYMean(true);
-            double zMean = object.getZMean(true,false);
-
-            // Getting coordinates to plot
-            int z = (int) Math.round(zMean+1);
-            int t = object.getT();
-
-            // Adding circles where the object centroids are
-            PointRoi roi = new PointRoi(xMean+1,yMean+1);
-            roi.setPointType(3);
-            if (ipl.isHyperStack()) {
-                roi.setPosition(1, z, t);
-            } else {
-                int pos = Math.max(Math.max(1,z),t);
-                roi.setPosition(pos);
-            }
-
-            if (showID) {
-                int ID = useParentID ? object.getParent(parentObjectsName).getID() : object.getID();
-                IJ.log("ID");
-                TextRoi text = new TextRoi(xMean+1, yMean+1, String.valueOf(ID));
-                text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
-
-                if (ipl.isHyperStack()) {
-                    text.setPosition(1, z, t);
-                } else {
-                    text.setPosition(Math.max(Math.max(1, z), t));
-                }
-                text.setStrokeColor(colour);
-                ovl.addElement(text);
-
-            }
-
-            roi.setStrokeColor(colour);
-            ovl.addElement(roi);
-
-        }
-    }
+//    private void addEstimatedDiameter(ObjCollection objects) {
+//        for (Obj object:objects.values()) {
+//            int x = (int) object.getX(true)[0];
+//            int y = (int) object.getY(true)[0];
+//            int z = (int) object.getZ(false,false)[0]; // In slice coordinates
+//            int r = (int) Math.round(object.getMeasurement(Measurements.ESTIMATED_DIAMETER).getValue());
+//
+//            double distXY = object.getDistPerPxXY();
+//            double distZ = object.getDistPerPxZ();
+//            double xyzRatio = distZ/distXY;
+//
+//            for (int xx = x-r; xx<=x+r; xx++) {
+//                for (int yy = y-r; yy<=y+r; yy++) {
+//                    // Z range in slice coordinates
+//                    int zMin = (int) Math.floor(z-r/xyzRatio);
+//                    int zMax = (int) Math.ceil(z+r/xyzRatio);
+//
+//                    for (int zz = zMin;zz<=zMax;zz++) {
+//                        double dist = Math.sqrt(((xx-x)*(xx-x))+((yy-y)*(yy-y))+((zz-z)*xyzRatio*(zz-z)*xyzRatio));
+//
+//
+//
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public String getTitle() {
@@ -152,16 +127,17 @@ public class RunTrackMate extends HCModule {
         double threshold = parameters.getValue(THRESHOLD);
         boolean normaliseIntensity = parameters.getValue(NORMALISE_INTENSITY);
         boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING);
+        boolean estimateSize = parameters.getValue(ESTIMATE_SIZE);
         double maxLinkDist = parameters.getValue(LINKING_MAX_DISTANCE);
         double maxGapDist = parameters.getValue(GAP_CLOSING_MAX_DISTANCE);
         int maxFrameGap = parameters.getValue(MAX_FRAME_GAP);
+        boolean showID = parameters.getValue(SHOW_ID);
 
         // Applying conversion to parameters
         if (calibratedUnits) {
             radius = calibration.getRawX(radius);
             maxLinkDist = calibration.getRawX(maxLinkDist);
             maxGapDist = calibration.getRawX(maxGapDist);
-
         }
 
         // Getting name of output objects
@@ -178,7 +154,6 @@ public class RunTrackMate extends HCModule {
         if (normaliseIntensity) {
             ipl = new Duplicator().run(ipl);
             NormaliseIntensity.normaliseIntenisty(ipl);
-
         }
 
         // Initialising TrackMate model to store data
@@ -233,25 +208,31 @@ public class RunTrackMate extends HCModule {
 
             }
 
-            if (verbose) System.out.println("["+moduleName+"] "+spots.getNSpots(false)+" trackObjects detected");
+            // Adding explicit volume to spots
+            if (estimateSize) {
+                ObjCollection spotVolumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.ESTIMATED_DIAMETER);
+
+                // Replacing spot volumes with explicit volume
+                for (Obj spotObject:spotObjects.values()) {
+                    Obj spotVolumeObject = spotObject.getParent("SpotVolume");
+                    spotObject.setPoints(spotVolumeObject.getPoints());
+                }
+            }
 
             // Adding spotObjects to the workspace
+            if (verbose) System.out.println("["+moduleName+"] "+spots.getNSpots(false)+" trackObjects detected");
             if (verbose) System.out.println("["+moduleName+"] Adding spotObjects ("+spotObjectsName+") to workspace");
             workspace.addObjects(spotObjects);
 
             // Displaying trackObjects (if selected)
             if (parameters.getValue(SHOW_OBJECTS)) {
-                System.out.println("Showing trackObjects");
-
-                // Creating a duplicate of the input image
                 ipl = new Duplicator().run(ipl);
                 IntensityMinMax.run(ipl,true);
-
-                // Getting parameters
-                boolean showID = parameters.getValue(SHOW_ID);
-
-                // Creating the overlay
-                createOverlay(spotObjects,ipl,showID,false,"");
+                String colourMode = AddObjectsOverlay.ColourModes.RANDOM_COLOUR;
+                HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(spotObjects,colourMode,"","");
+                String labelMode = AddObjectsOverlay.LabelModes.ID;
+                HashMap<Obj,String> IDs = showID ? AddObjectsOverlay.getIDs(spotObjects,labelMode,"","",0) : null;
+                AddObjectsOverlay.createOverlay(ipl,spotObjects,AddObjectsOverlay.PositionModes.CENTROID,null,colours,IDs,8);
 
                 // Displaying the overlay
                 ipl.show();
@@ -265,19 +246,13 @@ public class RunTrackMate extends HCModule {
         if (!trackmate.execTracking()) IJ.log(trackmate.getErrorMessage());
 
         // Converting tracks to local track model
-        int ID = 1;
         if (verbose) System.out.println("["+moduleName+"] Converting tracks to local track model");
 
         TrackModel trackModel = model.getTrackModel();
         Set<Integer> trackIDs = trackModel.trackIDs(false);
         for (Integer trackID:trackIDs) {
             // If necessary, creating a new summary object for the track
-            Obj trackObject = null;
-            if (createTracks) {
-                trackObject = new Obj(trackObjectsName,trackID,dppXY,dppZ,calibrationUnits);
-
-            }
-
+            Obj trackObject = createTracks ? new Obj(trackObjectsName,trackID,dppXY,dppZ,calibrationUnits) : null;
             ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
 
             // Sorting spots based on frame number
@@ -290,7 +265,7 @@ public class RunTrackMate extends HCModule {
             // Getting x,y,f and 2-channel spot intensities from TrackMate results
             for (Spot spot:spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
-                Obj spotObject = new Obj(spotObjectsName,ID++,dppXY,dppZ,calibrationUnits);
+                Obj spotObject = new Obj(spotObjectsName,spotObjects.getNextID(),dppXY,dppZ,calibrationUnits);
 
                 // Getting coordinates
                 int x = (int) spot.getDoublePosition(0);
@@ -307,13 +282,9 @@ public class RunTrackMate extends HCModule {
                     trackObject.addCoord(x,y,z);
                     trackObject.setT(0);
 
-                }
-
-                // Adding the connection between instance and summary objects
-                if (createTracks) {
+                    // Adding the connection between instance and summary objects
                     spotObject.addParent(trackObject);
                     trackObject.addChild(spotObject);
-
                 }
 
                 // Adding the instance object to the relevant collection
@@ -322,18 +293,26 @@ public class RunTrackMate extends HCModule {
             }
         }
 
+        // Adding explicit volume to spots
+        if (estimateSize) {
+            ObjCollection spotVolumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.ESTIMATED_DIAMETER);
+
+            // Replacing spot volumes with explicit volume
+            for (Obj spotObject:spotObjects.values()) {
+                Obj spotVolumeObject = spotObject.getParent("SpotVolume");
+                spotObject.setPoints(spotVolumeObject.getPoints());
+            }
+        }
+
         // Displaying the number of objects detected
         if (verbose) {
             System.out.println("["+moduleName+"] "+spotObjects.size()+" spots detected");
-
             if (createTracks) System.out.println("["+moduleName+"] "+trackObjects.size()+" tracks detected");
-
         }
 
         // Adding objects to the workspace
         if (verbose) System.out.println("["+moduleName+"] Adding objects ("+spotObjectsName+") to workspace");
         workspace.addObjects(spotObjects);
-
         if (createTracks) workspace.addObjects(trackObjects);
 
         // Displaying objects (if selected)
@@ -342,7 +321,6 @@ public class RunTrackMate extends HCModule {
             ipl = new Duplicator().run(ipl);
 
             // Getting parameters
-            boolean showID = parameters.getValue(SHOW_ID);
             boolean useTrackID = false;
             if (parameters.getValue(DO_TRACKING)) {
                 if (parameters.getValue(ID_MODE).equals(IDModes.USE_TRACK_ID)) {
@@ -351,7 +329,11 @@ public class RunTrackMate extends HCModule {
             }
 
             // Creating the overlay
-            createOverlay(spotObjects,ipl,showID,useTrackID,trackObjectsName);
+            String colourMode = AddObjectsOverlay.ColourModes.PARENT_ID;
+            HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(spotObjects,colourMode,"",trackObjectsName);
+            String labelMode = AddObjectsOverlay.LabelModes.PARENT_ID;
+            HashMap<Obj,String> IDs = showID ? AddObjectsOverlay.getIDs(spotObjects,labelMode,"",trackObjectsName,0) : null;
+            AddObjectsOverlay.createOverlay(ipl,spotObjects,AddObjectsOverlay.PositionModes.CENTROID,null,colours,IDs,8);
 
             // Displaying the overlay
             ipl.show();
@@ -359,69 +341,79 @@ public class RunTrackMate extends HCModule {
         }
 
         // Reapplying calibration to input image
-        ipl.setCalibration(calibration);
+        targetImage.getImagePlus().setCalibration(calibration);
 
     }
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(OUTPUT_SPOT_OBJECTS, Parameter.OUTPUT_OBJECTS,new String("Spots")));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(OUTPUT_SPOT_OBJECTS, Parameter.OUTPUT_OBJECTS,new String("Spots")));
 
-        parameters.addParameter(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(DO_SUBPIXEL_LOCALIZATION, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(DO_MEDIAN_FILTERING, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(RADIUS, Parameter.DOUBLE,2.0));
-        parameters.addParameter(new Parameter(THRESHOLD, Parameter.DOUBLE,5000.0));
-        parameters.addParameter(new Parameter(NORMALISE_INTENSITY, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(DO_SUBPIXEL_LOCALIZATION, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(DO_MEDIAN_FILTERING, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(RADIUS, Parameter.DOUBLE,2.0));
+        parameters.add(new Parameter(THRESHOLD, Parameter.DOUBLE,5000.0));
+        parameters.add(new Parameter(NORMALISE_INTENSITY, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(ESTIMATE_SIZE, Parameter.BOOLEAN,false));
 
-        parameters.addParameter(new Parameter(DO_TRACKING, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(LINKING_MAX_DISTANCE, Parameter.DOUBLE,2.0));
-        parameters.addParameter(new Parameter(GAP_CLOSING_MAX_DISTANCE, Parameter.DOUBLE,2.0));
-        parameters.addParameter(new Parameter(MAX_FRAME_GAP, Parameter.INTEGER,3));
+        parameters.add(new Parameter(DO_TRACKING, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(LINKING_MAX_DISTANCE, Parameter.DOUBLE,2.0));
+        parameters.add(new Parameter(GAP_CLOSING_MAX_DISTANCE, Parameter.DOUBLE,2.0));
+        parameters.add(new Parameter(MAX_FRAME_GAP, Parameter.INTEGER,3));
 
-        parameters.addParameter(new Parameter(CREATE_TRACK_OBJECTS, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(OUTPUT_TRACK_OBJECTS, Parameter.OUTPUT_OBJECTS,new String("Tracks")));
+        parameters.add(new Parameter(CREATE_TRACK_OBJECTS, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_TRACK_OBJECTS, Parameter.OUTPUT_OBJECTS,new String("Tracks")));
 
-        parameters.addParameter(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(SHOW_ID, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(ID_MODE, Parameter.CHOICE_ARRAY,IDModes.USE_SPOT_ID,IDModes.ALL));
+        parameters.add(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SHOW_ID, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(ID_MODE, Parameter.CHOICE_ARRAY,IDModes.USE_SPOT_ID,IDModes.ALL));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.RADIUS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.ESTIMATED_DIAMETER));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(OUTPUT_SPOT_OBJECTS));
 
-        returnedParameters.addParameter(parameters.getParameter(CALIBRATED_UNITS));
-        returnedParameters.addParameter(parameters.getParameter(DO_SUBPIXEL_LOCALIZATION));
-        returnedParameters.addParameter(parameters.getParameter(DO_MEDIAN_FILTERING));
-        returnedParameters.addParameter(parameters.getParameter(RADIUS));
-        returnedParameters.addParameter(parameters.getParameter(THRESHOLD));
-        returnedParameters.addParameter(parameters.getParameter(NORMALISE_INTENSITY));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_SPOT_OBJECTS));
 
-        returnedParameters.addParameter(parameters.getParameter(DO_TRACKING));
+        returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
+        returnedParameters.add(parameters.getParameter(DO_SUBPIXEL_LOCALIZATION));
+        returnedParameters.add(parameters.getParameter(DO_MEDIAN_FILTERING));
+        returnedParameters.add(parameters.getParameter(RADIUS));
+        returnedParameters.add(parameters.getParameter(THRESHOLD));
+        returnedParameters.add(parameters.getParameter(NORMALISE_INTENSITY));
+        returnedParameters.add(parameters.getParameter(ESTIMATE_SIZE));
+
+        returnedParameters.add(parameters.getParameter(DO_TRACKING));
         if (parameters.getValue(DO_TRACKING)) {
-            returnedParameters.addParameter(parameters.getParameter(LINKING_MAX_DISTANCE));
-            returnedParameters.addParameter(parameters.getParameter(GAP_CLOSING_MAX_DISTANCE));
-            returnedParameters.addParameter(parameters.getParameter(MAX_FRAME_GAP));
+            returnedParameters.add(parameters.getParameter(LINKING_MAX_DISTANCE));
+            returnedParameters.add(parameters.getParameter(GAP_CLOSING_MAX_DISTANCE));
+            returnedParameters.add(parameters.getParameter(MAX_FRAME_GAP));
 
-            returnedParameters.addParameter(parameters.getParameter(CREATE_TRACK_OBJECTS));
+            returnedParameters.add(parameters.getParameter(CREATE_TRACK_OBJECTS));
             if (parameters.getValue(CREATE_TRACK_OBJECTS)) {
-                returnedParameters.addParameter(parameters.getParameter(OUTPUT_TRACK_OBJECTS));
+                returnedParameters.add(parameters.getParameter(OUTPUT_TRACK_OBJECTS));
 
             }
         }
 
-        returnedParameters.addParameter(parameters.getParameter(SHOW_OBJECTS));
+        returnedParameters.add(parameters.getParameter(SHOW_OBJECTS));
         if (parameters.getValue(SHOW_OBJECTS)) {
-            returnedParameters.addParameter(parameters.getParameter(SHOW_ID));
+            returnedParameters.add(parameters.getParameter(SHOW_ID));
 
             if (parameters.getValue(DO_TRACKING)) {
                 if (parameters.getValue(SHOW_ID)) {
-                    returnedParameters.addParameter(parameters.getParameter(ID_MODE));
+                    returnedParameters.add(parameters.getParameter(ID_MODE));
 
                 }
             }
@@ -432,25 +424,21 @@ public class RunTrackMate extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-        spotObjects = new Reference();
-        objectReferences.add(spotObjects);
-
-        spotObjects.addMeasurementReference(new MeasurementReference(Measurements.RADIUS));
-        spotObjects.addMeasurementReference(new MeasurementReference(Measurements.ESTIMATED_DIAMETER));
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        spotObjects.setName(parameters.getValue(OUTPUT_SPOT_OBJECTS));
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
-        return objectReferences;
+        MeasurementReference radius = objectMeasurementReferences.get(Measurements.RADIUS);
+        MeasurementReference estimatedDiameter = objectMeasurementReferences.get(Measurements.ESTIMATED_DIAMETER);
+
+        radius.setImageObjName(outputSpotObjectsName);
+        estimatedDiameter.setImageObjName(outputSpotObjectsName);
+
+        return objectMeasurementReferences;
 
     }
 
@@ -462,3 +450,4 @@ public class RunTrackMate extends HCModule {
         }
     }
 }
+

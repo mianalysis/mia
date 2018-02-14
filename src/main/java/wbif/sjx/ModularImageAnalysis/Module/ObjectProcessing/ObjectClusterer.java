@@ -28,8 +28,6 @@ public class ObjectClusterer extends HCModule {
     public static final String EPS = "Neighbourhood for clustering (epsilon)";
     public static final String MIN_POINTS = "Minimum number of points per cluster";
 
-    private Reference outputObjects;
-
     public interface ClusteringAlgorithms {
         String KMEANSPLUSPLUS = "KMeans++";
         String DBSCAN = "DBSCAN";
@@ -215,32 +213,39 @@ public class ObjectClusterer extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CLUSTER_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CLUSTERING_ALGORITHM, Parameter.CHOICE_ARRAY,ClusteringAlgorithms.DBSCAN,ClusteringAlgorithms.ALL));
-        parameters.addParameter(new Parameter(K_CLUSTERS, Parameter.INTEGER,100));
-        parameters.addParameter(new Parameter(MAX_ITERATIONS, Parameter.INTEGER,10000));
-        parameters.addParameter(new Parameter(EPS, Parameter.DOUBLE,10.0));
-        parameters.addParameter(new Parameter(MIN_POINTS, Parameter.INTEGER,5));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CLUSTER_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(CLUSTERING_ALGORITHM, Parameter.CHOICE_ARRAY,ClusteringAlgorithms.DBSCAN,ClusteringAlgorithms.ALL));
+        parameters.add(new Parameter(K_CLUSTERS, Parameter.INTEGER,100));
+        parameters.add(new Parameter(MAX_ITERATIONS, Parameter.INTEGER,10000));
+        parameters.add(new Parameter(EPS, Parameter.DOUBLE,10.0));
+        parameters.add(new Parameter(MIN_POINTS, Parameter.INTEGER,5));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.CLUSTER_AREA_XY));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.N_POINTS_IN_CLUSTER));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(CLUSTER_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(CLUSTERING_ALGORITHM));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CLUSTER_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CLUSTERING_ALGORITHM));
 
         if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.KMEANSPLUSPLUS)) {
             // Running KMeans++ clustering
-            returnedParameters.addParameter(parameters.getParameter(K_CLUSTERS));
-            returnedParameters.addParameter(parameters.getParameter(MAX_ITERATIONS));
+            returnedParameters.add(parameters.getParameter(K_CLUSTERS));
+            returnedParameters.add(parameters.getParameter(MAX_ITERATIONS));
 
         } else if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.DBSCAN)) {
             // Running DBSCAN clustering
-            returnedParameters.addParameter(parameters.getParameter(EPS));
-            returnedParameters.addParameter(parameters.getParameter(MIN_POINTS));
+            returnedParameters.add(parameters.getParameter(EPS));
+            returnedParameters.add(parameters.getParameter(MIN_POINTS));
 
         }
 
@@ -249,23 +254,22 @@ public class ObjectClusterer extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-        outputObjects = new Reference();
-        objectReferences.add(outputObjects);
-
-        outputObjects.addMeasurementReference(new MeasurementReference(Measurements.CLUSTER_AREA_XY));
-        outputObjects.addMeasurementReference(new MeasurementReference(Measurements.N_POINTS_IN_CLUSTER));
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        return null;
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
+
+        MeasurementReference clusterAreaXY = objectMeasurementReferences.get(Measurements.CLUSTER_AREA_XY);
+        clusterAreaXY.setImageObjName(outputObjectsName);
+
+        MeasurementReference nPointsInCluster = objectMeasurementReferences.get(Measurements.CLUSTER_AREA_XY);
+        nPointsInCluster.setImageObjName(outputObjectsName);
+
+        return objectMeasurementReferences;
+
     }
 
     @Override

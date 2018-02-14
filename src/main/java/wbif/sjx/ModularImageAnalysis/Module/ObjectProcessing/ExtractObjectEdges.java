@@ -173,39 +173,44 @@ public class ExtractObjectEdges extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CREATE_EDGE_OBJECTS, Parameter.BOOLEAN, true));
-        parameters.addParameter(new Parameter(OUTPUT_EDGE_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CREATE_INTERIOR_OBJECTS, Parameter.BOOLEAN, true));
-        parameters.addParameter(new Parameter(OUTPUT_INTERIOR_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(EDGE_MODE, Parameter.CHOICE_ARRAY, EdgeModes.DISTANCE_FROM_EDGE, EdgeModes.ALL));
-        parameters.addParameter(new Parameter(EDGE_DISTANCE, Parameter.DOUBLE, 1.0));
-        parameters.addParameter(new Parameter(EDGE_PERCENTAGE, Parameter.DOUBLE, 1.0));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CREATE_EDGE_OBJECTS, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(OUTPUT_EDGE_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(CREATE_INTERIOR_OBJECTS, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(OUTPUT_INTERIOR_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(EDGE_MODE, Parameter.CHOICE_ARRAY, EdgeModes.DISTANCE_FROM_EDGE, EdgeModes.ALL));
+        parameters.add(new Parameter(EDGE_DISTANCE, Parameter.DOUBLE, 1.0));
+        parameters.add(new Parameter(EDGE_PERCENTAGE, Parameter.DOUBLE, 1.0));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
 
-        returnedParameters.addParameter(parameters.getParameter(CREATE_EDGE_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CREATE_EDGE_OBJECTS));
         if (parameters.getValue(CREATE_EDGE_OBJECTS)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_EDGE_OBJECTS));
+            returnedParameters.add(parameters.getParameter(OUTPUT_EDGE_OBJECTS));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(CREATE_INTERIOR_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CREATE_INTERIOR_OBJECTS));
         if (parameters.getValue(CREATE_INTERIOR_OBJECTS)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_INTERIOR_OBJECTS));
+            returnedParameters.add(parameters.getParameter(OUTPUT_INTERIOR_OBJECTS));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(EDGE_MODE));
+        returnedParameters.add(parameters.getParameter(EDGE_MODE));
 
         if (parameters.getValue(EDGE_MODE).equals(EdgeModes.DISTANCE_FROM_EDGE)) {
-            returnedParameters.addParameter(parameters.getParameter(EDGE_DISTANCE));
+            returnedParameters.add(parameters.getParameter(EDGE_DISTANCE));
 
         } else if (parameters.getValue(EDGE_MODE).equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
-            returnedParameters.addParameter(parameters.getParameter(EDGE_PERCENTAGE));
+            returnedParameters.add(parameters.getParameter(EDGE_PERCENTAGE));
 
         }
 
@@ -214,17 +219,12 @@ public class ExtractObjectEdges extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

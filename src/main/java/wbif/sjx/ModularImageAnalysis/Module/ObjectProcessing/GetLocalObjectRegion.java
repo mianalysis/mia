@@ -12,8 +12,10 @@ public class GetLocalObjectRegion extends HCModule {
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String CALIBRATED_RADIUS = "Calibrated radius";
+    public static final String USE_MEASUREMENT = "Use measurement for radius";
+    public static final String MEASUREMENT_NAME = "Measurement name";
 
-    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated) {
+    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated, boolean useMeasurement, String measurementName) {
         // Creating store for output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
@@ -34,6 +36,7 @@ public class GetLocalObjectRegion extends HCModule {
             double xCent = inputObject.getXMean(true);
             double yCent = inputObject.getYMean(true);
             double zCent = inputObject.getZMean(true,false);
+            if (useMeasurement) radius = inputObject.getMeasurement(measurementName).getValue();
 
             if (calibrated) {
                 for (int x = (int) Math.floor(xCent - radius/dppXY); x <= (int) Math.ceil(xCent + radius/dppXY); x++) {
@@ -95,11 +98,14 @@ public class GetLocalObjectRegion extends HCModule {
         // Getting parameters
         boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
         double radius = parameters.getValue(LOCAL_RADIUS);
+        boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
+        String measurementName = parameters.getValue(MEASUREMENT_NAME);
+
         if (verbose) System.out.println("["+moduleName+"] Using local radius of "+radius+" px");
         if (verbose) System.out.println("["+moduleName+"] Using local radius of "+radius+" ");
 
         // Getting local region
-        ObjCollection outputObjects = getLocalRegions(inputObjects, outputObjectsName, radius, calibrated);
+        ObjCollection outputObjects = getLocalRegions(inputObjects, outputObjectsName, radius, calibrated,useMeasurement,measurementName);
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
@@ -109,30 +115,50 @@ public class GetLocalObjectRegion extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE,10.0));
-        parameters.addParameter(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE,10.0));
+        parameters.add(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(USE_MEASUREMENT, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MEASUREMENT_NAME, Parameter.OBJECT_MEASUREMENT,null,null));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
-        return parameters;
-    }
-
-    @Override
-    public void initialiseReferences() {
+    protected void initialiseMeasurementReferences() {
 
     }
 
     @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public ParameterCollection updateAndGetParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(USE_MEASUREMENT));
+
+        if (parameters.getValue(USE_MEASUREMENT)) {
+            returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME));
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            parameters.updateValueSource(MEASUREMENT_NAME,inputObjectsName);
+        } else {
+            returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
+
+        }
+
+        returnedParameters.add(parameters.getParameter(CALIBRATED_RADIUS));
+
+        return returnedParameters;
+
+    }
+
+    @Override
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

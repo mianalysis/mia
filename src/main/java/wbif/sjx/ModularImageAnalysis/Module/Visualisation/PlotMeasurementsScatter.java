@@ -157,23 +157,28 @@ public class PlotMeasurementsScatter extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(EXCLUDE_NAN, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(MEASUREMENT1, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(MEASUREMENT2, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(INCLUDE_COLOUR, Parameter.BOOLEAN,false,null));
-        parameters.addParameter(new Parameter(MEASUREMENT3, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(COLOURMAP, Parameter.CHOICE_ARRAY,ColourMaps.RED_TO_BLUE,ColourMaps.ALL));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(EXCLUDE_NAN, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(MEASUREMENT1, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(MEASUREMENT2, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(INCLUDE_COLOUR, Parameter.BOOLEAN,false,null));
+        parameters.add(new Parameter(MEASUREMENT3, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(COLOURMAP, Parameter.CHOICE_ARRAY,ColourMaps.RED_TO_BLUE,ColourMaps.ALL));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(EXCLUDE_NAN));
-        returnedParameters.addParameter(parameters.getParameter(MEASUREMENT1));
-        returnedParameters.addParameter(parameters.getParameter(MEASUREMENT2));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(EXCLUDE_NAN));
+        returnedParameters.add(parameters.getParameter(MEASUREMENT1));
+        returnedParameters.add(parameters.getParameter(MEASUREMENT2));
 
         // Updating measurements with measurement choices from currently-selected object
         String objectName = parameters.getValue(INPUT_OBJECTS);
@@ -187,10 +192,10 @@ public class PlotMeasurementsScatter extends HCModule {
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(INCLUDE_COLOUR));
+        returnedParameters.add(parameters.getParameter(INCLUDE_COLOUR));
         if (parameters.getValue(INCLUDE_COLOUR)) {
-            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT3));
-            returnedParameters.addParameter(parameters.getParameter(COLOURMAP));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT3));
+            returnedParameters.add(parameters.getParameter(COLOURMAP));
 
             if (objectName != null) {
                 parameters.updateValueSource(MEASUREMENT3, objectName);
@@ -207,17 +212,12 @@ public class PlotMeasurementsScatter extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

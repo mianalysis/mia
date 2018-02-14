@@ -20,8 +20,7 @@ import java.util.concurrent.*;
  */
 public class BatchProcessor extends FileCrawler {
     private boolean verbose = true;
-    private boolean parallel = true;
-    private int nThreads = Runtime.getRuntime().availableProcessors()/2;//4;
+    private int nThreads = Runtime.getRuntime().availableProcessors()/2;
 
     private ThreadPoolExecutor pool;
 
@@ -53,15 +52,13 @@ public class BatchProcessor extends FileCrawler {
 
         } else {
             // The system can run multiple files in parallel or one at a time
-            if (parallel) runParallel(workspaces, analysis, exporter);
-            else runLinear(workspaces, analysis, exporter);
+            runParallel(workspaces, analysis, exporter);
 
         }
 
         // Saving the results
         if (shutdownEarly) return;
         exporter.exportResults(workspaces,analysis);
-        System.out.println("Complete!");
 
     }
 
@@ -114,8 +111,8 @@ public class BatchProcessor extends FileCrawler {
                     e.printStackTrace();
 
                 } catch (Throwable t) {
-                    String errorMessage = "Failed for file "+finalNext.getName();
-                    JOptionPane.showMessageDialog(new Frame(), errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+                    System.err.println("Failed for file "+finalNext.getName());
+                    t.printStackTrace(System.err);
 
                     pool.shutdownNow();
 
@@ -139,47 +136,41 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    private void runLinear(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws GenericMIAException, IOException {
-        File next = getNextValidFileInStructure();
+    private void runSingle(WorkspaceCollection workspaces, Analysis analysis) throws InterruptedException {
+        // Setting up the ExecutorService, which will manage the threads
+        pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
-        boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
-        int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
-
-        int fileCounter = 0;
-        while (next != null) {
+        Runnable task = () -> {
             // Running the analysis
-            Workspace workspace = workspaces.getNewWorkspace(next);
-            analysis.execute(workspace, verbose);
+            Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
+            try {
+                analysis.execute(workspace, verbose);
+            } catch (GenericMIAException e) {
+                e.printStackTrace();
+            }
 
             // Clearing images from the workspace to prevent memory leak
             workspace.clearAllImages(true);
 
-            next = getNextValidFileInStructure();
-
-            fileCounter++;
-            if (continuousExport && fileCounter%saveNFiles==0) exporter.exportResults(workspaces,analysis);
-
             // Adding a blank line to the output
             if (verbose) System.out.println(" ");
 
-        }
-    }
+        };
 
-    private void runSingle(WorkspaceCollection workspaces, Analysis analysis) throws GenericMIAException {
-        // Running the analysis
-        Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
-        analysis.execute(workspace, verbose);
-
-        // Clearing images from the workspace to prevent memory leak
-        workspace.clearAllImages(true);
-
-        // Adding a blank line to the output
-        if (verbose) System.out.println(" ");
+        // Submit the one job, then telling the pool not to accept any more jobs and to wait until all queued jobs have
+        // completed
+        pool.submit(task);
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 
     public void stopAnalysis() {
-        pool.shutdownNow();
+        if (pool == null) {
+            Thread.currentThread().interrupt();
+        } else {
+            pool.shutdownNow();
+        }
         shutdownEarly = true;
 
         System.out.println("Shutdown complete!");
@@ -195,14 +186,6 @@ public class BatchProcessor extends FileCrawler {
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
-    }
-
-    public boolean isParallel() {
-        return parallel;
-    }
-
-    public void setParallel(boolean parallel) {
-        this.parallel = parallel;
     }
 
     public int getnThreads() {

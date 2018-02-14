@@ -23,12 +23,13 @@ public class FilterObjects extends HCModule {
         String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)";
         String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
         String NO_PARENT = "Remove objects without parent";
+        String WITH_PARENT = "Remove objects with a parent";
         String MIN_NUMBER_OF_CHILDREN = "Remove objects with few children than:";
         String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
         String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
 
-        String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, MIN_NUMBER_OF_CHILDREN,
-                MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
+        String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT,
+                MIN_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
 
     }
 
@@ -113,6 +114,22 @@ public class FilterObjects extends HCModule {
 
                 break;
 
+            case FilterMethods.WITH_PARENT:
+                parentObjectName = parameters.getValue(PARENT_OBJECT);
+
+                iterator = inputObjects.values().iterator();
+                while (iterator.hasNext()) {
+                    Obj inputObject = iterator.next();
+
+                    LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
+                    if (parents.get(parentObjectName) != null) {
+                        inputObject.removeRelationships();
+                        iterator.remove();
+                    }
+                }
+
+                break;
+
             case FilterMethods.MIN_NUMBER_OF_CHILDREN:
                 String childObjectsName = parameters.getValue(CHILD_OBJECTS);
                 double minChildN = parameters.getValue(REFERENCE_VALUE);
@@ -181,55 +198,65 @@ public class FilterObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(FILTER_METHOD, Parameter.CHOICE_ARRAY,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
-        parameters.addParameter(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.addParameter(new Parameter(PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
-        parameters.addParameter(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
-        parameters.addParameter(new Parameter(REFERENCE_VALUE, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(FILTER_METHOD, Parameter.CHOICE_ARRAY,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
+        parameters.add(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
+        parameters.add(new Parameter(REFERENCE_VALUE, Parameter.DOUBLE,1.0));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(FILTER_METHOD));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(FILTER_METHOD));
 
-        if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.MISSING_MEASUREMENTS)) {
-            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
-            if (parameters.getValue(INPUT_OBJECTS) != null) {
-                parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+        switch ((String) parameters.getValue(FILTER_METHOD)) {
+            case FilterMethods.MISSING_MEASUREMENTS:
+                returnedParameters.add(parameters.getParameter(MEASUREMENT));
+                if (parameters.getValue(INPUT_OBJECTS) != null) {
+                    parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
 
-            }
+                }
+                break;
 
-        } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.REMOVE_ON_IMAGE_EDGE_2D)) {
-            returnedParameters.addParameter(parameters.getParameter(REFERENCE_IMAGE));
+            case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                break;
 
-        } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.NO_PARENT)) {
-            returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECT));
+            case FilterMethods.NO_PARENT:
+            case FilterMethods.WITH_PARENT:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
+                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                parameters.updateValueSource(PARENT_OBJECT,inputObjectsName);
+                break;
 
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(PARENT_OBJECT,inputObjectsName);
+            case FilterMethods.MIN_NUMBER_OF_CHILDREN:
+                returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
+                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
 
-        } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.MIN_NUMBER_OF_CHILDREN)) {
-            returnedParameters.addParameter(parameters.getParameter(CHILD_OBJECTS));
-            returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
+                inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                parameters.updateValueSource(CHILD_OBJECTS,inputObjectsName);
+                break;
 
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(CHILD_OBJECTS,inputObjectsName);
+            case FilterMethods.MEASUREMENTS_SMALLER_THAN:
+            case FilterMethods.MEASUREMENTS_LARGER_THAN:
+                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+                returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
-        } else if (parameters.getValue(FILTER_METHOD).equals(FilterMethods.MEASUREMENTS_SMALLER_THAN) |
-                parameters.getValue(FILTER_METHOD).equals(FilterMethods.MEASUREMENTS_LARGER_THAN)) {
+                if (parameters.getValue(INPUT_OBJECTS) != null) {
+                    parameters.updateValueSource(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
 
-            returnedParameters.addParameter(parameters.getParameter(REFERENCE_VALUE));
-            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT));
-
-            if (parameters.getValue(INPUT_OBJECTS) != null) {
-                parameters.updateValueSource(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
-
-            }
+                }
+                break;
 
         }
 
@@ -238,17 +265,12 @@ public class FilterObjects extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

@@ -6,9 +6,16 @@
 
 package wbif.sjx.ModularImageAnalysis.Module;
 
+import ij.Prefs;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
+import loci.formats.FormatException;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -16,8 +23,8 @@ import java.io.Serializable;
  */
 public abstract class HCModule implements Serializable {
     protected ParameterCollection parameters = new ParameterCollection();
-    protected ReferenceCollection imageReferences = new ReferenceCollection();
-    protected ReferenceCollection objectReferences = new ReferenceCollection();
+    protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
+    protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
 
     private String nickname;
     private String notes = "";
@@ -28,10 +35,11 @@ public abstract class HCModule implements Serializable {
     // CONSTRUCTOR
 
     public HCModule() {
-        initialiseReferences();
-        initialiseParameters();
         moduleName = getTitle();
         nickname = moduleName;
+
+        initialiseParameters();
+        initialiseMeasurementReferences();
 
     }
 
@@ -48,6 +56,10 @@ public abstract class HCModule implements Serializable {
         String moduleName = getTitle();
         if (verbose) System.out.println("["+moduleName+"] Initialising");
 
+        // By default all modules should use this format
+        Prefs.blackBackground = false;
+
+        // Running the main module code
         run(workspace,verbose);
 
         if (verbose) System.out.println("["+moduleName+"] Complete");
@@ -60,7 +72,9 @@ public abstract class HCModule implements Serializable {
      * operation is included in the method.
      * @return
      */
-    public abstract void initialiseParameters();
+    protected abstract void initialiseParameters();
+
+    protected abstract void initialiseMeasurementReferences();
 
     /**
      * Return a ParameterCollection of the currently active parameters.  This is run each time a parameter is changed.
@@ -69,24 +83,29 @@ public abstract class HCModule implements Serializable {
      * an appropriate GUI panel.
      * @return
      */
-    public abstract ParameterCollection getActiveParameters();
+    public abstract ParameterCollection updateAndGetParameters();
 
-    public ParameterCollection getAllParameters() {
-        return parameters;
+    public abstract MeasurementReferenceCollection updateAndGetImageMeasurementReferences();
+
+    public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
+
+    public MeasurementReference getImageMeasurementReference(String name) {
+        for (MeasurementReference measurementReference : imageMeasurementReferences) {
+            if (measurementReference.getName().equals(name)) return measurementReference;
+        }
+
+        return null;
+
     }
 
-    public abstract void initialiseReferences();
+    public MeasurementReference getObjectMeasurementReference(String name) {
+        for (MeasurementReference measurementReference : objectMeasurementReferences) {
+            if (measurementReference.getName().equals(name)) return measurementReference;
+        }
 
-    public abstract ReferenceCollection updateAndGetImageReferences();
+        return null;
 
-    public abstract ReferenceCollection updateAndGetObjectReferences();
-
-    /*
-     * Takes an existing collection of measurements and adds any created
-     * @param measurements
-     * @return
-     */
-//    public abstract void addMeasurements(MeasurementCollection measurements);
+    }
 
     /**
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
@@ -114,13 +133,10 @@ public abstract class HCModule implements Serializable {
 
     }
 
-    public void addImageReference(Reference reference) {
-        imageReferences.add(reference);
+    public ParameterCollection getAllParameters() {
+        return parameters;
     }
 
-    public void addObjectReference(Reference reference) {
-        objectReferences.add(reference);
-    }
 
     // PRIVATE METHODS
 

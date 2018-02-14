@@ -32,7 +32,7 @@ public class ObjectImageConverterTest {
      * @throws Exception
      */
     @Test
-    public void testConvertObjectsToImage16bit3DWithRefImage() throws Exception {
+    public void testConvertObjectsToImagebit3DWithRefImage() throws Exception {
         // Initialising parameters
         String colourMode = ObjectImageConverter.ColourModes.ID;
         String colourSource = ""; // This isn't required for COLOUR_MODES[3] (ID)
@@ -48,12 +48,11 @@ public class ObjectImageConverterTest {
         ObjCollection testObjects = new ExpectedObjects3D().getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
 
         // Loading a reference image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image referenceImage = new Image("Reference image",ipl);
 
         // Converting objects to image
-        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);
+        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",ipl,colourMode,colourSource,hideMissing);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -70,11 +69,11 @@ public class ObjectImageConverterTest {
 
         // Running through each image, comparing the bytes to those of an expected image
         for (int z = 0;z<12;z++) {
-            referenceImage.getImagePlus().setPosition(1,z+1,1);
+            ipl.setPosition(1,z+1,1);
             testImage.getImagePlus().setPosition(1,z+1,1);
 
-            int[][] referenceArray = referenceImage.getImagePlus().getProcessor().getIntArray();
-            int[][] testArray = testImage.getImagePlus().getProcessor().getIntArray();
+            float[][] referenceArray = ipl.getProcessor().getFloatArray();
+            float[][] testArray = testImage.getImagePlus().getProcessor().getFloatArray();
 
             assertArrayEquals(referenceArray, testArray);
 
@@ -86,7 +85,7 @@ public class ObjectImageConverterTest {
      * @throws Exception
      */
     @Test
-    public void testConvertObjectsToImage16bit3DWithNoRefImage() throws Exception {
+    public void testConvertObjectsToImagebit3DWithNoRefImage() throws Exception {
         // Initialising parameters
         String colourMode = ObjectImageConverter.ColourModes.ID;
         String colourSource = ""; // This isn't required for COLOUR_MODES[3] (ID)
@@ -102,12 +101,11 @@ public class ObjectImageConverterTest {
         ObjCollection testObjects = new ExpectedObjects3D().getObjects(objectName,false,dppXY,dppZ,calibratedUnits);
 
         // Loading a reference image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_16bit_NoRef.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit_NoRef.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Image referenceImage = new Image("Reference image",ipl);
 
         // Converting objects to image
-        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",referenceImage,colourMode,colourSource,hideMissing);
+        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",ipl,colourMode,colourSource,hideMissing);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -124,11 +122,11 @@ public class ObjectImageConverterTest {
 
         // Running through each image, comparing the bytes to those of an expected image
         for (int z = 0;z<12;z++) {
-            referenceImage.getImagePlus().setPosition(1,z+1,1);
+            ipl.setPosition(1,z+1,1);
             testImage.getImagePlus().setPosition(1,z+1,1);
 
-            int[][] referenceArray = referenceImage.getImagePlus().getProcessor().getIntArray();
-            int[][] testArray = testImage.getImagePlus().getProcessor().getIntArray();
+            float[][] referenceArray = ipl.getProcessor().getFloatArray();
+            float[][] testArray = testImage.getImagePlus().getProcessor().getFloatArray();
 
             assertArrayEquals(referenceArray, testArray);
 

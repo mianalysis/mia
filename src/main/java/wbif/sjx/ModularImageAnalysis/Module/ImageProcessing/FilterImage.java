@@ -5,14 +5,17 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.plugin.*;
 import ij.plugin.filter.RankFilters;
+import inra.ijpb.morphology.Morphology;
+import inra.ijpb.morphology.strel.BallStrel;
+import inra.ijpb.morphology.strel.DiskStrel;
+import inra.ijpb.plugins.MorphologicalFilterPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
+import wbif.sjx.common.Filters.RidgeEnhancement;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 
@@ -33,12 +36,15 @@ public class FilterImage extends HCModule {
         String DOG2D = "Difference of Gaussian 2D";
         String GAUSSIAN2D = "Gaussian 2D";
         String GAUSSIAN3D = "Gaussian 3D";
+        String GRADIENT2D = "Gradient 2D";
         String MEDIAN2D = "Median 2D";
         String MEDIAN3D = "Median 3D";
+        String RIDGE_ENHANCEMENT = "Ridge enhancement 2D";
         String ROLLING_FRAME = "Rolling frame";
         String VARIANCE2D = "Variance 2D";
 
-        String[] ALL = new String[]{DOG2D,GAUSSIAN2D,GAUSSIAN3D,MEDIAN2D,MEDIAN3D,ROLLING_FRAME,VARIANCE2D};
+        String[] ALL = new String[]{
+                DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MEDIAN2D,MEDIAN3D,RIDGE_ENHANCEMENT, ROLLING_FRAME,VARIANCE2D};
 
     }
 
@@ -66,6 +72,20 @@ public class FilterImage extends HCModule {
                 }
             }
         }
+        imagePlus.setPosition(1,1,1);
+    }
+
+    public static void runGradient2DFilter(ImagePlus imagePlus, double sigma) {
+        DiskStrel strel = DiskStrel.fromRadius((int) Math.round(sigma));
+        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
+                    imagePlus.setPosition(c, z, t);
+                    imagePlus.setProcessor(Morphology.gradient(imagePlus.getProcessor(),strel));
+                }
+            }
+        }
+        imagePlus.setPosition(1,1,1);
     }
 
     /**
@@ -212,6 +232,12 @@ public class FilterImage extends HCModule {
                 GaussianBlur3D.blur(inputImagePlus,filterRadius,filterRadius,filterRadius);
                 break;
 
+            case FilterModes.GRADIENT2D:
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 2D Gradient filter (radius = " + filterRadius + " px)");
+                    runGradient2DFilter(inputImagePlus,filterRadius);
+                break;
+
             case FilterModes.MEDIAN2D:
                 if (verbose) System.out.println("[" + moduleName + "] " +
                         "Applying 2D median filter (radius = " + filterRadius + " px)");
@@ -222,6 +248,12 @@ public class FilterImage extends HCModule {
                 if (verbose) System.out.println("[" + moduleName + "] " +
                         "Applying 3D median filter (radius = " + filterRadius + " px)");
                 runMedian3DFilter(inputImagePlus,(float) filterRadius);
+                break;
+
+            case FilterModes.RIDGE_ENHANCEMENT:
+                if (verbose) System.out.println("[" + moduleName + "] " +
+                        "Applying 3D median filter (radius = " + filterRadius + " px)");
+                RidgeEnhancement.run(inputImagePlus,(float) filterRadius, true);
                 break;
 
             case FilterModes.ROLLING_FRAME:
@@ -243,10 +275,13 @@ public class FilterImage extends HCModule {
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
+            outputImage.getImagePlus().setPosition(1,1,1);
+
             // If selected, displaying the image
             if (parameters.getValue(SHOW_IMAGE)) {
                 ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
                 IntensityMinMax.run(dispIpl,true);
+                dispIpl.show();
             }
 
         } else {
@@ -254,62 +289,62 @@ public class FilterImage extends HCModule {
             if (parameters.getValue(SHOW_IMAGE)) {
                 ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
                 IntensityMinMax.run(dispIpl,true);
+                dispIpl.show();
             }
         }
     }
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-
-        parameters.addParameter(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FilterModes.DOG2D,FilterModes.ALL));
-        parameters.addParameter(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
-        parameters.addParameter(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
-        parameters.addParameter(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FilterModes.DOG2D,FilterModes.ALL));
+        parameters.add(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
+        parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(APPLY_TO_INPUT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(APPLY_TO_INPUT));
 
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
-            returnedParameters.addParameter(parameters.getParameter(OUTPUT_IMAGE));
+            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(FILTER_MODE));
+        returnedParameters.add(parameters.getParameter(FILTER_MODE));
         if (!parameters.getValue(FILTER_MODE).equals(FilterModes.ROLLING_FRAME)) {
-            returnedParameters.addParameter(parameters.getParameter(FILTER_RADIUS));
-            returnedParameters.addParameter(parameters.getParameter(CALIBRATED_UNITS));
+            returnedParameters.add(parameters.getParameter(FILTER_RADIUS));
+            returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         } else {
-            returnedParameters.addParameter(parameters.getParameter(WINDOW_HALF_WIDTH));
+            returnedParameters.add(parameters.getParameter(WINDOW_HALF_WIDTH));
 
         }
 
-        returnedParameters.addParameter(parameters.getParameter(SHOW_IMAGE));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

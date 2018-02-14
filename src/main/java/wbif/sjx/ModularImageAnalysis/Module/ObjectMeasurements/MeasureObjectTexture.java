@@ -22,12 +22,6 @@ public class MeasureObjectTexture extends HCModule {
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
 
-    private Reference inputObjects;
-    private MeasurementReference asmMeasurement;
-    private MeasurementReference contrastMeasurement;
-    private MeasurementReference correlationMeasurement;
-    private MeasurementReference entropyMeasurement;
-
     public interface Measurements {
         String ASM = "ASM";
         String CONTRAST = "CONTRAST";
@@ -35,6 +29,7 @@ public class MeasureObjectTexture extends HCModule {
         String ENTROPY = "ENTROPY";
 
     }
+
 
     private String getFullName(String imageName, String measurement) {
         return "TEXTURE//"+imageName+"_"+measurement;
@@ -74,7 +69,7 @@ public class MeasureObjectTexture extends HCModule {
             boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
 
             // Getting local object region
-            inputObjects = GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated);
+            inputObjects = GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated,false,"");
 
         }
 
@@ -101,7 +96,6 @@ public class MeasureObjectTexture extends HCModule {
 
             for (int i=0;i<x.size();i++) {
                 coords.add(new int[]{x.get(i),y.get(i),z.get(i)});
-
             }
 
             textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs,c,t,coords);
@@ -147,71 +141,73 @@ public class MeasureObjectTexture extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(POINT_MEASUREMENT, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(MEASUREMENT_RADIUS, Parameter.DOUBLE,10.0));
-        parameters.addParameter(new Parameter(X_OFFSET, Parameter.INTEGER,1));
-        parameters.addParameter(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
-        parameters.addParameter(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(POINT_MEASUREMENT, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MEASUREMENT_RADIUS, Parameter.DOUBLE,10.0));
+        parameters.add(new Parameter(X_OFFSET, Parameter.INTEGER,1));
+        parameters.add(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
+        parameters.add(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        returnedParameters.addParameter(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(POINT_MEASUREMENT));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(POINT_MEASUREMENT));
 
         if (parameters.getValue(POINT_MEASUREMENT)) {
-            returnedParameters.addParameter(parameters.getParameter(CALIBRATED_RADIUS));
-            returnedParameters.addParameter(parameters.getParameter(MEASUREMENT_RADIUS));
+            returnedParameters.add(parameters.getParameter(CALIBRATED_RADIUS));
+            returnedParameters.add(parameters.getParameter(MEASUREMENT_RADIUS));
         }
 
-        returnedParameters.addParameter(parameters.getParameter(X_OFFSET));
-        returnedParameters.addParameter(parameters.getParameter(Y_OFFSET));
-        returnedParameters.addParameter(parameters.getParameter(Z_OFFSET));
+        returnedParameters.add(parameters.getParameter(X_OFFSET));
+        returnedParameters.add(parameters.getParameter(Y_OFFSET));
+        returnedParameters.add(parameters.getParameter(Z_OFFSET));
 
         return returnedParameters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-        inputObjects = new Reference();
-        objectReferences.add(inputObjects);
-
-        asmMeasurement = new MeasurementReference(Measurements.ASM);
-        contrastMeasurement = new MeasurementReference(Measurements.CONTRAST);
-        correlationMeasurement = new MeasurementReference(Measurements.CORRELATION);
-        entropyMeasurement = new MeasurementReference(Measurements.ENTROPY);
-
-        inputObjects.addMeasurementReference(asmMeasurement);
-        inputObjects.addMeasurementReference(contrastMeasurement);
-        inputObjects.addMeasurementReference(correlationMeasurement);
-        inputObjects.addMeasurementReference(entropyMeasurement);
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        inputObjects.setName(parameters.getValue(INPUT_OBJECTS));
-
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        asmMeasurement.setMeasurementName(getFullName(inputImageName, Measurements.ASM));
-        contrastMeasurement.setMeasurementName(getFullName(inputImageName, Measurements.CONTRAST));
-        correlationMeasurement.setMeasurementName(getFullName(inputImageName, Measurements.CORRELATION));
-        entropyMeasurement.setMeasurementName(getFullName(inputImageName, Measurements.ENTROPY));
+        MeasurementReference asm = objectMeasurementReferences.get(Measurements.ASM);
+        asm.setImageObjName(inputObjectsName);
+        asm.setNickName(getFullName(inputImageName,Measurements.ASM));
 
-        return objectReferences;
+        MeasurementReference contrast = objectMeasurementReferences.get(Measurements.CONTRAST);
+        contrast.setImageObjName(inputObjectsName);
+        contrast.setNickName(getFullName(inputImageName,Measurements.CONTRAST));
+
+        MeasurementReference correlation = objectMeasurementReferences.get(Measurements.CORRELATION);
+        correlation.setImageObjName(inputObjectsName);
+        correlation.setNickName(getFullName(inputImageName,Measurements.CORRELATION));
+
+        MeasurementReference entropy = objectMeasurementReferences.get(Measurements.ENTROPY);
+        entropy.setImageObjName(inputObjectsName);
+        entropy.setNickName(getFullName(inputImageName,Measurements.ENTROPY));
+
+        return objectMeasurementReferences;
 
     }
 

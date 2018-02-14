@@ -30,18 +30,9 @@ import java.io.*;
  * Created by sc13967 on 23/06/2017.
  */
 public class AnalysisHandler {
-    private BatchProcessor batchProcessor;
+    private static BatchProcessor batchProcessor;
 
-    public void saveAnalysis(Analysis analysis) throws IOException, ParserConfigurationException, TransformerException {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
-        fileDialog.setMultipleMode(false);
-        fileDialog.setVisible(true);
-
-        String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
-        if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
-            outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
-        }
-
+    public void saveAnalysis(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
         // Creating a module collection holding the input and output
         ModuleCollection inOutModules = new ModuleCollection();
         inOutModules.add(analysis.getInputControl());
@@ -62,6 +53,19 @@ public class AnalysisHandler {
         transformer.transform(source, result);
 
         System.out.println("File saved ("+FilenameUtils.getName(outputFileName)+")");
+    }
+
+    public void saveAnalysis(Analysis analysis) throws IOException, ParserConfigurationException, TransformerException {
+        FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
+        fileDialog.setMultipleMode(false);
+        fileDialog.setVisible(true);
+
+        String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
+        if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
+            outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
+        }
+
+        saveAnalysis(analysis,outputFileName);
 
     }
 
@@ -99,16 +103,14 @@ public class AnalysisHandler {
                 // If the module is an input or output control, treat it differently
                 if (module.getClass().isInstance(new InputControl())) {
                     NodeList moduleChildNodes = moduleNode.getChildNodes();
-                    boolean foundParameters = false;
                     for (int j=0;j<moduleChildNodes.getLength();j++) {
                         switch (moduleChildNodes.item(j).getNodeName()) {
                             case "PARAMETERS":
                                 populateModuleParameters(moduleChildNodes.item(j), module);
-                                foundParameters = true;
                                 break;
 
-                            case "REFERENCES":
-                                populateModuleReferences(moduleChildNodes.item(j), module);
+                            case "MEASUREMENTS":
+                                populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
                                 break;
                         }
                     }
@@ -118,16 +120,14 @@ public class AnalysisHandler {
 
                 } else if (module.getClass().isInstance(new OutputControl())) {
                     NodeList moduleChildNodes = moduleNode.getChildNodes();
-                    boolean foundParameters = false;
                     for (int j=0;j<moduleChildNodes.getLength();j++) {
                         switch (moduleChildNodes.item(j).getNodeName()) {
                             case "PARAMETERS":
                                 populateModuleParameters(moduleChildNodes.item(j), module);
-                                foundParameters = true;
                                 break;
 
-                            case "REFERENCES":
-                                populateModuleReferences(moduleChildNodes.item(j), module);
+                            case "MEASUREMENTS":
+                                populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
                                 break;
                         }
                     }
@@ -145,6 +145,20 @@ public class AnalysisHandler {
                     module.setNickname(module.getTitle());
                 }
 
+                if (moduleAttributes.getNamedItem("ENABLED") != null) {
+                    String isEnabled = moduleAttributes.getNamedItem("ENABLED").getNodeValue();
+                    module.setEnabled(Boolean.parseBoolean(isEnabled));
+                } else {
+                    module.setEnabled(true);
+                }
+
+                if (moduleAttributes.getNamedItem("NOTES") != null) {
+                    String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
+                    module.setNotes(notes);
+                } else {
+                    module.setNotes("");
+                }
+
                 // Populating parameters
                 NodeList moduleChildNodes = moduleNode.getChildNodes();
                 boolean foundParameters = false;
@@ -155,8 +169,8 @@ public class AnalysisHandler {
                             foundParameters = true;
                             break;
 
-                        case "REFERENCES":
-                            populateModuleReferences(moduleChildNodes.item(j), module);
+                        case "MEASUREMENTS":
+                            populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
                             break;
                     }
                 }
@@ -201,6 +215,7 @@ public class AnalysisHandler {
                     case Parameter.INPUT_OBJECTS:
                     case Parameter.OUTPUT_OBJECTS:
                     case Parameter.REMOVED_IMAGE:
+                    case Parameter.REMOVED_OBJECTS:
                     case Parameter.STRING:
                     case Parameter.CHOICE_ARRAY:
                     case Parameter.FILE_PATH:
@@ -236,48 +251,41 @@ public class AnalysisHandler {
         }
     }
 
-    private void populateModuleReferences(Node moduleNode, HCModule module) {
+    private void populateModuleMeasurementReferences(Node moduleNode, HCModule module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
-        for (int i = 0; i < referenceNodes.getLength(); i++) {
-            NodeList currentReferenceNodes = referenceNodes.item(i).getChildNodes();
 
-            // Iterating over all references of this type
-            for (int j=0;j<currentReferenceNodes.getLength();j++) {
-                Node currentReferenceNode = currentReferenceNodes.item(j);
-                // Creating the reference object and adding to the relevant collection
-                Reference reference = new Reference();
+        // Iterating over all references of this type
+        for (int j=0;j<referenceNodes.getLength();j++) {
+            Node referenceNode = referenceNodes.item(j);
 
-                switch (currentReferenceNode.getNodeName()) {
-                    case "IMAGE_REF":
-                        module.addImageReference(reference);
-                        break;
+            // Getting measurement properties
+            NamedNodeMap attributes = referenceNode.getAttributes();
+            String measurementName = attributes.getNamedItem("NAME").getNodeValue();
+            boolean isCalulated = Boolean.parseBoolean(attributes.getNamedItem("IS_CALCULATED").getNodeValue());
+            boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
+            String type = attributes.getNamedItem("TYPE").getNodeValue();
+            String imageObjectName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
 
-                    case "OBJECT_REF":
-                        module.addObjectReference(reference);
-                        break;
-                }
+            // Acquiring the relevant reference
+            MeasurementReference measurementReference = null;
+            switch (type) {
+                case "IMAGE":
+                    measurementReference = module.getImageMeasurementReference(measurementName);
+                    break;
 
-                // Adding measurements to the reference object
-                NodeList measurementNodes = currentReferenceNode.getChildNodes().item(0).getChildNodes();
+                case "OBJECTS":
+                    measurementReference = module.getObjectMeasurementReference(measurementName);
+                    break;
 
-                if (measurementNodes == null) continue;
-
-                for (int k = 0; k < measurementNodes.getLength(); k++) {
-                    Node measurementNode = measurementNodes.item(k);
-
-                    // Getting measurement properties
-                    NamedNodeMap attributes = measurementNode.getAttributes();
-                    String measurementName = attributes.getNamedItem("NAME").getNodeValue();
-                    boolean isCalulated = Boolean.parseBoolean(attributes.getNamedItem("IS_CALCULATED").getNodeValue());
-                    boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
-                    MeasurementReference measurementReference = new MeasurementReference(measurementName);
-                    measurementReference.setCalculated(isCalulated);
-                    measurementReference.setExportable(isExportable);
-
-                    reference.addMeasurementReference(measurementReference);
-
-                }
             }
+
+            if (measurementReference == null) continue;
+
+            // Updating the reference's parameters
+            measurementReference.setCalculated(isCalulated);
+            measurementReference.setExportable(isExportable);
+            measurementReference.setImageObjName(imageObjectName);
+
         }
     }
 
@@ -302,6 +310,7 @@ public class AnalysisHandler {
         OutputControl outputControl = analysis.getOutputControl();
         boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
+        String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
 
         // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
@@ -359,6 +368,16 @@ public class AnalysisHandler {
         if (exporter != null) {
             exporter.setExportSummary(exportSummary);
             exporter.setExportIndividualObjects(exportIndividualObjects);
+
+            switch (summaryType) {
+                case OutputControl.SummaryTypes.ONE_AVERAGE_PER_FILE:
+                    exporter.setSummaryType(Exporter.SummaryType.PER_FILE);
+                    break;
+
+                case OutputControl.SummaryTypes.AVERAGE_PER_TIMEPOINT:
+                    exporter.setSummaryType(Exporter.SummaryType.PER_TIMEPOINT_PER_FILE);
+                    break;
+            }
         }
 
         // Initialising BatchProcessor
@@ -404,5 +423,9 @@ public class AnalysisHandler {
     public void stopAnalysis() {
         batchProcessor.stopAnalysis();
 
+    }
+
+    public static BatchProcessor getBatchProcessor() {
+        return batchProcessor;
     }
 }

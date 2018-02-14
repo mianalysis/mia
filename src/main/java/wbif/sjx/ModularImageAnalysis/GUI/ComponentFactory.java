@@ -11,12 +11,10 @@ import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.FileParameter;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.TextParameter;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -72,14 +70,28 @@ public class ComponentFactory {
 
             parameterControl = new ChoiceArrayParameter(gui,module,parameter,names);
 
-        } else if (parameter.getType() == Parameter.INPUT_OBJECTS) {
+        } else if (parameter.getType() == Parameter.INPUT_OBJECTS || parameter.getType() == Parameter.REMOVED_OBJECTS) {
             // Getting a list of available images
             LinkedHashSet<Parameter> objects = modules.getParametersMatchingType(Parameter.OUTPUT_OBJECTS,module);
+            LinkedHashSet<Parameter> removedObjects = modules.getParametersMatchingType(Parameter.REMOVED_OBJECTS,module);
 
-            String[] names = new String[objects.size()];
-            int i = 0;
+            // Adding any output images to the list
+            LinkedHashSet<String> namesSet = new LinkedHashSet<>();
+            namesSet.add(null);
             for (Parameter object : objects) {
-                names[i++] = object.getValue();
+                namesSet.add(object.getValue());
+
+            }
+
+            // Removing any images which have since been removed from the workspace
+            for (Parameter object : removedObjects) {
+                namesSet.remove(object.getValue());
+            }
+
+            String[] names = new String[namesSet.size()];
+            int i = 0;
+            for (String name:namesSet) {
+                names[i++] = name;
             }
 
             parameterControl = new ChoiceArrayParameter(gui,module,parameter,names);
@@ -104,18 +116,12 @@ public class ComponentFactory {
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
 
         } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
-            Reference reference = modules.getImageReferences(module).get((String) parameter.getValueSource());
-            String[] measurementChoices = reference.getActiveMeasurementNames();
-//            MeasurementCollection measurements = modules.getMeasurements(module);
-//            String[] measurementChoices = measurements.getImageMeasurementNames(parameter.getValueSource());
+            String[] measurementChoices = modules.getImageReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
         } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
-            Reference reference = modules.getObjectReferences(module).get((String) parameter.getValueSource());
-            String[] measurementChoices = reference.getActiveMeasurementNames();
-//            MeasurementCollection measurements = modules.getMeasurements(module);
-//            String[] measurementChoices = measurements.getObjectMeasurementNames(parameter.getValueSource());
+            String[] measurementChoices = modules.getObjectReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
@@ -221,7 +227,7 @@ public class ComponentFactory {
 
         // Only displaying the module title if it has at least one visible parameter
         boolean hasVisibleParameters = false;
-        for (Parameter parameter : module.getActiveParameters().values()) {
+        for (Parameter parameter : module.updateAndGetParameters().values()) {
             if (parameter.isVisible()) hasVisibleParameters = true;
         }
         if (!hasVisibleParameters) return null;
@@ -237,7 +243,7 @@ public class ComponentFactory {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         modulePanel.add(titlePanel, c);
 
-        for (Parameter parameter : module.getActiveParameters().values()) {
+        for (Parameter parameter : module.updateAndGetParameters().values()) {
             if (parameter.isVisible()) {
                 JPanel paramPanel = createParameterControl(parameter, gui.getModules(), module, panelWidth);
 
@@ -280,7 +286,7 @@ public class ComponentFactory {
         c.gridy = 0;
         c.insets = new Insets(5,5,0,0);
 
-        JTextField measurementName = new JTextField("            "+measurement.getMeasurementName());
+        JTextField measurementName = new JTextField("            "+measurement.getNickName());
         measurementName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
         measurementName.setEditable(false);
         measurementName.setBorder(null);
@@ -291,6 +297,7 @@ public class ComponentFactory {
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.EAST;
+        exportCheck.setSelected(measurement.isExportable());
         measurementPanel.add(exportCheck,c);
 
         return measurementPanel;

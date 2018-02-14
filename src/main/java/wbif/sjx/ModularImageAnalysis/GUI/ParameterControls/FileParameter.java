@@ -8,6 +8,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -31,6 +32,7 @@ public class FileParameter extends JButton implements ActionListener {
         this.parameter = parameter;
         this.fileType = fileType;
 
+        setToolTipText(parameter.getValue());
         setText(FilenameUtils.getName(parameter.getValue()));
         addActionListener(this);
         setFocusPainted(false);
@@ -65,12 +67,16 @@ public class FileParameter extends JButton implements ActionListener {
                 break;
         }
 
+        if (parameter.getValue() != null) {
+            fileChooser.setCurrentDirectory(new File((String) parameter.getValue()));
+        }
         fileChooser.showDialog(null,"Open");
 
         if (fileChooser.getSelectedFile() == null) return;
 
         parameter.setValue(fileChooser.getSelectedFile().getAbsolutePath());
         setText(FilenameUtils.getName(parameter.getValue()));
+        setToolTipText(parameter.getValue());
 
         int idx = gui.getModules().indexOf(module);
         if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);

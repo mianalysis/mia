@@ -41,7 +41,8 @@ public class ShowObjects extends HCModule {
         }
 
         // Converting objects to an image
-        Image image = ObjectImageConverter.convertObjectsToImage(inputObjects,"Object image",templateImage,ObjectImageConverter.ColourModes.RANDOM_COLOUR,null,false);
+        Image image = ObjectImageConverter.convertObjectsToImage(inputObjects,"Object image",
+                templateImage.getImagePlus(),ObjectImageConverter.ColourModes.RANDOM_COLOUR,null,false);
         image.getImagePlus().setTitle(inputObjectName);
 
         // Creating a random colour LUT and assigning it to the image (maximising intensity range to 0-255)
@@ -55,28 +56,28 @@ public class ShowObjects extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

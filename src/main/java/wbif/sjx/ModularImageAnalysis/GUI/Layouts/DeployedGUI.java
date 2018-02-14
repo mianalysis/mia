@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.OutputStreamTextField;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.StatusTextField;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
@@ -13,6 +14,7 @@ import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,8 +27,8 @@ import java.net.URISyntaxException;
  * Created by sc13967 on 21/11/2017.
  */
 public class DeployedGUI extends GUI implements ActionListener {
-    private int frameWidth = 350;
-    private int frameHeight = 600;
+    private int frameWidth = 375;
+    private int frameHeight = 700;
     private int elementHeight = 25;
 
     private JFrame frame = new JFrame();
@@ -39,29 +41,38 @@ public class DeployedGUI extends GUI implements ActionListener {
     private String name;
     private String version;
     private ComponentFactory componentFactory;
+    private boolean saveOnRun = false;
+    private String saveLocation = "";
 
     public static void main(String[] args) throws IllegalAccessException, ParserConfigurationException, IOException, InstantiationException, URISyntaxException, SAXException, ClassNotFoundException {
         new DeployedGUI("/2017-11-20 Cilia analysis.mia","t","1");
     }
 
     public DeployedGUI(String analysisResourcePath, String name, String version) throws URISyntaxException, SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
-        InputStream analysisResourceStream = DeployedGUI.class.getResourceAsStream(analysisResourcePath);
-        Analysis analysis = new AnalysisHandler().loadAnalysis(analysisResourceStream);
-
-        new DeployedGUI(analysis,name,version);
+        new DeployedGUI(analysis,name,version,frameHeight);
 
     }
 
-    public DeployedGUI(Analysis analysis, String name, String version) throws IllegalAccessException, InstantiationException {
+    public DeployedGUI(String analysisResourcePath, String name, String version, int height) throws URISyntaxException, SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
+        InputStream analysisResourceStream = DeployedGUI.class.getResourceAsStream(analysisResourcePath);
+        Analysis analysis = new AnalysisHandler().loadAnalysis(analysisResourceStream);
+
+        new DeployedGUI(analysis,name,version,height);
+
+    }
+
+    public DeployedGUI(Analysis analysis, String name, String version, int height) throws IllegalAccessException, InstantiationException {
         this.analysis = analysis;
         this.name = name;
         this.version = version;
+        this.frameHeight = height;
 
         componentFactory = new ComponentFactory(this, elementHeight);
 
         // Setting location of panel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - frameWidth) / 2, (screenSize.height - frameHeight) / 2);
+        frame.setResizable(false);
 
         frame.setLayout(new GridBagLayout());
         frame.setTitle(name+" (version " + version + ")");
@@ -146,6 +157,7 @@ public class DeployedGUI extends GUI implements ActionListener {
 
     public void updateModules() {
         basicModulesPanel.removeAll();
+        JSeparator separator = new JSeparator();
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -156,6 +168,16 @@ public class DeployedGUI extends GUI implements ActionListener {
         c.gridy++;
         JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(),frameWidth-40);
         if (inputPanel != null) basicModulesPanel.add(inputPanel,c);
+
+        if (inputPanel != null) {
+            basicModulesPanel.add(inputPanel,c);
+
+            // Adding a separator between the input and main modules
+            c.gridy++;
+            separator.setPreferredSize(new Dimension(frameWidth-40, 10));
+            basicModulesPanel.add(separator,c);
+
+        }
 
         // Adding module buttons
         ModuleCollection modules = analysis.getModules();
@@ -169,9 +191,21 @@ public class DeployedGUI extends GUI implements ActionListener {
 
         }
 
+        JPanel outputPanel = componentFactory.createBasicModuleControl(analysis.getOutputControl(),frameWidth-40);
+
+        if (outputPanel != null) {
+            // Adding a separator between the input and main modules
+            c.gridy++;
+            separator.setPreferredSize(new Dimension(frameWidth-40, 10));
+            basicModulesPanel.add(separator,c);
+
+            c.gridy++;
+            basicModulesPanel.add(outputPanel,c);
+
+        }
+
         c.gridy++;
         c.weighty = 100;
-        JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(0, 15));
         basicModulesPanel.add(separator, c);
 
@@ -190,18 +224,39 @@ public class DeployedGUI extends GUI implements ActionListener {
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
 
-        JTextField textField = new JTextField();
+        StatusTextField textField = new StatusTextField();
         textField.setBackground(null);
         textField.setPreferredSize(new Dimension(width - 20, 25));
         textField.setBorder(null);
         textField.setText(name+" (version " + version + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+        textField.setEditable(false);
+        textField.setToolTipText(textField.getText());
         statusPanel.add(textField, c);
 
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
         PrintStream printStream = new PrintStream(outputStreamTextField);
         System.setOut(printStream);
 
+    }
+
+    public void enableSaveOnRun(String saveLocation) {
+        this.saveOnRun = true;
+        this.saveLocation = saveLocation;
+
+    }
+
+    public void disableSaveOnRun() {
+        this.saveOnRun = false;
+
+    }
+
+    public boolean isSaveOnRun() {
+        return saveOnRun;
+    }
+
+    public String getSaveLocation() {
+        return saveLocation;
     }
 
     @Override
@@ -217,6 +272,15 @@ public class DeployedGUI extends GUI implements ActionListener {
                 }
             });
             t.start();
+
+            // If selected, save the analysis when run
+            if (saveOnRun) {
+                try {
+                    new AnalysisHandler().saveAnalysis(analysis,saveLocation);
+                } catch (IOException | ParserConfigurationException | TransformerException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
     }
 }

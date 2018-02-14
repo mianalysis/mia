@@ -14,13 +14,6 @@ public class MeasureImageTexture extends HCModule {
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
 
-    private Reference inputImage;
-
-    private MeasurementReference asmMeasurement;
-    private MeasurementReference contrastMeasurement;
-    private MeasurementReference correlationMeasurement;
-    private MeasurementReference entropyMeasurement;
-
     private interface Measurements {
         String ASM = "TEXTURE//ASM";
         String CONTRAST = "TEXTURE//CONTRAST";
@@ -91,45 +84,49 @@ public class MeasureImageTexture extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(X_OFFSET, Parameter.INTEGER,1));
-        parameters.addParameter(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
-        parameters.addParameter(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(X_OFFSET, Parameter.INTEGER,1));
+        parameters.add(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
+        parameters.add(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
+        imageMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public void initialiseReferences() {
-        inputImage = new Reference();
-        imageReferences.add(inputImage);
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        String imageName = parameters.getValue(INPUT_IMAGE);
 
-        asmMeasurement = new MeasurementReference(Measurements.ASM);
-        contrastMeasurement = new MeasurementReference(Measurements.CONTRAST);
-        correlationMeasurement = new MeasurementReference(Measurements.CORRELATION);
-        entropyMeasurement = new MeasurementReference(Measurements.ENTROPY);
-        inputImage.addMeasurementReference(asmMeasurement);
-        inputImage.addMeasurementReference(contrastMeasurement);
-        inputImage.addMeasurementReference(correlationMeasurement);
-        inputImage.addMeasurementReference(entropyMeasurement);
+        MeasurementReference asm = imageMeasurementReferences.get(Measurements.ASM);
+        asm.setImageObjName(imageName);
 
-    }
+        MeasurementReference contrast = imageMeasurementReferences.get(Measurements.CONTRAST);
+        contrast.setImageObjName(imageName);
 
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
-        // Updating image name
-        inputImage.setName(parameters.getValue(INPUT_IMAGE));
+        MeasurementReference correlation = imageMeasurementReferences.get(Measurements.CORRELATION);
+        correlation.setImageObjName(imageName);
 
-        return imageReferences;
+        MeasurementReference entropy = imageMeasurementReferences.get(Measurements.ENTROPY);
+        entropy.setImageObjName(imageName);
+
+        return imageMeasurementReferences;
 
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

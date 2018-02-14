@@ -11,10 +11,11 @@ public class CalculateNearestNeighbour extends HCModule {
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
     public static final String PARENT_OBJECTS = "Parent objects";
 
-    private static final String NN_DISTANCE = "NN_DISTANCE";
-    private static final String NN_ID = "NN_ID";
+    public interface Measurements {
+        String NN_DISTANCE = "NN_DISTANCE";
+        String NN_ID = "NN_ID";
 
-    private Reference inputObjects;
+    }
 
     @Override
     public String getTitle() {
@@ -94,12 +95,12 @@ public class CalculateNearestNeighbour extends HCModule {
 
             // Adding details of the nearest neighbour to the input object's measurements
             if (nearestNeighbour != null) {
-                inputObject.addMeasurement(new Measurement(NN_ID, nearestNeighbour.getID()));
-                inputObject.addMeasurement(new Measurement(NN_DISTANCE, minDist));
+                inputObject.addMeasurement(new Measurement(Measurements.NN_ID, nearestNeighbour.getID()));
+                inputObject.addMeasurement(new Measurement(Measurements.NN_DISTANCE, minDist));
 
             } else {
-                inputObject.addMeasurement(new Measurement(NN_ID, Double.NaN));
-                inputObject.addMeasurement(new Measurement(NN_DISTANCE, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.NN_ID, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.NN_DISTANCE, Double.NaN));
 
             }
         }
@@ -107,21 +108,28 @@ public class CalculateNearestNeighbour extends HCModule {
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(CALCULATE_WITHIN_PARENT, Parameter.BOOLEAN,false));
-        parameters.addParameter(new Parameter(PARENT_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CALCULATE_WITHIN_PARENT, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(PARENT_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_DISTANCE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_ID));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.addParameter(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.addParameter(parameters.getParameter(CALCULATE_WITHIN_PARENT));
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CALCULATE_WITHIN_PARENT));
 
         if (parameters.getValue(CALCULATE_WITHIN_PARENT)) {
-            returnedParameters.addParameter(parameters.getParameter(PARENT_OBJECTS));
+            returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(PARENT_OBJECTS,inputObjectsName);
@@ -133,23 +141,22 @@ public class CalculateNearestNeighbour extends HCModule {
     }
 
     @Override
-    public void initialiseReferences() {
-        inputObjects = new Reference();
-        objectReferences.add(inputObjects);
-
-        inputObjects.addMeasurementReference(new MeasurementReference(NN_DISTANCE));
-        inputObjects.addMeasurementReference(new MeasurementReference(NN_ID));
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        return objectReferences;
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
+        MeasurementReference nnDistance = objectMeasurementReferences.get(Measurements.NN_DISTANCE);
+        nnDistance.setImageObjName(inputObjectsName);
+
+        MeasurementReference nnID = objectMeasurementReferences.get(Measurements.NN_ID);
+        nnID.setImageObjName(inputObjectsName);
+
+        return objectMeasurementReferences;
+
     }
 
     @Override

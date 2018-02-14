@@ -39,69 +39,75 @@ public class Parameter implements Serializable {
     public final static int REMOVED_IMAGE = 4;
 
     /**
+     * ObjCollection removed by a module.  This is used to tell the ComponentFactory if an object set is no longer
+     * available.
+     */
+    public final static int REMOVED_OBJECTS = 5;
+
+    /**
      * Single integer variable.  These can be set in ParameterWindow by numeric fields
      */
-    public final static int INTEGER = 5;
+    public final static int INTEGER = 6;
 
     /**
      * Single double variable.  These can be set in ParameterWindow by numeric fields
      */
-    public final static int DOUBLE = 6;
+    public final static int DOUBLE = 7;
 
     /**
      * Single string variable.  These can be set in ParameterWindow by string fields
      */
-    public final static int STRING = 7;
+    public final static int STRING = 8;
 
     /**
      * String array containing choices (e.g. names of thresholding methods).  These are displayed as drop-down choice
      * menus in ParameterWindow
      */
-    public final static int CHOICE_ARRAY = 8;
+    public final static int CHOICE_ARRAY = 9;
 
     /**
      * Boolean class parameter.  These are displayed by ParameterWindow as checkboxes.
      */
-    public final static int BOOLEAN = 9;
+    public final static int BOOLEAN = 10;
 
     /**
      * System file parameter.  These are displayed as buttons for loading file open dialog.  This is stored as an
      * absolute path String.
      */
-    public final static int FILE_PATH = 10;
+    public final static int FILE_PATH = 11;
 
     /**
      * System file parameter.  These are displayed as buttons for loading file open dialog.  This is stored as an
      * absolute path String.
      */
-    public final static int FOLDER_PATH = 11;
+    public final static int FOLDER_PATH = 12;
 
     /**
      * HCMeasurement input to the module.  This could be used as a parameter for plotting, or as a value for another
      * parameter
      */
-    public final static int IMAGE_MEASUREMENT = 12;
+    public final static int IMAGE_MEASUREMENT = 13;
 
     /**
      * HCMeasurement input to the module.  This could be used as a parameter for plotting, or as a value for another
      * parameter
      */
-    public final static int OBJECT_MEASUREMENT = 13;
+    public final static int OBJECT_MEASUREMENT = 14;
 
     /**
      * Child object of the given parent object.
      */
-    public final static int CHILD_OBJECTS = 14;
+    public final static int CHILD_OBJECTS = 15;
 
     /**
      * Parent object of the given child object.
      */
-    public final static int PARENT_OBJECTS = 15;
+    public final static int PARENT_OBJECTS = 16;
 
 
     private final String name;
-    private final int type;
-    private Object valueSource; // Where the possible values come from (used for CHOICE_ARRAY and MEASUREMENT)
+    private int type;
+    private Object valueSource; // Where the possible values come from (used for CHOICE_ARRAY and MEASUREMENT_FOR_COLOUR)
     private Object value;
     private boolean visible = false;
 
@@ -129,6 +135,10 @@ public class Parameter implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public int getType() {

@@ -2,10 +2,13 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.apache.commons.io.FileUtils;
+import ij.plugin.Duplicator;
+import ij.process.LUT;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
@@ -21,6 +24,7 @@ public class ImageSaver extends HCModule {
     public static final String SAVE_FILE_PATH = "File path";
     public static final String SAVE_SUFFIX = "Add filename suffix";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
+    public static final String SHOW_IMAGE = "Show image";
 
     public interface SaveLocations {
         String MIRRORED_DIRECTORY = "Mirrored directory";
@@ -55,7 +59,19 @@ public class ImageSaver extends HCModule {
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
 
         // The save image option is there so users can toggle it
-        if (!saveImage) return;
+        if (!saveImage) {
+            // It's still possible to display the image
+            if (parameters.getValue(SHOW_IMAGE)) {
+                // Loading the image to save
+                Image inputImage = workspace.getImages().get(inputImageName);
+                ImagePlus dispIpl = new Duplicator().run(inputImage.getImagePlus());
+                IntensityMinMax.run(dispIpl,true);
+                dispIpl.setLut(LUTs.Random(true));
+                dispIpl.show();
+            }
+
+            return;
+        }
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -112,62 +128,72 @@ public class ImageSaver extends HCModule {
                 break;
 
         }
+
+        if (parameters.getValue(SHOW_IMAGE)) {
+            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+            IntensityMinMax.run(dispIpl,true);
+            dispIpl.setLut(LUTs.Random(true));
+            dispIpl.show();
+        }
     }
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(SAVE_IMAGE,Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.MIRRORED_DIRECTORY,SaveLocations.ALL));
-        parameters.addParameter(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FOLDER_PATH,""));
-        parameters.addParameter(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
-        parameters.addParameter(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
-        parameters.addParameter(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SAVE_IMAGE,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.MIRRORED_DIRECTORY,SaveLocations.ALL));
+        parameters.add(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FOLDER_PATH,""));
+        parameters.add(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
+        parameters.add(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
+        parameters.add(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 
-        returnedParamters.addParameter(parameters.getParameter(SAVE_IMAGE));
+        returnedParamters.add(parameters.getParameter(SAVE_IMAGE));
 
         if (parameters.getValue(SAVE_IMAGE)) {
-            returnedParamters.addParameter(parameters.getParameter(INPUT_IMAGE));
-            returnedParamters.addParameter(parameters.getParameter(SAVE_LOCATION));
+            returnedParamters.add(parameters.getParameter(INPUT_IMAGE));
+            returnedParamters.add(parameters.getParameter(SAVE_LOCATION));
 
             switch ((String) parameters.getValue(SAVE_LOCATION)) {
                 case SaveLocations.SPECIFIC_LOCATION:
-                    returnedParamters.addParameter(parameters.getParameter(SAVE_FILE_PATH));
+                    returnedParamters.add(parameters.getParameter(SAVE_FILE_PATH));
                     break;
 
                 case SaveLocations.MIRRORED_DIRECTORY:
-                    returnedParamters.addParameter(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
+                    returnedParamters.add(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
                     break;
 
             }
 
-            returnedParamters.addParameter(parameters.getParameter(SAVE_SUFFIX));
-            returnedParamters.addParameter(parameters.getParameter(FLATTEN_OVERLAY));
+            returnedParamters.add(parameters.getParameter(SAVE_SUFFIX));
+            returnedParamters.add(parameters.getParameter(FLATTEN_OVERLAY));
 
         }
+
+        returnedParamters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParamters;
 
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

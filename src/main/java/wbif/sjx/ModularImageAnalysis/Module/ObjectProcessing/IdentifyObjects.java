@@ -3,6 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -42,6 +43,9 @@ public class IdentifyObjects extends HCModule {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS);
+
+        // Creating a duplicate of the input image
+        inputImagePlus = new Duplicator().run(inputImagePlus);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             if (verbose)
@@ -88,37 +92,37 @@ public class IdentifyObjects extends HCModule {
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showObjects) ObjectImageConverter.convertObjectsToImage(outputObjects, outputObjectsName, inputImage,
+        if (showObjects) ObjectImageConverter.convertObjectsToImage(outputObjects, outputObjectsName, inputImagePlus,
                     ObjectImageConverter.ColourModes.RANDOM_COLOUR, "", false).getImagePlus().show();
 
     }
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.addParameter(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.addParameter(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
-        parameters.addParameter(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
-    public void initialiseReferences() {
-
-    }
-
-    @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 

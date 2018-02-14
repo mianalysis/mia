@@ -12,7 +12,12 @@ import java.util.ArrayList;
 public class MeasureObjectShape extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
 
-    private static final String N_VOXELS = "N_VOXELS";
+    private interface Measurements {
+        String N_VOXELS = "N_VOXELS";
+
+        String[] ALL = new String[]{N_VOXELS};
+    }
+
 
     @Override
     public String getTitle() {
@@ -36,44 +41,43 @@ public class MeasureObjectShape extends HCModule {
             ArrayList<Integer> x = inputObject.getXCoords();
 
             // Adding the relevant measurements
-            inputObject.addMeasurement(new Measurement(N_VOXELS,x.size(),this));
+            inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS,x.size(),this));
 
         }
     }
 
     @Override
     public void initialiseParameters() {
-        parameters.addParameter(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
 
     }
 
     @Override
-    public ParameterCollection getActiveParameters() {
+    protected void initialiseMeasurementReferences() {
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.N_VOXELS));
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
         return parameters;
-    }
-
-    @Override
-    public void initialiseReferences() {
 
     }
 
     @Override
-    public ReferenceCollection updateAndGetImageReferences() {
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public ReferenceCollection updateAndGetObjectReferences() {
-        return null;
-    }
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-//    @Override
-//    public void addMeasurements(MeasurementCollection measurements) {
-//        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-//
-//        measurements.addObjectMeasurement(inputObjectsName,N_VOXELS);
-//
-//    }
+        objectMeasurementReferences.updateImageObjectName(Measurements.N_VOXELS,inputObjectsName);
+
+        return objectMeasurementReferences;
+
+    }
 
     @Override
     public void addRelationships(RelationshipCollection relationships) {
