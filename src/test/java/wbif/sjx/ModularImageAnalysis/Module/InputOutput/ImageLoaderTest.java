@@ -32,7 +32,6 @@ public class ImageLoaderTest {
         imageLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.SPECIFIC_FILE);
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
         imageLoader.updateParameterValue(ImageLoader.FILE_PATH,pathToImage);
-        imageLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,false);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
@@ -79,7 +78,6 @@ public class ImageLoaderTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,false);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
@@ -126,7 +124,6 @@ public class ImageLoaderTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,true);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
@@ -173,7 +170,6 @@ public class ImageLoaderTest {
 
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_BIOFORMATS,true);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 

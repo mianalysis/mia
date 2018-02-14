@@ -59,14 +59,14 @@ public class IdentifyObjectsTest {
         assertEquals(8,objects.size());
 
         // Checking the spatial calibration and coordinate limits of each object
-        HashMap<Integer, HashMap<String, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         for (Obj object:objects.values()) {
             // Getting the number of voxels in this object (this is used as the key for the expected values map)
             int nVoxels = object.getNVoxels();
 
             // Getting the relevant measures
-            HashMap<String, Object> expected = expectedValues.get(nVoxels);
+            HashMap<ExpectedObjects3D.Measures, Object> expected = expectedValues.get(nVoxels);
             assertNotNull("Null means no expected object with the specified number of voxels",expected);
 
             // Testing coordinate ranges
@@ -125,14 +125,14 @@ public class IdentifyObjectsTest {
         assertEquals(8,objects.size());
 
         // Checking the spatial calibration and coordinate limits of each object
-        HashMap<Integer, HashMap<String, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         for (Obj object:objects.values()) {
             // Getting the number of voxels in this object (this is used as the key for the expected values map)
             int nVoxels = object.getNVoxels();
 
             // Getting the relevant measures
-            HashMap<String, Object> expected = expectedValues.get(nVoxels);
+            HashMap<ExpectedObjects3D.Measures, Object> expected = expectedValues.get(nVoxels);
             assertNotNull("Null means no expected object with the specified number of voxels",expected);
 
             // Testing coordinate ranges
@@ -187,14 +187,14 @@ public class IdentifyObjectsTest {
         assertEquals(8,objects.size());
 
         // Checking the spatial calibration and coordinate limits of each object
-        HashMap<Integer, HashMap<String, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         for (Obj object:objects.values()) {
             // Getting the number of voxels in this object (this is used as the key for the expected values map)
             int nVoxels = object.getNVoxels();
 
             // Getting the relevant measures
-            HashMap<String, Object> expected = expectedValues.get(nVoxels);
+            HashMap<ExpectedObjects3D.Measures, Object> expected = expectedValues.get(nVoxels);
             assertNotNull("Null means no expected object with the specified number of voxels",expected);
 
             // Testing coordinate ranges

@@ -29,7 +29,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = ExpectedObjects3D.getObjects("TestObj",true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module

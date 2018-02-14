@@ -47,7 +47,7 @@ public class MeasureObjectCentroidTest {
         measureObjectCentroid.run(workspace,false);
 
         // Getting expected values
-        HashMap<Integer, HashMap<String, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -97,7 +97,7 @@ public class MeasureObjectCentroidTest {
         measureObjectCentroid.run(workspace,false);
 
         // Getting expected values
-        HashMap<Integer, HashMap<String, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {

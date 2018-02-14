@@ -56,7 +56,7 @@ public class ProjectObjectsTest {
         assertEquals(8,workspace.getObjectSet(outputObjectsName).size());
 
         // Getting expected values
-        HashMap<Integer, HashMap<String, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Testing coordinate range for projected objects.  These are accessed via the number of voxels of the parent
         // (as this is how they are stored in the expected values HashMap)
@@ -80,7 +80,7 @@ public class ProjectObjectsTest {
             int nVoxels = parentObject.getNVoxels();
 
             // Getting the relevant measures
-            HashMap<String, Object> expected = expectedValues.get(nVoxels);
+            HashMap<ExpectedObjects3D.Measures, Object> expected = expectedValues.get(nVoxels);
             assertNotNull("Null means no expected object with the specified number of voxels",expected);
 
             // Testing coordinate ranges

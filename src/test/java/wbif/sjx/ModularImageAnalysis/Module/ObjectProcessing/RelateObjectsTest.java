@@ -68,7 +68,7 @@ public class RelateObjectsTest {
         assertEquals(25,workspace.getObjectSet(inputSpotsName).size());
 
         // Getting expected values
-        HashMap<Integer,HashMap<String,Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer,HashMap<ExpectedObjects3D.Measures,Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -130,12 +130,12 @@ public class RelateObjectsTest {
         relateObjects.run(workspace,false);
 
         // Getting expected values
-        HashMap<Integer, HashMap<String, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
-            HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            HashMap<ExpectedObjects3D.Measures, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
             int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_X);
             int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_Y);
             int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_Z);
@@ -215,12 +215,12 @@ public class RelateObjectsTest {
         relateObjects.run(workspace,false);
 
         // Getting expected values
-        HashMap<Integer, HashMap<String, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
-            HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            HashMap<ExpectedObjects3D.Measures, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
             int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_X);
             int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_Y);
             int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_Z);
