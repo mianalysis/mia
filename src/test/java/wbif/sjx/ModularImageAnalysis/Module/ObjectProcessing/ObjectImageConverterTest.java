@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 
+import java.awt.*;
 import java.net.URLDecoder;
 import java.util.HashMap;
 
@@ -36,7 +37,6 @@ public class ObjectImageConverterTest {
         // Initialising parameters
         String colourMode = ObjectImageConverter.ColourModes.ID;
         String colourSource = ""; // This isn't required for COLOUR_MODES[3] (ID)
-        boolean hideMissing = false;
 
         // Setting object parameters
         String objectName = "Test objects";
@@ -52,7 +52,8 @@ public class ObjectImageConverterTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
 
         // Converting objects to image
-        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",ipl,colourMode,colourSource,hideMissing);
+        HashMap<Obj,Float> hues = testObjects.getHue(ObjCollection.ColourModes.ID,"","",false);
+        Image testImage = testObjects.convertObjectsToImage("Output",ipl,colourMode,hues,false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -89,7 +90,6 @@ public class ObjectImageConverterTest {
         // Initialising parameters
         String colourMode = ObjectImageConverter.ColourModes.ID;
         String colourSource = ""; // This isn't required for COLOUR_MODES[3] (ID)
-        boolean hideMissing = false;
 
         // Setting object parameters
         String objectName = "Test objects";
@@ -105,7 +105,8 @@ public class ObjectImageConverterTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
 
         // Converting objects to image
-        Image testImage = ObjectImageConverter.convertObjectsToImage(testObjects,"Test image",ipl,colourMode,colourSource,hideMissing);
+        HashMap<Obj,Float> hues = testObjects.getHue(ObjCollection.ColourModes.ID,"","",false);
+        Image testImage = testObjects.convertObjectsToImage("Output",ipl,colourMode,hues,false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -148,7 +149,7 @@ public class ObjectImageConverterTest {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        ObjCollection testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
+        ObjCollection testObjects = image.convertImageToObjects(testObjectsName);
 
         // Checking objects have been assigned
         assertNotNull("Testing converted objects are not null",testObjects);
@@ -202,7 +203,7 @@ public class ObjectImageConverterTest {
         String testObjectsName = "Test objects";
 
         // Running the method to be tested
-        ObjCollection testObjects = ObjectImageConverter.convertImageToObjects(image, testObjectsName);
+        ObjCollection testObjects = image.convertImageToObjects(testObjectsName);
 
         // Checking objects have been assigned
         assertNotNull("Testing converted objects are not null",testObjects);

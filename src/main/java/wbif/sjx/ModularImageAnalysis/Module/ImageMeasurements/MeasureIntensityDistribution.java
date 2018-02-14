@@ -8,7 +8,11 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
+
+import java.awt.*;
+import java.util.HashMap;
 
 /**
  * Created by Stephen on 17/11/2017.
@@ -58,8 +62,8 @@ public class MeasureIntensityDistribution extends HCModule {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        Image objectsImage = ObjectImageConverter.convertObjectsToImage(inputObjects, "Objects image", inputImagePlus,
-                ObjectImageConverter.ColourModes.SINGLE_COLOUR, "", true);
+        HashMap<Obj,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, true);
 
         // Calculating a 3D distance map for the binary image
         ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());
@@ -122,8 +126,8 @@ public class MeasureIntensityDistribution extends HCModule {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        Image objectsImage = ObjectImageConverter.convertObjectsToImage(inputObjects, "Objects image", inputImagePlus,
-                ObjectImageConverter.ColourModes.SINGLE_COLOUR, "", true);
+        HashMap<Obj,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, true);
 
         // Calculating a 3D distance map for the binary image
         ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());

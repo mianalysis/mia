@@ -8,6 +8,10 @@ import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
+
+import java.awt.*;
+import java.util.HashMap;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -70,7 +74,7 @@ public class IdentifyObjects extends HCModule {
 
             // Converting image to objects
             Image tempImage = new Image("Temp image", currStack);
-            ObjCollection currOutputObjects = ObjectImageConverter.convertImageToObjects(tempImage, outputObjectsName);
+            ObjCollection currOutputObjects = tempImage.convertImageToObjects(outputObjectsName);
 
             // Updating the current objects (setting the real frame number and offsetting the ID)
             int maxID = 0;
@@ -92,9 +96,10 @@ public class IdentifyObjects extends HCModule {
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showObjects) ObjectImageConverter.convertObjectsToImage(outputObjects, outputObjectsName, inputImagePlus,
-                    ObjectImageConverter.ColourModes.RANDOM_COLOUR, "", false).getImagePlus().show();
-
+        if (showObjects) {
+            HashMap<Obj,Float> hues = outputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"","",false);
+            outputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.RANDOM_COLOUR, hues, false).getImagePlus().show();
+        }
     }
 
     @Override
