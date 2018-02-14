@@ -6,8 +6,8 @@ import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 /**
  * Created by Stephen Cross on 10/09/2017.
  */
-public class ExpectedSpots3D {
-    public static int[][] getCoordinates3D() {
+public class ExpectedSpots3D extends ExpectedObjects {
+    public int[][] getCoordinates3D() {
         return new int[][]{{1,17,10,0,8,0},
                 {2,35,41,0,3,0},
                 {3,24,42,0,1,0},
@@ -33,31 +33,6 @@ public class ExpectedSpots3D {
                 {23,36,21,0,7,0},
                 {24,44,14,0,2,0},
                 {25,44,14,0,7,0}};
-
-    }
-
-    public static ObjCollection getObjects(String objectName, double dppXY, double dppZ, String calibratedUnits) {
-        // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName);
-
-        // Adding all provided coordinates to each object
-        int[][] coordinates = getCoordinates3D();
-        for (int i = 0;i<coordinates.length;i++) {
-            int ID = coordinates[i][0];
-            int x = coordinates[i][1];
-            int y = coordinates[i][2];
-            int z = coordinates[i][4];
-            int t = coordinates[i][5];
-
-            testObjects.putIfAbsent(ID,new Obj(objectName,ID,dppXY,dppZ,calibratedUnits));
-
-            Obj testObject = testObjects.get(ID);
-            testObject.addCoord(x,y,z);
-            testObject.setT(t);
-
-        }
-
-        return testObjects;
 
     }
 }

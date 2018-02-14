@@ -1,21 +1,18 @@
 package wbif.sjx.ModularImageAnalysis;
 
-import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
-
 import java.util.HashMap;
 
 /**
  * Created by Stephen Cross on 29/08/2017.
  */
-public class ExpectedObjects3D {
+public class ExpectedObjects3D extends ExpectedObjects {
     public enum Measures {ID_8BIT,
         ID_16BIT, X_MIN, X_MEAN, X_MEDIAN, X_MAX, Y_MIN, Y_MEAN, Y_MEDIAN, Y_MAX, Z_MIN, Z_MEAN, Z_MEDIAN, Z_MAX, C, F,
         N_VOXELS, N_VOXELS_PROJ, I_MEAN_8BIT, I_MIN_8BIT, I_MAX_8BIT, I_STD_8BIT, I_SUM_8BIT, I_MEAN_16BIT, I_MIN_16BIT,
         I_MAX_16BIT, I_STD_16BIT, I_SUM_16BIT, I_MEAN_32BIT, I_MIN_32BIT, I_MAX_32BIT, I_STD_32BIT, I_SUM_32BIT,
         SPOT_ID_X, SPOT_ID_Y, SPOT_ID_Z, SPOT_PROX_CENT_X, SPOT_PROX_CENT_Y, SPOT_PROX_CENT_Z, SPOT_PROX_CENT_DIST,
         SPOT_PROX_CENT_20PX_X, SPOT_PROX_CENT_20PX_Y, SPOT_PROX_CENT_20PX_Z, SPOT_PROX_CENT_20PX_DIST}
-    
+
     public static HashMap<Integer,HashMap<Measures,Object>> getExpectedValues3D() {
         HashMap<Integer,HashMap<Measures,Object>> expectedValues = new HashMap<>();
 
@@ -398,7 +395,7 @@ public class ExpectedObjects3D {
 
     }
 
-    public static int[][] getCoordinates3D() {
+    public int[][] getCoordinates3D() {
         return new int[][]{{3,3,11,12,0,0,0},
                 {3,3,12,12,0,0,0},
                 {3,3,11,13,0,0,0},
@@ -1901,29 +1898,5 @@ public class ExpectedObjects3D {
 
     }
 
-    public static ObjCollection getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits) {
-        // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName);
-
-        // Adding all provided coordinates to each object
-        int[][] coordinates = getCoordinates3D();
-        for (int i = 0;i<coordinates.length;i++) {
-            int ID = eightBit ? coordinates[i][0] : coordinates[i][1];
-            int x = coordinates[i][2];
-            int y = coordinates[i][3];
-            int z = coordinates[i][5];
-            int t = coordinates[i][6];
-
-            testObjects.putIfAbsent(ID,new Obj(objectName,ID,dppXY,dppZ,calibratedUnits));
-
-            Obj testObject = testObjects.get(ID);
-            testObject.addCoord(x,y,z);
-            testObject.setT(t);
-
-        }
-
-        return testObjects;
-
-    }
 }
 
