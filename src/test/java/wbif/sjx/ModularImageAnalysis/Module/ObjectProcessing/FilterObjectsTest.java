@@ -36,7 +36,7 @@ public class FilterObjectsTest {
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_LARGER_THAN);
-        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT,ExpectedObjects3D.Measures.N_VOXELS);
+        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT,"SHAPE//AREA_PX");
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
