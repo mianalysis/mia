@@ -3,24 +3,20 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import org.apache.commons.math3.analysis.interpolation.DividedDifferenceInterpolator;
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
-import org.apache.commons.math3.analysis.polynomials.PolynomialFunctionNewtonForm;
-import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Vertex;
 import wbif.sjx.common.Process.SkeletonTools.Skeleton;
-import wbif.sjx.common.Process.SkeletonTools.SkeletonVisualiser;
 
-import java.util.Arrays;
+import java.awt.*;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.TreeMap;
 
@@ -99,7 +95,8 @@ public class SplineAnalysis extends HCModule {
             ObjCollection tempObjects = new ObjCollection("Backbone");
             tempObjects.add(inputObject);
 
-            ImagePlus objectIpl = ObjectImageConverter.convertObjectsToImage(tempObjects, "Temp", templateImage, ObjectImageConverter.ColourModes.SINGLE_COLOUR, "", false).getImagePlus();
+            HashMap<Obj,Float> hues = tempObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+            ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, false).getImagePlus();
             InvertIntensity.process(objectIpl);
 
             // Skeletonise fish to get single backbone

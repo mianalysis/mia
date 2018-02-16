@@ -3,8 +3,12 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 import wbif.sjx.common.Object.LUTs;
+
+import java.awt.*;
+import java.util.HashMap;
 
 
 /**
@@ -41,8 +45,8 @@ public class ShowObjects extends HCModule {
         }
 
         // Converting objects to an image
-        Image image = ObjectImageConverter.convertObjectsToImage(inputObjects,"Object image",
-                templateImage.getImagePlus(),ObjectImageConverter.ColourModes.RANDOM_COLOUR,null,false);
+        HashMap<Obj,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"","",false);
+        Image image = inputObjects.convertObjectsToImage("Objects",templateImage.getImagePlus(),ObjectImageConverter.ColourModes.RANDOM_COLOUR,hues,false);
         image.getImagePlus().setTitle(inputObjectName);
 
         // Creating a random colour LUT and assigning it to the image (maximising intensity range to 0-255)

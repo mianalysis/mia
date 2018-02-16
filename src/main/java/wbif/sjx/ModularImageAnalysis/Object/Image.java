@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import ij.ImagePlus;
+import ij.process.ImageProcessor;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
 import net.imglib2.type.NativeType;
@@ -23,6 +24,54 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     public Image(String name, ImagePlus imagePlus) {
         this.name = name;
         this.imagePlus = imagePlus;
+
+    }
+
+    public ObjCollection convertImageToObjects(String outputObjectsName) {
+        // Need to get coordinates and convert to a HCObject
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
+
+        // Getting spatial calibration
+        double dppXY = imagePlus.getCalibration().getX(1);
+        double dppZ = imagePlus.getCalibration().getZ(1);
+        String calibratedUnits = imagePlus.getCalibration().getUnits();
+
+        ImageProcessor ipr = imagePlus.getProcessor();
+
+        int h = imagePlus.getHeight();
+        int w = imagePlus.getWidth();
+        int nSlices = imagePlus.getNSlices();
+        int nFrames = imagePlus.getNFrames();
+        int nChannels = imagePlus.getNChannels();
+
+        for (int c=0;c<nChannels;c++) {
+            for (int t = 0; t < nFrames; t++) {
+                // HashMap linking the ID numbers in the present frame to those used to store the object (this means
+                // each frame instance has different ID numbers)
+                HashMap<Integer,Integer> IDlink = new HashMap<>();
+
+                for (int z = 0; z < nSlices; z++) {
+                    imagePlus.setPosition(c+1,z+1,t+1);
+                    for (int x = 0; x < w; x++) {
+                        for (int y = 0; y < h; y++) {
+                            int imageID = (int) ipr.getPixelValue(x, y); //Pixel value
+
+                            if (imageID != 0) {
+                                IDlink.computeIfAbsent(imageID, k -> outputObjects.getNextID());
+                                int outID = IDlink.get(imageID);
+
+                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName, outID,dppXY,dppZ,calibratedUnits));
+                                outputObjects.get(outID).addCoord(x,y,z);
+                                outputObjects.get(outID).setT(t);
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return outputObjects;
 
     }
 

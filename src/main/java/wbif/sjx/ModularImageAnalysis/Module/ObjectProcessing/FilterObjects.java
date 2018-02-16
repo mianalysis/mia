@@ -184,6 +184,9 @@ public class FilterObjects extends HCModule {
                     Obj inputObject = iterator.next();
 
                     // Removing the object if it has no children
+                    for (Measurement meas:inputObject.getMeasurements().values()) {
+                        System.out.println(meas.getName());
+                    }
                     if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
                         inputObject.removeRelationships();
                         iterator.remove();

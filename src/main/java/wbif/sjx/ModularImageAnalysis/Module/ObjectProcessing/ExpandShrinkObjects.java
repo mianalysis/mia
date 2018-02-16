@@ -1,14 +1,15 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.gui.Roi;
-import ij.measure.Calibration;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
+
+import java.awt.*;
+import java.util.HashMap;
 
 /**
  * Created by sc13967 on 16/01/2018.
@@ -75,8 +76,8 @@ public class ExpandShrinkObjects extends HCModule {
             // Convert each object to an image, do the dilation/erosion, then convert back to an object
             ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
             objectCollection.add(inputObject);
-            Image objectImage = ObjectImageConverter.convertObjectsToImage(objectCollection,"ProjectedImage",
-                    templateImagePlus,ObjectImageConverter.ColourModes.SINGLE_COLOUR,null,false);
+            HashMap<Obj,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+            Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImagePlus,ObjectImageConverter.ColourModes.SINGLE_COLOUR,hues,false);
 
             Prefs.blackBackground = true;
 
@@ -97,7 +98,7 @@ public class ExpandShrinkObjects extends HCModule {
             Prefs.blackBackground = false;
 
             // Creating a new object collection (only contains one image) from the transformed image
-            ObjCollection newObjects = ObjectImageConverter.convertImageToObjects(objectImage,"NewObjects");
+            ObjCollection newObjects = objectImage.convertImageToObjects("NewObjects");
 
             // If the input objects are to be transformed, taking the new pixel coordinates and applying them to
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.

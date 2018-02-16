@@ -313,24 +313,6 @@ public class AnalysisHandler {
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
 
-        // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
-//        String inputFilePath = Prefs.get("MIA.inputFilePath","");
-//
-//        JFileChooser fileChooser = new JFileChooser(inputFilePath);
-//        fileChooser.setDialogTitle("Select file to run");
-//        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-//        fileChooser.setMultiSelectionEnabled(false);
-//        fileChooser.showDialog(null,"Open");
-//
-//        File inputFile = fileChooser.getSelectedFile();
-//        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
-//        Prefs.savePreferences();
-//
-//        String exportName;
-//        if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
-//        else exportName = inputFile.getAbsolutePath() + "\\output";
-        // END OLD SECTION
-
         File inputFile = null;
         String exportName = null;
         int nThreads = 1;
@@ -397,6 +379,8 @@ public class AnalysisHandler {
 
         // Cleaning up
         Runtime.getRuntime().gc();
+
+        System.out.println("Complete!");
 
     }
 

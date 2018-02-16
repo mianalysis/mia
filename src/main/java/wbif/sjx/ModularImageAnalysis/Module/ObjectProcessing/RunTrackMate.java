@@ -9,13 +9,8 @@ import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.Overlay;
-import ij.gui.PointRoi;
-import ij.gui.TextRoi;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
-import net.imglib2.type.operators.Add;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.NormaliseIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
@@ -26,7 +21,6 @@ import wbif.sjx.common.Process.IntensityMinMax;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -210,11 +204,11 @@ public class RunTrackMate extends HCModule {
 
             // Adding explicit volume to spots
             if (estimateSize) {
-                ObjCollection spotVolumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.ESTIMATED_DIAMETER);
+                ObjCollection spotVolumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
 
                 // Replacing spot volumes with explicit volume
                 for (Obj spotObject:spotObjects.values()) {
-                    Obj spotVolumeObject = spotObject.getParent("SpotVolume");
+                    Obj spotVolumeObject = spotObject.getChildren("SpotVolume").values().iterator().next();
                     spotObject.setPoints(spotVolumeObject.getPoints());
                 }
             }
@@ -228,11 +222,11 @@ public class RunTrackMate extends HCModule {
             if (parameters.getValue(SHOW_OBJECTS)) {
                 ipl = new Duplicator().run(ipl);
                 IntensityMinMax.run(ipl,true);
-                String colourMode = AddObjectsOverlay.ColourModes.RANDOM_COLOUR;
-                HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(spotObjects,colourMode,"","");
-                String labelMode = AddObjectsOverlay.LabelModes.ID;
-                HashMap<Obj,String> IDs = showID ? AddObjectsOverlay.getIDs(spotObjects,labelMode,"","",0) : null;
-                AddObjectsOverlay.createOverlay(ipl,spotObjects,AddObjectsOverlay.PositionModes.CENTROID,null,colours,IDs,8);
+                String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
+                HashMap<Obj,Float> hues = spotObjects.getHue(colourMode,"","",true);
+                String labelMode = ObjCollection.LabelModes.ID;
+                HashMap<Obj,String> IDs = showID ? spotObjects.getIDs(labelMode,"","",0) : null;
+                AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8);
 
                 // Displaying the overlay
                 ipl.show();
@@ -329,11 +323,11 @@ public class RunTrackMate extends HCModule {
             }
 
             // Creating the overlay
-            String colourMode = AddObjectsOverlay.ColourModes.PARENT_ID;
-            HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(spotObjects,colourMode,"",trackObjectsName);
-            String labelMode = AddObjectsOverlay.LabelModes.PARENT_ID;
-            HashMap<Obj,String> IDs = showID ? AddObjectsOverlay.getIDs(spotObjects,labelMode,"",trackObjectsName,0) : null;
-            AddObjectsOverlay.createOverlay(ipl,spotObjects,AddObjectsOverlay.PositionModes.CENTROID,null,colours,IDs,8);
+            String colourMode = ObjCollection.ColourModes.PARENT_ID;
+            HashMap<Obj,Float> hues = spotObjects.getHue(colourMode,"",trackObjectsName,true);
+            String labelMode = ObjCollection.LabelModes.PARENT_ID;
+            HashMap<Obj,String> IDs = showID ? spotObjects.getIDs(labelMode,"",trackObjectsName,0) : null;
+            AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8);
 
             // Displaying the overlay
             ipl.show();
