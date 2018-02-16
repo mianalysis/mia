@@ -135,4 +135,9 @@ public class ExpectedProxCubes1 extends ExpectedObjects {
                 {20,40,43,0,12,0}
         };
     }
+
+    @Override
+    public HashMap<Integer, HashMap<String, Double>> getMeasurements() {
+        return null;
+    }
 }

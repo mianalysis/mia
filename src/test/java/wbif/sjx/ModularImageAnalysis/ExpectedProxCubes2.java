@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis;
 
+import java.util.HashMap;
+
 /**
  * Created by sc13967 on 12/02/2018.
  */
@@ -3587,5 +3589,10 @@ public class ExpectedProxCubes2 extends ExpectedObjects {
                 {65,69,60,0,9,0},
                 {65,70,60,0,9,0}
         };
+    }
+
+    @Override
+    public HashMap<Integer, HashMap<String, Double>> getMeasurements() {
+        return null;
     }
 }
