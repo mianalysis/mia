@@ -11,6 +11,9 @@ public class OutputControl extends HCModule {
     public static final String EXPORT_XLSX = "Export results to Excel file";
     public static final String EXPORT_SUMMARY = "Export summary";
     public static final String SUMMARY_TYPE = "Summary type";
+    public static final String CALCULATE_SUMMARY_MEAN = "Calculate summary means";
+    public static final String CALCULATE_SUMMARY_STD = "Calculate summary standard deviations";
+    public static final String CALCULATE_SUMMARY_SUM = "Calculate summary sums";
     public static final String EXPORT_INDIVIDUAL_OBJECTS = "Export individual objects";
     public static final String CONTINUOUS_DATA_EXPORT = "Continuous data export";
     public static final String SAVE_EVERY_N = "Save every n files";
@@ -46,6 +49,10 @@ public class OutputControl extends HCModule {
         parameters.add(new Parameter(EXPORT_SUMMARY,Parameter.BOOLEAN,true));
         parameters.add(
                 new Parameter(SUMMARY_TYPE,Parameter.CHOICE_ARRAY,SummaryTypes.ONE_AVERAGE_PER_FILE,SummaryTypes.ALL));
+
+        parameters.add(new Parameter(CALCULATE_SUMMARY_MEAN,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CALCULATE_SUMMARY_STD,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CALCULATE_SUMMARY_SUM,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(EXPORT_INDIVIDUAL_OBJECTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CONTINUOUS_DATA_EXPORT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SAVE_EVERY_N,Parameter.INTEGER,10));
@@ -68,6 +75,9 @@ public class OutputControl extends HCModule {
             returnedParameters.add(parameters.getParameter(EXPORT_SUMMARY));
             if (parameters.getValue(EXPORT_SUMMARY)) {
                 returnedParameters.add(parameters.getParameter(SUMMARY_TYPE));
+                returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MEAN));
+                returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_STD));
+                returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_SUM));
             }
 
             returnedParameters.add(parameters.getParameter(EXPORT_INDIVIDUAL_OBJECTS));

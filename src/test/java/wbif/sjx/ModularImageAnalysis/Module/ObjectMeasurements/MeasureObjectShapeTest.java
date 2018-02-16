@@ -57,10 +57,7 @@ public class MeasureObjectShapeTest {
         for (Obj testObject:testObjects.values()) {
             HashMap<String, Double> currExpectedValues = expectedValues.get(testObject.getPoints().size());
 
-            assertEquals("Number of measurements",1,testObject.getMeasurements().size());
-            assertEquals("Measurement name","SHAPE//AREA_PX",testObject.getMeasurements().keySet().iterator().next());
-
-            int expectedNVoxels = (int) Math.round(currExpectedValues.get(ExpectedObjects3D.Measures.N_VOXELS));
+            int expectedNVoxels = (int) Math.round(currExpectedValues.get(ExpectedObjects3D.Measures.N_VOXELS.name()));
             int actualNVoxels = (int) testObject.getMeasurement("N_VOXELS").getValue();
             assertEquals("Measurement value", expectedNVoxels, actualNVoxels);
 

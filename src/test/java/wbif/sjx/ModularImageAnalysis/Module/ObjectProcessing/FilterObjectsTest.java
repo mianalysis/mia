@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.FilterImage;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectShape;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -40,7 +41,7 @@ public class FilterObjectsTest {
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_LARGER_THAN);
-        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT,"SHAPE//AREA_PX");
+        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, "N_VOXELS");
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
@@ -52,7 +53,7 @@ public class FilterObjectsTest {
 
     }
 
-    @Test
+    @Test @Ignore
     public void equalityTest() throws Exception {
         Obj ob1 = new Obj("Ob1",1,1,1,"");
         ArrayList<Point<Integer>> pointArrayList = new ArrayList<>();

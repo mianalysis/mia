@@ -196,6 +196,7 @@ public class AnalysisHandler {
 
     private void populateModuleParameters(Node moduleNode, HCModule module) {
         NodeList parameterNodes = moduleNode.getChildNodes();
+//        System.out.println(module.getTitle()+"_"+parameterNodes.getLength()+parameterNodes.item(0).getNodeValue()+"_"+parameterNodes.item(1).getNodeValue()+"_"+parameterNodes.item(2).getNodeValue()+"_"+parameterNodes.item(3).getNodeValue()+"_"+parameterNodes.item(4).getNodeValue());
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
             NamedNodeMap parameterAttributes = parameterNode.getAttributes();
@@ -311,6 +312,9 @@ public class AnalysisHandler {
         boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
+        boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
+        boolean calculateStd = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_STD);
+        boolean calculateSum = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_SUM);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
 
         File inputFile = null;
@@ -349,6 +353,9 @@ public class AnalysisHandler {
         Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
         if (exporter != null) {
             exporter.setExportSummary(exportSummary);
+            exporter.setCalculateMean(calculateMean);
+            exporter.setCalculateStd(calculateStd);
+            exporter.setCalculateSum(calculateSum);
             exporter.setExportIndividualObjects(exportIndividualObjects);
 
             switch (summaryType) {

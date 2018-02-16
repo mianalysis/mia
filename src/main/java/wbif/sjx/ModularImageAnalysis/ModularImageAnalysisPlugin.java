@@ -18,10 +18,7 @@ import wbif.sjx.common.Object.Point;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
