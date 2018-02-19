@@ -1,18 +1,19 @@
 package wbif.sjx.ModularImageAnalysis;
 
-import wbif.sjx.ModularImageAnalysis.Object.Obj;
-import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
+import util.opencsv.CSVReader;
 
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Stephen Cross on 10/09/2017.
+ * Created by sc13967 on 12/02/2018.
  */
-public class ExpectedSpots3D extends ExpectedObjects {
+public class ExpectedProxCubes2 extends ExpectedObjects {
     @Override
     public List<Integer[]> getCoordinates3D() {
-        return getCoordinates3D("/coordinates/ExpectedSpots3D.csv");
+        return getCoordinates3D("/coordinates/ExpectedProxCubes2.csv");
     }
 
     @Override

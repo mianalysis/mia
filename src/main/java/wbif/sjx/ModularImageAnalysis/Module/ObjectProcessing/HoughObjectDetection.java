@@ -25,7 +25,8 @@ public class HoughObjectDetection extends HCModule {
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String MIN_RADIUS = "Minimum radius (px)";
     public static final String MAX_RADIUS = "Maximum radius (px)";
-    public static final String NORMALISE_SCORES = "Normalise scores";
+    public static final String RANDOM_SAMPLING = "Random sampling (faster, but less accurate)";
+    public static final String SAMPLE_FRACTION = "Sample fraction (0 = none, 1 = all)";
     public static final String DETECTION_THRESHOLD = "Detection threshold";
     public static final String EXCLUSION_RADIUS = "Exclusion radius (px)";
     public static final String SHOW_TRANSFORM_IMAGE = "Show transform image";
@@ -54,16 +55,17 @@ public class HoughObjectDetection extends HCModule {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
+        ImagePlus ipl = inputImage.getImagePlus();
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Getting parameters
-        int minRadius = parameters.getValue(MIN_RADIUS);
-        int maxRadius = parameters.getValue(MAX_RADIUS);
-        boolean normaliseScores = parameters.getValue(NORMALISE_SCORES);
+        int minR = parameters.getValue(MIN_RADIUS);
+        int maxR = parameters.getValue(MAX_RADIUS);
+        boolean randomSampling = parameters.getValue(RANDOM_SAMPLING);
+        double sampleFraction = parameters.getValue(SAMPLE_FRACTION);
         double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
         int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
         boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
@@ -72,26 +74,25 @@ public class HoughObjectDetection extends HCModule {
         int labelSize = parameters.getValue(LABEL_SIZE);
 
         // Storing the image calibration
-        Calibration calibration = inputImagePlus.getCalibration();
+        Calibration calibration = ipl.getCalibration();
         double dppXY = calibration.getX(1);
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
 
         // Iterating over all images in the ImagePlus
         int count = 1;
-        int total = inputImagePlus.getNChannels()*inputImagePlus.getNSlices()*inputImagePlus.getNFrames();
+        int total = ipl.getNChannels()*ipl.getNSlices()*ipl.getNFrames();
 
-        for (int c=0;c<inputImagePlus.getNChannels();c++) {
-            for (int z = 0; z < inputImagePlus.getNSlices(); z++) {
-                for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
-                    inputImagePlus.setPosition(c + 1, z + 1, t + 1);
+        for (int c=0;c<ipl.getNChannels();c++) {
+            for (int z = 0; z < ipl.getNSlices(); z++) {
+                for (int t = 0; t < ipl.getNFrames(); t++) {
+                    ipl.setPosition(c + 1, z + 1, t + 1);
 
                     // Initialising the Hough transform
-                    int[][] parameterRanges =
-                            new int[][]{{0, inputImagePlus.getWidth() - 1}, {0, inputImagePlus.getHeight() - 1},
-                                    {minRadius, maxRadius}};
-                    CircleHoughTransform circleHoughTransform =
-                            new CircleHoughTransform(inputImagePlus.getProcessor(), parameterRanges);
+                    int[][] paramRanges = new int[][]{{0,ipl.getWidth() - 1}, {0,ipl.getHeight() - 1}, {minR,maxR}};
+                    CircleHoughTransform circleHoughTransform = new CircleHoughTransform(ipl.getProcessor(),paramRanges);
+                    circleHoughTransform.setRandomSampling(randomSampling);
+                    circleHoughTransform.setSampleFraction(sampleFraction);
 
                     // Running the transforms
                     if (verbose) System.out.println(
@@ -99,11 +100,9 @@ public class HoughObjectDetection extends HCModule {
                     circleHoughTransform.run();
 
                     // Normalising scores based on the number of points in that circle
-                    if (normaliseScores) {
                         if (verbose) System.out.println(
                                 "[" + moduleName + "] Normalising scores (image " + (count) + " of " + total+")");
                         circleHoughTransform.normaliseScores();
-                    }
 
                     // Getting the accumulator as an image
                     if (showTransformImage) circleHoughTransform.getAccumulatorAsImage().show();
@@ -112,7 +111,7 @@ public class HoughObjectDetection extends HCModule {
                     if (verbose) System.out.println(
                             "[" + moduleName + "] Detecting objects (image " + (count++) + " of " + total+")");
                     ArrayList<double[]> circles = circleHoughTransform.getObjects(detectionThreshold, exclusionRadius);
-                    Indexer indexer = new Indexer(inputImagePlus.getWidth(), inputImagePlus.getHeight());
+                    Indexer indexer = new Indexer(ipl.getWidth(), ipl.getHeight());
                     for (double[] circle : circles) {
                         // Initialising the object
                         Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ,
@@ -149,24 +148,24 @@ public class HoughObjectDetection extends HCModule {
             }
         }
 
-        inputImagePlus.setPosition(1,1,1);
+        ipl.setPosition(1,1,1);
         workspace.addObjects(outputObjects);
 
         if (showObjects) {
-            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+            ImagePlus dispIpl = new Duplicator().run(ipl);
             IntensityMinMax.run(dispIpl,true);
 
-            String colourMode = AddObjectsOverlay.ColourModes.RANDOM_COLOUR;
-            HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(outputObjects,colourMode,"","");
+            String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
+            HashMap<Obj,Float> hues = outputObjects.getHue(colourMode,"","",true);
 
             HashMap<Obj, String> IDs = null;
             if (showHoughScore) {
-                String labelMode = AddObjectsOverlay.LabelModes.MEASUREMENT_VALUE;
-                IDs = AddObjectsOverlay.getIDs(outputObjects, labelMode, Measurements.SCORE, "",0);
+                String labelMode = ObjCollection.LabelModes.MEASUREMENT_VALUE;
+                IDs = outputObjects.getIDs(labelMode, Measurements.SCORE, "",0);
             }
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 
-            AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,colours,IDs,labelSize);
+            AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,hues,IDs,labelSize);
 
             dispIpl.show();
 
@@ -179,7 +178,8 @@ public class HoughObjectDetection extends HCModule {
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
         parameters.add(new Parameter(MIN_RADIUS,Parameter.INTEGER,10));
         parameters.add(new Parameter(MAX_RADIUS,Parameter.INTEGER,20));
-        parameters.add(new Parameter(NORMALISE_SCORES,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(RANDOM_SAMPLING,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SAMPLE_FRACTION,Parameter.DOUBLE,0.5));
         parameters.add(new Parameter(DETECTION_THRESHOLD,Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(EXCLUSION_RADIUS,Parameter.INTEGER,10));
         parameters.add(new Parameter(SHOW_TRANSFORM_IMAGE,Parameter.BOOLEAN,false));
@@ -202,7 +202,12 @@ public class HoughObjectDetection extends HCModule {
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(MIN_RADIUS));
         returnedParameters.add(parameters.getParameter(MAX_RADIUS));
-        returnedParameters.add(parameters.getParameter(NORMALISE_SCORES));
+        returnedParameters.add(parameters.getParameter(RANDOM_SAMPLING));
+
+        if (parameters.getValue(RANDOM_SAMPLING)) {
+            returnedParameters.add(parameters.getParameter(SAMPLE_FRACTION));
+        }
+
         returnedParameters.add(parameters.getParameter(DETECTION_THRESHOLD));
         returnedParameters.add(parameters.getParameter(EXCLUSION_RADIUS));
         returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));

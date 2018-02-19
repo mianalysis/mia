@@ -32,7 +32,7 @@ public class MeasureObjectShapeTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = ExpectedObjects3D.getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectShape
@@ -51,16 +51,13 @@ public class MeasureObjectShapeTest {
         assertEquals(8,workspace.getObjectSet(inputObjectsName).size());
 
         // Getting expected values
-        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<String, Double>> expectedValues = new ExpectedObjects3D().getMeasurements();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            HashMap<ExpectedObjects3D.Measures, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            HashMap<String, Double> currExpectedValues = expectedValues.get(testObject.getPoints().size());
 
-            assertEquals("Number of measurements",1,testObject.getMeasurements().size());
-            assertEquals("Measurement name","N_VOXELS",testObject.getMeasurements().keySet().iterator().next());
-
-            int expectedNVoxels = (int) currExpectedValues.get(ExpectedObjects3D.Measures.N_VOXELS);
+            int expectedNVoxels = (int) Math.round(currExpectedValues.get(ExpectedObjects3D.Measures.N_VOXELS.name()));
             int actualNVoxels = (int) testObject.getMeasurement("N_VOXELS").getValue();
             assertEquals("Measurement value", expectedNVoxels, actualNVoxels);
 

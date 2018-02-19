@@ -187,7 +187,6 @@ public class FilterObjects extends HCModule {
                     if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
                         inputObject.removeRelationships();
                         iterator.remove();
-
                     }
                 }
 

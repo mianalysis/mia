@@ -3,8 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Object;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
-import ij.plugin.Selection;
-import ij.plugin.ZProjector;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ProjectObjects;
 import wbif.sjx.common.Object.*;
@@ -226,9 +224,8 @@ public class Obj extends Volume {
         Obj projectedObject = ProjectObjects.createProjection(this,"Projected");
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(projectedObject);
-        Image objectImage = ObjectImageConverter.convertObjectsToImage(objectCollection,"ProjectedImage",
-                new ImagePlus("Template",templateIpl.getProcessor()), ObjectImageConverter.ColourModes.SINGLE_COLOUR,
-                null,false);
+        HashMap<Obj,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+        Image objectImage = objectCollection.convertObjectsToImage("Output",templateIpl, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, false);
 
         // Getting the object as a Roi
         objectImage.getImagePlus().getProcessor().invert();
@@ -236,7 +233,9 @@ public class Obj extends Volume {
         Roi roi = objectImage.getImagePlus().getRoi();
 
         // Clearing up some unwanted objects
+        projectedObject = null;
         objectCollection = null;
+        hues = null;
         objectImage = null;
 
         return roi;

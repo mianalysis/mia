@@ -51,6 +51,9 @@ public class Exporter {
     private String exportFilePath;
     private boolean verbose = false;
     private boolean exportSummary = true;
+    private boolean calculateMean = true;
+    private boolean calculateStd = true;
+    private boolean calculateSum = true;
     private SummaryType summaryType = SummaryType.PER_FILE;
     private boolean exportIndividualObjects = true;
     private boolean addMetadataToObjects = true;
@@ -447,6 +450,32 @@ public class Exporter {
                 summaryHeaderCell.setCellValue(summaryDataName);
                 colNumbers.put(summaryDataName, headerCol++);
 
+                // Running through all the object's children
+                if (!modules.getRelationships().getChildNames(exampleObjSetName)[0].equals("")) {
+                    for (String child : modules.getRelationships().getChildNames(exampleObjSetName)) {
+                        if (calculateMean) {
+                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                            summaryDataName = getObjectString(exampleObjSetName, "MEAN", "NUM_CHILDREN_" + child);
+                            summaryHeaderCell.setCellValue(summaryDataName);
+                            colNumbers.put(summaryDataName, headerCol++);
+                        }
+
+                            if (calculateStd) {
+                                summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                                summaryDataName = getObjectString(exampleObjSetName, "STD", "NUM_CHILDREN_" + child);
+                                summaryHeaderCell.setCellValue(summaryDataName);
+                                colNumbers.put(summaryDataName, headerCol++);
+                            }
+
+                                if (calculateSum) {
+                                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                                    summaryDataName = getObjectString(exampleObjSetName, "SUM", "NUM_CHILDREN_" + child);
+                                    summaryHeaderCell.setCellValue(summaryDataName);
+                                    colNumbers.put(summaryDataName, headerCol++);
+                                }
+                    }
+                }
+
                 MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(exampleObjSetName);
 
                 // If the current object hasn't got any assigned measurements, skip it
@@ -457,21 +486,26 @@ public class Exporter {
                     if (!objectMeasurement.isCalculated()) continue;
                     if (!objectMeasurement.isExportable()) continue;
 
-                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName,"MEAN",objectMeasurement.getNickName());
-                    summaryHeaderCell.setCellValue(summaryDataName);
-                    colNumbers.put(summaryDataName, headerCol++);
+                    if (calculateMean) {
+                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                        summaryDataName = getObjectString(exampleObjSetName, "MEAN", objectMeasurement.getNickName());
+                        summaryHeaderCell.setCellValue(summaryDataName);
+                        colNumbers.put(summaryDataName, headerCol++);
+                    }
 
-                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName,"STD",objectMeasurement.getNickName());
-                    summaryHeaderCell.setCellValue(summaryDataName);
-                    colNumbers.put(summaryDataName, headerCol++);
+                    if (calculateStd) {
+                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                        summaryDataName = getObjectString(exampleObjSetName, "STD", objectMeasurement.getNickName());
+                        summaryHeaderCell.setCellValue(summaryDataName);
+                        colNumbers.put(summaryDataName, headerCol++);
+                    }
 
-                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName,"SUM",objectMeasurement.getNickName());
-                    summaryHeaderCell.setCellValue(summaryDataName);
-                    colNumbers.put(summaryDataName, headerCol++);
-
+                    if (calculateSum) {
+                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                        summaryDataName = getObjectString(exampleObjSetName, "SUM", objectMeasurement.getNickName());
+                        summaryHeaderCell.setCellValue(summaryDataName);
+                        colNumbers.put(summaryDataName, headerCol++);
+                    }
                 }
             }
         }
@@ -510,7 +544,6 @@ public class Exporter {
             int colNumber = colNumbers.get(headerName);
             Cell metaValueCell = summaryValueRow.createCell(colNumber);
             metaValueCell.setCellValue(metadata.getAsString(name));
-
         }
 
         if (timepoint != Integer.MIN_VALUE) {
@@ -549,6 +582,55 @@ public class Exporter {
             int colNum = colNumbers.get(headerName);
             Cell summaryCell = summaryValueRow.createCell(colNum);
             summaryCell.setCellValue(objCollection.size());
+            double val;
+
+            // Running through all the object's children
+            if (!modules.getRelationships().getChildNames(objSetName)[0].equals("")) {
+                for (String child : modules.getRelationships().getChildNames(objSetName)) {
+                    // Running through all objects in this set, adding children to a CumStat object
+                    CumStat cs = new CumStat();
+                    for (Obj obj : objCollection.values()) {
+                        ObjCollection children = obj.getChildren(child);
+                        if (children != null) cs.addMeasure(children.size());
+                    }
+
+                    if (calculateMean) {
+                        headerName = getObjectString(objSetName, "MEAN", "NUM_CHILDREN_" + child);
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getMean();
+                        if (val == Double.NaN) {
+                            summaryCell.setCellValue("");
+                        } else {
+                            summaryCell.setCellValue(val);
+                        }
+                    }
+
+                    if (calculateStd) {
+                        headerName = getObjectString(objSetName, "STD", "NUM_CHILDREN_" + child);
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getStd();
+                        if (val == Double.NaN) {
+                            summaryCell.setCellValue("");
+                        } else {
+                            summaryCell.setCellValue(val);
+                        }
+                    }
+
+                    if (calculateSum) {
+                        headerName = getObjectString(objSetName, "SUM", "NUM_CHILDREN_" + child);
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getSum();
+                        if (val == Double.NaN) {
+                            summaryCell.setCellValue("");
+                        } else {
+                            summaryCell.setCellValue(val);
+                        }
+                    }
+                }
+            }
 
             MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(objSetName);
 
@@ -567,36 +649,41 @@ public class Exporter {
                     if (measurement != null) cs.addMeasure(measurement.getValue());
                 }
 
-                headerName = getObjectString(objSetName,"MEAN",objectMeasurement.getNickName());
-                colNum = colNumbers.get(headerName);
-                summaryCell = summaryValueRow.createCell(colNum);
-                double val = cs.getMean();
-                if (val == Double.NaN) {
-                    summaryCell.setCellValue("");
-                } else {
-                    summaryCell.setCellValue(val);
+                if (calculateMean) {
+                    headerName = getObjectString(objSetName, "MEAN", objectMeasurement.getNickName());
+                    colNum = colNumbers.get(headerName);
+                    summaryCell = summaryValueRow.createCell(colNum);
+                    val = cs.getMean();
+                    if (val == Double.NaN) {
+                        summaryCell.setCellValue("");
+                    } else {
+                        summaryCell.setCellValue(val);
+                    }
                 }
 
-                headerName = getObjectString(objSetName,"STD",objectMeasurement.getNickName());
-                colNum = colNumbers.get(headerName);
-                summaryCell = summaryValueRow.createCell(colNum);
-                val = cs.getStd();
-                if (val == Double.NaN) {
-                    summaryCell.setCellValue("");
-                } else {
-                    summaryCell.setCellValue(val);
+                if (calculateStd) {
+                    headerName = getObjectString(objSetName, "STD", objectMeasurement.getNickName());
+                    colNum = colNumbers.get(headerName);
+                    summaryCell = summaryValueRow.createCell(colNum);
+                    val = cs.getStd();
+                    if (val == Double.NaN) {
+                        summaryCell.setCellValue("");
+                    } else {
+                        summaryCell.setCellValue(val);
+                    }
                 }
 
-                headerName = getObjectString(objSetName,"SUM",objectMeasurement.getNickName());
-                colNum = colNumbers.get(headerName);
-                summaryCell = summaryValueRow.createCell(colNum);
-                val = cs.getSum();
-                if (val == Double.NaN) {
-                    summaryCell.setCellValue("");
-                } else {
-                    summaryCell.setCellValue(val);
+                if (calculateSum) {
+                    headerName = getObjectString(objSetName, "SUM", objectMeasurement.getNickName());
+                    colNum = colNumbers.get(headerName);
+                    summaryCell = summaryValueRow.createCell(colNum);
+                    val = cs.getSum();
+                    if (val == Double.NaN) {
+                        summaryCell.setCellValue("");
+                    } else {
+                        summaryCell.setCellValue(val);
+                    }
                 }
-
             }
         }
     }
@@ -660,7 +747,7 @@ public class Exporter {
 
                 // Adding number of children for each child type
                 String[] children = relationships.getChildNames(objectName);
-                if (children.length != 1 && !children[0].equals("")) {
+                if (!children[0].equals("")) {
                     for (String child : children) {
                         childNames.putIfAbsent(objectName, new LinkedHashMap<>());
                         childNames.get(objectName).put(col, child);
@@ -842,5 +929,29 @@ public class Exporter {
 
     public void setExportIndividualObjects(boolean exportIndividualObjects) {
         this.exportIndividualObjects = exportIndividualObjects;
+    }
+
+    public boolean isCalculateMean() {
+        return calculateMean;
+    }
+
+    public void setCalculateMean(boolean calculateMean) {
+        this.calculateMean = calculateMean;
+    }
+
+    public boolean isCalculateStd() {
+        return calculateStd;
+    }
+
+    public void setCalculateStd(boolean calculateStd) {
+        this.calculateStd = calculateStd;
+    }
+
+    public boolean isCalculateSum() {
+        return calculateSum;
+    }
+
+    public void setCalculateSum(boolean calculateSum) {
+        this.calculateSum = calculateSum;
     }
 }

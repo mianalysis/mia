@@ -22,15 +22,12 @@ public class GetLocalObjectRegion extends HCModule {
         double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
         double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
         String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
+        double xy_z_ratio = dppXY/dppZ;
 
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
             // Creating new object and assigning relationship to input objects
             Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits);
-            outputObject.addParent(inputObject);
-            inputObject.addChild(outputObject);
-
-            double xy_z_ratio = dppXY/dppZ;
 
             // Getting centroid coordinates
             double xCent = inputObject.getXMean(true);
@@ -68,6 +65,10 @@ public class GetLocalObjectRegion extends HCModule {
 
             // Adding object to HashMap
             outputObjects.put(outputObject.getID(),outputObject);
+
+            // Adding relationships
+            outputObject.addParent(inputObject);
+            inputObject.addChild(outputObject);
 
         }
 

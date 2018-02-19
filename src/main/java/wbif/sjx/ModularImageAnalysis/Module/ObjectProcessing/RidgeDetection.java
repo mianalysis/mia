@@ -191,10 +191,10 @@ public class RidgeDetection extends HCModule {
             IntensityMinMax.run(inputImagePlus, true);
 
             // Creating the overlay
-            String colourMode = AddObjectsOverlay.ColourModes.RANDOM_COLOUR;
-            HashMap<Obj,Color> colours = AddObjectsOverlay.getColours(outputObjects,colourMode,"","");
+            String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
+            HashMap<Obj,Float> hues = outputObjects.getHue(colourMode,"","",true);
             String positionMode = AddObjectsOverlay.PositionModes.ALL_POINTS;
-            AddObjectsOverlay.createOverlay(inputImagePlus,outputObjects,positionMode,null,colours,null,8);
+            AddObjectsOverlay.createOverlay(inputImagePlus,outputObjects,positionMode,null,hues,null,8);
 
             // Displaying the overlay
             inputImagePlus.show();

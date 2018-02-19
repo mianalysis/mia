@@ -102,6 +102,13 @@ public class AnalysisHandler {
 
                 // If the module is an input or output control, treat it differently
                 if (module.getClass().isInstance(new InputControl())) {
+                    if (moduleAttributes.getNamedItem("NICKNAME") != null) {
+                        String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
+                        module.setNickname(moduleNickname);
+                    } else {
+                        module.setNickname(module.getTitle());
+                    }
+
                     NodeList moduleChildNodes = moduleNode.getChildNodes();
                     for (int j=0;j<moduleChildNodes.getLength();j++) {
                         switch (moduleChildNodes.item(j).getNodeName()) {
@@ -119,6 +126,13 @@ public class AnalysisHandler {
                     continue;
 
                 } else if (module.getClass().isInstance(new OutputControl())) {
+                    if (moduleAttributes.getNamedItem("NICKNAME") != null) {
+                        String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
+                        module.setNickname(moduleNickname);
+                    } else {
+                        module.setNickname(module.getTitle());
+                    }
+
                     NodeList moduleChildNodes = moduleNode.getChildNodes();
                     for (int j=0;j<moduleChildNodes.getLength();j++) {
                         switch (moduleChildNodes.item(j).getNodeName()) {
@@ -196,6 +210,7 @@ public class AnalysisHandler {
 
     private void populateModuleParameters(Node moduleNode, HCModule module) {
         NodeList parameterNodes = moduleNode.getChildNodes();
+//        System.out.println(module.getTitle()+"_"+parameterNodes.getLength()+parameterNodes.item(0).getNodeValue()+"_"+parameterNodes.item(1).getNodeValue()+"_"+parameterNodes.item(2).getNodeValue()+"_"+parameterNodes.item(3).getNodeValue()+"_"+parameterNodes.item(4).getNodeValue());
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
             NamedNodeMap parameterAttributes = parameterNode.getAttributes();
@@ -311,25 +326,10 @@ public class AnalysisHandler {
         boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
+        boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
+        boolean calculateStd = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_STD);
+        boolean calculateSum = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_SUM);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-
-        // THE OLD METHOD THAT WILL BE REMOVED ONCE THE NEW CONTROLS ARE ALSO IMPLEMENTED IN THE BASIC GUI
-//        String inputFilePath = Prefs.get("MIA.inputFilePath","");
-//
-//        JFileChooser fileChooser = new JFileChooser(inputFilePath);
-//        fileChooser.setDialogTitle("Select file to run");
-//        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-//        fileChooser.setMultiSelectionEnabled(false);
-//        fileChooser.showDialog(null,"Open");
-//
-//        File inputFile = fileChooser.getSelectedFile();
-//        Prefs.set("MIA.inputFilePath",inputFile.getParentFile().getAbsolutePath());
-//        Prefs.savePreferences();
-//
-//        String exportName;
-//        if (inputFile.isFile()) exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
-//        else exportName = inputFile.getAbsolutePath() + "\\output";
-        // END OLD SECTION
 
         File inputFile = null;
         String exportName = null;
@@ -367,6 +367,9 @@ public class AnalysisHandler {
         Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
         if (exporter != null) {
             exporter.setExportSummary(exportSummary);
+            exporter.setCalculateMean(calculateMean);
+            exporter.setCalculateStd(calculateStd);
+            exporter.setCalculateSum(calculateSum);
             exporter.setExportIndividualObjects(exportIndividualObjects);
 
             switch (summaryType) {
@@ -397,6 +400,8 @@ public class AnalysisHandler {
 
         // Cleaning up
         Runtime.getRuntime().gc();
+
+        System.out.println("Complete!");
 
     }
 

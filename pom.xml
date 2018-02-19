@@ -4,7 +4,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.2.6</version>
+    <version>0.2.7</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>http://maven.apache.org</url>
@@ -158,7 +158,7 @@
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.3.3</version>
+            <version>1.3.4</version>
         </dependency>
     </dependencies>
 

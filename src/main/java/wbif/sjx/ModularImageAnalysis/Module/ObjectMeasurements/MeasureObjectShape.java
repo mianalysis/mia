@@ -12,10 +12,11 @@ import java.util.ArrayList;
 public class MeasureObjectShape extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
 
-    private interface Measurements {
-        String N_VOXELS = "N_VOXELS";
+    public interface Measurements {
+        String AREA_PX = "SHAPE//AREA_PX";
+        String AREA_CAL = "SHAPE//AREA_CAL";
 
-        String[] ALL = new String[]{N_VOXELS};
+        String[] ALL = new String[]{AREA_PX,AREA_CAL};
     }
 
 
@@ -26,8 +27,7 @@ public class MeasureObjectShape extends HCModule {
 
     @Override
     public String getHelp() {
-        return "+++INCOMPLETE+++" +
-                "\nCurrently only measures the number of voxels per object";
+        return "";
     }
 
     @Override
@@ -40,8 +40,13 @@ public class MeasureObjectShape extends HCModule {
         for (Obj inputObject:inputObjects.values()) {
             ArrayList<Integer> x = inputObject.getXCoords();
 
+            double distXY = inputObject.getDistPerPxXY();
+            double distZ = inputObject.getDistPerPxZ();
+            double cal = distXY*distXY*distZ;
+
             // Adding the relevant measurements
-            inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS,x.size(),this));
+            inputObject.addMeasurement(new Measurement(Measurements.AREA_PX,x.size(),this));
+            inputObject.addMeasurement(new Measurement(Measurements.AREA_CAL,x.size()*cal,this));
 
         }
     }
@@ -54,7 +59,8 @@ public class MeasureObjectShape extends HCModule {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.N_VOXELS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.AREA_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.AREA_CAL));
 
     }
 
@@ -73,7 +79,8 @@ public class MeasureObjectShape extends HCModule {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        objectMeasurementReferences.updateImageObjectName(Measurements.N_VOXELS,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.AREA_PX,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.AREA_CAL,inputObjectsName);
 
         return objectMeasurementReferences;
 
