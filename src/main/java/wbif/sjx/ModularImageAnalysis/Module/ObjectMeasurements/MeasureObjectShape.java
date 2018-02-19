@@ -36,13 +36,23 @@ public class MeasureObjectShape extends HCModule {
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
 
+        int[][] coordRange = inputObjects.getSpatialLimits();
+
         // Running through each object, making the measurements
         for (Obj inputObject:inputObjects.values()) {
             ArrayList<Integer> x = inputObject.getXCoords();
 
             double distXY = inputObject.getDistPerPxXY();
             double distZ = inputObject.getDistPerPxZ();
-            double cal = distXY*distXY*distZ;
+            double cal;
+            inputObject.getCoordinateRange();
+
+            // Calibration will depend on if they're 3D objects
+            if (coordRange[2][1]==coordRange[2][0]) {
+                cal = distXY * distXY;
+            } else {
+                cal = distXY * distXY * distZ;
+            }
 
             // Adding the relevant measurements
             inputObject.addMeasurement(new Measurement(Measurements.AREA_PX,x.size(),this));

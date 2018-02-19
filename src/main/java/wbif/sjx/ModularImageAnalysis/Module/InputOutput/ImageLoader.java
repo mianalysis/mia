@@ -5,6 +5,7 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import loci.common.DebugTools;
@@ -37,6 +38,7 @@ public class ImageLoader extends HCModule {
     public static final String COMMENT = "Comment";
     public static final String PREFIX = "Prefix";
     public static final String FILE_PATH = "File path";
+    public static final String OUTPUT_IMAGE = "Output image";
     public static final String SERIES_NUMBER = "Series number (>= 1)";
     public static final String USE_ALL_C = "Use all channels";
     public static final String STARTING_C = "Starting channel";
@@ -47,7 +49,10 @@ public class ImageLoader extends HCModule {
     public static final String USE_ALL_T = "Use all timepoints";
     public static final String STARTING_T = "Starting timepoint";
     public static final String ENDING_T = "Ending timepoint";
-    public static final String OUTPUT_IMAGE = "Output image";
+    public static final String SET_CAL = "Set manual spatial calibration";
+    public static final String XY_CAL = "XY calibration (dist/px)";
+    public static final String Z_CAL = "Z calibration (dist/px)";
+    public static final String UNITS = "Units";
     public static final String SHOW_IMAGE = "Show image";
 
     public interface ImportModes {
@@ -218,6 +223,10 @@ public class ImageLoader extends HCModule {
         boolean useAllT = parameters.getValue(USE_ALL_T);
         int startingT = parameters.getValue(STARTING_T);
         int endingT = parameters.getValue(ENDING_T);
+        boolean setCalibration = parameters.getValue(SET_CAL);
+        double xyCal = parameters.getValue(XY_CAL);
+        double zCal = parameters.getValue(Z_CAL);
+        String units = parameters.getValue(UNITS);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
@@ -232,140 +241,164 @@ public class ImageLoader extends HCModule {
                 case ImportModes.CURRENT_FILE:
                     File file = workspace.getMetadata().getFile();
                     if (file == null) throw new GenericMIAException("Load file using Analysis > Set file to analyse");
-                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(),seriesNumber,dimRanges);
-                        break;
-
-                        case ImportModes.IMAGEJ:
-                            ipl = IJ.getImage();
-                            break;
-
-                        case ImportModes.MATCHING_FORMAT:
-                            switch (nameFormat) {
-                                case NameFormats.INCUCYTE_SHORT:
-                                    ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),comment,seriesNumber,dimRanges);
-                                    break;
-
-                                case NameFormats.INPUT_FILE_PREFIX:
-                                    ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),prefix,seriesNumber,dimRanges);
-                                    break;
-                            }
-                            break;
-
-                        case ImportModes.SPECIFIC_FILE:
-                            ipl = getBFImage(filePath,seriesNumber,dimRanges);
-                            break;
-                    }
-            } catch (ServiceException | DependencyException | IOException | FormatException e) {
-                e.printStackTrace();
-            }
-
-            // Adding image to workspace
-            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
-            workspace.addImage(new Image(outputImageName,ipl));
-
-            // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
-            if (showImage && ipl != null) {
-                ipl = new Duplicator().run(ipl);
-                ipl.show();
-            }
-        }
-
-        @Override
-        public void initialiseParameters() {
-            parameters.add(
-                    new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
-            parameters.add(
-                    new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
-            parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
-            parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
-            parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
-            parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-            parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
-            parameters.add(new Parameter(USE_ALL_C, Parameter.BOOLEAN,true));
-            parameters.add(new Parameter(STARTING_C, Parameter.INTEGER,1));
-            parameters.add(new Parameter(ENDING_C, Parameter.INTEGER,1));
-            parameters.add(new Parameter(USE_ALL_Z, Parameter.BOOLEAN,true));
-            parameters.add(new Parameter(STARTING_Z, Parameter.INTEGER,1));
-            parameters.add(new Parameter(ENDING_Z, Parameter.INTEGER,1));
-            parameters.add(new Parameter(USE_ALL_T, Parameter.BOOLEAN,true));
-            parameters.add(new Parameter(STARTING_T, Parameter.INTEGER,1));
-            parameters.add(new Parameter(ENDING_T, Parameter.INTEGER,1));
-            parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-        }
-
-        @Override
-        protected void initialiseMeasurementReferences() {
-
-        }
-
-        @Override
-        public ParameterCollection updateAndGetParameters() {
-            ParameterCollection returnedParameters = new ParameterCollection();
-
-            returnedParameters.add(parameters.getParameter(IMPORT_MODE));
-            switch((String) parameters.getValue(IMPORT_MODE)) {
-                case ImportModes.CURRENT_FILE:
+                    ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(),seriesNumber,dimRanges);
                     break;
 
                 case ImportModes.IMAGEJ:
+                    ipl = IJ.getImage();
                     break;
 
                 case ImportModes.MATCHING_FORMAT:
-                    returnedParameters.add(parameters.getParameter(NAME_FORMAT));
-                    switch ((String) parameters.getValue(NAME_FORMAT)) {
+                    switch (nameFormat) {
                         case NameFormats.INCUCYTE_SHORT:
-                            returnedParameters.add(parameters.getParameter(COMMENT));
+                            ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),comment,seriesNumber,dimRanges);
                             break;
+
                         case NameFormats.INPUT_FILE_PREFIX:
-                            returnedParameters.add(parameters.getParameter(PREFIX));
+                            ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),prefix,seriesNumber,dimRanges);
                             break;
                     }
                     break;
 
                 case ImportModes.SPECIFIC_FILE:
-                    returnedParameters.add(parameters.getParameter(FILE_PATH));
+                    ipl = getBFImage(filePath,seriesNumber,dimRanges);
                     break;
             }
+        } catch (ServiceException | DependencyException | IOException | FormatException e) {
+            e.printStackTrace();
+        }
 
-            returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
-            returnedParameters.add(parameters.getParameter(USE_ALL_C));
-            if (!(boolean) parameters.getValue(USE_ALL_C)) {
-                returnedParameters.add(parameters.getParameter(STARTING_C));
-                returnedParameters.add(parameters.getParameter(ENDING_C));
-            }
+        // If necessary, setting the spatial calibration
+        if (setCalibration) {
+            Calibration calibration = new Calibration();
 
-            returnedParameters.add(parameters.getParameter(USE_ALL_Z));
-            if (!(boolean) parameters.getValue(USE_ALL_Z)) {
-                returnedParameters.add(parameters.getParameter(STARTING_Z));
-                returnedParameters.add(parameters.getParameter(ENDING_Z));
-            }
+            calibration.pixelHeight = xyCal;
+            calibration.pixelWidth= xyCal;
+            calibration.pixelDepth = zCal;
+            calibration.setUnit(units);
 
-            returnedParameters.add(parameters.getParameter(USE_ALL_T));
-            if (!(boolean) parameters.getValue(USE_ALL_T)) {
-                returnedParameters.add(parameters.getParameter(STARTING_T));
-                returnedParameters.add(parameters.getParameter(ENDING_T));
-            }
-
-            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-            returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
-
-            return returnedParameters;
+            ipl.setCalibration(calibration);
 
         }
 
-        @Override
-        public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-            return null;
-        }
+        // Adding image to workspace
+        writeMessage("Adding image ("+outputImageName+") to workspace",verbose);
+        workspace.addImage(new Image(outputImageName,ipl));
 
-        @Override
-        public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-            return null;
-        }
-
-        @Override
-        public void addRelationships(RelationshipCollection relationships) {
-
+        // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
+        if (showImage && ipl != null) {
+            ipl = new Duplicator().run(ipl);
+            ipl.show();
         }
     }
+
+    @Override
+    public void initialiseParameters() {
+        parameters.add(
+                new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
+        parameters.add(
+                new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
+        parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
+        parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
+        parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
+        parameters.add(new Parameter(USE_ALL_C, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(STARTING_C, Parameter.INTEGER,1));
+        parameters.add(new Parameter(ENDING_C, Parameter.INTEGER,1));
+        parameters.add(new Parameter(USE_ALL_Z, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(STARTING_Z, Parameter.INTEGER,1));
+        parameters.add(new Parameter(ENDING_Z, Parameter.INTEGER,1));
+        parameters.add(new Parameter(USE_ALL_T, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(STARTING_T, Parameter.INTEGER,1));
+        parameters.add(new Parameter(ENDING_T, Parameter.INTEGER,1));
+        parameters.add(new Parameter(SET_CAL, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(XY_CAL, Parameter.DOUBLE, 1.0));
+        parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
+        parameters.add(new Parameter(UNITS, Parameter.STRING, "um"));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
+
+    }
+
+    @Override
+    protected void initialiseMeasurementReferences() {
+
+    }
+
+    @Override
+    public ParameterCollection updateAndGetParameters() {
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(IMPORT_MODE));
+        switch((String) parameters.getValue(IMPORT_MODE)) {
+            case ImportModes.CURRENT_FILE:
+                break;
+
+            case ImportModes.IMAGEJ:
+                break;
+
+            case ImportModes.MATCHING_FORMAT:
+                returnedParameters.add(parameters.getParameter(NAME_FORMAT));
+                switch ((String) parameters.getValue(NAME_FORMAT)) {
+                    case NameFormats.INCUCYTE_SHORT:
+                        returnedParameters.add(parameters.getParameter(COMMENT));
+                        break;
+                    case NameFormats.INPUT_FILE_PREFIX:
+                        returnedParameters.add(parameters.getParameter(PREFIX));
+                        break;
+                }
+                break;
+
+            case ImportModes.SPECIFIC_FILE:
+                returnedParameters.add(parameters.getParameter(FILE_PATH));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
+        returnedParameters.add(parameters.getParameter(USE_ALL_C));
+        if (!(boolean) parameters.getValue(USE_ALL_C)) {
+            returnedParameters.add(parameters.getParameter(STARTING_C));
+            returnedParameters.add(parameters.getParameter(ENDING_C));
+        }
+
+        returnedParameters.add(parameters.getParameter(USE_ALL_Z));
+        if (!(boolean) parameters.getValue(USE_ALL_Z)) {
+            returnedParameters.add(parameters.getParameter(STARTING_Z));
+            returnedParameters.add(parameters.getParameter(ENDING_Z));
+        }
+
+        returnedParameters.add(parameters.getParameter(USE_ALL_T));
+        if (!(boolean) parameters.getValue(USE_ALL_T)) {
+            returnedParameters.add(parameters.getParameter(STARTING_T));
+            returnedParameters.add(parameters.getParameter(ENDING_T));
+        }
+
+        returnedParameters.add(parameters.getParameter(SET_CAL));
+        if (parameters.getValue(SET_CAL)) {
+            returnedParameters.add(parameters.getParameter(XY_CAL));
+            returnedParameters.add(parameters.getParameter(Z_CAL));
+            returnedParameters.add(parameters.getParameter(UNITS));
+        }
+
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
+
+        return returnedParameters;
+
+    }
+
+    @Override
+    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public void addRelationships(RelationshipCollection relationships) {
+
+    }
+}
