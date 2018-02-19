@@ -132,7 +132,6 @@ public class ImageSaver extends HCModule {
         if (parameters.getValue(SHOW_IMAGE)) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
             IntensityMinMax.run(dispIpl,true);
-            dispIpl.setLut(LUTs.Random(true));
             dispIpl.show();
         }
     }

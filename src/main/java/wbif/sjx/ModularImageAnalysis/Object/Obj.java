@@ -233,7 +233,9 @@ public class Obj extends Volume {
         Roi roi = objectImage.getImagePlus().getRoi();
 
         // Clearing up some unwanted objects
+        projectedObject = null;
         objectCollection = null;
+        hues = null;
         objectImage = null;
 
         return roi;

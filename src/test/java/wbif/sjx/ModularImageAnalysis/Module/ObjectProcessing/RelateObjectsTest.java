@@ -68,7 +68,7 @@ public class RelateObjectsTest {
         assertEquals(25,workspace.getObjectSet(inputSpotsName).size());
 
         // Getting expected values
-        HashMap<Integer,HashMap<ExpectedObjects3D.Measures,Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer,HashMap<String, Double>> expectedValues = new ExpectedObjects3D().getMeasurements();
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -84,17 +84,17 @@ public class RelateObjectsTest {
 
             // Testing spot is at expected location
             int nPoints = testObject.getPoints().size();
-            int expected = (int) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.SPOT_ID_X);
-            int actual = (int) childSpot.getX(true)[0];
-            assertEquals(expected,actual);
+            double expected = expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.SPOT_ID_X.name());
+            double actual = childSpot.getX(true)[0];
+            assertEquals(expected,actual,tolerance);
 
-            expected = (int) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.SPOT_ID_Y);
-            actual = (int) childSpot.getY(true)[0];
-            assertEquals(expected,actual);
+            expected = expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.SPOT_ID_Y.name());
+            actual = childSpot.getY(true)[0];
+            assertEquals(expected,actual,tolerance);
 
-            expected = (int) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.SPOT_ID_Z);
-            actual = (int) childSpot.getZ(true,false)[0];
-            assertEquals(expected,actual);
+            expected = expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.SPOT_ID_Z.name());
+            actual = childSpot.getZ(true,false)[0];
+            assertEquals(expected,actual,tolerance);
 
         }
     }
@@ -130,16 +130,16 @@ public class RelateObjectsTest {
         relateObjects.run(workspace,false);
 
         // Getting expected values
-        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<String, Object>> expectedValues = new ExpectedObjects3D().getOtherValues();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
-            HashMap<ExpectedObjects3D.Measures, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
-            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_X);
-            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_Y);
-            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_Z);
-            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_DIST);
+            HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_X.name());
+            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_Y.name());
+            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_Z.name());
+            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_DIST.name());
 
             // Getting child objects (those linked here)
             ObjCollection childSpots = testObject.getChildren(inputSpotsName);
@@ -215,16 +215,16 @@ public class RelateObjectsTest {
         relateObjects.run(workspace,false);
 
         // Getting expected values
-        HashMap<Integer, HashMap<ExpectedObjects3D.Measures, Object>> expectedValues = ExpectedObjects3D.getExpectedValues3D();
+        HashMap<Integer, HashMap<String, Object>> expectedValues = new ExpectedObjects3D().getOtherValues();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
-            HashMap<ExpectedObjects3D.Measures, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
-            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_X);
-            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_Y);
-            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_Z);
-            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_DIST);
+            HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_X.name());
+            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_Y.name());
+            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_Z.name());
+            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_DIST.name());
 
             // Getting child objects (those linked here)
             ObjCollection childSpots = testObject.getChildren(inputSpotsName);
@@ -269,7 +269,7 @@ public class RelateObjectsTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testProximitySurfaceLink() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -300,12 +300,13 @@ public class RelateObjectsTest {
         relateObjects.run(workspace,false);
 
         // Getting expected values
-        HashMap<Integer, HashMap<ExpectedProxCubes1.Measures, Object>> expectedValues = ExpectedProxCubes1.getExpectedValues3D();
+        HashMap<Integer, HashMap<String, Double>> expectedValues = new ExpectedProxCubes1().getMeasurements();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {
+            System.out.println(proxObj1Obj.getID());
             // Getting expected values for this object
-            HashMap<ExpectedProxCubes1.Measures, Object> currExpectedValues = expectedValues.get(proxObj1Obj.getPoints().size());
+            HashMap<String, Double> currExpectedValues = expectedValues.get(proxObj1Obj.getPoints().size());
 
             // Checking the object has no children
             LinkedHashMap<String, ObjCollection> children = proxObj1Obj.getChildren();
@@ -313,16 +314,16 @@ public class RelateObjectsTest {
 
             // Checking the parent ID is the one expected
             Obj parentObj = proxObj1Obj.getParent(proxObj2Name);
-            int expectedParentID = (int) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_ID);
+            double expectedParentID = currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_ID.name());
             int actualParentID = parentObj.getID();
-            assertEquals(expectedParentID, actualParentID);
+            assertEquals(expectedParentID, actualParentID, tolerance);
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX);
+            double expectedSurfDistPx = currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX.name());
             double actualSurfDistPx = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_PX).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
-            double expectedSurfDistCal = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL);
+            double expectedSurfDistCal = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL.name());
             double actualSurfDistCal = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_CAL).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 
@@ -360,12 +361,12 @@ public class RelateObjectsTest {
         relateObjects.run(workspace,false);
 
         // Getting expected values
-        HashMap<Integer, HashMap<ExpectedProxCubes1.Measures, Object>> expectedValues = ExpectedProxCubes1.getExpectedValues3D();
+        HashMap<Integer, HashMap<String, Double>> expectedValues = new ExpectedProxCubes1().getMeasurements();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {
             // Getting expected values for this object
-            HashMap<ExpectedProxCubes1.Measures, Object> currExpectedValues = expectedValues.get(proxObj1Obj.getPoints().size());
+            HashMap<String, Double> currExpectedValues = expectedValues.get(proxObj1Obj.getPoints().size());
 
             // Checking the object has no children
             LinkedHashMap<String, ObjCollection> children = proxObj1Obj.getChildren();
@@ -373,16 +374,16 @@ public class RelateObjectsTest {
 
             // Checking the parent ID is the one expected
             Obj parentObj = proxObj1Obj.getParent(proxObj2Name);
-            int expectedParentID = (int) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_ID);
+            double expectedParentID = currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_ID.name());
             int actualParentID = parentObj.getID();
-            assertEquals(expectedParentID, actualParentID);
+            assertEquals(expectedParentID, actualParentID, tolerance);
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX);
+            double expectedSurfDistPx = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX.name());
             double actualSurfDistPx = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_PX).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
-            double expectedSurfDistCal = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL);
+            double expectedSurfDistCal = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL.name());
             double actualSurfDistCal = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_CAL).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 

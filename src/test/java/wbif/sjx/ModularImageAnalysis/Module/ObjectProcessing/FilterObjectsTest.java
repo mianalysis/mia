@@ -4,8 +4,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.FilterImage;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectShape;
+import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.common.Object.Point;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -36,7 +41,7 @@ public class FilterObjectsTest {
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_LARGER_THAN);
-        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT,"SHAPE//AREA_PX");
+        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, "N_VOXELS");
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
@@ -45,6 +50,26 @@ public class FilterObjectsTest {
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
 
+
+    }
+
+    @Test @Ignore
+    public void equalityTest() throws Exception {
+        Obj ob1 = new Obj("Ob1",1,1,1,"");
+        ArrayList<Point<Integer>> pointArrayList = new ArrayList<>();
+        pointArrayList.add(new Point<>(1,1,1));
+        pointArrayList.add(new Point<>(5,2,4));
+        ob1.setPoints(pointArrayList);
+
+        Obj ob2 = new Obj("Ob2",1,1,1,"");
+        ArrayList<Point<Integer>> pointArrayList2 = new ArrayList<>();
+        pointArrayList2.add(new Point<>(1,1,1));
+        pointArrayList2.add(new Point<>(5,2,4));
+        ob2.setPoints(pointArrayList2);
+
+        System.out.println(ob1.getPoints()+"_"+ob1.getPoints().hashCode());
+        System.out.println(ob2.getPoints()+"_"+ob2.getPoints().hashCode());
+        assertEquals(ob1.getPoints(),ob2.getPoints());
 
     }
 }

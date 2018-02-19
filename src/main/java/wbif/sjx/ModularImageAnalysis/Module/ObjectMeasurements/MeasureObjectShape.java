@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class MeasureObjectShape extends HCModule {
     public static final String INPUT_OBJECTS = "Input objects";
 
-    private interface Measurements {
+    public interface Measurements {
         String AREA_PX = "SHAPE//AREA_PX";
         String AREA_CAL = "SHAPE//AREA_CAL";
 
