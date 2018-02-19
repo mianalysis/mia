@@ -269,7 +269,7 @@ public class RelateObjectsTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testProximitySurfaceLink() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);

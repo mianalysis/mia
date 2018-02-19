@@ -135,6 +135,14 @@ public class MainGUI extends GUI {
 
     }
 
+    public void render() throws IllegalAccessException, InstantiationException {
+        if (basicGUI) {
+            renderBasicMode();
+        } else {
+            renderEditingMode();
+        }
+    }
+
     public void renderBasicMode() {
         basicGUI = true;
 
@@ -678,7 +686,7 @@ public class MainGUI extends GUI {
 
     }
 
-    void updateEvalButtonStates() {
+    private void updateEvalButtonStates() {
         if (basicGUI) {
             for (Component component : basicModulesScrollPane.getComponents()) {
                 if (component.getClass() == EvalButton.class) {
@@ -807,7 +815,10 @@ public class MainGUI extends GUI {
             ModuleCollection modules = getModules();
             // Removing a module resets all the current evaluation
             int idx = modules.indexOf(activeModule);
-            if (idx < lastModuleEval) lastModuleEval = -1;
+
+            if (idx <= lastModuleEval) {
+                lastModuleEval = -1;
+            }
 
             modules.remove(activeModule);
             activeModule = null;

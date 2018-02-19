@@ -102,6 +102,13 @@ public class AnalysisHandler {
 
                 // If the module is an input or output control, treat it differently
                 if (module.getClass().isInstance(new InputControl())) {
+                    if (moduleAttributes.getNamedItem("NICKNAME") != null) {
+                        String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
+                        module.setNickname(moduleNickname);
+                    } else {
+                        module.setNickname(module.getTitle());
+                    }
+
                     NodeList moduleChildNodes = moduleNode.getChildNodes();
                     for (int j=0;j<moduleChildNodes.getLength();j++) {
                         switch (moduleChildNodes.item(j).getNodeName()) {
@@ -119,6 +126,13 @@ public class AnalysisHandler {
                     continue;
 
                 } else if (module.getClass().isInstance(new OutputControl())) {
+                    if (moduleAttributes.getNamedItem("NICKNAME") != null) {
+                        String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
+                        module.setNickname(moduleNickname);
+                    } else {
+                        module.setNickname(module.getTitle());
+                    }
+
                     NodeList moduleChildNodes = moduleNode.getChildNodes();
                     for (int j=0;j<moduleChildNodes.getLength();j++) {
                         switch (moduleChildNodes.item(j).getNodeName()) {
