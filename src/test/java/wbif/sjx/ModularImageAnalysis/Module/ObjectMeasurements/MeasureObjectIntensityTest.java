@@ -79,23 +79,23 @@
 //
 //            assertEquals("Number of measurements",5,testObject.getMeasurements().size());
 //
-//            double expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MEAN_8BIT);
+//            double expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_MEAN_8BIT);
 //            double actual = testObject.getMeasurement("INTENSITY//Test_image_MEAN").getValue();
 //            assertEquals("Measurement value", expectedDouble, actual, 1E-2);
 //
-//            int expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_MIN_8BIT);
+//            int expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_MIN_8BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_MIN").getValue();
 //            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 //
-//            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_MAX_8BIT);
+//            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_MAX_8BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_MAX").getValue();
 //            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 //
-//            expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_STD_8BIT);
+//            expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_STD_8BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_STDEV").getValue();
 //            assertEquals("Measurement value", expectedDouble, actual, 1E-2);
 //
-//            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_SUM_8BIT);
+//            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_SUM_8BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_SUM").getValue();
 //            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 //
@@ -154,23 +154,23 @@
 //
 //            assertEquals("Number of measurements", 5, testObject.getMeasurements().size());
 //
-//            double expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MEAN_16BIT);
+//            double expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_MEAN_16BIT);
 //            double actual = testObject.getMeasurement("INTENSITY//Test_image_MEAN").getValue();
 //            assertEquals("Measurement value", expectedDouble, actual, 1E-2);
 //
-//            int expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_MIN_16BIT);
+//            int expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_MIN_16BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_MIN").getValue();
 //            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 //
-//            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_MAX_16BIT);
+//            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_MAX_16BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_MAX").getValue();
 //            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 //
-//            expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_STD_16BIT);
+//            expectedDouble = (double) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_STD_16BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_STDEV").getValue();
 //            assertEquals("Measurement value", expectedDouble, actual, 1E-2);
 //
-//            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.I_SUM_16BIT);
+//            expectedInt = (int) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_SUM_16BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_SUM").getValue();
 //            assertEquals("Measurement value", expectedInt, actual, 1E-2);
 //
@@ -229,23 +229,23 @@
 //
 //            assertEquals("Number of measurements",5,testObject.getMeasurements().size());
 //
-//            double expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MEAN_32BIT);
+//            double expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_MEAN_32BIT);
 //            double actual = testObject.getMeasurement("INTENSITY//Test_image_MEAN").getValue();
 //            assertEquals("Measurement value", expected, actual,1E-2);
 //
-//            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MIN_32BIT);
+//            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_MIN_32BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_MIN").getValue();
 //            assertEquals("Measurement value", expected, actual,1E-2);
 //
-//            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_MAX_32BIT);
+//            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_MAX_32BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_MAX").getValue();
 //            assertEquals("Measurement value", expected, actual,1E-2);
 //
-//            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_STD_32BIT);
+//            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_STD_32BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_STDEV").getValue();
 //            assertEquals("Measurement value", expected, actual,1E-2);
 //
-//            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.I_SUM_32BIT);
+//            expected = (double) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_I_SUM_32BIT);
 //            actual = testObject.getMeasurement("INTENSITY//Test_image_SUM").getValue();
 //            assertEquals("Measurement value", expected, actual,1E-2);
 //

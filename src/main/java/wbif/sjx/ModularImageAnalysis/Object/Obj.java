@@ -291,5 +291,22 @@ public class Obj extends Volume {
         return new Image(imageName,ipl);
 
     }
+
+    @Override
+    public int hashCode() {
+        // Updating the hash for time-point.  ID, measurements and relationships aren't included; only spatial location.
+        return super.hashCode()*31 + T;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) return false;
+
+        if (obj == this) return true;
+        if (!(obj instanceof Obj)) return false;
+
+        return (T == ((Obj) obj).T);
+
+    }
 }
 

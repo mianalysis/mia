@@ -32,7 +32,7 @@ public class MeasureObjectShapeTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,false);
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectShape
@@ -57,7 +57,7 @@ public class MeasureObjectShapeTest {
         for (Obj testObject:testObjects.values()) {
             HashMap<String, Double> currExpectedValues = expectedValues.get(testObject.getPoints().size());
 
-            int expectedNVoxels = (int) Math.round(currExpectedValues.get(ExpectedObjects3D.Measures.N_VOXELS.name()));
+            int expectedNVoxels = (int) Math.round(currExpectedValues.get(ExpectedObjects3D.Measures.EXP_N_VOXELS.name()));
             int actualNVoxels = (int) testObject.getMeasurement("N_VOXELS").getValue();
             assertEquals("Measurement value", expectedNVoxels, actualNVoxels);
 

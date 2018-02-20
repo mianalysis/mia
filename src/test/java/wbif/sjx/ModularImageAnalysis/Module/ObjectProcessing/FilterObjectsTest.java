@@ -11,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 import wbif.sjx.common.Object.Point;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 import static org.junit.Assert.*;
 
@@ -34,7 +35,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,false);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
@@ -50,26 +51,6 @@ public class FilterObjectsTest {
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
 
-
-    }
-
-    @Test @Ignore
-    public void equalityTest() throws Exception {
-        Obj ob1 = new Obj("Ob1",1,1,1,"");
-        ArrayList<Point<Integer>> pointArrayList = new ArrayList<>();
-        pointArrayList.add(new Point<>(1,1,1));
-        pointArrayList.add(new Point<>(5,2,4));
-        ob1.setPoints(pointArrayList);
-
-        Obj ob2 = new Obj("Ob2",1,1,1,"");
-        ArrayList<Point<Integer>> pointArrayList2 = new ArrayList<>();
-        pointArrayList2.add(new Point<>(1,1,1));
-        pointArrayList2.add(new Point<>(5,2,4));
-        ob2.setPoints(pointArrayList2);
-
-        System.out.println(ob1.getPoints()+"_"+ob1.getPoints().hashCode());
-        System.out.println(ob2.getPoints()+"_"+ob2.getPoints().hashCode());
-        assertEquals(ob1.getPoints(),ob2.getPoints());
 
     }
 }

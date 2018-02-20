@@ -35,7 +35,7 @@ public class ProjectObjectsTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection inputObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection inputObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,false);
         workspace.addObjects(inputObjects);
 
         // Initialising ProjectObjects
@@ -85,16 +85,16 @@ public class ProjectObjectsTest {
 
             // Testing coordinate ranges
             int[][] coordinateRange = testObject.getCoordinateRange();
-            assertEquals("X-min",expected.get(ExpectedObjects3D.Measures.X_MIN.name()),coordinateRange[0][0],tolerance);
-            assertEquals("X-max",expected.get(ExpectedObjects3D.Measures.X_MAX.name()),coordinateRange[0][1],tolerance);
-            assertEquals("Y-min",expected.get(ExpectedObjects3D.Measures.Y_MIN.name()),coordinateRange[1][0],tolerance);
-            assertEquals("Y-max",expected.get(ExpectedObjects3D.Measures.Y_MAX.name()),coordinateRange[1][1],tolerance);
+            assertEquals("X-min",expected.get(ExpectedObjects3D.Measures.EXP_X_MIN.name()),coordinateRange[0][0],tolerance);
+            assertEquals("X-max",expected.get(ExpectedObjects3D.Measures.EXP_X_MAX.name()),coordinateRange[0][1],tolerance);
+            assertEquals("Y-min",expected.get(ExpectedObjects3D.Measures.EXP_Y_MIN.name()),coordinateRange[1][0],tolerance);
+            assertEquals("Y-max",expected.get(ExpectedObjects3D.Measures.EXP_Y_MAX.name()),coordinateRange[1][1],tolerance);
             assertEquals("Z-min",0,0);
             assertEquals("Z-max",0,0,tolerance);
-            assertEquals("F",expected.get(ExpectedObjects3D.Measures.F.name()),testObject.getT(),tolerance);
+            assertEquals("F",expected.get(ExpectedObjects3D.Measures.EXP_F.name()),testObject.getT(),tolerance);
 
             // Testing the number of voxels in the test object
-            double expectedNVoxels = expected.get(ExpectedObjects3D.Measures.N_VOXELS_PROJ.name());
+            double expectedNVoxels = expected.get(ExpectedObjects3D.Measures.EXP_N_VOXELS_PROJ.name());
             int actualNVoxels = testObject.getPoints().size();
             assertEquals("Number of voxels", expectedNVoxels, actualNVoxels,tolerance);
 

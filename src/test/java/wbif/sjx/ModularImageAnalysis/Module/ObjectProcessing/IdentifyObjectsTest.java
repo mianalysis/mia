@@ -71,13 +71,13 @@ public class IdentifyObjectsTest {
 
             // Testing coordinate ranges
             int[][] coordinateRange = object.getCoordinateRange();
-            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.X_MIN.name()),coordinateRange[0][0],tolerance);
-            assertEquals("X-max", expected.get(ExpectedObjects3D.Measures.X_MAX.name()),coordinateRange[0][1],tolerance);
-            assertEquals("Y-min", expected.get(ExpectedObjects3D.Measures.Y_MIN.name()),coordinateRange[1][0],tolerance);
-            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.Y_MAX.name()),coordinateRange[1][1],tolerance);
-            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.Z_MIN.name()),coordinateRange[2][0],tolerance);
-            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.Z_MAX.name()),coordinateRange[2][1],tolerance);
-            assertEquals("F", expected.get(ExpectedObjects3D.Measures.F.name()),object.getT(),tolerance);
+            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.EXP_X_MIN.name()),coordinateRange[0][0],tolerance);
+            assertEquals("X-max", expected.get(ExpectedObjects3D.Measures.EXP_X_MAX.name()),coordinateRange[0][1],tolerance);
+            assertEquals("Y-min", expected.get(ExpectedObjects3D.Measures.EXP_Y_MIN.name()),coordinateRange[1][0],tolerance);
+            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.EXP_Y_MAX.name()),coordinateRange[1][1],tolerance);
+            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.EXP_Z_MIN.name()),coordinateRange[2][0],tolerance);
+            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.EXP_Z_MAX.name()),coordinateRange[2][1],tolerance);
+            assertEquals("F", expected.get(ExpectedObjects3D.Measures.EXP_F.name()),object.getT(),tolerance);
 
             // Checking the objects have the correct spatial calibration
             double dppXY = object.getDistPerPxXY();
@@ -137,13 +137,13 @@ public class IdentifyObjectsTest {
 
             // Testing coordinate ranges
             int[][] coordinateRange = object.getCoordinateRange();
-            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.X_MIN.name()),coordinateRange[0][0],tolerance);
-            assertEquals("X-max", expected.get(ExpectedObjects3D.Measures.X_MAX.name()),coordinateRange[0][1],tolerance);
-            assertEquals("Y-min", expected.get(ExpectedObjects3D.Measures.Y_MIN.name()),coordinateRange[1][0],tolerance);
-            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.Y_MAX.name()),coordinateRange[1][1],tolerance);
-            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.Z_MIN.name()),coordinateRange[2][0],tolerance);
-            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.Z_MAX.name()),coordinateRange[2][1],tolerance);
-            assertEquals("F", expected.get(ExpectedObjects3D.Measures.F.name()),object.getT(),tolerance);
+            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.EXP_X_MIN.name()),coordinateRange[0][0],tolerance);
+            assertEquals("X-max", expected.get(ExpectedObjects3D.Measures.EXP_X_MAX.name()),coordinateRange[0][1],tolerance);
+            assertEquals("Y-min", expected.get(ExpectedObjects3D.Measures.EXP_Y_MIN.name()),coordinateRange[1][0],tolerance);
+            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.EXP_Y_MAX.name()),coordinateRange[1][1],tolerance);
+            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.EXP_Z_MIN.name()),coordinateRange[2][0],tolerance);
+            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.EXP_Z_MAX.name()),coordinateRange[2][1],tolerance);
+            assertEquals("F", expected.get(ExpectedObjects3D.Measures.EXP_F.name()),object.getT(),tolerance);
 
             // Checking the objects have the correct spatial calibration
             double dppXY = object.getDistPerPxXY();
@@ -199,13 +199,13 @@ public class IdentifyObjectsTest {
 
             // Testing coordinate ranges
             int[][] coordinateRange = object.getCoordinateRange();
-            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.X_MIN.name()),coordinateRange[0][0],tolerance);
-            assertEquals("X-max", expected.get(ExpectedObjects3D.Measures.X_MAX.name()),coordinateRange[0][1],tolerance);
-            assertEquals("Y-min", expected.get(ExpectedObjects3D.Measures.Y_MIN.name()),coordinateRange[1][0],tolerance);
-            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.Y_MAX.name()),coordinateRange[1][1],tolerance);
-            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.Z_MIN.name()),coordinateRange[2][0],tolerance);
-            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.Z_MAX.name()),coordinateRange[2][1],tolerance);
-            assertEquals("F", expected.get(ExpectedObjects3D.Measures.F.name()),object.getT(),tolerance);
+            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.EXP_X_MIN.name()),coordinateRange[0][0],tolerance);
+            assertEquals("X-max", expected.get(ExpectedObjects3D.Measures.EXP_X_MAX.name()),coordinateRange[0][1],tolerance);
+            assertEquals("Y-min", expected.get(ExpectedObjects3D.Measures.EXP_Y_MIN.name()),coordinateRange[1][0],tolerance);
+            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.EXP_Y_MAX.name()),coordinateRange[1][1],tolerance);
+            assertEquals("X-min", expected.get(ExpectedObjects3D.Measures.EXP_Z_MIN.name()),coordinateRange[2][0],tolerance);
+            assertEquals("Y-max", expected.get(ExpectedObjects3D.Measures.EXP_Z_MAX.name()),coordinateRange[2][1],tolerance);
+            assertEquals("F", expected.get(ExpectedObjects3D.Measures.EXP_F.name()),object.getT(),tolerance);
 
             // Checking the objects have the correct spatial calibration
             double dppXY = object.getDistPerPxXY();

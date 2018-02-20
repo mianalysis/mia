@@ -19,7 +19,7 @@ public abstract class ExpectedObjects {
 
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
-    public ObjCollection getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits) {
+    public ObjCollection getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) {
         // Initialising object store
         ObjCollection testObjects = new ObjCollection(objectName);
 
@@ -41,14 +41,16 @@ public abstract class ExpectedObjects {
         }
 
         // Adding measurements to each object
-        HashMap<Integer,HashMap<String,Double>> measurements = getMeasurements();
-        if (measurements != null) {
-            for (Obj testObject : testObjects.values()) {
-                int size = testObject.getNVoxels();
-                HashMap<String, Double> measurement = measurements.get(size);
+        if (includeMeasurements) {
+            HashMap<Integer, HashMap<String, Double>> measurements = getMeasurements();
+            if (measurements != null) {
+                for (Obj testObject : testObjects.values()) {
+                    int size = testObject.getNVoxels();
+                    HashMap<String, Double> measurement = measurements.get(size);
 
-                for (String measurementName : measurement.keySet()) {
-                    testObject.addMeasurement(new Measurement(measurementName, measurement.get(measurementName)));
+                    for (String measurementName : measurement.keySet()) {
+                        testObject.addMeasurement(new Measurement(measurementName, measurement.get(measurementName)));
+                    }
                 }
             }
         }
@@ -85,4 +87,5 @@ public abstract class ExpectedObjects {
             return null;
         }
     }
+
 }
