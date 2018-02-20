@@ -6,8 +6,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
-import java.util.HashMap;
-
 import static org.junit.Assert.*;
 
 /**
@@ -23,7 +21,7 @@ public class MeasureObjectCentroidTest {
     }
 
     @Test
-    public void testRunMean() throws Exception {
+    public void calculateCentroidMean() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
 
@@ -34,7 +32,7 @@ public class MeasureObjectCentroidTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectCentroid
@@ -46,24 +44,19 @@ public class MeasureObjectCentroidTest {
         // Running MeasureObjectCentroid
         measureObjectCentroid.run(workspace,false);
 
-        // Getting expected values
-        HashMap<Integer, HashMap<String, Double>> expectedValues = new ExpectedObjects3D().getMeasurements();
-
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
-            int nPoints = testObject.getPoints().size();
-
             // Testing measurements
-            double expected = (double) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.X_MEAN.name());
-            double actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_X_PX).getValue();
+            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_X_MEAN.name()).getValue();
+            double actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_X).getValue();
             assertEquals(expected,actual,tolerance);
 
-            expected = (double) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.Y_MEAN.name());
-            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_Y_PX).getValue();
+            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_Y_MEAN.name()).getValue();
+            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_Y).getValue();
             assertEquals(expected,actual,tolerance);
 
-            expected = (double) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.Z_MEAN.name());
-            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_Z_SLICE).getValue();
+            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_Z_MEAN.name()).getValue();
+            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_Z).getValue();
             assertEquals(expected,actual,tolerance);
 
         }
@@ -81,7 +74,7 @@ public class MeasureObjectCentroidTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectCentroid
@@ -93,24 +86,19 @@ public class MeasureObjectCentroidTest {
         // Running MeasureObjectCentroid
         measureObjectCentroid.run(workspace,false);
 
-        // Getting expected values
-        HashMap<Integer, HashMap<String, Double>> expectedValues = new ExpectedObjects3D().getMeasurements();
-
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
-            int nPoints = testObject.getPoints().size();
-
             // Testing measurements
             double expected = (double) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.X_MEDIAN.name());
-            double actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_X_PX).getValue();
+            double actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_X).getValue();
             assertEquals(expected,actual,tolerance);
 
             expected = (double) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.Y_MEDIAN.name());
-            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_Y_PX).getValue();
+            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_Y).getValue();
             assertEquals(expected,actual,tolerance);
 
             expected = (double) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.Z_MEDIAN.name());
-            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_Z_SLICE).getValue();
+            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_Z).getValue();
             assertEquals(expected,actual,tolerance);
 
         }
