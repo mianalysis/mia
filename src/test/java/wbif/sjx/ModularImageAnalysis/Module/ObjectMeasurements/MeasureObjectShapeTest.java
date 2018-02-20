@@ -14,6 +14,8 @@ import static org.junit.Assert.*;
  * Created by Stephen Cross on 03/09/2017.
  */
 public class MeasureObjectShapeTest {
+    private double tolerance = 1E-2;
+
     @Test
     public void testGetTitle() throws Exception {
         assertNotNull(new MeasureObjectShape().getTitle());
@@ -27,7 +29,7 @@ public class MeasureObjectShapeTest {
 
         // Setting object parameters
         String inputObjectsName = "Test objects";
-        double dppXY = 0.02;
+        double dppXY = 0.2357;
         double dppZ = 0.1;
         String calibratedUnits = "um";
 
@@ -58,9 +60,18 @@ public class MeasureObjectShapeTest {
             HashMap<String, Double> currExpectedValues = expectedValues.get(testObject.getPoints().size());
 
             int expectedNVoxels = (int) Math.round(currExpectedValues.get(ExpectedObjects3D.Measures.EXP_N_VOXELS.name()));
-            int actualNVoxels = (int) testObject.getMeasurement("N_VOXELS").getValue();
+            int actualNVoxels = (int) testObject.getMeasurement(MeasureObjectShape.Measurements.VOLUME_PX).getValue();
             assertEquals("Measurement value", expectedNVoxels, actualNVoxels);
+
+            double expectedProjDiaPX = currExpectedValues.get(ExpectedObjects3D.Measures.EXP_PROJ_DIA_PX.name());
+            double actualProjDiaPX = testObject.getMeasurement(MeasureObjectShape.Measurements.PROJ_DIA_PX).getValue();
+            assertEquals("Measurement value", expectedProjDiaPX, actualProjDiaPX, tolerance);
+
+            double expectedProjDiaCal = currExpectedValues.get(ExpectedObjects3D.Measures.EXP_PROJ_DIA_CAL.name());
+            double actualProjDiaCal = testObject.getMeasurement(MeasureObjectShape.Measurements.PROJ_DIA_CAL).getValue();
+            assertEquals("Measurement value", expectedProjDiaCal, actualProjDiaCal, tolerance);
 
         }
     }
+
 }

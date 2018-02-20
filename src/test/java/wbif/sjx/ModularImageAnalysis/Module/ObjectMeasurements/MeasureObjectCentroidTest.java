@@ -48,15 +48,15 @@ public class MeasureObjectCentroidTest {
         for (Obj testObject:testObjects.values()) {
             // Testing measurements
             double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_X_MEAN.name()).getValue();
-            double actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_X).getValue();
+            double actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_X_PX).getValue();
             assertEquals(expected,actual,tolerance);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_Y_MEAN.name()).getValue();
-            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_Y).getValue();
+            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_Y_PX).getValue();
             assertEquals(expected,actual,tolerance);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_Z_MEAN.name()).getValue();
-            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_Z).getValue();
+            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEAN_Z_SLICE).getValue();
             assertEquals(expected,actual,tolerance);
 
         }
@@ -89,16 +89,16 @@ public class MeasureObjectCentroidTest {
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
             // Testing measurements
-            double expected = (double) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.X_MEDIAN.name());
-            double actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_X).getValue();
+            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_X_MEDIAN.name()).getValue();
+            double actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_X_PX).getValue();
             assertEquals(expected,actual,tolerance);
 
-            expected = (double) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.Y_MEDIAN.name());
-            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_Y).getValue();
+            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_Y_MEDIAN.name()).getValue();
+            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_Y_PX).getValue();
             assertEquals(expected,actual,tolerance);
 
-            expected = (double) expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.Z_MEDIAN.name());
-            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_Z).getValue();
+            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_Z_MEDIAN.name()).getValue();
+            actual = testObject.getMeasurement(MeasureObjectCentroid.Measurements.MEDIAN_Z_SLICE).getValue();
             assertEquals(expected,actual,tolerance);
 
         }
