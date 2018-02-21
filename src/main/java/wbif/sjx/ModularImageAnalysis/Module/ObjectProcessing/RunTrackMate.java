@@ -209,6 +209,7 @@ public class RunTrackMate extends HCModule {
                 // Replacing spot volumes with explicit volume
                 for (Obj spotObject:spotObjects.values()) {
                     Obj spotVolumeObject = spotObject.getChildren("SpotVolume").values().iterator().next();
+
                     spotObject.setPoints(spotVolumeObject.getPoints());
                 }
             }

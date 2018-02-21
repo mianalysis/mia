@@ -11,6 +11,7 @@ import wbif.sjx.common.Object.Point;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  * Created by sc13967 on 20/09/2017.
@@ -55,8 +56,8 @@ public class TrackObjects extends HCModule {
 
     private static float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
         // Getting coordinates for each object
-        ArrayList<Point<Integer>> prevPoints = prevObj.getPoints();
-        ArrayList<Point<Integer>> currPoints = currObj.getPoints();
+        TreeSet<Point<Integer>> prevPoints = prevObj.getPoints();
+        TreeSet<Point<Integer>> currPoints = currObj.getPoints();
 
         // Indexer gives a single value for coordinates.  Will use a HashSet to prevent index duplicates.
         Indexer indexer = new Indexer(spatialLimits[0][1]+1,spatialLimits[1][1]+1,spatialLimits[2][1]+1);

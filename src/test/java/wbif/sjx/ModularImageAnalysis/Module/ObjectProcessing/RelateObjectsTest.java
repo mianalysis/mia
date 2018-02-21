@@ -40,12 +40,12 @@ public class RelateObjectsTest {
         String inputSpotsName = "Test_spots";
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -67,9 +67,6 @@ public class RelateObjectsTest {
         assertNotNull(workspace.getObjectSet(inputSpotsName));
         assertEquals(25,workspace.getObjectSet(inputSpotsName).size());
 
-        // Getting expected values
-        HashMap<Integer,HashMap<String, Double>> expectedValues = new ExpectedObjects3D().getMeasurements();
-
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
             ObjCollection childSpots = testObject.getChildren(inputSpotsName);
@@ -84,15 +81,15 @@ public class RelateObjectsTest {
 
             // Testing spot is at expected location
             int nPoints = testObject.getPoints().size();
-            double expected = expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.SPOT_ID_X.name());
+            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_SPOT_ID_X.name()).getValue();
             double actual = childSpot.getX(true)[0];
             assertEquals(expected,actual,tolerance);
 
-            expected = expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.SPOT_ID_Y.name());
+            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_SPOT_ID_Y.name()).getValue();
             actual = childSpot.getY(true)[0];
             assertEquals(expected,actual,tolerance);
 
-            expected = expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.SPOT_ID_Z.name());
+            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_SPOT_ID_Z.name()).getValue();
             actual = childSpot.getZ(true,false)[0];
             assertEquals(expected,actual,tolerance);
 
@@ -109,12 +106,12 @@ public class RelateObjectsTest {
         String inputSpotsName = "Test_spots";
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -136,10 +133,10 @@ public class RelateObjectsTest {
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
             HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
-            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_X.name());
-            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_Y.name());
-            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_Z.name());
-            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_DIST.name());
+            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_X.name());
+            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_Y.name());
+            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_Z.name());
+            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_DIST.name());
 
             // Getting child objects (those linked here)
             ObjCollection childSpots = testObject.getChildren(inputSpotsName);
@@ -194,12 +191,12 @@ public class RelateObjectsTest {
         String inputSpotsName = "Test_spots";
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -221,10 +218,10 @@ public class RelateObjectsTest {
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
             HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
-            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_X.name());
-            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_Y.name());
-            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_Z.name());
-            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.SPOT_PROX_CENT_20PX_DIST.name());
+            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_20PX_X.name());
+            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_20PX_Y.name());
+            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_20PX_Z.name());
+            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_20PX_DIST.name());
 
             // Getting child objects (those linked here)
             ObjCollection childSpots = testObject.getChildren(inputSpotsName);
@@ -279,12 +276,12 @@ public class RelateObjectsTest {
         String proxObj2Name = "Prox_obj_2";
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -340,12 +337,12 @@ public class RelateObjectsTest {
         String proxObj2Name = "Prox_obj_2";
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits);
+        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects

@@ -170,4 +170,8 @@ public abstract class HCModule implements Serializable {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    protected void writeMessage(String message, boolean verbose) {
+        if (verbose) System.out.println("[" + moduleName + "] "+message);
+    }
 }
