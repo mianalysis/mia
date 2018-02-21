@@ -29,12 +29,12 @@ public class MeasureObjectShapeTest {
 
         // Setting object parameters
         String inputObjectsName = "Test objects";
-        double dppXY = 0.2357;
+        double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,false);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectShape

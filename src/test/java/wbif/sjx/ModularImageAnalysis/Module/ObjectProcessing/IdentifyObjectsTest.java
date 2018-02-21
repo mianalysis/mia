@@ -59,7 +59,7 @@ public class IdentifyObjectsTest {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
         ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
@@ -110,7 +110,7 @@ public class IdentifyObjectsTest {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
         ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
@@ -157,7 +157,7 @@ public class IdentifyObjectsTest {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
         ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects

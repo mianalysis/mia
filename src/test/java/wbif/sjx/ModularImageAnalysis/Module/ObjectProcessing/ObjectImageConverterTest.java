@@ -39,7 +39,7 @@ public class ObjectImageConverterTest {
         String objectName = "Test objects";
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Initialising object store
         ObjCollection testObjects = new ExpectedObjects3D().getObjects(objectName,false,dppXY,dppZ,calibratedUnits,false);
@@ -91,7 +91,7 @@ public class ObjectImageConverterTest {
         String objectName = "Test objects";
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Initialising object store
         ObjCollection testObjects = new ExpectedObjects3D().getObjects(objectName,false,dppXY,dppZ,calibratedUnits,false);
@@ -156,7 +156,7 @@ public class ObjectImageConverterTest {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
         ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:actualObjects.values()) {
@@ -193,7 +193,7 @@ public class ObjectImageConverterTest {
         // Getting the expected objects
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
         ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:actualObjects.values()) {

@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class ExpectedObjects {
     public abstract List<Integer[]> getCoordinates3D();
 
-//    public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
+    public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
     public ObjCollection getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) {
         // Initialising object store

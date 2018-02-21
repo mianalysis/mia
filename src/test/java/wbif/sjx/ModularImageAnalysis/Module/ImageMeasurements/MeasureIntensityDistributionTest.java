@@ -14,13 +14,13 @@ public class MeasureIntensityDistributionTest {
         assertNotNull(new MeasureIntensityDistribution().getTitle());
     }
 
-//    @Test @Ignore
-//    public void testMeasureIntensityWeightedProximity() throws Exception {
-//
-//    }
-//
-//    @Test @Ignore
-//    public void run() throws Exception {
-//
-//    }
+    @Test @Ignore
+    public void testMeasureIntensityWeightedProximity() throws Exception {
+
+    }
+
+    @Test @Ignore
+    public void run() throws Exception {
+
+    }
 }

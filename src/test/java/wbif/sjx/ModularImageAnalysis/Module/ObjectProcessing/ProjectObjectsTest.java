@@ -2,11 +2,14 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.Object.ExpectedObjects2D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.common.Object.Point;
 
 import java.util.HashMap;
+import java.util.TreeSet;
 
 import static org.junit.Assert.*;
 
@@ -32,7 +35,7 @@ public class ProjectObjectsTest {
         String outputObjectsName = "Output objects";
         double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
         ObjCollection inputObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,false);
@@ -55,49 +58,16 @@ public class ProjectObjectsTest {
         // Testing number of objects in projected set
         assertEquals(8,workspace.getObjectSet(outputObjectsName).size());
 
-        // Testing coordinate range for projected objects.  These are accessed via the number of voxels of the parent
-        // (as this is how they are stored in the expected values HashMap)
-        ObjCollection testObjects = workspace.getObjectSet(outputObjectsName);
-        for (Obj testObject:testObjects.values()) {
-            // Checking the objects have a single parent object and that parent has the expected number of voxels
-            assertEquals("Number of parents",1,testObject.getParents(true).size());
-            assertEquals("Number of parents",1,testObject.getParents(false).size());
-            assertNotNull("Correct parent",testObject.getParent(inputObjectsName));
-            assertEquals("Number of children",0,testObject.getChildren().size());
+        // Getting expected and actual objects
+        ObjCollection expectedObjects = new ExpectedObjects2D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection actualObjects = workspace.getObjectSet(outputObjectsName);
 
-            // Getting the parent object
-            Obj parentObject = testObject.getParent(inputObjectsName);
+        TreeSet<Point<Integer>> expPoints = expectedObjects.get(3).getPoints();
 
-            // Checking the number of children and parents for the parent object
-            assertEquals("Number of parents",0,parentObject.getParents(true).size());
-            assertEquals("Number of parents",0,parentObject.getParents(false).size());
-            assertEquals("Number of children",1,parentObject.getChildren().size());
-
-            // Getting the number of voxels in this object (this is used as the key for the expected values map)
-            int nVoxels = parentObject.getNVoxels();
-
-            // Getting the relevant measures
-            HashMap<String, Double> expected = expectedValues.get(nVoxels);
-            assertNotNull("Null means no expected object with the specified number of voxels",expected);
-
-            // Testing coordinate ranges
-            int[][] coordinateRange = testObject.getCoordinateRange();
-            assertEquals("X-min",expected.get(ExpectedObjects3D.Measures.EXP_X_MIN.name()),coordinateRange[0][0],tolerance);
-            assertEquals("X-max",expected.get(ExpectedObjects3D.Measures.EXP_X_MAX.name()),coordinateRange[0][1],tolerance);
-            assertEquals("Y-min",expected.get(ExpectedObjects3D.Measures.EXP_Y_MIN.name()),coordinateRange[1][0],tolerance);
-            assertEquals("Y-max",expected.get(ExpectedObjects3D.Measures.EXP_Y_MAX.name()),coordinateRange[1][1],tolerance);
-            assertEquals("Z-min",0,0);
-            assertEquals("Z-max",0,0,tolerance);
-            assertEquals("F",expected.get(ExpectedObjects3D.Measures.EXP_F.name()),testObject.getT(),tolerance);
-
-            // Testing the number of voxels in the test object
-            double expectedNVoxels = expected.get(ExpectedObjects3D.Measures.EXP_N_VOXELS_PROJ.name());
-            int actualNVoxels = testObject.getPoints().size();
-            assertEquals("Number of voxels", expectedNVoxels, actualNVoxels,tolerance);
-
-            // Checking the objects have the correct spatial calibration
-            assertEquals("Spatial calibration in XY",dppXY,testObject.getDistPerPxXY(),tolerance);
-            assertEquals("Spatial calibration in Z",dppZ,testObject.getDistPerPxZ(),tolerance);
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
 
         }
     }
