@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ProjectObjects;
@@ -230,15 +231,8 @@ public class Obj extends Volume {
         // Getting the object as a Roi
         objectImage.getImagePlus().getProcessor().invert();
         IJ.runPlugIn(objectImage.getImagePlus(),"ij.plugin.Selection","from");
-        Roi roi = objectImage.getImagePlus().getRoi();
-
-        // Clearing up some unwanted objects
-        projectedObject = null;
-        objectCollection = null;
-        hues = null;
-        objectImage = null;
-
-        return roi;
+        Polygon polygon = objectImage.getImagePlus().getRoi().getPolygon();
+        return new PolygonRoi(polygon,Roi.POLYGON);
 
     }
 
@@ -309,4 +303,3 @@ public class Obj extends Volume {
 
     }
 }
-

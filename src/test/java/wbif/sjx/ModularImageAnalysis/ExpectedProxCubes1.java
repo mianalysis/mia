@@ -25,7 +25,7 @@ public class ExpectedProxCubes1 extends ExpectedObjects {
         obj.put(Measures.SURF_PROX_ID_3PX.name(),Double.NaN);
         obj.put(Measures.SURF_PROX_DIST_PX_3PX.name(),Double.NaN);
         obj.put(Measures.SURF_PROX_DIST_CAL_3PX.name(),Double.NaN);
-        expectedValues.put(64, obj);
+        expectedValues.put(25, obj);
 
         obj = new HashMap<>();
         obj.put(Measures.N_VOXELS.name(), 1d);
@@ -36,7 +36,7 @@ public class ExpectedProxCubes1 extends ExpectedObjects {
         obj.put(Measures.SURF_PROX_ID_3PX.name(),65d);
         obj.put(Measures.SURF_PROX_DIST_PX_3PX.name(),-1d);
         obj.put(Measures.SURF_PROX_DIST_CAL_3PX.name(),-0.1d);
-        expectedValues.put(1, obj);
+        expectedValues.put(43, obj);
 
         obj = new HashMap<>();
         obj.put(Measures.N_VOXELS.name(), 12d);
@@ -47,7 +47,7 @@ public class ExpectedProxCubes1 extends ExpectedObjects {
         obj.put(Measures.SURF_PROX_ID_3PX.name(),65d);
         obj.put(Measures.SURF_PROX_DIST_PX_3PX.name(),2d);
         obj.put(Measures.SURF_PROX_DIST_CAL_3PX.name(),0.04d);
-        expectedValues.put(12, obj);
+        expectedValues.put(20, obj);
 
         return expectedValues;
 

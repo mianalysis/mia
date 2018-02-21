@@ -24,7 +24,7 @@ public class FilterObjectsTest {
         assertNotNull(new FilterImage().getTitle());
     }
 
-    @Test
+    @Test @Ignore
     public void testRunMeasurementsLargerThan() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);

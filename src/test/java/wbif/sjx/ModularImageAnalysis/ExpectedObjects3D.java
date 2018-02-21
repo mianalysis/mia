@@ -59,8 +59,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Y.name(),42d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),1d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),15.2971d);
-        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),3.6055d);
-        expectedValues.put(272,obj);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.3059d);
+        expectedValues.put(3,obj);
 
         obj = new HashMap<>();
         obj.put(Measures.EXP_ID_8BIT.name(),4d);
@@ -101,7 +101,7 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),1d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),0d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0d);
-        expectedValues.put(2,obj);
+        expectedValues.put(4,obj);
 
         obj = new HashMap<>();
         obj.put(Measures.EXP_ID_8BIT.name(),7d);
@@ -141,8 +141,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Y.name(),13d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),0d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),18.3848d);
-        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),4.3333d);
-        expectedValues.put(742,obj);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.3677d);
+        expectedValues.put(7,obj);
 
         obj = new HashMap<>();
         obj.put(Measures.EXP_ID_8BIT.name(),8d);
@@ -182,8 +182,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Y.name(),31d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),2d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),13.1529d);
-        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),3.1001d);
-        expectedValues.put(90,obj);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.2631d);
+        expectedValues.put(8,obj);
 
         obj = new HashMap<>();
         obj.put(Measures.EXP_ID_8BIT.name(),9d);
@@ -223,7 +223,7 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Y.name(),75d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),5d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),2.8284d);
-        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.6667d);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.0566d);
         expectedValues.put(9,obj);
 
         obj = new HashMap<>();
@@ -264,8 +264,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Y.name(),27d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),3d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),14.4222d);
-        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),3.3993d);
-        expectedValues.put(375,obj);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.2884d);
+        expectedValues.put(13,obj);
 
         obj = new HashMap<>();
         obj.put(Measures.EXP_ID_8BIT.name(),20d);
@@ -305,9 +305,9 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Y.name(),57d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),2d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),9.2195d);
-        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),2.1730d);
-        expectedValues.put(8,obj);
-        
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.1844d);
+        expectedValues.put(20,obj);
+
         obj = new HashMap<>();
         obj.put(Measures.EXP_ID_8BIT.name(),23d);
         obj.put(Measures.EXP_ID_16BIT.name(),23d);
@@ -347,7 +347,7 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),7d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),0d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0d);
-        expectedValues.put(1,obj);
+        expectedValues.put(23,obj);
 
         return expectedValues;
 

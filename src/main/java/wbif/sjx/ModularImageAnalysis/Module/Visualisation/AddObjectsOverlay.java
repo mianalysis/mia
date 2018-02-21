@@ -12,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -67,6 +68,8 @@ public class AddObjectsOverlay extends HCModule {
 
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
+
+        ArrayList<Roi> roiss = new ArrayList<>();
 
         // Running through each object, adding it to the overlay along with an ID label
         for (Obj object:inputObjects.values()) {
@@ -146,11 +149,11 @@ public class AddObjectsOverlay extends HCModule {
 
                     Roi polyRoi = object.getRoi(ipl);
                     if (ipl.isHyperStack()) {
-                        ipl.setPosition(1, z, t);
+//                        ipl.setPosition(1, z, t);
                         polyRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-                        ipl.setPosition(pos);
+//                        ipl.setPosition(pos);
                         polyRoi.setPosition(pos);
                     }
                     polyRoi.setStrokeColor(colour);

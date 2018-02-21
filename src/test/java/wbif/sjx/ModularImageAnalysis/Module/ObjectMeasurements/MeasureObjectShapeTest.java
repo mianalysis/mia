@@ -29,12 +29,12 @@ public class MeasureObjectShapeTest {
 
         // Setting object parameters
         String inputObjectsName = "Test objects";
-        double dppXY = 0.2357;
+        double dppXY = 0.02;
         double dppZ = 0.1;
-        String calibratedUnits = "um";
+        String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,false);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising MeasureObjectShape
@@ -52,22 +52,17 @@ public class MeasureObjectShapeTest {
         assertNotNull(workspace.getObjectSet(inputObjectsName));
         assertEquals(8,workspace.getObjectSet(inputObjectsName).size());
 
-        // Getting expected values
-        HashMap<Integer, HashMap<String, Double>> expectedValues = new ExpectedObjects3D().getMeasurements();
-
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            HashMap<String, Double> currExpectedValues = expectedValues.get(testObject.getPoints().size());
+            double expectedNVoxels = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_N_VOXELS.name()).getValue();
+            double actualNVoxels = testObject.getMeasurement(MeasureObjectShape.Measurements.VOLUME_PX).getValue();
+            assertEquals("Measurement value", expectedNVoxels, actualNVoxels,tolerance);
 
-            int expectedNVoxels = (int) Math.round(currExpectedValues.get(ExpectedObjects3D.Measures.EXP_N_VOXELS.name()));
-            int actualNVoxels = (int) testObject.getMeasurement(MeasureObjectShape.Measurements.VOLUME_PX).getValue();
-            assertEquals("Measurement value", expectedNVoxels, actualNVoxels);
-
-            double expectedProjDiaPX = currExpectedValues.get(ExpectedObjects3D.Measures.EXP_PROJ_DIA_PX.name());
+            double expectedProjDiaPX = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_PROJ_DIA_PX.name()).getValue();
             double actualProjDiaPX = testObject.getMeasurement(MeasureObjectShape.Measurements.PROJ_DIA_PX).getValue();
             assertEquals("Measurement value", expectedProjDiaPX, actualProjDiaPX, tolerance);
 
-            double expectedProjDiaCal = currExpectedValues.get(ExpectedObjects3D.Measures.EXP_PROJ_DIA_CAL.name());
+            double expectedProjDiaCal = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_PROJ_DIA_CAL.name()).getValue();
             double actualProjDiaCal = testObject.getMeasurement(MeasureObjectShape.Measurements.PROJ_DIA_CAL).getValue();
             assertEquals("Measurement value", expectedProjDiaCal, actualProjDiaCal, tolerance);
 

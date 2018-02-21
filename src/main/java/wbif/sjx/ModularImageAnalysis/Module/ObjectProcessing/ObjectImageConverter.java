@@ -5,6 +5,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -58,9 +59,9 @@ public class ObjectImageConverter extends HCModule {
 
         if (conversionMode.equals(ConversionModes.IMAGE_TO_OBJECTS)) {
             String inputImageName = parameters.getValue(INPUT_IMAGE);
-            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-
             Image inputImage = workspace.getImages().get(inputImageName);
+
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
             ObjCollection objects = inputImage.convertImageToObjects(outputObjectsName);
 
@@ -82,6 +83,11 @@ public class ObjectImageConverter extends HCModule {
             HashMap<Obj, Float> hues = inputObjects.getHue(colourMode, measurementForColour, parentForColour,false);
             Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage.getImagePlus(), colourMode,hues,hideMissing);
 
+            // Applying spatial calibration from template image
+            Calibration calibration = templateImage.getImagePlus().getCalibration();
+            outputImage.getImagePlus().setCalibration(calibration);
+
+            // Adding image to workspace
             workspace.addImage(outputImage);
 
             if (showImage) {

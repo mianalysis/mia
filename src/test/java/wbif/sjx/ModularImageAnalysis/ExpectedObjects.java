@@ -45,8 +45,8 @@ public abstract class ExpectedObjects {
             HashMap<Integer, HashMap<String, Double>> measurements = getMeasurements();
             if (measurements != null) {
                 for (Obj testObject : testObjects.values()) {
-                    int size = testObject.getNVoxels();
-                    HashMap<String, Double> measurement = measurements.get(size);
+                    int ID = testObject.getID();
+                    HashMap<String, Double> measurement = measurements.get(ID);
 
                     for (String measurementName : measurement.keySet()) {
                         testObject.addMeasurement(new Measurement(measurementName, measurement.get(measurementName)));

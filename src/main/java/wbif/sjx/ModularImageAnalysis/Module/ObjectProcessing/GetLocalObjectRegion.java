@@ -19,6 +19,8 @@ public class GetLocalObjectRegion extends HCModule {
         // Creating store for output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
+        if (inputObjects.values().size() == 0) return outputObjects;
+
         double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
         double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
         String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
