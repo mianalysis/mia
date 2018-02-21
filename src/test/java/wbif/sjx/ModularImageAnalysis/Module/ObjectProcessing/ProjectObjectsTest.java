@@ -55,9 +55,6 @@ public class ProjectObjectsTest {
         // Testing number of objects in projected set
         assertEquals(8,workspace.getObjectSet(outputObjectsName).size());
 
-        // Getting expected values
-        HashMap<Integer, HashMap<String, Double>> expectedValues = new ExpectedObjects3D().getMeasurements();
-
         // Testing coordinate range for projected objects.  These are accessed via the number of voxels of the parent
         // (as this is how they are stored in the expected values HashMap)
         ObjCollection testObjects = workspace.getObjectSet(outputObjectsName);

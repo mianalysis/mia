@@ -67,9 +67,6 @@ public class RelateObjectsTest {
         assertNotNull(workspace.getObjectSet(inputSpotsName));
         assertEquals(25,workspace.getObjectSet(inputSpotsName).size());
 
-        // Getting expected values
-        HashMap<Integer,HashMap<String, Double>> expectedValues = new ExpectedObjects3D().getMeasurements();
-
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
             ObjCollection childSpots = testObject.getChildren(inputSpotsName);
@@ -84,15 +81,15 @@ public class RelateObjectsTest {
 
             // Testing spot is at expected location
             int nPoints = testObject.getPoints().size();
-            double expected = expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.EXP_SPOT_ID_X.name());
+            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_SPOT_ID_X.name()).getValue();
             double actual = childSpot.getX(true)[0];
             assertEquals(expected,actual,tolerance);
 
-            expected = expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.EXP_SPOT_ID_Y.name());
+            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_SPOT_ID_Y.name()).getValue();
             actual = childSpot.getY(true)[0];
             assertEquals(expected,actual,tolerance);
 
-            expected = expectedValues.get(nPoints).get(ExpectedObjects3D.Measures.EXP_SPOT_ID_Z.name());
+            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_SPOT_ID_Z.name()).getValue();
             actual = childSpot.getZ(true,false)[0];
             assertEquals(expected,actual,tolerance);
 
