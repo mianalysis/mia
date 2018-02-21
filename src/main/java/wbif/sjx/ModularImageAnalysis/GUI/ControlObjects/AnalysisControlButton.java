@@ -66,6 +66,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
                     }
 
                     gui.setLastModuleEval(-1);
+                    gui.render();
 
                     break;
 

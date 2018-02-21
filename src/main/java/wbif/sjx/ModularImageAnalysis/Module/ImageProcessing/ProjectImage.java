@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.ZProjector;
 import wbif.sjx.ModularImageAnalysis.Module.HCModule;
@@ -59,6 +60,17 @@ public class ProjectImage extends HCModule {
 
         zProjector.doProjection();
         ImagePlus iplOut = zProjector.getProjection();
+
+        // Setting spatial calibration
+        Calibration calibrationIn = inputImage.getImagePlus().getCalibration();
+        Calibration calibrationOut = new Calibration();
+
+        calibrationOut.pixelHeight = calibrationIn.pixelHeight;
+        calibrationOut.pixelWidth= calibrationIn.pixelWidth;
+        calibrationOut.pixelDepth = calibrationIn.pixelDepth;
+        calibrationOut.setUnit(calibrationIn.getUnit());
+
+        iplOut.setCalibration(calibrationOut);
 
         return new Image(outputImageName,iplOut);
 

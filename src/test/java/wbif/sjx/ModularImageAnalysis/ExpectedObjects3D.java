@@ -14,7 +14,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         EXP_I_MIN_16BIT, EXP_I_MAX_16BIT, EXP_I_STD_16BIT, EXP_I_SUM_16BIT, EXP_I_MEAN_32BIT, EXP_I_MIN_32BIT,
         EXP_I_MAX_32BIT, EXP_I_STD_32BIT, EXP_I_SUM_32BIT, EXP_SPOT_ID_X, EXP_SPOT_ID_Y, EXP_SPOT_ID_Z,
         EXP_SPOT_PROX_CENT_X, EXP_SPOT_PROX_CENT_Y, EXP_SPOT_PROX_CENT_Z, EXP_SPOT_PROX_CENT_DIST,
-        EXP_SPOT_PROX_CENT_20PX_X, EXP_SPOT_PROX_CENT_20PX_Y, EXP_SPOT_PROX_CENT_20PX_Z, EXP_SPOT_PROX_CENT_20PX_DIST
+        EXP_SPOT_PROX_CENT_20PX_X, EXP_SPOT_PROX_CENT_20PX_Y, EXP_SPOT_PROX_CENT_20PX_Z, EXP_SPOT_PROX_CENT_20PX_DIST,
+        EXP_PROJ_DIA_PX, EXP_PROJ_DIA_CAL
     }
 
     public HashMap<Integer,HashMap<String,Double>> getMeasurements() {
@@ -57,6 +58,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_X.name(),24d);
         obj.put(Measures.EXP_SPOT_ID_Y.name(),42d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),1d);
+        obj.put(Measures.EXP_PROJ_DIA_PX.name(),15.2971d);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),3.6055d);
         expectedValues.put(272,obj);
 
         obj = new HashMap<>();
@@ -96,6 +99,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_X.name(),24d);
         obj.put(Measures.EXP_SPOT_ID_Y.name(),44d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),1d);
+        obj.put(Measures.EXP_PROJ_DIA_PX.name(),0d);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0d);
         expectedValues.put(2,obj);
 
         obj = new HashMap<>();
@@ -135,6 +140,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_X.name(),19d);
         obj.put(Measures.EXP_SPOT_ID_Y.name(),13d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),0d);
+        obj.put(Measures.EXP_PROJ_DIA_PX.name(),18.3848d);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),4.3333d);
         expectedValues.put(742,obj);
 
         obj = new HashMap<>();
@@ -174,6 +181,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_X.name(),0d);
         obj.put(Measures.EXP_SPOT_ID_Y.name(),31d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),2d);
+        obj.put(Measures.EXP_PROJ_DIA_PX.name(),13.1529d);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),3.1001d);
         expectedValues.put(90,obj);
 
         obj = new HashMap<>();
@@ -213,6 +222,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_X.name(),0d);
         obj.put(Measures.EXP_SPOT_ID_Y.name(),75d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),5d);
+        obj.put(Measures.EXP_PROJ_DIA_PX.name(),2.8284d);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.6667d);
         expectedValues.put(9,obj);
 
         obj = new HashMap<>();
@@ -252,6 +263,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_X.name(),39d);
         obj.put(Measures.EXP_SPOT_ID_Y.name(),27d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),3d);
+        obj.put(Measures.EXP_PROJ_DIA_PX.name(),14.4222d);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),3.3993d);
         expectedValues.put(375,obj);
 
         obj = new HashMap<>();
@@ -291,6 +304,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_X.name(),15d);
         obj.put(Measures.EXP_SPOT_ID_Y.name(),57d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),2d);
+        obj.put(Measures.EXP_PROJ_DIA_PX.name(),9.2195d);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),2.1730d);
         expectedValues.put(8,obj);
         
         obj = new HashMap<>();
@@ -330,6 +345,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_X.name(),36d);
         obj.put(Measures.EXP_SPOT_ID_Y.name(),21d);
         obj.put(Measures.EXP_SPOT_ID_Z.name(),7d);
+        obj.put(Measures.EXP_PROJ_DIA_PX.name(),0d);
+        obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0d);
         expectedValues.put(1,obj);
 
         return expectedValues;

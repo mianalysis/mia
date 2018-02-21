@@ -202,14 +202,7 @@ public class ComponentFactory {
         c.weightx = 0;
         c.insets = new Insets(0, 5, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
-//        EvalButton evalButton = new EvalButton(gui,module);
-//        evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
-//        modulePanel.add(evalButton,c);
-//
-//        // Adding the module title
-//        c.gridx++;
-//        c.weightx = 1;
-//        c.anchor = GridBagConstraints.FIRST_LINE_END;
+
         JTextField title = new JTextField(module.getNickname());
         title.setEditable(false);
         title.setBorder(null);

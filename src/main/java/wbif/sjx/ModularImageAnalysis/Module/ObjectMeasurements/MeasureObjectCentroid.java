@@ -24,12 +24,18 @@ public class MeasureObjectCentroid extends HCModule {
     }
 
     public interface Measurements {
-        String MEAN_X = "CENTROID//MEAN_X_PX";
-        String MEAN_Y = "CENTROID//MEAN_Y_PX";
-        String MEAN_Z = "CENTROID//MEAN_Z_SLICE";
-        String MEDIAN_X = "CENTROID//MEDIAN_X_PX";
-        String MEDIAN_Y = "CENTROID//MEDIAN_Y_PX";
-        String MEDIAN_Z = "CENTROID//MEDIAN_Z_SLICE";
+        String MEAN_X_PX = "CENTROID//MEAN_X_PX";
+        String MEAN_Y_PX = "CENTROID//MEAN_Y_PX";
+        String MEAN_Z_SLICE = "CENTROID//MEAN_Z_SLICE";
+        String MEAN_X_CAL = "CENTROID//MEAN_X_CAL";
+        String MEAN_Y_CAL = "CENTROID//MEAN_Y_CAL";
+        String MEAN_Z_CAL = "CENTROID//MEAN_Z_CAL";
+        String MEDIAN_X_PX = "CENTROID//MEDIAN_X_PX";
+        String MEDIAN_Y_PX = "CENTROID//MEDIAN_Y_PX";
+        String MEDIAN_Z_SLICE = "CENTROID//MEDIAN_Z_SLICE";
+        String MEDIAN_X_CAL = "CENTROID//MEDIAN_X_CAL";
+        String MEDIAN_Y_CAL = "CENTROID//MEDIAN_Y_CAL";
+        String MEDIAN_Z_CAL = "CENTROID//MEDIAN_Z_CAL";
 
     }
 
@@ -55,7 +61,7 @@ public class MeasureObjectCentroid extends HCModule {
         String choice = parameters.getValue(CENTROID_METHOD);
         boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
         boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
-        if (verbose) System.out.println("["+moduleName+"] Calculating centroid as "+choice);
+        writeMessage("Calculating centroid as "+choice,verbose);
 
         // Getting the centroids of each and saving them to the objects
         for (Obj object:inputObjects.values()) {
@@ -65,43 +71,31 @@ public class MeasureObjectCentroid extends HCModule {
 
             if (useMean) {
                 if (x != null) {
-                    double xMean = object.getXMean(true);
-                    Measurement measurement = new Measurement(Measurements.MEAN_X,xMean);
-                    measurement.setSource(this);
-                    object.addMeasurement(measurement);
+                    object.addMeasurement(new Measurement(Measurements.MEAN_X_PX,object.getXMean(true)));
+                    object.addMeasurement(new Measurement(Measurements.MEAN_X_CAL,object.getXMean(false)));
                 }
                 if (y!= null) {
-                    double yMean = object.getYMean(true);
-                    Measurement measurement = new Measurement(Measurements.MEAN_Y,yMean);
-                    measurement.setSource(this);
-                    object.addMeasurement(measurement);
+                    object.addMeasurement(new Measurement(Measurements.MEAN_Y_PX,object.getYMean(true)));
+                    object.addMeasurement(new Measurement(Measurements.MEAN_Y_CAL,object.getYMean(false)));
                 }
                 if (z!= null) {
-                    double zMean = object.getZMean(true,false);
-                    Measurement measurement = new Measurement(Measurements.MEAN_Z,zMean);
-                    measurement.setSource(this);
-                    object.addMeasurement(measurement);
+                    object.addMeasurement(new Measurement(Measurements.MEAN_Z_SLICE,object.getZMean(true,false)));
+                    object.addMeasurement(new Measurement(Measurements.MEAN_Z_CAL,object.getZMean(false,false)));
                 }
             }
 
             if (useMedian) {
                 if (x != null) {
-                    double xMedian = object.getXMedian(true);
-                    Measurement measurement = new Measurement(Measurements.MEDIAN_X,xMedian);
-                    measurement.setSource(this);
-                    object.addMeasurement(measurement);
+                    object.addMeasurement(new Measurement(Measurements.MEDIAN_X_PX,object.getXMedian(true)));
+                    object.addMeasurement(new Measurement(Measurements.MEDIAN_X_CAL,object.getXMedian(false)));
                 }
                 if (y!= null) {
-                    double yMedian = object.getYMedian(true);
-                    Measurement measurement = new Measurement(Measurements.MEDIAN_Y,yMedian);
-                    measurement.setSource(this);
-                    object.addMeasurement(measurement);
+                    object.addMeasurement(new Measurement(Measurements.MEDIAN_Y_PX,object.getYMedian(true)));
+                    object.addMeasurement(new Measurement(Measurements.MEDIAN_Y_CAL,object.getYMedian(false)));
                 }
                 if (z!= null) {
-                    double zMedian = object.getZMedian(true,false);
-                    Measurement measurement = new Measurement(Measurements.MEDIAN_Z,zMedian);
-                    measurement.setSource(this);
-                    object.addMeasurement(measurement);
+                    object.addMeasurement(new Measurement(Measurements.MEDIAN_Z_SLICE,object.getZMedian(true,false)));
+                    object.addMeasurement(new Measurement(Measurements.MEDIAN_Z_CAL,object.getZMedian(false,false)));
                 }
             }
         }
@@ -116,12 +110,18 @@ public class MeasureObjectCentroid extends HCModule {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z_SLICE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z_SLICE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z_CAL));
 
     }
 
@@ -139,34 +139,65 @@ public class MeasureObjectCentroid extends HCModule {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference meanX = objectMeasurementReferences.get(Measurements.MEAN_X);
-        MeasurementReference meanY = objectMeasurementReferences.get(Measurements.MEAN_Y);
-        MeasurementReference meanZ = objectMeasurementReferences.get(Measurements.MEAN_Z);
-        MeasurementReference medianX = objectMeasurementReferences.get(Measurements.MEDIAN_X);
-        MeasurementReference medianY = objectMeasurementReferences.get(Measurements.MEDIAN_Y);
-        MeasurementReference medianZ = objectMeasurementReferences.get(Measurements.MEDIAN_Z);
+        MeasurementReference meanXPx = objectMeasurementReferences.get(Measurements.MEAN_X_PX);
+        MeasurementReference meanYPx = objectMeasurementReferences.get(Measurements.MEAN_Y_PX);
+        MeasurementReference meanZSlice = objectMeasurementReferences.get(Measurements.MEAN_Z_SLICE);
+        MeasurementReference meanXCal = objectMeasurementReferences.get(Measurements.MEAN_X_CAL);
+        MeasurementReference meanYCal = objectMeasurementReferences.get(Measurements.MEAN_Y_CAL);
+        MeasurementReference meanZCal = objectMeasurementReferences.get(Measurements.MEAN_Z_CAL);
+        MeasurementReference medianXPx = objectMeasurementReferences.get(Measurements.MEDIAN_X_PX);
+        MeasurementReference medianYPx = objectMeasurementReferences.get(Measurements.MEDIAN_Y_PX);
+        MeasurementReference medianZSlice = objectMeasurementReferences.get(Measurements.MEDIAN_Z_SLICE);
+        MeasurementReference medianXCal = objectMeasurementReferences.get(Measurements.MEDIAN_X_CAL);
+        MeasurementReference medianYCal = objectMeasurementReferences.get(Measurements.MEDIAN_Y_CAL);
+        MeasurementReference medianZCal = objectMeasurementReferences.get(Measurements.MEDIAN_Z_CAL);
+
+        meanXPx.setImageObjName(inputObjectsName);
+        meanYPx.setImageObjName(inputObjectsName);
+        meanZSlice.setImageObjName(inputObjectsName);
+        meanXCal.setImageObjName(inputObjectsName);
+        meanYCal.setImageObjName(inputObjectsName);
+        meanZCal.setImageObjName(inputObjectsName);
+        medianXPx.setImageObjName(inputObjectsName);
+        medianYPx.setImageObjName(inputObjectsName);
+        medianZSlice.setImageObjName(inputObjectsName);
+        medianXCal.setImageObjName(inputObjectsName);
+        medianYCal.setImageObjName(inputObjectsName);
+        medianZCal.setImageObjName(inputObjectsName);
 
         String choice = parameters.getValue(CENTROID_METHOD);
         boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
         boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
 
-        meanX.setCalculated(false);
-        meanY.setCalculated(false);
-        meanZ.setCalculated(false);
-        medianX.setCalculated(false);
-        medianY.setCalculated(false);
-        medianZ.setCalculated(false);
+        meanXPx.setCalculated(false);
+        meanYPx.setCalculated(false);
+        meanZSlice.setCalculated(false);
+        meanXCal.setCalculated(false);
+        meanYCal.setCalculated(false);
+        meanZCal.setCalculated(false);
+        medianXPx.setCalculated(false);
+        medianYPx.setCalculated(false);
+        medianZSlice.setCalculated(false);
+        medianXCal.setCalculated(false);
+        medianYCal.setCalculated(false);
+        medianZCal.setCalculated(false);
 
         if (useMean) {
-            meanX.setCalculated(true);
-            meanY.setCalculated(true);
-            meanZ.setCalculated(true);
+            meanXPx.setCalculated(true);
+            meanYPx.setCalculated(true);
+            meanZSlice.setCalculated(true);
+            meanXCal.setCalculated(true);
+            meanYCal.setCalculated(true);
+            meanZCal.setCalculated(true);
         }
 
         if (useMedian) {
-            medianX.setCalculated(true);
-            medianY.setCalculated(true);
-            medianZ.setCalculated(true);
+            medianXPx.setCalculated(true);
+            medianYPx.setCalculated(true);
+            medianZSlice.setCalculated(true);
+            medianXCal.setCalculated(true);
+            medianYCal.setCalculated(true);
+            medianZCal.setCalculated(true);
         }
 
         return objectMeasurementReferences;
