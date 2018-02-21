@@ -2,13 +2,12 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.Object.ExpectedObjects2D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects2D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 import wbif.sjx.common.Object.Point;
 
-import java.util.HashMap;
 import java.util.TreeSet;
 
 import static org.junit.Assert.*;
