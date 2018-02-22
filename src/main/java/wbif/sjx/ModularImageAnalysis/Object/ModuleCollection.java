@@ -1,25 +1,24 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class ModuleCollection extends ArrayList<HCModule> implements Serializable {
+public class ModuleCollection extends ArrayList<Module> implements Serializable {
     public MeasurementReferenceCollection getImageReferences(String imageName) {
         return getImageReferences(imageName,null);
     }
 
-    public MeasurementReferenceCollection getImageReferences(String imageName, HCModule cutoffModule) {
+    public MeasurementReferenceCollection getImageReferences(String imageName, Module cutoffModule) {
         MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
 
         // Iterating over all modules, collecting any measurements for the current image
-        for (HCModule module:this) {
+        for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
             MeasurementReferenceCollection currentMeasurementReferences = module.updateAndGetImageMeasurementReferences();
@@ -43,11 +42,11 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
 
     }
 
-    public MeasurementReferenceCollection getObjectReferences(String objectName, HCModule cutoffModule) {
+    public MeasurementReferenceCollection getObjectReferences(String objectName, Module cutoffModule) {
         MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
 
         // Iterating over all modules, collecting any measurements for the current objects
-        for (HCModule module:this) {
+        for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
             MeasurementReferenceCollection currentMeasurementReferences =
@@ -70,10 +69,10 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
 //        return getImageReferences(null);
 //    }
 //
-//    public LinkedHashMap<String,ImageObjReference> getImageReferences(HCModule cutoffModule) {
+//    public LinkedHashMap<String,ImageObjReference> getImageReferences(Module cutoffModule) {
 //        LinkedHashMap<String,ImageObjReference> superReferences = new LinkedHashMap<>();
 //
-//        for (HCModule module:this) {
+//        for (Module module:this) {
 //            if (module == cutoffModule) break;
 //            if (!module.isEnabled()) continue;
 //
@@ -97,10 +96,10 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
 //        return getObjectReferences(null);
 //    }
 //
-//    public LinkedHashMap<String,ImageObjReference> getObjectReferences(HCModule cutoffModule) {
+//    public LinkedHashMap<String,ImageObjReference> getObjectReferences(Module cutoffModule) {
 //        LinkedHashMap<String,ImageObjReference> superReferences = new LinkedHashMap<>();
 //
-//        for (HCModule module:this) {
+//        for (Module module:this) {
 //            if (module == cutoffModule) break;
 //            if (!module.isEnabled()) continue;
 //
@@ -126,10 +125,10 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
      * @param cutoffModule
      * @return
      */
-    public LinkedHashSet<Parameter> getParametersMatchingType(int type, HCModule cutoffModule) {
+    public LinkedHashSet<Parameter> getParametersMatchingType(int type, Module cutoffModule) {
         LinkedHashSet<Parameter> parameters = new LinkedHashSet<>();
 
-        for (HCModule module:this) {
+        for (Module module:this) {
             // If this module isn't enabled, skip it
             if (!module.isEnabled()) continue;
 
@@ -159,10 +158,10 @@ public class ModuleCollection extends ArrayList<HCModule> implements Serializabl
 
     }
 
-    public RelationshipCollection getRelationships(HCModule cutoffModule) {
+    public RelationshipCollection getRelationships(Module cutoffModule) {
         RelationshipCollection relationships = new RelationshipCollection();
 
-        for (HCModule module:this) {
+        for (Module module:this) {
             if (module == cutoffModule) {
                 break;
             }

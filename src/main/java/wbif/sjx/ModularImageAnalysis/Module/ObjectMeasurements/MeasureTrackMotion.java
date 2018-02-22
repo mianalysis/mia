@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Track;
 
@@ -9,7 +9,7 @@ import java.util.TreeMap;
 /**
  * Created by steph on 24/05/2017.
  */
-public class MeasureTrackMotion extends HCModule {
+public class MeasureTrackMotion extends Module {
     public static final String INPUT_TRACK_OBJECTS = "Input track objects";
     public static final String INPUT_SPOT_OBJECTS = "Input spot objects";
 

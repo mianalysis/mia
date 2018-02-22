@@ -1,13 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by sc13967 on 07/02/2018.
  */
-public class RemoveObjects extends HCModule {
+public class RemoveObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
     @Override

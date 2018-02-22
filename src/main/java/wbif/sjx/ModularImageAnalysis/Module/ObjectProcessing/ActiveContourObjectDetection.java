@@ -5,7 +5,7 @@ import ij.gui.Roi;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 /**
  * Created by sc13967 on 16/01/2018.
  */
-public class ActiveContourObjectDetection extends HCModule {
+public class ActiveContourObjectDetection extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";

@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,9 +12,9 @@ import java.awt.event.ActionListener;
  */
 public class ModuleEnabledCheck extends JCheckBox implements ActionListener {
     private GUI gui;
-    private HCModule module;
+    private Module module;
 
-    public ModuleEnabledCheck(GUI gui, HCModule module) {
+    public ModuleEnabledCheck(GUI gui, Module module) {
         this.gui = gui;
         this.module = module;
 
@@ -25,7 +25,7 @@ public class ModuleEnabledCheck extends JCheckBox implements ActionListener {
 
     }
 
-    public HCModule getModule() {
+    public Module getModule() {
         return module;
     }
 

@@ -5,19 +5,18 @@ import ij.plugin.Duplicator;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
 
-import java.awt.*;
 import java.util.HashMap;
 
 /**
  * Created by Stephen on 17/11/2017.
  */
-public class MeasureIntensityDistribution extends HCModule {
+public class MeasureIntensityDistribution extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String MEASUREMENT_TYPE = "Measurement type";
     public static final String INPUT_OBJECTS = "Input objects";

@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ import java.io.File;
  */
 public class FileParameter extends JButton implements ActionListener {
     private GUI gui;
-    private HCModule module;
+    private Module module;
     private Parameter parameter;
     private String fileType = FileTypes.EITHER_TYPE;
 
@@ -26,7 +26,7 @@ public class FileParameter extends JButton implements ActionListener {
 
     }
 
-    public FileParameter(GUI gui, HCModule module, Parameter parameter, String fileType) {
+    public FileParameter(GUI gui, Module module, Parameter parameter, String fileType) {
         this.gui = gui;
         this.module = module;
         this.parameter = parameter;
@@ -39,7 +39,7 @@ public class FileParameter extends JButton implements ActionListener {
 
     }
 
-    public HCModule getModule() {
+    public Module getModule() {
         return module;
     }
 

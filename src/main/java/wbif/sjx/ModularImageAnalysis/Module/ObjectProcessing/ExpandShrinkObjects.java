@@ -3,18 +3,17 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 import ij.ImagePlus;
 import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
-import java.awt.*;
 import java.util.HashMap;
 
 /**
  * Created by sc13967 on 16/01/2018.
  */
-public class ExpandShrinkObjects extends HCModule {
+public class ExpandShrinkObjects extends Module {
     public static final String INPUT_IMAGE = "Template image (sets object limits)";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";

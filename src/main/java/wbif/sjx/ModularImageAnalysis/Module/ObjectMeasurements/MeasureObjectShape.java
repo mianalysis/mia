@@ -1,19 +1,18 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ProjectObjects;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 /**
  * Created by sc13967 on 29/06/2017.
  */
-public class MeasureObjectShape extends HCModule {
+public class MeasureObjectShape extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
 
     public interface Measurements {

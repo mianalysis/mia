@@ -3,10 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import ij.process.LUT;
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowImage;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -16,7 +14,7 @@ import java.io.File;
 /**
  * Created by sc13967 on 26/06/2017.
  */
-public class ImageSaver extends HCModule {
+public class ImageSaver extends Module {
     public static final String SAVE_IMAGE = "Save image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String SAVE_LOCATION = "Save location";

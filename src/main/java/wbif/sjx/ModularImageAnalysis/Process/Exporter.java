@@ -3,8 +3,6 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -13,7 +11,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
@@ -25,14 +23,11 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -202,7 +197,7 @@ public class Exporter {
         Element modulesElement =  doc.createElement("MODULES");
 
         // Running through each parameter set (one for each module
-        for (HCModule module:modules) {
+        for (Module module:modules) {
             Element moduleElement =  doc.createElement("MODULE");
             Attr nameAttr = doc.createAttribute("NAME");
             nameAttr.appendChild(doc.createTextNode(module.getClass().getName()));
@@ -243,7 +238,7 @@ public class Exporter {
 
     }
 
-    public static Element prepareParametersXML(Document doc, HCModule module) {
+    public static Element prepareParametersXML(Document doc, Module module) {
         // Adding parameters from this module
         Element parametersElement = doc.createElement("PARAMETERS");
 
@@ -359,7 +354,7 @@ public class Exporter {
         moduleValueCell.setCellValue("");
 
         // Adding a new parameter to each row
-        for (HCModule module:modules) {
+        for (Module module:modules) {
             LinkedHashMap<String,Parameter> parameters = module.updateAndGetParameters();
 
             paramRow++;

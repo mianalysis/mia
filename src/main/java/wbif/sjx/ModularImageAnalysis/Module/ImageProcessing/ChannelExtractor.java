@@ -3,13 +3,13 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.Duplicator;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by sc13967 on 08/05/2017.
  */
-public class ChannelExtractor extends HCModule {
+public class ChannelExtractor extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract (>= 1)";

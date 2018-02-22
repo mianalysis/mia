@@ -11,14 +11,13 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.NormaliseIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Process.IntensityMinMax;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -26,7 +25,7 @@ import java.util.Set;
 /**
  * Created by sc13967 on 15/05/2017.
  */
-public class RunTrackMate extends HCModule {
+public class RunTrackMate extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_SPOT_OBJECTS = "Output spot objects";
     public static final String CALIBRATED_UNITS = "Calibrated radius";

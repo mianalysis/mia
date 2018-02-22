@@ -2,7 +2,7 @@
 
 //package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 //
-//import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+//import wbif.sjx.ModularImageAnalysis.Module.Module;
 //import wbif.sjx.ModularImageAnalysis.Object.*;
 //import wbif.sjx.common.MathFunc.CumStat;
 //
@@ -13,7 +13,7 @@
 // * Runs through all the different children HCObjectSets assigned to an object and calculates statistics for all
 // * measurements.  Eventually it would be good to offer the option which statistics will be processed.
 // */
-//public class CalculateStatsForChildren extends HCModule {
+//public class CalculateStatsForChildren extends Module {
 //    public static final String PARENT_OBJECTS = "Parent objects";
 //    public static final String CHILD_OBJECTS = "Child objects";
 //    public static final String CALCULATE_MEAN = "Calculate mean";

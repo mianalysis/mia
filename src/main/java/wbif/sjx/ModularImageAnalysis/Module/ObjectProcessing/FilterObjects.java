@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 /**
  * Created by sc13967 on 23/05/2017.
  */
-public class FilterObjects extends HCModule {
+public class FilterObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String REFERENCE_IMAGE = "Reference image";

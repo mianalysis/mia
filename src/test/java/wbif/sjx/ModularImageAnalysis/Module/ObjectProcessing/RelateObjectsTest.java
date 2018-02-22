@@ -266,7 +266,7 @@ public class RelateObjectsTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testProximitySurfaceLink() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -296,39 +296,32 @@ public class RelateObjectsTest {
         // Running RelateObjects
         relateObjects.run(workspace,false);
 
-        // Getting expected values
-        HashMap<Integer, HashMap<String, Double>> expectedValues = new ExpectedProxCubes1().getMeasurements();
-
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {
-            System.out.println(proxObj1Obj.getID());
-            // Getting expected values for this object
-            HashMap<String, Double> currExpectedValues = expectedValues.get(proxObj1Obj.getPoints().size());
-
             // Checking the object has no children
             LinkedHashMap<String, ObjCollection> children = proxObj1Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the parent ID is the one expected
             Obj parentObj = proxObj1Obj.getParent(proxObj2Name);
-            double expectedParentID = currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_ID.name());
+            double expectedParentID = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_ID.name()).getValue();
             int actualParentID = parentObj.getID();
             assertEquals(expectedParentID, actualParentID, tolerance);
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX.name());
+            double expectedSurfDistPx = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX.name()).getValue();
             double actualSurfDistPx = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_PX).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
-            double expectedSurfDistCal = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL.name());
+            double expectedSurfDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL.name()).getValue();
             double actualSurfDistCal = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_CAL).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 
         }
     }
 
-    @Test @Ignore
-    public void testProximitySurfaceLink3px() throws Exception {
+    @Test
+    public void testProximitySurfaceLink5px() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
 
@@ -352,35 +345,33 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
         relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
-        relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,3.0);
+        relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,5.0);
 
         // Running RelateObjects
         relateObjects.run(workspace,false);
 
-        // Getting expected values
-        HashMap<Integer, HashMap<String, Double>> expectedValues = new ExpectedProxCubes1().getMeasurements();
-
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {
-            // Getting expected values for this object
-            HashMap<String, Double> currExpectedValues = expectedValues.get(proxObj1Obj.getPoints().size());
-
             // Checking the object has no children
             LinkedHashMap<String, ObjCollection> children = proxObj1Obj.getChildren();
             assertEquals(0, children.size());
 
             // Checking the parent ID is the one expected
             Obj parentObj = proxObj1Obj.getParent(proxObj2Name);
-            double expectedParentID = currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_ID.name());
-            int actualParentID = parentObj.getID();
-            assertEquals(expectedParentID, actualParentID, tolerance);
+            double expectedParentID = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_ID_5PX.name()).getValue();
+            if (Double.isNaN(expectedParentID)) {
+                assertNull(parentObj);
+            } else {
+                int actualParentID = parentObj.getID();
+                assertEquals(expectedParentID, actualParentID, tolerance);
+            }
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX.name());
+            double expectedSurfDistPx = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX_5PX.name()).getValue();
             double actualSurfDistPx = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_PX).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
-            double expectedSurfDistCal = (double) currExpectedValues.get(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL.name());
+            double expectedSurfDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL_5PX.name()).getValue();
             double actualSurfDistCal = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_CAL).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 

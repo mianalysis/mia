@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
@@ -13,10 +13,10 @@ import java.awt.event.FocusListener;
  */
 public class TextParameter extends JTextField implements FocusListener {
     private GUI gui;
-    private HCModule module;
+    private Module module;
     private Parameter parameter;
 
-    public TextParameter(GUI gui, HCModule module, Parameter parameter) {
+    public TextParameter(GUI gui, Module module, Parameter parameter) {
         this.gui = gui;
         this.module = module;
         this.parameter = parameter;
@@ -27,7 +27,7 @@ public class TextParameter extends JTextField implements FocusListener {
 
     }
 
-    public HCModule getModule() {
+    public Module getModule() {
         return module;
     }
 

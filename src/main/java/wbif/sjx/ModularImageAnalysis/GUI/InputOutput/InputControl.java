@@ -1,13 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by steph on 29/07/2017.
  */
-public class InputControl extends HCModule {
+public class InputControl extends Module {
     public static final String INPUT_MODE = "Input mode";
     public static final String SINGLE_FILE_PATH = "Single file path";
     public static final String BATCH_FOLDER_PATH = "Batch folder path";

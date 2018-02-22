@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,12 +12,12 @@ import java.awt.event.ActionListener;
  */
 public class ModuleButton extends JToggleButton implements ActionListener {
     private GUI gui;
-    private HCModule module;
+    private Module module;
 
 
     // CONSTRUCTOR
 
-    public ModuleButton(GUI gui, HCModule module) {
+    public ModuleButton(GUI gui, Module module) {
         this.gui = gui;
         this.module = module;
         setFocusPainted(false);
@@ -30,7 +30,7 @@ public class ModuleButton extends JToggleButton implements ActionListener {
 
     // GETTERS
 
-    public HCModule getModule() {
+    public Module getModule() {
         return module;
     }
 

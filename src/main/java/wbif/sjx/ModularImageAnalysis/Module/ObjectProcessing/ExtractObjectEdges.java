@@ -5,7 +5,7 @@ import ij.ImagePlus;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by sc13967 on 01/08/2017.
  */
-public class ExtractObjectEdges extends HCModule {
+public class ExtractObjectEdges extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CREATE_EDGE_OBJECTS = "Create edge objects";
     public static final String OUTPUT_EDGE_OBJECTS = "Output edge objects";
