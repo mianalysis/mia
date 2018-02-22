@@ -79,7 +79,7 @@ public class ObjectImageConverter extends Module {
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
 
-            HashMap<Obj, Float> hues = inputObjects.getHue(colourMode, measurementForColour, parentForColour,false);
+            HashMap<Integer, Float> hues = inputObjects.getHue(colourMode, measurementForColour, parentForColour,false);
             Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage.getImagePlus(), colourMode,hues,hideMissing);
 
             // Applying spatial calibration from template image

@@ -57,7 +57,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
-                                     String[] posMeasurements,HashMap<Obj,Float> colours, HashMap<Obj,String> IDs,
+                                     String[] posMeasurements,HashMap<Integer,Float> colours, HashMap<Integer,String> IDs,
                                      int labelSize) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -73,7 +73,7 @@ public class AddObjectsOverlay extends Module {
 
         // Running through each object, adding it to the overlay along with an ID label
         for (Obj object:inputObjects.values()) {
-            Color colour = Color.getHSBColor(colours.get(object),1,1);
+            Color colour = Color.getHSBColor(colours.get(object.getID()),1,1);
 
             double xMean = 0;
             double yMean = 0;
@@ -99,11 +99,9 @@ public class AddObjectsOverlay extends Module {
                         roi.setPointType(PointRoi.NORMAL);
 
                         if (ipl.isHyperStack()) {
-                            ipl.setPosition(1, (int) zz[i], t);
                             roi.setPosition(1, (int) zz[i], t);
                         } else {
                             int pos = Math.max(Math.max(1,(int) zz[i]),t);
-                            ipl.setPosition(pos);
                             roi.setPosition(pos);
                         }
                         roi.setStrokeColor(colour);
@@ -125,11 +123,9 @@ public class AddObjectsOverlay extends Module {
                     PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
                     pointRoi.setPointType(PointRoi.NORMAL);
                     if (ipl.isHyperStack()) {
-                        ipl.setPosition(1, z, t);
                         pointRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-                        ipl.setPosition(pos);
                         pointRoi.setPosition(pos);
                     }
                     pointRoi.setStrokeColor(colour);
@@ -149,11 +145,9 @@ public class AddObjectsOverlay extends Module {
 
                     Roi polyRoi = object.getRoi(ipl);
                     if (ipl.isHyperStack()) {
-//                        ipl.setPosition(1, z, t);
                         polyRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-//                        ipl.setPosition(pos);
                         polyRoi.setPosition(pos);
                     }
                     polyRoi.setStrokeColor(colour);
@@ -174,11 +168,9 @@ public class AddObjectsOverlay extends Module {
                     pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
                     pointRoi.setPointType(PointRoi.NORMAL);
                     if (ipl.isHyperStack()) {
-                        ipl.setPosition(1, z, t);
                         pointRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-                        ipl.setPosition(pos);
                         pointRoi.setPosition(pos);
                     }
                     pointRoi.setStrokeColor(colour);
@@ -190,7 +182,7 @@ public class AddObjectsOverlay extends Module {
 
             if (IDs != null) {
                 // Adding text label
-                TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, IDs.get(object));
+                TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, IDs.get(object.getID()));
                 text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
                 if (ipl.isHyperStack()) {
                     text.setPosition(1, z, t);
@@ -204,7 +196,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Obj,Float> hues) {
+    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Integer,Float> hues) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -297,8 +289,8 @@ public class AddObjectsOverlay extends Module {
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Obj,Float> hues = inputObjects.getHue(colourMode,measurementForColour,parentObjectsForColourName,true);
-        HashMap<Obj,String> IDs;
+        HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,measurementForColour,parentObjectsForColourName,true);
+        HashMap<Integer,String> IDs;
         if (showID) {
             IDs = inputObjects.getIDs(labelMode,measurementForID,parentObjectsForIDName,decimalPlaces);
         } else {

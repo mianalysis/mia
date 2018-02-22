@@ -15,7 +15,8 @@ public class ExpectedObjects3D extends ExpectedObjects {
         EXP_I_MAX_32BIT, EXP_I_STD_32BIT, EXP_I_SUM_32BIT, EXP_SPOT_ID_X, EXP_SPOT_ID_Y, EXP_SPOT_ID_Z,
         EXP_SPOT_PROX_CENT_X, EXP_SPOT_PROX_CENT_Y, EXP_SPOT_PROX_CENT_Z, EXP_SPOT_PROX_CENT_DIST,
         EXP_SPOT_PROX_CENT_20PX_X, EXP_SPOT_PROX_CENT_20PX_Y, EXP_SPOT_PROX_CENT_20PX_Z, EXP_SPOT_PROX_CENT_20PX_DIST,
-        EXP_PROJ_DIA_PX, EXP_PROJ_DIA_CAL, EXP_BIN_N_VOXELS_4BINS
+        EXP_PROJ_DIA_PX, EXP_PROJ_DIA_CAL, EXP_BIN_N_VOXELS_4BINS_INRANGE, EXP_BIN_N_VOXELS_4BINS_SHORTRANGE,
+        EXP_BIN_N_VOXELS_4BINS_HIGHRANGE
     }
 
     public HashMap<Integer,HashMap<String,Double>> getMeasurements() {
@@ -60,7 +61,9 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),1d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),15.2971d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.3059d);
-        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS.name(),300d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name(),300d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name(),200d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name(),150d);
         expectedValues.put(3,obj);
 
         obj = new HashMap<>();
@@ -102,7 +105,9 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),1d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),0d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0d);
-        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name(),200d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name(),0d);
         expectedValues.put(4,obj);
 
         obj = new HashMap<>();
@@ -144,7 +149,9 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),0d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),18.3848d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.3677d);
-        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS.name(),700d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name(),700d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name(),800d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name(),150d);
         expectedValues.put(7,obj);
 
         obj = new HashMap<>();
@@ -186,7 +193,9 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),2d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),13.1529d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.2631d);
-        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name(),200d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name(),100d);
         expectedValues.put(8,obj);
 
         obj = new HashMap<>();
@@ -228,7 +237,9 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),5d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),2.8284d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.0566d);
-        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name(),200d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name(),0d);
         expectedValues.put(9,obj);
 
         obj = new HashMap<>();
@@ -270,7 +281,9 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),3d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),14.4222d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.2884d);
-        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS.name(),300d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name(),300d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name(),400d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name(),150d);
         expectedValues.put(13,obj);
 
         obj = new HashMap<>();
@@ -312,7 +325,9 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),2d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),9.2195d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0.1844d);
-        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name(),200d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name(),0d);
         expectedValues.put(20,obj);
 
         obj = new HashMap<>();
@@ -354,7 +369,9 @@ public class ExpectedObjects3D extends ExpectedObjects {
         obj.put(Measures.EXP_SPOT_ID_Z.name(),7d);
         obj.put(Measures.EXP_PROJ_DIA_PX.name(),0d);
         obj.put(Measures.EXP_PROJ_DIA_CAL.name(),0d);
-        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name(),100d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name(),200d);
+        obj.put(Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name(),0d);
         expectedValues.put(23,obj);
 
         return expectedValues;

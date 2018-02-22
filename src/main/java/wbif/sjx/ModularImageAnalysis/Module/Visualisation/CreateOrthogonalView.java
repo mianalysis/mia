@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
+import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
 import net.imglib2.*;
 import net.imglib2.img.Img;
@@ -14,6 +16,7 @@ import net.imglib2.view.*;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 05/02/2018.
@@ -23,6 +26,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String POSITION_MODE = "Position mode";
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String SHOW_IMAGE = "Show image";
 
 
     interface PositionModes{
@@ -55,6 +59,8 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String positionMode = parameters.getValue(POSITION_MODE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
+        Img< T > orthoImg = null;
 
         switch (positionMode) {
             case PositionModes.INTENSITY_PROJECTION:
@@ -100,7 +106,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
                 // Creating a single image, large enough to hold all images
                 final ImgFactory< T > factory = new ArrayImgFactory< T >();
                 final long[] dimensions = new long[] { dimX+dimZScaled+border, dimY+dimZScaled+border};
-                final Img< T > orthoImg = factory.create( dimensions, viewXY.firstElement() );
+                orthoImg = factory.create( dimensions, viewXY.firstElement() );
                 Cursor<T> cursorOrtho = orthoImg.cursor();
                 double white = orthoImg.firstElement().getMaxValue();
                 while (cursorOrtho.hasNext()) cursorOrtho.next().setReal(white);
@@ -117,13 +123,21 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
 
                 // Adding YZ view
                 Cursor<T> cursorYZ = viewYZ.cursor();
-//                Cursor<T> cursorOrthoYZ = Views.invertAxis(Views.rotate(Views.offsetInterval(orthoImg,new long[]{dimX+border,0},new long[]{dimZScaled,dimY}),0,1),0).cursor();
                 Cursor<T> cursorOrthoYZ = Views.permute(Views.offsetInterval(orthoImg,new long[]{dimX+border,0},new long[]{dimZScaled,dimY}),0,1).cursor();
                 while (cursorYZ.hasNext()) cursorOrthoYZ.next().set(cursorYZ.next());
-                ImageJFunctions.show(orthoImg);
 
                 break;
 
+        }
+
+        // Adding image to workspace
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(orthoImg,outputImageName);
+        Image outputImage = new Image(outputImageName,outputImagePlus);
+        workspace.addImage(outputImage);
+
+        // Displaying the image
+        if (parameters.getValue(SHOW_IMAGE)) {
+            ImageJFunctions.show(orthoImg);
         }
     }
 
@@ -133,6 +147,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(POSITION_MODE,Parameter.CHOICE_ARRAY,PositionModes.INTENSITY_PROJECTION,PositionModes.ALL));
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
     }
 

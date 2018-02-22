@@ -49,7 +49,7 @@ public class ObjectImageConverterTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
 
         // Converting objects to image
-        HashMap<Obj,Float> hues = testObjects.getHue(colourMode,"","",false);
+        HashMap<Integer,Float> hues = testObjects.getHue(colourMode,"","",false);
         Image testImage = testObjects.convertObjectsToImage("Test image",ipl,colourMode,hues,false);
 
         // Testing the resultant image is the expected size
@@ -101,7 +101,7 @@ public class ObjectImageConverterTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
 
         // Converting objects to image
-        HashMap<Obj,Float> hues = testObjects.getHue(colourMode,"","",false);
+        HashMap<Integer,Float> hues = testObjects.getHue(colourMode,"","",false);
         Image testImage = testObjects.convertObjectsToImage("Test image",ipl,colourMode,hues,false);
 
         // Testing the resultant image is the expected size

@@ -36,11 +36,24 @@ public class BinObjectsByMeasurement extends Module {
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting parameters
-        String measurement = parameters.getValue(MEASUREMENT);
+        String measurementName = parameters.getValue(MEASUREMENT);
         double smallestBin = parameters.getValue(SMALLEST_BIN_CENTRE);
         double largestBin = parameters.getValue(LARGEST_BIN_CENTRE);
         int numberOfBins = parameters.getValue(NUMBER_OF_BINS);
 
+        double binWidth = (largestBin-smallestBin)/(numberOfBins-1);
+
+        for (Obj inputObject:inputObjects.values()) {
+            double measurement = inputObject.getMeasurement(measurementName).getValue();
+            double bin = Math.round((measurement-smallestBin)/binWidth)*binWidth+smallestBin;
+
+            // Ensuring the bin is within the specified range
+            bin = Math.min(bin,largestBin);
+            bin = Math.max(bin,smallestBin);
+
+            inputObject.addMeasurement(new Measurement(getFullName(measurementName),bin));
+
+        }
     }
 
     @Override
@@ -60,6 +73,9 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        parameters.updateValueSource(MEASUREMENT,inputObjectsName);
+
         return parameters;
     }
 

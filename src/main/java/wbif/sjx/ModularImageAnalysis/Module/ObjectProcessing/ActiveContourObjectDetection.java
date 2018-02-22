@@ -166,10 +166,10 @@ public class ActiveContourObjectDetection extends Module {
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
 
             if (updateInputObjects) {
-                HashMap<Obj,Float> hues = inputObjects.getHue(colourMode,"","",true);
+                HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,"","",true);
                 AddObjectsOverlay.createOverlay(dispIpl,inputObjects,positionMode,null,hues,null,8);
             } else {
-                HashMap<Obj,Float> hues = outputObjects.getHue(colourMode,"","",true);
+                HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"","",true);
                 AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,hues,null,8);
             }
 
