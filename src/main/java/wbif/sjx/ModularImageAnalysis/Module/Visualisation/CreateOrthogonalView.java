@@ -104,7 +104,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
                 viewYZ = Views.interval(RealViews.affine(interpYZ, affine2D),intervalYZ);
 
                 // Creating a single image, large enough to hold all images
-                final ImgFactory< T > factory = new ArrayImgFactory< T >();
+                final ImgFactory< T > factory = new ArrayImgFactory<>();
                 final long[] dimensions = new long[] { dimX+dimZScaled+border, dimY+dimZScaled+border};
                 orthoImg = factory.create( dimensions, viewXY.firstElement() );
                 Cursor<T> cursorOrtho = orthoImg.cursor();
