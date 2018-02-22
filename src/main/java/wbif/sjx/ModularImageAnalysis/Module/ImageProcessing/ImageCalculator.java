@@ -5,13 +5,13 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by sc13967 on 19/09/2017.
  */
-public class ImageCalculator extends HCModule {
+public class ImageCalculator extends Module {
     public static final String INPUT_IMAGE1 = "Input image 1";
     public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OVERWRITE_MODE = "Overwrite mode";

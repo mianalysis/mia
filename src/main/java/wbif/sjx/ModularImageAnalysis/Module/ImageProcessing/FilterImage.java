@@ -9,10 +9,8 @@ import ij.ImagePlus;
 import ij.plugin.*;
 import ij.plugin.filter.RankFilters;
 import inra.ijpb.morphology.Morphology;
-import inra.ijpb.morphology.strel.BallStrel;
 import inra.ijpb.morphology.strel.DiskStrel;
-import inra.ijpb.plugins.MorphologicalFilterPlugin;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
 import wbif.sjx.common.Filters.RidgeEnhancement;
@@ -22,7 +20,7 @@ import wbif.sjx.common.Process.IntensityMinMax;
 /**
  * Created by sc13967 on 30/05/2017.
  */
-public class FilterImage extends HCModule {
+public class FilterImage extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";

@@ -1,19 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.RelateObjects;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.Indexer;
-import wbif.sjx.common.Object.Point;
-
-import java.util.HashSet;
 
 /**
  * Created by sc13967 on 07/02/2018.
  */
-public class MeasureObjectOverlap extends HCModule {
+public class MeasureObjectOverlap extends Module {
     public final static String OBJECT_SET_1 = "Object set 1";
     public final static String OBJECT_SET_2 = "Object set 2";
 

@@ -9,7 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
@@ -98,7 +98,7 @@ public class AnalysisHandler {
                 NamedNodeMap moduleAttributes = moduleNode.getAttributes();
                 String moduleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
                 Class<?> clazz = Class.forName(moduleName);
-                HCModule module = (HCModule) clazz.newInstance();
+                Module module = (Module) clazz.newInstance();
 
                 // If the module is an input or output control, treat it differently
                 if (module.getClass().isInstance(new InputControl())) {
@@ -208,7 +208,7 @@ public class AnalysisHandler {
 
     }
 
-    private void populateModuleParameters(Node moduleNode, HCModule module) {
+    private void populateModuleParameters(Node moduleNode, Module module) {
         NodeList parameterNodes = moduleNode.getChildNodes();
 //        System.out.println(module.getTitle()+"_"+parameterNodes.getLength()+parameterNodes.item(0).getNodeValue()+"_"+parameterNodes.item(1).getNodeValue()+"_"+parameterNodes.item(2).getNodeValue()+"_"+parameterNodes.item(3).getNodeValue()+"_"+parameterNodes.item(4).getNodeValue());
         for (int j = 0; j < parameterNodes.getLength(); j++) {
@@ -266,7 +266,7 @@ public class AnalysisHandler {
         }
     }
 
-    private void populateModuleMeasurementReferences(Node moduleNode, HCModule module) {
+    private void populateModuleMeasurementReferences(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type

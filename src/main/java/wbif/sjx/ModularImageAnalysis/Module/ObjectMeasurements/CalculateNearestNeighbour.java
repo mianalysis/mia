@@ -1,12 +1,12 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by sc13967 on 22/06/2017.
  */
-public class CalculateNearestNeighbour extends HCModule {
+public class CalculateNearestNeighbour extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
     public static final String PARENT_OBJECTS = "Parent objects";

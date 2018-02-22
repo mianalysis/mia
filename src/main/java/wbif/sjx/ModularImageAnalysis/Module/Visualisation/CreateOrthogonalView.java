@@ -1,9 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import ij.ImagePlus;
-import ij.measure.Calibration;
 import net.imagej.ImgPlus;
-import net.imagej.ImgPlusMetadata;
 import net.imglib2.*;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -15,13 +12,13 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.*;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by sc13967 on 05/02/2018.
  */
-public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> extends HCModule {
+public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String POSITION_MODE = "Position mode";

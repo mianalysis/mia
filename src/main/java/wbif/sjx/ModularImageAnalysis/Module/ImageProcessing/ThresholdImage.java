@@ -6,14 +6,14 @@ import fiji.threshold.Auto_Local_Threshold;
 import fiji.threshold.Auto_Threshold;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
 
 /**
  * Created by sc13967 on 06/06/2017.
  */
-public class ThresholdImage extends HCModule {
+public class ThresholdImage extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";

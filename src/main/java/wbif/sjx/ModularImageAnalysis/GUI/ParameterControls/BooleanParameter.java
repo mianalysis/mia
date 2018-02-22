@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
@@ -13,10 +13,10 @@ import java.awt.event.ActionListener;
  */
 public class BooleanParameter extends JCheckBox implements ActionListener {
     private GUI gui;
-    private HCModule module;
+    private Module module;
     private Parameter parameter;
 
-    public BooleanParameter(GUI gui, HCModule module, Parameter parameter) {
+    public BooleanParameter(GUI gui, Module module, Parameter parameter) {
         this.gui = gui;
         this.module = module;
         this.parameter = parameter;
@@ -26,7 +26,7 @@ public class BooleanParameter extends JCheckBox implements ActionListener {
 
     }
 
-    public HCModule getModule() {
+    public Module getModule() {
         return module;
     }
 

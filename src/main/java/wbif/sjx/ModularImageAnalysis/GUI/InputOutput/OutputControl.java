@@ -1,13 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by steph on 29/07/2017.
  */
-public class OutputControl extends HCModule {
+public class OutputControl extends Module {
     public static final String EXPORT_XLSX = "Export results to Excel file";
     public static final String EXPORT_SUMMARY = "Export summary";
     public static final String SUMMARY_TYPE = "Summary type";

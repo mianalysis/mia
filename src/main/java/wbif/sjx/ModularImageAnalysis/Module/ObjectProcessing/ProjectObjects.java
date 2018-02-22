@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 
@@ -10,7 +10,7 @@ import java.util.HashMap;
 /**
  * Projects xy coordinates into a single plane.  Duplicates of xy coordinates at different heights are removed.
  */
-public class ProjectObjects extends HCModule {
+public class ProjectObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 

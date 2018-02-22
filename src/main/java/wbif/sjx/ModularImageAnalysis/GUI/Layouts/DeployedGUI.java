@@ -6,7 +6,7 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.OutputStreamTextField;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.StatusTextField;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
@@ -181,7 +181,7 @@ public class DeployedGUI extends GUI implements ActionListener {
 
         // Adding module buttons
         ModuleCollection modules = analysis.getModules();
-        for (HCModule module : modules) {
+        for (Module module : modules) {
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
             c.gridy++;

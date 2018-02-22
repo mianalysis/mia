@@ -7,7 +7,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import org.apache.commons.math3.ml.clustering.*;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by sc13967 on 21/06/2017.
  */
-public class ObjectClusterer extends HCModule {
+public class ObjectClusterer extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CLUSTER_OBJECTS = "Cluster (parent) objects";
     public static final String CLUSTERING_ALGORITHM = "Clustering algorithm";

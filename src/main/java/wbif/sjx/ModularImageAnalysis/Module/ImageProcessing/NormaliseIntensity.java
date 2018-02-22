@@ -4,13 +4,13 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageStatistics;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by sc13967 on 10/08/2017.
  */
-public class NormaliseIntensity extends HCModule {
+public class NormaliseIntensity extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";

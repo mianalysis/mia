@@ -2,7 +2,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by sc13967 on 11/05/2017.
  */
-public class MeasureObjectCentroid extends HCModule {
+public class MeasureObjectCentroid extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CENTROID_METHOD = "Centroid method";
 

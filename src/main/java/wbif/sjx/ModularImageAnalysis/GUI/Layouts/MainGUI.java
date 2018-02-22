@@ -523,7 +523,7 @@ public class MainGUI extends GUI {
         // Adding module buttons
         ModuleCollection modules = getModules();
         for (int i=0;i<modules.size();i++) {
-            HCModule module = modules.get(i);
+            Module module = modules.get(i);
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
 
@@ -731,7 +731,7 @@ public class MainGUI extends GUI {
 
         // Adding module buttons
         ModuleCollection modules = getModules();
-        for (HCModule module : modules) {
+        for (Module module : modules) {
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
             c.gridy++;
@@ -771,32 +771,32 @@ public class MainGUI extends GUI {
     }
 
     private void listAvailableModules() throws IllegalAccessException, InstantiationException {
-        // Using Reflections tool to get list of classes extending HCModule
+        // Using Reflections tool to get list of classes extending Module
         Reflections.log = null;
         Reflections reflections = new Reflections("wbif.sjx.ModularImageAnalysis");
-        Set<Class<? extends HCModule>> availableModules = reflections.getSubTypesOf(HCModule.class);
+        Set<Class<? extends Module>> availableModules = reflections.getSubTypesOf(Module.class);
 
         // Creating new instances of these classes and adding to ArrayList
-        TreeMap<String, ArrayList<HCModule>> availableModulesList = new TreeMap<>();
+        TreeMap<String, ArrayList<Module>> availableModulesList = new TreeMap<>();
         for (Class clazz : availableModules) {
             if (clazz != InputControl.class) {
                 String[] names = clazz.getPackage().getName().split("\\.");
                 String pkg = names[names.length - 1];
 
                 availableModulesList.putIfAbsent(pkg, new ArrayList<>());
-                availableModulesList.get(pkg).add((HCModule) clazz.newInstance());
+                availableModulesList.get(pkg).add((Module) clazz.newInstance());
 
             }
         }
 
         // Sorting the ArrayList based on module title
-        for (ArrayList<HCModule> modules : availableModulesList.values()) {
-            Collections.sort(modules, Comparator.comparing(HCModule::getTitle));
+        for (ArrayList<Module> modules : availableModulesList.values()) {
+            Collections.sort(modules, Comparator.comparing(Module::getTitle));
         }
 
         // Adding the modules to the list
         for (String pkgName : availableModulesList.keySet()) {
-            ArrayList<HCModule> modules = availableModulesList.get(pkgName);
+            ArrayList<Module> modules = availableModulesList.get(pkgName);
             ModuleListMenu packageMenu = new ModuleListMenu(this, pkgName, modules);
 
             moduleListMenu.add(packageMenu);

@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -11,7 +11,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Workspace;
  */
 public abstract class GUI {
     protected GUIAnalysis analysis = new GUIAnalysis();
-    HCModule activeModule = null;
+    Module activeModule = null;
     private int lastModuleEval = -1;
     private Workspace testWorkspace = new Workspace(1, null);
 
@@ -29,15 +29,15 @@ public abstract class GUI {
         this.lastModuleEval = lastModuleEval;
     }
 
-    public HCModule getActiveModule() {
+    public Module getActiveModule() {
         return activeModule;
     }
 
-    public void setActiveModule(HCModule activeModule) {
+    public void setActiveModule(Module activeModule) {
         this.activeModule = activeModule;
     }
 
-    public void evaluateModule(HCModule module) throws GenericMIAException {
+    public void evaluateModule(Module module) throws GenericMIAException {
         module.execute(testWorkspace, true);
         lastModuleEval = getModules().indexOf(module);
 

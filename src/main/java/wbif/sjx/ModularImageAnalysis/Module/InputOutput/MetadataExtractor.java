@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MetadataExtractors.*;
 import wbif.sjx.common.Object.HCMetadata;
@@ -8,7 +8,7 @@ import wbif.sjx.common.Object.HCMetadata;
 /**
  * Created by sc13967 on 05/05/2017.
  */
-public class MetadataExtractor extends HCModule {
+public class MetadataExtractor extends Module {
     public static final String EXTRACTOR_MODE = "Extractor mode";
     private static final String FILENAME_EXTRACTOR = "Filename extractor";
     private static final String FOLDERNAME_EXTRACTOR = "Foldername extractor";

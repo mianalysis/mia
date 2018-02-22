@@ -3,7 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.gui.Plot;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -12,7 +12,7 @@ import java.awt.*;
 /**
  * Created by sc13967 on 19/05/2017.
  */
-public class PlotMeasurementsScatter extends HCModule {
+public class PlotMeasurementsScatter extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String EXCLUDE_NAN = "Exclude NaN measurements";
     public static final String MEASUREMENT1 = "First measurement (X)";

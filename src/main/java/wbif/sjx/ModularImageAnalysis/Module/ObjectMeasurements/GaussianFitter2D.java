@@ -5,7 +5,7 @@ import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.process.ImageProcessor;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.Iterator;
@@ -15,7 +15,7 @@ import static wbif.sjx.common.MathFunc.GaussianFitter.fitGaussian2D;
 /**
  * Created by sc13967 on 05/06/2017.
  */
-public class GaussianFitter2D extends HCModule {
+public class GaussianFitter2D extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String RADIUS_MODE = "Method to estimate spot radius";

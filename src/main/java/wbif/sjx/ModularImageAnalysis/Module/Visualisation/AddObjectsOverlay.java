@@ -7,7 +7,7 @@ import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -19,7 +19,7 @@ import java.util.TreeMap;
 /**
  * Created by sc13967 on 17/05/2017.
  */
-public class AddObjectsOverlay extends HCModule {
+public class AddObjectsOverlay extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String APPLY_TO_INPUT = "Apply to input image";

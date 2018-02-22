@@ -1,13 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 
 /**
  * Returns a spherical object around a point object.  This is useful for calculating local object features.
  */
-public class GetLocalObjectRegion extends HCModule {
+public class GetLocalObjectRegion extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String LOCAL_RADIUS = "Local radius";

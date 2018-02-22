@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,9 +12,9 @@ import java.awt.event.ActionListener;
  */
 public class PopupMenuItem extends JMenuItem implements ActionListener {
     private MainGUI gui;
-    private HCModule module;
+    private Module module;
 
-    public PopupMenuItem(MainGUI gui, HCModule module) {
+    public PopupMenuItem(MainGUI gui, Module module) {
         this.gui = gui;
         this.module = module;
         if (module != null) setText(module.getTitle());
@@ -22,7 +22,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
 
     }
 
-    public HCModule getModule() {
+    public Module getModule() {
         return module;
     }
 
@@ -33,7 +33,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         if (module == null) return;
 
         // Adding it after the currently-selected module
-        HCModule newModule = null;
+        Module newModule = null;
         try {
             newModule = module.getClass().newInstance();
         } catch (InstantiationException | IllegalAccessException e1) {
