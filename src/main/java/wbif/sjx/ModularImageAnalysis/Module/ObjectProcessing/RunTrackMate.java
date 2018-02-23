@@ -75,7 +75,7 @@ public class RunTrackMate extends Module {
     public void run(Workspace workspace, boolean verbose) {
         // Loading input image
         String targetImageName = parameters.getValue(INPUT_IMAGE);
-        if (verbose) System.out.println("["+moduleName+"] Loading image ("+targetImageName+") into workspace");
+        writeMessage("Loading image ("+targetImageName+") into workspace",verbose);
         Image targetImage = workspace.getImage(targetImageName);
         ImagePlus ipl = targetImage.getImagePlus();
 
@@ -154,6 +154,9 @@ public class RunTrackMate extends Module {
         if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());
         if (!trackmate.execDetection()) IJ.log(trackmate.getErrorMessage());
         if (!trackmate.computeSpotFeatures(false)) IJ.log(trackmate.getErrorMessage());
+
+        // Re-applying the spatial calibration
+        ipl.setCalibration(calibration);
 
         if (normaliseIntensity) ipl = targetImage.getImagePlus();
 

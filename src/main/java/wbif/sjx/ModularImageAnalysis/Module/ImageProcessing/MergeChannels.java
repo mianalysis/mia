@@ -38,12 +38,14 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     private Img<ARGBType> createRGB(Image inputImageRed, Image inputImageGreen, Image inputImageBlue) {
         long dimX = 0;
         long dimY = 0;
+        long dimZ = 0;
 
         Img<T> redImg = null;
         if (inputImageRed != null) {
             redImg = inputImageRed.getImg();
             dimX = redImg.dimension(0);
             dimY = redImg.dimension(1);
+            dimZ = redImg.dimension(2);
         }
 
         Img<T> greenImg = null;
@@ -51,6 +53,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
             greenImg = inputImageGreen.getImg();
             dimX = greenImg.dimension(0);
             dimY = greenImg.dimension(1);
+            dimZ = greenImg.dimension(2);
         }
 
         Img<T> blueImg = null;
@@ -58,10 +61,11 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
             blueImg = inputImageBlue.getImg();
             dimX = blueImg.dimension(0);
             dimY = blueImg.dimension(1);
+            dimZ = blueImg.dimension(2);
         }
 
         // Creating the RGB image
-        long[] dimensions = new long[]{dimX,dimY};
+        long[] dimensions = new long[]{dimX,dimY,dimZ};
         final ImgFactory<ARGBType> factory = new ArrayImgFactory<>();
         Img<ARGBType> rgbImg = factory.create(dimensions, new ARGBType());
 
@@ -86,6 +90,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     private Img<T> createComposite(Image inputImageRed, Image inputImageGreen, Image inputImageBlue) {
         long dimX = 0;
         long dimY = 0;
+        long dimZ = 0;
         T type = null;
 
         Img<T> redImg = null;
@@ -93,6 +98,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
             redImg = inputImageRed.getImg();
             dimX = redImg.dimension(0);
             dimY = redImg.dimension(1);
+            dimZ = redImg.dimension(2);
             type = redImg.firstElement();
         }
 
@@ -101,6 +107,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
             greenImg = inputImageGreen.getImg();
             dimX = greenImg.dimension(0);
             dimY = greenImg.dimension(1);
+            dimZ = greenImg.dimension(2);
             type = greenImg.firstElement();
         }
 
@@ -109,30 +116,31 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
             blueImg = inputImageBlue.getImg();
             dimX = blueImg.dimension(0);
             dimY = blueImg.dimension(1);
+            dimZ = blueImg.dimension(2);
             type = blueImg.firstElement();
         }
 
         // Creating the RGB image
-        long[] dimensions = new long[]{dimX,dimY,3};
+        long[] dimensions = new long[]{dimX,dimY,3, dimZ};
         final ImgFactory< T > factory = new ArrayImgFactory<>();
         Img<T> rgbImg = factory.create(dimensions, type);
 
         // Adding values view
         if (inputImageRed != null) {
             Cursor<T> cursorSingle = redImg.cursor();
-            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 0}, new long[]{dimX,dimY, 1}).cursor();
+            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 0, 0}, new long[]{dimX,dimY,1, dimZ}).cursor();
             while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
         }
 
         if (inputImageGreen != null) {
             Cursor<T> cursorSingle = greenImg.cursor();
-            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 1}, new long[]{dimX, dimY, 1}).cursor();
+            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 1, 0}, new long[]{dimX, dimY, 1, dimZ}).cursor();
             while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
         }
 
         if (inputImageBlue != null) {
             Cursor<T> cursorSingle = blueImg.cursor();
-            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 2}, new long[]{dimX, dimY, 1}).cursor();
+            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 2, 0}, new long[]{dimX, dimY, 1, dimZ}).cursor();
             while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
         }
 
