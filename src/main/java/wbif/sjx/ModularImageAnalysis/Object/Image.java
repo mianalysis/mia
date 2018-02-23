@@ -31,6 +31,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     public Image(String name, Img<T> img) {
         this.name = name;
         this.imagePlus = ImageJFunctions.wrap(img,name);
+
     }
 
     public ObjCollection convertImageToObjects(String outputObjectsName) {

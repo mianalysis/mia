@@ -39,7 +39,6 @@ public class ChannelExtractor extends Module {
 
         // Getting selected channel
         if (verbose) System.out.println("["+moduleName+"] Extracting channel "+channel);
-//        ImagePlus outputChannelImagePlus = SubHyperstackMaker.makeSubhyperstack(ipl,String.valueOf(channel),"1-"+ipl.getNSlices(),"1-"+ipl.getNFrames());
         ipl = new Duplicator().run(ipl);
         ImagePlus outputChannelImagePlus = ChannelSplitter.split(ipl)[channel-1];
 

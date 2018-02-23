@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
+import ij.ImagePlus;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -17,7 +18,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  * Created by sc13967 on 22/02/2018.
  */
 public class MergeChannels< T extends RealType< T > & NativeType< T >> extends Module {
-    public static final String MERGE_MODE = "Merging mode";
     public static final String USE_RED = "Use red channel";
     public static final String INPUT_IMAGE_RED = "Input image (red)";
     public static final String USE_GREEN = "Use green channel";
@@ -27,63 +27,52 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
 
-    interface MergingMode {
-        String COMPSITE = "Composite";
-        String RGB = "RGB";
+    private Img<T> combineImages(Image inputImage1, Image inputImage2) {
+        Img<T> img1 = inputImage1.getImg();
+        Img<T> img2 = inputImage2.getImg();
 
-        String[] ALL = new String[]{COMPSITE,RGB};
+        T type = img1.firstElement();
 
-    }
+        long[] dims1 = new long[img1.numDimensions()];
+        long[] dims2 = new long[img2.numDimensions()];
+        long[] dims = new long[img1.numDimensions()];
 
-    private Img<ARGBType> createRGB(Image inputImageRed, Image inputImageGreen, Image inputImageBlue) {
-        long dimX = 0;
-        long dimY = 0;
-        long dimZ = 0;
+        long[] offset1 = new long[img1.numDimensions()];
+        long[] offset2 = new long[img2.numDimensions()];
 
-        Img<T> redImg = null;
-        if (inputImageRed != null) {
-            redImg = inputImageRed.getImg();
-            dimX = redImg.dimension(0);
-            dimY = redImg.dimension(1);
-            dimZ = redImg.dimension(2);
+        for (int i=0;i<img1.numDimensions();i++) {
+            System.out.println("Im1 "+img1.dimension(i));
+            dims1[i] = img1.dimension(i);
+            offset1[i] = 0;
         }
 
-        Img<T> greenImg = null;
-        if (inputImageGreen != null) {
-            greenImg = inputImageGreen.getImg();
-            dimX = greenImg.dimension(0);
-            dimY = greenImg.dimension(1);
-            dimZ = greenImg.dimension(2);
+        for (int i=0;i<img2.numDimensions();i++) {
+            System.out.println("Im2 "+img2.dimension(i));
+            dims2[i] = img2.dimension(i);
+            offset2[i] = 0;
         }
+        offset2[2] = dims1[2];
 
-        Img<T> blueImg = null;
-        if (inputImageBlue != null) {
-            blueImg = inputImageBlue.getImg();
-            dimX = blueImg.dimension(0);
-            dimY = blueImg.dimension(1);
-            dimZ = blueImg.dimension(2);
+        for (int i=0;i<img1.numDimensions();i++) {
+            System.out.println("Im "+img1.dimension(i));
+            dims[i] = img1.dimension(i);
         }
+        dims[2] = dims1[2]+dims2[2];
 
-        // Creating the RGB image
-        long[] dimensions = new long[]{dimX,dimY,dimZ};
-        final ImgFactory<ARGBType> factory = new ArrayImgFactory<>();
-        Img<ARGBType> rgbImg = factory.create(dimensions, new ARGBType());
+        // Creating the composite image
+        final ImgFactory< T > factory = new ArrayImgFactory<>();
+        Img<T> mergedImg = factory.create(dims, type);
 
-        Cursor<ARGBType> cursorSingle = rgbImg.cursor();
-        Cursor<T> cursorRed = inputImageRed != null ? redImg.cursor() : null;
-        Cursor<T> cursorGreen = inputImageGreen != null? greenImg.cursor() : null;
-        Cursor<T> cursorBlue = inputImageBlue != null ? blueImg.cursor() : null;
+        // Adding values from image 1
+        Cursor<T> cursor1 = img1.cursor();
+        Cursor<T> cursorMerge = Views.offsetInterval(mergedImg, offset1, dims1).cursor();
+        while (cursor1.hasNext()) cursorMerge.next().set(cursor1.next());
 
-        while (cursorSingle.hasNext()) {
-            double r = inputImageRed != null ? cursorRed.next().getRealDouble() : 0;
-            double g = inputImageGreen != null ? cursorGreen.next().getRealDouble() : 0;
-            double b = inputImageBlue != null ? cursorBlue.next().getRealDouble() : 0;
+        Cursor<T> cursor2 = img2.cursor();
+        cursorMerge = Views.offsetInterval(mergedImg, offset2, dims2).cursor();
+        while (cursor2.hasNext()) cursorMerge.next().set(cursor2.next());
 
-            cursorSingle.next().set(ARGBType.rgba(r,g,b,1));
-
-        }
-
-        return rgbImg;
+        return mergedImg;
 
     }
 
@@ -120,27 +109,27 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
             type = blueImg.firstElement();
         }
 
-        // Creating the RGB image
-        long[] dimensions = new long[]{dimX,dimY,3, dimZ};
+        // Creating the composite image
+        long[] dimensions = new long[]{dimX,dimY,3, dimZ,1};
         final ImgFactory< T > factory = new ArrayImgFactory<>();
         Img<T> rgbImg = factory.create(dimensions, type);
 
         // Adding values view
         if (inputImageRed != null) {
             Cursor<T> cursorSingle = redImg.cursor();
-            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 0, 0}, new long[]{dimX,dimY,1, dimZ}).cursor();
+            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 0, 0,0}, new long[]{dimX,dimY,1, dimZ,1}).cursor();
             while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
         }
 
         if (inputImageGreen != null) {
             Cursor<T> cursorSingle = greenImg.cursor();
-            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 1, 0}, new long[]{dimX, dimY, 1, dimZ}).cursor();
+            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 1, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
             while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
         }
 
         if (inputImageBlue != null) {
             Cursor<T> cursorSingle = blueImg.cursor();
-            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 2, 0}, new long[]{dimX, dimY, 1, dimZ}).cursor();
+            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 2, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
             while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
         }
 
@@ -161,8 +150,6 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     @Override
     protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
         // Getting parameters
-        String mergeMode = parameters.getValue(MERGE_MODE);
-
         String inputImageRedName = parameters.getValue(INPUT_IMAGE_RED);
         Image inputImageRed = workspace.getImage(inputImageRedName);
 
@@ -175,33 +162,22 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
-        switch (mergeMode) {
-            case MergingMode.COMPSITE:
-                Img<T> compositeImage = createComposite(inputImageRed,inputImageGreen,inputImageBlue);
-                Image outputImage = new Image(outputImageName,compositeImage);
-                workspace.addImage(outputImage);
+//        Img<T> mergedImage = combineImages(inputImageGreen,inputImageBlue);
+//        Image outputImage = new Image(outputImageName,mergedImage);
+//        workspace.addImage(outputImage);
+//
+//        if (showImage) ImageJFunctions.show(mergedImage,"Merged");
 
-                if (showImage) ImageJFunctions.show(compositeImage);
+        Img<T> compositeImage = createComposite(inputImageRed,inputImageGreen,inputImageBlue);
+        Image outputImage = new Image(outputImageName,compositeImage);
+        workspace.addImage(outputImage);
 
-                break;
-
-            case MergingMode.RGB:
-                Img<ARGBType> rgbImage = createRGB(inputImageRed, inputImageGreen, inputImageBlue);
-                outputImage = new Image(outputImageName,rgbImage);
-                workspace.addImage(outputImage);
-
-                if (showImage) ImageJFunctions.show(rgbImage);
-
-                break;
-
-        }
-
+        if (showImage) ImageJFunctions.show(compositeImage,"Composite");
 
     }
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(MERGE_MODE,Parameter.CHOICE_ARRAY,MergingMode.COMPSITE,MergingMode.ALL));
         parameters.add(new Parameter(USE_RED,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(INPUT_IMAGE_RED,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(USE_GREEN,Parameter.BOOLEAN,true));
@@ -222,7 +198,8 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.add(parameters.getParameter(MERGE_MODE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
         returnedParameters.add(parameters.getParameter(USE_RED));
         if (parameters.getValue(USE_RED)) returnedParameters.add(parameters.getParameter(INPUT_IMAGE_RED));
 
@@ -232,7 +209,6 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         returnedParameters.add(parameters.getParameter(USE_BLUE));
         if (parameters.getValue(USE_BLUE)) returnedParameters.add(parameters.getParameter(INPUT_IMAGE_BLUE));
 
-        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;

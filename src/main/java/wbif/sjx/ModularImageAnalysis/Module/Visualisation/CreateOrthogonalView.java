@@ -30,10 +30,60 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
 
 
     interface PositionModes{
+        String IMAGE_CENTRE = "Image centre";
         String INTENSITY_PROJECTION = "Intensity projection";
         String LARGEST_OBJ_CENTROID = "Centroid of largest object";
 
-        String[] ALL = new String[]{INTENSITY_PROJECTION,LARGEST_OBJ_CENTROID};
+        String[] ALL = new String[]{IMAGE_CENTRE, INTENSITY_PROJECTION,LARGEST_OBJ_CENTROID};
+
+    }
+
+    public Img<T> getCentreView(Img<T> inputImg, long[] centres, long[] dims, double ZXYRatio) {
+        long border = 10;
+
+        // Get orthogonal views through centre point
+        IntervalView<T> viewXY = Views.hyperSlice(inputImg,2,centres[2]);
+        IntervalView<T> viewXZ = Views.hyperSlice(inputImg,1,centres[1]);
+        IntervalView<T> viewYZ = Views.hyperSlice(inputImg,0,centres[0]);
+
+        // Scaling the XZ and YZ views
+        AffineTransform2D affine2D = new AffineTransform2D();
+        affine2D.set(new double[][]{{1,0,0},{0,ZXYRatio,0},{0,0,1}});
+        NearestNeighborInterpolatorFactory<T> interpolator = new NearestNeighborInterpolatorFactory<T>();
+
+        Interval intervalXZ = new FinalInterval(new long[]{0, 0}, new long[]{dims[0]-1, dims[2]});
+        RealRandomAccessible<T> interpXZ = Views.interpolate(viewXZ, interpolator);
+        viewXZ = Views.interval(RealViews.affine(interpXZ, affine2D),intervalXZ);
+
+        Interval intervalYZ = new FinalInterval(new long[]{0, 0}, new long[]{dims[1]-1,dims[2]});
+        RealRandomAccessible<T> interpYZ = Views.interpolate(viewYZ, interpolator);
+        viewYZ = Views.interval(RealViews.affine(interpYZ, affine2D),intervalYZ);
+
+        // Creating a single image, large enough to hold all images
+        final ImgFactory< T > factory = new ArrayImgFactory<>();
+        final long[] orthoDims = new long[] { dims[0]+dims[2]+border, dims[1]+dims[2]+border};
+        Img< T > orthoImg = factory.create( orthoDims, viewXY.firstElement() );
+        Cursor<T> cursorOrtho = orthoImg.cursor();
+
+        double white = orthoImg.firstElement().getMaxValue();
+        while (cursorOrtho.hasNext()) cursorOrtho.next().setReal(white);
+
+        // Adding XY view
+        Cursor<T> cursorXY = viewXY.cursor();
+        Cursor<T> cursorOrthoXY = Views.offsetInterval(orthoImg,new long[]{0,0},new long[]{dims[0],dims[1]}).cursor();
+        while (cursorXY.hasNext()) cursorOrthoXY.next().set(cursorXY.next());
+
+        // Adding XZ view
+        Cursor<T> cursorXZ = viewXZ.cursor();
+        Cursor<T> cursorOrthoXZ = Views.offsetInterval(orthoImg,new long[]{0,dims[1]+border},new long[]{dims[0],dims[2]}).cursor();
+        while (cursorXZ.hasNext()) cursorOrthoXZ.next().set(cursorXZ.next());
+
+        // Adding YZ view
+        Cursor<T> cursorYZ = viewYZ.cursor();
+        Cursor<T> cursorOrthoYZ = Views.permute(Views.offsetInterval(orthoImg,new long[]{dims[0]+border,0},new long[]{dims[2],dims[1]}),0,1).cursor();
+        while (cursorYZ.hasNext()) cursorOrthoYZ.next().set(cursorYZ.next());
+
+        return orthoImg;
 
     }
 
@@ -68,8 +118,18 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
                 break;
 
             case PositionModes.LARGEST_OBJ_CENTROID:
-                long border = 10;
+                // Getting the largest object
+                ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
+                Obj largestObject = null;
+                int largestSize = 0;
+                for (Obj inputObject:inputObjects.values()) {
+                    int currentSize
+                    if (inputObject.getPoints().size())
+                }
 
+                break;
+
+            case PositionModes.IMAGE_CENTRE:
                 // Getting input image dimensions
                 double xCal = ((ImgPlus<T>) inputImg).averageScale(0);
                 double zCal = ((ImgPlus<T>) inputImg).averageScale(2);
@@ -79,52 +139,10 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
                 long dimY = inputImg.dimension(1);
                 long dimZ = inputImg.dimension(2);
                 long dimZScaled = (long) Math.floor((dimZ-1) * ZXYRatio);
+                long[] dims = new long[]{dimX,dimY,dimZScaled};
+                long[] centres = new long[]{dimX/2, dimY/2, dimZ/2};
 
-                // Get centre of object
-                long centX = dimX/2;
-                long centY = dimY/2;
-                long centZ = dimZ/2;
-
-                // Get orthogonal views through centre point
-                IntervalView<T> viewXY = Views.hyperSlice(inputImg,2,centZ);
-                IntervalView<T> viewXZ = Views.hyperSlice(inputImg,1,centY);
-                IntervalView<T> viewYZ = Views.hyperSlice(inputImg,0,centX);
-
-                // Scaling the XZ and YZ views
-                AffineTransform2D affine2D = new AffineTransform2D();
-                affine2D.set(new double[][]{{1,0,0},{0,ZXYRatio,0},{0,0,1}});
-                NearestNeighborInterpolatorFactory<T> interpolator = new NearestNeighborInterpolatorFactory<T>();
-
-                Interval intervalXZ = new FinalInterval(new long[]{0, 0}, new long[]{dimX-1, dimZScaled});
-                RealRandomAccessible<T> interpXZ = Views.interpolate(viewXZ, interpolator);
-                viewXZ = Views.interval(RealViews.affine(interpXZ, affine2D),intervalXZ);
-
-                Interval intervalYZ = new FinalInterval(new long[]{0, 0}, new long[]{dimY-1,dimZScaled});
-                RealRandomAccessible<T> interpYZ = Views.interpolate(viewYZ, interpolator);
-                viewYZ = Views.interval(RealViews.affine(interpYZ, affine2D),intervalYZ);
-
-                // Creating a single image, large enough to hold all images
-                final ImgFactory< T > factory = new ArrayImgFactory<>();
-                final long[] dimensions = new long[] { dimX+dimZScaled+border, dimY+dimZScaled+border};
-                orthoImg = factory.create( dimensions, viewXY.firstElement() );
-                Cursor<T> cursorOrtho = orthoImg.cursor();
-                double white = orthoImg.firstElement().getMaxValue();
-                while (cursorOrtho.hasNext()) cursorOrtho.next().setReal(white);
-
-                // Adding XY view
-                Cursor<T> cursorXY = viewXY.cursor();
-                Cursor<T> cursorOrthoXY = Views.offsetInterval(orthoImg,new long[]{0,0},new long[]{dimX,dimY}).cursor();
-                while (cursorXY.hasNext()) cursorOrthoXY.next().set(cursorXY.next());
-
-                // Adding XZ view
-                Cursor<T> cursorXZ = viewXZ.cursor();
-                Cursor<T> cursorOrthoXZ = Views.offsetInterval(orthoImg,new long[]{0,dimY+border},new long[]{dimX,dimZScaled}).cursor();
-                while (cursorXZ.hasNext()) cursorOrthoXZ.next().set(cursorXZ.next());
-
-                // Adding YZ view
-                Cursor<T> cursorYZ = viewYZ.cursor();
-                Cursor<T> cursorOrthoYZ = Views.permute(Views.offsetInterval(orthoImg,new long[]{dimX+border,0},new long[]{dimZScaled,dimY}),0,1).cursor();
-                while (cursorYZ.hasNext()) cursorOrthoYZ.next().set(cursorYZ.next());
+                orthoImg = getCentreView(inputImg,centres,dims,ZXYRatio);
 
                 break;
 
@@ -145,7 +163,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(POSITION_MODE,Parameter.CHOICE_ARRAY,PositionModes.INTENSITY_PROJECTION,PositionModes.ALL));
+        parameters.add(new Parameter(POSITION_MODE,Parameter.CHOICE_ARRAY,PositionModes.IMAGE_CENTRE,PositionModes.ALL));
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
@@ -158,7 +176,22 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(POSITION_MODE));
+
+        switch ((String) parameters.getValue(POSITION_MODE)) {
+            case PositionModes.LARGEST_OBJ_CENTROID:
+                returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
+
+        return returnedParameters;
+
     }
 
     @Override

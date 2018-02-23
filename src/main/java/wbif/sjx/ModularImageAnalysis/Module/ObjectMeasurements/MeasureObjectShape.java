@@ -30,9 +30,9 @@ public class MeasureObjectShape extends Module {
      * @return
      */
     public double calculateMaximumPointPointDistance(Obj object) {
-        double[] x = object.getSurfaceX(true);
-        double[] y = object.getSurfaceY(true);
-        double[] z = object.getSurfaceZ(true,true);
+        double[] x = object.getX(true);
+        double[] y = object.getY(true);
+        double[] z = object.getZ(true,true);
 
         double maxDistance = 0;
 
