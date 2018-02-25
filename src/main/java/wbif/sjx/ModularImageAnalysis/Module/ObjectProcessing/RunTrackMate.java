@@ -179,7 +179,7 @@ public class RunTrackMate extends Module {
 
             // Adding explicit volume to spots
             if (estimateSize) {
-                ObjCollection spotVolumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
+                GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
 
                 // Replacing spot volumes with explicit volume
                 for (Obj spotObject:spotObjects.values()) {

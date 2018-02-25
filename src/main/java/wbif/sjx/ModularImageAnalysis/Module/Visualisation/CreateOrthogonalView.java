@@ -110,6 +110,16 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
         String positionMode = parameters.getValue(POSITION_MODE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
+        // Getting input image dimensions
+        double xCal = ((ImgPlus<T>) inputImg).averageScale(0);
+        double zCal = ((ImgPlus<T>) inputImg).averageScale(2);
+        double ZXYRatio = zCal/xCal;
+        long dimX = inputImg.dimension(0);
+        long dimY = inputImg.dimension(1);
+        long dimZ = inputImg.dimension(2);
+        long dimZScaled = (long) Math.floor((dimZ-1) * ZXYRatio);
+        long[] dims = new long[]{dimX,dimY,dimZScaled};
+
         Img< T > orthoImg = null;
 
         switch (positionMode) {
@@ -123,25 +133,25 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
                 Obj largestObject = null;
                 int largestSize = 0;
                 for (Obj inputObject:inputObjects.values()) {
-                    int currentSize
-                    if (inputObject.getPoints().size())
+                    int currentSize = inputObject.getPoints().size();
+                    if (currentSize > largestSize) {
+                        largestSize = currentSize;
+                        largestObject = inputObject;
+                    }
                 }
+
+                // Getting the object centroid
+                long xCent = Math.round(largestObject.getXMean(true));
+                long yCent = Math.round(largestObject.getYMean(true));
+                long zCent = Math.round(largestObject.getZMean(true,false));
+
+                long[] centres = new long[]{xCent,yCent,zCent};
+                orthoImg = getCentreView(inputImg,centres,dims,ZXYRatio);
 
                 break;
 
             case PositionModes.IMAGE_CENTRE:
-                // Getting input image dimensions
-                double xCal = ((ImgPlus<T>) inputImg).averageScale(0);
-                double zCal = ((ImgPlus<T>) inputImg).averageScale(2);
-                double ZXYRatio = zCal/xCal;
-
-                long dimX = inputImg.dimension(0);
-                long dimY = inputImg.dimension(1);
-                long dimZ = inputImg.dimension(2);
-                long dimZScaled = (long) Math.floor((dimZ-1) * ZXYRatio);
-                long[] dims = new long[]{dimX,dimY,dimZScaled};
-                long[] centres = new long[]{dimX/2, dimY/2, dimZ/2};
-
+                centres = new long[]{dimX/2, dimY/2, dimZ/2};
                 orthoImg = getCentreView(inputImg,centres,dims,ZXYRatio);
 
                 break;
