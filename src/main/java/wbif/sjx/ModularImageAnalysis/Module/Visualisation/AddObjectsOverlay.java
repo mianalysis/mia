@@ -194,7 +194,7 @@ public class AddObjectsOverlay extends Module {
 
         if (IDs != null) {
             // Adding text label
-            TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, IDs.get(object.getID()));
+            TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2+5, IDs.get(object.getID()));
             text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
             if (ipl.isHyperStack()) {
                 text.setPosition(1, z, t);
