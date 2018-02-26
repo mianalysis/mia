@@ -87,9 +87,9 @@ public class AddObjectsOverlay extends Module {
                     yMean = object.getYMean(true);
 
                     // Adding each point
-                    double[] xx = object.getX(false);
-                    double[] yy = object.getY(false);
-                    double[] zz = object.getZ(false,false);
+                    double[] xx = object.getX(true);
+                    double[] yy = object.getY(true);
+                    double[] zz = object.getZ(true,false);
 
                     t = object.getT()+1;
 
