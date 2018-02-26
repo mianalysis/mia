@@ -2,7 +2,6 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
@@ -17,10 +16,13 @@ import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
+import net.imglib2.img.Img;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
@@ -32,7 +34,7 @@ import java.io.IOException;
 /**
  * Created by sc13967 on 15/05/2017.
  */
-public class ImageLoader extends HCModule {
+public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Module {
     public static final String IMPORT_MODE = "Import mode";
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";
@@ -290,6 +292,9 @@ public class ImageLoader extends HCModule {
             ipl = new Duplicator().run(ipl);
             ipl.show();
         }
+
+        Img<T> img = workspace.getImage(outputImageName).getImg();
+
     }
 
     @Override

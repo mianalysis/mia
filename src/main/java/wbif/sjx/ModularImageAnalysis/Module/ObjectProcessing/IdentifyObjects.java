@@ -6,17 +6,16 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
-import java.awt.*;
 import java.util.HashMap;
 
 /**
  * Created by sc13967 on 06/06/2017.
  */
-public class IdentifyObjects extends HCModule {
+public class IdentifyObjects extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
@@ -97,7 +96,7 @@ public class IdentifyObjects extends HCModule {
 
         // Showing objects
         if (showObjects) {
-            HashMap<Obj,Float> hues = outputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"","",false);
+            HashMap<Integer,Float> hues = outputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"","",false);
             outputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.RANDOM_COLOUR, hues, false).getImagePlus().show();
         }
     }

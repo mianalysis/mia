@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Process;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.Serializable;
@@ -56,7 +56,7 @@ public abstract class Analysis implements Serializable {
         if (verbose) System.out.println("Starting analysis");
 
         // Check that all available parameters have been set
-        for (HCModule module:modules) {
+        for (Module module:modules) {
             ParameterCollection activeParameters = module.updateAndGetParameters();
 
             for (Parameter activeParameter:activeParameters.values()) {
@@ -66,7 +66,7 @@ public abstract class Analysis implements Serializable {
         }
 
         // Running through modules
-        for (HCModule module:modules) {
+        for (Module module:modules) {
             if (Thread.currentThread().isInterrupted()) break;
             if (module.isEnabled()) module.execute(workspace,verbose);
 

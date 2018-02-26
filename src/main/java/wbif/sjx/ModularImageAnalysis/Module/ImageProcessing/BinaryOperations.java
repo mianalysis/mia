@@ -7,14 +7,14 @@ import ij.plugin.Duplicator;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 06/06/2017.
  */
-public class BinaryOperations extends HCModule {
+public class BinaryOperations extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";

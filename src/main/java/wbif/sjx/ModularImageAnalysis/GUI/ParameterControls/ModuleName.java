@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +13,9 @@ import java.awt.event.FocusListener;
  */
 public class ModuleName extends JTextField implements FocusListener {
     private MainGUI gui;
-    private HCModule module;
+    private Module module;
 
-    public ModuleName(MainGUI gui, HCModule module) {
+    public ModuleName(MainGUI gui, Module module) {
         this.gui = gui;
         this.module = module;
 

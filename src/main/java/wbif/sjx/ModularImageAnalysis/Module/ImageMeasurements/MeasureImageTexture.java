@@ -1,14 +1,14 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by Stephen on 09/05/2017.
  */
-public class MeasureImageTexture extends HCModule {
+public class MeasureImageTexture extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String X_OFFSET = "X-offset";
     public static final String Y_OFFSET = "Y-offset";

@@ -1,23 +1,19 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
-import ij.plugin.SubstackMaker;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Created by sc13967 on 18/01/2018.
  */
-public class ExtractSubstrack extends HCModule{
+public class ExtractSubstrack extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String USE_ALL_C = "Use all channels";

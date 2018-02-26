@@ -1,10 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
-import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanLinkingCostMatrixCreator;
-import fiji.plugin.trackmate.tracking.sparselap.costmatrix.JaqamanSegmentCostMatrixCreator;
 import org.apache.hadoop.hbase.util.MunkresAssignment;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
@@ -16,7 +14,7 @@ import java.util.TreeSet;
 /**
  * Created by sc13967 on 20/09/2017.
  */
-public class TrackObjects extends HCModule {
+public class TrackObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String TRACK_OBJECTS = "Output track objects";
     public static final String LINKING_METHOD = "Linking method";

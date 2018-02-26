@@ -3,7 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import ij.ImagePlus;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by sc13967 on 05/05/2017.
  */
-public class MeasureObjectIntensity extends HCModule {
+public class MeasureObjectIntensity extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String INPUT_IMAGE = "Input image";
     public static final String MEASURE_MEAN = "Measure mean";
@@ -123,8 +123,7 @@ public class MeasureObjectIntensity extends HCModule {
 
     @Override
     public void run(Workspace workspace, boolean verbose) {
-        String moduleName = this.getClass().getSimpleName();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
+        writeMessage("Initialising",verbose);
 
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS);
@@ -143,7 +142,7 @@ public class MeasureObjectIntensity extends HCModule {
             for (Obj object:objects.values()) measureWeightedCentre(object,ipl);
         }
 
-        if (verbose) System.out.println("["+moduleName+"] Complete");
+        writeMessage("Complete",verbose);
 
     }
 

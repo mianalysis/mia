@@ -4,7 +4,7 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -13,14 +13,13 @@ import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by sc13967 on 15/01/2018.
  */
-public class HoughObjectDetection extends HCModule {
+public class HoughObjectDetection extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String MIN_RADIUS = "Minimum radius (px)";
@@ -156,9 +155,9 @@ public class HoughObjectDetection extends HCModule {
             IntensityMinMax.run(dispIpl,true);
 
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-            HashMap<Obj,Float> hues = outputObjects.getHue(colourMode,"","",true);
+            HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"","",true);
 
-            HashMap<Obj, String> IDs = null;
+            HashMap<Integer, String> IDs = null;
             if (showHoughScore) {
                 String labelMode = ObjCollection.LabelModes.MEASUREMENT_VALUE;
                 IDs = outputObjects.getIDs(labelMode, Measurements.SCORE, "",0);

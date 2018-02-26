@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -9,7 +9,7 @@ import wbif.sjx.common.MathFunc.CumStat;
 /**
  * Created by sc13967 on 12/05/2017.
  */
-public class MeasureImageIntensity extends HCModule {
+public class MeasureImageIntensity extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String MEASURE_MEAN = "Measure mean";
     public static final String MEASURE_STDEV = "Measure standard deviation";

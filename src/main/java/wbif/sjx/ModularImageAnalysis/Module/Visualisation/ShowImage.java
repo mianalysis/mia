@@ -2,14 +2,14 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class ShowImage extends HCModule {
+public class ShowImage extends Module {
     public final static String DISPLAY_IMAGE = "Display image";
 
     @Override

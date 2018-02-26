@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,12 +15,12 @@ import java.awt.event.ActionListener;
  */
 public class EvalButton extends JButton implements ActionListener {
     private GUI gui;
-    private HCModule module;
+    private Module module;
 
 
     // CONSTRUCTOR
 
-    public EvalButton(GUI gui, HCModule module) {
+    public EvalButton(GUI gui, Module module) {
         this.gui = gui;
         this.module = module;
 
@@ -55,7 +55,7 @@ public class EvalButton extends JButton implements ActionListener {
 
     // GETTERS
 
-    public HCModule getModule() {
+    public Module getModule() {
         return module;
     }
 
@@ -75,7 +75,7 @@ public class EvalButton extends JButton implements ActionListener {
         // If multiple modules will need to be evaluated first
         new Thread(() -> {
             for (int i = gui.getLastModuleEval()+1;i<=idx;i++) {
-                HCModule module = gui.getModules().get(i);
+                Module module = gui.getModules().get(i);
                 if (module.isEnabled()) try {
                     gui.evaluateModule(module);
                 } catch (GenericMIAException ex) {

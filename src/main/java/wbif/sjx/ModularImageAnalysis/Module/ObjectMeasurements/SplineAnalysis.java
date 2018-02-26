@@ -4,7 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
@@ -15,7 +15,6 @@ import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Vertex;
 import wbif.sjx.common.Process.SkeletonTools.Skeleton;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.TreeMap;
@@ -23,7 +22,7 @@ import java.util.TreeMap;
 /**
  * Created by sc13967 on 24/01/2018.
  */
-public class SplineAnalysis extends HCModule {
+public class SplineAnalysis extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String SPLINE_FITTING_METHOD = "Spline fitting method";
@@ -95,7 +94,7 @@ public class SplineAnalysis extends HCModule {
             ObjCollection tempObjects = new ObjCollection("Backbone");
             tempObjects.add(inputObject);
 
-            HashMap<Obj,Float> hues = tempObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+            HashMap<Integer,Float> hues = tempObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
             ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, false).getImagePlus();
             InvertIntensity.process(objectIpl);
 

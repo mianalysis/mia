@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.BufferedReader;
@@ -11,7 +11,7 @@ import java.io.IOException;
  * Applies manual object classifications from a .csv file at the specified location.  Each row of the file must
  * correspond to a different object and have the format [ID],[Classification]
  */
-public class ApplyManualClassification extends HCModule {
+public class ApplyManualClassification extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CLASSIFICATION_FILE = "Classification file";
     public static final String REMOVE_MISSING = "Remove objects without classification";

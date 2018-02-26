@@ -7,19 +7,18 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
-import java.awt.*;
 import java.util.HashMap;
 
 /**
  * Created by sc13967 on 04/05/2017.
  */
-public class ObjectImageConverter extends HCModule {
+public class ObjectImageConverter extends Module {
     public static final String CONVERSION_MODE = "Conversion mode";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -80,7 +79,7 @@ public class ObjectImageConverter extends HCModule {
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
 
-            HashMap<Obj, Float> hues = inputObjects.getHue(colourMode, measurementForColour, parentForColour,false);
+            HashMap<Integer, Float> hues = inputObjects.getHue(colourMode, measurementForColour, parentForColour,false);
             Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage.getImagePlus(), colourMode,hues,hideMissing);
 
             // Applying spatial calibration from template image

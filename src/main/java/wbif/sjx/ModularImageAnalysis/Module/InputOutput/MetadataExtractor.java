@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MetadataExtractors.*;
 import wbif.sjx.common.Object.HCMetadata;
@@ -8,18 +8,20 @@ import wbif.sjx.common.Object.HCMetadata;
 /**
  * Created by sc13967 on 05/05/2017.
  */
-public class MetadataExtractor extends HCModule {
+public class MetadataExtractor extends Module {
     public static final String EXTRACTOR_MODE = "Extractor mode";
     private static final String FILENAME_EXTRACTOR = "Filename extractor";
     private static final String FOLDERNAME_EXTRACTOR = "Foldername extractor";
+    public static final String KEYWORD_LIST = "Keyword list";
     private static final String METADATA_FILE_EXTRACTOR = "Metadata file extractor";
 
     public interface ExtractorModes {
         String FILENAME_MODE = "Filename";
         String FOLDERNAME_MODE = "Foldername";
+        String KEYWORD_MODE = "Keyword";
         String METADATA_FILE_MODE = "Metadata file";
 
-        String[] ALL = new String[]{FILENAME_MODE, FOLDERNAME_MODE, METADATA_FILE_MODE};
+        String[] ALL = new String[]{FILENAME_MODE, FOLDERNAME_MODE, KEYWORD_MODE, METADATA_FILE_MODE};
 
     }
 
@@ -31,7 +33,7 @@ public class MetadataExtractor extends HCModule {
         String OPERA_FILENAME_EXTRACTOR = "Opera filename";
 
         String[] ALL = new String[]{NONE, CELLVOYAGER_FILENAME_EXTRACTOR, INCUCYTE_LONG_FILENAME_EXTRACTOR,
-            INCUCYTE_SHORT_FILENAME_EXTRACTOR, OPERA_FILENAME_EXTRACTOR};
+                INCUCYTE_SHORT_FILENAME_EXTRACTOR, OPERA_FILENAME_EXTRACTOR};
 
     }
 
@@ -116,6 +118,12 @@ public class MetadataExtractor extends HCModule {
                 if (foldernameExtractor != null) foldernameExtractor.extract(metadata,metadata.getFile().getParent());
                 break;
 
+            case ExtractorModes.KEYWORD_MODE:
+                String keywordList = parameters.getValue(KEYWORD_LIST);
+                KeywordExtractor keywordExtractor = new KeywordExtractor(keywordList);
+                keywordExtractor.extract(metadata,metadata.getFile().getName());
+                break;
+
             case ExtractorModes.METADATA_FILE_MODE:
                 // Getting metadata file extractor
                 String metadataFileExtractorName = parameters.getValue(METADATA_FILE_EXTRACTOR);
@@ -137,6 +145,7 @@ public class MetadataExtractor extends HCModule {
         parameters.add(new Parameter(EXTRACTOR_MODE,Parameter.CHOICE_ARRAY,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
         parameters.add(new Parameter(FILENAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FilenameExtractors.NONE,FilenameExtractors.ALL));
         parameters.add(new Parameter(FOLDERNAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
+        parameters.add(new Parameter(KEYWORD_LIST,Parameter.STRING,""));
         parameters.add(new Parameter(METADATA_FILE_EXTRACTOR,Parameter.CHOICE_ARRAY,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
 
     }
@@ -152,14 +161,22 @@ public class MetadataExtractor extends HCModule {
 
         returnedParameters.add(parameters.getParameter(EXTRACTOR_MODE));
 
-        if (parameters.getValue(EXTRACTOR_MODE).equals(ExtractorModes.FILENAME_MODE)) {
-            returnedParameters.add(parameters.getParameter(FILENAME_EXTRACTOR));
+        switch((String) parameters.getValue(EXTRACTOR_MODE)) {
+            case ExtractorModes.FILENAME_MODE:
+                returnedParameters.add(parameters.getParameter(FILENAME_EXTRACTOR));
+                break;
 
-        } else if (parameters.getValue(EXTRACTOR_MODE).equals(ExtractorModes.FOLDERNAME_MODE)) {
-            returnedParameters.add(parameters.getParameter(FOLDERNAME_EXTRACTOR));
+            case ExtractorModes.FOLDERNAME_MODE:
+                returnedParameters.add(parameters.getParameter(FOLDERNAME_EXTRACTOR));
+                break;
 
-        }if (parameters.getValue(EXTRACTOR_MODE).equals(ExtractorModes.METADATA_FILE_MODE)) {
-            returnedParameters.add(parameters.getParameter(METADATA_FILE_EXTRACTOR));
+            case ExtractorModes.KEYWORD_MODE:
+                returnedParameters.add(parameters.getParameter(KEYWORD_LIST));
+                break;
+
+            case ExtractorModes.METADATA_FILE_MODE:
+                returnedParameters.add(parameters.getParameter(METADATA_FILE_EXTRACTOR));
+                break;
 
         }
 

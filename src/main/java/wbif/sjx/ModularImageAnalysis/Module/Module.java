@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class HCModule implements Serializable {
+public abstract class Module implements Serializable {
     protected ParameterCollection parameters = new ParameterCollection();
     protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
     protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
@@ -34,7 +34,7 @@ public abstract class HCModule implements Serializable {
 
     // CONSTRUCTOR
 
-    public HCModule() {
+    public Module() {
         moduleName = getTitle();
         nickname = moduleName;
 

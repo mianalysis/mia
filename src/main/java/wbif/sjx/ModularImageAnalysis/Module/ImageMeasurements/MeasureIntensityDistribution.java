@@ -5,19 +5,18 @@ import ij.plugin.Duplicator;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
 
-import java.awt.*;
 import java.util.HashMap;
 
 /**
  * Created by Stephen on 17/11/2017.
  */
-public class MeasureIntensityDistribution extends HCModule {
+public class MeasureIntensityDistribution extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String MEASUREMENT_TYPE = "Measurement type";
     public static final String INPUT_OBJECTS = "Input objects";
@@ -62,7 +61,7 @@ public class MeasureIntensityDistribution extends HCModule {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        HashMap<Obj,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+        HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
         Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, true);
 
         // Calculating a 3D distance map for the binary image
@@ -126,7 +125,7 @@ public class MeasureIntensityDistribution extends HCModule {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        HashMap<Obj,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+        HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
         Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, true);
 
         // Calculating a 3D distance map for the binary image

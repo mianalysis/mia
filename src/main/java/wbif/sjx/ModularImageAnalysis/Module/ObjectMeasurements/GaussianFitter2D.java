@@ -5,7 +5,8 @@ import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.process.ImageProcessor;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.Iterator;
@@ -15,7 +16,7 @@ import static wbif.sjx.common.MathFunc.GaussianFitter.fitGaussian2D;
 /**
  * Created by sc13967 on 05/06/2017.
  */
-public class GaussianFitter2D extends HCModule {
+public class GaussianFitter2D extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String RADIUS_MODE = "Method to estimate spot radius";
@@ -24,6 +25,7 @@ public class GaussianFitter2D extends HCModule {
     public static final String MEASUREMENT_MULTIPLIER = "Measurement multiplier";
     public static final String MAX_EVALUATIONS = "Maximum number of evaluations";
     public static final String REMOVE_UNFIT = "Remove objects with failed fitting";
+    public static final String APPLY_VOLUME = "Apply volume";
 
     public interface RadiusModes {
         String FIXED_VALUE = "Fixed value";
@@ -34,11 +36,18 @@ public class GaussianFitter2D extends HCModule {
     }
     
     public interface Measurements {
-        String X_0 = "GAUSSFIT2D//X_0";
-        String Y_0 = "GAUSSFIT2D//Y_0";
-        String Z_0 = "GAUSSFIT2D//Z_0_(CENTROID)";
-        String SIGMA_X = "GAUSSFIT2D//SIGMA_X";
-        String SIGMA_Y = "GAUSSFIT2D//SIGMA_Y";
+        String X0_PX = "GAUSSFIT2D//X0_PX";
+        String Y0_PX = "GAUSSFIT2D//Y0_PX";
+        String Z0_SLICE = "GAUSSFIT2D//Z0_SLICE_(CENTROID)";
+        String SIGMA_X_PX = "GAUSSFIT2D//SIGMA_X_PX";
+        String SIGMA_Y_PX = "GAUSSFIT2D//SIGMA_Y_PX";
+        String SIGMA_MEAN_PX = "GAUSSFIT2D//SIGMA_MEAN_PX";
+        String X0_CAL = "GAUSSFIT2D//X0_CAL";
+        String Y0_CAL = "GAUSSFIT2D//Y0_CAL";
+        String Z0_CAL = "GAUSSFIT2D//Z0_CAL_(CENTROID)";
+        String SIGMA_X_CAL = "GAUSSFIT2D//SIGMA_X_CAL";
+        String SIGMA_Y_CAL = "GAUSSFIT2D//SIGMA_Y_CAL";
+        String SIGMA_MEAN_CAL = "GAUSSFIT2D//SIGMA_MEAN_CAL";
         String A_0 = "GAUSSFIT2D//A_0";
         String A_BG = "GAUSSFIT2D//A_BG";
         String THETA = "GAUSSFIT2D//THETA";
@@ -66,6 +75,10 @@ public class GaussianFitter2D extends HCModule {
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
+        // Getting calibration
+        double distPerPxXY = inputImagePlus.getCalibration().pixelWidth;
+        double distPerPxZ = inputImagePlus.getCalibration().pixelDepth;
+
         // Getting input objects to refine (if selected by used)
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -74,6 +87,7 @@ public class GaussianFitter2D extends HCModule {
         String radiusMode = parameters.getValue(RADIUS_MODE);
         int maxEvaluations = parameters.getValue(MAX_EVALUATIONS);
         boolean removeUnfit = parameters.getValue(REMOVE_UNFIT);
+        boolean applyVolume = parameters.getValue(APPLY_VOLUME);
 
         // Running through each object, doing the fitting
         int count = 0;
@@ -81,13 +95,14 @@ public class GaussianFitter2D extends HCModule {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            if (verbose) System.out.println("["+moduleName+"] Fitting object "+(count+1)+" of "+startingNumber);
+            if (verbose)
+                System.out.println("[" + moduleName + "] Fitting object " + (count + 1) + " of " + startingNumber);
             count++;
 
             // Getting the centroid of the current object (should be single points anyway)
             int x = (int) Math.round(inputObject.getXMean(true));
             int y = (int) Math.round(inputObject.getYMean(true));
-            int z = (int) Math.round(inputObject.getZMean(true,false));
+            int z = (int) Math.round(inputObject.getZMean(true, false));
 
             // Getting time and channel coordinates
             int t = inputObject.getT();
@@ -98,7 +113,7 @@ public class GaussianFitter2D extends HCModule {
                 r = (int) Math.ceil(parameters.getValue(RADIUS));
             } else {
                 double multiplier = parameters.getValue(MEASUREMENT_MULTIPLIER);
-                r = (int) Math.ceil(inputObject.getMeasurement(parameters.getValue(RADIUS_MEASUREMENT)).getValue()*multiplier);
+                r = (int) Math.ceil(inputObject.getMeasurement(parameters.getValue(RADIUS_MEASUREMENT)).getValue() * multiplier);
 
             }
 
@@ -115,18 +130,18 @@ public class GaussianFitter2D extends HCModule {
 
             // Setting limits
             double[][] limits = new double[][]{
-                    {0, 2*r+1},
-                    {0, 2*r+1},
+                    {0, 2 * r + 1},
+                    {0, 2 * r + 1},
                     {1E-50, Double.MAX_VALUE}, // Sigma can't go to zero
                     {1E-50, Double.MAX_VALUE},
                     {Double.MIN_VALUE, Double.MAX_VALUE},
                     {Double.MIN_VALUE, Double.MAX_VALUE},
-                    {0, 2*Math.PI}
+                    {0, 2 * Math.PI}
             };
 
             // Getting the local image region
-            if (x-r > 0 & x+r+1 < inputImagePlus.getWidth() & y-r>0 & y+r+1 < inputImagePlus.getHeight()) {
-                inputImagePlus.setPosition(1, z+1, t+1);
+            if (x - r > 0 & x + r + 1 < inputImagePlus.getWidth() & y - r > 0 & y + r + 1 < inputImagePlus.getHeight()) {
+                inputImagePlus.setPosition(1, z + 1, t + 1);
                 ImageProcessor ipr = inputImagePlus.getProcessor();
                 int[] xx = new int[]{x - r, x - r, x + r + 1, x + r + 1, x - r};
                 int[] yy = new int[]{y - r, y + r + 1, y + r + 1, y - r, y - r};
@@ -151,7 +166,7 @@ public class GaussianFitter2D extends HCModule {
                 if (pOut != null) {
                     x0 = pOut[0] + x - r;
                     y0 = pOut[1] + y - r;
-                    z0 = inputObject.getZMean(true,false);
+                    z0 = inputObject.getZMean(true, false);
                     sx = pOut[2];
                     sy = pOut[3];
                     A0 = pOut[4];
@@ -180,23 +195,51 @@ public class GaussianFitter2D extends HCModule {
 //                    IJ.runMacro("waitForUser");
 
                 }
+
+                // If the centroid has moved more than the width of the window, removing this localisation
+                if (pOut != null) {
+                    if (pOut[0] <= 1 || pOut[0] >= r * 2 || pOut[1] <= 1 || pOut[1] >= r * 2 || pOut[2] < 0.1 || pOut[3] < 0.1) {
+                        pOut = null;
+                    }
+                }
             }
 
+            double sm = (sx+sy)/2;
+
             // Storing the results as measurements
-            inputObject.addMeasurement(new Measurement(Measurements.X_0,x0,this));
-            inputObject.addMeasurement(new Measurement(Measurements.Y_0,y0,this));
-            inputObject.addMeasurement(new Measurement(Measurements.Z_0,z0,this));
-            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_X,sx,this));
-            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_Y,sy,this));
-            inputObject.addMeasurement(new Measurement(Measurements.A_0,A0,this));
-            inputObject.addMeasurement(new Measurement(Measurements.A_BG,ABG,this));
-            inputObject.addMeasurement(new Measurement(Measurements.THETA,th,this));
-            inputObject.addMeasurement(new Measurement(Measurements.ELLIPTICITY,ellipticity,this));
+            inputObject.addMeasurement(new Measurement(Measurements.X0_PX, x0));
+            inputObject.addMeasurement(new Measurement(Measurements.Y0_PX, y0));
+            inputObject.addMeasurement(new Measurement(Measurements.Z0_SLICE, z0));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_X_PX, sx));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_Y_PX, sy));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_PX, sm));
+            inputObject.addMeasurement(new Measurement(Measurements.X0_CAL, x0*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Measurements.Y0_CAL, y0*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Measurements.Z0_CAL, z0*distPerPxZ));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_X_CAL, sx*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_Y_CAL, sy*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_CAL, sm*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Measurements.A_0, A0));
+            inputObject.addMeasurement(new Measurement(Measurements.A_BG, ABG));
+            inputObject.addMeasurement(new Measurement(Measurements.THETA, th));
+            inputObject.addMeasurement(new Measurement(Measurements.ELLIPTICITY, ellipticity));
 
             // If selected, any objects that weren't fit are removed
             if (removeUnfit & pOut == null) {
                 inputObject.removeRelationships();
                 iterator.remove();
+            }
+        }
+
+        // Adding explicit volume to spots
+        if (applyVolume) {
+            GetLocalObjectRegion.getLocalRegions(inputObjects,"SpotVolume",0,false,true, Measurements.SIGMA_X_PX);
+
+            // Replacing spot volumes with explicit volume
+            for (Obj spotObject:inputObjects.values()) {
+                Obj spotVolumeObject = spotObject.getChildren("SpotVolume").values().iterator().next();
+
+                spotObject.setPoints(spotVolumeObject.getPoints());
             }
         }
 
@@ -214,16 +257,24 @@ public class GaussianFitter2D extends HCModule {
         parameters.add(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(MAX_EVALUATIONS, Parameter.INTEGER,1000));
         parameters.add(new Parameter(REMOVE_UNFIT, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(APPLY_VOLUME,Parameter.BOOLEAN,true));
 
     }
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.X_0));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y_0));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z_0));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.X0_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y0_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z0_SLICE));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_MEAN_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.X0_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y0_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z0_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_MEAN_CAL));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.A_0));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.A_BG));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.THETA));
@@ -251,6 +302,7 @@ public class GaussianFitter2D extends HCModule {
 
         returnedParameters.add(parameters.getParameter(MAX_EVALUATIONS));
         returnedParameters.add(parameters.getParameter(REMOVE_UNFIT));
+        returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
 
         return returnedParameters;
 
@@ -265,11 +317,18 @@ public class GaussianFitter2D extends HCModule {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        objectMeasurementReferences.updateImageObjectName(Measurements.X_0,inputObjectsName);
-        objectMeasurementReferences.updateImageObjectName(Measurements.Y_0,inputObjectsName);
-        objectMeasurementReferences.updateImageObjectName(Measurements.Z_0,inputObjectsName);
-        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_X,inputObjectsName);
-        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_Y,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.X0_PX,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.Y0_PX,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.Z0_SLICE,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_X_PX,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_Y_PX,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_MEAN_PX,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.X0_CAL,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.Y0_CAL,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.Z0_CAL,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_X_CAL,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_Y_CAL,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_MEAN_CAL,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.A_0,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.A_BG,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.THETA,inputObjectsName);
@@ -284,3 +343,5 @@ public class GaussianFitter2D extends HCModule {
 
     }
 }
+
+//when signax_0:sigmay_o is >1.5, delete spot... i - 1 ;

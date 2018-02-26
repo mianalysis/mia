@@ -9,7 +9,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.BooleanParameter;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ChoiceArrayParameter;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.FileParameter;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.TextParameter;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.swing.*;
@@ -29,7 +29,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, HCModule module, int panelWidth) {
+    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module, int panelWidth) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -153,7 +153,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createAdvancedModuleControl(HCModule module, ButtonGroup group, HCModule activeModule, int panelWidth) {
+    public JPanel createAdvancedModuleControl(Module module, ButtonGroup group, Module activeModule, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -193,7 +193,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicModuleHeading(HCModule module, int panelWidth) {
+    public JPanel createBasicModuleHeading(Module module, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -214,7 +214,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicModuleControl(HCModule module, int panelWidth) {
+    public JPanel createBasicModuleControl(Module module, int panelWidth) {
         // Only show if the module is enabled
         if (!module.isEnabled()) return null;
 

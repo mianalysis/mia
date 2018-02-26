@@ -5,7 +5,7 @@ import ij.gui.Roi;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 /**
  * Created by sc13967 on 16/01/2018.
  */
-public class ActiveContourObjectDetection extends HCModule {
+public class ActiveContourObjectDetection extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String UPDATE_INPUT_OBJECTS = "Update input objects";
@@ -166,10 +166,10 @@ public class ActiveContourObjectDetection extends HCModule {
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
 
             if (updateInputObjects) {
-                HashMap<Obj,Float> hues = inputObjects.getHue(colourMode,"","",true);
+                HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,"","",true);
                 AddObjectsOverlay.createOverlay(dispIpl,inputObjects,positionMode,null,hues,null,8);
             } else {
-                HashMap<Obj,Float> hues = outputObjects.getHue(colourMode,"","",true);
+                HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"","",true);
                 AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,hues,null,8);
             }
 

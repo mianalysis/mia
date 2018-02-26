@@ -1,13 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by sc13967 on 31/01/2018.
  */
-public class MergeObjects extends HCModule {
+public class MergeObjects extends Module {
     public static final String INPUT_OBJECTS_1 = "Input objects 1";
     public static final String INPUT_OBJECTS_2 = "Input objects 2";
     public static final String OUTPUT_OBJECTS= "Output objects";

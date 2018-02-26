@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
+import ij.process.FloatPolygon;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ProjectObjects;
 import wbif.sjx.common.Object.*;
@@ -220,12 +221,12 @@ public class Obj extends Volume {
 
     }
 
-    public Roi getRoi(ImagePlus templateIpl) {
+    public PolygonRoi getRoi(ImagePlus templateIpl) {
         // Projecting object and converting to a binary 2D image
         Obj projectedObject = ProjectObjects.createProjection(this,"Projected");
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(projectedObject);
-        HashMap<Obj,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+        HashMap<Integer,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
         Image objectImage = objectCollection.convertObjectsToImage("Output",templateIpl, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, false);
 
         // Getting the object as a Roi

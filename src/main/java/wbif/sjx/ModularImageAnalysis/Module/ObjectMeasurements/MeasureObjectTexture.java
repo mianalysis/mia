@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import ij.ImagePlus;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.GetLocalObjectRegion;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Takes a set of objects and measures intensity texture values on a provided image.  Measurements are stored with the
  * objects.
  */
-public class MeasureObjectTexture extends HCModule {
+public class MeasureObjectTexture extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String POINT_MEASUREMENT = "Measurements based on centroid point";

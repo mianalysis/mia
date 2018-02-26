@@ -2,15 +2,16 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
 import ij.IJ;
 import ij.ImagePlus;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Object.Point;
 
 import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 04/05/2017.
  */
-public class RelateObjects extends HCModule {
+public class RelateObjects extends Module {
     public final static String PARENT_OBJECTS = "Parent (larger) objects";
     public final static String CHILD_OBJECTS = "Child (smaller) objects";
     public final static String RELATE_MODE = "Method to relate objects";
@@ -94,7 +95,7 @@ public class RelateObjects extends HCModule {
                         double zDist = childObject.getZMean(true, true) - parentObject.getZMean(true, true);
                         double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
-                        if (dist < minDist && dist < linkingDistance) {
+                        if (dist < minDist && dist <= linkingDistance) {
                             minDist = dist;
                             currentLink = parentObject;
                         }
@@ -119,7 +120,7 @@ public class RelateObjects extends HCModule {
                                 zDist = childZ[j] - parentZ[i];
                                 dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
-                                if (dist < minDist && dist < linkingDistance) {
+                                if (dist < minDist && dist <= linkingDistance) {
                                     minDist = dist;
                                     currentLink = parentObject;
 
@@ -130,6 +131,19 @@ public class RelateObjects extends HCModule {
                         break;
 
                 }
+            }
+
+            // If using surface linking and the child is within the parent, setting the distance to a negative value
+            if (referencePoint.equals(ReferencePoints.SURFACE) && currentLink != null) {
+                // Getting child centroid
+                int xChild = (int) Math.round(childObject.getXMean(true));
+                int yChild = (int) Math.round(childObject.getYMean(true));
+                int zChild = (int) Math.round(childObject.getZMean(true,false));
+                Point<Integer> centroid = new Point<>(xChild,yChild,zChild);
+
+                // Checking if the centroid pixel is also a parent pixel
+                if (currentLink.getPoints().contains(centroid)) minDist = -minDist;
+
             }
 
             if (currentLink != null) {
@@ -143,6 +157,16 @@ public class RelateObjects extends HCModule {
                 } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
                     childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX,minDist));
                     childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_CAL,minDist*dpp));
+
+                }
+            } else {
+                if (referencePoint.equals(ReferencePoints.CENTROID)) {
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX,Double.NaN));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_CAL,Double.NaN));
+
+                } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX,Double.NaN));
+                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_CAL,Double.NaN));
 
                 }
             }
@@ -170,7 +194,7 @@ public class RelateObjects extends HCModule {
 
                     // If the test object and the current object is less than the linking distance, assign the relationship
                     double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
-                    if (dist < linkingDistance) {
+                    if (dist <= linkingDistance) {
                         childObject.addParent(parentObject);
                         parentObject.addChild(childObject);
 

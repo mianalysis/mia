@@ -1,20 +1,19 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 import wbif.sjx.common.Object.LUTs;
 
-import java.awt.*;
 import java.util.HashMap;
 
 
 /**
  * Created by sc13967 on 03/05/2017.
  */
-public class ShowObjects extends HCModule {
+public class ShowObjects extends Module {
     public final static String INPUT_OBJECTS = "Input objects";
     public final static String TEMPLATE_IMAGE = "Template image";
 
@@ -45,7 +44,7 @@ public class ShowObjects extends HCModule {
         }
 
         // Converting objects to an image
-        HashMap<Obj,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"","",false);
+        HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"","",false);
         Image image = inputObjects.convertObjectsToImage("Objects",templateImage.getImagePlus(),ObjectImageConverter.ColourModes.RANDOM_COLOUR,hues,false);
         image.getImagePlus().setTitle(inputObjectName);
 

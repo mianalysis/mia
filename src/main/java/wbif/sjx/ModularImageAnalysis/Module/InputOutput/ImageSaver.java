@@ -3,12 +3,9 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import ij.process.LUT;
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowImage;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
@@ -16,7 +13,7 @@ import java.io.File;
 /**
  * Created by sc13967 on 26/06/2017.
  */
-public class ImageSaver extends HCModule {
+public class ImageSaver extends Module {
     public static final String SAVE_IMAGE = "Save image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String SAVE_LOCATION = "Save location";
@@ -66,7 +63,6 @@ public class ImageSaver extends HCModule {
                 Image inputImage = workspace.getImages().get(inputImageName);
                 ImagePlus dispIpl = new Duplicator().run(inputImage.getImagePlus());
                 IntensityMinMax.run(dispIpl,true);
-                dispIpl.setLut(LUTs.Random(true));
                 dispIpl.show();
             }
 
@@ -132,7 +128,6 @@ public class ImageSaver extends HCModule {
         if (parameters.getValue(SHOW_IMAGE)) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
             IntensityMinMax.run(dispIpl,true);
-            dispIpl.setLut(LUTs.Grey());
             dispIpl.show();
         }
     }

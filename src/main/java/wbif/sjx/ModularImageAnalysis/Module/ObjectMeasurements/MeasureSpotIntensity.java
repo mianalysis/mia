@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements;
 
 import ij.ImagePlus;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * 3D.  Allows the user to specify the region around each point to be measured.  Intensity traces are stored as
  * HCMultiMeasurements
  */
-public class MeasureSpotIntensity extends HCModule {
+public class MeasureSpotIntensity extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String INPUT_OBJECTS = "Input spot objects";
     public static final String MEASUREMENT_RADIUS = "Measurement radius";
@@ -121,9 +121,6 @@ public class MeasureSpotIntensity extends HCModule {
                 spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.SUM), cs.getSum()));
 
         }
-
-        spotObjects = null;
-
     }
 
     @Override

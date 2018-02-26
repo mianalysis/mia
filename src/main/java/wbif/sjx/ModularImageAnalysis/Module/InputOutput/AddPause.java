@@ -1,19 +1,15 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.HCModule;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
-import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Created by sc13967 on 09/02/2018.
  */
-public class AddPause extends HCModule {
+public class AddPause extends Module {
     public static final String ENABLE_PAUSE = "Enable pause";
 
     private static final String RESUME = "Resume";

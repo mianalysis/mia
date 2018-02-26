@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Object;
+package wbif.sjx.ModularImageAnalysis;
 
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects;
 
