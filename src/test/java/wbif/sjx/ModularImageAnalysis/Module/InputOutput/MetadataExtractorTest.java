@@ -98,7 +98,7 @@ public class MetadataExtractorTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testRunKeywordMissing() throws IOException {
         // Creating the fake file to process
         TemporaryFolder temporaryFolder = new TemporaryFolder();

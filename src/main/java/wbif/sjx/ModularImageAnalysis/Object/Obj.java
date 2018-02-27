@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
+import ij.gui.Wand;
 import ij.process.FloatPolygon;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ProjectObjects;
@@ -230,11 +231,19 @@ public class Obj extends Volume {
         Image objectImage = objectCollection.convertObjectsToImage("Output",templateIpl, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, false);
 
         // Getting the object as a Roi
+        int x = (int) Math.round(projectedObject.getX(true)[0]);
+        int y = (int) Math.round(projectedObject.getY(true)[0]);
+
+        // Filling holes in the object
         objectImage.getImagePlus().getProcessor().invert();
-        IJ.runPlugIn(objectImage.getImagePlus(),"ij.plugin.Selection","from");
-        return objectImage.getImagePlus().getRoi();
-//        Polygon polygon = objectImage.getImagePlus().getRoi().getPolygon();
-//        return new PolygonRoi(polygon,Roi.POLYGON);
+        IJ.run(objectImage.getImagePlus(),"Options...", "iterations=1 count=1 do=[Fill Holes] stack");
+
+        // Detecting the object edge
+        Wand wand = new Wand(objectImage.getImagePlus().getProcessor());
+        wand.autoOutline(x,y);
+
+        // Creating the ROI
+        return new PolygonRoi(wand.xpoints,wand.ypoints,wand.npoints,Roi.TRACED_ROI);
 
     }
 
