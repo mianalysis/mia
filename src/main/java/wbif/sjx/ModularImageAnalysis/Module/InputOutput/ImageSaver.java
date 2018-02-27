@@ -6,7 +6,6 @@ import ij.plugin.Duplicator;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
@@ -64,7 +63,6 @@ public class ImageSaver extends Module {
                 Image inputImage = workspace.getImages().get(inputImageName);
                 ImagePlus dispIpl = new Duplicator().run(inputImage.getImagePlus());
                 IntensityMinMax.run(dispIpl,true);
-                dispIpl.setLut(LUTs.Random(true));
                 dispIpl.show();
             }
 
@@ -130,7 +128,6 @@ public class ImageSaver extends Module {
         if (parameters.getValue(SHOW_IMAGE)) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
             IntensityMinMax.run(dispIpl,true);
-            dispIpl.setLut(LUTs.Grey());
             dispIpl.show();
         }
     }

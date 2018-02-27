@@ -87,9 +87,9 @@ public class AddObjectsOverlay extends Module {
                     yMean = object.getYMean(true);
 
                     // Adding each point
-                    double[] xx = object.getX(false);
-                    double[] yy = object.getY(false);
-                    double[] zz = object.getZ(false,false);
+                    double[] xx = object.getX(true);
+                    double[] yy = object.getY(true);
+                    double[] zz = object.getZ(true,false);
 
                     t = object.getT()+1;
 
@@ -194,7 +194,7 @@ public class AddObjectsOverlay extends Module {
 
         if (IDs != null) {
             // Adding text label
-            TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, IDs.get(object.getID()));
+            TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2+5, IDs.get(object.getID()));
             text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
             if (ipl.isHyperStack()) {
                 text.setPosition(1, z, t);

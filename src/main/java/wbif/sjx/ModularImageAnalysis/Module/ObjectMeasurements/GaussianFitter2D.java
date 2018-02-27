@@ -41,11 +41,13 @@ public class GaussianFitter2D extends Module {
         String Z0_SLICE = "GAUSSFIT2D//Z0_SLICE_(CENTROID)";
         String SIGMA_X_PX = "GAUSSFIT2D//SIGMA_X_PX";
         String SIGMA_Y_PX = "GAUSSFIT2D//SIGMA_Y_PX";
+        String SIGMA_MEAN_PX = "GAUSSFIT2D//SIGMA_MEAN_PX";
         String X0_CAL = "GAUSSFIT2D//X0_CAL";
         String Y0_CAL = "GAUSSFIT2D//Y0_CAL";
         String Z0_CAL = "GAUSSFIT2D//Z0_CAL_(CENTROID)";
         String SIGMA_X_CAL = "GAUSSFIT2D//SIGMA_X_CAL";
         String SIGMA_Y_CAL = "GAUSSFIT2D//SIGMA_Y_CAL";
+        String SIGMA_MEAN_CAL = "GAUSSFIT2D//SIGMA_MEAN_CAL";
         String A_0 = "GAUSSFIT2D//A_0";
         String A_BG = "GAUSSFIT2D//A_BG";
         String THETA = "GAUSSFIT2D//THETA";
@@ -195,10 +197,14 @@ public class GaussianFitter2D extends Module {
                 }
 
                 // If the centroid has moved more than the width of the window, removing this localisation
-                if (pOut[0] <= 1 || pOut[0] >= r*2 || pOut[1] <= 1 || pOut[1] >= r*2 || pOut[2] < 0.1 || pOut[3] < 0.1) {
-                    pOut = null;
+                if (pOut != null) {
+                    if (pOut[0] <= 1 || pOut[0] >= r * 2 || pOut[1] <= 1 || pOut[1] >= r * 2 || pOut[2] < 0.1 || pOut[3] < 0.1) {
+                        pOut = null;
+                    }
                 }
             }
+
+            double sm = (sx+sy)/2;
 
             // Storing the results as measurements
             inputObject.addMeasurement(new Measurement(Measurements.X0_PX, x0));
@@ -206,11 +212,13 @@ public class GaussianFitter2D extends Module {
             inputObject.addMeasurement(new Measurement(Measurements.Z0_SLICE, z0));
             inputObject.addMeasurement(new Measurement(Measurements.SIGMA_X_PX, sx));
             inputObject.addMeasurement(new Measurement(Measurements.SIGMA_Y_PX, sy));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_PX, sm));
             inputObject.addMeasurement(new Measurement(Measurements.X0_CAL, x0*distPerPxXY));
             inputObject.addMeasurement(new Measurement(Measurements.Y0_CAL, y0*distPerPxXY));
             inputObject.addMeasurement(new Measurement(Measurements.Z0_CAL, z0*distPerPxZ));
             inputObject.addMeasurement(new Measurement(Measurements.SIGMA_X_CAL, sx*distPerPxXY));
             inputObject.addMeasurement(new Measurement(Measurements.SIGMA_Y_CAL, sy*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_CAL, sm*distPerPxXY));
             inputObject.addMeasurement(new Measurement(Measurements.A_0, A0));
             inputObject.addMeasurement(new Measurement(Measurements.A_BG, ABG));
             inputObject.addMeasurement(new Measurement(Measurements.THETA, th));
@@ -260,11 +268,13 @@ public class GaussianFitter2D extends Module {
         objectMeasurementReferences.add(new MeasurementReference(Measurements.Z0_SLICE));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X_PX));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_MEAN_PX));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.X0_CAL));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.Y0_CAL));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.Z0_CAL));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X_CAL));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_MEAN_CAL));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.A_0));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.A_BG));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.THETA));
@@ -312,11 +322,13 @@ public class GaussianFitter2D extends Module {
         objectMeasurementReferences.updateImageObjectName(Measurements.Z0_SLICE,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_X_PX,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_Y_PX,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_MEAN_PX,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.X0_CAL,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.Y0_CAL,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.Z0_CAL,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_X_CAL,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_Y_CAL,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.SIGMA_MEAN_CAL,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.A_0,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.A_BG,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.THETA,inputObjectsName);
@@ -331,3 +343,5 @@ public class GaussianFitter2D extends Module {
 
     }
 }
+
+//when signax_0:sigmay_o is >1.5, delete spot... i - 1 ;
