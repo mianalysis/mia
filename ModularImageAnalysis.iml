@@ -59,7 +59,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:1.4.2">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_161/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -170,7 +170,7 @@
     <orderEntry type="module-library">
       <library name="Maven: jdk.tools:jdk.tools:1.6">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_161/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -225,6 +225,6 @@
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-hdfs:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: commons-daemon:commons-daemon:1.0.13" level="project" />
     <orderEntry type="library" name="Maven: org.ehcache:ehcache:3.4.0" level="project" />
-    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.3.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.3.6" level="project" />
   </component>
 </module>

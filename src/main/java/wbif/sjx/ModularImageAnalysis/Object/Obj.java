@@ -221,7 +221,7 @@ public class Obj extends Volume {
 
     }
 
-    public PolygonRoi getRoi(ImagePlus templateIpl) {
+    public Roi getRoi(ImagePlus templateIpl) {
         // Projecting object and converting to a binary 2D image
         Obj projectedObject = ProjectObjects.createProjection(this,"Projected");
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
@@ -232,8 +232,9 @@ public class Obj extends Volume {
         // Getting the object as a Roi
         objectImage.getImagePlus().getProcessor().invert();
         IJ.runPlugIn(objectImage.getImagePlus(),"ij.plugin.Selection","from");
-        Polygon polygon = objectImage.getImagePlus().getRoi().getPolygon();
-        return new PolygonRoi(polygon,Roi.POLYGON);
+        return objectImage.getImagePlus().getRoi();
+//        Polygon polygon = objectImage.getImagePlus().getRoi().getPolygon();
+//        return new PolygonRoi(polygon,Roi.POLYGON);
 
     }
 

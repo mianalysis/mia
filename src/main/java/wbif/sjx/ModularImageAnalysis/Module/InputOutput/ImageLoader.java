@@ -55,6 +55,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
     public static final String UNITS = "Units";
+    public static final String USE_IMAGEJ_READER = "Use ImageJ reader";
     public static final String SHOW_IMAGE = "Show image";
 
     public interface ImportModes {
@@ -230,6 +231,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         double zCal = parameters.getValue(Z_CAL);
         String units = parameters.getValue(UNITS);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean useImageJReader = parameters.getValue(USE_IMAGEJ_READER);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         if (useAllC) startingC = -1;
@@ -239,32 +241,38 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
 
         ImagePlus ipl = null;
         try {
-            switch (importMode) {
-                case ImportModes.CURRENT_FILE:
-                    File file = workspace.getMetadata().getFile();
-                    if (file == null) throw new GenericMIAException("Load file using Analysis > Set file to analyse");
-                    ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(),seriesNumber,dimRanges);
-                    break;
+            if (useImageJReader) {
+                ipl = IJ.openImage(workspace.getMetadata().getFile().getAbsolutePath());
 
-                case ImportModes.IMAGEJ:
-                    ipl = IJ.getImage();
-                    break;
+            } else {
+                switch (importMode) {
+                    case ImportModes.CURRENT_FILE:
+                        File file = workspace.getMetadata().getFile();
+                        if (file == null)
+                            throw new GenericMIAException("Load file using Analysis > Set file to analyse");
+                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges);
+                        break;
 
-                case ImportModes.MATCHING_FORMAT:
-                    switch (nameFormat) {
-                        case NameFormats.INCUCYTE_SHORT:
-                            ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),comment,seriesNumber,dimRanges);
-                            break;
+                    case ImportModes.IMAGEJ:
+                        ipl = IJ.getImage();
+                        break;
 
-                        case NameFormats.INPUT_FILE_PREFIX:
-                            ipl = getFormattedNameImage(nameFormat,workspace.getMetadata(),prefix,seriesNumber,dimRanges);
-                            break;
-                    }
-                    break;
+                    case ImportModes.MATCHING_FORMAT:
+                        switch (nameFormat) {
+                            case NameFormats.INCUCYTE_SHORT:
+                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges);
+                                break;
 
-                case ImportModes.SPECIFIC_FILE:
-                    ipl = getBFImage(filePath,seriesNumber,dimRanges);
-                    break;
+                            case NameFormats.INPUT_FILE_PREFIX:
+                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges);
+                                break;
+                        }
+                        break;
+
+                    case ImportModes.SPECIFIC_FILE:
+                        ipl = getBFImage(filePath, seriesNumber, dimRanges);
+                        break;
+                }
             }
         } catch (ServiceException | DependencyException | IOException | FormatException e) {
             e.printStackTrace();
@@ -321,6 +329,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         parameters.add(new Parameter(XY_CAL, Parameter.DOUBLE, 1.0));
         parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
         parameters.add(new Parameter(UNITS, Parameter.STRING, "um"));
+        parameters.add(new Parameter(USE_IMAGEJ_READER, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
@@ -386,6 +395,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(USE_IMAGEJ_READER));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
