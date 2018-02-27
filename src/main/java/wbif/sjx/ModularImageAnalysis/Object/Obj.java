@@ -225,7 +225,7 @@ public class Obj extends Volume {
         Obj projectedObject = ProjectObjects.createProjection(this,"Projected");
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(projectedObject);
-        HashMap<Obj,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+        HashMap<Integer,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
         Image objectImage = objectCollection.convertObjectsToImage("Output",templateIpl, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, false);
 
         // Getting the object as a Roi

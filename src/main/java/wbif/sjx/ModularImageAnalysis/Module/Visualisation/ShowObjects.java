@@ -44,7 +44,7 @@ public class ShowObjects extends Module {
         }
 
         // Converting objects to an image
-        HashMap<Obj,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"","",false);
+        HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"","",false);
         Image image = inputObjects.convertObjectsToImage("Objects",templateImage.getImagePlus(),ObjectImageConverter.ColourModes.RANDOM_COLOUR,hues,false);
         image.getImagePlus().setTitle(inputObjectName);
 

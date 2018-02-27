@@ -94,7 +94,7 @@ public class SplineAnalysis extends Module {
             ObjCollection tempObjects = new ObjCollection("Backbone");
             tempObjects.add(inputObject);
 
-            HashMap<Obj,Float> hues = tempObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+            HashMap<Integer,Float> hues = tempObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
             ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, false).getImagePlus();
             InvertIntensity.process(objectIpl);
 

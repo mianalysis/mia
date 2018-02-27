@@ -59,33 +59,6 @@ public class RunTrackMate extends Module {
 
     }
 
-//    private void addEstimatedDiameter(ObjCollection objects) {
-//        for (Obj object:objects.values()) {
-//            int x = (int) object.getX(true)[0];
-//            int y = (int) object.getY(true)[0];
-//            int z = (int) object.getZ(false,false)[0]; // In slice coordinates
-//            int r = (int) Math.round(object.getMeasurement(Measurements.ESTIMATED_DIAMETER).getValue());
-//
-//            double distXY = object.getDistPerPxXY();
-//            double distZ = object.getDistPerPxZ();
-//            double xyzRatio = distZ/distXY;
-//
-//            for (int xx = x-r; xx<=x+r; xx++) {
-//                for (int yy = y-r; yy<=y+r; yy++) {
-//                    // Z range in slice coordinates
-//                    int zMin = (int) Math.floor(z-r/xyzRatio);
-//                    int zMax = (int) Math.ceil(z+r/xyzRatio);
-//
-//                    for (int zz = zMin;zz<=zMax;zz++) {
-//                        double dist = Math.sqrt(((xx-x)*(xx-x))+((yy-y)*(yy-y))+((zz-z)*xyzRatio*(zz-z)*xyzRatio));
-//
-//
-//
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     @Override
     public String getTitle() {
@@ -102,7 +75,7 @@ public class RunTrackMate extends Module {
     public void run(Workspace workspace, boolean verbose) {
         // Loading input image
         String targetImageName = parameters.getValue(INPUT_IMAGE);
-        if (verbose) System.out.println("["+moduleName+"] Loading image ("+targetImageName+") into workspace");
+        writeMessage("Loading image ("+targetImageName+") into workspace",verbose);
         Image targetImage = workspace.getImage(targetImageName);
         ImagePlus ipl = targetImage.getImagePlus();
 
@@ -177,16 +150,19 @@ public class RunTrackMate extends Module {
         TrackMate trackmate = new TrackMate(model, settings);
 
         // Running TrackMate
-        if (verbose) System.out.println("["+moduleName+"] Running TrackMate detection");
+        writeMessage("Running TrackMate detection",verbose);
         if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());
         if (!trackmate.execDetection()) IJ.log(trackmate.getErrorMessage());
         if (!trackmate.computeSpotFeatures(false)) IJ.log(trackmate.getErrorMessage());
+
+        // Re-applying the spatial calibration
+        ipl.setCalibration(calibration);
 
         if (normaliseIntensity) ipl = targetImage.getImagePlus();
 
         if (!(boolean) parameters.getValue(DO_TRACKING)) {
             // Getting trackObjects and adding them to the output trackObjects
-            if (verbose) System.out.println("["+moduleName+"] Processing detected objects");
+            writeMessage("Processing detected objects",verbose);
 
             SpotCollection spots = model.getSpots();
             for (Spot spot:spots.iterable(false)) {
@@ -203,7 +179,7 @@ public class RunTrackMate extends Module {
 
             // Adding explicit volume to spots
             if (estimateSize) {
-                ObjCollection spotVolumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
+                GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
 
                 // Replacing spot volumes with explicit volume
                 for (Obj spotObject:spotObjects.values()) {
@@ -214,8 +190,8 @@ public class RunTrackMate extends Module {
             }
 
             // Adding spotObjects to the workspace
-            if (verbose) System.out.println("["+moduleName+"] "+spots.getNSpots(false)+" trackObjects detected");
-            if (verbose) System.out.println("["+moduleName+"] Adding spotObjects ("+spotObjectsName+") to workspace");
+            writeMessage(spots.getNSpots(false)+" trackObjects detected",verbose);
+            writeMessage("Adding spotObjects ("+spotObjectsName+") to workspace",verbose);
             workspace.addObjects(spotObjects);
 
             // Displaying trackObjects (if selected)
@@ -223,9 +199,9 @@ public class RunTrackMate extends Module {
                 ipl = new Duplicator().run(ipl);
                 IntensityMinMax.run(ipl,true);
                 String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-                HashMap<Obj,Float> hues = spotObjects.getHue(colourMode,"","",true);
+                HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"","",true);
                 String labelMode = ObjCollection.LabelModes.ID;
-                HashMap<Obj,String> IDs = showID ? spotObjects.getIDs(labelMode,"","",0) : null;
+                HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"","",0) : null;
                 AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8);
 
                 // Displaying the overlay
@@ -236,11 +212,11 @@ public class RunTrackMate extends Module {
             return;
         }
 
-        if (verbose) System.out.println("["+moduleName+"] Running TrackMate tracking");
+        writeMessage("Running TrackMate tracking",verbose);
         if (!trackmate.execTracking()) IJ.log(trackmate.getErrorMessage());
 
         // Converting tracks to local track model
-        if (verbose) System.out.println("["+moduleName+"] Converting tracks to local track model");
+        writeMessage("Converting tracks to local track model",verbose);
 
         TrackModel trackModel = model.getTrackModel();
         Set<Integer> trackIDs = trackModel.trackIDs(false);
@@ -299,13 +275,11 @@ public class RunTrackMate extends Module {
         }
 
         // Displaying the number of objects detected
-        if (verbose) {
-            System.out.println("["+moduleName+"] "+spotObjects.size()+" spots detected");
-            if (createTracks) System.out.println("["+moduleName+"] "+trackObjects.size()+" tracks detected");
-        }
+        writeMessage(spotObjects.size()+" spots detected",verbose);
+            if (createTracks) writeMessage(trackObjects.size()+" tracks detected",verbose);
 
         // Adding objects to the workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+spotObjectsName+") to workspace");
+        writeMessage("Adding objects ("+spotObjectsName+") to workspace",verbose);
         workspace.addObjects(spotObjects);
         if (createTracks) workspace.addObjects(trackObjects);
 
@@ -324,9 +298,9 @@ public class RunTrackMate extends Module {
 
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.PARENT_ID;
-            HashMap<Obj,Float> hues = spotObjects.getHue(colourMode,"",trackObjectsName,true);
+            HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"",trackObjectsName,true);
             String labelMode = ObjCollection.LabelModes.PARENT_ID;
-            HashMap<Obj,String> IDs = showID ? spotObjects.getIDs(labelMode,"",trackObjectsName,0) : null;
+            HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",trackObjectsName,0) : null;
             AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8);
 
             // Displaying the overlay

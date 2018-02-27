@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 
@@ -24,6 +25,12 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     public Image(String name, ImagePlus imagePlus) {
         this.name = name;
         this.imagePlus = imagePlus;
+
+    }
+
+    public Image(String name, Img<T> img) {
+        this.name = name;
+        this.imagePlus = ImageJFunctions.wrap(img,name);
 
     }
 

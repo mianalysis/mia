@@ -109,9 +109,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public Image convertObjectsToImage(String outputName, ImagePlus templateIpl, String colourMode, HashMap<Obj,Float> hues, boolean hideMissing) {
+    public Image convertObjectsToImage(String outputName, ImagePlus templateIpl, String colourMode, HashMap<Integer,Float> hues, boolean hideMissing) {
         ImagePlus ipl;
-
         int bitDepth = 8;
         switch (colourMode){
             case ColourModes.RANDOM_COLOUR:
@@ -194,11 +193,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 ipl.setPosition(1,zPos+1,tPos+1);
 
                 if (colourMode.equals(ColourModes.SINGLE_COLOUR) | colourMode.equals(ColourModes.RANDOM_COLOUR)) {
-                    ipl.getProcessor().putPixel(x.get(i), y.get(i), (int) Math.round(hues.get(object)*255));
+                    ipl.getProcessor().putPixel(x.get(i), y.get(i), (int) Math.round(hues.get(object.getID())*255));
 
                 } else if (colourMode.equals(ColourModes.MEASUREMENT_VALUE) | colourMode.equals(ColourModes.ID)
                         | colourMode.equals(ColourModes.PARENT_ID)) {
-                    ipl.getProcessor().putPixelValue(x.get(i), y.get(i), hues.get(object));
+                    ipl.getProcessor().putPixelValue(x.get(i), y.get(i), hues.get(object.getID()));
 
                 }
             }
@@ -217,8 +216,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public HashMap<Obj,String> getIDs(String labelMode, String measurementForID, String parentObjectsForID, int nDecimalPlaces) {
-        HashMap<Obj,String> IDs = new HashMap<>();
+    public HashMap<Integer,String> getIDs(String labelMode, String measurementForID, String parentObjectsForID, int nDecimalPlaces) {
+        HashMap<Integer,String> IDs = new HashMap<>();
 
         DecimalFormat df;
         if (nDecimalPlaces == 0) {
@@ -235,15 +234,16 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         for (Obj object:values()) {
             switch (labelMode) {
                 case LabelModes.ID:
-                    IDs.put(object,df.format(object.getID()));
+                    IDs.put(object.getID(),df.format(object.getID()));
                     break;
 
                 case LabelModes.MEASUREMENT_VALUE:
-                    IDs.put(object, df.format(object.getMeasurement(measurementForID).getValue()));
+                    IDs.put(object.getID(), df.format(object.getMeasurement(measurementForID).getValue()));
+                    System.out.println(IDs);
                     break;
 
                 case LabelModes.PARENT_ID:
-                    IDs.put(object, df.format(object.getParent(parentObjectsForID).getID()));
+                    IDs.put(object.getID(), df.format(object.getParent(parentObjectsForID).getID()));
                     break;
             }
         }
@@ -252,8 +252,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public HashMap<Obj,Float> getHue(String colourMode, String measurementForColour, String parentObjectsForColour, boolean normalised) {
-        HashMap<Obj,Float> hues = new HashMap<>();
+    public HashMap<Integer,Float> getHue(String colourMode, String measurementForColour, String parentObjectsForColour, boolean normalised) {
+        HashMap<Integer,Float> hues = new HashMap<>();
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
@@ -262,6 +262,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         for (Obj object:values()) {
+            int ID = object.getID();
+
             // Default hue value in case none is assigned
             float H = 0f;
 
@@ -302,7 +304,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
             }
 
-            hues.put(object,H);
+            hues.put(ID,H);
 
         }
 

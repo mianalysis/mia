@@ -35,6 +35,7 @@ public class GetLocalObjectRegion extends Module {
             double xCent = inputObject.getXMean(true);
             double yCent = inputObject.getYMean(true);
             double zCent = inputObject.getZMean(true,false);
+
             if (useMeasurement) radius = inputObject.getMeasurement(measurementName).getValue();
 
             if (calibrated) {

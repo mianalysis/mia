@@ -34,8 +34,6 @@ public class MeasureObjectShape extends Module {
         double[] y = object.getY(true);
         double[] z = object.getZ(true,true);
 
-        TreeSet<Point<Integer>> points = object.getPoints();
-
         double maxDistance = 0;
 
         for (int i=0;i<x.length;i++) {

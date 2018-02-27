@@ -61,7 +61,7 @@ public class MeasureIntensityDistribution extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        HashMap<Obj,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+        HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
         Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, true);
 
         // Calculating a 3D distance map for the binary image
@@ -125,7 +125,7 @@ public class MeasureIntensityDistribution extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        HashMap<Obj,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+        HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
         Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, true);
 
         // Calculating a 3D distance map for the binary image

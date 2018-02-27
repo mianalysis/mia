@@ -82,6 +82,8 @@ public class AnalysisControlButton extends JButton implements ActionListener {
                             e1.printStackTrace();
                         } catch (GenericMIAException e1) {
                             IJ.showMessage(e1.getMessage());
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
                     });
                     t.start();

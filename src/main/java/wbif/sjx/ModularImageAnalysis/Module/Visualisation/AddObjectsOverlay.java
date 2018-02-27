@@ -12,7 +12,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -35,6 +34,8 @@ public class AddObjectsOverlay extends Module {
     public static final String X_POSITION_MEASUREMENT = "X-position measurement";
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
+    public static final String USE_RADIUS = "Use radius measurement";
+    public static final String MEASUREMENT_FOR_RADIUS = "Measuremen for radius";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
@@ -57,7 +58,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
-                                     String[] posMeasurements,HashMap<Obj,Float> colours, HashMap<Obj,String> IDs,
+                                     String[] posMeasurements,HashMap<Integer,Float> colours, HashMap<Integer,String> IDs,
                                      int labelSize) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -69,11 +70,9 @@ public class AddObjectsOverlay extends Module {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
-        ArrayList<Roi> roiss = new ArrayList<>();
-
         // Running through each object, adding it to the overlay along with an ID label
         for (Obj object:inputObjects.values()) {
-            Color colour = Color.getHSBColor(colours.get(object),1,1);
+            Color colour = Color.getHSBColor(colours.get(object.getID()),1,1);
 
             double xMean = 0;
             double yMean = 0;
@@ -99,11 +98,9 @@ public class AddObjectsOverlay extends Module {
                         roi.setPointType(PointRoi.NORMAL);
 
                         if (ipl.isHyperStack()) {
-                            ipl.setPosition(1, (int) zz[i], t);
                             roi.setPosition(1, (int) zz[i], t);
                         } else {
                             int pos = Math.max(Math.max(1,(int) zz[i]),t);
-                            ipl.setPosition(pos);
                             roi.setPosition(pos);
                         }
                         roi.setStrokeColor(colour);
@@ -125,11 +122,9 @@ public class AddObjectsOverlay extends Module {
                     PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
                     pointRoi.setPointType(PointRoi.NORMAL);
                     if (ipl.isHyperStack()) {
-                        ipl.setPosition(1, z, t);
                         pointRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-                        ipl.setPosition(pos);
                         pointRoi.setPosition(pos);
                     }
                     pointRoi.setStrokeColor(colour);
@@ -149,11 +144,9 @@ public class AddObjectsOverlay extends Module {
 
                     Roi polyRoi = object.getRoi(ipl);
                     if (ipl.isHyperStack()) {
-//                        ipl.setPosition(1, z, t);
                         polyRoi.setPosition(1, z, t);
                     } else {
                         int pos = Math.max(Math.max(1,z),t);
-//                        ipl.setPosition(pos);
                         polyRoi.setPosition(pos);
                     }
                     polyRoi.setStrokeColor(colour);
@@ -170,41 +163,52 @@ public class AddObjectsOverlay extends Module {
                     z = (int) Math.round(zMean+1);
                     t = object.getT()+1;
 
-                    // Adding circles where the object centroids are
-                    pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
-                    pointRoi.setPointType(PointRoi.NORMAL);
-                    if (ipl.isHyperStack()) {
-                        ipl.setPosition(1, z, t);
-                        pointRoi.setPosition(1, z, t);
+                    if (posMeasurements[3].equals("")) {
+                        pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
+                        pointRoi.setPointType(PointRoi.NORMAL);
+                        if (ipl.isHyperStack()) {
+                            pointRoi.setPosition(1, z, t);
+                        } else {
+                            int pos = Math.max(Math.max(1,z),t);
+                            pointRoi.setPosition(pos);
+                        }
+                        pointRoi.setStrokeColor(colour);
+                        ovl.addElement(pointRoi);
+
                     } else {
-                        int pos = Math.max(Math.max(1,z),t);
-                        ipl.setPosition(pos);
-                        pointRoi.setPosition(pos);
+                        double r = object.getMeasurement(posMeasurements[3]).getValue();
+                        OvalRoi ovalRoi = new OvalRoi(xMean + 0.5 - r, yMean + 0.5 - r, 2 * r, 2 * r);
+                        if (ipl.isHyperStack()) {
+                            ovalRoi.setPosition(1, z, t);
+                        } else {
+                            int pos = Math.max(Math.max(1, z), t);
+                            ovalRoi.setPosition(pos);
+                        }
+                        ovalRoi.setStrokeColor(colour);
+                        ovl.addElement(ovalRoi);
                     }
-                    pointRoi.setStrokeColor(colour);
-                    ovl.addElement(pointRoi);
 
-                    break;
+            break;
 
+        }
+
+        if (IDs != null) {
+            // Adding text label
+            TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, IDs.get(object.getID()));
+            text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
+            if (ipl.isHyperStack()) {
+                text.setPosition(1, z, t);
+            } else {
+                text.setPosition(Math.max(Math.max(1, z), t));
             }
+            text.setStrokeColor(colour);
+            ovl.addElement(text);
 
-            if (IDs != null) {
-                // Adding text label
-                TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2, IDs.get(object));
-                text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
-                if (ipl.isHyperStack()) {
-                    text.setPosition(1, z, t);
-                } else {
-                    text.setPosition(Math.max(Math.max(1, z), t));
-                }
-                text.setStrokeColor(colour);
-                ovl.addElement(text);
-
-            }
         }
     }
+}
 
-    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Obj,Float> hues) {
+    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Integer,Float> hues) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -281,6 +285,8 @@ public class AddObjectsOverlay extends Module {
         String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
         String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
         String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
+        boolean useRadius = parameters.getValue(USE_RADIUS);
+        String measurementForRadius = parameters.getValue(MEASUREMENT_FOR_RADIUS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
@@ -297,8 +303,8 @@ public class AddObjectsOverlay extends Module {
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Obj,Float> hues = inputObjects.getHue(colourMode,measurementForColour,parentObjectsForColourName,true);
-        HashMap<Obj,String> IDs;
+        HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,measurementForColour,parentObjectsForColourName,true);
+        HashMap<Integer,String> IDs;
         if (showID) {
             IDs = inputObjects.getIDs(labelMode,measurementForID,parentObjectsForIDName,decimalPlaces);
         } else {
@@ -310,7 +316,12 @@ public class AddObjectsOverlay extends Module {
             case PositionModes.CENTROID:
             case PositionModes.OUTLINE:
             case PositionModes.POSITION_MEASUREMENTS:
-                String[] positionMeasurements = new String[]{xPosMeas,yPosMeas,zPosMeas};
+                String[] positionMeasurements;
+                if (useRadius) {
+                    positionMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas, measurementForRadius};
+                } else {
+                    positionMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas, ""};
+                }
                 createOverlay(ipl,inputObjects,positionMode,positionMeasurements,hues,IDs,labelSize);
                 break;
 
@@ -349,6 +360,8 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(X_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(Y_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(Z_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(USE_RADIUS, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(MEASUREMENT_FOR_RADIUS, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
         parameters.add(new Parameter(MEASUREMENT_FOR_COLOUR, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
@@ -392,7 +405,7 @@ public class AddObjectsOverlay extends Module {
 
                 case LabelModes.PARENT_ID:
                     returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_ID));
-                     inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                     parameters.updateValueSource(PARENT_OBJECT_FOR_ID,inputObjectsName);
                     break;
             }
@@ -413,6 +426,11 @@ public class AddObjectsOverlay extends Module {
             parameters.updateValueSource(Y_POSITION_MEASUREMENT,inputObjectsName);
             parameters.updateValueSource(Z_POSITION_MEASUREMENT,inputObjectsName);
 
+            returnedParameters.add(parameters.getParameter(USE_RADIUS));
+            if (parameters.getValue(USE_RADIUS)) {
+                returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_RADIUS));
+                parameters.updateValueSource(MEASUREMENT_FOR_RADIUS,inputObjectsName);
+            }
         }
 
         if (parameters.getValue(POSITION_MODE).equals(PositionModes.TRACKS)) {
@@ -420,7 +438,6 @@ public class AddObjectsOverlay extends Module {
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(TRACK_OBJECTS,inputObjectsName);
-
         }
 
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));
@@ -462,5 +479,4 @@ public class AddObjectsOverlay extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
-
 }

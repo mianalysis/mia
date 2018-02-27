@@ -75,7 +75,7 @@ public class ExpandShrinkObjects extends Module {
             // Convert each object to an image, do the dilation/erosion, then convert back to an object
             ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
             objectCollection.add(inputObject);
-            HashMap<Obj,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
+            HashMap<Integer,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
             Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImagePlus,ObjectImageConverter.ColourModes.SINGLE_COLOUR,hues,false);
 
             Prefs.blackBackground = true;

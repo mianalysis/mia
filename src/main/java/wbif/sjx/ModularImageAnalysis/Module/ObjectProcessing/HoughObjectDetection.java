@@ -155,9 +155,9 @@ public class HoughObjectDetection extends Module {
             IntensityMinMax.run(dispIpl,true);
 
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-            HashMap<Obj,Float> hues = outputObjects.getHue(colourMode,"","",true);
+            HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"","",true);
 
-            HashMap<Obj, String> IDs = null;
+            HashMap<Integer, String> IDs = null;
             if (showHoughScore) {
                 String labelMode = ObjCollection.LabelModes.MEASUREMENT_VALUE;
                 IDs = outputObjects.getIDs(labelMode, Measurements.SCORE, "",0);

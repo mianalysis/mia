@@ -16,6 +16,9 @@ import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
+import net.imglib2.img.Img;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
@@ -31,7 +34,7 @@ import java.io.IOException;
 /**
  * Created by sc13967 on 15/05/2017.
  */
-public class ImageLoader extends Module {
+public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Module {
     public static final String IMPORT_MODE = "Import mode";
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";
@@ -289,6 +292,9 @@ public class ImageLoader extends Module {
             ipl = new Duplicator().run(ipl);
             ipl.show();
         }
+
+        Img<T> img = workspace.getImage(outputImageName).getImg();
+
     }
 
     @Override
