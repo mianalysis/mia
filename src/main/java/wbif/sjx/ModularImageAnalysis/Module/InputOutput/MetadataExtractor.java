@@ -10,10 +10,10 @@ import wbif.sjx.common.Object.HCMetadata;
  */
 public class MetadataExtractor extends Module {
     public static final String EXTRACTOR_MODE = "Extractor mode";
-    private static final String FILENAME_EXTRACTOR = "Filename extractor";
-    private static final String FOLDERNAME_EXTRACTOR = "Foldername extractor";
+    public static final String FILENAME_EXTRACTOR = "Filename extractor";
+    public static final String FOLDERNAME_EXTRACTOR = "Foldername extractor";
     public static final String KEYWORD_LIST = "Keyword list";
-    private static final String METADATA_FILE_EXTRACTOR = "Metadata file extractor";
+    public static final String METADATA_FILE_EXTRACTOR = "Metadata file extractor";
 
     public interface ExtractorModes {
         String FILENAME_MODE = "Filename";
