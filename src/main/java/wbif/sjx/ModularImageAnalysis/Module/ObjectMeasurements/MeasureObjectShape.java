@@ -4,16 +4,16 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ProjectObjects;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Object.Point;
 
 import java.util.ArrayList;
-import java.util.TreeSet;
 
 /**
  * Created by sc13967 on 29/06/2017.
  */
 public class MeasureObjectShape extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String MEASURE_VOLUME = "Measure volume";
+    public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
 
     public interface Measurements {
         String VOLUME_PX = "SHAPE//VOLUME_PX";
@@ -74,6 +74,10 @@ public class MeasureObjectShape extends Module {
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
 
+        // Getting parameters
+        boolean measureVolume = parameters.getValue(MEASURE_VOLUME);
+        boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA);
+
         int[][] coordRange = inputObjects.getSpatialLimits();
         boolean is2D = (coordRange[2][1]==coordRange[2][0]);
 
@@ -94,21 +98,26 @@ public class MeasureObjectShape extends Module {
             }
 
             // Adding the volume measurements
-            inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX,x.size(),this));
-            inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL,x.size()*cal,this));
+            if (measureVolume) {
+                inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, x.size(), this));
+                inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, x.size() * cal, this));
+            }
 
             // Adding the projected-object diameter measurements
-            Obj projectedObject = ProjectObjects.createProjection(inputObject,"Projected");
-            double maxDistance = calculateMaximumPointPointDistance(projectedObject);
-            inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX,maxDistance,this));
-            inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL,maxDistance*distXY,this));
-
+           if (measureProjectedDiameter) {
+               Obj projectedObject = ProjectObjects.createProjection(inputObject, "Projected");
+               double maxDistance = calculateMaximumPointPointDistance(projectedObject);
+               inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistance, this));
+               inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistance * distXY, this));
+           }
         }
     }
 
     @Override
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(MEASURE_VOLUME, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, true));
 
     }
 
@@ -136,10 +145,24 @@ public class MeasureObjectShape extends Module {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        objectMeasurementReferences.updateImageObjectName(Measurements.VOLUME_PX,inputObjectsName);
-        objectMeasurementReferences.updateImageObjectName(Measurements.VOLUME_CAL,inputObjectsName);
-        objectMeasurementReferences.updateImageObjectName(Measurements.PROJ_DIA_PX,inputObjectsName);
-        objectMeasurementReferences.updateImageObjectName(Measurements.PROJ_DIA_CAL,inputObjectsName);
+        objectMeasurementReferences.get(Measurements.VOLUME_PX).setCalculated(false);
+        objectMeasurementReferences.get(Measurements.VOLUME_CAL).setCalculated(false);
+        objectMeasurementReferences.get(Measurements.PROJ_DIA_PX).setCalculated(false);
+        objectMeasurementReferences.get(Measurements.PROJ_DIA_CAL).setCalculated(false);
+
+        if (parameters.getValue(MEASURE_VOLUME)) {
+            objectMeasurementReferences.updateImageObjectName(Measurements.VOLUME_PX, inputObjectsName);
+            objectMeasurementReferences.updateImageObjectName(Measurements.VOLUME_CAL, inputObjectsName);
+            objectMeasurementReferences.get(Measurements.VOLUME_PX).setCalculated(true);
+            objectMeasurementReferences.get(Measurements.VOLUME_CAL).setCalculated(true);
+        }
+
+        if (parameters.getValue(MEASURE_PROJECTED_DIA)) {
+            objectMeasurementReferences.updateImageObjectName(Measurements.PROJ_DIA_PX, inputObjectsName);
+            objectMeasurementReferences.updateImageObjectName(Measurements.PROJ_DIA_CAL, inputObjectsName);
+            objectMeasurementReferences.get(Measurements.PROJ_DIA_PX).setCalculated(true);
+            objectMeasurementReferences.get(Measurements.PROJ_DIA_CAL).setCalculated(true);
+        }
 
         return objectMeasurementReferences;
 

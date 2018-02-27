@@ -32,8 +32,8 @@ public class FilterImage extends Module {
 
     public interface FilterModes {
         String DOG2D = "Difference of Gaussian 2D";
-        String GAUSSIAN2D = "Gaussian 2D";
-        String GAUSSIAN3D = "Gaussian 3D";
+        String GAUSSIAN2D = "Gaussian 2D"; // Tested
+        String GAUSSIAN3D = "Gaussian 3D"; // Tested
         String GRADIENT2D = "Gradient 2D";
         String MEDIAN2D = "Median 2D";
         String MEDIAN3D = "Median 3D";

@@ -67,7 +67,7 @@ public class ChannelExtractorTest {
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(12,outputImage.getNSlices());
-        assertEquals(6,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
@@ -131,7 +131,7 @@ public class ChannelExtractorTest {
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(12,outputImage.getNSlices());
-        assertEquals(6,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
@@ -195,7 +195,7 @@ public class ChannelExtractorTest {
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(12,outputImage.getNSlices());
-        assertEquals(6,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
@@ -259,7 +259,7 @@ public class ChannelExtractorTest {
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(12,outputImage.getNSlices());
-        assertEquals(6,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
@@ -323,7 +323,7 @@ public class ChannelExtractorTest {
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(12,outputImage.getNSlices());
-        assertEquals(6,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {
@@ -387,7 +387,7 @@ public class ChannelExtractorTest {
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(12,outputImage.getNSlices());
-        assertEquals(6,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int z=0;z<outputImage.getNSlices();z++) {

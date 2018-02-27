@@ -1160,7 +1160,7 @@ public class BinaryOperationsTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunWithFillHoles2DOperation5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
