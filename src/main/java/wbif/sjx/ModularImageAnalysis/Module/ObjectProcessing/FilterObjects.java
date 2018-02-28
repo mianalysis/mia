@@ -14,6 +14,7 @@ public class FilterObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String FILTER_METHOD = "Method for filtering";
     public static final String REFERENCE_IMAGE = "Reference image";
+    public static final String INCLUDE_Z_POSITION = "Include Z-position";
     public static final String MEASUREMENT = "Measurement to filter on";
     public static final String PARENT_OBJECT = "Parent object";
     public static final String CHILD_OBJECTS = "Child objects";
@@ -31,6 +32,129 @@ public class FilterObjects extends Module {
         String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT,
                 MIN_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
 
+    }
+
+    public void filterObjectsOnImageEdge(ObjCollection inputObjects, Image inputImage, boolean includeZ) {
+        int minX = 0;
+        int minY = 0;
+        int minZ = 0;
+        int maxX = inputImage.getImagePlus().getWidth()-1;
+        int maxY = inputImage.getImagePlus().getHeight()-1;
+        int maxZ = inputImage.getImagePlus().getNSlices()-1;
+
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+
+            ArrayList<Integer> x = inputObject.getXCoords();
+            ArrayList<Integer> y = inputObject.getYCoords();
+            ArrayList<Integer> z = inputObject.getZCoords();
+
+            for (int i=0;i<x.size();i++) {
+                if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY) {
+                    inputObject.removeRelationships();
+                    iterator.remove();
+
+                    break;
+                }
+
+                // Only consider Z if the user requested this
+                if (includeZ && (z.get(i) == minZ | z.get(i) == maxZ)) {
+                    inputObject.removeRelationships();
+                    iterator.remove();
+
+                    break;
+                }
+            }
+        }
+    }
+
+    public void filterObjectsWithMissingMeasurement(ObjCollection inputObjects, String measurement) {
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+
+            if (Double.isNaN(inputObject.getMeasurement(measurement).getValue())) {
+                inputObject.removeRelationships();
+                iterator.remove();
+            }
+        }
+    }
+
+    public void filterObjectsWithoutAParent(ObjCollection inputObjects, String parentObjectName) {
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+
+            LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
+            if (parents.get(parentObjectName) == null) {
+                inputObject.removeRelationships();
+                iterator.remove();
+            }
+        }
+    }
+
+    public void filterObjectsWithAParent(ObjCollection inputObjects, String parentObjectName) {
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+
+            LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
+            if (parents.get(parentObjectName) != null) {
+                inputObject.removeRelationships();
+                iterator.remove();
+            }
+        }
+    }
+
+    public void filterObjectsWithMinNumOfChildren(ObjCollection inputObjects, String childObjectsName, double minChildN) {
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+            ObjCollection childObjects = inputObject.getChildren(childObjectsName);
+
+            // Removing the object if it has no children
+            if (childObjects == null) {
+                inputObject.removeRelationships();
+                iterator.remove();
+                continue;
+
+            }
+
+            // Removing the object if it has too few children
+            if (childObjects.size() < minChildN) {
+                inputObject.removeRelationships();
+                iterator.remove();
+
+            }
+        }
+    }
+
+    public void filterObjectsWithMeasSmallerThan(ObjCollection inputObjects, String measurement, double referenceValue) {
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+
+            // Removing the object if it has no children
+            if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
+                inputObject.removeRelationships();
+                iterator.remove();
+
+            }
+        }
+    }
+
+    public void filterObjectsWithMeasLargerThan(ObjCollection inputObjects, String measurement, double referenceValue) {
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+
+            // Removing the object if it has no children
+            if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
+                inputObject.removeRelationships();
+                iterator.remove();
+            }
+        }
     }
 
     @Override
@@ -51,145 +175,42 @@ public class FilterObjects extends Module {
 
         // Getting parameters
         String method = parameters.getValue(FILTER_METHOD);
+        String inputImageName = parameters.getValue(REFERENCE_IMAGE);
+        Image inputImage = workspace.getImage(inputImageName);
+        boolean includeZ = parameters.getValue(INCLUDE_Z_POSITION);
+        String measurement = parameters.getValue(MEASUREMENT);
+        String parentObjectName = parameters.getValue(PARENT_OBJECT);
+        String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        double referenceValue = parameters.getValue(REFERENCE_VALUE);
 
         // Removing objects with a missing measurement (i.e. value set to null)
         switch (method) {
             case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
-                String inputImageName = parameters.getValue(REFERENCE_IMAGE);
-                Image inputImage = workspace.getImage(inputImageName);
-
-                int minX = 0;
-                int minY = 0;
-                int maxX = inputImage.getImagePlus().getWidth()-1;
-                int maxY = inputImage.getImagePlus().getHeight()-1;
-
-                Iterator<Obj> iterator = inputObjects.values().iterator();
-                while (iterator.hasNext()) {
-                    Obj inputObject = iterator.next();
-
-                    ArrayList<Integer> x = inputObject.getXCoords();
-                    ArrayList<Integer> y = inputObject.getYCoords();
-
-                    for (int i=0;i<x.size();i++) {
-                        if (x.get(i) == minX | x.get(i) == maxX | y.get(i) == minY | y.get(i) == maxY) {
-                            inputObject.removeRelationships();
-                            iterator.remove();
-
-                            break;
-
-                        }
-                    }
-                }
-
+                filterObjectsOnImageEdge(inputObjects,inputImage,includeZ);
                 break;
 
             case FilterMethods.MISSING_MEASUREMENTS:
-                String measurement = parameters.getValue(MEASUREMENT);
-
-                iterator = inputObjects.values().iterator();
-                while (iterator.hasNext()) {
-                    Obj inputObject = iterator.next();
-
-                    if (inputObject.getMeasurement(measurement).getValue() == Double.NaN) {
-                        inputObject.removeRelationships();
-                        iterator.remove();
-                    }
-                }
-
+                filterObjectsWithMissingMeasurement(inputObjects,measurement);
                 break;
 
             case FilterMethods.NO_PARENT:
-                String parentObjectName = parameters.getValue(PARENT_OBJECT);
-
-                iterator = inputObjects.values().iterator();
-                while (iterator.hasNext()) {
-                    Obj inputObject = iterator.next();
-
-                    LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
-                    if (parents.get(parentObjectName) == null) {
-                        inputObject.removeRelationships();
-                        iterator.remove();
-                    }
-                }
-
+                filterObjectsWithoutAParent(inputObjects,parentObjectName);
                 break;
 
             case FilterMethods.WITH_PARENT:
-                parentObjectName = parameters.getValue(PARENT_OBJECT);
-
-                iterator = inputObjects.values().iterator();
-                while (iterator.hasNext()) {
-                    Obj inputObject = iterator.next();
-
-                    LinkedHashMap<String,Obj> parents = inputObject.getParents(true);
-                    if (parents.get(parentObjectName) != null) {
-                        inputObject.removeRelationships();
-                        iterator.remove();
-                    }
-                }
-
+                filterObjectsWithAParent(inputObjects,parentObjectName);
                 break;
 
             case FilterMethods.MIN_NUMBER_OF_CHILDREN:
-                String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-                double minChildN = parameters.getValue(REFERENCE_VALUE);
-
-                iterator = inputObjects.values().iterator();
-                while (iterator.hasNext()) {
-                    Obj inputObject = iterator.next();
-                    ObjCollection childObjects = inputObject.getChildren(childObjectsName);
-
-                    // Removing the object if it has no children
-                    if (childObjects == null) {
-                        inputObject.removeRelationships();
-                        iterator.remove();
-                        continue;
-
-                    }
-
-                    // Removing the object if it has too few children
-                    if (childObjects.size() < minChildN) {
-                        inputObject.removeRelationships();
-                        iterator.remove();
-
-                    }
-                }
-
+                filterObjectsWithMinNumOfChildren(inputObjects,childObjectsName,referenceValue);
                 break;
 
             case FilterMethods.MEASUREMENTS_SMALLER_THAN:
-                measurement = parameters.getValue(MEASUREMENT);
-                double referenceValue = parameters.getValue(REFERENCE_VALUE);
-
-                iterator = inputObjects.values().iterator();
-                while (iterator.hasNext()) {
-                    Obj inputObject = iterator.next();
-
-                    // Removing the object if it has no children
-                    if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
-                        inputObject.removeRelationships();
-                        iterator.remove();
-
-                    }
-                }
-
+                filterObjectsWithMeasSmallerThan(inputObjects,measurement,referenceValue);
                 break;
 
             case FilterMethods.MEASUREMENTS_LARGER_THAN:
-                measurement = parameters.getValue(MEASUREMENT);
-                referenceValue = parameters.getValue(REFERENCE_VALUE);
-
-                iterator = inputObjects.values().iterator();
-                while (iterator.hasNext()) {
-                    Obj inputObject = iterator.next();
-
-                    // Removing the object if it has no children
-                    if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
-                        inputObject.removeRelationships();
-                        iterator.remove();
-                    }
-                }
-
+                filterObjectsWithMeasLargerThan(inputObjects,measurement,referenceValue);
                 break;
 
         }
@@ -200,6 +221,7 @@ public class FilterObjects extends Module {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(FILTER_METHOD, Parameter.CHOICE_ARRAY,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
         parameters.add(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INCLUDE_Z_POSITION,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
@@ -229,6 +251,7 @@ public class FilterObjects extends Module {
 
             case FilterMethods.REMOVE_ON_IMAGE_EDGE_2D:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                returnedParameters.add(parameters.getParameter(INCLUDE_Z_POSITION));
                 break;
 
             case FilterMethods.NO_PARENT:
