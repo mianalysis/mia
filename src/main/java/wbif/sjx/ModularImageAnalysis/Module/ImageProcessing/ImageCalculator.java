@@ -32,7 +32,7 @@ public class ImageCalculator extends Module {
     public interface CalculationMethods {
         String ADD = "Add image 1 and image 2";
         String DIVIDE = "Divide image 1 by image 2";
-        String MULTIPLY = "Multiply image 1 and image";
+        String MULTIPLY = "Multiply image 1 and image 1";
         String SUBTRACT = "Subtract image 2 from image 1";
 
         String[] ALL = new String[]{ADD,DIVIDE,MULTIPLY,SUBTRACT};

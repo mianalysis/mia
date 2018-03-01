@@ -27,6 +27,7 @@ public class AddObjectsOverlay extends Module {
     public static final String SHOW_LABEL = "Show label";
     public static final String LABEL_MODE = "Label mode";
     public static final String DECIMAL_PLACES = "Decimal places";
+    public static final String USE_SCIENTIFIC = "Use scientific notation";
     public static final String LABEL_SIZE = "Label size";
     public static final String PARENT_OBJECT_FOR_ID = "Parent object for ID";
     public static final String MEASUREMENT_FOR_ID = "Measurement for ID";
@@ -275,6 +276,7 @@ public class AddObjectsOverlay extends Module {
         boolean showID = parameters.getValue(SHOW_LABEL);
         String labelMode = parameters.getValue(LABEL_MODE);
         int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
+        boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
         int labelSize = parameters.getValue(LABEL_SIZE);
         String parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
         String measurementForID = parameters.getValue(MEASUREMENT_FOR_ID);
@@ -306,7 +308,7 @@ public class AddObjectsOverlay extends Module {
         HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,measurementForColour,parentObjectsForColourName,true);
         HashMap<Integer,String> IDs;
         if (showID) {
-            IDs = inputObjects.getIDs(labelMode,measurementForID,parentObjectsForIDName,decimalPlaces);
+            IDs = inputObjects.getIDs(labelMode,measurementForID,parentObjectsForIDName,decimalPlaces,useScientific);
         } else {
             IDs = null;
         }
@@ -353,6 +355,7 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(SHOW_LABEL, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LABEL_MODE, Parameter.CHOICE_ARRAY, LabelModes.ID, LabelModes.ALL));
         parameters.add(new Parameter(DECIMAL_PLACES, Parameter.INTEGER,2));
+        parameters.add(new Parameter(USE_SCIENTIFIC,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(MEASUREMENT_FOR_ID, Parameter.OBJECT_MEASUREMENT,null,null));
@@ -411,6 +414,7 @@ public class AddObjectsOverlay extends Module {
             }
 
             returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
+            returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
             returnedParameters.add(parameters.getParameter(LABEL_SIZE));
 
         }

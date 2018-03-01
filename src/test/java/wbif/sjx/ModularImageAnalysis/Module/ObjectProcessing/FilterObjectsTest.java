@@ -270,6 +270,55 @@ public class FilterObjectsTest {
     }
 
     @Test
+    public void testRunMaximumNumberOfChildren() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Getting test objects
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        workspace.addObjects(testObjects);
+
+        // Creating a second set of objects and relate these to the test objects.  The number of children will be
+        // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
+        // only count the number of remaining objects post-filter.
+        int[] kids = new int[]{3,1,4,2,0,6,5,2};
+        ObjCollection childObjects = new ObjCollection("Children");
+
+        int counter = 0;
+        for (Obj testObject:testObjects.values()) {
+            for (int i=0;i<kids[counter];i++) {
+                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits);
+                childObjects.add(childObject);
+
+                testObject.addChild(childObject);
+                childObject.addParent(testObject);
+            }
+
+            counter++;
+        }
+
+        // Initialising FilterObjects module
+        FilterObjects filterObjects = new FilterObjects();
+        filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
+        filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MAX_NUMBER_OF_CHILDREN);
+        filterObjects.updateParameterValue(FilterObjects.CHILD_OBJECTS,"Children");
+        filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,2d);
+
+        // Running the module
+        filterObjects.run(workspace,false);
+
+        // Checking basic facts
+        assertNotNull(workspace.getObjectSet("TestObj"));
+        assertEquals(4,workspace.getObjectSet("TestObj").values().size());
+
+    }
+
+    @Test
     public void testRunMissingParent() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);

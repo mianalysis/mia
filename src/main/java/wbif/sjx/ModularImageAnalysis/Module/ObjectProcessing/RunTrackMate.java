@@ -201,7 +201,7 @@ public class RunTrackMate extends Module {
                 String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
                 HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"","",true);
                 String labelMode = ObjCollection.LabelModes.ID;
-                HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"","",0) : null;
+                HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"","",0,false) : null;
                 AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8);
 
                 // Displaying the overlay
@@ -300,7 +300,7 @@ public class RunTrackMate extends Module {
             String colourMode = ObjCollection.ColourModes.PARENT_ID;
             HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"",trackObjectsName,true);
             String labelMode = ObjCollection.LabelModes.PARENT_ID;
-            HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",trackObjectsName,0) : null;
+            HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",trackObjectsName,0,false) : null;
             AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8);
 
             // Displaying the overlay

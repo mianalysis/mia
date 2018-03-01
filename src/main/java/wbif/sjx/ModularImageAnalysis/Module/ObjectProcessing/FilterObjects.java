@@ -26,11 +26,12 @@ public class FilterObjects extends Module {
         String NO_PARENT = "Remove objects without parent";
         String WITH_PARENT = "Remove objects with a parent";
         String MIN_NUMBER_OF_CHILDREN = "Remove objects with few children than:";
+        String MAX_NUMBER_OF_CHILDREN = "Remove objects with more children than:";
         String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
         String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
 
         String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT,
-                MIN_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
+                MIN_NUMBER_OF_CHILDREN, MAX_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
 
     }
 
@@ -130,6 +131,29 @@ public class FilterObjects extends Module {
         }
     }
 
+    public void filterObjectsWithMaxNumOfChildren(ObjCollection inputObjects, String childObjectsName, double minChildN) {
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
+            ObjCollection childObjects = inputObject.getChildren(childObjectsName);
+
+            // Removing the object if it has no children
+            if (childObjects == null) {
+                inputObject.removeRelationships();
+                iterator.remove();
+                continue;
+
+            }
+
+            // Removing the object if it has too few children
+            if (childObjects.size() > minChildN) {
+                inputObject.removeRelationships();
+                iterator.remove();
+
+            }
+        }
+    }
+
     public void filterObjectsWithMeasSmallerThan(ObjCollection inputObjects, String measurement, double referenceValue) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
@@ -203,6 +227,10 @@ public class FilterObjects extends Module {
 
             case FilterMethods.MIN_NUMBER_OF_CHILDREN:
                 filterObjectsWithMinNumOfChildren(inputObjects,childObjectsName,referenceValue);
+                break;
+
+            case FilterMethods.MAX_NUMBER_OF_CHILDREN:
+                filterObjectsWithMaxNumOfChildren(inputObjects,childObjectsName,referenceValue);
                 break;
 
             case FilterMethods.MEASUREMENTS_SMALLER_THAN:
