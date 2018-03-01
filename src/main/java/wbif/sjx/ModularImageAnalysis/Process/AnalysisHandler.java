@@ -224,6 +224,7 @@ public class AnalysisHandler {
 
             try {
                 int parameterType = module.getParameterType(parameterName);
+                System.out.println(module.getTitle()+"_"+parameterName);
                 switch (parameterType) {
                     case Parameter.INPUT_IMAGE:
                     case Parameter.OUTPUT_IMAGE:

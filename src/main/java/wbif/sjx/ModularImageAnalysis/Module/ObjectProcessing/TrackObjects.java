@@ -40,6 +40,7 @@ public class TrackObjects extends Module {
         String ANGLE_TO_NEXT_DEGS = "TRACKING//ANGLE_TO_NEXT_DEGS";
         String LEADING_X_PX = "TRACKING//LEADING_POINT_X_PX";
         String LEADING_Y_PX = "TRACKING//LEADING_POINT_Y_PX";
+        String LEADING_Z_PX = "TRACKING//LEADING_POINT_Z_PX";
 
     }
 
@@ -109,7 +110,8 @@ public class TrackObjects extends Module {
                     double offset = midLine.getOffset(new Vector2D(point.getX(),point.getY()));
 
                     // Determining if the offset is positive or negative
-
+                    double refOffset = refLine.getOffset(new Vector2D(point.getX(),point.getY()));
+                    if (refOffset > offset) offset = -offset;
 
                     if (offset > largestOffset) {
                         largestOffset = offset;
@@ -316,6 +318,10 @@ public class TrackObjects extends Module {
     protected void initialiseMeasurementReferences() {
         objectMeasurementReferences.add(new MeasurementReference(Measurements.TRACK_PREV_ID));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.TRACK_NEXT_ID));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.ANGLE_TO_NEXT_DEGS));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.LEADING_X_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.LEADING_Y_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.LEADING_Z_PX));
 
     }
 
@@ -355,9 +361,31 @@ public class TrackObjects extends Module {
 
         MeasurementReference trackPrevID = objectMeasurementReferences.get(Measurements.TRACK_PREV_ID);
         MeasurementReference trackNextID = objectMeasurementReferences.get(Measurements.TRACK_NEXT_ID);
+        MeasurementReference angleMeasurement = objectMeasurementReferences.get(Measurements.ANGLE_TO_NEXT_DEGS);
+        MeasurementReference leadingXPx= objectMeasurementReferences.get(Measurements.LEADING_X_PX);
+        MeasurementReference leadingYPx= objectMeasurementReferences.get(Measurements.LEADING_Y_PX);
+        MeasurementReference leadingZPx= objectMeasurementReferences.get(Measurements.LEADING_Z_PX);
 
         trackPrevID.setImageObjName(inputObjectsName);
         trackNextID.setImageObjName(inputObjectsName);
+
+        if (parameters.getValue(IDENTIFY_LEADING_POINT)) {
+            angleMeasurement.setCalculated(true);
+            leadingXPx.setCalculated(true);
+            leadingYPx.setCalculated(true);
+            leadingZPx.setCalculated(true);
+
+            angleMeasurement.setImageObjName(inputObjectsName);
+            leadingXPx.setImageObjName(inputObjectsName);
+            leadingYPx.setImageObjName(inputObjectsName);
+            leadingZPx.setImageObjName(inputObjectsName);
+
+        } else {
+            angleMeasurement.setCalculated(false);
+            leadingXPx.setCalculated(false);
+            leadingYPx.setCalculated(false);
+            leadingZPx.setCalculated(false);
+        }
 
         return objectMeasurementReferences;
 
