@@ -123,9 +123,14 @@ public class TrackObjects extends Module {
                 obj.addMeasurement(new Measurement(Measurements.ANGLE_TO_NEXT_DEGS,Math.toDegrees(angle)));
                 obj.addMeasurement(new Measurement(Measurements.LEADING_X_PX,furthestPoint.getX()));
                 obj.addMeasurement(new Measurement(Measurements.LEADING_Y_PX,furthestPoint.getY()));
+                obj.addMeasurement(new Measurement(Measurements.LEADING_Z_PX,0));
 
             } else {
-                System.out.println("NULLLLLL");
+                // Adding furthest point coordinates to measurements
+                obj.addMeasurement(new Measurement(Measurements.ANGLE_TO_NEXT_DEGS,Double.NaN));
+                obj.addMeasurement(new Measurement(Measurements.LEADING_X_PX,Double.NaN));
+                obj.addMeasurement(new Measurement(Measurements.LEADING_Y_PX,Double.NaN));
+                obj.addMeasurement(new Measurement(Measurements.LEADING_Z_PX,Double.NaN));
             }
         }
     }
@@ -293,9 +298,7 @@ public class TrackObjects extends Module {
         }
 
         // Determining the leading point in the object (to next object)
-        if (identifyLeading) {
-            identifyLeading(inputObjects);
-        }
+        if (identifyLeading) identifyLeading(inputObjects);
 
         // Adding track objects to the workspace
         workspace.addObjects(trackObjects);

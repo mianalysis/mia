@@ -189,31 +189,30 @@ public class AddObjectsOverlay extends Module {
                         ovl.addElement(ovalRoi);
                     }
 
-            break;
+                    break;
 
-        }
-
-        if (IDs != null) {
-            // Adding text label
-            TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2+5, IDs.get(object.getID()));
-            text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
-            if (ipl.isHyperStack()) {
-                text.setPosition(1, z, t);
-            } else {
-                text.setPosition(Math.max(Math.max(1, z), t));
             }
-            text.setStrokeColor(colour);
-            ovl.addElement(text);
 
+            if (IDs != null) {
+                // Adding text label
+                TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2+5, IDs.get(object.getID()));
+                text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
+                if (ipl.isHyperStack()) {
+                    text.setPosition(1, z, t);
+                } else {
+                    text.setPosition(Math.max(Math.max(1, z), t));
+                }
+                text.setStrokeColor(colour);
+                ovl.addElement(text);
+
+            }
         }
     }
-}
 
-    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Integer,Float> hues) {
+    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Integer,Float> hues, boolean verbose) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-
         }
 
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
@@ -232,7 +231,7 @@ public class AddObjectsOverlay extends Module {
             int nFrames = ipl.getNFrames();
             Obj p1 = null;
             for (Obj p2:points.values()) {
-                Color color = Color.getHSBColor(hues.get(p2),1,1);
+                Color color = Color.getHSBColor(hues.get(p2.getID()),1,1);
 
                 if (p1 != null) {
                     int x1 = (int) Math.round(p1.getXMean(true));
@@ -329,7 +328,7 @@ public class AddObjectsOverlay extends Module {
 
             case PositionModes.TRACKS:
                 ObjCollection tracks = workspace.getObjectSet(trackObjectsName);
-                createTrackOverlay(ipl,inputObjectsName,tracks,hues);
+                createTrackOverlay(ipl,inputObjectsName,tracks,hues,verbose);
                 break;
         }
 

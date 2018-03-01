@@ -250,7 +250,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                     break;
 
                 case LabelModes.PARENT_ID:
-                    IDs.put(object.getID(), df.format(object.getParent(parentObjectsForID).getID()));
+                    if (object.getParent(parentObjectsForID) == null) {
+                        IDs.put(object.getID(), "NA");
+                    } else {
+                        IDs.put(object.getID(), df.format(object.getParent(parentObjectsForID).getID()));
+                    }
+
                     break;
             }
         }

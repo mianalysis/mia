@@ -210,7 +210,7 @@ public class AnalysisHandler {
 
     private void populateModuleParameters(Node moduleNode, Module module) {
         NodeList parameterNodes = moduleNode.getChildNodes();
-//        System.out.println(module.getTitle()+"_"+parameterNodes.getLength()+parameterNodes.item(0).getNodeValue()+"_"+parameterNodes.item(1).getNodeValue()+"_"+parameterNodes.item(2).getNodeValue()+"_"+parameterNodes.item(3).getNodeValue()+"_"+parameterNodes.item(4).getNodeValue());
+
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
             NamedNodeMap parameterAttributes = parameterNode.getAttributes();
@@ -224,7 +224,7 @@ public class AnalysisHandler {
 
             try {
                 int parameterType = module.getParameterType(parameterName);
-                System.out.println(module.getTitle()+"_"+parameterName);
+
                 switch (parameterType) {
                     case Parameter.INPUT_IMAGE:
                     case Parameter.OUTPUT_IMAGE:
