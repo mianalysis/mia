@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
 
+import org.apache.commons.math3.geometry.euclidean.twod.Line;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.hadoop.hbase.util.MunkresAssignment;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -21,6 +23,7 @@ public class TrackObjects extends Module {
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String MINIMUM_OVERLAP = "Minimum overlap";
     public static final String MAXIMUM_MISSING_FRAMES = "Maximum number of missing frames";
+    public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
 
 
     public interface LinkingMethods {
@@ -34,6 +37,9 @@ public class TrackObjects extends Module {
     public interface Measurements {
         String TRACK_PREV_ID = "TRACKING//PREVIOUS_OBJECT_IN_TRACK_ID";
         String TRACK_NEXT_ID = "TRACKING//NEXT_OBJECT_IN_TRACK_ID";
+        String ANGLE_TO_NEXT_DEGS = "TRACKING//ANGLE_TO_NEXT_DEGS";
+        String LEADING_X_PX = "TRACKING//LEADING_POINT_X_PX";
+        String LEADING_Y_PX = "TRACKING//LEADING_POINT_Y_PX";
 
     }
 
@@ -79,6 +85,49 @@ public class TrackObjects extends Module {
 
     }
 
+    private void identifyLeading(ObjCollection objects) {
+        for (Obj obj:objects.values()) {
+            if (obj.getMeasurement(Measurements.TRACK_NEXT_ID) != null) {
+                Obj nextObj = objects.get((int) obj.getMeasurement(Measurements.TRACK_NEXT_ID).getValue());
+                double angle = obj.calculateAngle2D(nextObj);
+                double xCent = obj.getXMean(true);
+                double yCent = obj.getYMean(true);
+
+                // Calculate line perpendicular to the direction of motion, passing through the origin.
+                Vector2D p = new Vector2D(xCent,yCent);
+                Line midLine = new Line(p,angle+Math.PI/2,1E-2);
+
+                // Calculating second line perpendicular to the direction of motion, but shifted one pixel in the
+                // direction of motion
+                p = new Vector2D(xCent+Math.cos(angle),yCent+Math.sin(angle));
+                Line refLine = new Line(p,angle+Math.PI/2,1E-2);
+
+                // Iterating over all points, measuring their distance from the midLine
+                Point<Integer> furthestPoint = null;
+                double largestOffset = Double.NEGATIVE_INFINITY;
+                for (Point<Integer> point:obj.getPoints()) {
+                    double offset = midLine.getOffset(new Vector2D(point.getX(),point.getY()));
+
+                    // Determining if the offset is positive or negative
+
+
+                    if (offset > largestOffset) {
+                        largestOffset = offset;
+                        furthestPoint = point;
+                    }
+                }
+
+                // Adding furthest point coordinates to measurements
+                obj.addMeasurement(new Measurement(Measurements.ANGLE_TO_NEXT_DEGS,Math.toDegrees(angle)));
+                obj.addMeasurement(new Measurement(Measurements.LEADING_X_PX,furthestPoint.getX()));
+                obj.addMeasurement(new Measurement(Measurements.LEADING_Y_PX,furthestPoint.getY()));
+
+            } else {
+                System.out.println("NULLLLLL");
+            }
+        }
+    }
+
     @Override
     public String getTitle() {
         return "Track objects";
@@ -86,7 +135,8 @@ public class TrackObjects extends Module {
 
     @Override
     public String getHelp() {
-        return "Uses Munkres Assignment Algorithm implementation from Apache HBase library";
+        return "Uses Munkres Assignment Algorithm implementation from Apache HBase library" +
+                "\nLeading point currently only works in 2D";
     }
 
     @Override
@@ -102,6 +152,7 @@ public class TrackObjects extends Module {
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
         double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES);
+        boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT);
 
         // Getting calibration from the first input object
         double dppXY = 1;
@@ -239,6 +290,11 @@ public class TrackObjects extends Module {
             }
         }
 
+        // Determining the leading point in the object (to next object)
+        if (identifyLeading) {
+            identifyLeading(inputObjects);
+        }
+
         // Adding track objects to the workspace
         workspace.addObjects(trackObjects);
 
@@ -252,6 +308,7 @@ public class TrackObjects extends Module {
         parameters.add(new Parameter(MINIMUM_OVERLAP,Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
         parameters.add(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
+        parameters.add(new Parameter(IDENTIFY_LEADING_POINT,Parameter.BOOLEAN,false));
 
     }
 
@@ -281,6 +338,7 @@ public class TrackObjects extends Module {
         }
 
         returnedParamters.add(parameters.getParameter(MAXIMUM_MISSING_FRAMES));
+        returnedParamters.add(parameters.getParameter(IDENTIFY_LEADING_POINT));
 
         return returnedParamters;
 

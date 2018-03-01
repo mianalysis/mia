@@ -29,6 +29,9 @@ public class SplineAnalysis extends Module {
     public static final String N_NEIGHBOURS = "Number of neighbours (smoothing)";
     public static final String ITERATIONS = "Iterations";
     public static final String ACCURACY = "Accuracy";
+    public static final String RELATE_TO_REFERENCE_POINT = "Relate to reference point";
+    public static final String X_REF_MEASUREMENT = "X-axis reference measurement";
+    public static final String Y_REF_MEASUREMENT = "Y-axis reference measurement";
     public static final String SHOW_SPLINE = "Show spline";
     public static final String MAX_CURVATURE = "Maximum curvature (for colour)";
     public static final String APPLY_TO_IMAGE = "Apply to image";
@@ -153,6 +156,9 @@ public class SplineAnalysis extends Module {
         parameters.add(new Parameter(N_NEIGHBOURS, Parameter.INTEGER,20));
         parameters.add(new Parameter(ITERATIONS, Parameter.INTEGER,10));
         parameters.add(new Parameter(ACCURACY, Parameter.DOUBLE,1d));
+        parameters.add(new Parameter(RELATE_TO_REFERENCE_POINT,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(X_REF_MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(Y_REF_MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(SHOW_SPLINE, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(APPLY_TO_IMAGE, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MAX_CURVATURE,Parameter.DOUBLE,1d));
@@ -182,6 +188,12 @@ public class SplineAnalysis extends Module {
                 returnedParameters.add(parameters.getParameter(ITERATIONS));
                 returnedParameters.add(parameters.getParameter(ACCURACY));
                 break;
+        }
+
+        returnedParameters.add(parameters.getParameter(RELATE_TO_REFERENCE_POINT));
+        if (parameters.getValue(RELATE_TO_REFERENCE_POINT)) {
+            returnedParameters.add(parameters.getParameter(X_REF_MEASUREMENT));
+            returnedParameters.add(parameters.getParameter(Y_REF_MEASUREMENT));
         }
 
         returnedParameters.add(parameters.getParameter(SHOW_SPLINE));
