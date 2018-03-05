@@ -32,7 +32,7 @@ public class ImageCalculator extends Module {
     public interface CalculationMethods {
         String ADD = "Add image 1 and image 2";
         String DIVIDE = "Divide image 1 by image 2";
-        String MULTIPLY = "Multiply image 1 and image";
+        String MULTIPLY = "Multiply image 1 and image 1";
         String SUBTRACT = "Subtract image 2 from image 1";
 
         String[] ALL = new String[]{ADD,DIVIDE,MULTIPLY,SUBTRACT};
@@ -113,7 +113,16 @@ public class ImageCalculator extends Module {
                                     break;
 
                                 case CalculationMethods.DIVIDE:
-                                    val = imageProcessor1.getPixelValue(x,y)/imageProcessor2.getPixelValue(x,y);
+                                        if (output32Bit) {
+                                            val = imageProcessor1.getPixelValue(x, y) / imageProcessor2.getPixelValue(x, y);
+                                        } else {
+                                            if (imageProcessor2.getPixelValue(x, y) == 0) {
+                                                val = Math.pow(2, imageProcessor1.getBitDepth()) - 1;
+                                            } else {
+                                                // Using "floor" to maintain consistency with ImageJ's calculator
+                                                val = Math.floor(imageProcessor1.getPixelValue(x, y) / imageProcessor2.getPixelValue(x, y));
+                                            }
+                                        }
                                     break;
 
                                 case CalculationMethods.MULTIPLY:

@@ -252,7 +252,7 @@ public class GaussianFitter2D extends Module {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(RADIUS_MODE, Parameter.CHOICE_ARRAY,RadiusModes.FIXED_VALUE,RadiusModes.ALL));
-        parameters.add(new Parameter(RADIUS, Parameter.DOUBLE,null));
+        parameters.add(new Parameter(RADIUS, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(RADIUS_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null));
         parameters.add(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(MAX_EVALUATIONS, Parameter.INTEGER,1000));

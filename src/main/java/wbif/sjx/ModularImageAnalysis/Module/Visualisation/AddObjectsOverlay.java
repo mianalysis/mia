@@ -27,6 +27,7 @@ public class AddObjectsOverlay extends Module {
     public static final String SHOW_LABEL = "Show label";
     public static final String LABEL_MODE = "Label mode";
     public static final String DECIMAL_PLACES = "Decimal places";
+    public static final String USE_SCIENTIFIC = "Use scientific notation";
     public static final String LABEL_SIZE = "Label size";
     public static final String PARENT_OBJECT_FOR_ID = "Parent object for ID";
     public static final String MEASUREMENT_FOR_ID = "Measurement for ID";
@@ -188,31 +189,30 @@ public class AddObjectsOverlay extends Module {
                         ovl.addElement(ovalRoi);
                     }
 
-            break;
+                    break;
 
-        }
-
-        if (IDs != null) {
-            // Adding text label
-            TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2+5, IDs.get(object.getID()));
-            text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
-            if (ipl.isHyperStack()) {
-                text.setPosition(1, z, t);
-            } else {
-                text.setPosition(Math.max(Math.max(1, z), t));
             }
-            text.setStrokeColor(colour);
-            ovl.addElement(text);
 
+            if (IDs != null) {
+                // Adding text label
+                TextRoi text = new TextRoi(xMean-labelSize/2, yMean-labelSize/2+5, IDs.get(object.getID()));
+                text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
+                if (ipl.isHyperStack()) {
+                    text.setPosition(1, z, t);
+                } else {
+                    text.setPosition(Math.max(Math.max(1, z), t));
+                }
+                text.setStrokeColor(colour);
+                ovl.addElement(text);
+
+            }
         }
     }
-}
 
-    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Integer,Float> hues) {
+    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Integer,Float> hues, boolean verbose) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-
         }
 
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
@@ -231,7 +231,7 @@ public class AddObjectsOverlay extends Module {
             int nFrames = ipl.getNFrames();
             Obj p1 = null;
             for (Obj p2:points.values()) {
-                Color color = Color.getHSBColor(hues.get(p2),1,1);
+                Color color = Color.getHSBColor(hues.get(p2.getID()),1,1);
 
                 if (p1 != null) {
                     int x1 = (int) Math.round(p1.getXMean(true));
@@ -275,6 +275,7 @@ public class AddObjectsOverlay extends Module {
         boolean showID = parameters.getValue(SHOW_LABEL);
         String labelMode = parameters.getValue(LABEL_MODE);
         int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
+        boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
         int labelSize = parameters.getValue(LABEL_SIZE);
         String parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
         String measurementForID = parameters.getValue(MEASUREMENT_FOR_ID);
@@ -306,7 +307,7 @@ public class AddObjectsOverlay extends Module {
         HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,measurementForColour,parentObjectsForColourName,true);
         HashMap<Integer,String> IDs;
         if (showID) {
-            IDs = inputObjects.getIDs(labelMode,measurementForID,parentObjectsForIDName,decimalPlaces);
+            IDs = inputObjects.getIDs(labelMode,measurementForID,parentObjectsForIDName,decimalPlaces,useScientific);
         } else {
             IDs = null;
         }
@@ -327,7 +328,7 @@ public class AddObjectsOverlay extends Module {
 
             case PositionModes.TRACKS:
                 ObjCollection tracks = workspace.getObjectSet(trackObjectsName);
-                createTrackOverlay(ipl,inputObjectsName,tracks,hues);
+                createTrackOverlay(ipl,inputObjectsName,tracks,hues,verbose);
                 break;
         }
 
@@ -353,6 +354,7 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(SHOW_LABEL, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LABEL_MODE, Parameter.CHOICE_ARRAY, LabelModes.ID, LabelModes.ALL));
         parameters.add(new Parameter(DECIMAL_PLACES, Parameter.INTEGER,2));
+        parameters.add(new Parameter(USE_SCIENTIFIC,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(MEASUREMENT_FOR_ID, Parameter.OBJECT_MEASUREMENT,null,null));
@@ -411,6 +413,7 @@ public class AddObjectsOverlay extends Module {
             }
 
             returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
+            returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
             returnedParameters.add(parameters.getParameter(LABEL_SIZE));
 
         }

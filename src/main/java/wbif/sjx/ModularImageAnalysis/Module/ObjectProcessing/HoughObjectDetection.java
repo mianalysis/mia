@@ -160,7 +160,7 @@ public class HoughObjectDetection extends Module {
             HashMap<Integer, String> IDs = null;
             if (showHoughScore) {
                 String labelMode = ObjCollection.LabelModes.MEASUREMENT_VALUE;
-                IDs = outputObjects.getIDs(labelMode, Measurements.SCORE, "",0);
+                IDs = outputObjects.getIDs(labelMode, Measurements.SCORE, "",0,true);
             }
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 

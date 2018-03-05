@@ -216,19 +216,27 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public HashMap<Integer,String> getIDs(String labelMode, String measurementForID, String parentObjectsForID, int nDecimalPlaces) {
+    public HashMap<Integer,String> getIDs(String labelMode, String measurementForID, String parentObjectsForID, int nDecimalPlaces, boolean useScientific) {
         HashMap<Integer,String> IDs = new HashMap<>();
 
         DecimalFormat df;
         if (nDecimalPlaces == 0) {
             df = new DecimalFormat("0");
         } else {
-            String zeros = "0.";
-            for (int i=0;i<nDecimalPlaces;i++) {
-                zeros = zeros + "0";
+            if (useScientific) {
+                StringBuilder zeros = new StringBuilder("0.");
+                for (int i = 0; i < nDecimalPlaces; i++) {
+                    zeros.append("0");
+                }
+                zeros.append("E0");
+                df = new DecimalFormat(zeros.toString());
+            } else {
+                StringBuilder zeros = new StringBuilder("#.");
+                for (int i = 0;i <nDecimalPlaces; i++) {
+                    zeros.append("#");
+                }
+                df = new DecimalFormat(zeros.toString());
             }
-            zeros = zeros+"E0";
-            df = new DecimalFormat(zeros);
         }
 
         for (Obj object:values()) {
@@ -239,11 +247,15 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
                 case LabelModes.MEASUREMENT_VALUE:
                     IDs.put(object.getID(), df.format(object.getMeasurement(measurementForID).getValue()));
-                    System.out.println(IDs);
                     break;
 
                 case LabelModes.PARENT_ID:
-                    IDs.put(object.getID(), df.format(object.getParent(parentObjectsForID).getID()));
+                    if (object.getParent(parentObjectsForID) == null) {
+                        IDs.put(object.getID(), "NA");
+                    } else {
+                        IDs.put(object.getID(), df.format(object.getParent(parentObjectsForID).getID()));
+                    }
+
                     break;
             }
         }
