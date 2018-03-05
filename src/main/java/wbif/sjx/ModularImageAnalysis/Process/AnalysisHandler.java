@@ -210,7 +210,6 @@ public class AnalysisHandler {
 
     private void populateModuleParameters(Node moduleNode, Module module) {
         NodeList parameterNodes = moduleNode.getChildNodes();
-
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
             NamedNodeMap parameterAttributes = parameterNode.getAttributes();

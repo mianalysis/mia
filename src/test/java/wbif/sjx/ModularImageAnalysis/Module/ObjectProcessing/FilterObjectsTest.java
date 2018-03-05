@@ -300,6 +300,7 @@ public class FilterObjectsTest {
             }
 
             counter++;
+            
         }
 
         // Initialising FilterObjects module

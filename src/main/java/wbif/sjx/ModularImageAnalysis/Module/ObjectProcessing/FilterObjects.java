@@ -131,22 +131,16 @@ public class FilterObjects extends Module {
         }
     }
 
-    public void filterObjectsWithMaxNumOfChildren(ObjCollection inputObjects, String childObjectsName, double minChildN) {
+    public void filterObjectsWithMaxNumOfChildren(ObjCollection inputObjects, String childObjectsName, double maxChildN) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
             ObjCollection childObjects = inputObject.getChildren(childObjectsName);
 
-            // Removing the object if it has no children
-            if (childObjects == null) {
-                inputObject.removeRelationships();
-                iterator.remove();
-                continue;
-
-            }
+            if (childObjects == null) continue;
 
             // Removing the object if it has too few children
-            if (childObjects.size() > minChildN) {
+            if (childObjects.size() > maxChildN) {
                 inputObject.removeRelationships();
                 iterator.remove();
 
@@ -290,6 +284,7 @@ public class FilterObjects extends Module {
                 break;
 
             case FilterMethods.MIN_NUMBER_OF_CHILDREN:
+            case FilterMethods.MAX_NUMBER_OF_CHILDREN:
                 returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
                 returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
 

@@ -4,6 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing;
 
 import fiji.threshold.Auto_Local_Threshold;
 import fiji.threshold.Auto_Threshold;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -71,8 +72,7 @@ public class ThresholdImage extends Module {
 
     public void applyGlobalThresholdToStack(ImagePlus inputImagePlus, String algorithm, double thrMult,
                                             boolean useLowerLim, double lowerLim) {
-
-        Object[] results = new Auto_Threshold().exec(inputImagePlus,algorithm,true,false,true,true,false,true);
+        Object[] results = new Auto_Threshold().exec(inputImagePlus, algorithm, true, false, true, true, false, true);
 
         // Applying limits, where applicable
         if (useLowerLim && (int) results[0] < lowerLim) {
