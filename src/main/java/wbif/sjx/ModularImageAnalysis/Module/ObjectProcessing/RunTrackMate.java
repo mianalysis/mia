@@ -149,6 +149,8 @@ public class RunTrackMate extends Module {
 
         TrackMate trackmate = new TrackMate(model, settings);
 
+
+        System.out.println(ipl.getWidth());
         // Running TrackMate
         writeMessage("Running TrackMate detection",verbose);
         if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());
@@ -202,7 +204,7 @@ public class RunTrackMate extends Module {
                 HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"","",true);
                 String labelMode = ObjCollection.LabelModes.ID;
                 HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"","",0,false) : null;
-                AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8);
+                AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1);
 
                 // Displaying the overlay
                 ipl.show();
@@ -301,7 +303,7 @@ public class RunTrackMate extends Module {
             HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"",trackObjectsName,true);
             String labelMode = ObjCollection.LabelModes.PARENT_ID;
             HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",trackObjectsName,0,false) : null;
-            AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8);
+            AddObjectsOverlay.createOverlay(ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1);
 
             // Displaying the overlay
             ipl.show();

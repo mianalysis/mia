@@ -10,6 +10,9 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 public class MeasureObjectOverlap extends Module {
     public final static String OBJECT_SET_1 = "Object set 1";
     public final static String OBJECT_SET_2 = "Object set 2";
+    public static final String MOVE_OVERLAPPING = "Move overlapping to new object set";
+    public static final String OUTPUT_OBJECTS_NAME = "Output objects name";
+    public static final String MINIMUM_OVERLAP_PC = "Minimum overlap (%)";
 
     public interface Measurements {
         String OVERLAP_VOX_1 = "OVERLAP_VOXELS_1";

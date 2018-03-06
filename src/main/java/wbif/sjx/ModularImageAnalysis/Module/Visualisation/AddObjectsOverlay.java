@@ -41,6 +41,7 @@ public class AddObjectsOverlay extends Module {
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String TRACK_OBJECTS = "Track objects";
+    public static final String LINE_WIDTH = "Line width";
     public static final String SHOW_IMAGE = "Show image";
 
     public interface ColourModes extends ObjCollection.ColourModes {}
@@ -60,7 +61,7 @@ public class AddObjectsOverlay extends Module {
 
     public static void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
                                      String[] posMeasurements,HashMap<Integer,Float> colours, HashMap<Integer,String> IDs,
-                                     int labelSize) {
+                                     int labelSize, double lineWidth) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
@@ -105,6 +106,7 @@ public class AddObjectsOverlay extends Module {
                             roi.setPosition(pos);
                         }
                         roi.setStrokeColor(colour);
+                        roi.setStrokeWidth(lineWidth);
                         ovl.addElement(roi);
                     }
 
@@ -129,6 +131,7 @@ public class AddObjectsOverlay extends Module {
                         pointRoi.setPosition(pos);
                     }
                     pointRoi.setStrokeColor(colour);
+                    pointRoi.setStrokeWidth(lineWidth);
                     ovl.addElement(pointRoi);
 
                     break;
@@ -151,6 +154,7 @@ public class AddObjectsOverlay extends Module {
                         polyRoi.setPosition(pos);
                     }
                     polyRoi.setStrokeColor(colour);
+                    polyRoi.setStrokeWidth(lineWidth);
                     ovl.addElement(polyRoi);
 
                     break;
@@ -174,6 +178,7 @@ public class AddObjectsOverlay extends Module {
                             pointRoi.setPosition(pos);
                         }
                         pointRoi.setStrokeColor(colour);
+                        pointRoi.setStrokeWidth(lineWidth);
                         ovl.addElement(pointRoi);
 
                     } else {
@@ -186,6 +191,7 @@ public class AddObjectsOverlay extends Module {
                             ovalRoi.setPosition(pos);
                         }
                         ovalRoi.setStrokeColor(colour);
+                        ovalRoi.setStrokeWidth(lineWidth);
                         ovl.addElement(ovalRoi);
                     }
 
@@ -209,7 +215,8 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects, HashMap<Integer,Float> hues, boolean verbose) {
+    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects,
+                                          HashMap<Integer,Float> hues, double lineWidth, boolean verbose) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -243,7 +250,7 @@ public class AddObjectsOverlay extends Module {
                     for (int t = p2.getT();t<nFrames;t++) {
                         Line line = new Line(x1, y1, x2, y2);
                         line.setPosition(t+1);
-                        line.setStrokeWidth(2f);
+                        line.setStrokeWidth(lineWidth);
                         line.setStrokeColor(color);
                         ovl.addElement(line);
 
@@ -289,6 +296,7 @@ public class AddObjectsOverlay extends Module {
         boolean useRadius = parameters.getValue(USE_RADIUS);
         String measurementForRadius = parameters.getValue(MEASUREMENT_FOR_RADIUS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
+        double lineWidth = parameters.getValue(LINE_WIDTH);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Getting input objects
@@ -323,12 +331,12 @@ public class AddObjectsOverlay extends Module {
                 } else {
                     positionMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas, ""};
                 }
-                createOverlay(ipl,inputObjects,positionMode,positionMeasurements,hues,IDs,labelSize);
+                createOverlay(ipl,inputObjects,positionMode,positionMeasurements,hues,IDs,labelSize,lineWidth);
                 break;
 
             case PositionModes.TRACKS:
                 ObjCollection tracks = workspace.getObjectSet(trackObjectsName);
-                createTrackOverlay(ipl,inputObjectsName,tracks,hues,verbose);
+                createTrackOverlay(ipl,inputObjectsName,tracks,hues,lineWidth,verbose);
                 break;
         }
 
@@ -368,6 +376,7 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(MEASUREMENT_FOR_COLOUR, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(TRACK_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(LINE_WIDTH,Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
@@ -462,6 +471,7 @@ public class AddObjectsOverlay extends Module {
 
         }
 
+        returnedParameters.add(parameters.getParameter(LINE_WIDTH));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;

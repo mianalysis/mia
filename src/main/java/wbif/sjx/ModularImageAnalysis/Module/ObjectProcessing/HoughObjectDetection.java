@@ -164,7 +164,7 @@ public class HoughObjectDetection extends Module {
             }
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 
-            AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,hues,IDs,labelSize);
+            AddObjectsOverlay.createOverlay(dispIpl,outputObjects,positionMode,null,hues,IDs,labelSize,1);
 
             dispIpl.show();
 

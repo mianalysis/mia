@@ -20,6 +20,7 @@ public class RelateObjects extends Module {
     public final static String LINKING_DISTANCE = "Maximum linking distance (px)";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
+
     public interface RelateModes {
         String MATCHING_IDS = "Matching IDs";
         String PROXIMITY = "Proximity";
@@ -341,6 +342,7 @@ public class RelateObjects extends Module {
                 parameters.updateValueSource(TEST_CHILD_OBJECTS,parentObjectNames);
 
                 break;
+
         }
 
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
