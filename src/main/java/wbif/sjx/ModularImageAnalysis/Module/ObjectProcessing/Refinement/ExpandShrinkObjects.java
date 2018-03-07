@@ -85,13 +85,13 @@ public class ExpandShrinkObjects extends Module {
             // from the converter has white objects on a black background.
             switch (method) {
                 case Methods.EXPAND_2D:
-                    BinaryOperations.applyBinaryTransform(objectImage.getImagePlus(),
-                            BinaryOperations.OperationModes.DILATE_2D,radiusChangePx,0);
+                    BinaryOperations.applyStockBinaryTransform(objectImage.getImagePlus(),
+                            BinaryOperations.OperationModes.DILATE_2D,radiusChangePx);
                     break;
 
                 case Methods.SHRINK_2D:
-                    BinaryOperations.applyBinaryTransform(objectImage.getImagePlus(),
-                            BinaryOperations.OperationModes.ERODE_2D,radiusChangePx,0);
+                    BinaryOperations.applyStockBinaryTransform(objectImage.getImagePlus(),
+                            BinaryOperations.OperationModes.ERODE_2D,radiusChangePx);
                     break;
             }
 

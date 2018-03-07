@@ -148,7 +148,7 @@ public class SplineAnalysis extends Module {
         double maxCurvature = parameters.getValue(MAX_CURVATURE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
-        // Getting spatial calibratio
+        // Getting spatial calibration
         double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
 
         if (showSplines &! applyToImage) {
@@ -170,7 +170,7 @@ public class SplineAnalysis extends Module {
             InvertIntensity.process(objectIpl);
 
             // Skeletonise fish to get single backbone
-            BinaryOperations.applyBinaryTransform(objectIpl, BinaryOperations.OperationModes.SKELETONISE_2D, 1, 0);
+            BinaryOperations.applyStockBinaryTransform(objectIpl, BinaryOperations.OperationModes.SKELETONISE_2D, 1);
 
             // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
             Skeleton skeleton = new Skeleton(objectIpl);

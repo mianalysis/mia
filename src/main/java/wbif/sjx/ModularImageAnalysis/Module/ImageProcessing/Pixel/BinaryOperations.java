@@ -2,11 +2,18 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.Duplicator;
+import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.binary.ChamferWeights3D;
+import inra.ijpb.morphology.MinimaAndMaxima3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
+import inra.ijpb.plugins.MarkerControlledWatershed3DPlugin;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
+import inra.ijpb.watershed.MarkerControlledWatershedTransform3D;
+import inra.ijpb.watershed.Watershed;
+import inra.ijpb.watershed.WatershedTransform3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -20,23 +27,46 @@ public class BinaryOperations extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OPERATION_MODE = "Filter mode";
     public static final String NUM_ITERATIONS = "Number of iterations";
-    public static final String DYNAMIC = "Dynamic (Watershed)";
+    public static final String USE_MARKERS = "Use markers";
+    public static final String MARKER_IMAGE = "Input marker image";
+    public static final String INTENSITY_MODE = "Intensity mode";
+    public static final String INTENSITY_IMAGE = "Intensity image";
+    public static final String DYNAMIC = "Dynamic";
+    public static final String CONNECTIVITY_3D = "Connectivity (3D)";
     public static final String SHOW_IMAGE = "Show image";
 
     public interface OperationModes {
         String DILATE_2D = "Dilate 2D";
-        String MANHATTAN_DISTANCE_MAP_2D = "Distance map (Manhattan) 2D";
+        String DISTANCE_MAP_3D = "Distance map 3D";
         String ERODE_2D = "Erode 2D";
         String FILL_HOLES_2D = "Fill holes 2D";
         String SKELETONISE_2D = "Skeletonise 2D";
         String WATERSHED_2D = "Watershed 2D";
         String WATERSHED_3D = "Watershed 3D";
 
-        String[] ALL = new String[]{DILATE_2D,MANHATTAN_DISTANCE_MAP_2D,ERODE_2D,FILL_HOLES_2D,SKELETONISE_2D,WATERSHED_2D,WATERSHED_3D};
+        String[] ALL = new String[]{DILATE_2D,DISTANCE_MAP_3D,ERODE_2D,FILL_HOLES_2D,SKELETONISE_2D,WATERSHED_2D,
+                WATERSHED_3D};
 
     }
 
-    public static void applyBinaryTransform(ImagePlus ipl, String operationMode, int numIterations, int dynamic) {
+    public interface IntensityModes {
+        String DISTANCE = "Distance";
+        String INPUT_IMAGE = "Input image intensity";
+
+        String[] ALL = new String[]{DISTANCE,INPUT_IMAGE};
+
+    }
+
+    public interface Connectivity3D {
+        String SIX = "6";
+        String TWENTYSIX = "26";
+
+        String[] ALL = new String[]{SIX,TWENTYSIX};
+
+    }
+
+
+    public static void applyStockBinaryTransform(ImagePlus ipl, String operationMode, int numIterations) {
         // Applying process to stack
         switch (operationMode) {
             case OperationModes.DILATE_2D:
@@ -60,50 +90,37 @@ public class BinaryOperations extends Module {
                 Prefs.blackBackground = false;
                 break;
 
-            case OperationModes.WATERSHED_3D:
-                IJ.run(ipl,"Invert", "stack");
-                Prefs.blackBackground = false;
-
-                // Creating a marker image
-                ImagePlus markerIpl = new Duplicator().run(ipl);
-
-                // Inverting the mask intensity
-                for (int z = 1; z <= markerIpl.getNSlices(); z++) {
-                    for (int c = 1; c <= markerIpl.getNChannels(); c++) {
-                        for (int t = 1; t <= markerIpl.getNFrames(); t++) {
-                            markerIpl.setPosition(c, z, t);
-                            markerIpl.getProcessor().invert();
-                        }
-                    }
-                }
-                markerIpl.setPosition(1,1,1);
-
-                // Calculating the distance map using MorphoLibJ
-                float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
-                ImagePlus distIpl = new GeodesicDistanceMap3D().process(markerIpl,ipl,"Dist",weights,false);
-
-                // Inverting the distance map, so the centres of objects have the smallest values
-                for (int z = 1; z <= distIpl.getNSlices(); z++) {
-                    for (int c = 1; c <= distIpl.getNChannels(); c++) {
-                        for (int t = 1; t <= distIpl.getNFrames(); t++) {
-                            distIpl.setPosition(c, z, t);
-                            distIpl.getProcessor().invert();
-                        }
-                    }
-                }
-                distIpl.setPosition(1,1,1);
-
-                ipl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(distIpl.getImageStack(),ipl.getImageStack(),dynamic,26,false));
-
-                IJ.setRawThreshold(ipl, 0, 0, null);
-                IJ.run(ipl, "Convert to Mask", "method=Default background=Light");
-                IJ.run(ipl, "Invert LUT", "");
-
-                break;
-
         }
     }
 
+    public static void applyDistanceMap3D(ImagePlus ipl) {
+        // Calculating the distance map using MorphoLibJ
+        float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
+
+        ImagePlus maskIpl = new Duplicator().run(ipl);
+        IJ.run(maskIpl,"Invert","stack");
+        ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,false).getStack());
+
+    }
+
+    public static void applyWatershed3D(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) {
+        IJ.run(maskIpl,"Invert","stack");
+
+        if (markerIpl == null) {
+            maskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(intensityIpl.getImageStack(),maskIpl.getImageStack(),dynamic,connectivity,false));
+
+        } else {
+            markerIpl = BinaryImages.componentsLabeling(markerIpl, connectivity, 32);
+            maskIpl.setStack(Watershed.computeWatershed(intensityIpl,markerIpl,maskIpl,connectivity,true,false).getStack());
+
+        }
+
+        // The image produced by MorphoLibJ's watershed function is labelled.  Converting to binary.
+        IJ.setRawThreshold(maskIpl, 0, 0, null);
+        IJ.run(maskIpl, "Convert to Mask", "method=Default background=Light");
+        IJ.run(maskIpl, "Invert LUT", "");
+
+    }
 
     @Override
     public String getTitle() {
@@ -112,8 +129,9 @@ public class BinaryOperations extends Module {
 
     @Override
     public String getHelp() {
-        return "Performs 2D fill holes, dilate and erode using ImageJ functions\n" +
-                "Uses MorphoLibJ to do 3D Watershed";
+        return "Expects black objects on a white background" +
+                "\nPerforms 2D fill holes, dilate and erode using ImageJ functions" +
+                "\nUses MorphoLibJ to do 3D Watershed";
 
     }
 
@@ -129,12 +147,52 @@ public class BinaryOperations extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String operationMode = parameters.getValue(OPERATION_MODE);
         int numIterations = parameters.getValue(NUM_ITERATIONS);
+        boolean useMarkers = parameters.getValue(USE_MARKERS);
+        String markerImageName = parameters.getValue(MARKER_IMAGE);
+        String intensityMode = parameters.getValue(INTENSITY_MODE);
+        String intensityImageName = parameters.getValue(INTENSITY_IMAGE);
         int dynamic = parameters.getValue(DYNAMIC);
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY_3D));
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        applyBinaryTransform(inputImagePlus,operationMode,numIterations,dynamic);
+        switch (operationMode) {
+            case (OperationModes.DILATE_2D):
+            case (OperationModes.ERODE_2D):
+            case (OperationModes.FILL_HOLES_2D):
+            case (OperationModes.SKELETONISE_2D):
+            case (OperationModes.WATERSHED_2D):
+                applyStockBinaryTransform(inputImagePlus,operationMode,numIterations);
+                break;
+
+            case (OperationModes.DISTANCE_MAP_3D):
+                applyDistanceMap3D(inputImagePlus);
+                break;
+
+            case (OperationModes.WATERSHED_3D):
+                ImagePlus markerIpl = null;
+                if (useMarkers) markerIpl = workspace.getImage(markerImageName).getImagePlus();
+
+                ImagePlus intensityIpl = null;
+                switch (intensityMode) {
+                    case IntensityModes.DISTANCE:
+                        intensityIpl = new Duplicator().run(inputImagePlus);
+                        applyDistanceMap3D(intensityIpl);
+                        IJ.run(intensityIpl,"Invert","stack");
+                        break;
+
+                    case IntensityModes.INPUT_IMAGE:
+                        intensityIpl = workspace.getImage(intensityImageName).getImagePlus();
+                        break;
+
+                }
+
+                applyWatershed3D(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity);
+
+                break;
+
+        }
 
         // If selected, displaying the image
         if (parameters.getValue(SHOW_IMAGE)) {
@@ -160,7 +218,12 @@ public class BinaryOperations extends Module {
         parameters.add(
                 new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE_2D,OperationModes.ALL));
         parameters.add(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
+        parameters.add(new Parameter(USE_MARKERS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MARKER_IMAGE, Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INTENSITY_MODE, Parameter.CHOICE_ARRAY,IntensityModes.DISTANCE,IntensityModes.ALL));
+        parameters.add(new Parameter(INTENSITY_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
+        parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY,Connectivity3D.SIX,Connectivity3D.ALL));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
@@ -181,14 +244,28 @@ public class BinaryOperations extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));
+        switch ((String) parameters.getValue(OPERATION_MODE)) {
+            case OperationModes.DILATE_2D:
+            case OperationModes.ERODE_2D:
+                returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
+                break;
 
-        if (parameters.getValue(OPERATION_MODE).equals(OperationModes.DILATE_2D)
-                | parameters.getValue(OPERATION_MODE).equals(OperationModes.ERODE_2D)) {
-            returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
+            case OperationModes.WATERSHED_3D:
+                returnedParameters.add(parameters.getParameter(USE_MARKERS));
+                if (parameters.getValue(USE_MARKERS)) {
+                    returnedParameters.add(parameters.getParameter(MARKER_IMAGE));
+                } else {
+                    returnedParameters.add(parameters.getParameter(DYNAMIC));
+                }
 
-        } else if (parameters.getValue(OPERATION_MODE).equals(OperationModes.WATERSHED_3D)) {
-            returnedParameters.add(parameters.getParameter(DYNAMIC));
-
+                returnedParameters.add(parameters.getParameter(INTENSITY_MODE));
+                switch ((String) parameters.getValue(INTENSITY_MODE)) {
+                    case IntensityModes.INPUT_IMAGE:
+                        returnedParameters.add(parameters.getParameter(INTENSITY_IMAGE));
+                        break;
+                }
+                returnedParameters.add(parameters.getParameter(CONNECTIVITY_3D));
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
