@@ -776,32 +776,48 @@ public class MainGUI extends GUI {
         Reflections reflections = new Reflections("wbif.sjx.ModularImageAnalysis");
         Set<Class<? extends Module>> availableModules = reflections.getSubTypesOf(Module.class);
 
-        // Creating new instances of these classes and adding to ArrayList
-        TreeMap<String, ArrayList<Module>> availableModulesList = new TreeMap<>();
+        // Creating an alphabetically-ordered list of all modules
+        TreeMap<String,Class> modules = new TreeMap<>();
         for (Class clazz : availableModules) {
-            if (clazz != InputControl.class) {
+            if (clazz != InputControl.class && clazz != OutputControl.class) {
                 String[] names = clazz.getPackage().getName().split("\\.");
-                String pkg = names[names.length - 1];
-
-                availableModulesList.putIfAbsent(pkg, new ArrayList<>());
-                availableModulesList.get(pkg).add((Module) clazz.newInstance());
-
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String name:names) stringBuilder.append(name);
+                modules.put(stringBuilder.toString()+clazz.getSimpleName(),clazz);
             }
         }
 
-        // Sorting the ArrayList based on module title
-        for (ArrayList<Module> modules : availableModulesList.values()) {
-            Collections.sort(modules, Comparator.comparing(Module::getTitle));
+        LinkedHashSet<ModuleListMenu> topList = new LinkedHashSet<>();
+        for (Class clazz : modules.values()) {
+            // ActiveList starts at the top list
+            LinkedHashSet<ModuleListMenu> activeList = topList;
+            ModuleListMenu activeItem = null;
+
+            String[] names = clazz.getPackage().getName().split("\\.");
+            for (int i=4;i<names.length;i++) {
+                boolean found = false;
+                for (ModuleListMenu listItemm:activeList) {
+                    if (listItemm.getName().equals(names[i])) {
+                        activeItem = listItemm;
+                        found = true;
+                    }
+                }
+
+                if (!found) {
+                    ModuleListMenu newItem = new ModuleListMenu(this, names[i], new ArrayList<>());
+                    newItem.setName(names[i]);
+                    activeList.add(newItem);
+                    if (activeItem != null) activeItem.add(newItem);
+                    activeItem = newItem;
+                }
+
+                activeList = activeItem.getChildren();
+
+            }
+            activeItem.addMenuItem((Module) clazz.newInstance());
         }
 
-        // Adding the modules to the list
-        for (String pkgName : availableModulesList.keySet()) {
-            ArrayList<Module> modules = availableModulesList.get(pkgName);
-            ModuleListMenu packageMenu = new ModuleListMenu(this, pkgName, modules);
-
-            moduleListMenu.add(packageMenu);
-
-        }
+        for (ModuleListMenu listMenu:topList) moduleListMenu.add(listMenu);
     }
 
     public void addModule() {

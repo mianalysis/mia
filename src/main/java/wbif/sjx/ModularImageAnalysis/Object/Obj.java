@@ -5,9 +5,8 @@ import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.Wand;
-import ij.process.FloatPolygon;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ProjectObjects;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ObjectImageConverter;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ProjectObjects;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 

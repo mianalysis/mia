@@ -6,7 +6,7 @@ import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ObjectImageConverter;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -34,7 +34,7 @@ public class MeasureIntensityDistribution extends Module {
 
     public interface SpatialUnits {
         String CALIBRATED = "Calibrated";
-        String PIXELS = "Pixels";
+        String PIXELS = "Pixel";
 
         String[] ALL = new String[]{CALIBRATED,PIXELS};
 
