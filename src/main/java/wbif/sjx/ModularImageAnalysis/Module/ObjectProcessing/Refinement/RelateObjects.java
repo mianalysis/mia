@@ -31,6 +31,7 @@ public class RelateObjects extends Module {
 
     }
 
+
     public interface ReferencePoints {
         String CENTROID = "Centroid";
         String SURFACE = "Surface";
@@ -270,10 +271,11 @@ public class RelateObjects extends Module {
 
         // Getting parameters
         String relateMode = parameters.getValue(RELATE_MODE);
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
         String testChildObjectsName = parameters.getValue(TEST_CHILD_OBJECTS);
         String referencePoint = parameters.getValue(REFERENCE_POINT);
         double linkingDistance = parameters.getValue(LINKING_DISTANCE);
-        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
+
 
         switch (relateMode) {
             case RelateModes.MATCHING_IDS:
@@ -295,6 +297,7 @@ public class RelateObjects extends Module {
                 if (verbose) System.out.println("["+moduleName+"] Relating objects by spatial overlap");
                 spatialLinking(parentObjects,childObjects);
                 break;
+
         }
     }
 

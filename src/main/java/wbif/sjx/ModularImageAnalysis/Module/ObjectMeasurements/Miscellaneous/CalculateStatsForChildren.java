@@ -14,7 +14,7 @@
 // * measurements.  Eventually it would be good to offer the option which statistics will be processed.
 // */
 //public class CalculateStatsForChildren extends Module {
-//    public static final String PARENT_OBJECTS = "Parent objects";
+//    public static final String INPUT_OBJECTS_1 = "Parent objects";
 //    public static final String CHILD_OBJECTS = "Child objects";
 //    public static final String CALCULATE_MEAN = "Calculate mean";
 //    public static final String CALCULATE_STD = "Calculate standard deviation";
@@ -36,7 +36,7 @@
 //    @Override
 //    public void run(Workspace workspace, boolean verbose) {
 //        // Getting input objects
-//        String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
+//        String parentObjectsName = parameters.getValue(INPUT_OBJECTS_1);
 //        ObjCollection parentObjects = workspace.getObjects().get(parentObjectsName);
 //
 //        // Getting child objects to calculate statistics for
@@ -148,7 +148,7 @@
 //
 //    @Override
 //    public void initialiseParameters() {
-//        parameters.add(new Parameter(PARENT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+//        parameters.add(new Parameter(INPUT_OBJECTS_1, Parameter.INPUT_OBJECTS,null));
 //        parameters.add(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
 //        parameters.add(new Parameter(CALCULATE_MEAN, Parameter.BOOLEAN,true));
 //        parameters.add(new Parameter(CALCULATE_STD, Parameter.BOOLEAN,true));
@@ -161,7 +161,7 @@
 //    @Override
 //    public ParameterCollection updateAndGetParameters() {
 //        ParameterCollection returnedParameters = new ParameterCollection();
-//        returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
+//        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS_1));
 //        returnedParameters.add(parameters.getParameter(CHILD_OBJECTS));
 //        returnedParameters.add(parameters.getParameter(CALCULATE_MEAN));
 //        returnedParameters.add(parameters.getParameter(CALCULATE_STD));
@@ -170,7 +170,7 @@
 //        returnedParameters.add(parameters.getParameter(CALCULATE_SUM));
 //
 //        // Updating measurements with measurement choices from currently-selected object
-//        String objectName = parameters.getValue(PARENT_OBJECTS);
+//        String objectName = parameters.getValue(INPUT_OBJECTS_1);
 //        if (objectName != null) {
 //            parameters.updateValueSource(CHILD_OBJECTS, objectName);
 //
@@ -200,30 +200,30 @@
 //
 ////    @Override
 ////    public void addMeasurements(MeasurementCollection measurements) {
-////        if (parameters.getValue(PARENT_OBJECTS) != null & parameters.getValue(CHILD_OBJECTS) != null) {
+////        if (parameters.getValue(INPUT_OBJECTS_1) != null & parameters.getValue(CHILD_OBJECTS) != null) {
 ////            String childName = parameters.getValue(CHILD_OBJECTS);
 ////
 ////            String[] names = measurements.getObjectMeasurementNames(parameters.getValue(CHILD_OBJECTS));
 ////
 ////            for (String name:names) {
 ////                if (parameters.getValue(CALCULATE_MEAN)) {
-////                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MEAN_OF_"+childName);
+////                    measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS_1), name + "_MEAN_OF_"+childName);
 ////                }
 ////
 ////                if (parameters.getValue(CALCULATE_STD)) {
-////                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_STD_OF_"+childName);
+////                    measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS_1), name + "_STD_OF_"+childName);
 ////                }
 ////
 ////                if (parameters.getValue(CALCULATE_MIN)) {
-////                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MIN_OF_"+childName);
+////                    measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS_1), name + "_MIN_OF_"+childName);
 ////                }
 ////
 ////                if (parameters.getValue(CALCULATE_MAX)) {
-////                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_MAX_OF_"+childName);
+////                    measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS_1), name + "_MAX_OF_"+childName);
 ////                }
 ////
 ////                if (parameters.getValue(CALCULATE_SUM)) {
-////                    measurements.addObjectMeasurement(parameters.getValue(PARENT_OBJECTS), name + "_SUM_OF_"+childName);
+////                    measurements.addObjectMeasurement(parameters.getValue(INPUT_OBJECTS_1), name + "_SUM_OF_"+childName);
 ////                }
 ////
 ////            }

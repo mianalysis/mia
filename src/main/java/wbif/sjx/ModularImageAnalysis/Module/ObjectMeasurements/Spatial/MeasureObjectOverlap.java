@@ -10,18 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 public class MeasureObjectOverlap extends Module {
     public final static String OBJECT_SET_1 = "Object set 1";
     public final static String OBJECT_SET_2 = "Object set 2";
-    public static final String MOVE_OVERLAPPING = "Move overlapping to new object set";
-    public static final String OUTPUT_OBJECTS_NAME = "Output objects name";
-    public static final String MINIMUM_OVERLAP_PC = "Minimum overlap (%)";
-    public static final String OVERLAP_REQUIREMENT = "Overlap requirement";
 
-    public interface OverlapRequirements {
-        String MIN_EXCEEDED_BY_BOTH = "Minimum exceeded by both";
-        String MIN_EXCEEDED_BY_EITHER = "Minimum exceeded by either";
-
-        String[] ALL = new String[]{MIN_EXCEEDED_BY_BOTH,MIN_EXCEEDED_BY_EITHER};
-
-    }
 
     public interface Measurements {
         String OVERLAP_VOX_1 = "OVERLAP_VOXELS_1";
@@ -54,16 +43,6 @@ public class MeasureObjectOverlap extends Module {
         String inputObjects2Name = parameters.getValue(OBJECT_SET_2);
         ObjCollection inputObjects2 = workspace.getObjectSet(inputObjects2Name);
 
-        // Getting parameters
-        boolean moveOverlapping = parameters.getValue(MOVE_OVERLAPPING);
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
-        double minOverlap = parameters.getValue(MINIMUM_OVERLAP_PC);
-        String overlapRequirement = parameters.getValue(OVERLAP_REQUIREMENT);
-
-        // If necessary, creating the new ObjCollection
-        ObjCollection outputObjects;
-        if (moveOverlapping)  outputObjects = new ObjCollection(outputObjectsName);
-
         // Iterating over all object pairs, checking the overlap
         for (Obj obj1:inputObjects1.values()) {
             int overlap = 0;
@@ -94,29 +73,12 @@ public class MeasureObjectOverlap extends Module {
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOX_2),overlap));
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_PERCENT_2),overlapPC));
         }
-
-        if (moveOverlapping) {
-            boolean move = false;
-            switch (overlapRequirement) {
-                case OverlapRequirements.MIN_EXCEEDED_BY_BOTH:
-
-                    break;
-
-                case OverlapRequirements.MIN_EXCEEDED_BY_EITHER:
-
-                    break;
-            }
-        }
     }
 
     @Override
     protected void initialiseParameters() {
         parameters.add(new Parameter(OBJECT_SET_1,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(OBJECT_SET_2,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(MOVE_OVERLAPPING,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(OUTPUT_OBJECTS_NAME,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(MINIMUM_OVERLAP_PC,Parameter.DOUBLE,0.0));
-        parameters.add(new Parameter(OVERLAP_REQUIREMENT,Parameter.CHOICE_ARRAY,OverlapRequirements.MIN_EXCEEDED_BY_BOTH,OverlapRequirements.ALL));
 
     }
 
@@ -131,19 +93,7 @@ public class MeasureObjectOverlap extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
-        returnedParameters.add(parameters.getParameter(OBJECT_SET_1));
-        returnedParameters.add(parameters.getParameter(OBJECT_SET_2));
-        returnedParameters.add(parameters.getParameter(MOVE_OVERLAPPING));
-
-        if (parameters.getValue(MOVE_OVERLAPPING)) {
-            returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS_NAME));
-            returnedParameters.add(parameters.getParameter(MINIMUM_OVERLAP_PC));
-            returnedParameters.add(parameters.getParameter(OVERLAP_REQUIREMENT));
-        }
-
-        return returnedParameters;
+        return parameters;
 
     }
 

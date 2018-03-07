@@ -10,7 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 public class MergeObjects extends Module {
     public static final String INPUT_OBJECTS_1 = "Input objects 1";
     public static final String INPUT_OBJECTS_2 = "Input objects 2";
-    public static final String OUTPUT_OBJECTS= "Output objects";
+    public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String DELETE_INPUTS = "Remove input objects";
 
     @Override
