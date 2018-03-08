@@ -30,7 +30,7 @@ public abstract class GUI {
     }
 
     public void setLastModuleEval(int lastModuleEval) {
-        this.lastModuleEval = lastModuleEval;
+        this.lastModuleEval = Math.max(lastModuleEval,-1);
     }
 
     public Module getActiveModule() {

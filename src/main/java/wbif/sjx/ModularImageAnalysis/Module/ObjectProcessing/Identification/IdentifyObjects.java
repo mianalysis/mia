@@ -52,8 +52,7 @@ public class IdentifyObjects extends Module {
         inputImagePlus = new Duplicator().run(inputImagePlus);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            if (verbose)
-                System.out.println("[" + moduleName + "] Processing frame "+t+" of "+inputImagePlus.getNFrames());
+            writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames(),verbose);
             // Creating a copy of the input image
             ImagePlus currStack = SubHyperstackMaker.makeSubhyperstack(
                     inputImagePlus,1+"-"+inputImagePlus.getNChannels(),1+"-"+inputImagePlus.getNSlices(),t+"-"+t);
@@ -89,10 +88,10 @@ public class IdentifyObjects extends Module {
             }
         }
 
-        if (verbose) System.out.println("["+moduleName+"] "+outputObjects.size()+" objects detected");
+        writeMessage(outputObjects.size()+" objects detected",verbose);
 
         // Adding objects to workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
+        writeMessage("Adding objects ("+outputObjectsName+") to workspace",verbose);
         workspace.addObjects(outputObjects);
 
         // Showing objects

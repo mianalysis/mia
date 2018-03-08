@@ -95,6 +95,9 @@ public class ImageCalculator extends Module {
         int nFrames = inputImagePlus1.getNFrames();
 
         // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
+        int nImages = nSlices*nChannels*nFrames;
+        int count = 0;
+
         for (int z = 1; z <= nSlices; z++) {
             for (int c = 1; c <= nChannels; c++) {
                 for (int t = 1; t <= nFrames; t++) {
@@ -148,6 +151,9 @@ public class ImageCalculator extends Module {
                             }
                         }
                     }
+
+                    writeMessage("Processed "+(++count)+" of "+nFrames+" frames",verbose);
+
                 }
             }
         }

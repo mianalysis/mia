@@ -13,6 +13,7 @@ import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -102,10 +103,13 @@ public class BinaryOperations extends Module {
 
     }
 
-    public static void applyWatershed3D(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) {
+    public void applyWatershed3D(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity, boolean verbose) {
+        // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
+        // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
 
-        for (int t = 1; t <= maskIpl.getNFrames(); t++) {
+        int nFrames = maskIpl.getNFrames();
+        for (int t = 1; t <= nFrames; t++) {
             // Getting maskIpl for this timepoint
             ImagePlus timepointMaskIpl = getTimepoint(maskIpl,t);
             ImagePlus timepointIntensityIpl = getTimepoint(intensityIpl,t);
@@ -114,26 +118,28 @@ public class BinaryOperations extends Module {
                 timepointMaskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensityIpl.getImageStack(), timepointMaskIpl.getImageStack(), dynamic, connectivity, false));
 
             } else {
+                IJ.run(markerIpl,"Invert","stack");
                 ImagePlus timepointMarkerIpl = getTimepoint(markerIpl,t);
                 timepointMarkerIpl = BinaryImages.componentsLabeling(timepointMarkerIpl, connectivity, 32);
                 timepointMaskIpl.setStack(Watershed.computeWatershed(timepointIntensityIpl, timepointMarkerIpl, timepointMaskIpl, connectivity, true, false).getStack());
 
             }
 
+            // The image produced by MorphoLibJ's watershed function is labelled.  Converting to binary and back to 8-bit.
+            IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
+            IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
+            IJ.run(timepointMaskIpl, "Invert LUT", "");
+            IJ.run(timepointMaskIpl, "8-bit", null);
+
             //  Replacing the maskIpl intensity
             overwriteTimepoint(maskIpl,timepointMaskIpl,t);
 
+            writeMessage("Processed "+t+" of "+nFrames+" frames",verbose);
+
         }
-
-        // The image produced by MorphoLibJ's watershed function is labelled.  Converting to binary.
-        IJ.setRawThreshold(maskIpl, 0, 0, null);
-        IJ.run(maskIpl, "Convert to Mask", "method=Default background=Light");
-        IJ.run(maskIpl, "Invert LUT", "");
-
     }
 
     private static ImagePlus getTimepoint(ImagePlus inputImagePlus, int timepoint) {
-        // Creating the new ImagePlus
         ImagePlus outputImagePlus = IJ.createImage("Output",inputImagePlus.getWidth(),inputImagePlus.getHeight(),inputImagePlus.getNSlices(),inputImagePlus.getBitDepth());
 
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
@@ -244,7 +250,7 @@ public class BinaryOperations extends Module {
 
                 }
 
-                applyWatershed3D(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity);
+                applyWatershed3D(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity,verbose);
 
                 break;
 

@@ -76,7 +76,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
 
     }
 
-    private static ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges) throws ServiceException, DependencyException, IOException, FormatException {
+    private ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, boolean verbose) throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
@@ -127,6 +127,8 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
                 endingT-startingT+1, bitDepth);
 
         // Iterating over all images in the stack, adding them to the output ImagePlus
+        int nTotal = (endingZ-startingZ+1)*(endingC-startingC+1)*(endingT-startingT+1);
+        int count = 0;
         for (int z = startingZ; z <= endingZ; z++) {
             for (int c = startingC; c <= endingC; c++) {
                 for (int t = startingT; t <= endingT; t++) {
@@ -135,6 +137,8 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
 
                     ipl.setPosition(c-startingC+1, z-startingZ+1, t-startingT+1);
                     ipl.setProcessor(ip);
+
+                    writeMessage("Loaded image "+(++count)+" of "+nTotal,verbose);
 
                 }
             }
@@ -169,8 +173,8 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
 
     }
 
-    private static ImagePlus getFormattedNameImage(String nameFormat, HCMetadata metadata, String comment,
-                                                   int seriesNumber,int[][] dimRanges) throws ServiceException, DependencyException, FormatException, IOException {
+    private ImagePlus getFormattedNameImage(String nameFormat, HCMetadata metadata, String comment,
+                                                   int seriesNumber,int[][] dimRanges, boolean verbose) throws ServiceException, DependencyException, FormatException, IOException {
 
         String filename = null;
         switch (nameFormat) {
@@ -193,7 +197,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
                 break;
         }
 
-        return getBFImage(filename,seriesNumber,dimRanges);
+        return getBFImage(filename,seriesNumber,dimRanges,verbose);
 
     }
 
@@ -249,8 +253,8 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
                     case ImportModes.CURRENT_FILE:
                         File file = workspace.getMetadata().getFile();
                         if (file == null)
-                            throw new GenericMIAException("Load file using Analysis > Set file to analyse");
-                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges);
+                            throw new GenericMIAException("Set file in Input Control");
+                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges,verbose);
                         break;
 
                     case ImportModes.IMAGEJ:
@@ -260,17 +264,17 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
                     case ImportModes.MATCHING_FORMAT:
                         switch (nameFormat) {
                             case NameFormats.INCUCYTE_SHORT:
-                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges);
+                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges,verbose);
                                 break;
 
                             case NameFormats.INPUT_FILE_PREFIX:
-                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges);
+                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges,verbose);
                                 break;
                         }
                         break;
 
                     case ImportModes.SPECIFIC_FILE:
-                        ipl = getBFImage(filePath, seriesNumber, dimRanges);
+                        ipl = getBFImage(filePath, seriesNumber, dimRanges,verbose);
                         break;
                 }
             }

@@ -118,7 +118,7 @@ public class AnalysisHandler {
 
             // If no module was found, display an error, then continue
             if (module == null) {
-                IJ.showMessage("Class \""+moduleName+"\" not found (skipping)");
+                System.err.println("Class \""+moduleName+"\" not found (skipping)");
                 continue;
             }
 
@@ -275,8 +275,8 @@ public class AnalysisHandler {
                 module.setParameterVisibility(parameterName,parameterVisible);
 
             } catch (NullPointerException e) {
-                IJ.showMessage("Module "+module.getTitle()
-                        +", parameter \""+parameterName + "\" not set");
+                System.err.println("Module \""+module.getTitle()
+                        +"\" parameter \""+parameterName + "\" not set");
 
             }
         }

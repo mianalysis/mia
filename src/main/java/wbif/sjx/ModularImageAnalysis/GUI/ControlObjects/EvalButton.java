@@ -77,7 +77,6 @@ public class EvalButton extends JButton implements ActionListener {
             }
         }).start();
 
-        System.out.println("idx "+idx);
         // If multiple modules will need to be evaluated first
         new Thread(() -> {
             for (int i = gui.getLastModuleEval()+1;i<=idx;i++) {

@@ -961,7 +961,11 @@ public class MainGUI extends GUI {
         }
 
         if (inputFile == null) return;
-        if (getTestWorkspace().getMetadata().getFile() == null) return;
+
+        if (getTestWorkspace().getMetadata().getFile() == null) {
+            lastModuleEval = -1;
+            setTestWorkspace(new Workspace(1, new File(inputFile)));
+        }
 
         // If the input path isn't the same assign this new file
         if (!getTestWorkspace().getMetadata().getFile().getAbsolutePath().equals(inputFile)) {

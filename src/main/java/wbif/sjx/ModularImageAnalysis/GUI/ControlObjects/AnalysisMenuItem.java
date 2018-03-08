@@ -64,21 +64,6 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     new AnalysisHandler().saveAnalysis(gui.getAnalysis());
                     break;
 
-//                case SET_FILE_TO_ANALYSE:
-//                    FileDialog fileDialog = new FileDialog(new Frame(), "Select file to run", FileDialog.LOAD);
-//                    fileDialog.setMultipleMode(false);
-//                    fileDialog.setVisible(true);
-//
-//                    gui.setTestWorkspace(new Workspace(1, fileDialog.getFiles()[0]));
-//
-//                    // Updating currently-processed modules to none
-//                    gui.setLastModuleEval(-1);
-//                    gui.populateModuleList();
-//
-//                    System.out.println("Set current file to \"" + fileDialog.getFiles()[0].getName() + "\"");
-//
-//                    break;
-
                 case START_ANALYSIS:
                     Thread t = new Thread(() -> {
                         try {

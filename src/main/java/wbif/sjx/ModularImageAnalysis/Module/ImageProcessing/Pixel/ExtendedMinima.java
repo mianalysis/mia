@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
@@ -49,6 +50,9 @@ public class ExtendedMinima extends Module {
         // Getting region minima
         inputImagePlus.setStack(MinimaAndMaxima3D.extendedMinima(inputImagePlus.getImageStack(),dynamic,connectivity));
         inputImagePlus.setPosition(1,1,1);
+
+        // MorphoLibJ gives white objects on a black background.  Inverting this to match the logic of ImageJ
+        IJ.run(inputImagePlus,"Invert","stack");
 
         // If selected, displaying the image
         if (parameters.getValue(SHOW_IMAGE)) {

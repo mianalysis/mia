@@ -27,6 +27,7 @@ public class FilterImage extends Module {
     public static final String FILTER_MODE = "Filter mode";
     public static final String FILTER_RADIUS = "Filter radius";
     public static final String CALIBRATED_UNITS = "Calibrated units";
+    public static final String ROLLING_METHOD = "Rolling filter method";
     public static final String WINDOW_HALF_WIDTH = "Window half width (frames)";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -43,6 +44,15 @@ public class FilterImage extends Module {
 
         String[] ALL = new String[]{
                 DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MEDIAN2D,MEDIAN3D,RIDGE_ENHANCEMENT, ROLLING_FRAME,VARIANCE2D};
+
+    }
+
+    public interface RollingMethods {
+        String AVERAGE = "Average";
+        String MINIMUM = "Minimum";
+        String MAXIMUM = "Maximum";
+
+        String[] ALL = new String[]{AVERAGE,MINIMUM,MAXIMUM};
 
     }
 
@@ -112,7 +122,7 @@ public class FilterImage extends Module {
 
     }
 
-    public static ImagePlus runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth) {
+    public static ImagePlus runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod) {
         // Creating new hyperstack
         String type = "8-bit";
         switch (inputImagePlus.getBitDepth()) {
@@ -151,7 +161,20 @@ public class FilterImage extends Module {
 
             // Applying average filter
             ZProjector zProjector = new ZProjector(currentSubstack);
-            zProjector.setMethod(ZProjector.AVG_METHOD);
+            switch (rollingMethod) {
+                case RollingMethods.AVERAGE:
+                    zProjector.setMethod(ZProjector.AVG_METHOD);
+                    break;
+
+                case RollingMethods.MINIMUM:
+                    zProjector.setMethod(ZProjector.MIN_METHOD);
+                    break;
+
+                case RollingMethods.MAXIMUM:
+                    zProjector.setMethod(ZProjector.MAX_METHOD);
+                    break;
+            }
+
             zProjector.setStartSlice(1);
             zProjector.setStopSlice(currentSubstack.getNSlices());
             zProjector.doHyperStackProjection(true);
@@ -201,6 +224,7 @@ public class FilterImage extends Module {
         String filterMode = parameters.getValue(FILTER_MODE);
         double filterRadius = parameters.getValue(FILTER_RADIUS);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
+        String rollingMethod = parameters.getValue(ROLLING_METHOD);
         int windowHalfWidth = parameters.getValue(WINDOW_HALF_WIDTH);
 
         if (calibratedUnits) {
@@ -257,7 +281,7 @@ public class FilterImage extends Module {
             case FilterModes.ROLLING_FRAME:
                 if (verbose) System.out.println("[" + moduleName + "] " +
                         "Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
-                inputImagePlus = runRollingFrameFilter(inputImagePlus,windowHalfWidth);
+                inputImagePlus = runRollingFrameFilter(inputImagePlus,windowHalfWidth,rollingMethod);
                 break;
 
             case FilterModes.VARIANCE2D:
@@ -300,6 +324,7 @@ public class FilterImage extends Module {
         parameters.add(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FilterModes.DOG2D,FilterModes.ALL));
         parameters.add(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
         parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(ROLLING_METHOD, Parameter.CHOICE_ARRAY,RollingMethods.AVERAGE,RollingMethods.ALL));
         parameters.add(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
@@ -326,6 +351,7 @@ public class FilterImage extends Module {
             returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         } else {
+            returnedParameters.add(parameters.getParameter(ROLLING_METHOD));
             returnedParameters.add(parameters.getParameter(WINDOW_HALF_WIDTH));
 
         }
