@@ -2,18 +2,17 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackMaker;
+import ij.plugin.SubHyperstackMaker;
+import ij.plugin.SubstackMaker;
+import ij.process.ImageProcessor;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.morphology.MinimaAndMaxima3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
-import inra.ijpb.plugins.MarkerControlledWatershed3DPlugin;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
-import inra.ijpb.watershed.MarkerControlledWatershedTransform3D;
 import inra.ijpb.watershed.Watershed;
-import inra.ijpb.watershed.WatershedTransform3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -106,12 +105,23 @@ public class BinaryOperations extends Module {
     public static void applyWatershed3D(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) {
         IJ.run(maskIpl,"Invert","stack");
 
-        if (markerIpl == null) {
-            maskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(intensityIpl.getImageStack(),maskIpl.getImageStack(),dynamic,connectivity,false));
+        for (int t = 1; t <= maskIpl.getNFrames(); t++) {
+            // Getting maskIpl for this timepoint
+            ImagePlus timepointMaskIpl = getTimepoint(maskIpl,t);
+            ImagePlus timepointIntensityIpl = getTimepoint(intensityIpl,t);
 
-        } else {
-            markerIpl = BinaryImages.componentsLabeling(markerIpl, connectivity, 32);
-            maskIpl.setStack(Watershed.computeWatershed(intensityIpl,markerIpl,maskIpl,connectivity,true,false).getStack());
+            if (markerIpl == null) {
+                timepointMaskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensityIpl.getImageStack(), timepointMaskIpl.getImageStack(), dynamic, connectivity, false));
+
+            } else {
+                ImagePlus timepointMarkerIpl = getTimepoint(markerIpl,t);
+                timepointMarkerIpl = BinaryImages.componentsLabeling(timepointMarkerIpl, connectivity, 32);
+                timepointMaskIpl.setStack(Watershed.computeWatershed(timepointIntensityIpl, timepointMarkerIpl, timepointMaskIpl, connectivity, true, false).getStack());
+
+            }
+
+            //  Replacing the maskIpl intensity
+            overwriteTimepoint(maskIpl,timepointMaskIpl,t);
 
         }
 
@@ -119,6 +129,52 @@ public class BinaryOperations extends Module {
         IJ.setRawThreshold(maskIpl, 0, 0, null);
         IJ.run(maskIpl, "Convert to Mask", "method=Default background=Light");
         IJ.run(maskIpl, "Invert LUT", "");
+
+    }
+
+    private static ImagePlus getTimepoint(ImagePlus inputImagePlus, int timepoint) {
+        // Creating the new ImagePlus
+        ImagePlus outputImagePlus = IJ.createImage("Output",inputImagePlus.getWidth(),inputImagePlus.getHeight(),inputImagePlus.getNSlices(),inputImagePlus.getBitDepth());
+
+        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+            inputImagePlus.setPosition(1,z,timepoint);
+            outputImagePlus.setPosition(z);
+
+            ImageProcessor inputImageProcessor = inputImagePlus.getProcessor();
+            ImageProcessor outputImageProcessor = outputImagePlus.getProcessor();
+
+            for (int y=0;y<inputImagePlus.getHeight();y++) {
+                for (int x = 0; x < inputImagePlus.getWidth(); x++) {
+                    outputImageProcessor.set(x,y,inputImageProcessor.get(x,y));
+                }
+            }
+        }
+
+        inputImagePlus.setPosition(1,1,1);
+        outputImagePlus.setPosition(1);
+
+        return outputImagePlus;
+
+    }
+
+    private static  void overwriteTimepoint(ImagePlus inputImagePlus, ImagePlus timepointImagePlus, int timepoint) {
+        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+            inputImagePlus.setPosition(1,z,timepoint);
+            timepointImagePlus.setPosition(z);
+
+            ImageProcessor inputImageProcessor = inputImagePlus.getProcessor();
+            ImageProcessor timepointImageProcessor = timepointImagePlus.getProcessor();
+
+            for (int y=0;y<inputImagePlus.getHeight();y++) {
+                for (int x = 0; x < inputImagePlus.getWidth(); x++) {
+                    inputImageProcessor.set(x,y,timepointImageProcessor.get(x,y));
+                }
+            }
+
+        }
+
+        inputImagePlus.setPosition(1,1,1);
+        timepointImagePlus.setPosition(1);
 
     }
 

@@ -407,9 +407,9 @@ public class AnalysisHandler {
         batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
 
         // Adding filename filters
-        if (useFilenameFilter1) addFilenameFilter(filenameFilterType1,filenameFilter1);
-        if (useFilenameFilter2) addFilenameFilter(filenameFilterType2,filenameFilter2);
-        if (useFilenameFilter3) addFilenameFilter(filenameFilterType3,filenameFilter3);
+        if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1);
+        if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2);
+        if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3);
 
         // Running the analysis
         batchProcessor.runAnalysisOnStructure(analysis,exporter);
@@ -419,26 +419,6 @@ public class AnalysisHandler {
 
         System.out.println("Complete!");
 
-    }
-
-    private void addFilenameFilter(String filenameFilterType, String filenameFilter) {
-        switch (filenameFilterType) {
-            case InputControl.FilterTypes.INCLUDE_MATCHES_PARTIALLY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
-                break;
-
-            case InputControl.FilterTypes.INCLUDE_MATCHES_COMPLETELY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
-                break;
-
-            case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
-                break;
-
-            case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
-                break;
-        }
     }
 
     public void stopAnalysis() {

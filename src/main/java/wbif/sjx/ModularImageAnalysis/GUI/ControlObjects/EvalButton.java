@@ -2,13 +2,18 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
+import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Created by Stephen on 08/06/2017.
@@ -72,6 +77,7 @@ public class EvalButton extends JButton implements ActionListener {
             }
         }).start();
 
+        System.out.println("idx "+idx);
         // If multiple modules will need to be evaluated first
         new Thread(() -> {
             for (int i = gui.getLastModuleEval()+1;i<=idx;i++) {

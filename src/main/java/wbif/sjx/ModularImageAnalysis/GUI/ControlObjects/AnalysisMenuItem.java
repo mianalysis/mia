@@ -22,7 +22,6 @@ import java.io.IOException;
 public class AnalysisMenuItem extends JMenuItem implements ActionListener {
     public static final String LOAD_ANALYSIS = "Load pipeline";
     public static final String SAVE_ANALYSIS = "Save pipeline";
-    public static final String SET_FILE_TO_ANALYSE = "Set file to analyse";
     public static final String START_ANALYSIS = "Run analysis";
     public static final String STOP_ANALYSIS = "Stop analysis";
     public static final String CLEAR_PIPELINE = "Remove all modules";
@@ -65,20 +64,20 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     new AnalysisHandler().saveAnalysis(gui.getAnalysis());
                     break;
 
-                case SET_FILE_TO_ANALYSE:
-                    FileDialog fileDialog = new FileDialog(new Frame(), "Select file to run", FileDialog.LOAD);
-                    fileDialog.setMultipleMode(false);
-                    fileDialog.setVisible(true);
-
-                    gui.setTestWorkspace(new Workspace(1, fileDialog.getFiles()[0]));
-
-                    // Updating currently-processed modules to none
-                    gui.setLastModuleEval(-1);
-                    gui.populateModuleList();
-
-                    System.out.println("Set current file to \"" + fileDialog.getFiles()[0].getName() + "\"");
-
-                    break;
+//                case SET_FILE_TO_ANALYSE:
+//                    FileDialog fileDialog = new FileDialog(new Frame(), "Select file to run", FileDialog.LOAD);
+//                    fileDialog.setMultipleMode(false);
+//                    fileDialog.setVisible(true);
+//
+//                    gui.setTestWorkspace(new Workspace(1, fileDialog.getFiles()[0]));
+//
+//                    // Updating currently-processed modules to none
+//                    gui.setLastModuleEval(-1);
+//                    gui.populateModuleList();
+//
+//                    System.out.println("Set current file to \"" + fileDialog.getFiles()[0].getName() + "\"");
+//
+//                    break;
 
                 case START_ANALYSIS:
                     Thread t = new Thread(() -> {

@@ -48,6 +48,7 @@ public class ExtendedMinima extends Module {
 
         // Getting region minima
         inputImagePlus.setStack(MinimaAndMaxima3D.extendedMinima(inputImagePlus.getImageStack(),dynamic,connectivity));
+        inputImagePlus.setPosition(1,1,1);
 
         // If selected, displaying the image
         if (parameters.getValue(SHOW_IMAGE)) {
