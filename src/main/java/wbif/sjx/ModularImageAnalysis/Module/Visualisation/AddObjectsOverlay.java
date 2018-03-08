@@ -3,6 +3,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
@@ -108,6 +109,7 @@ public class AddObjectsOverlay extends Module {
                         roi.setStrokeColor(colour);
                         roi.setStrokeWidth(lineWidth);
                         ovl.addElement(roi);
+
                     }
 
                     break;
@@ -140,22 +142,29 @@ public class AddObjectsOverlay extends Module {
                     // Still need to get mean coords for label
                     xMean = object.getXMean(true);
                     yMean = object.getYMean(true);
-                    zMean = object.getZMean(true,false);
+                    t = object.getT() + 1;
 
-                    // Getting coordinates to plot
-                    z = (int) Math.round(zMean+1);
-                    t = object.getT()+1;
+                    // Running through each slice of this object
+                    int[][] range = object.getCoordinateRange();
+                    for (z=range[2][0];z<=range[2][1];z++) {
+                        Roi polyRoi = object.getRoi(ipl,z);
+                        if (ipl.isHyperStack()) {
+                            ipl.setPosition(1,z+1,t);
+                            polyRoi.setPosition(1, z+1, t);
+                        } else {
+                            int pos = Math.max(Math.max(1, z+1), t);
+                            ipl.setPosition(pos);
+                            polyRoi.setPosition(pos);
+                        }
 
-                    Roi polyRoi = object.getRoi(ipl);
-                    if (ipl.isHyperStack()) {
-                        polyRoi.setPosition(1, z, t);
-                    } else {
-                        int pos = Math.max(Math.max(1,z),t);
-                        polyRoi.setPosition(pos);
+                        polyRoi.setStrokeColor(colour);
+                        polyRoi.setStrokeWidth(lineWidth);
+                        ovl.addElement(polyRoi);
+
                     }
-                    polyRoi.setStrokeColor(colour);
-                    polyRoi.setStrokeWidth(lineWidth);
-                    ovl.addElement(polyRoi);
+
+                    zMean = object.getZMean(true, false);
+                    z = (int) Math.round(zMean+1);
 
                     break;
 
