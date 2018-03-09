@@ -82,8 +82,8 @@ public class RelateObjects extends Module {
             // If no parent objects were detected
             if (parentObjects.size() == 0) continue;
 
-            double minDist = Double.MAX_VALUE;
             double dpp = parentObjects.values().iterator().next().getDistPerPxXY();
+            double minDist = Double.MAX_VALUE;
             Obj currentLink = null;
 
             for (Obj parentObject:parentObjects.values()) {
@@ -122,6 +122,11 @@ public class RelateObjects extends Module {
                                 zDist = childZ[j] - parentZ[i];
                                 dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
+                                // If this point is also a parent pixel it is inside the parent and the distance
+                                // should be negative
+                                Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZ[j]);
+                                if (parentObject.getPoints().contains(currentPoint)) dist = -dist;
+
                                 if (dist < minDist && dist <= linkingDistance) {
                                     minDist = dist;
                                     currentLink = parentObject;
@@ -135,8 +140,8 @@ public class RelateObjects extends Module {
                 }
             }
 
-            // If using surface linking and the child is within the parent, setting the distance to a negative value
-            if (referencePoint.equals(ReferencePoints.SURFACE) && currentLink != null) {
+            // If the child is within the parent, setting the distance to a negative value
+            if (referencePoint.equals(ReferencePoints.CENTROID) && currentLink != null) {
                 // Getting child centroid
                 int xChild = (int) Math.round(childObject.getXMean(true));
                 int yChild = (int) Math.round(childObject.getYMean(true));
@@ -147,6 +152,7 @@ public class RelateObjects extends Module {
                 if (currentLink.getPoints().contains(centroid)) minDist = -minDist;
 
             }
+
 
             if (currentLink != null) {
                 childObject.addParent(currentLink);

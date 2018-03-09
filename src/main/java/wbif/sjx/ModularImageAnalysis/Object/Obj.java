@@ -5,8 +5,7 @@ import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.Wand;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ObjectImageConverter;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ProjectObjects;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 
@@ -231,7 +230,7 @@ public class Obj extends Volume {
         objectCollection.add(sliceObj);
 
         HashMap<Integer,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
-        Image objectImage = objectCollection.convertObjectsToImage("Output",templateIpl, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, false);
+        Image objectImage = objectCollection.convertObjectsToImage("Output",templateIpl, ShowObjects.ColourModes.SINGLE_COLOUR, hues, false);
 
         // Getting the object as a Roi
         int x = (int) Math.round(sliceObj.getX(true)[0]);

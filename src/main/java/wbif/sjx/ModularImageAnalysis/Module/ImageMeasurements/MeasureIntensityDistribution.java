@@ -6,7 +6,7 @@ import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ObjectImageConverter;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -62,7 +62,7 @@ public class MeasureIntensityDistribution extends Module {
 
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, true);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.SINGLE_COLOUR, hues, true);
 
         // Calculating a 3D distance map for the binary image
         ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());
@@ -126,7 +126,7 @@ public class MeasureIntensityDistribution extends Module {
 
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, true);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.SINGLE_COLOUR, hues, true);
 
         // Calculating a 3D distance map for the binary image
         ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());

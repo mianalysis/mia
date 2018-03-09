@@ -5,7 +5,7 @@ import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ObjectImageConverter;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -18,12 +18,12 @@ import static org.junit.Assert.*;
 /**
  * Created by Stephen Cross on 02/09/2017.
  */
-public class ObjectImageConverterTest {
+public class ShowObjectsTest {
     private double tolerance = 1E-2;
 
     @Test
     public void testGetTitle() throws Exception {
-        assertNotNull(new ObjectImageConverter().getTitle());
+        assertNotNull(new ShowObjects().getTitle());
 
     }
 
@@ -34,7 +34,7 @@ public class ObjectImageConverterTest {
     @Test
     public void testConvertObjectsToImagebit3DWithRefImage() throws Exception {
         // Initialising parameters
-        String colourMode = ObjectImageConverter.ColourModes.ID;
+        String colourMode = ShowObjects.ColourModes.ID;
 
         // Setting object parameters
         String objectName = "Test objects";
@@ -86,7 +86,7 @@ public class ObjectImageConverterTest {
     @Test
     public void testConvertObjectsToImagebit3DWithNoRefImage() throws Exception {
         // Initialising parameters
-        String colourMode = ObjectImageConverter.ColourModes.ID;
+        String colourMode = ShowObjects.ColourModes.ID;
 
         // Setting object parameters
         String objectName = "Test objects";

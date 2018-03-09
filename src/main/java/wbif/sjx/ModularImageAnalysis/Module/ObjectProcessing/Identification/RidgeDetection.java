@@ -193,7 +193,7 @@ public class RidgeDetection extends Module {
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
             HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"","",true);
             String positionMode = AddObjectsOverlay.PositionModes.ALL_POINTS;
-            AddObjectsOverlay.createOverlay(inputImagePlus,outputObjects,positionMode,null,hues,null,8,1);
+            new AddObjectsOverlay().createOverlay(inputImagePlus,outputObjects,positionMode,null,hues,null,8,1,verbose);
 
             // Displaying the overlay
             inputImagePlus.show();

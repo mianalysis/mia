@@ -60,9 +60,9 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public static void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
+    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
                                      String[] posMeasurements,HashMap<Integer,Float> colours, HashMap<Integer,String> IDs,
-                                     int labelSize, double lineWidth) {
+                                     int labelSize, double lineWidth, boolean verbose) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
@@ -74,6 +74,7 @@ public class AddObjectsOverlay extends Module {
         Overlay ovl = ipl.getOverlay();
 
         // Running through each object, adding it to the overlay along with an ID label
+        int count = 0;
         for (Obj object:inputObjects.values()) {
             Color colour = Color.getHSBColor(colours.get(object.getID()),1,1);
 
@@ -221,10 +222,13 @@ public class AddObjectsOverlay extends Module {
                 ovl.addElement(text);
 
             }
+
+            writeMessage("Rendered "+(count++)+" objects of "+inputObjects.size(),verbose);
+
         }
     }
 
-    public static void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects,
+    public void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects,
                                           HashMap<Integer,Float> hues, double lineWidth, boolean verbose) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
@@ -234,6 +238,7 @@ public class AddObjectsOverlay extends Module {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
+        int count = 0;
         for (Obj trackObject:trackObjects.values()) {
             ObjCollection pointObjects = trackObject.getChildren(inputObjectsName);
 
@@ -269,6 +274,9 @@ public class AddObjectsOverlay extends Module {
                 p1 = p2;
 
             }
+
+            writeMessage("Rendered "+(count++)+" tracks of "+trackObjects.size(),verbose);
+
         }
     }
 
@@ -340,7 +348,7 @@ public class AddObjectsOverlay extends Module {
                 } else {
                     positionMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas, ""};
                 }
-                createOverlay(ipl,inputObjects,positionMode,positionMeasurements,hues,IDs,labelSize,lineWidth);
+                createOverlay(ipl,inputObjects,positionMode,positionMeasurements,hues,IDs,labelSize,lineWidth,verbose);
                 break;
 
             case PositionModes.TRACKS:
