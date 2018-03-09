@@ -70,21 +70,21 @@ public class RelateObjects extends Module {
      * @param childObjects
      * @param linkingDistance
      */
-    public static void proximity(ObjCollection parentObjects, ObjCollection childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame, boolean verbose) {
+    public void proximity(ObjCollection parentObjects, ObjCollection childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame, boolean verbose) {
         String moduleName = RelateObjects.class.getSimpleName();
 
         int iter = 1;
         int numberOfChildren = childObjects.size();
 
         for (Obj childObject:childObjects.values()) {
-            if (verbose) System.out.println("["+moduleName+"] Processing object "+(iter++)+" of "+numberOfChildren);
+            writeMessage("Processing object "+(iter++)+" of "+numberOfChildren,verbose);
 
             // If no parent objects were detected
             if (parentObjects.size() == 0) continue;
 
             double dpp = parentObjects.values().iterator().next().getDistPerPxXY();
             double minDist = Double.MAX_VALUE;
-            Obj currentLink = null;
+            Obj minLink = null;
 
             for (Obj parentObject:parentObjects.values()) {
                 if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
@@ -99,7 +99,7 @@ public class RelateObjects extends Module {
 
                         if (dist < minDist && dist <= linkingDistance) {
                             minDist = dist;
-                            currentLink = parentObject;
+                            minLink = parentObject;
                         }
 
                         break;
@@ -113,25 +113,36 @@ public class RelateObjects extends Module {
                         double[] childX = childObject.getSurfaceX(true);
                         double[] childY = childObject.getSurfaceY(true);
                         double[] childZ = childObject.getSurfaceZ(true,true);
+                        double[] childZSlice = childObject.getSurfaceZ(true,false);
 
                         // Measuring point-to-point distances on both object surfaces
-                        for (int i = 0;i<parentX.length;i++) {
-                            for (int j = 0;j<childX.length;j++) {
+                        for (int j = 0;j<childX.length;j++) {
+                            double currMinDist = Double.MAX_VALUE;
+                            Obj currMinLink = null;
+                            boolean isInside = false;
+
+                            for (int i = 0;i<parentX.length;i++) {
                                 xDist = childX[j] - parentX[i];
                                 yDist = childY[j] - parentY[i];
                                 zDist = childZ[j] - parentZ[i];
                                 dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
-                                // If this point is also a parent pixel it is inside the parent and the distance
-                                // should be negative
-                                Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZ[j]);
-                                if (parentObject.getPoints().contains(currentPoint)) dist = -dist;
+                                if (dist < currMinDist && dist <= linkingDistance) {
+                                    currMinDist = dist;
+                                    currMinLink = parentObject;
 
-                                if (dist < minDist && dist <= linkingDistance) {
-                                    minDist = dist;
-                                    currentLink = parentObject;
+                                    // If this point is inside the parent the distance should be negative
+                                    Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZSlice[j]);
+                                    isInside = parentObject.getPoints().contains(currentPoint);
 
                                 }
+                            }
+
+                            // Comparing the closest distance for this child point to the previous minimum distance
+                            if (isInside) currMinDist = -currMinDist;
+                            if (currMinDist < minDist) {
+                                minDist = currMinDist;
+                                minLink = currMinLink;
                             }
                         }
 
@@ -140,23 +151,9 @@ public class RelateObjects extends Module {
                 }
             }
 
-            // If the child is within the parent, setting the distance to a negative value
-            if (referencePoint.equals(ReferencePoints.CENTROID) && currentLink != null) {
-                // Getting child centroid
-                int xChild = (int) Math.round(childObject.getXMean(true));
-                int yChild = (int) Math.round(childObject.getYMean(true));
-                int zChild = (int) Math.round(childObject.getZMean(true,false));
-                Point<Integer> centroid = new Point<>(xChild,yChild,zChild);
-
-                // Checking if the centroid pixel is also a parent pixel
-                if (currentLink.getPoints().contains(centroid)) minDist = -minDist;
-
-            }
-
-
-            if (currentLink != null) {
-                childObject.addParent(currentLink);
-                currentLink.addChild(childObject);
+            if (minLink != null) {
+                childObject.addParent(minLink);
+                minLink.addChild(childObject);
 
                 if (referencePoint.equals(ReferencePoints.CENTROID)) {
                     childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX,minDist));
@@ -167,6 +164,7 @@ public class RelateObjects extends Module {
                     childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_CAL,minDist*dpp));
 
                 }
+
             } else {
                 if (referencePoint.equals(ReferencePoints.CENTROID)) {
                     childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX,Double.NaN));

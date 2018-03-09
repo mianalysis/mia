@@ -149,8 +149,6 @@ public class RunTrackMate extends Module {
 
         TrackMate trackmate = new TrackMate(model, settings);
 
-
-        System.out.println(ipl.getWidth());
         // Running TrackMate
         writeMessage("Running TrackMate detection",verbose);
         if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());

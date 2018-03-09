@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous;
+package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.IJ;
 import ij.ImagePlus;

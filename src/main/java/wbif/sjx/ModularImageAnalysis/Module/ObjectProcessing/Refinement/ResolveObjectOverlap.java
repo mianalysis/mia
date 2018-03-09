@@ -4,6 +4,8 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
+import java.util.HashMap;
+
 public class ResolveObjectOverlap extends Module {
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
     public final static String INPUT_OBJECTS_2 = "Input objects 2";
@@ -45,9 +47,39 @@ public class ResolveObjectOverlap extends Module {
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP_PC);
         String overlapRequirement = parameters.getValue(OVERLAP_REQUIREMENT);
 
-        // If necessary, creating the new ObjCollection
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        // Initialising the storage, which has ID number (key) and maximum overlap[0] and object ID[1] (value)
+        HashMap<Integer,Double[]> overlaps1 = new HashMap<>();
+        HashMap<Integer,Double[]> overlaps2 = new HashMap<>();
+        for (Obj object1:inputObjects1.values()) {
+            overlaps1.put(object1.getID(),new Double[]{Double.MIN_VALUE,0d});
+        }
+        for (Obj object2:inputObjects2.values()) {
+            overlaps2.put(object2.getID(),new Double[]{Double.MIN_VALUE,0d});
+        }
 
+        // Calculating the overlaps
+        for (Obj object1:inputObjects1.values()) {
+            Double[] overlap1 = overlaps1.get(object1.getID());
+            for (Obj object2:inputObjects1.values()) {
+                Double[] overlap2 = overlaps2.get(object2.getID());
+
+                double overlap = object1.getOverlap(object2);
+
+                // Comparing the overlap to previously-maximum overlaps
+                if (overlap>overlap1[0]) {
+                    overlap1[0] = overlap;
+                    overlap1[1] = (double) object2.getID();
+                }
+
+                // Comparing the overlap to previously-maximum overlaps
+                if (overlap>overlap2[0]) {
+                    overlap2[0] = overlap;
+                    overlap2[1] = (double) object1.getID();
+                }
+            }
+        }
+
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
         switch (overlapRequirement) {
             case OverlapRequirements.MUTUAL_MAX_OVERLAP:
 

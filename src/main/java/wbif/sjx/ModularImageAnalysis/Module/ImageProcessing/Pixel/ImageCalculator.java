@@ -152,7 +152,7 @@ public class ImageCalculator extends Module {
                         }
                     }
 
-                    writeMessage("Processed "+(++count)+" of "+nFrames+" frames",verbose);
+                    writeMessage("Processed "+(++count)+" of "+nImages+" images",verbose);
 
                 }
             }

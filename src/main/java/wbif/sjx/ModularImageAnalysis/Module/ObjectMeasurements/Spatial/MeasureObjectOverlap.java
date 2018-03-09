@@ -54,7 +54,7 @@ public class MeasureObjectOverlap extends Module {
 
             // Adding the measurements
             int objVolume = obj1.getNVoxels();
-            double overlapPC = (double) overlap/(double) objVolume;
+            double overlapPC = 100*(double) overlap/(double) objVolume;
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_VOX_1),overlap));
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_PERCENT_1),overlapPC));
         }
@@ -69,7 +69,7 @@ public class MeasureObjectOverlap extends Module {
 
             // Adding the measurements
             int objVolume = obj2.getNVoxels();
-            double overlapPC = (double) overlap/(double) objVolume;
+            double overlapPC = 100*(double) overlap/(double) objVolume;
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOX_2),overlap));
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_PERCENT_2),overlapPC));
         }

@@ -282,7 +282,7 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     public String getTitle() {
-        return "Add objects as overlay";
+        return "Add overlay";
     }
 
     @Override
