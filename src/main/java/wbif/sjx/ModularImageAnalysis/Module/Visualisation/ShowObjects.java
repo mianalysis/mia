@@ -2,7 +2,7 @@
 // TODO: For image to objects, could create parent object for all instances of that image ID in different frames
 // TODO: Colour based on parent measurement
 
-package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous;
+package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.ImagePlus;
 import ij.measure.Calibration;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 /**
  * Created by sc13967 on 04/05/2017.
  */
-public class ObjectImageConverter extends Module {
+public class ShowObjects extends Module {
     public static final String CONVERSION_MODE = "Conversion mode";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -43,7 +43,7 @@ public class ObjectImageConverter extends Module {
 
     @Override
     public String getTitle() {
-        return "Image-object converter";
+        return "Show objects";
 
     }
 
