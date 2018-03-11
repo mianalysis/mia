@@ -45,12 +45,15 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
     public static final String USE_ALL_C = "Use all channels";
     public static final String STARTING_C = "Starting channel";
     public static final String ENDING_C = "Ending channel";
+    public static final String INTERVAL_C = "Channel interval";
     public static final String USE_ALL_Z = "Use all Z-slices";
     public static final String STARTING_Z = "Starting Z-slice";
     public static final String ENDING_Z = "Ending Z-slice";
+    public static final String INTERVAL_Z = "Slice interval";
     public static final String USE_ALL_T = "Use all timepoints";
     public static final String STARTING_T = "Starting timepoint";
     public static final String ENDING_T = "Ending timepoint";
+    public static final String INTERVAL_T = "Timepoint interval";
     public static final String SET_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
@@ -80,11 +83,11 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
-        ImagePlus ipl = null;
+        ImagePlus ipl;
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
 
         // Setting spatial calibration
-        IMetadata meta = null;
+        IMetadata meta;
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         meta = service.createOMEXMLMetadata();
@@ -103,45 +106,50 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
 
         int startingC = dimRanges[0][0];
         int endingC = dimRanges[0][1];
+        int intervalC = dimRanges[0][2];
         int startingZ = dimRanges[1][0];
         int endingZ = dimRanges[1][1];
+        int intervalZ = dimRanges[1][2];
         int startingT = dimRanges[2][0];
         int endingT = dimRanges[2][1];
+        int intervalT = dimRanges[2][2];
 
         // Updating ranges for full import dimensions
-        if (startingC == -1) {
-            startingC = 1;
-            endingC = sizeC;
-        }
-        if (startingZ == -1) {
-            startingZ = 1;
-            endingZ = sizeZ;
-        }
-        if (startingT == -1) {
-            startingT = 1;
-            endingT = sizeT;
-        }
+        if (endingC == -1) endingC = sizeC;
+        if (endingZ == -1) endingZ = sizeZ;
+        if (endingT == -1) endingT = sizeT;
+
+        int nC = Math.floorDiv((endingC-startingC+1),intervalC);
+        int nZ = Math.floorDiv((endingZ-startingZ+1),intervalZ);
+        int nT = Math.floorDiv((endingT-startingT+1),intervalT);
 
         // Creating the new ImagePlus
-        ipl = IJ.createHyperStack("Image", width, height, endingC-startingC+1, endingZ-startingZ+1,
-                endingT-startingT+1, bitDepth);
+        ipl = IJ.createHyperStack("Image", width, height,nC,nZ,nT,bitDepth);
+
 
         // Iterating over all images in the stack, adding them to the output ImagePlus
-        int nTotal = (endingZ-startingZ+1)*(endingC-startingC+1)*(endingT-startingT+1);
+        int nTotal = nC*nT*nZ;
         int count = 0;
-        for (int z = startingZ; z <= endingZ; z++) {
-            for (int c = startingC; c <= endingC; c++) {
-                for (int t = startingT; t <= endingT; t++) {
+        int countC = 1;
+        int countZ = 1;
+        int countT = 1;
+//        stephen is the bestcoder (and not just limied to MTLAB anymore )
+        for (int z = startingZ; z <= endingZ; z=z+intervalZ) {
+            for (int c = startingC; c <= endingC; c=c+intervalC) {
+                for (int t = startingT; t <= endingT; t=t+intervalT) {
                     int idx = reader.getIndex(z-1, c-1, t-1);
                     ImageProcessor ip = reader.openProcessors(idx)[0];
 
-                    ipl.setPosition(c-startingC+1, z-startingZ+1, t-startingT+1);
+                    ipl.setPosition(countC,countZ,countT);
                     ipl.setProcessor(ip);
 
                     writeMessage("Loaded image "+(++count)+" of "+nTotal,verbose);
 
+                    countT++;
                 }
+                countC++;
             }
+            countZ++;
         }
 
         ipl.setPosition(1, 1, 1);
@@ -224,12 +232,15 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         boolean useAllC = parameters.getValue(USE_ALL_C);
         int startingC = parameters.getValue(STARTING_C);
         int endingC = parameters.getValue(ENDING_C);
+        int intervalC = parameters.getValue(INTERVAL_C);
         boolean useAllZ = parameters.getValue(USE_ALL_Z);
         int startingZ = parameters.getValue(STARTING_Z);
         int endingZ = parameters.getValue(ENDING_Z);
+        int intervalZ = parameters.getValue(INTERVAL_Z);
         boolean useAllT = parameters.getValue(USE_ALL_T);
         int startingT = parameters.getValue(STARTING_T);
         int endingT = parameters.getValue(ENDING_T);
+        int intervalT = parameters.getValue(INTERVAL_T);
         boolean setCalibration = parameters.getValue(SET_CAL);
         double xyCal = parameters.getValue(XY_CAL);
         double zCal = parameters.getValue(Z_CAL);
@@ -238,10 +249,10 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         boolean useImageJReader = parameters.getValue(USE_IMAGEJ_READER);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
-        if (useAllC) startingC = -1;
-        if (useAllZ) startingZ = -1;
-        if (useAllT) startingT = -1;
-        int[][] dimRanges = new int[][]{{startingC,endingC},{startingZ,endingZ},{startingT,endingT}};
+        if (useAllC) endingC = -1;
+        if (useAllZ) endingZ = -1;
+        if (useAllT) endingT = -1;
+        int[][] dimRanges = new int[][]{{startingC,endingC,intervalC},{startingZ,endingZ,intervalZ},{startingT,endingT,intervalT}};
 
         ImagePlus ipl = null;
         try {
@@ -304,9 +315,6 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
             ipl = new Duplicator().run(ipl);
             ipl.show();
         }
-
-        Img<T> img = workspace.getImage(outputImageName).getImg();
-
     }
 
     @Override
@@ -323,12 +331,15 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         parameters.add(new Parameter(USE_ALL_C, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(STARTING_C, Parameter.INTEGER,1));
         parameters.add(new Parameter(ENDING_C, Parameter.INTEGER,1));
+        parameters.add(new Parameter(INTERVAL_C, Parameter.INTEGER,1));
         parameters.add(new Parameter(USE_ALL_Z, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(STARTING_Z, Parameter.INTEGER,1));
         parameters.add(new Parameter(ENDING_Z, Parameter.INTEGER,1));
+        parameters.add(new Parameter(INTERVAL_Z, Parameter.INTEGER,1));
         parameters.add(new Parameter(USE_ALL_T, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(STARTING_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(ENDING_T, Parameter.INTEGER,1));
+        parameters.add(new Parameter(INTERVAL_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(SET_CAL, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(XY_CAL, Parameter.DOUBLE, 1.0));
         parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
@@ -373,21 +384,25 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         }
 
         returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
+
+        returnedParameters.add(parameters.getParameter(STARTING_C));
+        returnedParameters.add(parameters.getParameter(INTERVAL_C));
         returnedParameters.add(parameters.getParameter(USE_ALL_C));
         if (!(boolean) parameters.getValue(USE_ALL_C)) {
-            returnedParameters.add(parameters.getParameter(STARTING_C));
             returnedParameters.add(parameters.getParameter(ENDING_C));
         }
 
+        returnedParameters.add(parameters.getParameter(STARTING_Z));
+        returnedParameters.add(parameters.getParameter(INTERVAL_Z));
         returnedParameters.add(parameters.getParameter(USE_ALL_Z));
         if (!(boolean) parameters.getValue(USE_ALL_Z)) {
-            returnedParameters.add(parameters.getParameter(STARTING_Z));
             returnedParameters.add(parameters.getParameter(ENDING_Z));
         }
 
+        returnedParameters.add(parameters.getParameter(STARTING_T));
+        returnedParameters.add(parameters.getParameter(INTERVAL_T));
         returnedParameters.add(parameters.getParameter(USE_ALL_T));
         if (!(boolean) parameters.getValue(USE_ALL_T)) {
-            returnedParameters.add(parameters.getParameter(STARTING_T));
             returnedParameters.add(parameters.getParameter(ENDING_T));
         }
 
@@ -421,3 +436,6 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
 
     }
 }
+
+// when dataisgood, Gemma = given food
+// i = 42^1000000000000000000000000000000000000000000 [dontend]

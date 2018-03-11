@@ -1,3 +1,5 @@
+// TODO: For unit test: reverse coordinates for ExpectedObjects 3D
+
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
@@ -5,6 +7,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class ResolveObjectOverlap extends Module {
     public final static String INPUT_OBJECTS_1 = "Input objects 1";
@@ -22,6 +25,42 @@ public class ResolveObjectOverlap extends Module {
 
     }
 
+
+    private void reassignObjects(ObjCollection objects1, ObjCollection objects2, ObjCollection outputObjects,
+                                 HashMap<Integer,Double[]> overlaps1, HashMap<Integer,Double[]> overlaps2,
+                                 double minOverlap, boolean requireMutual) {
+
+        Iterator<Obj> iterator = objects1.values().iterator();
+        while (iterator.hasNext()) {
+            Obj object1 = iterator.next();
+            Double[] overlap1 = overlaps1.get(object1.getID());
+
+            // The associated ID will be zero if no overlap was detected
+            if (overlap1[1] == 0) continue;
+
+            Obj object2 = objects2.get(overlap1[1].intValue());
+            Double[] overlap2 = overlaps2.get(object2.getID());
+
+            double overlapPC1 = 100*overlap1[0]/object1.getPoints().size();
+            double overlapPC2 = 100*overlap2[0]/object2.getPoints().size();
+
+            if (overlapPC1 < minOverlap) continue;
+            if (requireMutual && overlap2[1] != object1.getID()) continue;
+            if (requireMutual && overlapPC2 < minOverlap) continue;
+
+            // Merge objects and adding to output objects
+            Obj outputObject = new Obj(outputObjects.getName(),outputObjects.getNextID(),
+                    object1.getDistPerPxXY(),object1.getDistPerPxZ(),object1.getCalibratedUnits());
+            outputObject.getPoints().addAll(object1.getPoints());
+            outputObject.getPoints().addAll(object2.getPoints());
+            outputObjects.add(outputObject);
+
+            // Removing merged objects from input
+            iterator.remove();
+            objects2.remove(object2.getID());
+
+        }
+    }
 
     @Override
     public String getTitle() {
@@ -60,7 +99,7 @@ public class ResolveObjectOverlap extends Module {
         // Calculating the overlaps
         for (Obj object1:inputObjects1.values()) {
             Double[] overlap1 = overlaps1.get(object1.getID());
-            for (Obj object2:inputObjects1.values()) {
+            for (Obj object2:inputObjects2.values()) {
                 Double[] overlap2 = overlaps2.get(object2.getID());
 
                 double overlap = object1.getOverlap(object2);
@@ -82,17 +121,19 @@ public class ResolveObjectOverlap extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
         switch (overlapRequirement) {
             case OverlapRequirements.MUTUAL_MAX_OVERLAP:
-
+                reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2,minOverlap,true);
                 break;
 
             case OverlapRequirements.MAX_OVERLAP_FOR_OBJECTS1:
-
+                reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2,minOverlap,false);
                 break;
 
             case OverlapRequirements.MAX_OVERLAP_FOR_OBJECTS2:
-
+                reassignObjects(inputObjects2,inputObjects1,outputObjects,overlaps2,overlaps1,minOverlap,true);
                 break;
         }
+
+        workspace.addObjects(outputObjects);
     }
 
     @Override
@@ -100,7 +141,7 @@ public class ResolveObjectOverlap extends Module {
         parameters.add(new Parameter(INPUT_OBJECTS_1,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(INPUT_OBJECTS_2,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(OUTPUT_OBJECTS_NAME,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(MINIMUM_OVERLAP_PC,Parameter.DOUBLE,0.0));
+        parameters.add(new Parameter(MINIMUM_OVERLAP_PC,Parameter.DOUBLE,50.0));
         parameters.add(new Parameter(OVERLAP_REQUIREMENT,Parameter.CHOICE_ARRAY,OverlapRequirements.MUTUAL_MAX_OVERLAP,OverlapRequirements.ALL));
 
     }

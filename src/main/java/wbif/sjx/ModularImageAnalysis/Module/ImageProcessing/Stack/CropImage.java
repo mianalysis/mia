@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
@@ -42,9 +43,7 @@ public class CropImage extends Module {
         int bottom = parameters.getValue(BOTTOM);
 
         // Applying the macro
-        Roi roi = new Roi(left,top,right-left,bottom-top);
-        inputImagePlus.setRoi(roi);
-        ImagePlus outputImagePlus = inputImagePlus.crop();
+        ImagePlus outputImagePlus = new ImagePlus(outputImageName,inputImagePlus.getStack().crop(left,top,0,(right-left),(bottom-top),inputImagePlus.getNSlices()));
 
         // If selected, displaying the image
         if (parameters.getValue(SHOW_IMAGE)) {

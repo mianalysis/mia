@@ -4,6 +4,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -106,7 +107,7 @@ public class ShowObjects extends Module {
                         break;
 
                     case ColourModes.SINGLE_COLOUR:
-                        iplShow.setLut(LUTs.Grey());
+                        IJ.run(iplShow,"Grays","");
                         break;
                 }
 
@@ -118,7 +119,7 @@ public class ShowObjects extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,ConversionModes.IMAGE_TO_OBJECTS,ConversionModes.ALL));
+        parameters.add(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,ConversionModes.OBJECTS_TO_IMAGE,ConversionModes.ALL));
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
         parameters.add(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));

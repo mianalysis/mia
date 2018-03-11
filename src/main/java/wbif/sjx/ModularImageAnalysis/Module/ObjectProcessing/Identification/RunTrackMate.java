@@ -212,7 +212,7 @@ public class RunTrackMate extends Module {
 
             return;
         }
-
+IJ.runMacro("waitForUser");
         writeMessage("Running TrackMate tracking",verbose);
         if (!trackmate.execTracking()) IJ.log(trackmate.getErrorMessage());
 
