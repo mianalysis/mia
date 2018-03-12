@@ -126,16 +126,15 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         // Creating the new ImagePlus
         ipl = IJ.createHyperStack("Image", width, height,nC,nZ,nT,bitDepth);
 
-
         // Iterating over all images in the stack, adding them to the output ImagePlus
         int nTotal = nC*nT*nZ;
         int count = 0;
-        int countC = 1;
         int countZ = 1;
-        int countT = 1;
-//        stephen is the bestcoder (and not just limied to MTLAB anymore )
+
         for (int z = startingZ; z <= endingZ; z=z+intervalZ) {
+            int countC = 1;
             for (int c = startingC; c <= endingC; c=c+intervalC) {
+                int countT = 1;
                 for (int t = startingT; t <= endingT; t=t+intervalT) {
                     int idx = reader.getIndex(z-1, c-1, t-1);
                     ImageProcessor ip = reader.openProcessors(idx)[0];
