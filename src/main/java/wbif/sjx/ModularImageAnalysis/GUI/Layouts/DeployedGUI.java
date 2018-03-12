@@ -216,6 +216,11 @@ public class DeployedGUI extends GUI implements ActionListener {
 
     }
 
+    @Override
+    public void updateTestFile() {
+
+    }
+
     private void initialiseStatusPanel(int width) {
         statusPanel = new JPanel();
         statusPanel.setPreferredSize(new Dimension(width, 40));

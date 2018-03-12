@@ -12,6 +12,8 @@ import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ModuleName;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
+import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -101,7 +103,7 @@ public class MainGUI extends GUI {
         // Creating the analysis menu
         menu = new JMenu("Analysis");
         menuBar.add(menu);
-        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
+//        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.START_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.STOP_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.CLEAR_PIPELINE));
@@ -177,6 +179,7 @@ public class MainGUI extends GUI {
         frame.repaint();
 
         populateBasicModules();
+        updateTestFile();
 
     }
 
@@ -243,6 +246,7 @@ public class MainGUI extends GUI {
 
         populateModuleList();
         populateModuleParameters();
+        updateTestFile();
 
     }
 
@@ -776,32 +780,48 @@ public class MainGUI extends GUI {
         Reflections reflections = new Reflections("wbif.sjx.ModularImageAnalysis");
         Set<Class<? extends Module>> availableModules = reflections.getSubTypesOf(Module.class);
 
-        // Creating new instances of these classes and adding to ArrayList
-        TreeMap<String, ArrayList<Module>> availableModulesList = new TreeMap<>();
+        // Creating an alphabetically-ordered list of all modules
+        TreeMap<String,Class> modules = new TreeMap<>();
         for (Class clazz : availableModules) {
-            if (clazz != InputControl.class) {
+            if (clazz != InputControl.class && clazz != OutputControl.class) {
                 String[] names = clazz.getPackage().getName().split("\\.");
-                String pkg = names[names.length - 1];
-
-                availableModulesList.putIfAbsent(pkg, new ArrayList<>());
-                availableModulesList.get(pkg).add((Module) clazz.newInstance());
-
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String name:names) stringBuilder.append(name);
+                modules.put(stringBuilder.toString()+clazz.getSimpleName(),clazz);
             }
         }
 
-        // Sorting the ArrayList based on module title
-        for (ArrayList<Module> modules : availableModulesList.values()) {
-            Collections.sort(modules, Comparator.comparing(Module::getTitle));
+        LinkedHashSet<ModuleListMenu> topList = new LinkedHashSet<>();
+        for (Class clazz : modules.values()) {
+            // ActiveList starts at the top list
+            LinkedHashSet<ModuleListMenu> activeList = topList;
+            ModuleListMenu activeItem = null;
+
+            String[] names = clazz.getPackage().getName().split("\\.");
+            for (int i=4;i<names.length;i++) {
+                boolean found = false;
+                for (ModuleListMenu listItemm:activeList) {
+                    if (listItemm.getName().equals(names[i])) {
+                        activeItem = listItemm;
+                        found = true;
+                    }
+                }
+
+                if (!found) {
+                    ModuleListMenu newItem = new ModuleListMenu(this, names[i], new ArrayList<>());
+                    newItem.setName(names[i]);
+                    activeList.add(newItem);
+                    if (activeItem != null) activeItem.add(newItem);
+                    activeItem = newItem;
+                }
+
+                activeList = activeItem.getChildren();
+
+            }
+            activeItem.addMenuItem((Module) clazz.newInstance());
         }
 
-        // Adding the modules to the list
-        for (String pkgName : availableModulesList.keySet()) {
-            ArrayList<Module> modules = availableModulesList.get(pkgName);
-            ModuleListMenu packageMenu = new ModuleListMenu(this, pkgName, modules);
-
-            moduleListMenu.add(packageMenu);
-
-        }
+        for (ModuleListMenu listMenu:topList) moduleListMenu.add(listMenu);
     }
 
     public void addModule() {
@@ -895,5 +915,63 @@ public class MainGUI extends GUI {
             populateBasicModules();
         }
         populateModuleList();
+    }
+
+    @Override
+    public void updateTestFile() {
+        // Ensuring the input file specified in the InputControl is active in the test workspace
+        InputControl inputControl = getAnalysis().getInputControl();
+        String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
+        String singleFile = inputControl.getParameterValue(InputControl.SINGLE_FILE_PATH);
+        String batchFolder = inputControl.getParameterValue(InputControl.BATCH_FOLDER_PATH);
+        String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
+        int nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS);
+        boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
+        String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
+        String filenameFilterType1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_1);
+        boolean useFilenameFilter2 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_2);
+        String filenameFilter2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_2);
+        String filenameFilterType2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_2);
+        boolean useFilenameFilter3 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_3);
+        String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
+        String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
+
+        String inputFile = "";
+        switch (inputMode) {
+            case InputControl.InputModes.SINGLE_FILE:
+                inputFile = singleFile;
+                break;
+
+            case InputControl.InputModes.BATCH:
+                // Initialising BatchProcessor
+                BatchProcessor batchProcessor = new BatchProcessor(new File(batchFolder));
+                batchProcessor.setnThreads(nThreads);
+
+                // Adding extension filter
+                batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
+
+                // Adding filename filters
+                if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1);
+                if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2);
+                if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3);
+
+                // Running the analysis
+                inputFile = batchProcessor.getNextValidFileInStructure().getAbsolutePath();
+                break;
+        }
+
+        if (inputFile == null) return;
+
+        if (getTestWorkspace().getMetadata().getFile() == null) {
+            lastModuleEval = -1;
+            setTestWorkspace(new Workspace(1, new File(inputFile)));
+        }
+
+        // If the input path isn't the same assign this new file
+        if (!getTestWorkspace().getMetadata().getFile().getAbsolutePath().equals(inputFile)) {
+            lastModuleEval = -1;
+            setTestWorkspace(new Workspace(1, new File(inputFile)));
+
+        }
     }
 }

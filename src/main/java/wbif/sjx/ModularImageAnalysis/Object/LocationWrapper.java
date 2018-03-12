@@ -1,9 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import org.apache.commons.math3.ml.clustering.Clusterable;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.MeasureObjectCentroid;
-
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 27/07/2017.

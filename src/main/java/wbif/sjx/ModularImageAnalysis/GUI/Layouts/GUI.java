@@ -6,6 +6,8 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
+import java.io.File;
+
 /**
  * Created by sc13967 on 21/11/2017.
  */
@@ -21,12 +23,14 @@ public abstract class GUI {
 
     public abstract void updateModules();
 
+    public abstract void updateTestFile();
+
     public int getLastModuleEval(){
            return lastModuleEval;
     }
 
     public void setLastModuleEval(int lastModuleEval) {
-        this.lastModuleEval = lastModuleEval;
+        this.lastModuleEval = Math.max(lastModuleEval,-1);
     }
 
     public Module getActiveModule() {
@@ -46,6 +50,14 @@ public abstract class GUI {
 
     public void setTestWorkspace(Workspace testWorkspace) {
         this.testWorkspace = testWorkspace;
+    }
+
+    public GUIAnalysis getAnalysis() {
+        return analysis;
+    }
+
+    public Workspace getTestWorkspace() {
+        return testWorkspace;
     }
 
 }

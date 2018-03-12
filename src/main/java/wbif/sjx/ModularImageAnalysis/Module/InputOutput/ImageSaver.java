@@ -154,10 +154,10 @@ public class ImageSaver extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 
+        returnedParamters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParamters.add(parameters.getParameter(SAVE_IMAGE));
 
         if (parameters.getValue(SAVE_IMAGE)) {
-            returnedParamters.add(parameters.getParameter(INPUT_IMAGE));
             returnedParamters.add(parameters.getParameter(SAVE_LOCATION));
 
             switch ((String) parameters.getValue(SAVE_LOCATION)) {
