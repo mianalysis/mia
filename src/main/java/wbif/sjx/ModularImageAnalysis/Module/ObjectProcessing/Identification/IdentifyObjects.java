@@ -96,7 +96,7 @@ public class IdentifyObjects extends Module {
 
         // Showing objects
         if (showObjects) {
-            HashMap<Integer,Float> hues = outputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"","",false);
+            HashMap<Integer,Float> hues = outputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
             outputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.RANDOM_COLOUR, hues, false).getImagePlus().show();
         }
     }

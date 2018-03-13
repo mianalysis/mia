@@ -39,6 +39,7 @@ public class AddObjectsOverlay extends Module {
     public static final String USE_RADIUS = "Use radius measurement";
     public static final String MEASUREMENT_FOR_RADIUS = "Measuremen for radius";
     public static final String COLOUR_MODE = "Colour mode";
+    public static final String SINGLE_COLOUR = "Single colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
     public static final String TRACK_OBJECTS = "Track objects";
@@ -46,6 +47,8 @@ public class AddObjectsOverlay extends Module {
     public static final String SHOW_IMAGE = "Show image";
 
     public interface ColourModes extends ObjCollection.ColourModes {}
+
+    public interface SingleColours extends ObjCollection.SingleColours {}
 
     public interface LabelModes extends ObjCollection.LabelModes {}
 
@@ -59,6 +62,7 @@ public class AddObjectsOverlay extends Module {
         String[] ALL = new String[]{ALL_POINTS, CENTROID, OUTLINE, POSITION_MEASUREMENTS, TRACKS};
 
     }
+
 
     public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
                                      String[] posMeasurements,HashMap<Integer,Float> colours, HashMap<Integer,String> IDs,
@@ -305,6 +309,7 @@ public class AddObjectsOverlay extends Module {
         String measurementForID = parameters.getValue(MEASUREMENT_FOR_ID);
         String positionMode = parameters.getValue(POSITION_MODE);
         String colourMode = parameters.getValue(COLOUR_MODE);
+        String singleColour = parameters.getValue(SINGLE_COLOUR);
         String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
         String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
         String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
@@ -329,10 +334,33 @@ public class AddObjectsOverlay extends Module {
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,measurementForColour,parentObjectsForColourName,true);
+        String sourceColour = "";
+        switch (colourMode) {
+            case ColourModes.SINGLE_COLOUR:
+                sourceColour = singleColour;
+                break;
+            case ColourModes.MEASUREMENT_VALUE:
+                sourceColour = measurementForColour;
+                break;
+            case ColourModes.PARENT_ID:
+                sourceColour = parentObjectsForColourName;
+                break;
+        }
+        HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,sourceColour,true);
+
+        // Generating labels for each object
+        String souceLabel = null;
+        switch (labelMode) {
+            case LabelModes.MEASUREMENT_VALUE:
+                souceLabel = measurementForID;
+                break;
+            case LabelModes.PARENT_ID:
+                souceLabel = parentObjectsForIDName;
+                break;
+        }
         HashMap<Integer,String> IDs;
         if (showID) {
-            IDs = inputObjects.getIDs(labelMode,measurementForID,parentObjectsForIDName,decimalPlaces,useScientific);
+            IDs = inputObjects.getIDs(labelMode,souceLabel,decimalPlaces,useScientific);
         } else {
             IDs = null;
         }
@@ -390,6 +418,7 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(USE_RADIUS, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(MEASUREMENT_FOR_RADIUS, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
+        parameters.add(new Parameter(SINGLE_COLOUR,Parameter.CHOICE_ARRAY,SingleColours.WHITE,SingleColours.ALL));
         parameters.add(new Parameter(MEASUREMENT_FOR_COLOUR, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(TRACK_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
@@ -470,22 +499,23 @@ public class AddObjectsOverlay extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));
-        if (parameters.getValue(COLOUR_MODE).equals(ObjCollection.ColourModes.MEASUREMENT_VALUE)) {
-            // Use measurement
-            returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
+        switch ((String) parameters.getValue(COLOUR_MODE)) {
+            case ColourModes.SINGLE_COLOUR:
+                returnedParameters.add(parameters.getParameter(SINGLE_COLOUR));
+                break;
 
-            if (parameters.getValue(INPUT_OBJECTS) != null) {
-                parameters.updateValueSource(MEASUREMENT_FOR_COLOUR,parameters.getValue(INPUT_OBJECTS));
+            case ColourModes.MEASUREMENT_VALUE:
+                returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
+                if (parameters.getValue(INPUT_OBJECTS) != null) {
+                    parameters.updateValueSource(MEASUREMENT_FOR_COLOUR,parameters.getValue(INPUT_OBJECTS));
+                }
+                break;
 
-            }
-
-        } else if (parameters.getValue(COLOUR_MODE).equals(ObjCollection.ColourModes.PARENT_ID)) {
-            // Use Parent ID
-            returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
-
+            case ColourModes.PARENT_ID:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
