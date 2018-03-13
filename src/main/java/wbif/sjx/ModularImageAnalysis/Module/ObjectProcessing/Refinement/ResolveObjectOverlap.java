@@ -39,6 +39,9 @@ public class ResolveObjectOverlap extends Module {
             if (overlap1[1] == 0) continue;
 
             Obj object2 = objects2.get(overlap1[1].intValue());
+
+            // There is a possibility the other object has been removed already
+            if (object2 == null) continue;
             Double[] overlap2 = overlaps2.get(object2.getID());
 
             double overlapPC1 = 100*overlap1[0]/object1.getPoints().size();

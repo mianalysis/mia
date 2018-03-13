@@ -1,11 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageStatistics;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 10/08/2017.
@@ -18,13 +20,12 @@ public class NormaliseIntensity extends Module {
 
     public static void normaliseIntenisty(ImagePlus ipl) {
         int bitDepth = ipl.getProcessor().getBitDepth();
+        if (bitDepth == 8 | bitDepth == 16) IJ.run(ipl, "32-bit", null);
 
         for (int z = 1; z <= ipl.getNSlices(); z++) {
             for (int c = 1; c <= ipl.getNChannels(); c++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
                     ipl.setPosition(c, z, t);
-
-                    if (bitDepth == 8 | bitDepth == 16) ipl.setProcessor(ipl.getProcessor().convertToFloat());
 
                     ImageStatistics imageStatistics = ipl.getStatistics();
                     ipl.getProcessor().subtract(imageStatistics.min);
@@ -32,6 +33,19 @@ public class NormaliseIntensity extends Module {
 
                 }
             }
+        }
+
+        switch (bitDepth) {
+            case 8:
+                IntensityMinMax.run(ipl,true);
+                IJ.run(ipl, "8-bit", null);
+                break;
+
+            case 16:
+                IntensityMinMax.run(ipl,true);
+                IJ.run(ipl, "16-bit", null);
+                break;
+
         }
     }
 
@@ -85,7 +99,7 @@ public class NormaliseIntensity extends Module {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 

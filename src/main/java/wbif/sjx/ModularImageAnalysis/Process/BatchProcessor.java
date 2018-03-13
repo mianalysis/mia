@@ -148,8 +148,8 @@ public class BatchProcessor extends FileCrawler {
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
             try {
                 analysis.execute(workspace, verbose);
-            } catch (GenericMIAException e) {
-                e.printStackTrace();
+            } catch (Throwable t) {
+                t.printStackTrace(System.err);
             }
 
             // Clearing images from the workspace to prevent memory leak

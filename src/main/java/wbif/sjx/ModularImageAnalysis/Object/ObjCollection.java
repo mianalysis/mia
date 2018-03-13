@@ -36,12 +36,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         String ORANGE = "Orange";
         String YELLOW = "Yellow";
         String GREEN = "Green";
-        String BLUE = "Blue";
         String CYAN = "Cyan";
-        String MAGENTA = "Magenta";
+        String BLUE = "Blue";
         String VIOLET = "Violet";
+        String MAGENTA = "Magenta";
 
-        String[] ALL = new String[]{WHITE,BLACK,RED,ORANGE,YELLOW,GREEN,BLUE,CYAN,MAGENTA,VIOLET};
+        String[] ALL = new String[]{WHITE,BLACK,RED,ORANGE,YELLOW,GREEN,CYAN,BLUE,VIOLET,MAGENTA};
 
     }
 
@@ -299,14 +299,35 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 case ColourModes.SINGLE_COLOUR:
                     switch (source) {
                         case "":
-                        case SingleColours.BLACK:
+                        case SingleColours.WHITE:
                             H = 1f;
+                            break;
+                        case SingleColours.BLACK:
+                            H = 0f;
                             break;
                         case SingleColours.RED:
                             H = 0f;
                             break;
                         case SingleColours.ORANGE:
                             H = 0.078f;
+                            break;
+                        case SingleColours.YELLOW:
+                            H = 0.157f;
+                            break;
+                        case SingleColours.GREEN:
+                            H = 0.314f;
+                            break;
+                        case SingleColours.CYAN:
+                            H = 0.471f;
+                            break;
+                        case SingleColours.BLUE:
+                            H = 0.627f;
+                            break;
+                        case SingleColours.VIOLET:
+                            H = 0.706f;
+                            break;
+                        case SingleColours.MAGENTA:
+                            H = 0.784f;
                             break;
                     }
 

@@ -227,7 +227,7 @@ public class AddObjectsOverlay extends Module {
 
             }
 
-            writeMessage("Rendered "+(count++)+" objects of "+inputObjects.size(),verbose);
+            writeMessage("Rendered "+(++count)+" objects of "+inputObjects.size(),verbose);
 
         }
     }
