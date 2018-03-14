@@ -18,7 +18,11 @@ public class FilterObjects extends Module {
     public static final String MEASUREMENT = "Measurement to filter on";
     public static final String PARENT_OBJECT = "Parent object";
     public static final String CHILD_OBJECTS = "Child objects";
+    public static final String REFERENCE_MODE = "Reference mode";
     public static final String REFERENCE_VALUE = "Reference value";
+    public static final String REFERENCE_VAL_IMAGE = "Reference value image";
+    public static final String REFERENCE_MEASUREMENT = "Reference value measurement";
+    public static final String REFERENCE_MULTIPLIER = "Reference value multiplier";
 
     public interface FilterMethods {
         String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)";
@@ -34,6 +38,15 @@ public class FilterObjects extends Module {
                 MIN_NUMBER_OF_CHILDREN, MAX_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
 
     }
+
+    public interface ReferenceModes {
+        String FIXED_VALUE = "Fixed value";
+        String IMAGE_MEASUREMENT = "Image measurement";
+
+        String[] ALL = new String[]{FIXED_VALUE,IMAGE_MEASUREMENT};
+
+    }
+
 
     public void filterObjectsOnImageEdge(ObjCollection inputObjects, Image inputImage, boolean includeZ) {
         int minX = 0;
@@ -199,7 +212,11 @@ public class FilterObjects extends Module {
         String measurement = parameters.getValue(MEASUREMENT);
         String parentObjectName = parameters.getValue(PARENT_OBJECT);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        String referenceMode = parameters.getValue(REFERENCE_MODE);
         double referenceValue = parameters.getValue(REFERENCE_VALUE);
+        String referenceValueImage = parameters.getValue(REFERENCE_VAL_IMAGE);
+        String referenceMeasurement = parameters.getValue(REFERENCE_MEASUREMENT);
+        double referenceMultiplier = parameters.getValue(REFERENCE_MULTIPLIER);
 
         // Removing objects with a missing measurement (i.e. value set to null)
         switch (method) {
@@ -228,10 +245,20 @@ public class FilterObjects extends Module {
                 break;
 
             case FilterMethods.MEASUREMENTS_SMALLER_THAN:
+                if (referenceMode.equals(ReferenceModes.IMAGE_MEASUREMENT)) {
+                    Measurement refMeas = workspace.getImage(referenceValueImage).getMeasurement(referenceMeasurement);
+                    referenceValue = refMeas.getValue()*referenceMultiplier;
+                }
+
                 filterObjectsWithMeasSmallerThan(inputObjects,measurement,referenceValue);
                 break;
 
             case FilterMethods.MEASUREMENTS_LARGER_THAN:
+                if (referenceMode.equals(ReferenceModes.IMAGE_MEASUREMENT)) {
+                    Measurement refMeas = workspace.getImage(referenceValueImage).getMeasurement(referenceMeasurement);
+                    referenceValue = refMeas.getValue()*referenceMultiplier;
+                }
+
                 filterObjectsWithMeasLargerThan(inputObjects,measurement,referenceValue);
                 break;
 
@@ -247,7 +274,11 @@ public class FilterObjects extends Module {
         parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
-        parameters.add(new Parameter(REFERENCE_VALUE, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(REFERENCE_MODE, Parameter.CHOICE_ARRAY, ReferenceModes.FIXED_VALUE,ReferenceModes.ALL));
+        parameters.add(new Parameter(REFERENCE_VALUE, Parameter.DOUBLE,1d));
+        parameters.add(new Parameter(REFERENCE_VAL_IMAGE, Parameter.INPUT_IMAGE, null));
+        parameters.add(new Parameter(REFERENCE_MEASUREMENT, Parameter.IMAGE_MEASUREMENT, "",""));
+        parameters.add(new Parameter(REFERENCE_MULTIPLIER, Parameter.DOUBLE, 1d));
 
     }
 
@@ -294,13 +325,23 @@ public class FilterObjects extends Module {
 
             case FilterMethods.MEASUREMENTS_SMALLER_THAN:
             case FilterMethods.MEASUREMENTS_LARGER_THAN:
-                returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
+                parameters.updateValueSource(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
 
-                if (parameters.getValue(INPUT_OBJECTS) != null) {
-                    parameters.updateValueSource(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
+                switch ((String) parameters.getValue(REFERENCE_MODE)) {
+                    case ReferenceModes.FIXED_VALUE:
+                        returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
+                        break;
 
+                    case ReferenceModes.IMAGE_MEASUREMENT:
+                        returnedParameters.add(parameters.getParameter(REFERENCE_VAL_IMAGE));
+                        returnedParameters.add(parameters.getParameter(REFERENCE_MEASUREMENT));
+                        returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
+                        parameters.updateValueSource(REFERENCE_MEASUREMENT,parameters.getValue(REFERENCE_VAL_IMAGE));
+                        break;
                 }
+
                 break;
 
         }

@@ -79,75 +79,75 @@ public class RelateObjects extends Module {
         for (Obj childObject:childObjects.values()) {
             writeMessage("Processing object "+(iter++)+" of "+numberOfChildren,verbose);
 
-            // If no parent objects were detected
-            if (parentObjects.size() == 0) continue;
-
-            double dpp = parentObjects.values().iterator().next().getDistPerPxXY();
             double minDist = Double.MAX_VALUE;
             Obj minLink = null;
+            double dpp = childObject.getDistPerPxXY();
 
-            for (Obj parentObject:parentObjects.values()) {
-                if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
+            // If no parent objects were detected
+            if (parentObjects.size() != 0) {
+                for (Obj parentObject : parentObjects.values()) {
+                    if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
 
-                // Calculating the object spacing
-                switch (referencePoint) {
-                    case ReferencePoints.CENTROID:
-                        double xDist = childObject.getXMean(true) - parentObject.getXMean(true);
-                        double yDist = childObject.getYMean(true) - parentObject.getYMean(true);
-                        double zDist = childObject.getZMean(true, true) - parentObject.getZMean(true, true);
-                        double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+                    // Calculating the object spacing
+                    switch (referencePoint) {
+                        case ReferencePoints.CENTROID:
+                            double xDist = childObject.getXMean(true) - parentObject.getXMean(true);
+                            double yDist = childObject.getYMean(true) - parentObject.getYMean(true);
+                            double zDist = childObject.getZMean(true, true) - parentObject.getZMean(true, true);
+                            double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
-                        if (dist < minDist && dist <= linkingDistance) {
-                            minDist = dist;
-                            minLink = parentObject;
-                        }
+                            if (dist < minDist && dist <= linkingDistance) {
+                                minDist = dist;
+                                minLink = parentObject;
+                            }
 
-                        break;
+                            break;
 
-                    case ReferencePoints.SURFACE:
-                        // Getting coordinates for the surface points (6-way connectivity)
-                        double[] parentX = parentObject.getSurfaceX(true);
-                        double[] parentY = parentObject.getSurfaceY(true);
-                        double[] parentZ = parentObject.getSurfaceZ(true,true);
+                        case ReferencePoints.SURFACE:
+                            // Getting coordinates for the surface points (6-way connectivity)
+                            double[] parentX = parentObject.getSurfaceX(true);
+                            double[] parentY = parentObject.getSurfaceY(true);
+                            double[] parentZ = parentObject.getSurfaceZ(true, true);
 
-                        double[] childX = childObject.getSurfaceX(true);
-                        double[] childY = childObject.getSurfaceY(true);
-                        double[] childZ = childObject.getSurfaceZ(true,true);
-                        double[] childZSlice = childObject.getSurfaceZ(true,false);
+                            double[] childX = childObject.getSurfaceX(true);
+                            double[] childY = childObject.getSurfaceY(true);
+                            double[] childZ = childObject.getSurfaceZ(true, true);
+                            double[] childZSlice = childObject.getSurfaceZ(true, false);
 
-                        // Measuring point-to-point distances on both object surfaces
-                        for (int j = 0;j<childX.length;j++) {
-                            double currMinDist = Double.MAX_VALUE;
-                            Obj currMinLink = null;
-                            boolean isInside = false;
+                            // Measuring point-to-point distances on both object surfaces
+                            for (int j = 0; j < childX.length; j++) {
+                                double currMinDist = Double.MAX_VALUE;
+                                Obj currMinLink = null;
+                                boolean isInside = false;
 
-                            for (int i = 0;i<parentX.length;i++) {
-                                xDist = childX[j] - parentX[i];
-                                yDist = childY[j] - parentY[i];
-                                zDist = childZ[j] - parentZ[i];
-                                dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+                                for (int i = 0; i < parentX.length; i++) {
+                                    xDist = childX[j] - parentX[i];
+                                    yDist = childY[j] - parentY[i];
+                                    zDist = childZ[j] - parentZ[i];
+                                    dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
-                                if (dist < currMinDist && dist <= linkingDistance) {
-                                    currMinDist = dist;
-                                    currMinLink = parentObject;
+                                    if (dist < currMinDist && dist <= linkingDistance) {
+                                        currMinDist = dist;
+                                        currMinLink = parentObject;
 
-                                    // If this point is inside the parent the distance should be negative
-                                    Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZSlice[j]);
-                                    isInside = parentObject.getPoints().contains(currentPoint);
+                                        // If this point is inside the parent the distance should be negative
+                                        Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZSlice[j]);
+                                        isInside = parentObject.getPoints().contains(currentPoint);
 
+                                    }
+                                }
+
+                                // Comparing the closest distance for this child point to the previous minimum distance
+                                if (isInside) currMinDist = -currMinDist;
+                                if (currMinDist < minDist) {
+                                    minDist = currMinDist;
+                                    minLink = currMinLink;
                                 }
                             }
 
-                            // Comparing the closest distance for this child point to the previous minimum distance
-                            if (isInside) currMinDist = -currMinDist;
-                            if (currMinDist < minDist) {
-                                minDist = currMinDist;
-                                minLink = currMinLink;
-                            }
-                        }
+                            break;
 
-                        break;
-
+                    }
                 }
             }
 

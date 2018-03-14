@@ -44,6 +44,7 @@ public class CropImage extends Module {
 
         // Applying the macro
         ImagePlus outputImagePlus = new ImagePlus(outputImageName,inputImagePlus.getStack().crop(left,top,0,(right-left),(bottom-top),inputImagePlus.getNSlices()));
+        outputImagePlus.setCalibration(inputImagePlus.getCalibration());
 
         // If selected, displaying the image
         if (parameters.getValue(SHOW_IMAGE)) {

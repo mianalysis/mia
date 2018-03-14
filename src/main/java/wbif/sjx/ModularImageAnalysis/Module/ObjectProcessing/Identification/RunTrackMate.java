@@ -199,9 +199,9 @@ public class RunTrackMate extends Module {
                 ipl = new Duplicator().run(ipl);
                 IntensityMinMax.run(ipl,true);
                 String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-                HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"","",true);
+                HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"",true);
                 String labelMode = ObjCollection.LabelModes.ID;
-                HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"","",0,false) : null;
+                HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",0,false) : null;
                 new AddObjectsOverlay().createOverlay(
                         ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1,verbose);
 
@@ -299,9 +299,9 @@ IJ.runMacro("waitForUser");
 
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.PARENT_ID;
-            HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"",trackObjectsName,true);
+            HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,trackObjectsName,true);
             String labelMode = ObjCollection.LabelModes.PARENT_ID;
-            HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",trackObjectsName,0,false) : null;
+            HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,trackObjectsName,0,false) : null;
             new AddObjectsOverlay().createOverlay(
                     ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1,verbose);
 

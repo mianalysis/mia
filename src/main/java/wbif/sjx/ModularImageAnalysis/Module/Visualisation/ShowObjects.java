@@ -80,7 +80,18 @@ public class ShowObjects extends Module {
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
 
-            HashMap<Integer, Float> hues = inputObjects.getHue(colourMode, measurementForColour, parentForColour,false);
+            // Generating colours for each object
+            String sourceColour = "";
+            switch (colourMode) {
+                case AddObjectsOverlay.ColourModes.MEASUREMENT_VALUE:
+                    sourceColour = measurementForColour;
+                    break;
+                case AddObjectsOverlay.ColourModes.PARENT_ID:
+                    sourceColour = parentForColour;
+                    break;
+            }
+            HashMap<Integer, Float> hues = inputObjects.getHue(colourMode, sourceColour,false);
+
             Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage.getImagePlus(), colourMode,hues,hideMissing);
 
             // Applying spatial calibration from template image

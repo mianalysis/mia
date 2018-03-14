@@ -53,7 +53,6 @@ public class MainGUI extends GUI {
     private JPanel basicModulesPanel = new JPanel();
     private JScrollPane basicModulesScrollPane = new JScrollPane(basicModulesPanel);
     private JPopupMenu moduleListMenu = new JPopupMenu();
-    private int lastModuleEval = -1;
     private boolean basicGUI = true;
     private boolean debugOn = false;
 
@@ -565,15 +564,9 @@ public class MainGUI extends GUI {
         boolean isInput = activeModule.getClass().isInstance(new InputControl());
         boolean isOutput = activeModule.getClass().isInstance(new OutputControl());
 
-        // Adding the nickname control to the top of the panel
-        ModuleName moduleName = new ModuleName(this, activeModule);
-        paramsPanel.add(moduleName, c);
-
-        ResetModuleName resetModuleName = new ResetModuleName(this, activeModule);
-        c.gridx++;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.EAST;
-        paramsPanel.add(resetModuleName, c);
+        JPanel topPanel = componentFactory.createParametersTopRow(activeModule);
+        c.gridwidth = 2;
+        paramsPanel.add(topPanel,c);
 
         // If it's an input/output control, get the current version
         if (activeModule.getClass().isInstance(new InputControl())) activeModule = analysis.getInputControl();
@@ -582,7 +575,7 @@ public class MainGUI extends GUI {
         // If the active module hasn't got parameters enabled, skip it
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
         c.insets = new Insets(0, 0, 0, 5);
         if (activeModule.updateAndGetParameters() != null) {
             Iterator<Parameter> iterator = activeModule.updateAndGetParameters().values().iterator();
@@ -672,7 +665,7 @@ public class MainGUI extends GUI {
             c.gridy++;
             c.weighty = 1;
             c.gridwidth = 3;
-            c.insets = new Insets(5, 5, 5, 5);
+            c.insets = new Insets(5, 5, 5, 10);
             paramsPanel.add(notesHelpPane, c);
 
         } else {
@@ -711,11 +704,14 @@ public class MainGUI extends GUI {
     public void populateBasicModules() {
         basicModulesPanel.removeAll();
 
-        JSeparator separator;
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0;
+
+        JSeparator separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0,20));
+        basicModulesPanel.add(separator,c);
 
         // Adding input control options
         c.gridy++;
@@ -727,13 +723,13 @@ public class MainGUI extends GUI {
 
             // Adding a separator between the input and main modules
             c.gridy++;
-            separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 10));
-            basicModulesPanel.add(separator,c);
+            c.insets = new Insets(10,0,0,0);
+            basicModulesPanel.add(componentFactory.getSeparator(basicFrameWidth-40),c);
 
         }
 
         // Adding module buttons
+        c.insets = new Insets(0,0,0,0);
         ModuleCollection modules = getModules();
         for (Module module : modules) {
             int idx = modules.indexOf(module);
@@ -752,19 +748,16 @@ public class MainGUI extends GUI {
         if (outputPanel != null) {
             // Adding a separator between the input and main modules
             c.gridy++;
-            separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 10));
-            basicModulesPanel.add(separator,c);
+            basicModulesPanel.add(componentFactory.getSeparator(basicFrameWidth-40),c);
 
             c.gridy++;
+            c.insets = new Insets(0,0,0,0);
             basicModulesPanel.add(outputPanel,c);
 
         }
 
         c.gridy++;
         c.weighty = 100;
-        separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0, 1));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();
@@ -853,8 +846,9 @@ public class MainGUI extends GUI {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
+
             if (idx != 0) {
-                if (idx - 1 <= lastModuleEval) lastModuleEval = idx - 2;
+                if (idx - 2 <= lastModuleEval) lastModuleEval = idx - 2;
 
                 modules.remove(activeModule);
                 modules.add(idx - 1, activeModule);
@@ -868,6 +862,7 @@ public class MainGUI extends GUI {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
+
             if (idx != modules.size()) {
                 if (idx <= lastModuleEval) lastModuleEval = idx - 1;
 
