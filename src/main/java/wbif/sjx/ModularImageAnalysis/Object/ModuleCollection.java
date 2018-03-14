@@ -129,14 +129,10 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         LinkedHashSet<Parameter> parameters = new LinkedHashSet<>();
 
         for (Module module:this) {
-            // If this module isn't enabled, skip it
-            if (!module.isEnabled()) continue;
-
             // If the current module is the cutoff the loop terminates.  This prevents the system offering measurements
             // that are created after this module
-            if (module == cutoffModule) {
-                break;
-            }
+            if (module == cutoffModule) break;
+            if (!module.isEnabled()) continue;
 
             // Running through all parameters, adding all images to the list
             ParameterCollection currParameters = module.updateAndGetParameters();

@@ -14,7 +14,7 @@ import java.io.File;
 public abstract class GUI {
     protected GUIAnalysis analysis = new GUIAnalysis();
     Module activeModule = null;
-    private int lastModuleEval = -1;
+    protected int lastModuleEval = -1;
     private Workspace testWorkspace = new Workspace(1, null);
 
     public ModuleCollection getModules() {

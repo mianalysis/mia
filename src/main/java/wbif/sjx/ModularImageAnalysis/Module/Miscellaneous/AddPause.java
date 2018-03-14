@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
+package wbif.sjx.ModularImageAnalysis.Module.Miscellaneous;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -10,8 +10,6 @@ import javax.swing.*;
  * Created by sc13967 on 09/02/2018.
  */
 public class AddPause extends Module {
-    public static final String ENABLE_PAUSE = "Enable pause";
-
     private static final String RESUME = "Resume";
     private static final String TERMINATE = "Terminate";
 
@@ -27,8 +25,6 @@ public class AddPause extends Module {
 
     @Override
     protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
-        if (! (boolean) parameters.getValue(ENABLE_PAUSE)) return;
-
         String[] options = {RESUME,TERMINATE};
         JOptionPane optionPane = new JOptionPane("Execution paused.  What would you like to do?",JOptionPane.QUESTION_MESSAGE,JOptionPane.OK_CANCEL_OPTION,null,options);
         JDialog dialog = optionPane.createDialog(null, "Execution paused");
@@ -57,7 +53,7 @@ public class AddPause extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(ENABLE_PAUSE,Parameter.BOOLEAN,true));
+
     }
 
     @Override

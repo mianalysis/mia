@@ -1,8 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.*;
+import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -28,7 +31,7 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets(5,5,0,0);
+        c.insets = new Insets(2,5,0,0);
 
         JTextField parameterName = new JTextField(parameter.getName());
         parameterName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
@@ -74,7 +77,6 @@ public class ComponentFactory {
             namesSet.add(null);
             for (Parameter object : objects) {
                 namesSet.add(object.getValue());
-
             }
 
             // Removing any images which have since been removed from the workspace
@@ -154,7 +156,7 @@ public class ComponentFactory {
         // Adding the module enabled checkbox
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(5, 0, 0, 0);
+        c.insets = new Insets(2, 0, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         ModuleEnabledCheck enabledCheck = new ModuleEnabledCheck(gui,module);
@@ -163,7 +165,7 @@ public class ComponentFactory {
         // Adding the main module button
         c.gridx++;
         c.weightx = 1;
-        c.insets = new Insets(5, 5, 0, 0);
+        c.insets = new Insets(2, 5, 0, 0);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         ModuleButton button = new ModuleButton(gui,module);
         button.setPreferredSize(new Dimension(panelWidth-elementHeight-20,elementHeight));
@@ -177,7 +179,7 @@ public class ComponentFactory {
         // Adding the state/evaluate button
         c.gridx++;
         c.weightx = 0;
-        c.insets = new Insets(5, 0, 0, 0);
+        c.insets = new Insets(2, 0, 0, 0);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         EvalButton evalButton = new EvalButton(gui,module);
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
@@ -196,6 +198,9 @@ public class ComponentFactory {
 
         // Adding the nickname control to the top of the panel
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
+        if (activeModule.getClass() == InputControl.class || activeModule.getClass() == OutputControl.class) {
+            disableableCheck.setEnabled(false);
+        }
         paramPanel.add(disableableCheck,c);
 
         JSeparator separator = new JSeparator();
@@ -243,13 +248,33 @@ public class ComponentFactory {
 
     }
 
+    public JPanel getSeparator(int panelWidth) {
+        JPanel panel = new JPanel(new GridBagLayout());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weighty = 0;
+
+        JSeparator separator = new JSeparator();
+        c.insets = new Insets(10,0,0,0);
+        separator.setPreferredSize(new Dimension(panelWidth, 10));
+        panel.add(separator,c);
+
+        return panel;
+
+    }
+
     public JPanel createBasicModuleControl(Module module, int panelWidth) {
+        // If the module is the special-case GUISeparator, create this module, then return
+        if (module.getClass().isInstance(new GUISeparator())) return getSeparator(panelWidth);
+
         // Only displaying the module title if it has at least one visible parameter
         boolean hasVisibleParameters = false;
         for (Parameter parameter : module.updateAndGetParameters().values()) {
             if (parameter.isVisible()) hasVisibleParameters = true;
         }
-        if (!hasVisibleParameters) return null;
+        if (!hasVisibleParameters &! module.canBeDisabled()) return null;
 
         JPanel modulePanel = new JPanel(new GridBagLayout());
         JPanel titlePanel = createBasicModuleHeading(module, panelWidth);
@@ -275,11 +300,6 @@ public class ComponentFactory {
 
             }
         }
-
-        c.gridy++;
-        JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0, 10));
-        modulePanel.add(separator, c);
 
         return modulePanel;
 

@@ -58,7 +58,6 @@ public abstract class Analysis implements Serializable {
         // Check that all available parameters have been set
         for (Module module:modules) {
             ParameterCollection activeParameters = module.updateAndGetParameters();
-
             for (Parameter activeParameter:activeParameters.values()) {
                 if (activeParameter.getValue() == null) throw new GenericMIAException(
                         "Module \""+module.getTitle()+"\" parameter \""+activeParameter.getName()+"\" not set");
