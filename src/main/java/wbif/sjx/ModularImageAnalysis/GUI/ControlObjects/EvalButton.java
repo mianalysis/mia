@@ -35,6 +35,7 @@ public class EvalButton extends JButton implements ActionListener {
         setName("EvalButton");
         setText("⇩");
         setFont(new Font(Font.SERIF,Font.BOLD,14));
+        setEnabled(module.isEnabled());
         addActionListener(this);
         updateColour();
 

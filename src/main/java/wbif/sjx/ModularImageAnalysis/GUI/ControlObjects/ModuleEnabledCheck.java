@@ -18,8 +18,9 @@ public class ModuleEnabledCheck extends JCheckBox implements ActionListener {
         this.gui = gui;
         this.module = module;
 
-        this.setSelected(module.isEnabled());
-        this.setName("ModuleEnabledCheck");
+        setSelected(module.isEnabled());
+        setName("ModuleEnabledCheck");
+        setEnabled(module.canBeDisabled());
 
         addActionListener(this);
 

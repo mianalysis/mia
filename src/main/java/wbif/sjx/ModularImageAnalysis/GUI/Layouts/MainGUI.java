@@ -565,15 +565,9 @@ public class MainGUI extends GUI {
         boolean isInput = activeModule.getClass().isInstance(new InputControl());
         boolean isOutput = activeModule.getClass().isInstance(new OutputControl());
 
-        // Adding the nickname control to the top of the panel
-        ModuleName moduleName = new ModuleName(this, activeModule);
-        paramsPanel.add(moduleName, c);
-
-        ResetModuleName resetModuleName = new ResetModuleName(this, activeModule);
-        c.gridx++;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.EAST;
-        paramsPanel.add(resetModuleName, c);
+        JPanel topPanel = componentFactory.createParametersTopRow(activeModule);
+        c.gridwidth = 2;
+        paramsPanel.add(topPanel,c);
 
         // If it's an input/output control, get the current version
         if (activeModule.getClass().isInstance(new InputControl())) activeModule = analysis.getInputControl();
@@ -582,7 +576,7 @@ public class MainGUI extends GUI {
         // If the active module hasn't got parameters enabled, skip it
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
         c.insets = new Insets(0, 0, 0, 5);
         if (activeModule.updateAndGetParameters() != null) {
             Iterator<Parameter> iterator = activeModule.updateAndGetParameters().values().iterator();
@@ -672,7 +666,7 @@ public class MainGUI extends GUI {
             c.gridy++;
             c.weighty = 1;
             c.gridwidth = 3;
-            c.insets = new Insets(5, 5, 5, 5);
+            c.insets = new Insets(5, 5, 5, 10);
             paramsPanel.add(notesHelpPane, c);
 
         } else {

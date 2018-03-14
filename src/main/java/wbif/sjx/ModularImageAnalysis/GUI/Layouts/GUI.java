@@ -21,6 +21,10 @@ public abstract class GUI {
         return analysis.getModules();
     }
 
+    public abstract void populateModuleList();
+
+    public abstract void populateModuleParameters();
+
     public abstract void updateModules();
 
     public abstract void updateTestFile();

@@ -188,6 +188,13 @@ public class AnalysisHandler {
                 module.setEnabled(true);
             }
 
+            if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
+                String isDisableable = moduleAttributes.getNamedItem("DISABLEABLE").getNodeValue();
+                module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
+            } else {
+                module.setCanBeDisabled(false);
+            }
+
             if (moduleAttributes.getNamedItem("NOTES") != null) {
                 String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
                 module.setNotes(notes);

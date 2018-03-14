@@ -1,14 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.GUI;
 
-import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.EvalButton;
-import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.MeasurementExportCheck;
-import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleButton;
-import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleEnabledCheck;
+import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.BooleanParameter;
-import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ChoiceArrayParameter;
-import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.FileParameter;
-import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.TextParameter;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.*;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -193,6 +187,37 @@ public class ComponentFactory {
 
     }
 
+    public JPanel createParametersTopRow(Module activeModule) {
+        JPanel paramPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.insets = new Insets(5,5,0,0);
+
+        // Adding the nickname control to the top of the panel
+        DisableableCheck disableableCheck = new DisableableCheck(activeModule);
+        paramPanel.add(disableableCheck,c);
+
+        JSeparator separator = new JSeparator();
+        separator.setOrientation(JSeparator.VERTICAL);
+        separator.setPreferredSize(new Dimension(5, 25));
+        c.gridx++;
+        paramPanel.add(separator);
+
+        ModuleName moduleName = new ModuleName(gui, activeModule);
+        c.gridx++;
+        paramPanel.add(moduleName, c);
+
+        ResetModuleName resetModuleName = new ResetModuleName(gui, activeModule);
+        c.gridx++;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.EAST;
+        paramPanel.add(resetModuleName, c);
+
+        return paramPanel;
+
+    }
+
     public JPanel createBasicModuleHeading(Module module, int panelWidth) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -203,11 +228,15 @@ public class ComponentFactory {
         c.insets = new Insets(0, 5, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
+        ModuleEnabledCheck moduleEnabledCheck = new ModuleEnabledCheck(gui,module);
+        modulePanel.add(moduleEnabledCheck,c);
+
         JTextField title = new JTextField(module.getNickname());
         title.setEditable(false);
         title.setBorder(null);
         title.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
         title.setPreferredSize(new Dimension(panelWidth-elementHeight,elementHeight));
+        c.gridx++;
         modulePanel.add(title,c);
 
         return modulePanel;
@@ -215,9 +244,6 @@ public class ComponentFactory {
     }
 
     public JPanel createBasicModuleControl(Module module, int panelWidth) {
-        // Only show if the module is enabled
-        if (!module.isEnabled()) return null;
-
         // Only displaying the module title if it has at least one visible parameter
         boolean hasVisibleParameters = false;
         for (Parameter parameter : module.updateAndGetParameters().values()) {
@@ -236,9 +262,13 @@ public class ComponentFactory {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         modulePanel.add(titlePanel, c);
 
+        // If there are visible parameters, but the module isn't enabled only return the heading
+        if (!module.isEnabled()) return modulePanel;
+
+        c.insets = new Insets(0,35,0,0);
         for (Parameter parameter : module.updateAndGetParameters().values()) {
             if (parameter.isVisible()) {
-                JPanel paramPanel = createParameterControl(parameter, gui.getModules(), module, panelWidth);
+                JPanel paramPanel = createParameterControl(parameter, gui.getModules(), module, panelWidth-35);
 
                 c.gridy++;
                 modulePanel.add(paramPanel, c);
