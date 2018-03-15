@@ -198,7 +198,7 @@ public class ComponentFactory {
 
         // Adding the nickname control to the top of the panel
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
-        if (activeModule.getClass() == InputControl.class || activeModule.getClass() == OutputControl.class) {
+        if (activeModule.getClass() == InputControl.class) {
             disableableCheck.setEnabled(false);
         }
         paramPanel.add(disableableCheck,c);

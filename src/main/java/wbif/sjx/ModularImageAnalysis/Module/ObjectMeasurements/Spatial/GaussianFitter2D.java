@@ -134,6 +134,8 @@ public class GaussianFitter2D extends Module {
                     {0, 2 * r + 1},
                     {1E-50, Double.MAX_VALUE}, // Sigma can't go to zero
                     {1E-50, Double.MAX_VALUE},
+//                    {r*0.3, r*3}, // Sigma can't go to zero
+//                    {r*0.3, r*3},
                     {Double.MIN_VALUE, Double.MAX_VALUE},
                     {Double.MIN_VALUE, Double.MAX_VALUE},
                     {0, 2 * Math.PI}

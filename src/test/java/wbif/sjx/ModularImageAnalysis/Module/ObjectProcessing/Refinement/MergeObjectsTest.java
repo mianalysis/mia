@@ -1,10 +1,11 @@
-package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing;
+package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.ExpectedMergedObjects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedSpots3D;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement.MergeObjects;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;

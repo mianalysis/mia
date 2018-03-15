@@ -597,7 +597,7 @@ public class MainGUI extends GUI {
 
         // If selected, adding the measurement selector for output control
         if (activeModule.getClass().isInstance(new OutputControl())
-                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_XLSX)
+                && (boolean) analysis.getOutputControl().isEnabled()
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
 
             LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);

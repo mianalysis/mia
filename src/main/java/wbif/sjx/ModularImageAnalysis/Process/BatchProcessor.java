@@ -60,7 +60,7 @@ public class BatchProcessor extends FileCrawler {
         }
 
         // Saving the results
-        if (shutdownEarly) return;
+        if (shutdownEarly || exporter == null) return;
         exporter.exportResults(workspaces,analysis);
 
     }

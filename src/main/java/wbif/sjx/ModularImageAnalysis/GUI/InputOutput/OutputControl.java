@@ -8,7 +8,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  * Created by steph on 29/07/2017.
  */
 public class OutputControl extends Module {
-    public static final String EXPORT_XLSX = "Export results to Excel file";
     public static final String EXPORT_SUMMARY = "Export summary";
     public static final String SUMMARY_TYPE = "Summary type";
     public static final String CALCULATE_SUMMARY_MEAN = "Calculate summary means";
@@ -45,7 +44,6 @@ public class OutputControl extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new Parameter(EXPORT_XLSX,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(EXPORT_SUMMARY,Parameter.BOOLEAN,true));
         parameters.add(
                 new Parameter(SUMMARY_TYPE,Parameter.CHOICE_ARRAY,SummaryTypes.ONE_AVERAGE_PER_FILE,SummaryTypes.ALL));
@@ -69,26 +67,22 @@ public class OutputControl extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.add(parameters.getParameter(EXPORT_XLSX));
-
-        if (parameters.getValue(EXPORT_XLSX)) {
-            returnedParameters.add(parameters.getParameter(EXPORT_SUMMARY));
-            if (parameters.getValue(EXPORT_SUMMARY)) {
-                returnedParameters.add(parameters.getParameter(SUMMARY_TYPE));
-                returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MEAN));
-                returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_STD));
-                returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_SUM));
-            }
-
-            returnedParameters.add(parameters.getParameter(EXPORT_INDIVIDUAL_OBJECTS));
-            returnedParameters.add(parameters.getParameter(CONTINUOUS_DATA_EXPORT));
-            if (parameters.getValue(CONTINUOUS_DATA_EXPORT)) {
-                returnedParameters.add(parameters.getParameter(SAVE_EVERY_N));
-            }
-
-            returnedParameters.add(parameters.getParameter(SELECT_MEASUREMENTS));
-
+        returnedParameters.add(parameters.getParameter(EXPORT_SUMMARY));
+        if (parameters.getValue(EXPORT_SUMMARY)) {
+            returnedParameters.add(parameters.getParameter(SUMMARY_TYPE));
+            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MEAN));
+            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_STD));
+            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_SUM));
         }
+
+        returnedParameters.add(parameters.getParameter(EXPORT_INDIVIDUAL_OBJECTS));
+        returnedParameters.add(parameters.getParameter(CONTINUOUS_DATA_EXPORT));
+        if (parameters.getValue(CONTINUOUS_DATA_EXPORT)) {
+            returnedParameters.add(parameters.getParameter(SAVE_EVERY_N));
+        }
+
+        returnedParameters.add(parameters.getParameter(SELECT_MEASUREMENTS));
+
 
         return returnedParameters;
 

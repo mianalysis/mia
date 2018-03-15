@@ -346,7 +346,7 @@ public class AnalysisHandler {
 
         // Getting output options
         OutputControl outputControl = analysis.getOutputControl();
-        boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
+        boolean exportXLSX = outputControl.isEnabled();
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
         boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
