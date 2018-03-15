@@ -23,7 +23,7 @@ public class MeasureImageIntensity extends Module {
     private MeasurementReference stdevMeasurement;
     private MeasurementReference sumMeasurement;
 
-    private interface Measurements {
+    public interface Measurements {
         String MEAN = "INTENSITY//MEAN";
         String MIN = "INTENSITY//MIN";
         String MAX = "INTENSITY//MAX";

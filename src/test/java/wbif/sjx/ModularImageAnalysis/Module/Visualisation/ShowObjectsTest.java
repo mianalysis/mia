@@ -205,13 +205,4 @@ public class ShowObjectsTest {
         }
     }
 
-    @Test @Ignore
-    public void testRunObjectToImage() throws Exception {
-
-    }
-
-    @Test @Ignore
-    public void testRunImageToObject() throws Exception {
-
-    }
 }
