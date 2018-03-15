@@ -22,15 +22,25 @@ public class NormaliseIntensity extends Module {
         int bitDepth = ipl.getProcessor().getBitDepth();
         if (bitDepth == 8 | bitDepth == 16) IJ.run(ipl, "32-bit", null);
 
-        for (int z = 1; z <= ipl.getNSlices(); z++) {
-            for (int c = 1; c <= ipl.getNChannels(); c++) {
+        for (int c = 1; c <= ipl.getNChannels(); c++) {
+            // Get min max values for whole stack
+            double min = Double.MAX_VALUE;
+            double max = Double.MIN_VALUE;
+            for (int z = 1; z <= ipl.getNSlices(); z++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
                     ipl.setPosition(c, z, t);
-
                     ImageStatistics imageStatistics = ipl.getStatistics();
-                    ipl.getProcessor().subtract(imageStatistics.min);
-                    ipl.getProcessor().multiply(1 / (imageStatistics.max - imageStatistics.min));
+                    min = Math.min(min,imageStatistics.min);
+                    max = Math.max(max,imageStatistics.max);
+                }
+            }
 
+            // Applying normalisation
+            for (int z = 1; z <= ipl.getNSlices(); z++) {
+                for (int t = 1; t <= ipl.getNFrames(); t++) {
+                    ipl.setPosition(c, z, t);
+                    ipl.getProcessor().subtract(min);
+                    ipl.getProcessor().multiply(1 / (max - min));
                 }
             }
         }
