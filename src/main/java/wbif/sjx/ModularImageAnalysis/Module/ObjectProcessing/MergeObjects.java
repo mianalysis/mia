@@ -89,8 +89,6 @@ public class MergeObjects extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
         boolean deleteInputs = parameters.getValue(DELETE_INPUTS);
 
         if (deleteInputs) {

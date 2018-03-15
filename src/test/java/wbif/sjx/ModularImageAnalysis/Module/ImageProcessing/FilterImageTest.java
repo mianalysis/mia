@@ -526,6 +526,10 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
+        // MEDIAN3D FAILS BECAUSE FILERS3D CLASS REQUIRES AN IMAGE STACK, BUT WE HAVE A HYPERSTACK.  NEED TO SEE WHAT CLASS THE FIJI IMPLEMENTATION USES
+
+        new ImageJ();
+
         // Running BinaryOperations
         filterImage.run(workspace,false);
 
@@ -541,7 +545,7 @@ public class FilterImageTest {
         assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
         assertEquals(8,outputImage.getBitDepth());
 
-        new ImageJ();
+        image.getImagePlus().show();
         expectedImage.show();
         outputImage.show();
         IJ.runMacro("waitForUser");
