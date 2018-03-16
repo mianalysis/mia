@@ -16,3 +16,5 @@ Required plugins that need installing via the Fiji updater:
 - [Ridge Detection](https://github.com/thorstenwagner/ij-ridgedetection)
 
 It also requires the Common library, which is hosted [here](https://github.com/SJCross/Common).
+
+A list of all dependencies along with their respective licenses can be found [here](https://rawgit.com/SJCross/ModularImageAnalysis/master/target/site/dependencies.html).
