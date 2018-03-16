@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
- * Created by steph on 30/04/2017.
+ * Created by stephen on 30/04/2017.
  */
 public class Image < T extends RealType< T > & NativeType< T >> {
     private String name;
