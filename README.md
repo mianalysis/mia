@@ -3,7 +3,7 @@
 This ImageJ/Fiji plugin provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.  Development of this plugin is ongoing.
 
 
-The plugin makes use of a combination of plugins packaged with Fiji as well as others that can be installed via the [updater] (http://imagej.net/Updater).
+The plugin makes use of a combination of plugins packaged with Fiji as well as others that can be installed via the [updater](http://imagej.net/Updater).
 
 Required plugins pre-packaged with Fiji:
 - [Auto Threshold](https://github.com/fiji/Auto_Threshold)
