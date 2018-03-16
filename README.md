@@ -6,7 +6,9 @@ This ImageJ/Fiji plugin provides a modular framework for assembling image and ob
 The plugin makes use of a combination of plugins packaged with Fiji as well as others that can be installed via the [updater] (http://imagej.net/Updater).
 
 Required plugins pre-packaged with Fiji:
+- [Auto Threshold](https://github.com/fiji/Auto_Threshold)
 - [BioFormats](https://github.com/openmicroscopy/bioformats)
+- [Correct Bleach](https://github.com/fiji/CorrectBleach)
 - [TrackMate](https://github.com/fiji/TrackMate)
 
 Required plugins that need installing via the Fiji updater:
