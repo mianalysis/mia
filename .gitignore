@@ -1,10 +1,9 @@
-
-target/
+target/*
+!target/site
+target/site/*
+!target/site/dependencies.html
 
 \.idea/workspace\.xml
-<<<<<<< HEAD
-=======
-
->>>>>>> UnitTests
-
 \.idea/libraries/
+
+
