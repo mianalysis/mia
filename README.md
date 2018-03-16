@@ -14,3 +14,5 @@ Required plugins pre-packaged with Fiji:
 Required plugins that need installing via the Fiji updater:
 - [MorphoLibJ](https://github.com/ijpb/MorphoLibJ)
 - [Ridge Detection](https://github.com/thorstenwagner/ij-ridgedetection)
+
+It also requires the Common library, which is hosted [here](https://github.com/SJCross/Common).
