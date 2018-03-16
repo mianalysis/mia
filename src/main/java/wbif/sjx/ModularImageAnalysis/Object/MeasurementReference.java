@@ -7,7 +7,7 @@ public class MeasurementReference extends Reference {
     private boolean calculated = true;
     private boolean exportable = true;
     private String imageObjName = "";
-    private String nickName = "";
+    private String nickName;
 
 
     public MeasurementReference(String name) {
