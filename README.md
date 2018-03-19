@@ -7,7 +7,7 @@ Installation
 ------------
 - The latest version of the plugin can be downloaded from the [Releases](https://github.com/SJCross/ModularImageAnalysis/releases) page.
 - Place this .jar file into the /plugins directory of the your Fiji installation.
-- It is necessary to install a couple of other Fiji plugins using the [updater] (http://imagej.net/Updater):
+- It is necessary to install a couple of other Fiji plugins using the [updater](http://imagej.net/Updater):
 > - In Fiji, go to Help > Update...
 > - Go to "Manage update sites"
 > - Ensure "Biomedgroup" and "IJPB-plugins" are selected, then click "Close"
