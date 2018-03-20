@@ -14,7 +14,7 @@ public class MeasureImageTexture extends Module {
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
 
-    private interface Measurements {
+    public interface Measurements {
         String ASM = "TEXTURE//ASM";
         String CONTRAST = "TEXTURE//CONTRAST";
         String CORRELATION = "TEXTURE//CORRELATION";

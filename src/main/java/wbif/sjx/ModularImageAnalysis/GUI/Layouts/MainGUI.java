@@ -9,7 +9,6 @@ import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ModuleName;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
@@ -609,7 +608,7 @@ public class MainGUI extends GUI {
                 c.gridy++;
                 paramsPanel.add(measurementHeader,c);
 
-                MeasurementReferenceCollection measurementReferences = getModules().getImageReferences(imageName);
+                MeasurementReferenceCollection measurementReferences = getModules().getImageMeasurementReferences(imageName);
                 // Iterating over the measurements for the current image, adding a control for each
                 for (MeasurementReference measurementReference:measurementReferences) {
                     if (!measurementReference.isCalculated()) continue;
@@ -631,7 +630,7 @@ public class MainGUI extends GUI {
                 c.gridy++;
                 paramsPanel.add(measurementHeader,c);
 
-                MeasurementReferenceCollection measurementReferences = getModules().getObjectReferences(objectName);
+                MeasurementReferenceCollection measurementReferences = getModules().getObjectMeasurementReferences(objectName);
                 // Iterating over the measurements for the current object, adding a control for each
                 for (MeasurementReference measurementReference:measurementReferences) {
                     if (!measurementReference.isCalculated()) continue;
