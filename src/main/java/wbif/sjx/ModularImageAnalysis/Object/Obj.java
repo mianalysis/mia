@@ -5,9 +5,7 @@ import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.Wand;
-import ij.process.FloatPolygon;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ObjectImageConverter;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.ProjectObjects;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 
@@ -222,17 +220,21 @@ public class Obj extends Volume {
 
     }
 
-    public Roi getRoi(ImagePlus templateIpl) {
-        // Projecting object and converting to a binary 2D image
-        Obj projectedObject = ProjectObjects.createProjection(this,"Projected");
+    public Roi getRoi(ImagePlus templateIpl, int slice) {
+        // Getting the image corresponding to this slice
+        TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
+        Obj sliceObj = new Obj("Slice",ID,dppXY,dppZ,calibratedUnits);
+        sliceObj.setPoints(slicePoints);
+
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
-        objectCollection.add(projectedObject);
-        HashMap<Integer,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"","",false);
-        Image objectImage = objectCollection.convertObjectsToImage("Output",templateIpl, ObjectImageConverter.ColourModes.SINGLE_COLOUR, hues, false);
+        objectCollection.add(sliceObj);
+
+        HashMap<Integer,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
+        Image objectImage = objectCollection.convertObjectsToImage("Output",templateIpl, ShowObjects.ColourModes.SINGLE_COLOUR, hues, false);
 
         // Getting the object as a Roi
-        int x = (int) Math.round(projectedObject.getX(true)[0]);
-        int y = (int) Math.round(projectedObject.getY(true)[0]);
+        int x = (int) Math.round(sliceObj.getX(true)[0]);
+        int y = (int) Math.round(sliceObj.getY(true)[0]);
 
         // Filling holes in the object
         objectImage.getImagePlus().getProcessor().invert();
@@ -294,6 +296,17 @@ public class Obj extends Volume {
         }
 
         return new Image(imageName,ipl);
+
+    }
+
+    public TreeSet<Point<Integer>> getSlicePoints(int slice) {
+        TreeSet<Point<Integer>> slicePoints = new TreeSet<>();
+
+        for (Point<Integer> point:points) {
+            if (point.getZ()==slice) slicePoints.add(point);
+        }
+
+        return slicePoints;
 
     }
 

@@ -14,14 +14,12 @@ import java.io.File;
  * Created by sc13967 on 26/06/2017.
  */
 public class ImageSaver extends Module {
-    public static final String SAVE_IMAGE = "Save image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String SAVE_LOCATION = "Save location";
     public static final String MIRROR_DIRECTORY_ROOT = "Mirrored directory root";
     public static final String SAVE_FILE_PATH = "File path";
     public static final String SAVE_SUFFIX = "Add filename suffix";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
-    public static final String SHOW_IMAGE = "Show image";
 
     public interface SaveLocations {
         String MIRRORED_DIRECTORY = "Mirrored directory";
@@ -48,26 +46,11 @@ public class ImageSaver extends Module {
     public void run(Workspace workspace, boolean verbose) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        boolean saveImage = parameters.getValue(SAVE_IMAGE);
         String saveLocation = parameters.getValue(SAVE_LOCATION);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT);
         String filePath = parameters.getValue(SAVE_FILE_PATH);
         String suffix = parameters.getValue(SAVE_SUFFIX);
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
-
-        // The save image option is there so users can toggle it
-        if (!saveImage) {
-            // It's still possible to display the image
-            if (parameters.getValue(SHOW_IMAGE)) {
-                // Loading the image to save
-                Image inputImage = workspace.getImages().get(inputImageName);
-                ImagePlus dispIpl = new Duplicator().run(inputImage.getImagePlus());
-                IntensityMinMax.run(dispIpl,true);
-                dispIpl.show();
-            }
-
-            return;
-        }
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -124,24 +107,16 @@ public class ImageSaver extends Module {
                 break;
 
         }
-
-        if (parameters.getValue(SHOW_IMAGE)) {
-            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
-            IntensityMinMax.run(dispIpl,true);
-            dispIpl.show();
-        }
     }
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new Parameter(SAVE_IMAGE,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.MIRRORED_DIRECTORY,SaveLocations.ALL));
         parameters.add(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FOLDER_PATH,""));
         parameters.add(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
         parameters.add(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
         parameters.add(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
     }
 
@@ -154,29 +129,23 @@ public class ImageSaver extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 
-        returnedParamters.add(parameters.getParameter(SAVE_IMAGE));
+        returnedParamters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParamters.add(parameters.getParameter(SAVE_LOCATION));
 
-        if (parameters.getValue(SAVE_IMAGE)) {
-            returnedParamters.add(parameters.getParameter(INPUT_IMAGE));
-            returnedParamters.add(parameters.getParameter(SAVE_LOCATION));
+        switch ((String) parameters.getValue(SAVE_LOCATION)) {
+            case SaveLocations.SPECIFIC_LOCATION:
+                returnedParamters.add(parameters.getParameter(SAVE_FILE_PATH));
+                break;
 
-            switch ((String) parameters.getValue(SAVE_LOCATION)) {
-                case SaveLocations.SPECIFIC_LOCATION:
-                    returnedParamters.add(parameters.getParameter(SAVE_FILE_PATH));
-                    break;
-
-                case SaveLocations.MIRRORED_DIRECTORY:
-                    returnedParamters.add(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
-                    break;
-
-            }
-
-            returnedParamters.add(parameters.getParameter(SAVE_SUFFIX));
-            returnedParamters.add(parameters.getParameter(FLATTEN_OVERLAY));
+            case SaveLocations.MIRRORED_DIRECTORY:
+                returnedParamters.add(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
+                break;
 
         }
 
-        returnedParamters.add(parameters.getParameter(SHOW_IMAGE));
+        returnedParamters.add(parameters.getParameter(SAVE_SUFFIX));
+        returnedParamters.add(parameters.getParameter(FLATTEN_OVERLAY));
+
 
         return returnedParamters;
 

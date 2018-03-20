@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Process;
 import ij.IJ;
 import ij.Prefs;
 import org.apache.commons.io.FilenameUtils;
+import org.reflections.Reflections;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
@@ -25,6 +26,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -90,68 +95,35 @@ public class AnalysisHandler {
         Analysis analysis = new GUIAnalysis();
         ModuleCollection modules = analysis.getModules();
 
+        // Creating a list of all available modules (rather than reading their full path, in case they move) using
+        // Reflections tool
+        Reflections.log = null;
+        Reflections reflections = new Reflections("wbif.sjx.ModularImageAnalysis");
+        Set<Class<? extends Module>> availableModules = reflections.getSubTypesOf(Module.class);
+
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {
             Node moduleNode = moduleNodes.item(i);
 
-            try {
-                NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-                String moduleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
-                Class<?> clazz = Class.forName(moduleName);
-                Module module = (Module) clazz.newInstance();
-
-                // If the module is an input or output control, treat it differently
-                if (module.getClass().isInstance(new InputControl())) {
-                    if (moduleAttributes.getNamedItem("NICKNAME") != null) {
-                        String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
-                        module.setNickname(moduleNickname);
-                    } else {
-                        module.setNickname(module.getTitle());
-                    }
-
-                    NodeList moduleChildNodes = moduleNode.getChildNodes();
-                    for (int j=0;j<moduleChildNodes.getLength();j++) {
-                        switch (moduleChildNodes.item(j).getNodeName()) {
-                            case "PARAMETERS":
-                                populateModuleParameters(moduleChildNodes.item(j), module);
-                                break;
-
-                            case "MEASUREMENTS":
-                                populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
-                                break;
-                        }
-                    }
-                    analysis.setInputControl((InputControl) module);
-
-                    continue;
-
-                } else if (module.getClass().isInstance(new OutputControl())) {
-                    if (moduleAttributes.getNamedItem("NICKNAME") != null) {
-                        String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
-                        module.setNickname(moduleNickname);
-                    } else {
-                        module.setNickname(module.getTitle());
-                    }
-
-                    NodeList moduleChildNodes = moduleNode.getChildNodes();
-                    for (int j=0;j<moduleChildNodes.getLength();j++) {
-                        switch (moduleChildNodes.item(j).getNodeName()) {
-                            case "PARAMETERS":
-                                populateModuleParameters(moduleChildNodes.item(j), module);
-                                break;
-
-                            case "MEASUREMENTS":
-                                populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
-                                break;
-                        }
-                    }
-                    analysis.setOutputControl((OutputControl) module);
-
-                    continue;
-
+            NamedNodeMap moduleAttributes = moduleNode.getAttributes();
+            String fullModuleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
+            String moduleName = FilenameUtils.getExtension(fullModuleName);
+            Module module = null;
+            for (Class<?> clazz:availableModules) {
+                if (moduleName.equals(clazz.getSimpleName())) {
+                    module = (Module) clazz.newInstance();
+                    break;
                 }
+            }
 
-                // Loading all standard HCModules
+            // If no module was found, display an error, then continue
+            if (module == null) {
+                System.err.println("Class \""+moduleName+"\" not found (skipping)");
+                continue;
+            }
+
+            // If the module is an input or output control, treat it differently
+            if (module.getClass().isInstance(new InputControl())) {
                 if (moduleAttributes.getNamedItem("NICKNAME") != null) {
                     String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
                     module.setNickname(moduleNickname);
@@ -159,28 +131,11 @@ public class AnalysisHandler {
                     module.setNickname(module.getTitle());
                 }
 
-                if (moduleAttributes.getNamedItem("ENABLED") != null) {
-                    String isEnabled = moduleAttributes.getNamedItem("ENABLED").getNodeValue();
-                    module.setEnabled(Boolean.parseBoolean(isEnabled));
-                } else {
-                    module.setEnabled(true);
-                }
-
-                if (moduleAttributes.getNamedItem("NOTES") != null) {
-                    String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
-                    module.setNotes(notes);
-                } else {
-                    module.setNotes("");
-                }
-
-                // Populating parameters
                 NodeList moduleChildNodes = moduleNode.getChildNodes();
-                boolean foundParameters = false;
                 for (int j=0;j<moduleChildNodes.getLength();j++) {
                     switch (moduleChildNodes.item(j).getNodeName()) {
                         case "PARAMETERS":
                             populateModuleParameters(moduleChildNodes.item(j), module);
-                            foundParameters = true;
                             break;
 
                         case "MEASUREMENTS":
@@ -188,18 +143,86 @@ public class AnalysisHandler {
                             break;
                     }
                 }
+                analysis.setInputControl((InputControl) module);
 
-                // Old file formats had parameters loose within MODULE
-                if (!foundParameters) populateModuleParameters(moduleNode, module);
+                continue;
 
-                modules.add(module);
+            } else if (module.getClass().isInstance(new OutputControl())) {
+                if (moduleAttributes.getNamedItem("NICKNAME") != null) {
+                    String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
+                    module.setNickname(moduleNickname);
+                } else {
+                    module.setNickname(module.getTitle());
+                }
 
-            } catch (ClassNotFoundException e) {
-                NamedNodeMap moduleAttributes = moduleNode.getAttributes();
-                String moduleName = moduleAttributes.getNamedItem("NAME").getNodeValue();
-                IJ.showMessage("Class \""+moduleName+"\" not found (skipping)");
+                NodeList moduleChildNodes = moduleNode.getChildNodes();
+                for (int j=0;j<moduleChildNodes.getLength();j++) {
+                    switch (moduleChildNodes.item(j).getNodeName()) {
+                        case "PARAMETERS":
+                            populateModuleParameters(moduleChildNodes.item(j), module);
+                            break;
+
+                        case "MEASUREMENTS":
+                            populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
+                            break;
+                    }
+                }
+                analysis.setOutputControl((OutputControl) module);
+
+                continue;
 
             }
+
+            // Loading all standard HCModules
+            if (moduleAttributes.getNamedItem("NICKNAME") != null) {
+                String moduleNickname = moduleAttributes.getNamedItem("NICKNAME").getNodeValue();
+                module.setNickname(moduleNickname);
+            } else {
+                module.setNickname(module.getTitle());
+            }
+
+            if (moduleAttributes.getNamedItem("ENABLED") != null) {
+                String isEnabled = moduleAttributes.getNamedItem("ENABLED").getNodeValue();
+                module.setEnabled(Boolean.parseBoolean(isEnabled));
+            } else {
+                module.setEnabled(true);
+            }
+
+            if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
+                String isDisableable = moduleAttributes.getNamedItem("DISABLEABLE").getNodeValue();
+                module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
+            } else {
+                module.setCanBeDisabled(false);
+            }
+
+            if (moduleAttributes.getNamedItem("NOTES") != null) {
+                String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
+                module.setNotes(notes);
+            } else {
+                module.setNotes("");
+            }
+
+            // Populating parameters
+            NodeList moduleChildNodes = moduleNode.getChildNodes();
+            boolean foundParameters = false;
+            for (int j=0;j<moduleChildNodes.getLength();j++) {
+                switch (moduleChildNodes.item(j).getNodeName()) {
+                    case "PARAMETERS":
+                        populateModuleParameters(moduleChildNodes.item(j), module);
+                        foundParameters = true;
+                        break;
+
+                    case "MEASUREMENTS":
+                        populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
+                        break;
+                }
+            }
+
+            // Old file formats had parameters loose within MODULE
+            if (!foundParameters) populateModuleParameters(moduleNode, module);
+
+            modules.add(module);
+
         }
 
         System.out.println("File loaded");
@@ -210,7 +233,6 @@ public class AnalysisHandler {
 
     private void populateModuleParameters(Node moduleNode, Module module) {
         NodeList parameterNodes = moduleNode.getChildNodes();
-//        System.out.println(module.getTitle()+"_"+parameterNodes.getLength()+parameterNodes.item(0).getNodeValue()+"_"+parameterNodes.item(1).getNodeValue()+"_"+parameterNodes.item(2).getNodeValue()+"_"+parameterNodes.item(3).getNodeValue()+"_"+parameterNodes.item(4).getNodeValue());
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
             NamedNodeMap parameterAttributes = parameterNode.getAttributes();
@@ -224,6 +246,7 @@ public class AnalysisHandler {
 
             try {
                 int parameterType = module.getParameterType(parameterName);
+
                 switch (parameterType) {
                     case Parameter.INPUT_IMAGE:
                     case Parameter.OUTPUT_IMAGE:
@@ -259,8 +282,8 @@ public class AnalysisHandler {
                 module.setParameterVisibility(parameterName,parameterVisible);
 
             } catch (NullPointerException e) {
-                IJ.showMessage("Module "+module.getTitle()
-                        +", parameter \""+parameterName + "\" not set");
+                System.err.println("Module \""+module.getTitle()
+                        +"\" parameter \""+parameterName + "\" not set");
 
             }
         }
@@ -323,7 +346,7 @@ public class AnalysisHandler {
 
         // Getting output options
         OutputControl outputControl = analysis.getOutputControl();
-        boolean exportXLSX = outputControl.getParameterValue(OutputControl.EXPORT_XLSX);
+        boolean exportXLSX = outputControl.isEnabled();
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
         boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
@@ -391,9 +414,9 @@ public class AnalysisHandler {
         batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
 
         // Adding filename filters
-        if (useFilenameFilter1) addFilenameFilter(filenameFilterType1,filenameFilter1);
-        if (useFilenameFilter2) addFilenameFilter(filenameFilterType2,filenameFilter2);
-        if (useFilenameFilter3) addFilenameFilter(filenameFilterType3,filenameFilter3);
+        if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1);
+        if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2);
+        if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3);
 
         // Running the analysis
         batchProcessor.runAnalysisOnStructure(analysis,exporter);
@@ -403,26 +426,6 @@ public class AnalysisHandler {
 
         System.out.println("Complete!");
 
-    }
-
-    private void addFilenameFilter(String filenameFilterType, String filenameFilter) {
-        switch (filenameFilterType) {
-            case InputControl.FilterTypes.INCLUDE_MATCHES_PARTIALLY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
-                break;
-
-            case InputControl.FilterTypes.INCLUDE_MATCHES_COMPLETELY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
-                break;
-
-            case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
-                break;
-
-            case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                batchProcessor.addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
-                break;
-        }
     }
 
     public void stopAnalysis() {

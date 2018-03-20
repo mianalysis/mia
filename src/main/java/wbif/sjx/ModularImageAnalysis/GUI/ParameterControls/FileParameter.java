@@ -17,7 +17,7 @@ public class FileParameter extends JButton implements ActionListener {
     private GUI gui;
     private Module module;
     private Parameter parameter;
-    private String fileType = FileTypes.EITHER_TYPE;
+    private String fileType;
 
     public interface FileTypes {
         String FILE_TYPE = "Global";
@@ -81,6 +81,7 @@ public class FileParameter extends JButton implements ActionListener {
         int idx = gui.getModules().indexOf(module);
         if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);
 
+        gui.updateTestFile();
         gui.updateModules();
 
     }

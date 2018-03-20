@@ -29,7 +29,8 @@ public abstract class Module implements Serializable {
     private String nickname;
     private String notes = "";
     private boolean enabled = true;
-    protected String moduleName = "";
+    protected String moduleName;
+    private boolean canBeDisabled = false;
 
 
     // CONSTRUCTOR
@@ -173,5 +174,13 @@ public abstract class Module implements Serializable {
 
     protected void writeMessage(String message, boolean verbose) {
         if (verbose) System.out.println("[" + moduleName + "] "+message);
+    }
+
+    public boolean canBeDisabled() {
+        return canBeDisabled;
+    }
+
+    public void setCanBeDisabled(boolean canBeDisabled) {
+        this.canBeDisabled = canBeDisabled;
     }
 }

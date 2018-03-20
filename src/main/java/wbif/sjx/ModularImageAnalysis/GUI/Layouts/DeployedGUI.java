@@ -155,6 +155,16 @@ public class DeployedGUI extends GUI implements ActionListener {
 
     }
 
+    @Override
+    public void populateModuleList() {
+
+    }
+
+    @Override
+    public void populateModuleParameters() {
+
+    }
+
     public void updateModules() {
         basicModulesPanel.removeAll();
         JSeparator separator = new JSeparator();
@@ -213,6 +223,11 @@ public class DeployedGUI extends GUI implements ActionListener {
         basicModulesPanel.repaint();
         basicModulesScrollPane.validate();
         basicModulesScrollPane.repaint();
+
+    }
+
+    @Override
+    public void updateTestFile() {
 
     }
 

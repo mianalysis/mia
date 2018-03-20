@@ -4,48 +4,25 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.2.12-SNAPSHOT</version>
+    <version>0.4.2</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/SJCross/ModularImageAnalysis</url>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3+</name>
+            <url>http://www.gnu.org/licenses/gpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <myscope>compile</myscope>
-        <buildDir>${project.build.directory}/${project.name}-${project.version}/plugins/WBIF_Bristol</buildDir>
-        <dependenciesDir>${project.build.directory}/${project.name}-${project.version}/jars/WBIF_Bristol</dependenciesDir>
-        <addClasspathCnd>false</addClasspathCnd>
-        <classpathPref></classpathPref>
-        <exclScope></exclScope>
-        <exclArtifactsID></exclArtifactsID>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>build-plugin</id>
-            <properties>
-                <buildDir>${project.build.directory}/${project.name}-${project.version}/plugins/WBIF_Bristol</buildDir>
-                <dependenciesDir>${project.build.directory}/${project.name}-${project.version}/jars/WBIF_Bristol</dependenciesDir>
-                <addClasspathCnd>false</addClasspathCnd>
-                <classpathPref></classpathPref>
-                <exclScope>provided</exclScope>
-                <exclArtifactsID>commons-codec,commons-collections,commons-io,hamcrest-core,guava,jama,tools,jdk.tools,javassist,junit,MorphoLibJ_</exclArtifactsID>
-            </properties>
-        </profile>
-        <profile>
-            <id>build-cli</id>
-            <properties>
-                <buildDir>${project.build.directory}/MIA/</buildDir>
-                <dependenciesDir>${project.build.directory}/MIA/lib</dependenciesDir>
-                <addClasspathCnd>true</addClasspathCnd>
-                <classpathPref>lib</classpathPref>
-                <exclScope></exclScope>
-                <exclArtifactsID></exclArtifactsID>
-            </properties>
-        </profile>
-    </profiles>
 
     <repositories>
         <repository>
@@ -147,18 +124,25 @@
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-server</artifactId>
             <version>1.3.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>3.4.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>wbif.sjx</groupId>
+            <!--<groupId>wbif.sjx</groupId>-->
+            <!--<artifactId>Common</artifactId>-->
+            <!--<version>1.3.9</version>-->
+            <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>1.3.7</version>
+            <version>v1.3.9</version>
         </dependency>
     </dependencies>
 
@@ -169,14 +153,11 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <outputDirectory>${buildDir}</outputDirectory>
                     <finalName>Modular_Image_Analysis-${project.version}</finalName>
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <addClasspath>${addClasspathCnd}</addClasspath>
-                            <classpathPrefix>${classpathPref}</classpathPrefix>
                             <mainClass>wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin</mainClass>
                         </manifest>
                     </archive>
@@ -185,27 +166,51 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.0.0</version>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <excludeScope>${exclScope}</excludeScope>
-                            <excludeArtifactIds>${exclArtifactsID}</excludeArtifactIds>
-
-                            <outputDirectory>${dependenciesDir}</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <minimizeJar>true</minimizeJar>
+                            <filters>
+                                <filter>
+                                    <artifact>org.apache.poi</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.apache.xmlbeans</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
+    <!--<reporting>-->
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-project-info-reports-plugin</artifactId>-->
+                <!--<version>2.9</version>-->
+                <!--<reportSets>-->
+                    <!--<reportSet>-->
+                        <!--<reports>-->
+                            <!--<report>dependencies</report>-->
+                        <!--</reports>-->
+                    <!--</reportSet>-->
+                <!--</reportSets>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+    <!--</reporting>-->
 </project>

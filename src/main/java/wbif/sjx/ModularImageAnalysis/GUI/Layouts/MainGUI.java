@@ -12,6 +12,8 @@ import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ModuleName;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
+import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -51,7 +53,6 @@ public class MainGUI extends GUI {
     private JPanel basicModulesPanel = new JPanel();
     private JScrollPane basicModulesScrollPane = new JScrollPane(basicModulesPanel);
     private JPopupMenu moduleListMenu = new JPopupMenu();
-    private int lastModuleEval = -1;
     private boolean basicGUI = true;
     private boolean debugOn = false;
 
@@ -101,7 +102,7 @@ public class MainGUI extends GUI {
         // Creating the analysis menu
         menu = new JMenu("Analysis");
         menuBar.add(menu);
-        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
+//        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.START_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.STOP_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.CLEAR_PIPELINE));
@@ -177,6 +178,7 @@ public class MainGUI extends GUI {
         frame.repaint();
 
         populateBasicModules();
+        updateTestFile();
 
     }
 
@@ -243,6 +245,7 @@ public class MainGUI extends GUI {
 
         populateModuleList();
         populateModuleParameters();
+        updateTestFile();
 
     }
 
@@ -561,15 +564,9 @@ public class MainGUI extends GUI {
         boolean isInput = activeModule.getClass().isInstance(new InputControl());
         boolean isOutput = activeModule.getClass().isInstance(new OutputControl());
 
-        // Adding the nickname control to the top of the panel
-        ModuleName moduleName = new ModuleName(this, activeModule);
-        paramsPanel.add(moduleName, c);
-
-        ResetModuleName resetModuleName = new ResetModuleName(this, activeModule);
-        c.gridx++;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.EAST;
-        paramsPanel.add(resetModuleName, c);
+        JPanel topPanel = componentFactory.createParametersTopRow(activeModule);
+        c.gridwidth = 2;
+        paramsPanel.add(topPanel,c);
 
         // If it's an input/output control, get the current version
         if (activeModule.getClass().isInstance(new InputControl())) activeModule = analysis.getInputControl();
@@ -578,7 +575,7 @@ public class MainGUI extends GUI {
         // If the active module hasn't got parameters enabled, skip it
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridwidth = 2;
+        c.gridwidth = 1;
         c.insets = new Insets(0, 0, 0, 5);
         if (activeModule.updateAndGetParameters() != null) {
             Iterator<Parameter> iterator = activeModule.updateAndGetParameters().values().iterator();
@@ -600,7 +597,7 @@ public class MainGUI extends GUI {
 
         // If selected, adding the measurement selector for output control
         if (activeModule.getClass().isInstance(new OutputControl())
-                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_XLSX)
+                && (boolean) analysis.getOutputControl().isEnabled()
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
 
             LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);
@@ -668,7 +665,7 @@ public class MainGUI extends GUI {
             c.gridy++;
             c.weighty = 1;
             c.gridwidth = 3;
-            c.insets = new Insets(5, 5, 5, 5);
+            c.insets = new Insets(5, 5, 5, 10);
             paramsPanel.add(notesHelpPane, c);
 
         } else {
@@ -707,11 +704,14 @@ public class MainGUI extends GUI {
     public void populateBasicModules() {
         basicModulesPanel.removeAll();
 
-        JSeparator separator;
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0;
+
+        JSeparator separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0,20));
+        basicModulesPanel.add(separator,c);
 
         // Adding input control options
         c.gridy++;
@@ -723,13 +723,13 @@ public class MainGUI extends GUI {
 
             // Adding a separator between the input and main modules
             c.gridy++;
-            separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 10));
-            basicModulesPanel.add(separator,c);
+            c.insets = new Insets(10,0,0,0);
+            basicModulesPanel.add(componentFactory.getSeparator(basicFrameWidth-40),c);
 
         }
 
         // Adding module buttons
+        c.insets = new Insets(0,0,0,0);
         ModuleCollection modules = getModules();
         for (Module module : modules) {
             int idx = modules.indexOf(module);
@@ -748,19 +748,16 @@ public class MainGUI extends GUI {
         if (outputPanel != null) {
             // Adding a separator between the input and main modules
             c.gridy++;
-            separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(basicFrameWidth-40, 10));
-            basicModulesPanel.add(separator,c);
+            basicModulesPanel.add(componentFactory.getSeparator(basicFrameWidth-40),c);
 
             c.gridy++;
+            c.insets = new Insets(0,0,0,0);
             basicModulesPanel.add(outputPanel,c);
 
         }
 
         c.gridy++;
         c.weighty = 100;
-        separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0, 1));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();
@@ -776,32 +773,48 @@ public class MainGUI extends GUI {
         Reflections reflections = new Reflections("wbif.sjx.ModularImageAnalysis");
         Set<Class<? extends Module>> availableModules = reflections.getSubTypesOf(Module.class);
 
-        // Creating new instances of these classes and adding to ArrayList
-        TreeMap<String, ArrayList<Module>> availableModulesList = new TreeMap<>();
+        // Creating an alphabetically-ordered list of all modules
+        TreeMap<String,Class> modules = new TreeMap<>();
         for (Class clazz : availableModules) {
-            if (clazz != InputControl.class) {
+            if (clazz != InputControl.class && clazz != OutputControl.class) {
                 String[] names = clazz.getPackage().getName().split("\\.");
-                String pkg = names[names.length - 1];
-
-                availableModulesList.putIfAbsent(pkg, new ArrayList<>());
-                availableModulesList.get(pkg).add((Module) clazz.newInstance());
-
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String name:names) stringBuilder.append(name);
+                modules.put(stringBuilder.toString()+clazz.getSimpleName(),clazz);
             }
         }
 
-        // Sorting the ArrayList based on module title
-        for (ArrayList<Module> modules : availableModulesList.values()) {
-            Collections.sort(modules, Comparator.comparing(Module::getTitle));
+        LinkedHashSet<ModuleListMenu> topList = new LinkedHashSet<>();
+        for (Class clazz : modules.values()) {
+            // ActiveList starts at the top list
+            LinkedHashSet<ModuleListMenu> activeList = topList;
+            ModuleListMenu activeItem = null;
+
+            String[] names = clazz.getPackage().getName().split("\\.");
+            for (int i=4;i<names.length;i++) {
+                boolean found = false;
+                for (ModuleListMenu listItemm:activeList) {
+                    if (listItemm.getName().equals(names[i])) {
+                        activeItem = listItemm;
+                        found = true;
+                    }
+                }
+
+                if (!found) {
+                    ModuleListMenu newItem = new ModuleListMenu(this, names[i], new ArrayList<>());
+                    newItem.setName(names[i]);
+                    activeList.add(newItem);
+                    if (activeItem != null) activeItem.add(newItem);
+                    activeItem = newItem;
+                }
+
+                activeList = activeItem.getChildren();
+
+            }
+            activeItem.addMenuItem((Module) clazz.newInstance());
         }
 
-        // Adding the modules to the list
-        for (String pkgName : availableModulesList.keySet()) {
-            ArrayList<Module> modules = availableModulesList.get(pkgName);
-            ModuleListMenu packageMenu = new ModuleListMenu(this, pkgName, modules);
-
-            moduleListMenu.add(packageMenu);
-
-        }
+        for (ModuleListMenu listMenu:topList) moduleListMenu.add(listMenu);
     }
 
     public void addModule() {
@@ -833,8 +846,9 @@ public class MainGUI extends GUI {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
+
             if (idx != 0) {
-                if (idx - 1 <= lastModuleEval) lastModuleEval = idx - 2;
+                if (idx - 2 <= lastModuleEval) lastModuleEval = idx - 2;
 
                 modules.remove(activeModule);
                 modules.add(idx - 1, activeModule);
@@ -848,6 +862,7 @@ public class MainGUI extends GUI {
         if (activeModule != null) {
             ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
+
             if (idx != modules.size()) {
                 if (idx <= lastModuleEval) lastModuleEval = idx - 1;
 
@@ -895,5 +910,63 @@ public class MainGUI extends GUI {
             populateBasicModules();
         }
         populateModuleList();
+    }
+
+    @Override
+    public void updateTestFile() {
+        // Ensuring the input file specified in the InputControl is active in the test workspace
+        InputControl inputControl = getAnalysis().getInputControl();
+        String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
+        String singleFile = inputControl.getParameterValue(InputControl.SINGLE_FILE_PATH);
+        String batchFolder = inputControl.getParameterValue(InputControl.BATCH_FOLDER_PATH);
+        String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
+        int nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS);
+        boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
+        String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
+        String filenameFilterType1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_1);
+        boolean useFilenameFilter2 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_2);
+        String filenameFilter2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_2);
+        String filenameFilterType2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_2);
+        boolean useFilenameFilter3 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_3);
+        String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
+        String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
+
+        String inputFile = "";
+        switch (inputMode) {
+            case InputControl.InputModes.SINGLE_FILE:
+                inputFile = singleFile;
+                break;
+
+            case InputControl.InputModes.BATCH:
+                // Initialising BatchProcessor
+                BatchProcessor batchProcessor = new BatchProcessor(new File(batchFolder));
+                batchProcessor.setnThreads(nThreads);
+
+                // Adding extension filter
+                batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
+
+                // Adding filename filters
+                if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1);
+                if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2);
+                if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3);
+
+                // Running the analysis
+                inputFile = batchProcessor.getNextValidFileInStructure().getAbsolutePath();
+                break;
+        }
+
+        if (inputFile == null) return;
+
+        if (getTestWorkspace().getMetadata().getFile() == null) {
+            lastModuleEval = -1;
+            setTestWorkspace(new Workspace(1, new File(inputFile)));
+        }
+
+        // If the input path isn't the same assign this new file
+        if (!getTestWorkspace().getMetadata().getFile().getAbsolutePath().equals(inputFile)) {
+            lastModuleEval = -1;
+            setTestWorkspace(new Workspace(1, new File(inputFile)));
+
+        }
     }
 }

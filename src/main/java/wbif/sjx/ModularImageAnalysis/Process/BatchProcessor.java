@@ -4,8 +4,11 @@ package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.FileConditions.FileCondition;
+import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.System.FileCrawler;
 
 import javax.swing.*;
@@ -57,7 +60,7 @@ public class BatchProcessor extends FileCrawler {
         }
 
         // Saving the results
-        if (shutdownEarly) return;
+        if (shutdownEarly || exporter == null) return;
         exporter.exportResults(workspaces,analysis);
 
     }
@@ -145,8 +148,8 @@ public class BatchProcessor extends FileCrawler {
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
             try {
                 analysis.execute(workspace, verbose);
-            } catch (GenericMIAException e) {
-                e.printStackTrace();
+            } catch (Throwable t) {
+                t.printStackTrace(System.err);
             }
 
             // Clearing images from the workspace to prevent memory leak
@@ -175,6 +178,31 @@ public class BatchProcessor extends FileCrawler {
 
         System.out.println("Shutdown complete!");
 
+    }
+
+    /**
+     * Iterprets inputs from InputControl and assigns the appropriate filters
+     * @param filenameFilterType
+     * @param filenameFilter
+     */
+    public void addFilenameFilter(String filenameFilterType, String filenameFilter) {
+        switch (filenameFilterType) {
+            case InputControl.FilterTypes.INCLUDE_MATCHES_PARTIALLY:
+                addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                break;
+
+            case InputControl.FilterTypes.INCLUDE_MATCHES_COMPLETELY:
+                addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
+                break;
+
+            case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
+                addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
+                break;
+
+            case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
+                addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
+                break;
+        }
     }
 
 

@@ -2,13 +2,18 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
+import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Created by Stephen on 08/06/2017.
@@ -30,6 +35,7 @@ public class EvalButton extends JButton implements ActionListener {
         setName("EvalButton");
         setText("⇩");
         setFont(new Font(Font.SERIF,Font.BOLD,14));
+        setEnabled(module.isEnabled());
         addActionListener(this);
         updateColour();
 

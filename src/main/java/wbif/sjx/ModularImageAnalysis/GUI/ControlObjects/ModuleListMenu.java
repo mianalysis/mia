@@ -7,12 +7,14 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 /**
  * Created by steph on 28/07/2017.
  */
 public class ModuleListMenu extends JMenu implements MouseListener {
     private MainGUI gui;
+    private LinkedHashSet<ModuleListMenu> children = new LinkedHashSet<>();
 
     public ModuleListMenu(MainGUI gui, String name, ArrayList<Module> modules) {
         this.gui = gui;
@@ -23,6 +25,14 @@ public class ModuleListMenu extends JMenu implements MouseListener {
         }
         addMouseListener(this);
 
+    }
+
+    public void addMenuItem(Module module) {
+        add(new PopupMenuItem(gui,module));
+    }
+
+    public LinkedHashSet<ModuleListMenu> getChildren() {
+        return children;
     }
 
     @Override

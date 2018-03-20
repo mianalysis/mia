@@ -29,6 +29,22 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
+    public interface SingleColours {
+        String WHITE = "White";
+        String BLACK = "Black";
+        String RED = "Red";
+        String ORANGE = "Orange";
+        String YELLOW = "Yellow";
+        String GREEN = "Green";
+        String CYAN = "Cyan";
+        String BLUE = "Blue";
+        String VIOLET = "Violet";
+        String MAGENTA = "Magenta";
+
+        String[] ALL = new String[]{WHITE,BLACK,RED,ORANGE,YELLOW,GREEN,CYAN,BLUE,VIOLET,MAGENTA};
+
+    }
+
     public interface LabelModes {
         String ID = "ID";
         String MEASUREMENT_VALUE = "Measurement value";
@@ -216,19 +232,27 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public HashMap<Integer,String> getIDs(String labelMode, String measurementForID, String parentObjectsForID, int nDecimalPlaces) {
+    public HashMap<Integer,String> getIDs(String labelMode, String source, int nDecimalPlaces, boolean useScientific) {
         HashMap<Integer,String> IDs = new HashMap<>();
 
         DecimalFormat df;
         if (nDecimalPlaces == 0) {
             df = new DecimalFormat("0");
         } else {
-            String zeros = "0.";
-            for (int i=0;i<nDecimalPlaces;i++) {
-                zeros = zeros + "0";
+            if (useScientific) {
+                StringBuilder zeros = new StringBuilder("0.");
+                for (int i = 0; i < nDecimalPlaces; i++) {
+                    zeros.append("0");
+                }
+                zeros.append("E0");
+                df = new DecimalFormat(zeros.toString());
+            } else {
+                StringBuilder zeros = new StringBuilder("#.");
+                for (int i = 0;i <nDecimalPlaces; i++) {
+                    zeros.append("#");
+                }
+                df = new DecimalFormat(zeros.toString());
             }
-            zeros = zeros+"E0";
-            df = new DecimalFormat(zeros);
         }
 
         for (Obj object:values()) {
@@ -238,12 +262,16 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                     break;
 
                 case LabelModes.MEASUREMENT_VALUE:
-                    IDs.put(object.getID(), df.format(object.getMeasurement(measurementForID).getValue()));
-                    System.out.println(IDs);
+                    IDs.put(object.getID(), df.format(object.getMeasurement(source).getValue()));
                     break;
 
                 case LabelModes.PARENT_ID:
-                    IDs.put(object.getID(), df.format(object.getParent(parentObjectsForID).getID()));
+                    if (object.getParent(source) == null) {
+                        IDs.put(object.getID(), "NA");
+                    } else {
+                        IDs.put(object.getID(), df.format(object.getParent(source).getID()));
+                    }
+
                     break;
             }
         }
@@ -252,13 +280,13 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public HashMap<Integer,Float> getHue(String colourMode, String measurementForColour, String parentObjectsForColour, boolean normalised) {
+    public HashMap<Integer,Float> getHue(String colourMode, String source, boolean normalised) {
         HashMap<Integer,Float> hues = new HashMap<>();
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
         if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
-            values().forEach(e -> cs.addMeasure(e.getMeasurement(measurementForColour).getValue()));
+            values().forEach(e -> cs.addMeasure(e.getMeasurement(source).getValue()));
         }
 
         for (Obj object:values()) {
@@ -269,7 +297,40 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
             switch (colourMode) {
                 case ColourModes.SINGLE_COLOUR:
-                   H = 1f;
+                    switch (source) {
+                        case "":
+                        case SingleColours.WHITE:
+                            H = 1f;
+                            break;
+                        case SingleColours.BLACK:
+                            H = 0f;
+                            break;
+                        case SingleColours.RED:
+                            H = 0f;
+                            break;
+                        case SingleColours.ORANGE:
+                            H = 0.078f;
+                            break;
+                        case SingleColours.YELLOW:
+                            H = 0.157f;
+                            break;
+                        case SingleColours.GREEN:
+                            H = 0.314f;
+                            break;
+                        case SingleColours.CYAN:
+                            H = 0.471f;
+                            break;
+                        case SingleColours.BLUE:
+                            H = 0.627f;
+                            break;
+                        case SingleColours.VIOLET:
+                            H = 0.706f;
+                            break;
+                        case SingleColours.MAGENTA:
+                            H = 0.784f;
+                            break;
+                    }
+
                    break;
 
                 case ColourModes.RANDOM_COLOUR:
@@ -278,7 +339,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                     break;
 
                 case ColourModes.MEASUREMENT_VALUE:
-                    H = (float) object.getMeasurement(measurementForColour).getValue();
+                    H = (float) object.getMeasurement(source).getValue();
                     if (normalised) {
                         double startH = 0;
                         double endH = 120d / 255d;
@@ -292,10 +353,10 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                     break;
 
                 case ColourModes.PARENT_ID:
-                    if (object.getParent(parentObjectsForColour) == null) {
+                    if (object.getParent(source) == null) {
                         H = 0.2f;
                     } else {
-                        H = (float) object.getParent(parentObjectsForColour).getID();
+                        H = (float) object.getParent(source).getID();
                     }
 
                     if (normalised) H = (H* 1048576 % 255) / 255;
