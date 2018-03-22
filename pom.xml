@@ -82,6 +82,12 @@
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
+            <groupId>io.scif</groupId>
+            <artifactId>scifio</artifactId>
+            <version>0.33.0</version>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>Auto_Threshold</artifactId>
             <version>1.16.4</version>

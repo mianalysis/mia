@@ -7,6 +7,10 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import io.scif.ImageMetadata;
+import io.scif.Metadata;
+import io.scif.Reader;
+import io.scif.SCIFIO;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -16,6 +20,7 @@ import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
+import net.imagej.axis.CalibratedAxis;
 import net.imglib2.img.Img;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -30,6 +35,10 @@ import wbif.sjx.common.Object.HCMetadata;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sc13967 on 15/05/2017.
@@ -79,7 +88,36 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
 
     }
 
-    private ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, boolean verbose) throws ServiceException, DependencyException, IOException, FormatException {
+    /**
+     * Uses SCIFIO to read the image
+     * @return
+     */
+    public Img<T> getImg(String path, int seriesNumber,int[][] dimRanges, boolean verbose) throws IOException, io.scif.FormatException {
+        File file = new File(path);
+
+        SCIFIO scifio = new SCIFIO();
+        final Reader reader = scifio.initializer().initializeReader(file.getAbsolutePath());
+        final Metadata meta = reader.getMetadata();
+
+        System.out.println("Image count "+meta.getImageCount());
+        for (int i=0;i<meta.getImageCount();i++) {
+            ImageMetadata iMeta = meta.get(i);
+            List<CalibratedAxis> axes = iMeta.getAxes();
+            for (CalibratedAxis axis:axes) {
+                System.out.println("    unit"+axis.unit());
+
+            }
+
+            long[] lengths = iMeta.getAxesLengths();
+            for (long len:lengths) System.out.println("    length "+len);
+
+        }
+
+        return null;
+
+    }
+
+    public ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, boolean verbose) throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
@@ -181,7 +219,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
     }
 
     private ImagePlus getFormattedNameImage(String nameFormat, HCMetadata metadata, String comment,
-                                                   int seriesNumber,int[][] dimRanges, boolean verbose) throws ServiceException, DependencyException, FormatException, IOException {
+                                            int seriesNumber,int[][] dimRanges, boolean verbose) throws ServiceException, DependencyException, FormatException, IOException {
 
         String filename = null;
         switch (nameFormat) {

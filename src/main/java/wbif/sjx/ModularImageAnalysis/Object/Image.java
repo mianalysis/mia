@@ -2,11 +2,14 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
+import net.imglib2.Cursor;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.view.IntervalView;
+import net.imglib2.view.Views;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -113,6 +116,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     public Img<T> getImg() {
         return ImagePlusAdapter.wrapImgPlus(imagePlus);
+
     }
 
     public HashMap<String, Measurement> getMeasurements() {
