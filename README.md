@@ -1,5 +1,5 @@
-ModularImageAnalysis
-====================
+MIA: Modular Image Analysis
+=========================
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
 
 This ImageJ/Fiji plugin provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.  Development of this plugin is ongoing.
@@ -16,6 +16,7 @@ Installation
 > - Select "Apply changes" and restart Fiji when promted
 
 Note: "Biomedgroup" enables the [Ridge Detection](https://github.com/thorstenwagner/ij-ridgedetection) plugin and "IJPB-plugins" enables [MorphoLibJ](https://github.com/ijpb/MorphoLibJ).
+
 
 Usage
 -----
@@ -34,6 +35,16 @@ Usage
 > - Checkboxes to the right of each module determine if they are visible in the basic view (default view)
 > - Input files and folders are specified using the "Input control" and Excel file export is configured in the "Output control"
 
+
+Troubleshooting
+---------------
+- Unsupported major.minor version
+> - Cause: MIA requires Java 8; however, older vesions of Fiji were packaged with Java 6.
+> - Solution 1: Run the Fiji updater from Help > Update...
+> - Solution 2: Download the latest version of  Fiji from [fiji.sc](http://fiji.sc).
+> - Validation: In Fiji, go to Help > About ImageJ and verify Java is version 1.8.0 (or newer).
+
+
 Acknowledgements
 ----------------
 The plugin makes use of a combination of plugins packaged with Fiji as well as others that can be installed via the updater.
@@ -47,6 +58,5 @@ Required plugins pre-packaged with Fiji:
 Required plugins that need installing via the Fiji updater:
 - [Ridge Detection](https://github.com/thorstenwagner/ij-ridgedetection)
 - [MorphoLibJ](https://github.com/ijpb/MorphoLibJ)
-
 
 A list of bundled dependencies along with their respective licenses can be found [here](https://rawgit.com/SJCross/ModularImageAnalysis/master/target/site/dependencies.html).
