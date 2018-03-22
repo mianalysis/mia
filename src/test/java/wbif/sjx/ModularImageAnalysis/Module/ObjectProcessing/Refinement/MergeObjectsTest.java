@@ -42,7 +42,7 @@ public class MergeObjectsTest {
         mergeObjects.updateParameterValue(MergeObjects.DELETE_INPUTS,true);
 
         // Running the module
-        mergeObjects.run(workspace,false);
+        mergeObjects.run(workspace);
 
         // Getting expected output objects
         ObjCollection expectedOutputObj= new ExpectedMergedObjects3D().getObjects("Output_obj",true,dppXY,dppZ,calibratedUnits,true);
@@ -88,7 +88,7 @@ public class MergeObjectsTest {
         mergeObjects.updateParameterValue(MergeObjects.DELETE_INPUTS,false);
 
         // Running the module
-        mergeObjects.run(workspace,false);
+        mergeObjects.run(workspace);
 
         // Getting expected output objects
         ObjCollection expectedOutputObj= new ExpectedMergedObjects3D().getObjects("Output_obj",true,dppXY,dppZ,calibratedUnits,true);

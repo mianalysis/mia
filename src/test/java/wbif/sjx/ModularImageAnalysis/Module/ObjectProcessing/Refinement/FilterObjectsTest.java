@@ -45,7 +45,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -75,7 +75,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -105,7 +105,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -140,7 +140,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_IMAGE,"Test_image");
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -176,7 +176,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,false);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -212,7 +212,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,true);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -261,7 +261,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,2d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -311,7 +311,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,2d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -356,7 +356,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -401,7 +401,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));

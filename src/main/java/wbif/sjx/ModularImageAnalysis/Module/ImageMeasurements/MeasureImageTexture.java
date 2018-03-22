@@ -35,7 +35,7 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
         int yOffs = parameters.getValue(Y_OFFSET);
@@ -47,10 +47,10 @@ public class MeasureImageTexture extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running texture measurement
-        if (verbose) System.out.println("["+moduleName+"] Calculating co-occurance matrix");
-        if (verbose) System.out.println("["+moduleName+"] X-offset: "+xOffs);
-        if (verbose) System.out.println("["+moduleName+"] Y-offset: "+yOffs);
-        if (verbose) System.out.println("["+moduleName+"] Z-offset: "+zOffs);
+        writeMessage("Calculating co-occurance matrix");
+        writeMessage("X-offset: "+xOffs);
+        writeMessage("Y-offset: "+yOffs);
+        writeMessage("Z-offset: "+zOffs);
 
         TextureCalculator textureCalculator = new TextureCalculator();
 
@@ -63,22 +63,22 @@ public class MeasureImageTexture extends Module {
         Measurement ASMMeasurement = new Measurement(Measurements.ASM,textureCalculator.getASM());
         ASMMeasurement.setSource(this);
         inputImage.addMeasurement(ASMMeasurement);
-        if (verbose) System.out.println("["+moduleName+"] ASM = "+ASMMeasurement.getValue());
+        writeMessage("ASM = "+ASMMeasurement.getValue());
 
         Measurement contrastMeasurement = new Measurement(Measurements.CONTRAST,textureCalculator.getContrast());
         contrastMeasurement.setSource(this);
         inputImage.addMeasurement(contrastMeasurement);
-        if (verbose) System.out.println("["+moduleName+"] Contrast = "+contrastMeasurement.getValue());
+        writeMessage("Contrast = "+contrastMeasurement.getValue());
 
         Measurement correlationMeasurement = new Measurement(Measurements.CORRELATION,textureCalculator.getCorrelation());
         correlationMeasurement.setSource(this);
         inputImage.addMeasurement(correlationMeasurement);
-        if (verbose) System.out.println("["+moduleName+"] Correlation = "+correlationMeasurement.getValue());
+        writeMessage("Correlation = "+correlationMeasurement.getValue());
 
         Measurement entropyMeasurement = new Measurement(Measurements.ENTROPY,textureCalculator.getEntropy());
         entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement);
-        if (verbose) System.out.println("["+moduleName+"] Entropy = "+entropyMeasurement.getValue());
+        writeMessage("Entropy = "+entropyMeasurement.getValue());
 
     }
 

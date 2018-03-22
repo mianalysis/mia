@@ -22,7 +22,7 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
 
     }
 

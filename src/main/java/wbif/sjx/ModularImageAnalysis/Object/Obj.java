@@ -310,6 +310,17 @@ public class Obj extends Volume {
 
     }
 
+    public Image convertObjToImage(String outputName, ImagePlus templateIpl) {
+        // Creating an ObjCollection to hold this image
+        ObjCollection tempObj = new ObjCollection(outputName);
+        tempObj.add(this);
+
+        // Getting the image
+        HashMap<Integer, Float> hues = tempObj.getHue(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
+        return tempObj.convertObjectsToImage(outputName,templateIpl,ObjCollection.ColourModes.SINGLE_COLOUR,hues,false);
+
+    }
+
     @Override
     public int hashCode() {
         // Updating the hash for time-point.  ID, measurements and relationships aren't included; only spatial location.

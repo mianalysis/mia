@@ -66,7 +66,7 @@ public class SplineAnalysisTest {
         splineAnalysis.updateParameterValue(SplineAnalysis.SHOW_IMAGE,false);
 
         // Running the module
-        splineAnalysis.run(workspace,false);
+        splineAnalysis.run(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:inputObj.values()) {

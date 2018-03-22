@@ -19,6 +19,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <dependency.locations.enabled>false</dependency.locations.enabled>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <myscope>compile</myscope>
@@ -103,6 +104,12 @@
             <groupId>sc.fiji</groupId>
             <artifactId>CorrectBleach_</artifactId>
             <version>2.0.2</version>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Trainable_Segmentation</artifactId>
+            <version>3.2.9</version>
             <scope>${myscope}</scope>
         </dependency>
 
@@ -196,10 +203,36 @@
                                     </includes>
                                 </filter>
                             </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <manifestEntries>
+                                    <Main-Class>wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin</Main-Class>
+                                    <Specification-Title>${project.artifactId}</Specification-Title>
+                                    <Specification-Version>${project.version}</Specification-Version>
+                                </manifestEntries>
+                            </transformer>
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependencies</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

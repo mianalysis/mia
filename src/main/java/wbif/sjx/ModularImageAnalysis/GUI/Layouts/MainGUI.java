@@ -950,7 +950,12 @@ public class MainGUI extends GUI {
                 if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3);
 
                 // Running the analysis
-                inputFile = batchProcessor.getNextValidFileInStructure().getAbsolutePath();
+                File nextFile = batchProcessor.getNextValidFileInStructure();
+                if (nextFile == null) {
+                    inputFile = null;
+                } else {
+                    inputFile = nextFile.getAbsolutePath();
+                }
                 break;
         }
 

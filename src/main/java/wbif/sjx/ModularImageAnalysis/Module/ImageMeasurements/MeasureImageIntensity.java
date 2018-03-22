@@ -45,10 +45,10 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
        // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName+")");
+        writeMessage("Loading image ("+inputImageName+")");
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 

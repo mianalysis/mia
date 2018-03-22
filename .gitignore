@@ -2,6 +2,7 @@ target/*
 !target/site
 target/site/*
 !target/site/dependencies.html
+!target/site/images/
 
 \.idea/workspace\.xml
 \.idea/libraries/

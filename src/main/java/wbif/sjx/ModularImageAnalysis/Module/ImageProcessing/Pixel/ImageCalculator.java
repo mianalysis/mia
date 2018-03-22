@@ -18,6 +18,7 @@ public class ImageCalculator extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_32BIT = "Output 32-bit image";
     public static final String CALCULATION_METHOD = "Calculation method";
+    public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
     public static final String SHOW_IMAGE = "Show image";
 
     public interface OverwriteModes {
@@ -50,7 +51,7 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input images
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
@@ -65,6 +66,7 @@ public class ImageCalculator extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean output32Bit = parameters.getValue(OUTPUT_32BIT);
         String calculationMethod = parameters.getValue(CALCULATION_METHOD);
+        boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // If applying to a new image, the input image is duplicated
@@ -93,6 +95,33 @@ public class ImageCalculator extends Module {
         int nChannels = inputImagePlus1.getNChannels();
         int nSlices = inputImagePlus1.getNSlices();
         int nFrames = inputImagePlus1.getNFrames();
+
+        // If necessary, converting NaN values to zero
+        if (setNaNToZero && (inputImagePlus1.getBitDepth() == 32 || inputImagePlus2.getBitDepth() == 32)) {
+            for (int z = 1; z <= nSlices; z++) {
+                for (int c = 1; c <= nChannels; c++) {
+                    for (int t = 1; t <= nFrames; t++) {
+                        inputImagePlus1.setPosition(c,z,t);
+                        ImageProcessor imageProcessor1 = inputImagePlus1.getProcessor();
+
+                        inputImagePlus2.setPosition(c,z,t);
+                        ImageProcessor imageProcessor2 = inputImagePlus2.getProcessor();
+
+                        for (int x=0;x<width;x++) {
+                            for (int y = 0; y < height; y++) {
+                                if (Float.isNaN(imageProcessor1.getf(x, y))) {
+                                    imageProcessor1.set(x,y,0);
+                                }
+
+                                if (Float.isNaN(imageProcessor2.getf(x, y))) {
+                                    imageProcessor2.set(x,y,0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
         int nImages = nSlices*nChannels*nFrames;
@@ -152,7 +181,7 @@ public class ImageCalculator extends Module {
                         }
                     }
 
-                    writeMessage("Processed "+(++count)+" of "+nImages+" images",verbose);
+                    writeMessage("Processed "+(++count)+" of "+nImages+" images");
 
                 }
             }
@@ -187,6 +216,7 @@ public class ImageCalculator extends Module {
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_32BIT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(CALCULATION_METHOD,Parameter.CHOICE_ARRAY,CalculationMethods.ADD,CalculationMethods.ALL));
+        parameters.add(new Parameter(SET_NAN_TO_ZERO,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
     }
@@ -210,6 +240,7 @@ public class ImageCalculator extends Module {
 
         returnedParameters.add(parameters.getParameter(OUTPUT_32BIT));
         returnedParameters.add(parameters.getParameter(CALCULATION_METHOD));
+        returnedParameters.add(parameters.getParameter(SET_NAN_TO_ZERO));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;

@@ -72,10 +72,10 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Loading input image
         String targetImageName = parameters.getValue(INPUT_IMAGE);
-        writeMessage("Loading image ("+targetImageName+") into workspace",verbose);
+        writeMessage("Loading image ("+targetImageName+") into workspace");
         Image targetImage = workspace.getImage(targetImageName);
         ImagePlus ipl = targetImage.getImagePlus();
 
@@ -150,7 +150,7 @@ public class RunTrackMate extends Module {
         TrackMate trackmate = new TrackMate(model, settings);
 
         // Running TrackMate
-        writeMessage("Running TrackMate detection",verbose);
+        writeMessage("Running TrackMate detection");
         if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());
         if (!trackmate.execDetection()) IJ.log(trackmate.getErrorMessage());
         if (!trackmate.computeSpotFeatures(false)) IJ.log(trackmate.getErrorMessage());
@@ -162,7 +162,7 @@ public class RunTrackMate extends Module {
 
         if (!(boolean) parameters.getValue(DO_TRACKING)) {
             // Getting trackObjects and adding them to the output trackObjects
-            writeMessage("Processing detected objects",verbose);
+            writeMessage("Processing detected objects");
 
             SpotCollection spots = model.getSpots();
             for (Spot spot:spots.iterable(false)) {
@@ -190,8 +190,8 @@ public class RunTrackMate extends Module {
             }
 
             // Adding spotObjects to the workspace
-            writeMessage(spots.getNSpots(false)+" trackObjects detected",verbose);
-            writeMessage("Adding spotObjects ("+spotObjectsName+") to workspace",verbose);
+            writeMessage(spots.getNSpots(false)+" trackObjects detected");
+            writeMessage("Adding spotObjects ("+spotObjectsName+") to workspace");
             workspace.addObjects(spotObjects);
 
             // Displaying trackObjects (if selected)
@@ -203,7 +203,7 @@ public class RunTrackMate extends Module {
                 String labelMode = ObjCollection.LabelModes.ID;
                 HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",0,false) : null;
                 new AddObjectsOverlay().createOverlay(
-                        ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1,verbose);
+                        ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1);
 
                 // Displaying the overlay
                 ipl.show();
@@ -212,12 +212,12 @@ public class RunTrackMate extends Module {
 
             return;
         }
-IJ.runMacro("waitForUser");
-        writeMessage("Running TrackMate tracking",verbose);
+
+        writeMessage("Running TrackMate tracking");
         if (!trackmate.execTracking()) IJ.log(trackmate.getErrorMessage());
 
         // Converting tracks to local track model
-        writeMessage("Converting tracks to local track model",verbose);
+        writeMessage("Converting tracks to local track model");
 
         TrackModel trackModel = model.getTrackModel();
         Set<Integer> trackIDs = trackModel.trackIDs(false);
@@ -276,11 +276,11 @@ IJ.runMacro("waitForUser");
         }
 
         // Displaying the number of objects detected
-        writeMessage(spotObjects.size()+" spots detected",verbose);
-            if (createTracks) writeMessage(trackObjects.size()+" tracks detected",verbose);
+        writeMessage(spotObjects.size()+" spots detected");
+            if (createTracks) writeMessage(trackObjects.size()+" tracks detected");
 
         // Adding objects to the workspace
-        writeMessage("Adding objects ("+spotObjectsName+") to workspace",verbose);
+        writeMessage("Adding objects ("+spotObjectsName+") to workspace");
         workspace.addObjects(spotObjects);
         if (createTracks) workspace.addObjects(trackObjects);
 
@@ -303,7 +303,7 @@ IJ.runMacro("waitForUser");
             String labelMode = ObjCollection.LabelModes.PARENT_ID;
             HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,trackObjectsName,0,false) : null;
             new AddObjectsOverlay().createOverlay(
-                    ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1,verbose);
+                    ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1);
 
             // Displaying the overlay
             ipl.show();

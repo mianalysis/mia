@@ -66,7 +66,7 @@ public class AddObjectsOverlay extends Module {
 
     public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
                                      String[] posMeasurements,HashMap<Integer,Float> colours, HashMap<Integer,String> IDs,
-                                     int labelSize, double lineWidth, boolean verbose) {
+                                     int labelSize, double lineWidth) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
@@ -227,13 +227,13 @@ public class AddObjectsOverlay extends Module {
 
             }
 
-            writeMessage("Rendered "+(++count)+" objects of "+inputObjects.size(),verbose);
+            writeMessage("Rendered "+(++count)+" objects of "+inputObjects.size());
 
         }
     }
 
     public void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects,
-                                          HashMap<Integer,Float> hues, double lineWidth, boolean verbose) {
+                                          HashMap<Integer,Float> hues, double lineWidth) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -279,7 +279,7 @@ public class AddObjectsOverlay extends Module {
 
             }
 
-            writeMessage("Rendered "+(count++)+" tracks of "+trackObjects.size(),verbose);
+            writeMessage("Rendered "+(count++)+" tracks of "+trackObjects.size());
 
         }
     }
@@ -295,7 +295,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -376,12 +376,12 @@ public class AddObjectsOverlay extends Module {
                 } else {
                     positionMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas, ""};
                 }
-                createOverlay(ipl,inputObjects,positionMode,positionMeasurements,hues,IDs,labelSize,lineWidth,verbose);
+                createOverlay(ipl,inputObjects,positionMode,positionMeasurements,hues,IDs,labelSize,lineWidth);
                 break;
 
             case PositionModes.TRACKS:
                 ObjCollection tracks = workspace.getObjectSet(trackObjectsName);
-                createTrackOverlay(ipl,inputObjectsName,tracks,hues,lineWidth,verbose);
+                createTrackOverlay(ipl,inputObjectsName,tracks,hues,lineWidth);
                 break;
         }
 

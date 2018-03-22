@@ -41,7 +41,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -92,7 +92,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -143,7 +143,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -197,7 +197,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -251,7 +251,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -304,7 +304,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -357,7 +357,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -414,7 +414,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -465,7 +465,7 @@ public class ImageFileLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());

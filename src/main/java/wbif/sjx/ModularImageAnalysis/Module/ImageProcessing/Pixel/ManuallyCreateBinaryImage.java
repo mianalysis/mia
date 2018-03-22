@@ -89,7 +89,7 @@ public class ManuallyCreateBinaryImage extends Module implements ActionListener 
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Local access to this is required for the action listeners
         this.workspace = workspace;
 

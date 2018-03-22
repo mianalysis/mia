@@ -126,7 +126,7 @@ public class SplineAnalysis extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -159,7 +159,7 @@ public class SplineAnalysis extends Module {
         int count = 1;
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            writeMessage("Processing object " + (count++) + " of " + total,verbose);
+            writeMessage("Processing object " + (count++) + " of " + total);
 
             // Converting object to image, then inverting, so we have a black object on a white background
             ObjCollection tempObjects = new ObjCollection("Backbone");

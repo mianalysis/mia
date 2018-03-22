@@ -4,7 +4,7 @@
   <groupId>wbif.sjx</groupId>
   <artifactId>ModularImageAnalysis</artifactId>
   <name>Modular_Image_Analysis</name>
-  <version>0.4.2</version>
+  <version>0.4.3-SNAPSHOT</version>
   <url>https://github.com/SJCross/ModularImageAnalysis</url>
   <licenses>
     <license>
@@ -22,6 +22,8 @@
           <finalName>Modular_Image_Analysis-${project.version}</finalName>
           <archive>
             <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
               <mainClass>wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin</mainClass>
             </manifest>
           </archive>
@@ -52,6 +54,15 @@
                   </includes>
                 </filter>
               </filters>
+              <transformers>
+                <transformer>
+                  <manifestEntries>
+                    <Main-Class>wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin</Main-Class>
+                    <Specification-Title>${project.artifactId}</Specification-Title>
+                    <Specification-Version>${project.version}</Specification-Version>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
             </configuration>
           </execution>
         </executions>
@@ -153,6 +164,34 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>io.scif</groupId>
+      <artifactId>scifio</artifactId>
+      <version>0.33.0</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>scifio-jai-imageio</artifactId>
+          <groupId>io.scif</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imagej-common</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>scijava-common</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>mapdb</artifactId>
+          <groupId>org.mapdb</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>Auto_Threshold</artifactId>
       <version>1.16.4</version>
@@ -173,10 +212,6 @@
           <groupId>net.imagej</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>imglib2</artifactId>
-          <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>imglib2-algorithm</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
@@ -191,10 +226,6 @@
         <exclusion>
           <artifactId>imglib2-realtransform</artifactId>
           <groupId>net.imglib2</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>scijava-common</artifactId>
-          <groupId>org.scijava</groupId>
         </exclusion>
         <exclusion>
           <artifactId>j3dcore</artifactId>
@@ -248,6 +279,14 @@
           <artifactId>fiji-lib</artifactId>
           <groupId>sc.fiji</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>imglib2</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>scijava-common</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -281,8 +320,24 @@
       </exclusions>
     </dependency>
   </dependencies>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.9</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>dependencies</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
   <properties>
     <myscope>compile</myscope>
+    <dependency.locations.enabled>false</dependency.locations.enabled>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>

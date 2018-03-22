@@ -41,7 +41,7 @@ public class ExpandShrinkObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input image
         String templateImageName = parameters.getValue(INPUT_IMAGE);
         Image templateImage = workspace.getImage(templateImageName);
@@ -70,8 +70,7 @@ public class ExpandShrinkObjects extends Module {
         int total = inputObjects.size();
 
         for (Obj inputObject:inputObjects.values()) {
-            if (verbose)
-                System.out.println("[" + moduleName + "] Processing object " + (count++) + " of " + total);
+            writeMessage("Processing object " + (count++) + " of " + total);
 
             // Convert each object to an image, do the dilation/erosion, then convert back to an object
             ObjCollection objectCollection = new ObjCollection("ObjectToMorph");

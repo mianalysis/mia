@@ -61,7 +61,7 @@ public class MeasureObjectIntensityTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
 
         // Running MeasureObjectIntensity
-        measureObjectIntensity.run(workspace,false);
+        measureObjectIntensity.run(workspace);
 
         // Checking the workspace contains a single object set
         assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());
@@ -129,7 +129,7 @@ public class MeasureObjectIntensityTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
 
         // Running MeasureObjectIntensity
-        measureObjectIntensity.run(workspace,false);
+        measureObjectIntensity.run(workspace);
 
         // Checking the workspace contains a single object set
         assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());
@@ -197,7 +197,7 @@ public class MeasureObjectIntensityTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
 
         // Running MeasureObjectIntensity
-        measureObjectIntensity.run(workspace,false);
+        measureObjectIntensity.run(workspace);
 
         // Checking the workspace contains a single object set
         assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());

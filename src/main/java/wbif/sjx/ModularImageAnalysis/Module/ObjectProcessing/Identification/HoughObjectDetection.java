@@ -50,7 +50,7 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -94,18 +94,18 @@ public class HoughObjectDetection extends Module {
                     circleHoughTransform.setSampleFraction(sampleFraction);
 
                     // Running the transforms
-                    writeMessage("Running transform (image " + (count) + " of " + total+")",verbose);
+                    writeMessage("Running transform (image " + (count) + " of " + total+")");
                     circleHoughTransform.run();
 
                     // Normalising scores based on the number of points in that circle
-                    writeMessage("Normalising scores (image " + (count) + " of " + total+")",verbose);
+                    writeMessage("Normalising scores (image " + (count) + " of " + total+")");
                         circleHoughTransform.normaliseScores();
 
                     // Getting the accumulator as an image
                     if (showTransformImage) circleHoughTransform.getAccumulatorAsImage().show();
 
                     // Getting circle objects and adding to workspace
-                    writeMessage("Detecting objects (image " + (count++) + " of " + total+")",verbose);
+                    writeMessage("Detecting objects (image " + (count++) + " of " + total+")");
                     ArrayList<double[]> circles = circleHoughTransform.getObjects(detectionThreshold, exclusionRadius);
                     Indexer indexer = new Indexer(ipl.getWidth(), ipl.getHeight());
                     for (double[] circle : circles) {
@@ -141,7 +141,7 @@ public class HoughObjectDetection extends Module {
 
                     }
 
-                    writeMessage(circles.size()+" circles detected in frame C="+c+", Z="+z+", T="+t,verbose);
+                    writeMessage(circles.size()+" circles detected in frame C="+c+", Z="+z+", T="+t);
 
                 }
             }
@@ -164,7 +164,7 @@ public class HoughObjectDetection extends Module {
             }
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 
-            new AddObjectsOverlay().createOverlay(dispIpl,outputObjects,positionMode,null,hues,IDs,labelSize,1,verbose);
+            new AddObjectsOverlay().createOverlay(dispIpl,outputObjects,positionMode,null,hues,IDs,labelSize,1);
 
             dispIpl.show();
 

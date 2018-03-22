@@ -49,7 +49,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -115,7 +115,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -181,7 +181,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -248,7 +248,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -314,7 +314,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -378,7 +378,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -443,7 +443,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -509,7 +509,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -576,7 +576,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -643,7 +643,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -713,7 +713,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -783,7 +783,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -854,7 +854,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -925,7 +925,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -990,7 +990,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.FILL_HOLES_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1055,7 +1055,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.FILL_HOLES_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1121,7 +1121,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.FILL_HOLES_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1187,7 +1187,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.FILL_HOLES_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

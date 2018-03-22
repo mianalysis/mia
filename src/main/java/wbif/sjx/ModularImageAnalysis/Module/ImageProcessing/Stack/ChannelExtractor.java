@@ -27,10 +27,10 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Loading input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName+") into workspace");
+        writeMessage("Loading image ("+inputImageName+") into workspace");
         ImagePlus ipl = workspace.getImages().get(inputImageName).getImagePlus();
 
         // Getting parameters
@@ -38,12 +38,12 @@ public class ChannelExtractor extends Module {
         int channel = parameters.getValue(CHANNEL_TO_EXTRACT);
 
         // Getting selected channel
-        if (verbose) System.out.println("["+moduleName+"] Extracting channel "+channel);
+        writeMessage("Extracting channel "+channel);
         ipl = new Duplicator().run(ipl);
         ImagePlus outputChannelImagePlus = ChannelSplitter.split(ipl)[channel-1];
 
         // Adding image to workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
+        writeMessage("Adding image ("+outputImageName+") to workspace");
         workspace.addImage(new Image(outputImageName,outputChannelImagePlus));
 
         // (If selected) displaying the loaded image

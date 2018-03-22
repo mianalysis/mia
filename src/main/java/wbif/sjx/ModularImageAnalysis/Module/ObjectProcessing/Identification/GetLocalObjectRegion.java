@@ -91,7 +91,7 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -105,15 +105,15 @@ public class GetLocalObjectRegion extends Module {
         boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
         String measurementName = parameters.getValue(MEASUREMENT_NAME);
 
-        if (verbose) System.out.println("["+moduleName+"] Using local radius of "+radius+" px");
-        if (verbose) System.out.println("["+moduleName+"] Using local radius of "+radius+" ");
+        writeMessage("Using local radius of "+radius+" px");
+        writeMessage("Using local radius of "+radius+" ");
 
         // Getting local region
         ObjCollection outputObjects = getLocalRegions(inputObjects, outputObjectsName, radius, calibrated,useMeasurement,measurementName);
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
+        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
 
     }
 

@@ -21,12 +21,12 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    public void run(Workspace workspace) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         // Removing the relevant image from the workspace
-        if (verbose) System.out.println("["+moduleName+"] Removing image ("+inputImageName+") from workspace");
+        writeMessage("Removing image ("+inputImageName+") from workspace");
         workspace.removeImage(inputImageName);
 
     }

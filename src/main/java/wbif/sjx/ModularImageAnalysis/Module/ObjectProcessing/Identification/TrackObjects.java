@@ -180,7 +180,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -219,7 +219,7 @@ public class TrackObjects extends Module {
         int[] frameLimits = inputObjects.getTimepointLimits();
 
         for (int t2=frameLimits[0]+1;t2<=frameLimits[1];t2++) {
-            if (verbose) System.out.println("["+moduleName+"] Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
+            writeMessage("Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
 
             for (int t1 = t2-1;t1>=t2-1-maxMissingFrames;t1--) {
                 // Creating a pair of ArrayLists to store the current and previous objects

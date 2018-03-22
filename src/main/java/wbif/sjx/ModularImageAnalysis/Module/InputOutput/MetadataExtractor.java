@@ -66,7 +66,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting current result
         HCMetadata metadata = workspace.getMetadata();
 

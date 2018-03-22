@@ -58,7 +58,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -132,7 +132,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -205,7 +205,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -279,7 +279,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -353,7 +353,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -426,7 +426,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -503,7 +503,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -578,7 +578,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -656,7 +656,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -731,7 +731,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -809,7 +809,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -884,7 +884,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());

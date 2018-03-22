@@ -54,7 +54,7 @@ public class ShowObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         String conversionMode = parameters.getValue(CONVERSION_MODE);
 
         if (conversionMode.equals(ConversionModes.IMAGE_TO_OBJECTS)) {

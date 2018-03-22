@@ -93,17 +93,17 @@ public class BinaryOperations extends Module {
         }
     }
 
-    public static void applyDistanceMap3D(ImagePlus ipl) {
+    public static void applyDistanceMap3D(ImagePlus ipl, boolean normalise) {
         // Calculating the distance map using MorphoLibJ
         float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
 
         ImagePlus maskIpl = new Duplicator().run(ipl);
         IJ.run(maskIpl,"Invert","stack");
-        ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,false).getStack());
+        ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,normalise).getStack());
 
     }
 
-    public void applyWatershed3D(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity, boolean verbose) {
+    public void applyWatershed3D(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) {
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
@@ -134,7 +134,7 @@ public class BinaryOperations extends Module {
             //  Replacing the maskIpl intensity
             overwriteTimepoint(maskIpl,timepointMaskIpl,t);
 
-            writeMessage("Processed "+t+" of "+nFrames+" frames",verbose);
+            writeMessage("Processed "+t+" of "+nFrames+" frames");
 
         }
     }
@@ -198,7 +198,7 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -229,7 +229,7 @@ public class BinaryOperations extends Module {
                 break;
 
             case (OperationModes.DISTANCE_MAP_3D):
-                applyDistanceMap3D(inputImagePlus);
+                applyDistanceMap3D(inputImagePlus,false);
                 break;
 
             case (OperationModes.WATERSHED_3D):
@@ -240,7 +240,7 @@ public class BinaryOperations extends Module {
                 switch (intensityMode) {
                     case IntensityModes.DISTANCE:
                         intensityIpl = new Duplicator().run(inputImagePlus);
-                        applyDistanceMap3D(intensityIpl);
+                        applyDistanceMap3D(intensityIpl,false);
                         IJ.run(intensityIpl,"Invert","stack");
                         break;
 
@@ -250,7 +250,7 @@ public class BinaryOperations extends Module {
 
                 }
 
-                applyWatershed3D(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity,verbose);
+                applyWatershed3D(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity);
 
                 break;
 
@@ -265,7 +265,7 @@ public class BinaryOperations extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
+            writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 

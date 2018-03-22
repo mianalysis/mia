@@ -58,7 +58,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -124,7 +124,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -194,7 +194,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -260,7 +260,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -326,7 +326,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -392,7 +392,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -462,7 +462,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -532,7 +532,7 @@ public class FilterImageTest {
         new ImageJ();
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -620,7 +620,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -686,7 +686,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

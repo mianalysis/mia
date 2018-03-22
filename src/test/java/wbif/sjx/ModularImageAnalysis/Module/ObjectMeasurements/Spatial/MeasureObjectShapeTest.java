@@ -42,7 +42,7 @@ public class MeasureObjectShapeTest {
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,inputObjectsName);
 
         // Running IdentifyObjects
-        measureObjectShape.run(workspace,false);
+        measureObjectShape.run(workspace);
 
         // Checking the workspace contains a single object set
         assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());

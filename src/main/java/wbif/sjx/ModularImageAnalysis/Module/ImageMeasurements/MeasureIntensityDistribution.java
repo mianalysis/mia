@@ -190,7 +190,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String measurementType = parameters.getValue(MEASUREMENT_TYPE);
@@ -219,10 +219,7 @@ public class MeasureIntensityDistribution extends Module {
                             new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), Double.NaN));
                     inputImage.addMeasurement(
                             new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), Double.NaN));
-                    inputImage.addMeasurement(
-                            new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), Double.NaN));
-                    inputImage.addMeasurement(
-                            new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), Double.NaN));
+
                     return;
                 }
 
@@ -236,17 +233,13 @@ public class MeasureIntensityDistribution extends Module {
                         new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), css[0].getMean()));
                 inputImage.addMeasurement(
                         new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), css[1].getMean()));
-                inputImage.addMeasurement(
-                        new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), css[0].getSum()));
-                inputImage.addMeasurement(
-                        new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), css[1].getSum()));
 
-                if (verbose) System.out.println("[" + moduleName + "] Number of pixels inside range = " + css[0].getN());
-                if (verbose) System.out.println("[" + moduleName + "] Number of pixels outside range = " + css[1].getN());
-                if (verbose) System.out.println("[" + moduleName + "] Total intensity in range = " + css[0].getSum());
-                if (verbose) System.out.println("[" + moduleName + "] Total intensity outside range = " + css[1].getSum());
-                if (verbose) System.out.println("[" + moduleName + "] Mean intensity in range = " + css[0].getMean());
-                if (verbose) System.out.println("[" + moduleName + "] Mean intensity outside range = " + css[1].getMean());
+                writeMessage("Number of pixels inside range = " + css[0].getN());
+                writeMessage("Number of pixels outside range = " + css[1].getN());
+                writeMessage("Total intensity in range = " + css[0].getSum());
+                writeMessage("Total intensity outside range = " + css[1].getSum());
+                writeMessage("Mean intensity in range = " + css[0].getMean());
+                writeMessage("Mean intensity outside range = " + css[1].getMean());
 
                 break;
 
@@ -269,8 +262,7 @@ public class MeasureIntensityDistribution extends Module {
                 inputImage.addMeasurement(
                         new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), cs.getStd()));
 
-                if (verbose)
-                    System.out.println("[" + moduleName + "] Mean intensity proximity = " + cs.getMean() + " +/- "+cs.getStd());
+                writeMessage("Mean intensity proximity = " + cs.getMean() + " +/- "+cs.getStd());
 
                 break;
 

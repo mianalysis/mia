@@ -41,20 +41,6 @@ public abstract class Analysis implements Serializable {
      * @return
      */
     public boolean execute(Workspace workspace) throws GenericMIAException {
-
-        return execute(workspace,false);
-
-    }
-
-    /**
-     * The method that gets called by the BatchProcessor.  This shouldn't have any user interaction elements
-     * @param workspace Workspace containing stores for images and objects
-     * @param verbose Switch determining if modules should report progress to System.out
-     * @return
-     */
-    public boolean execute(Workspace workspace, boolean verbose) throws GenericMIAException {
-        if (verbose) System.out.println("Starting analysis");
-
         // Check that all available parameters have been set
         for (Module module:modules) {
             ParameterCollection activeParameters = module.updateAndGetParameters();
@@ -67,7 +53,7 @@ public abstract class Analysis implements Serializable {
         // Running through modules
         for (Module module:modules) {
             if (Thread.currentThread().isInterrupted()) break;
-            if (module.isEnabled()) module.execute(workspace,verbose);
+            if (module.isEnabled()) module.execute(workspace);
 
         }
 

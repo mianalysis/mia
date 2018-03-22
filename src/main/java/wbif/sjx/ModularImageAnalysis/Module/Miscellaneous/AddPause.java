@@ -24,12 +24,14 @@ public class AddPause extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         String[] options = {RESUME,TERMINATE};
         JOptionPane optionPane = new JOptionPane("Execution paused.  What would you like to do?",JOptionPane.QUESTION_MESSAGE,JOptionPane.OK_CANCEL_OPTION,null,options);
         JDialog dialog = optionPane.createDialog(null, "Execution paused");
         dialog.setModal(false);
         dialog.setVisible(true);
+
+        writeMessage("Execution paused");
 
         while (optionPane.getValue() == JOptionPane.UNINITIALIZED_VALUE) {
             try {

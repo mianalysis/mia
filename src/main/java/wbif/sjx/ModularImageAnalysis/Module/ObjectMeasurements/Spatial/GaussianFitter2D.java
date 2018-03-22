@@ -69,7 +69,7 @@ public class GaussianFitter2D extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -95,8 +95,7 @@ public class GaussianFitter2D extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-            if (verbose)
-                System.out.println("[" + moduleName + "] Fitting object " + (count + 1) + " of " + startingNumber);
+            writeMessage("Fitting object " + (count + 1) + " of " + startingNumber);
             count++;
 
             // Getting the centroid of the current object (should be single points anyway)
@@ -245,7 +244,7 @@ public class GaussianFitter2D extends Module {
             }
         }
 
-        if (verbose) System.out.println("["+moduleName+"] Fit "+inputObjects.size()+" objects");
+        writeMessage("Fit "+inputObjects.size()+" objects");
 
     }
 

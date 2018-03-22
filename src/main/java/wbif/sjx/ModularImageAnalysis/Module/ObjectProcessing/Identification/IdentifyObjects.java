@@ -36,7 +36,7 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -52,7 +52,7 @@ public class IdentifyObjects extends Module {
         inputImagePlus = new Duplicator().run(inputImagePlus);
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-            writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames(),verbose);
+            writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());
             // Creating a copy of the input image
             ImagePlus currStack = SubHyperstackMaker.makeSubhyperstack(
                     inputImagePlus,1+"-"+inputImagePlus.getNChannels(),1+"-"+inputImagePlus.getNSlices(),t+"-"+t);
@@ -88,10 +88,10 @@ public class IdentifyObjects extends Module {
             }
         }
 
-        writeMessage(outputObjects.size()+" objects detected",verbose);
+        writeMessage(outputObjects.size()+" objects detected");
 
         // Adding objects to workspace
-        writeMessage("Adding objects ("+outputObjectsName+") to workspace",verbose);
+        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
         // Showing objects

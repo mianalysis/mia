@@ -70,14 +70,14 @@ public class RelateObjects extends Module {
      * @param childObjects
      * @param linkingDistance
      */
-    public void proximity(ObjCollection parentObjects, ObjCollection childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame, boolean verbose) {
+    public void proximity(ObjCollection parentObjects, ObjCollection childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame) {
         String moduleName = RelateObjects.class.getSimpleName();
 
         int iter = 1;
         int numberOfChildren = childObjects.size();
 
         for (Obj childObject:childObjects.values()) {
-            writeMessage("Processing object "+(iter++)+" of "+numberOfChildren,verbose);
+            writeMessage("Processing object "+(iter++)+" of "+numberOfChildren);
 
             double minDist = Double.MAX_VALUE;
             Obj minLink = null;
@@ -265,7 +265,7 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
         ObjCollection parentObjects = workspace.getObjects().get(parentObjectName);
@@ -283,22 +283,22 @@ public class RelateObjects extends Module {
 
         switch (relateMode) {
             case RelateModes.MATCHING_IDS:
-                if (verbose) System.out.println("["+moduleName+"] Relating objects by matching ID numbers");
+                writeMessage("Relating objects by matching ID numbers");
                 linkMatchingIDs(parentObjects,childObjects);
                 break;
 
             case RelateModes.PROXIMITY:
-                if (verbose) System.out.println("["+moduleName+"] Relating objects by proximity");
-                proximity(parentObjects,childObjects,linkingDistance,referencePoint,linkInSameFrame,verbose);
+                writeMessage("Relating objects by proximity");
+                proximity(parentObjects,childObjects,linkingDistance,referencePoint,linkInSameFrame);
                 break;
 
             case RelateModes.PROXIMITY_TO_CHILDREN:
-                if (verbose) System.out.println("["+moduleName+"] Relating objects by proximity to children");
+                writeMessage("Relating objects by proximity to children");
                 proximityToChildren(parentObjects,childObjects,testChildObjectsName,linkingDistance);
                 break;
 
             case RelateModes.SPATIAL_OVERLAP:
-                if (verbose) System.out.println("["+moduleName+"] Relating objects by spatial overlap");
+                writeMessage("Relating objects by spatial overlap");
                 spatialLinking(parentObjects,childObjects);
                 break;
 

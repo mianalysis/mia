@@ -45,7 +45,7 @@ public class IdentifyObjectsTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace,false);
+        identifyObjects.run(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -96,7 +96,7 @@ public class IdentifyObjectsTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace,false);
+        identifyObjects.run(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -143,7 +143,7 @@ public class IdentifyObjectsTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,true);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace,false);
+        identifyObjects.run(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
