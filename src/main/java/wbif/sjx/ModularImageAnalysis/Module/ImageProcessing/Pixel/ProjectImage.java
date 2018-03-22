@@ -1,9 +1,17 @@
+// TODO: Seems to be a problem with hyperstack projection on all channels and timepoints
+
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.ZProjector;
+import net.imglib2.Cursor;
+import net.imglib2.img.Img;
+import net.imglib2.img.ImgFactory;
+import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
@@ -11,7 +19,7 @@ import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 /**
  * Created by sc13967 on 04/05/2017.
  */
-public class ProjectImage extends Module {
+public class ProjectImage < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String PROJECTION_MODE = "Projection mode";

@@ -475,7 +475,7 @@ public class Exporter {
                     }
                 }
 
-                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(exampleObjSetName);
+                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(exampleObjSetName);
 
                 // If the current object hasn't got any assigned measurements, skip it
                 if (objectMeasurementReferences == null) continue;
@@ -631,7 +631,7 @@ public class Exporter {
                 }
             }
 
-            MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(objSetName);
+            MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(objSetName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (objectMeasurementReferences == null) continue;
@@ -760,7 +760,7 @@ public class Exporter {
                 Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
                 timepointHeaderCell.setCellValue("TIMEPOINT");
 
-                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectReferences(objectName);
+                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(objectName);
 
                 // If the current object hasn't got any assigned measurements, skip it
                 if (objectMeasurementReferences == null) continue;

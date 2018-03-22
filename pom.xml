@@ -4,7 +4,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.3.4</version>
+    <version>0.4.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>https://github.com/SJCross/ModularImageAnalysis</url>
@@ -79,6 +79,12 @@
             <groupId>sc.fiji</groupId>
             <artifactId>Fiji_Plugins</artifactId>
             <version>3.1.1</version>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.scif</groupId>
+            <artifactId>scifio</artifactId>
+            <version>0.33.0</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
@@ -196,21 +202,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <!--<reporting>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-project-info-reports-plugin</artifactId>-->
-                <!--<version>2.9</version>-->
-                <!--<reportSets>-->
-                    <!--<reportSet>-->
-                        <!--<reports>-->
-                            <!--<report>dependencies</report>-->
-                        <!--</reports>-->
-                    <!--</reportSet>-->
-                <!--</reportSets>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
-    <!--</reporting>-->
 </project>
