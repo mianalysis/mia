@@ -147,7 +147,7 @@ public class ProjectImageTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunMaxZ4D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -211,7 +211,7 @@ public class ProjectImageTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunMaxZ5D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -403,7 +403,7 @@ public class ProjectImageTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunMinZ3D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -448,7 +448,7 @@ public class ProjectImageTest {
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -467,7 +467,7 @@ public class ProjectImageTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunAverageZ3D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -512,7 +512,7 @@ public class ProjectImageTest {
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -531,7 +531,7 @@ public class ProjectImageTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunMedianZ3D() throws Exception  {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -576,7 +576,7 @@ public class ProjectImageTest {
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -595,7 +595,7 @@ public class ProjectImageTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunStdevZ3D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -633,14 +633,14 @@ public class ProjectImageTest {
         ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
         assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
         assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        assertEquals(32,outputImage.getBitDepth());
 
         // Checking the size of the output image
         assertEquals(64,outputImage.getWidth());
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -659,7 +659,7 @@ public class ProjectImageTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunSumZ3D() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null);
@@ -697,14 +697,14 @@ public class ProjectImageTest {
         ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
         assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
         assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        assertEquals(32,outputImage.getBitDepth());
 
         // Checking the size of the output image
         assertEquals(64,outputImage.getWidth());
         assertEquals(76,outputImage.getHeight());
         assertEquals(1,outputImage.getNChannels());
         assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
+        assertEquals(4,outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {

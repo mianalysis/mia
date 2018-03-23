@@ -1,10 +1,10 @@
 clear
 
-pnameIn = 'C:\Users\sc13967\Documents\Java_Projects\ModularImageAnalysis\src\test\resources\images\RelateObjects\';
-fnameIn = 'ProxCubes2_3D_8bit.tif';
+pnameIn = 'C:\Users\sc13967\Documents\Java_Projects\ModularImageAnalysis\src\test\resources\images\';
+fnameIn = 'BinarySphere3D_8bit.tif';
 
 pnameOut = 'C:\Users\sc13967\Documents\Java_Projects\ModularImageAnalysis\src\test\resources\coordinates\';
-fnameOut = 'ExpectedProxCubes2.csv';
+fnameOut = 'ExpectedSphere3D.csv';
 
 for i = 1:numel(imfinfo([pnameIn,fnameIn]))
    im(:,:,i) = imread([pnameIn,fnameIn],i);    

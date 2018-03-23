@@ -40,36 +40,32 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     public Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
-        ZProjector zProjector = new ZProjector(inputImage.getImagePlus());
-
+        ImagePlus iplOut = null;
         switch (projectionMode) {
             case ProjectionModes.AVERAGE:
-                zProjector.setMethod(ZProjector.AVG_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"avg all");
                 break;
 
             case ProjectionModes.MIN:
-                zProjector.setMethod(ZProjector.MIN_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"min all");
                 break;
 
             case ProjectionModes.MEDIAN:
-                zProjector.setMethod(ZProjector.MEDIAN_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"median all");
                 break;
 
             case ProjectionModes.MAX:
-                zProjector.setMethod(ZProjector.MAX_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"max all");
                 break;
 
             case ProjectionModes.STDEV:
-                zProjector.setMethod(ZProjector.SD_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"sd all");
                 break;
 
             case ProjectionModes.SUM:
-                zProjector.setMethod(ZProjector.SUM_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"sum all");
                 break;
         }
-
-        zProjector.doProjection();
-        ImagePlus iplOut = zProjector.getProjection();
 
         // Setting spatial calibration
         Calibration calibrationIn = inputImage.getImagePlus().getCalibration();

@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * Created by sc13967 on 15/05/2017.
  */
-public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Module {
+public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String IMPORT_MODE = "Import mode";
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";

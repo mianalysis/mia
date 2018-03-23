@@ -40,7 +40,39 @@ public class ImageCalculator extends Module {
 
     }
 
-    public void process(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2, String calculationMethod,
+    private void removeNaNs(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2) {
+        int width = inputImagePlus1.getWidth();
+        int height = inputImagePlus1.getHeight();
+        int nChannels = inputImagePlus1.getNChannels();
+        int nSlices = inputImagePlus1.getNSlices();
+        int nFrames = inputImagePlus1.getNFrames();
+
+        for (int z = 1; z <= nSlices; z++) {
+            for (int c = 1; c <= nChannels; c++) {
+                for (int t = 1; t <= nFrames; t++) {
+                    inputImagePlus1.setPosition(c,z,t);
+                    ImageProcessor imageProcessor1 = inputImagePlus1.getProcessor();
+
+                    inputImagePlus2.setPosition(c,z,t);
+                    ImageProcessor imageProcessor2 = inputImagePlus2.getProcessor();
+
+                    for (int x=0;x<width;x++) {
+                        for (int y = 0; y < height; y++) {
+                            if (Float.isNaN(imageProcessor1.getf(x, y))) {
+                                imageProcessor1.set(x,y,0);
+                            }
+
+                            if (Float.isNaN(imageProcessor2.getf(x, y))) {
+                                imageProcessor2.set(x,y,0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public ImagePlus process(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2, String calculationMethod,
                         String overwriteMode, boolean output32Bit, boolean setNaNToZero) {
         // If applying to a new image, the input image is duplicated
         switch (overwriteMode) {
@@ -71,29 +103,7 @@ public class ImageCalculator extends Module {
 
         // If necessary, converting NaN values to zero
         if (setNaNToZero && (inputImagePlus1.getBitDepth() == 32 || inputImagePlus2.getBitDepth() == 32)) {
-            for (int z = 1; z <= nSlices; z++) {
-                for (int c = 1; c <= nChannels; c++) {
-                    for (int t = 1; t <= nFrames; t++) {
-                        inputImagePlus1.setPosition(c,z,t);
-                        ImageProcessor imageProcessor1 = inputImagePlus1.getProcessor();
-
-                        inputImagePlus2.setPosition(c,z,t);
-                        ImageProcessor imageProcessor2 = inputImagePlus2.getProcessor();
-
-                        for (int x=0;x<width;x++) {
-                            for (int y = 0; y < height; y++) {
-                                if (Float.isNaN(imageProcessor1.getf(x, y))) {
-                                    imageProcessor1.set(x,y,0);
-                                }
-
-                                if (Float.isNaN(imageProcessor2.getf(x, y))) {
-                                    imageProcessor2.set(x,y,0);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            removeNaNs(inputImagePlus1,inputImagePlus2);
         }
 
         // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
@@ -163,6 +173,18 @@ public class ImageCalculator extends Module {
         inputImagePlus1.setPosition(1,1,1);
         inputImagePlus2.setPosition(1,1,1);
 
+        // If the image is being saved as a new image, adding it to the workspace
+        switch (overwriteMode) {
+            case OverwriteModes.CREATE_NEW:
+                return inputImagePlus1;
+
+            case OverwriteModes.OVERWRITE_IMAGE1:
+            case OverwriteModes.OVERWRITE_IMAGE2:
+                return null;
+        }
+
+        return null;
+
     }
 
     @Override
@@ -194,14 +216,14 @@ public class ImageCalculator extends Module {
         boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
-        process(inputImagePlus1,inputImagePlus2,calculationMethod,overwriteMode,output32Bit,setNaNToZero);
+        ImagePlus newIpl = process(inputImagePlus1,inputImagePlus2,calculationMethod,overwriteMode,output32Bit,setNaNToZero);
 
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
-                Image outputImage = new Image(outputImageName,inputImagePlus1);
+                Image outputImage = new Image(outputImageName,newIpl);
                 workspace.addImage(outputImage);
-                if (showImage) new Duplicator().run(inputImagePlus1).show();
+                if (showImage) new Duplicator().run(newIpl).show();
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE1:

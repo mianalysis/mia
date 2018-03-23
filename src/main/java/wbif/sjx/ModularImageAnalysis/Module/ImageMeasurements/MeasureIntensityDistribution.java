@@ -1,14 +1,16 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
+import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -81,21 +83,19 @@ public class MeasureIntensityDistribution extends Module {
         ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());
 
         // Inverting the mask intensity
-        for (int z = 1; z <= maskIpl.getNSlices(); z++) {
-            for (int c = 1; c <= maskIpl.getNChannels(); c++) {
-                for (int t = 1; t <= maskIpl.getNFrames(); t++) {
-                    maskIpl.setPosition(c, z, t);
-                    maskIpl.getProcessor().invert();
-                }
-            }
-        }
-        maskIpl.setPosition(1,1,1);
+        InvertIntensity.process(maskIpl);
 
+        // Calculaing the distance map
         float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
         ImagePlus distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
 
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
+        return measureIntensityFractions(inputImagePlus,distIpl,ignoreOnObjects,proximalDistance);
+
+    }
+
+    private static CumStat[] measureIntensityFractions(ImagePlus inputImagePlus, ImagePlus distIpl, boolean ignoreOnObjects, double proximalDistance) {
         CumStat[] cs = new CumStat[2];
         cs[0] = new CumStat();
         cs[1] = new CumStat();
@@ -131,7 +131,6 @@ public class MeasureIntensityDistribution extends Module {
         inputImagePlus.setPosition(1, 1, 1);
 
         return cs;
-
     }
 
     public static CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, String edgeMode) {
@@ -141,45 +140,38 @@ public class MeasureIntensityDistribution extends Module {
         HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
         Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.SINGLE_COLOUR, hues, true);
 
-        // Calculating a 3D distance map for the binary image
-        ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());
-
-        // Inverting the mask intensity
-        for (int z = 1; z <= maskIpl.getNSlices(); z++) {
-            for (int c = 1; c <= maskIpl.getNChannels(); c++) {
-                for (int t = 1; t <= maskIpl.getNFrames(); t++) {
-                    maskIpl.setPosition(c, z, t);
-                    maskIpl.getProcessor().invert();
-                }
-            }
-        }
-        maskIpl.setPosition(1,1,1);
-
-        float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
-
         ImagePlus distIpl = null;
         switch (edgeMode) {
             case EdgeDistanceModes.INSIDE_AND_OUTSIDE:
-                ImagePlus dist1 = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+                ImagePlus dist1 = new Duplicator().run(objectsImage.getImagePlus());
+                distIpl = new Duplicator().run(objectsImage.getImagePlus());
+                BinaryOperations.applyDistanceMap3D(dist1,true);
                 InvertIntensity.process(objectsImage.getImagePlus());
-                distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+                BinaryOperations.applyDistanceMap3D(distIpl,true);
 
                 new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
 
                 break;
 
             case EdgeDistanceModes.INSIDE_ONLY:
-                InvertIntensity.process(objectsImage.getImagePlus());
-                distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+                distIpl = new Duplicator().run(objectsImage.getImagePlus());
+                BinaryOperations.applyDistanceMap3D(distIpl,true);
                 break;
 
             case EdgeDistanceModes.OUTSIDE_ONLY:
-                distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+                InvertIntensity.process(objectsImage.getImagePlus());
+                distIpl = new Duplicator().run(objectsImage.getImagePlus());
+                BinaryOperations.applyDistanceMap3D(distIpl,true);
                 break;
         }
 
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
+        return measureWeightedDistance(inputImagePlus,distIpl);
+
+    }
+
+    private static CumStat measureWeightedDistance(ImagePlus inputImagePlus, ImagePlus distIpl) {
         CumStat cs = new CumStat();
 
         for (int z = 0; z < distIpl.getNSlices(); z++) {
@@ -210,6 +202,7 @@ public class MeasureIntensityDistribution extends Module {
         inputImagePlus.setPosition(1, 1, 1);
 
         return cs;
+
     }
 
     @Override

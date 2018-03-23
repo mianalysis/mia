@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class ExpectedCircles2D extends ExpectedObjects {
+public class ExpectedRings2D extends ExpectedObjects {
     public enum Measures { EXP_MEAN_CURVATURE,EXP_MIN_CURVATURE, EXP_MAX_CURVATURE, EXP_STD_CURVATURE,
         EXP_SPLINE_LENGTH_PX, EXP_SPLINE_LENGTH_CAL, EXP_FIRST_POINT_X_PX, EXP_FIRST_POINT_Y_PX,
         EXP_REL_LOC_OF_MIN_CURVATURE, EXP_REL_LOC_OF_MAX_CURVATURE

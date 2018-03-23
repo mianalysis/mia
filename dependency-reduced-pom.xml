@@ -142,7 +142,7 @@
     <dependency>
       <groupId>net.imagej</groupId>
       <artifactId>ij</artifactId>
-      <version>1.51h</version>
+      <version>1.51q</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -294,6 +294,50 @@
       <artifactId>CorrectBleach_</artifactId>
       <version>2.0.2</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>sc.fiji</groupId>
+      <artifactId>Trainable_Segmentation</artifactId>
+      <version>3.2.9</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>Anisotropic_Diffusion_2D</artifactId>
+          <groupId>sc.fiji</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>VIB-lib</artifactId>
+          <groupId>sc.fiji</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>weka-dev</artifactId>
+          <groupId>nz.ac.waikato.cms.weka</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imagescience</artifactId>
+          <groupId>sc.fiji</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2-ij</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2-algorithm-gpl</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>vecmath</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>fiji-lib</artifactId>
+          <groupId>sc.fiji</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>fr.inra.ijpb</groupId>
