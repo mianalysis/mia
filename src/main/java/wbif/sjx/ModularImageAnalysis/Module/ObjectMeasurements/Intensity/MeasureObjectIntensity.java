@@ -49,12 +49,7 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
-    public interface EdgeDistanceModes {
-        String INSIDE_AND_OUTSIDE = "Inside and outside";
-        String INSIDE_ONLY = "Inside only";
-        String OUTSIDE_ONLY = "Outside only";
-
-        String[] ALL = new String[]{INSIDE_AND_OUTSIDE,INSIDE_ONLY,OUTSIDE_ONLY};
+    public interface EdgeDistanceModes extends MeasureIntensityDistribution.EdgeDistanceModes {
 
     }
 
@@ -130,61 +125,14 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
-    private void measureWeightedEdgeDistance(Obj object, ImagePlus ipl) {
+    private void measureWeightedEdgeDistance(Obj object, Image image) {
         // Getting parameters
         String imageName = parameters.getValue(INPUT_IMAGE);
         String edgeDistanceMode = parameters.getValue(EDGE_DISTANCE_MODE);
 
-        // Duplicating the input image, so it isn't altered
-        ImagePlus intensityIpl = new Duplicator().run(ipl);
-
-        // Getting a binary mask of the object
-        ImagePlus distIpl = object.getAsImage("Binary").getImagePlus();
-        InvertIntensity.process(distIpl);
-
-        // If only the inside or outside intensity is to be considered, making a copy of the binary mask
-        ImagePlus binIpl = null;
-        if (edgeDistanceMode.equals(EdgeDistanceModes.INSIDE_ONLY) || edgeDistanceMode.equals(EdgeDistanceModes.OUTSIDE_ONLY)) {
-            binIpl = new Duplicator().run(distIpl);
-        }
-        binIpl.show();
-
-        // Calculating the distance map
-        BinaryOperations.applyDistanceMap3D(distIpl,true);
-
-        CumStat cs = new CumStat();
-
-        for (int z = 0; z < distIpl.getNSlices(); z++) {
-            for (int c = 0; c < distIpl.getNChannels(); c++) {
-                for (int t = 0; t < distIpl.getNFrames(); t++) {
-                    distIpl.setPosition(c+1, z+1, t+1);
-                    intensityIpl.setPosition(c+1, z+1, t+1);
-
-                    float[][] distVals = distIpl.getProcessor().getFloatArray();
-                    float[][] inputVals = intensityIpl.getProcessor().getFloatArray();
-
-                    for (int x=0;x<distVals.length;x++) {
-                        for (int y=0;y<distVals[0].length;y++) {
-                            float dist = distVals[x][y];
-                            float val = inputVals[x][y];
-
-                            if (edgeDistanceMode.equals(EdgeDistanceModes.INSIDE_ONLY)) {
-                                binIpl.setPosition(c+1, z+1, t+1);
-                                if (binIpl.getProcessor().getPixel(x,y) == 255) continue;
-                            }
-
-                            if (edgeDistanceMode.equals(EdgeDistanceModes.OUTSIDE_ONLY)) {
-                                binIpl.setPosition(c+1, z+1, t+1);
-                                if (binIpl.getProcessor().getPixel(x,y) == 0) continue;
-                            }
-
-                            cs.addMeasure(dist,val);
-
-                        }
-                    }
-                }
-            }
-        }
+        ObjCollection collection = new ObjCollection(object.getName());
+        collection.add(object);
+        CumStat cs = MeasureIntensityDistribution.measureIntensityWeightedProximity(collection,image,edgeDistanceMode);
 
         object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_PX), cs.getMean()));
         object.addMeasurement(new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_PX), cs.getStd()));
@@ -223,7 +171,7 @@ public class MeasureObjectIntensity extends Module {
 
         // If specified, measuring weighted distance to the object edge
         if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
-            for (Obj object:objects.values()) measureWeightedEdgeDistance(object,ipl);
+            for (Obj object:objects.values()) measureWeightedEdgeDistance(object,image);
         }
     }
 

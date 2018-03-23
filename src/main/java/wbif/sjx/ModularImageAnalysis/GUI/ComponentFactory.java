@@ -159,6 +159,7 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         ModuleEnabledCheck enabledCheck = new ModuleEnabledCheck(gui,module);
+        enabledCheck.setEnabled(true);
         modulePanel.add(enabledCheck,c);
 
         // Adding the main module button

@@ -73,7 +73,7 @@
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>ij</artifactId>
-            <version>1.51h</version>
+            <version>1.51q</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>

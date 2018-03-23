@@ -5,7 +5,10 @@ import ij.plugin.Duplicator;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -23,6 +26,7 @@ public class MeasureIntensityDistribution extends Module {
     public static final String PROXIMAL_DISTANCE = "Proximal distance";
     public static final String SPATIAL_UNITS = "Spatial units";
     public static final String IGNORE_ON_OBJECTS = "Ignore values on objects";
+    public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
 
     public interface MeasurementTypes {
         String FRACTION_PROXIMAL_TO_OBJECTS = "Fraction proximal to objects";
@@ -37,6 +41,15 @@ public class MeasureIntensityDistribution extends Module {
         String PIXELS = "Pixel";
 
         String[] ALL = new String[]{CALIBRATED,PIXELS};
+
+    }
+
+    public interface EdgeDistanceModes {
+        String INSIDE_AND_OUTSIDE = "Inside and outside";
+        String INSIDE_ONLY = "Inside only";
+        String OUTSIDE_ONLY = "Outside only";
+
+        String[] ALL = new String[]{INSIDE_AND_OUTSIDE,INSIDE_ONLY,OUTSIDE_ONLY};
 
     }
 
@@ -121,7 +134,7 @@ public class MeasureIntensityDistribution extends Module {
 
     }
 
-    public CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, boolean ignoreOnObjects) {
+    public static CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, String edgeMode) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
@@ -143,7 +156,27 @@ public class MeasureIntensityDistribution extends Module {
         maskIpl.setPosition(1,1,1);
 
         float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
-        ImagePlus distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+
+        ImagePlus distIpl = null;
+        switch (edgeMode) {
+            case EdgeDistanceModes.INSIDE_AND_OUTSIDE:
+                ImagePlus dist1 = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+                InvertIntensity.process(objectsImage.getImagePlus());
+                distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+
+                new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
+
+                break;
+
+            case EdgeDistanceModes.INSIDE_ONLY:
+                InvertIntensity.process(objectsImage.getImagePlus());
+                distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+                break;
+
+            case EdgeDistanceModes.OUTSIDE_ONLY:
+                distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+                break;
+        }
 
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
@@ -163,7 +196,7 @@ public class MeasureIntensityDistribution extends Module {
                             float dist = distVals[x][y];
                             float val = inputVals[x][y];
 
-                            if (ignoreOnObjects && dist == 0) continue;
+                            if (dist == 0) continue;
 
                             cs.addMeasure(dist,val);
 
@@ -198,6 +231,7 @@ public class MeasureIntensityDistribution extends Module {
         double proximalDistance = parameters.getValue(PROXIMAL_DISTANCE);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS);
         boolean ignoreOnObjects = parameters.getValue(IGNORE_ON_OBJECTS);
+        String edgeDistanceMode = parameters.getValue(EDGE_DISTANCE_MODE);
 
         Image inputImage = workspace.getImages().get(inputImageName);
 
@@ -255,7 +289,7 @@ public class MeasureIntensityDistribution extends Module {
                     return;
                 }
 
-                CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage, ignoreOnObjects);
+                CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage, edgeDistanceMode);
 
                 inputImage.addMeasurement(
                         new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), cs.getMean()));
@@ -277,7 +311,7 @@ public class MeasureIntensityDistribution extends Module {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(PROXIMAL_DISTANCE, Parameter.DOUBLE,2d));
         parameters.add(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
-        parameters.add(new Parameter(IGNORE_ON_OBJECTS, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(EDGE_DISTANCE_MODE,Parameter.CHOICE_ARRAY, EdgeDistanceModes.INSIDE_AND_OUTSIDE, EdgeDistanceModes.ALL));
 
     }
 
@@ -307,17 +341,17 @@ public class MeasureIntensityDistribution extends Module {
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
                 returnedParameters.add(parameters.getParameter(PROXIMAL_DISTANCE));
                 returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+                returnedParameters.add(parameters.getParameter(IGNORE_ON_OBJECTS));
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(EDGE_DISTANCE_MODE));
 
                 break;
 
         }
-
-        returnedParameters.add(parameters.getParameter(IGNORE_ON_OBJECTS));
 
         return returnedParameters;
 
@@ -325,7 +359,6 @@ public class MeasureIntensityDistribution extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        String imageName = parameters.getValue(INPUT_IMAGE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         MeasurementReference nPxInrange = imageMeasurementReferences.get(Measurements.N_PX_INRANGE);

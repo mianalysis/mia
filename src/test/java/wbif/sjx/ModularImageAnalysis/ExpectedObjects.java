@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis;
 
-import util.opencsv.CSVReader;
+//import util.opencsv.CSVReader;
 import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -62,25 +62,25 @@ public abstract class ExpectedObjects {
     protected List<Integer[]> getCoordinates3D(String path) {
         try {
             String pathToCoordinates = URLDecoder.decode(this.getClass().getResource(path).getPath(),"UTF-8");
-
-            BufferedReader reader = new BufferedReader(new FileReader(pathToCoordinates));
-            CSVReader csvReader = new CSVReader(reader);
-
-            List<Integer[]> coords = new ArrayList<>();
-
-            String[] coord = csvReader.readNext();
-            while (coord != null) {
-                Integer[] thisCoord = new Integer[coord.length];
-
-                for (int j=0;j<coord.length;j++) {
-                    thisCoord[j] = Integer.parseInt(coord[j]);
-                }
-
-                coords.add(thisCoord);
-                coord = csvReader.readNext();
-            }
-
-            return coords;
+return null;
+//            BufferedReader reader = new BufferedReader(new FileReader(pathToCoordinates));
+//            CSVReader csvReader = new CSVReader(reader);
+//
+//            List<Integer[]> coords = new ArrayList<>();
+//
+//            String[] coord = csvReader.readNext();
+//            while (coord != null) {
+//                Integer[] thisCoord = new Integer[coord.length];
+//
+//                for (int j=0;j<coord.length;j++) {
+//                    thisCoord[j] = Integer.parseInt(coord[j]);
+//                }
+//
+//                coords.add(thisCoord);
+//                coord = csvReader.readNext();
+//            }
+//
+//            return coords;
 
         } catch (IOException e) {
             e.printStackTrace(System.err);

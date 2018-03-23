@@ -56,11 +56,11 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.6" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: net.imagej:ij:1.51h" level="project" />
+    <orderEntry type="library" name="Maven: net.imagej:ij:1.51q" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:1.4.2">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_161/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -181,7 +181,7 @@
     <orderEntry type="module-library">
       <library name="Maven: jdk.tools:jdk.tools:1.6">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_161/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

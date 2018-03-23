@@ -23,6 +23,8 @@ public class GaussianFitter2D extends Module {
     public static final String RADIUS = "Radius";
     public static final String RADIUS_MEASUREMENT = "Radius measurement";
     public static final String MEASUREMENT_MULTIPLIER = "Measurement multiplier";
+    public static final String FIXED_FITTING_WINDOW = "Fixed fitting window";
+    public static final String WINDOW_SIZE = "Window size";
     public static final String MAX_EVALUATIONS = "Maximum number of evaluations";
     public static final String REMOVE_UNFIT = "Remove objects with failed fitting";
     public static final String APPLY_VOLUME = "Apply volume";
@@ -85,6 +87,8 @@ public class GaussianFitter2D extends Module {
 
         // Getting parameters
         String radiusMode = parameters.getValue(RADIUS_MODE);
+        boolean fixedFittingWindow = parameters.getValue(FIXED_FITTING_WINDOW);
+        int windowWidth = parameters.getValue(WINDOW_SIZE);
         int maxEvaluations = parameters.getValue(MAX_EVALUATIONS);
         boolean removeUnfit = parameters.getValue(REMOVE_UNFIT);
         boolean applyVolume = parameters.getValue(APPLY_VOLUME);
@@ -140,12 +144,16 @@ public class GaussianFitter2D extends Module {
                     {0, 2 * Math.PI}
             };
 
+            // Ensuring the window width is odd, then getting the half width
+            if (windowWidth%2!=0) windowWidth--;
+            int halfW = fixedFittingWindow ? windowWidth/2 : r;
+
             // Getting the local image region
-            if (x - r > 0 & x + r + 1 < inputImagePlus.getWidth() & y - r > 0 & y + r + 1 < inputImagePlus.getHeight()) {
+            if (x - halfW > 0 & x + halfW + 1 < inputImagePlus.getWidth() & y - halfW > 0 & y + halfW + 1 < inputImagePlus.getHeight()) {
                 inputImagePlus.setPosition(1, z + 1, t + 1);
                 ImageProcessor ipr = inputImagePlus.getProcessor();
-                int[] xx = new int[]{x - r, x - r, x + r + 1, x + r + 1, x - r};
-                int[] yy = new int[]{y - r, y + r + 1, y + r + 1, y - r, y - r};
+                int[] xx = new int[]{x - halfW, x - halfW, x + halfW + 1, x + halfW + 1, x - halfW};
+                int[] yy = new int[]{y - halfW, y + halfW + 1, y + halfW + 1, y - halfW, y - halfW};
                 Roi roi = new PolygonRoi(xx, yy, 5, Roi.POLYGON);
                 ipr.setRoi(roi);
                 ImageProcessor iprCrop = ipr.crop();
@@ -256,6 +264,8 @@ public class GaussianFitter2D extends Module {
         parameters.add(new Parameter(RADIUS, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(RADIUS_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null));
         parameters.add(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(FIXED_FITTING_WINDOW,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(WINDOW_SIZE,Parameter.INTEGER,15));
         parameters.add(new Parameter(MAX_EVALUATIONS, Parameter.INTEGER,1000));
         parameters.add(new Parameter(REMOVE_UNFIT, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(APPLY_VOLUME,Parameter.BOOLEAN,true));
@@ -299,6 +309,11 @@ public class GaussianFitter2D extends Module {
             parameters.updateValueSource(RADIUS_MEASUREMENT,inputObjectsName);
             returnedParameters.add(parameters.getParameter(MEASUREMENT_MULTIPLIER));
 
+        }
+
+        returnedParameters.add(parameters.getParameter(FIXED_FITTING_WINDOW));
+        if (parameters.getValue(FIXED_FITTING_WINDOW)) {
+            returnedParameters.add(parameters.getParameter(WINDOW_SIZE));
         }
 
         returnedParameters.add(parameters.getParameter(MAX_EVALUATIONS));

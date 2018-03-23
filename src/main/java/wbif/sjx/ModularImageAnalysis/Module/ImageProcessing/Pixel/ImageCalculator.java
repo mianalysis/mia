@@ -40,35 +40,8 @@ public class ImageCalculator extends Module {
 
     }
 
-    @Override
-    public String getTitle() {
-        return "Image calculator";
-    }
-
-    @Override
-    public String getHelp() {
-        return null;
-    }
-
-    @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
-        // Getting input images
-        String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
-        Image inputImage1 = workspace.getImages().get(inputImageName1);
-        ImagePlus inputImagePlus1 = inputImage1.getImagePlus();
-
-        String inputImageName2 = parameters.getValue(INPUT_IMAGE2);
-        Image inputImage2 = workspace.getImages().get(inputImageName2);
-        ImagePlus inputImagePlus2 = inputImage2.getImagePlus();
-
-        // Getting parameters
-        String overwriteMode = parameters.getValue(OVERWRITE_MODE);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean output32Bit = parameters.getValue(OUTPUT_32BIT);
-        String calculationMethod = parameters.getValue(CALCULATION_METHOD);
-        boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
-
+    public void process(ImagePlus inputImagePlus1, ImagePlus inputImagePlus2, String calculationMethod,
+                        String overwriteMode, boolean output32Bit, boolean setNaNToZero) {
         // If applying to a new image, the input image is duplicated
         switch (overwriteMode) {
             case OverwriteModes.CREATE_NEW:
@@ -145,16 +118,16 @@ public class ImageCalculator extends Module {
                                     break;
 
                                 case CalculationMethods.DIVIDE:
-                                        if (output32Bit) {
-                                            val = imageProcessor1.getPixelValue(x, y) / imageProcessor2.getPixelValue(x, y);
+                                    if (output32Bit) {
+                                        val = imageProcessor1.getPixelValue(x, y) / imageProcessor2.getPixelValue(x, y);
+                                    } else {
+                                        if (imageProcessor2.getPixelValue(x, y) == 0) {
+                                            val = Math.pow(2, imageProcessor1.getBitDepth()) - 1;
                                         } else {
-                                            if (imageProcessor2.getPixelValue(x, y) == 0) {
-                                                val = Math.pow(2, imageProcessor1.getBitDepth()) - 1;
-                                            } else {
-                                                // Using "floor" to maintain consistency with ImageJ's calculator
-                                                val = Math.floor(imageProcessor1.getPixelValue(x, y) / imageProcessor2.getPixelValue(x, y));
-                                            }
+                                            // Using "floor" to maintain consistency with ImageJ's calculator
+                                            val = Math.floor(imageProcessor1.getPixelValue(x, y) / imageProcessor2.getPixelValue(x, y));
                                         }
+                                    }
                                     break;
 
                                 case CalculationMethods.MULTIPLY:
@@ -189,6 +162,39 @@ public class ImageCalculator extends Module {
 
         inputImagePlus1.setPosition(1,1,1);
         inputImagePlus2.setPosition(1,1,1);
+
+    }
+
+    @Override
+    public String getTitle() {
+        return "Image calculator";
+    }
+
+    @Override
+    public String getHelp() {
+        return null;
+    }
+
+    @Override
+    protected void run(Workspace workspace) throws GenericMIAException {
+        // Getting input images
+        String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
+        Image inputImage1 = workspace.getImages().get(inputImageName1);
+        ImagePlus inputImagePlus1 = inputImage1.getImagePlus();
+
+        String inputImageName2 = parameters.getValue(INPUT_IMAGE2);
+        Image inputImage2 = workspace.getImages().get(inputImageName2);
+        ImagePlus inputImagePlus2 = inputImage2.getImagePlus();
+
+        // Getting parameters
+        String overwriteMode = parameters.getValue(OVERWRITE_MODE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        boolean output32Bit = parameters.getValue(OUTPUT_32BIT);
+        String calculationMethod = parameters.getValue(CALCULATION_METHOD);
+        boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
+        boolean showImage = parameters.getValue(SHOW_IMAGE);
+
+        process(inputImagePlus1,inputImagePlus2,calculationMethod,overwriteMode,output32Bit,setNaNToZero);
 
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
