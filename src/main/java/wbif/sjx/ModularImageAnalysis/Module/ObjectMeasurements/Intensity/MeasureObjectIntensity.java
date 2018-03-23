@@ -49,9 +49,7 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
-    public interface EdgeDistanceModes extends MeasureIntensityDistribution.EdgeDistanceModes {
-
-    }
+    public interface EdgeDistanceModes extends MeasureIntensityDistribution.EdgeDistanceModes {}
 
 
     public static String getFullName(String imageName, String measurement) {

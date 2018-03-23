@@ -78,16 +78,9 @@ public class MeasureIntensityDistribution extends Module {
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
         Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.SINGLE_COLOUR, hues, true);
-
-        // Calculating a 3D distance map for the binary image
-        ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());
-
-        // Inverting the mask intensity
-        InvertIntensity.process(maskIpl);
-
+        
         // Calculaing the distance map
-        float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
-        ImagePlus distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+        ImagePlus distIpl = BinaryOperations.applyDistanceMap3D(objectsImage.getImagePlus(),true,true);
 
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
@@ -145,9 +138,9 @@ public class MeasureIntensityDistribution extends Module {
             case EdgeDistanceModes.INSIDE_AND_OUTSIDE:
                 ImagePlus dist1 = new Duplicator().run(objectsImage.getImagePlus());
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
-                BinaryOperations.applyDistanceMap3D(dist1,true);
+                dist1 = BinaryOperations.applyDistanceMap3D(dist1,true,true);
                 InvertIntensity.process(objectsImage.getImagePlus());
-                BinaryOperations.applyDistanceMap3D(distIpl,true);
+                distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true,true);
 
                 new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
 
@@ -155,13 +148,13 @@ public class MeasureIntensityDistribution extends Module {
 
             case EdgeDistanceModes.INSIDE_ONLY:
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
-                BinaryOperations.applyDistanceMap3D(distIpl,true);
+                distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true,true);
                 break;
 
             case EdgeDistanceModes.OUTSIDE_ONLY:
                 InvertIntensity.process(objectsImage.getImagePlus());
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
-                BinaryOperations.applyDistanceMap3D(distIpl,true);
+                distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true,true);
                 break;
         }
 
