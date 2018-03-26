@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.process.ImageConverter;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -19,20 +20,8 @@ public class InvertIntensity extends Module {
     public static final String SHOW_IMAGE = "Show image";
 
     public static void process(ImagePlus inputImagePlus) {
-//        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-//            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-//                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-//                    inputImagePlus.setPosition(c, z, t);
-//                    inputImagePlus.getProcessor().invert();
-//                }
-//            }
-//        }
-//        inputImagePlus.setPosition(1,1,1);
-        new ImageJ();
-        new Duplicator().run(inputImagePlus).show();
         IJ.run(inputImagePlus,"Invert","stack");
-        new Duplicator().run(inputImagePlus).show();
-        IJ.runMacro("waitForUser");
+
     }
 
     @Override

@@ -4,6 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import fiji.threshold.Auto_Local_Threshold;
 import fiji.threshold.Auto_Threshold;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -215,17 +216,7 @@ public class ThresholdImage extends Module {
 
         }
 
-        if (whiteBackground) {
-            for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-                for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                    for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                        inputImagePlus.setPosition(c, z, t);
-                        inputImagePlus.getProcessor().invert();
-                    }
-                }
-            }
-            inputImagePlus.setPosition(1,1,1);
-        }
+        if (whiteBackground) IJ.run(inputImagePlus, "Invert", "stack");
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {

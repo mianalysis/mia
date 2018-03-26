@@ -22,11 +22,10 @@ public class ImageMath extends Module {
     public interface CalculationTypes {
         String ADD = "Add";
         String DIVIDE = "Divide";
-        String INVERT = "Invert";
         String MULTIPLY = "Multiply";
         String SUBTRACT = "Subtract";
 
-        String[] ALL = new String[]{ADD,DIVIDE,INVERT,MULTIPLY,SUBTRACT};
+        String[] ALL = new String[]{ADD,DIVIDE,MULTIPLY,SUBTRACT};
 
     }
 
@@ -67,55 +66,46 @@ public class ImageMath extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        if (calculationType.equals(CalculationTypes.INVERT)) {
-            InvertIntensity.process(inputImagePlus);
-        } else {
+        // Updating value if taken from a measurement
+        switch (valueSource) {
+            case ValueSources.MEASUREMENT:
+                mathValue = inputImage.getMeasurement(measurement).getValue();
+                break;
+        }
 
-            // Updating value if taken from a measurement
-            switch (valueSource) {
-                case ValueSources.MEASUREMENT:
-                    mathValue = inputImage.getMeasurement(measurement).getValue();
-                    break;
-            }
+        int nChannels = inputImagePlus.getNChannels();
+        int nSlices = inputImagePlus.getNSlices();
+        int nFrames = inputImagePlus.getNFrames();
 
-            int nChannels = inputImagePlus.getNChannels();
-            int nSlices = inputImagePlus.getNSlices();
-            int nFrames = inputImagePlus.getNFrames();
+        // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
+        for (int z = 1; z <= nSlices; z++) {
+            for (int c = 1; c <= nChannels; c++) {
+                for (int t = 1; t <= nFrames; t++) {
+                    inputImagePlus.setPosition(c, z, t);
 
-            // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
-            for (int z = 1; z <= nSlices; z++) {
-                for (int c = 1; c <= nChannels; c++) {
-                    for (int t = 1; t <= nFrames; t++) {
-                        inputImagePlus.setPosition(c, z, t);
+                    switch (calculationType) {
+                        case CalculationTypes.ADD:
+                            inputImagePlus.getProcessor().add(mathValue);
+                            break;
 
-                        switch (calculationType) {
-                            case CalculationTypes.ADD:
-                                inputImagePlus.getProcessor().add(mathValue);
-                                break;
+                        case CalculationTypes.DIVIDE:
+                            inputImagePlus.getProcessor().multiply(1 / mathValue);
+                            break;
 
-                            case CalculationTypes.DIVIDE:
-                                inputImagePlus.getProcessor().multiply(1 / mathValue);
-                                break;
+                        case CalculationTypes.MULTIPLY:
+                            inputImagePlus.getProcessor().multiply(mathValue);
+                            break;
 
-//                        case CalculationTypes.INVERT:
-//                            inputImagePlus.getProcessor().invert();
-//                            break;
+                        case CalculationTypes.SUBTRACT:
+                            inputImagePlus.getProcessor().subtract(mathValue);
+                            break;
 
-                            case CalculationTypes.MULTIPLY:
-                                inputImagePlus.getProcessor().multiply(mathValue);
-                                break;
-
-                            case CalculationTypes.SUBTRACT:
-                                inputImagePlus.getProcessor().subtract(mathValue);
-                                break;
-
-                        }
                     }
                 }
             }
-
-            inputImagePlus.setPosition(1, 1, 1);
         }
+
+        inputImagePlus.setPosition(1, 1, 1);
 
         // If selected, displaying the image
         if (showImage) {

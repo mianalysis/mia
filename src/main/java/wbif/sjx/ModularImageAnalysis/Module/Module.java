@@ -55,7 +55,7 @@ public abstract class Module implements Serializable {
     protected abstract void run(Workspace workspace) throws GenericMIAException;
 
     public void execute(Workspace workspace) throws GenericMIAException {
-        writeMessage("Initialising");
+        writeMessage("Processing");
 
         // By default all modules should use this format
         Prefs.blackBackground = false;

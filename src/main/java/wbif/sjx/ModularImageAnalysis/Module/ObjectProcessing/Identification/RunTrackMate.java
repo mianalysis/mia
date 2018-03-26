@@ -3,9 +3,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import fiji.plugin.trackmate.*;
+import fiji.plugin.trackmate.detection.DetectorKeys;
 import fiji.plugin.trackmate.detection.LogDetectorFactory;
 import fiji.plugin.trackmate.features.spot.SpotRadiusEstimatorFactory;
 import fiji.plugin.trackmate.tracking.LAPUtils;
+import fiji.plugin.trackmate.tracking.TrackerKeys;
 import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
 import ij.IJ;
 import ij.ImagePlus;
@@ -39,7 +41,6 @@ public class RunTrackMate extends Module {
     public static final String MAX_FRAME_GAP = "Max frame gap";
     public static final String ESTIMATE_SIZE = "Estimate spot size";
     public static final String DO_TRACKING = "Run tracking";
-    public static final String CREATE_TRACK_OBJECTS = "Create track objects";
     public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
     public static final String SHOW_OBJECTS = "Show objects";
     public static final String SHOW_ID = "Show ID";
@@ -59,6 +60,118 @@ public class RunTrackMate extends Module {
 
     }
 
+
+    private ObjCollection getSpots(Model model, String spotObjectsName,Calibration calibration, boolean estimateSize) {
+        // Getting trackObjects and adding them to the output trackObjects
+        writeMessage("Processing detected objects");
+
+        // Getting calibration
+        double dppXY = calibration.getX(1);
+        double dppZ = calibration.getZ(1);
+        String calibrationUnits = calibration.getUnits();
+
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
+        SpotCollection spots = model.getSpots();
+        for (Spot spot:spots.iterable(false)) {
+            Obj spotObject = new Obj(spotObjectsName,spot.ID(),dppXY,dppZ,calibrationUnits);
+            spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
+            spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
+
+            spotObject.addMeasurement(new Measurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
+            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
+
+            spotObjects.put(spotObject.getID(),spotObject);
+
+        }
+
+        // Adding explicit volume to spots
+        if (estimateSize) {
+            GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
+
+            // Replacing spot volumes with explicit volume
+            for (Obj spotObject:spotObjects.values()) {
+                Obj spotVolumeObject = spotObject.getChildren("SpotVolume").values().iterator().next();
+
+                spotObject.setPoints(spotVolumeObject.getPoints());
+            }
+        }
+
+        // Adding spotObjects to the workspace
+        writeMessage(spots.getNSpots(false)+" trackObjects detected");
+        writeMessage("Adding spotObjects ("+spotObjectsName+") to workspace");
+
+        return spotObjects;
+
+    }
+
+    private ObjCollection[] getSpotsAndTracks(Model model, String spotObjectsName, String trackObjectsName, Calibration calibration, boolean estimateSize) {
+        // Getting calibration
+        double dppXY = calibration.getX(1);
+        double dppZ = calibration.getZ(1);
+        String calibrationUnits = calibration.getUnits();
+
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
+
+        // Converting tracks to local track model
+        writeMessage("Converting tracks to local track model");
+        TrackModel trackModel = model.getTrackModel();
+        Set<Integer> trackIDs = trackModel.trackIDs(false);
+        System.out.println("size "+trackIDs.size());
+        for (Integer trackID : trackIDs) {
+            // If necessary, creating a new summary object for the track
+            Obj trackObject = new Obj(trackObjectsName, trackID, dppXY, dppZ, calibrationUnits);
+            ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
+
+            // Sorting spots based on frame number
+            spots.sort((o1, o2) -> {
+                double t1 = o1.getFeature(Spot.FRAME);
+                double t2 = o2.getFeature(Spot.FRAME);
+                return t1 > t2 ? 1 : t1 == t2 ? 0 : -1;
+            });
+
+            // Getting x,y,f and 2-channel spot intensities from TrackMate results
+            for (Spot spot : spots) {
+                // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
+                Obj spotObject = new Obj(spotObjectsName, spotObjects.getNextID(), dppXY, dppZ, calibrationUnits);
+
+                // Getting coordinates
+                int x = (int) spot.getDoublePosition(0);
+                int y = (int) spot.getDoublePosition(1);
+                int z = (int) (spot.getDoublePosition(2) * dppZ / dppXY);
+                int t = (int) Math.round(spot.getFeature(Spot.FRAME));
+
+                // Adding coordinates to the instance objects
+                spotObject.addCoord(x, y, z);
+                spotObject.setT(t);
+
+                // If necessary, adding coordinates to the summary objects
+                trackObject.addCoord(x, y, z);
+                trackObject.setT(0);
+
+                // Adding the connection between instance and summary objects
+                spotObject.addParent(trackObject);
+                trackObject.addChild(spotObject);
+
+                // Adding the instance object to the relevant collection
+                spotObjects.put(spotObject.getID(), spotObject);
+
+            }
+        }
+
+        // Adding explicit volume to spots
+        if (estimateSize) {
+            ObjCollection spotVolumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects, "SpotVolume", 0, false, true, Measurements.ESTIMATED_DIAMETER);
+
+            // Replacing spot volumes with explicit volume
+            for (Obj spotObject : spotObjects.values()) {
+                Obj spotVolumeObject = spotObject.getParent("SpotVolume");
+                spotObject.setPoints(spotVolumeObject.getPoints());
+            }
+        }
+
+        return new ObjCollection[]{spotObjects,trackObjects};
+    }
 
     @Override
     public String getTitle() {
@@ -87,6 +200,7 @@ public class RunTrackMate extends Module {
         String calibrationUnits = calibration.getUnits();
 
         // Getting parameters
+        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean subpixelLocalisation = parameters.getValue(DO_SUBPIXEL_LOCALIZATION);
         double radius = parameters.getValue(RADIUS);
@@ -94,6 +208,8 @@ public class RunTrackMate extends Module {
         boolean normaliseIntensity = parameters.getValue(NORMALISE_INTENSITY);
         boolean medianFiltering = parameters.getValue(DO_MEDIAN_FILTERING);
         boolean estimateSize = parameters.getValue(ESTIMATE_SIZE);
+        boolean doTracking = parameters.getValue(DO_TRACKING);
+        String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
         double maxLinkDist = parameters.getValue(LINKING_MAX_DISTANCE);
         double maxGapDist = parameters.getValue(GAP_CLOSING_MAX_DISTANCE);
         int maxFrameGap = parameters.getValue(MAX_FRAME_GAP);
@@ -105,16 +221,6 @@ public class RunTrackMate extends Module {
             maxLinkDist = calibration.getRawX(maxLinkDist);
             maxGapDist = calibration.getRawX(maxGapDist);
         }
-
-        // Getting name of output objects
-        String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
-        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
-
-        // Getting name of output summary objects (if required)
-        boolean createTracks = parameters.getValue(CREATE_TRACK_OBJECTS);
-        String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
-        ObjCollection trackObjects = null;
-        if (createTracks) trackObjects = new ObjCollection(trackObjectsName);
 
         // If image should be normalised
         if (normaliseIntensity) {
@@ -131,67 +237,78 @@ public class RunTrackMate extends Module {
 
         settings.setFrom(ipl);
         settings.detectorFactory = new LogDetectorFactory();
-        settings.detectorSettings.put("DO_SUBPIXEL_LOCALIZATION", subpixelLocalisation);
-        settings.detectorSettings.put("DO_MEDIAN_FILTERING", medianFiltering);
-        settings.detectorSettings.put("RADIUS", radius);
-        settings.detectorSettings.put("THRESHOLD", threshold);
-        settings.detectorSettings.put("TARGET_CHANNEL", 1);
+        settings.detectorSettings.put(DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION, subpixelLocalisation);
+        settings.detectorSettings.put(DetectorKeys.KEY_DO_MEDIAN_FILTERING, medianFiltering);
+        settings.detectorSettings.put(DetectorKeys.KEY_RADIUS, radius);
+        settings.detectorSettings.put(DetectorKeys.KEY_THRESHOLD, threshold);
+        settings.detectorSettings.put(DetectorKeys.KEY_TARGET_CHANNEL, 1);
 
         settings.addSpotAnalyzerFactory(new SpotRadiusEstimatorFactory<>());
 
         settings.trackerFactory  = new SparseLAPTrackerFactory();
         settings.trackerSettings = LAPUtils.getDefaultLAPSettingsMap();
-        settings.trackerSettings.put("ALLOW_TRACK_SPLITTING", false);
-        settings.trackerSettings.put("ALLOW_TRACK_MERGING", false);
-        settings.trackerSettings.put("LINKING_MAX_DISTANCE", maxLinkDist);
-        settings.trackerSettings.put("GAP_CLOSING_MAX_DISTANCE", maxGapDist);
-        settings.trackerSettings.put("MAX_FRAME_GAP",maxFrameGap);
+        settings.trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, false);
+        settings.trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_MERGING, false);
+        settings.trackerSettings.put(TrackerKeys.KEY_LINKING_MAX_DISTANCE, maxLinkDist);
+        settings.trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_DISTANCE, maxGapDist);
+        settings.trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP,maxFrameGap);
 
         TrackMate trackmate = new TrackMate(model, settings);
 
         // Running TrackMate
-        writeMessage("Running TrackMate detection");
-        if (!trackmate.checkInput()) IJ.log(trackmate.getErrorMessage());
-        if (!trackmate.execDetection()) IJ.log(trackmate.getErrorMessage());
-        if (!trackmate.computeSpotFeatures(false)) IJ.log(trackmate.getErrorMessage());
 
-        // Re-applying the spatial calibration
-        ipl.setCalibration(calibration);
 
-        if (normaliseIntensity) ipl = targetImage.getImagePlus();
+        // Resetting ipl to the input image
+        ipl = targetImage.getImagePlus();
 
-        if (!(boolean) parameters.getValue(DO_TRACKING)) {
-            // Getting trackObjects and adding them to the output trackObjects
-            writeMessage("Processing detected objects");
+        if (doTracking) {
+            writeMessage("Running TrackMate tracking");
+            if (!trackmate.process()) System.err.println(trackmate.getErrorMessage());
 
-            SpotCollection spots = model.getSpots();
-            for (Spot spot:spots.iterable(false)) {
-                Obj spotObject = new Obj(spotObjectsName,spot.ID(),dppXY,dppZ,calibrationUnits);
-                spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
-                spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
+            ObjCollection[] spotsAndTracks = getSpotsAndTracks(model,spotObjectsName,trackObjectsName,calibration,estimateSize);
+            ObjCollection spotObjects = spotsAndTracks[0];
+            ObjCollection trackObjects = spotsAndTracks[1];
 
-                spotObject.addMeasurement(new Measurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
-                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
+            // Displaying the number of objects detected
+            writeMessage(spotObjects.size() + " spots detected");
+            writeMessage(trackObjects.size() + " tracks detected");
 
-                spotObjects.put(spotObject.getID(),spotObject);
+            // Adding objects to the workspace
+            writeMessage("Adding objects (" + spotObjectsName + ") to workspace");
+            workspace.addObjects(spotObjects);
+            workspace.addObjects(trackObjects);
 
-            }
+            // Displaying objects (if selected)
+            if (parameters.getValue(SHOW_OBJECTS)) {
+                // Creating a duplicate of the input image
+                ipl = new Duplicator().run(ipl);
 
-            // Adding explicit volume to spots
-            if (estimateSize) {
-                GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
-
-                // Replacing spot volumes with explicit volume
-                for (Obj spotObject:spotObjects.values()) {
-                    Obj spotVolumeObject = spotObject.getChildren("SpotVolume").values().iterator().next();
-
-                    spotObject.setPoints(spotVolumeObject.getPoints());
+                // Getting parameters
+                boolean useTrackID = false;
+                if (parameters.getValue(ID_MODE).equals(IDModes.USE_TRACK_ID)) {
+                    useTrackID = true;
                 }
+
+                // Creating the overlay
+                String colourMode = ObjCollection.ColourModes.PARENT_ID;
+                HashMap<Integer, Float> hues = spotObjects.getHue(colourMode, trackObjectsName, true);
+                String labelMode = ObjCollection.LabelModes.PARENT_ID;
+                HashMap<Integer, String> IDs = showID ? spotObjects.getIDs(labelMode, trackObjectsName, 0, false) : null;
+                new AddObjectsOverlay().createOverlay(
+                        ipl, spotObjects, AddObjectsOverlay.PositionModes.CENTROID, null, hues, IDs, 8, 1);
+
+                // Displaying the overlay
+                ipl.show();
+
             }
 
-            // Adding spotObjects to the workspace
-            writeMessage(spots.getNSpots(false)+" trackObjects detected");
-            writeMessage("Adding spotObjects ("+spotObjectsName+") to workspace");
+        } else {
+            writeMessage("Running TrackMate detection");
+            if (!trackmate.checkInput()) System.err.println(trackmate.getErrorMessage());
+            if (!trackmate.execDetection()) System.err.println(trackmate.getErrorMessage());
+            if (!trackmate.computeSpotFeatures(false)) System.err.println(trackmate.getErrorMessage());
+
+            ObjCollection spotObjects = getSpots(model,spotObjectsName,calibration,estimateSize);
             workspace.addObjects(spotObjects);
 
             // Displaying trackObjects (if selected)
@@ -210,109 +327,10 @@ public class RunTrackMate extends Module {
 
             }
 
-            return;
-        }
-
-        writeMessage("Running TrackMate tracking");
-        if (!trackmate.execTracking()) IJ.log(trackmate.getErrorMessage());
-
-        // Converting tracks to local track model
-        writeMessage("Converting tracks to local track model");
-
-        TrackModel trackModel = model.getTrackModel();
-        Set<Integer> trackIDs = trackModel.trackIDs(false);
-        for (Integer trackID:trackIDs) {
-            // If necessary, creating a new summary object for the track
-            Obj trackObject = createTracks ? new Obj(trackObjectsName,trackID,dppXY,dppZ,calibrationUnits) : null;
-            ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
-
-            // Sorting spots based on frame number
-            spots.sort((o1, o2) -> {
-                double t1 = o1.getFeature(Spot.FRAME);
-                double t2 = o2.getFeature(Spot.FRAME);
-                return t1 > t2 ? 1 : t1 == t2 ? 0 : -1;
-            });
-
-            // Getting x,y,f and 2-channel spot intensities from TrackMate results
-            for (Spot spot:spots) {
-                // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
-                Obj spotObject = new Obj(spotObjectsName,spotObjects.getNextID(),dppXY,dppZ,calibrationUnits);
-
-                // Getting coordinates
-                int x = (int) spot.getDoublePosition(0);
-                int y = (int) spot.getDoublePosition(1);
-                int z = (int) (spot.getDoublePosition(2)*dppZ/dppXY);
-                int t = (int) Math.round(spot.getFeature(Spot.FRAME));
-
-                // Adding coordinates to the instance objects
-                spotObject.addCoord(x,y,z);
-                spotObject.setT(t);
-
-                // If necessary, adding coordinates to the summary objects
-                if (createTracks) {
-                    trackObject.addCoord(x,y,z);
-                    trackObject.setT(0);
-
-                    // Adding the connection between instance and summary objects
-                    spotObject.addParent(trackObject);
-                    trackObject.addChild(spotObject);
-                }
-
-                // Adding the instance object to the relevant collection
-                spotObjects.put(spotObject.getID(),spotObject);
-
-            }
-        }
-
-        // Adding explicit volume to spots
-        if (estimateSize) {
-            ObjCollection spotVolumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.ESTIMATED_DIAMETER);
-
-            // Replacing spot volumes with explicit volume
-            for (Obj spotObject:spotObjects.values()) {
-                Obj spotVolumeObject = spotObject.getParent("SpotVolume");
-                spotObject.setPoints(spotVolumeObject.getPoints());
-            }
-        }
-
-        // Displaying the number of objects detected
-        writeMessage(spotObjects.size()+" spots detected");
-            if (createTracks) writeMessage(trackObjects.size()+" tracks detected");
-
-        // Adding objects to the workspace
-        writeMessage("Adding objects ("+spotObjectsName+") to workspace");
-        workspace.addObjects(spotObjects);
-        if (createTracks) workspace.addObjects(trackObjects);
-
-        // Displaying objects (if selected)
-        if (parameters.getValue(SHOW_OBJECTS)) {
-            // Creating a duplicate of the input image
-            ipl = new Duplicator().run(ipl);
-
-            // Getting parameters
-            boolean useTrackID = false;
-            if (parameters.getValue(DO_TRACKING)) {
-                if (parameters.getValue(ID_MODE).equals(IDModes.USE_TRACK_ID)) {
-                    useTrackID = true;
-                }
-            }
-
-            // Creating the overlay
-            String colourMode = ObjCollection.ColourModes.PARENT_ID;
-            HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,trackObjectsName,true);
-            String labelMode = ObjCollection.LabelModes.PARENT_ID;
-            HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,trackObjectsName,0,false) : null;
-            new AddObjectsOverlay().createOverlay(
-                    ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1);
-
-            // Displaying the overlay
-            ipl.show();
+            // Reapplying calibration to input image
+            targetImage.getImagePlus().setCalibration(calibration);
 
         }
-
-        // Reapplying calibration to input image
-        targetImage.getImagePlus().setCalibration(calibration);
-
     }
 
     @Override
@@ -333,7 +351,6 @@ public class RunTrackMate extends Module {
         parameters.add(new Parameter(GAP_CLOSING_MAX_DISTANCE, Parameter.DOUBLE,2.0));
         parameters.add(new Parameter(MAX_FRAME_GAP, Parameter.INTEGER,3));
 
-        parameters.add(new Parameter(CREATE_TRACK_OBJECTS, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_TRACK_OBJECTS, Parameter.OUTPUT_OBJECTS,new String("Tracks")));
 
         parameters.add(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN,false));
@@ -369,12 +386,7 @@ public class RunTrackMate extends Module {
             returnedParameters.add(parameters.getParameter(LINKING_MAX_DISTANCE));
             returnedParameters.add(parameters.getParameter(GAP_CLOSING_MAX_DISTANCE));
             returnedParameters.add(parameters.getParameter(MAX_FRAME_GAP));
-
-            returnedParameters.add(parameters.getParameter(CREATE_TRACK_OBJECTS));
-            if (parameters.getValue(CREATE_TRACK_OBJECTS)) {
-                returnedParameters.add(parameters.getParameter(OUTPUT_TRACK_OBJECTS));
-
-            }
+            returnedParameters.add(parameters.getParameter(OUTPUT_TRACK_OBJECTS));
         }
 
         returnedParameters.add(parameters.getParameter(SHOW_OBJECTS));

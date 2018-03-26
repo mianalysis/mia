@@ -2,12 +2,13 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
@@ -20,7 +21,9 @@ public class IdentifyObjects extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
+    public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String SHOW_OBJECTS = "Show objects";
+
 
     @Override
     public String getTitle() {
@@ -46,10 +49,13 @@ public class IdentifyObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
+        boolean singleObject = parameters.getValue(SINGLE_OBJECT);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS);
 
         // Creating a duplicate of the input image
         inputImagePlus = new Duplicator().run(inputImagePlus);
+
+        if (whiteBackground) IJ.run(inputImagePlus, "Invert", "stack");
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());
@@ -57,23 +63,13 @@ public class IdentifyObjects extends Module {
             ImagePlus currStack = SubHyperstackMaker.makeSubhyperstack(
                     inputImagePlus,1+"-"+inputImagePlus.getNChannels(),1+"-"+inputImagePlus.getNSlices(),t+"-"+t);
 
-            if (whiteBackground) {
-                for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                    for (int z = 1; z <= currStack.getNSlices(); z++) {
-                        currStack.setPosition(c, z, 1);
-                        currStack.updateChannelAndDraw();
-                        currStack.getProcessor().invert();
-                    }
-                }
-            }
-
             // Applying connected components labelling
             FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26);
             currStack.setStack(ffcl3D.computeLabels(currStack.getImageStack()));
 
             // Converting image to objects
             Image tempImage = new Image("Temp image", currStack);
-            ObjCollection currOutputObjects = tempImage.convertImageToObjects(outputObjectsName);
+            ObjCollection currOutputObjects = tempImage.convertImageToObjects(outputObjectsName,singleObject);
 
             // Updating the current objects (setting the real frame number and offsetting the ID)
             int maxID = 0;
@@ -97,15 +93,16 @@ public class IdentifyObjects extends Module {
         // Showing objects
         if (showObjects) {
             HashMap<Integer,Float> hues = outputObjects.getHue(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
-            outputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.RANDOM_COLOUR, hues, false).getImagePlus().show();
+            outputObjects.convertObjectsToImage("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.RANDOM_COLOUR, hues, false).getImagePlus().show();
         }
     }
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(WHITE_BACKGROUND,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SINGLE_OBJECT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
 
     }

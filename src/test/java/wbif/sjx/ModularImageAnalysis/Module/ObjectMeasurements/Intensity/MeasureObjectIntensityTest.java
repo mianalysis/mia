@@ -4,6 +4,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;

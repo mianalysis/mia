@@ -7,7 +7,7 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
@@ -166,7 +166,7 @@ public class SplineAnalysis extends Module {
             tempObjects.add(inputObject);
 
             HashMap<Integer,Float> hues = tempObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-            ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ShowObjects.ColourModes.SINGLE_COLOUR, hues, false).getImagePlus();
+            ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues, false).getImagePlus();
             InvertIntensity.process(objectIpl);
 
             // Skeletonise fish to get single backbone

@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.IdentifyObjects;
@@ -23,6 +24,10 @@ public class IdentifyObjectsTest {
     @Test
     public void testGetTitle() throws Exception {
         assertNotNull(new IdentifyObjects().getTitle());
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground8bit2D() throws Exception  {
 
     }
 
@@ -71,6 +76,16 @@ public class IdentifyObjectsTest {
             assertNotNull(expectedObject);
 
         }
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground8bit4D() throws Exception  {
+
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground8bit5D() throws Exception  {
+
     }
 
     /**
@@ -169,5 +184,25 @@ public class IdentifyObjectsTest {
             assertNotNull(expectedObject);
 
         }
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground8bit3DSingleObject() throws Exception  {
+
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground8bit3DLabelledSingleObject() throws Exception  {
+
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground16Bit3D() throws Exception {
+
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground32Bit3D() throws Exception {
+
     }
 }

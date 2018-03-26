@@ -10,7 +10,7 @@ for i = 1:numel(imfinfo([pnameIn,fnameIn]))
    im(:,:,i) = imread([pnameIn,fnameIn],i);    
 end
 
-[x,y,z] = ind2sub(size(im),find(im~=0));
+[x,y,z] = ind2sub(size(im),find(im==0));
 coords = [];
 for i=1:numel(x)
    newCoord = [im(x(i),y(i),z(i)),im(x(i),y(i),z(i)),y(i)-1,x(i)-1,0,z(i)-1,0];

@@ -4,14 +4,12 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -77,7 +75,7 @@ public class MeasureIntensityDistribution extends Module {
 
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.SINGLE_COLOUR, hues, true);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues, true);
         
         // Calculaing the distance map
         ImagePlus distIpl = BinaryOperations.applyDistanceMap3D(objectsImage.getImagePlus(),true,true);
@@ -124,6 +122,7 @@ public class MeasureIntensityDistribution extends Module {
         inputImagePlus.setPosition(1, 1, 1);
 
         return cs;
+
     }
 
     public static CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, String edgeMode) {
@@ -131,15 +130,16 @@ public class MeasureIntensityDistribution extends Module {
 
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.SINGLE_COLOUR, hues, true);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues, true);
 
         ImagePlus distIpl = null;
         switch (edgeMode) {
             case EdgeDistanceModes.INSIDE_AND_OUTSIDE:
                 ImagePlus dist1 = new Duplicator().run(objectsImage.getImagePlus());
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
+
                 dist1 = BinaryOperations.applyDistanceMap3D(dist1,true,true);
-                InvertIntensity.process(objectsImage.getImagePlus());
+                InvertIntensity.process(distIpl);
                 distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true,true);
 
                 new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
@@ -147,12 +147,12 @@ public class MeasureIntensityDistribution extends Module {
                 break;
 
             case EdgeDistanceModes.INSIDE_ONLY:
+                InvertIntensity.process(objectsImage.getImagePlus());
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
                 distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true,true);
                 break;
 
             case EdgeDistanceModes.OUTSIDE_ONLY:
-                InvertIntensity.process(objectsImage.getImagePlus());
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
                 distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true,true);
                 break;
