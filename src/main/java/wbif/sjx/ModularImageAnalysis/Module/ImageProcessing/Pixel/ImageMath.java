@@ -67,50 +67,55 @@ public class ImageMath extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        // Updating value if taken from a measurement
-        switch (valueSource) {
-            case ValueSources.MEASUREMENT:
-                mathValue = inputImage.getMeasurement(measurement).getValue();
-                break;
-        }
+        if (calculationType.equals(CalculationTypes.INVERT)) {
+            InvertIntensity.process(inputImagePlus);
+        } else {
 
-        int nChannels = inputImagePlus.getNChannels();
-        int nSlices = inputImagePlus.getNSlices();
-        int nFrames = inputImagePlus.getNFrames();
+            // Updating value if taken from a measurement
+            switch (valueSource) {
+                case ValueSources.MEASUREMENT:
+                    mathValue = inputImage.getMeasurement(measurement).getValue();
+                    break;
+            }
 
-        // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
-        for (int z = 1; z <= nSlices; z++) {
-            for (int c = 1; c <= nChannels; c++) {
-                for (int t = 1; t <= nFrames; t++) {
-                    inputImagePlus.setPosition(c,z,t);
+            int nChannels = inputImagePlus.getNChannels();
+            int nSlices = inputImagePlus.getNSlices();
+            int nFrames = inputImagePlus.getNFrames();
 
-                    switch (calculationType) {
-                        case CalculationTypes.ADD:
-                            inputImagePlus.getProcessor().add(mathValue);
-                            break;
+            // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
+            for (int z = 1; z <= nSlices; z++) {
+                for (int c = 1; c <= nChannels; c++) {
+                    for (int t = 1; t <= nFrames; t++) {
+                        inputImagePlus.setPosition(c, z, t);
 
-                        case CalculationTypes.DIVIDE:
-                            inputImagePlus.getProcessor().multiply(1/mathValue);
-                            break;
+                        switch (calculationType) {
+                            case CalculationTypes.ADD:
+                                inputImagePlus.getProcessor().add(mathValue);
+                                break;
 
-                        case CalculationTypes.INVERT:
-                            inputImagePlus.getProcessor().invert();
-                            break;
+                            case CalculationTypes.DIVIDE:
+                                inputImagePlus.getProcessor().multiply(1 / mathValue);
+                                break;
 
-                        case CalculationTypes.MULTIPLY:
-                            inputImagePlus.getProcessor().multiply(mathValue);
-                            break;
+//                        case CalculationTypes.INVERT:
+//                            inputImagePlus.getProcessor().invert();
+//                            break;
 
-                        case CalculationTypes.SUBTRACT:
-                            inputImagePlus.getProcessor().subtract(mathValue);
-                            break;
+                            case CalculationTypes.MULTIPLY:
+                                inputImagePlus.getProcessor().multiply(mathValue);
+                                break;
 
+                            case CalculationTypes.SUBTRACT:
+                                inputImagePlus.getProcessor().subtract(mathValue);
+                                break;
+
+                        }
                     }
                 }
             }
-        }
 
-        inputImagePlus.setPosition(1,1,1);
+            inputImagePlus.setPosition(1, 1, 1);
+        }
 
         // If selected, displaying the image
         if (showImage) {
