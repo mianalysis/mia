@@ -41,7 +41,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting objects
         String inputObjects1Name = parameters.getValue(OBJECT_SET_1);
         ObjCollection inputObjects1 = workspace.getObjectSet(inputObjects1Name);

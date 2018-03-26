@@ -1,9 +1,5 @@
 package wbif.sjx.ModularImageAnalysis;
 
-import util.opencsv.CSVReader;
-
-import java.io.*;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 

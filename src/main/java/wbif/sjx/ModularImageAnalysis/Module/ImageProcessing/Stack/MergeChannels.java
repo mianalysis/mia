@@ -148,7 +148,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
         String inputImageRedName = parameters.getValue(INPUT_IMAGE_RED);
         Image inputImageRed = workspace.getImage(inputImageRedName);

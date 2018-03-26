@@ -44,7 +44,7 @@ public class BinObjectsByMeasurementTest {
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.NUMBER_OF_BINS,4);
 
         // Running IdentifyObjects
-        binObjectsByMeasurement.run(workspace,false);
+        binObjectsByMeasurement.run(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -82,7 +82,7 @@ public class BinObjectsByMeasurementTest {
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.NUMBER_OF_BINS,4);
 
         // Running IdentifyObjects
-        binObjectsByMeasurement.run(workspace,false);
+        binObjectsByMeasurement.run(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -120,7 +120,7 @@ public class BinObjectsByMeasurementTest {
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.NUMBER_OF_BINS,4);
 
         // Running IdentifyObjects
-        binObjectsByMeasurement.run(workspace,false);
+        binObjectsByMeasurement.run(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {

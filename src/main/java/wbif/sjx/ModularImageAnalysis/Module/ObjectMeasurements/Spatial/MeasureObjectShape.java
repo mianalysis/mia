@@ -69,7 +69,7 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    public void run(Workspace workspace) throws GenericMIAException {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);

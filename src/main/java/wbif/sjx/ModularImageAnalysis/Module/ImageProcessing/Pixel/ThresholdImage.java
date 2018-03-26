@@ -4,6 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import fiji.threshold.Auto_Local_Threshold;
 import fiji.threshold.Auto_Threshold;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -136,7 +137,7 @@ public class ThresholdImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -169,51 +170,44 @@ public class ThresholdImage extends Module {
         // Calculating the threshold based on the selected algorithm
         switch (thresholdType) {
             case ThresholdTypes.GLOBAL_TYPE:
-                if (verbose) System.out.println(
-                        "["+moduleName+"] Applying global "+globalThresholdAlgorithm+" threshold (multplier = "+thrMult+" x)");
+                writeMessage("Applying global "+globalThresholdAlgorithm+" threshold (multplier = "+thrMult+" x)");
                 applyGlobalThresholdToStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
                 break;
 
             case ThresholdTypes.LOCAL_TYPE:
                 switch (localThresholdAlgorithm) {
                     case LocalAlgorithms.BERNSEN_3D:
-                        if (verbose) System.out.println(
-                                "["+moduleName+"] Applying local Bernsen threshold (radius = "+localRadius+" px)");
+                        writeMessage("Applying local Bernsen threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.BERNSEN,localRadius,thrMult,
                                 useLowerLim,lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.CONTRAST_3D:
-                        if (verbose) System.out.println(
-                                "["+moduleName+"] Applying local Contrast threshold (radius = "+localRadius+" px)");
+                        writeMessage("Applying local Contrast threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.CONTRAST,localRadius,thrMult,
                                 useLowerLim,lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.MEAN_3D:
-                        if (verbose) System.out.println(
-                                "["+moduleName+"] Applying local Mean threshold (radius = "+localRadius+" px)");
+                        writeMessage("Applying local Mean threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEAN,localRadius,thrMult,useLowerLim,
                                 lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.MEDIAN_3D:
-                        if (verbose) System.out.println(
-                                "["+moduleName+"] Applying local Median threshold (radius = "+localRadius+" px)");
+                        writeMessage("Applying local Median threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.MEDIAN,localRadius,thrMult,useLowerLim,
                                 lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.PHANSALKAR_3D:
-                        if (verbose) System.out.println(
-                                "["+moduleName+"] Applying local Phansalkar threshold (radius = "+localRadius+" px)");
+                        writeMessage("Applying local Phansalkar threshold (radius = "+localRadius+" px)");
                         applyLocalThreshold3D(inputImagePlus,AutoLocalThreshold3D.PHANSALKAR,localRadius,thrMult,
                                 useLowerLim,lowerLim,useGlobalZ);
                         break;
 
                     case LocalAlgorithms.PHANSALKAR_SLICE:
-                        if (verbose) System.out.println(
-                                "["+moduleName+"] Applying local Phansalkar threshold (radius = "+localRadius+" px)");
+                        writeMessage("Applying local Phansalkar threshold (radius = "+localRadius+" px)");
                         applyLocalThresholdToStack(inputImagePlus,"Phansalkar",localRadius);
                         break;
 
@@ -222,17 +216,7 @@ public class ThresholdImage extends Module {
 
         }
 
-        if (whiteBackground) {
-            for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-                for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                    for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                        inputImagePlus.setPosition(c, z, t);
-                        inputImagePlus.getProcessor().invert();
-                    }
-                }
-            }
-            inputImagePlus.setPosition(1,1,1);
-        }
+        if (whiteBackground) IJ.run(inputImagePlus, "Invert", "stack");
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {

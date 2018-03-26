@@ -2,12 +2,10 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 
 import java.net.URLDecoder;
@@ -23,7 +21,7 @@ public class ShowObjectsTest {
 
     @Test
     public void testGetTitle() throws Exception {
-        assertNotNull(new ShowObjects().getTitle());
+        assertNotNull(new ConvertObjectsToImage().getTitle());
 
     }
 
@@ -34,7 +32,7 @@ public class ShowObjectsTest {
     @Test
     public void testConvertObjectsToImagebit3DWithRefImage() throws Exception {
         // Initialising parameters
-        String colourMode = ShowObjects.ColourModes.ID;
+        String colourMode = ConvertObjectsToImage.ColourModes.ID;
 
         // Setting object parameters
         String objectName = "Test objects";
@@ -86,7 +84,7 @@ public class ShowObjectsTest {
     @Test
     public void testConvertObjectsToImagebit3DWithNoRefImage() throws Exception {
         // Initialising parameters
-        String colourMode = ShowObjects.ColourModes.ID;
+        String colourMode = ConvertObjectsToImage.ColourModes.ID;
 
         // Setting object parameters
         String objectName = "Test objects";

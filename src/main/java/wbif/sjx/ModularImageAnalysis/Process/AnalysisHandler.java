@@ -65,6 +65,9 @@ public class AnalysisHandler {
         fileDialog.setMultipleMode(false);
         fileDialog.setVisible(true);
 
+        // If no file was selected quit the method
+        if (fileDialog.getFiles().length==0) return;
+
         String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
         if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
             outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";

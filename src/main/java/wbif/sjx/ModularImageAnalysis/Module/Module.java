@@ -26,6 +26,7 @@ public abstract class Module implements Serializable {
     protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
     protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
 
+    private static boolean verbose = false;
     private String nickname;
     private String notes = "";
     private boolean enabled = true;
@@ -51,19 +52,18 @@ public abstract class Module implements Serializable {
 
     public abstract String getHelp();
 
-    protected abstract void run(Workspace workspace, boolean verbose) throws GenericMIAException;
+    protected abstract void run(Workspace workspace) throws GenericMIAException;
 
-    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
-        String moduleName = getTitle();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
+    public void execute(Workspace workspace) throws GenericMIAException {
+        writeMessage("Processing");
 
         // By default all modules should use this format
         Prefs.blackBackground = false;
 
         // Running the main module code
-        run(workspace,verbose);
+        run(workspace);
 
-        if (verbose) System.out.println("["+moduleName+"] Complete");
+        writeMessage("Complete");
 
     }
 
@@ -141,11 +141,6 @@ public abstract class Module implements Serializable {
 
     // PRIVATE METHODS
 
-    void run(Workspace workspace) throws GenericMIAException {
-        run(workspace,false);
-
-    }
-
     public String getNickname() {
         return nickname;
     }
@@ -172,7 +167,7 @@ public abstract class Module implements Serializable {
         this.enabled = enabled;
     }
 
-    protected void writeMessage(String message, boolean verbose) {
+    protected void writeMessage(String message) {
         if (verbose) System.out.println("[" + moduleName + "] "+message);
     }
 
@@ -182,5 +177,13 @@ public abstract class Module implements Serializable {
 
     public void setCanBeDisabled(boolean canBeDisabled) {
         this.canBeDisabled = canBeDisabled;
+    }
+
+    public static boolean isVerbose() {
+        return verbose;
+    }
+
+    public static void setVerbose(boolean verbose) {
+        Module.verbose = verbose;
     }
 }

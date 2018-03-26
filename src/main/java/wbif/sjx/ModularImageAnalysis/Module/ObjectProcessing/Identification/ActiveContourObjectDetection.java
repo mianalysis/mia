@@ -51,7 +51,7 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -94,8 +94,7 @@ public class ActiveContourObjectDetection extends Module {
         int total = inputObjects.size();
 
         for (Obj inputObject:inputObjects.values()) {
-            if (verbose)
-                System.out.println("[" + moduleName + "] Processing object " + (count++) + " of " + total);
+            writeMessage("Processing object " + (count++) + " of " + total);
 
             // Getting the z-plane of the current object
             int z = inputObject.getPoints().iterator().next().getZ();
@@ -167,10 +166,10 @@ public class ActiveContourObjectDetection extends Module {
 
             if (updateInputObjects) {
                 HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,"",true);
-                new AddObjectsOverlay().createOverlay(dispIpl,inputObjects,positionMode,null,hues,null,8,1,verbose);
+                new AddObjectsOverlay().createOverlay(dispIpl,inputObjects,positionMode,null,hues,null,8,1);
             } else {
                 HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"",true);
-                new AddObjectsOverlay().createOverlay(dispIpl,outputObjects,positionMode,null,hues,null,8,1,verbose);
+                new AddObjectsOverlay().createOverlay(dispIpl,outputObjects,positionMode,null,hues,null,8,1);
             }
 
             dispIpl.show();

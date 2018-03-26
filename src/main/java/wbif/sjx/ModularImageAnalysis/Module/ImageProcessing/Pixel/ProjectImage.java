@@ -1,9 +1,19 @@
+// TODO: Seems to be a problem with hyperstack projection on all channels and timepoints
+
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+//import ij.plugin.ZProjector;
 import ij.plugin.ZProjector;
+import net.imglib2.Cursor;
+import net.imglib2.img.Img;
+import net.imglib2.img.ImgFactory;
+import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
@@ -11,7 +21,7 @@ import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 /**
  * Created by sc13967 on 04/05/2017.
  */
-public class ProjectImage extends Module {
+public class ProjectImage < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String PROJECTION_MODE = "Projection mode";
@@ -30,36 +40,32 @@ public class ProjectImage extends Module {
     }
 
     public Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
-        ZProjector zProjector = new ZProjector(inputImage.getImagePlus());
-
+        ImagePlus iplOut = null;
         switch (projectionMode) {
             case ProjectionModes.AVERAGE:
-                zProjector.setMethod(ZProjector.AVG_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"avg all");
                 break;
 
             case ProjectionModes.MIN:
-                zProjector.setMethod(ZProjector.MIN_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"min all");
                 break;
 
             case ProjectionModes.MEDIAN:
-                zProjector.setMethod(ZProjector.MEDIAN_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"median all");
                 break;
 
             case ProjectionModes.MAX:
-                zProjector.setMethod(ZProjector.MAX_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"max all");
                 break;
 
             case ProjectionModes.STDEV:
-                zProjector.setMethod(ZProjector.SD_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"sd all");
                 break;
 
             case ProjectionModes.SUM:
-                zProjector.setMethod(ZProjector.SUM_METHOD);
+                iplOut = ZProjector.run(inputImage.getImagePlus(),"sum all");
                 break;
         }
-
-        zProjector.doProjection();
-        ImagePlus iplOut = zProjector.getProjection();
 
         // Setting spatial calibration
         Calibration calibrationIn = inputImage.getImagePlus().getCalibration();
@@ -88,7 +94,7 @@ public class ProjectImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Loading image into workspace
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);

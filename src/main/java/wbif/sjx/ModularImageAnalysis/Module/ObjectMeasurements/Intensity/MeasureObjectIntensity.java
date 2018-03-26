@@ -3,6 +3,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -21,6 +25,8 @@ public class MeasureObjectIntensity extends Module {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
     public static final String MEASURE_WEIGHTED_CENTRE = "Measure weighted centre";
+    public static final String MEASURE_WEIGHTED_EDGE_DISTANCE = "Measure weighted distance to edge";
+    public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
 
     public interface Measurements {
         String MEAN = "MEAN";
@@ -30,16 +36,23 @@ public class MeasureObjectIntensity extends Module {
         String STDEV = "STDEV";
 
         String X_CENT_MEAN = "X_CENTRE_MEAN (PX)";
-        String X_CENT_STD = "X_CENTRE_STD (PX)";
+        String X_CENT_STDEV = "X_CENTRE_STDEV (PX)";
         String Y_CENT_MEAN = "Y_CENTRE_MEAN (PX)";
-        String Y_CENT_STD = "Y_CENTRE_STD (PX)";
+        String Y_CENT_STDEV = "Y_CENTRE_STDEV (PX)";
         String Z_CENT_MEAN = "Z_CENTRE_MEAN (SLICE)";
-        String Z_CENT_STD = "Z_CENTRE_STD (SLICE)";
+        String Z_CENT_STDEV = "Z_CENTRE_STDEV (SLICE)";
+
+        String MEAN_EDGE_DISTANCE_PX = "MEAN_EDGE_DISTANCE (PX)";
+        String MEAN_EDGE_DISTANCE_CAL = "MEAN_EDGE_DISTANCE (CAL)";
+        String STD_EDGE_DISTANCE_PX = "STD_EDGE_DISTANCE (PX)";
+        String STD_EDGE_DISTANCE_CAL = "STD_EDGE_DISTANCE (CAL)";
 
     }
 
+    public interface EdgeDistanceModes extends MeasureIntensityDistribution.EdgeDistanceModes {}
 
-    private String getFullName(String imageName, String measurement) {
+
+    public static String getFullName(String imageName, String measurement) {
         return "INTENSITY//"+imageName+"_"+measurement;
     }
 
@@ -102,11 +115,29 @@ public class MeasureObjectIntensity extends Module {
         }
 
         object.addMeasurement(new Measurement(getFullName(imageName,Measurements.X_CENT_MEAN), csX.getMean()));
-        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.X_CENT_STD), csX.getStd()));
+        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.X_CENT_STDEV), csX.getStd()));
         object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Y_CENT_MEAN), csY.getMean()));
-        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Y_CENT_STD), csY.getStd()));
+        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Y_CENT_STDEV), csY.getStd()));
         object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Z_CENT_MEAN), csZ.getMean()));
-        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Z_CENT_STD), csZ.getStd()));
+        object.addMeasurement(new Measurement(getFullName(imageName,Measurements.Z_CENT_STDEV), csZ.getStd()));
+
+    }
+
+    private void measureWeightedEdgeDistance(Obj object, Image image) {
+        // Getting parameters
+        String imageName = parameters.getValue(INPUT_IMAGE);
+        String edgeDistanceMode = parameters.getValue(EDGE_DISTANCE_MODE);
+
+        ObjCollection collection = new ObjCollection(object.getName());
+        collection.add(object);
+        CumStat cs = MeasureIntensityDistribution.measureIntensityWeightedProximity(collection,image,edgeDistanceMode);
+
+        double distPerPxXY = object.getDistPerPxXY();
+
+        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_PX), cs.getMean()));
+        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_CAL), cs.getMean()*distPerPxXY));
+        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_PX), cs.getStd()));
+        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_CAL), cs.getStd()*distPerPxXY));
 
     }
 
@@ -122,9 +153,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
-        writeMessage("Initialising",verbose);
-
+    public void run(Workspace workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection objects = workspace.getObjects().get(objectName);
@@ -142,8 +171,10 @@ public class MeasureObjectIntensity extends Module {
             for (Obj object:objects.values()) measureWeightedCentre(object,ipl);
         }
 
-        writeMessage("Complete",verbose);
-
+        // If specified, measuring weighted distance to the object edge
+        if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+            for (Obj object:objects.values()) measureWeightedEdgeDistance(object,image);
+        }
     }
 
     @Override
@@ -156,6 +187,8 @@ public class MeasureObjectIntensity extends Module {
         parameters.add(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(MEASURE_WEIGHTED_CENTRE, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_WEIGHTED_EDGE_DISTANCE, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(EDGE_DISTANCE_MODE,Parameter.CHOICE_ARRAY,EdgeDistanceModes.INSIDE_AND_OUTSIDE,EdgeDistanceModes.ALL));
 
     }
 
@@ -166,18 +199,40 @@ public class MeasureObjectIntensity extends Module {
         objectMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
+
         objectMeasurementReferences.add(new MeasurementReference(Measurements.X_CENT_MEAN));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.X_CENT_STD));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.X_CENT_STDEV));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.Y_CENT_MEAN));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y_CENT_STD));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y_CENT_STDEV));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.Z_CENT_MEAN));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z_CENT_STD));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z_CENT_STDEV));
+
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_EDGE_DISTANCE_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_EDGE_DISTANCE_CAL));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.STD_EDGE_DISTANCE_PX));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.STD_EDGE_DISTANCE_CAL));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(MEASURE_MEAN));
+        returnedParameters.add(parameters.getParameter(MEASURE_MIN));
+        returnedParameters.add(parameters.getParameter(MEASURE_MAX));
+        returnedParameters.add(parameters.getParameter(MEASURE_STDEV));
+        returnedParameters.add(parameters.getParameter(MEASURE_SUM));
+        returnedParameters.add(parameters.getParameter(MEASURE_WEIGHTED_CENTRE));
+        returnedParameters.add(parameters.getParameter(MEASURE_WEIGHTED_EDGE_DISTANCE));
+
+        if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+            returnedParameters.add(parameters.getParameter(EDGE_DISTANCE_MODE));
+        }
+
+        return returnedParameters;
 
     }
 
@@ -240,12 +295,12 @@ public class MeasureObjectIntensity extends Module {
             xCentMean.setNickName(getFullName(inputImageName,Measurements.X_CENT_MEAN));
         }
 
-        MeasurementReference xCentStdev = objectMeasurementReferences.get(Measurements.X_CENT_STD);
+        MeasurementReference xCentStdev = objectMeasurementReferences.get(Measurements.X_CENT_STDEV);
         xCentStdev.setImageObjName(inputObjectsName);
         xCentStdev.setCalculated(false);
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             xCentStdev.setCalculated(true);
-            xCentStdev.setNickName(getFullName(inputImageName,Measurements.X_CENT_STD));
+            xCentStdev.setNickName(getFullName(inputImageName,Measurements.X_CENT_STDEV));
         }
 
         MeasurementReference yCentMean = objectMeasurementReferences.get(Measurements.Y_CENT_MEAN);
@@ -256,12 +311,12 @@ public class MeasureObjectIntensity extends Module {
             yCentMean.setNickName(getFullName(inputImageName,Measurements.Y_CENT_MEAN));
         }
 
-        MeasurementReference yCentStdev = objectMeasurementReferences.get(Measurements.Y_CENT_STD);
+        MeasurementReference yCentStdev = objectMeasurementReferences.get(Measurements.Y_CENT_STDEV);
         yCentStdev.setImageObjName(inputObjectsName);
         yCentStdev.setCalculated(false);
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             yCentStdev.setCalculated(true);
-            yCentStdev.setNickName(getFullName(inputImageName,Measurements.Y_CENT_STD));
+            yCentStdev.setNickName(getFullName(inputImageName,Measurements.Y_CENT_STDEV));
         }
 
         MeasurementReference zCentMean = objectMeasurementReferences.get(Measurements.Z_CENT_MEAN);
@@ -272,12 +327,44 @@ public class MeasureObjectIntensity extends Module {
             zCentMean.setNickName(getFullName(inputImageName,Measurements.Z_CENT_MEAN));
         }
 
-        MeasurementReference zCentStdev = objectMeasurementReferences.get(Measurements.Z_CENT_STD);
+        MeasurementReference zCentStdev = objectMeasurementReferences.get(Measurements.Z_CENT_STDEV);
         zCentStdev.setImageObjName(inputObjectsName);
         zCentStdev.setCalculated(false);
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             zCentStdev.setCalculated(true);
-            zCentStdev.setNickName(getFullName(inputImageName,Measurements.Z_CENT_STD));
+            zCentStdev.setNickName(getFullName(inputImageName,Measurements.Z_CENT_STDEV));
+        }
+
+        MeasurementReference meanEdgeDistPx = objectMeasurementReferences.get(Measurements.MEAN_EDGE_DISTANCE_PX);
+        meanEdgeDistPx.setImageObjName(inputObjectsName);
+        meanEdgeDistPx.setCalculated(false);
+        if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+            meanEdgeDistPx.setCalculated(true);
+            meanEdgeDistPx.setNickName(getFullName(inputImageName,Measurements.MEAN_EDGE_DISTANCE_PX));
+        }
+
+        MeasurementReference meanEdgeDistCal = objectMeasurementReferences.get(Measurements.MEAN_EDGE_DISTANCE_CAL);
+        meanEdgeDistCal.setImageObjName(inputObjectsName);
+        meanEdgeDistCal.setCalculated(false);
+        if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+            meanEdgeDistCal.setCalculated(true);
+            meanEdgeDistCal.setNickName(getFullName(inputImageName,Measurements.MEAN_EDGE_DISTANCE_CAL));
+        }
+
+        MeasurementReference stdevEdgeDistPx = objectMeasurementReferences.get(Measurements.STD_EDGE_DISTANCE_PX);
+        stdevEdgeDistPx.setImageObjName(inputObjectsName);
+        stdevEdgeDistPx.setCalculated(false);
+        if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+            stdevEdgeDistPx.setCalculated(true);
+            stdevEdgeDistPx.setNickName(getFullName(inputImageName,Measurements.STD_EDGE_DISTANCE_PX));
+        }
+
+        MeasurementReference stdevEdgeDistCal = objectMeasurementReferences.get(Measurements.STD_EDGE_DISTANCE_CAL);
+        stdevEdgeDistCal.setImageObjName(inputObjectsName);
+        stdevEdgeDistCal.setCalculated(false);
+        if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
+            stdevEdgeDistCal.setCalculated(true);
+            stdevEdgeDistCal.setNickName(getFullName(inputImageName,Measurements.STD_EDGE_DISTANCE_CAL));
         }
 
         return objectMeasurementReferences;

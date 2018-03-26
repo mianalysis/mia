@@ -1,3 +1,7 @@
+// TODO: Could add optional argument to getParametersMatchingType for the removal type (i.e. if it matches type 1 add
+// to the list, but if it matches type 2 remove the same parameter from the list.  Would need to compare Parameters for
+// value.
+
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -10,11 +14,11 @@ import java.util.LinkedHashSet;
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<Module> implements Serializable {
-    public MeasurementReferenceCollection getImageReferences(String imageName) {
-        return getImageReferences(imageName,null);
+    public MeasurementReferenceCollection getImageMeasurementReferences(String imageName) {
+        return getImageMeasurementReferences(imageName,null);
     }
 
-    public MeasurementReferenceCollection getImageReferences(String imageName, Module cutoffModule) {
+    public MeasurementReferenceCollection getImageMeasurementReferences(String imageName, Module cutoffModule) {
         MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
 
         // Iterating over all modules, collecting any measurements for the current image
@@ -37,12 +41,12 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public MeasurementReferenceCollection getObjectReferences(String objectName) {
-        return getObjectReferences(objectName,null);
+    public MeasurementReferenceCollection getObjectMeasurementReferences(String objectName) {
+        return getObjectMeasurementReferences(objectName,null);
 
     }
 
-    public MeasurementReferenceCollection getObjectReferences(String objectName, Module cutoffModule) {
+    public MeasurementReferenceCollection getObjectMeasurementReferences(String objectName, Module cutoffModule) {
         MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
 
         // Iterating over all modules, collecting any measurements for the current objects
@@ -64,60 +68,6 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         return measurementReferences;
 
     }
-
-//    public LinkedHashMap<String,ImageObjReference> getImageReferences() {
-//        return getImageReferences(null);
-//    }
-//
-//    public LinkedHashMap<String,ImageObjReference> getImageReferences(Module cutoffModule) {
-//        LinkedHashMap<String,ImageObjReference> superReferences = new LinkedHashMap<>();
-//
-//        for (Module module:this) {
-//            if (module == cutoffModule) break;
-//            if (!module.isEnabled()) continue;
-//
-//            // Getting references from the current module, then adding them to the super references
-//            ReferenceCollection currentReferences = module.updateAndGetImageReferences();
-//            if (currentReferences == null) continue;
-//
-//            for (ImageObjReference currentImageObjReference :currentReferences) {
-//                superReferences.putIfAbsent(currentImageObjReference.getName(),new ImageObjReference());
-//
-//                superReferences.get(currentImageObjReference.getName()).addMeasurementReferences(currentImageObjReference);
-//
-//            }
-//        }
-//
-//        return superReferences;
-//
-//    }
-//
-//    public LinkedHashMap<String,ImageObjReference> getObjectReferences() {
-//        return getObjectReferences(null);
-//    }
-//
-//    public LinkedHashMap<String,ImageObjReference> getObjectReferences(Module cutoffModule) {
-//        LinkedHashMap<String,ImageObjReference> superReferences = new LinkedHashMap<>();
-//
-//        for (Module module:this) {
-//            if (module == cutoffModule) break;
-//            if (!module.isEnabled()) continue;
-//
-//            // Getting references from the current module, then adding them to the super references
-//            ReferenceCollection currentReferences = module.updateAndGetObjectReferences();
-//            if (currentReferences == null) continue;
-//
-//            for (ImageObjReference currentImageObjReference :currentReferences) {
-//                superReferences.putIfAbsent(currentImageObjReference.getName(),new ImageObjReference());
-//
-//                superReferences.get(currentImageObjReference.getName()).addMeasurementReferences(currentImageObjReference);
-//
-//            }
-//        }
-//
-//        return superReferences;
-//
-//    }
 
     /**
      * Returns an ArrayList of all parameters of a specific type

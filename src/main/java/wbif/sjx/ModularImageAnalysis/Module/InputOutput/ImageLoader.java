@@ -7,6 +7,10 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import io.scif.ImageMetadata;
+import io.scif.Metadata;
+import io.scif.Reader;
+import io.scif.SCIFIO;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -16,6 +20,7 @@ import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
+import net.imagej.axis.CalibratedAxis;
 import net.imglib2.img.Img;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -30,11 +35,15 @@ import wbif.sjx.common.Object.HCMetadata;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sc13967 on 15/05/2017.
  */
-public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Module {
+public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String IMPORT_MODE = "Import mode";
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";
@@ -79,7 +88,36 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
 
     }
 
-    private ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, boolean verbose) throws ServiceException, DependencyException, IOException, FormatException {
+    /**
+     * Uses SCIFIO to read the image
+     * @return
+     */
+    public Img<T> getImg(String path, int seriesNumber,int[][] dimRanges, boolean verbose) throws IOException, io.scif.FormatException {
+        File file = new File(path);
+
+        SCIFIO scifio = new SCIFIO();
+        final Reader reader = scifio.initializer().initializeReader(file.getAbsolutePath());
+        final Metadata meta = reader.getMetadata();
+
+        System.out.println("Image count "+meta.getImageCount());
+        for (int i=0;i<meta.getImageCount();i++) {
+            ImageMetadata iMeta = meta.get(i);
+            List<CalibratedAxis> axes = iMeta.getAxes();
+            for (CalibratedAxis axis:axes) {
+                System.out.println("    unit"+axis.unit());
+
+            }
+
+            long[] lengths = iMeta.getAxesLengths();
+            for (long len:lengths) System.out.println("    length "+len);
+
+        }
+
+        return null;
+
+    }
+
+    public ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges) throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
@@ -142,7 +180,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
                     ipl.setPosition(countC,countZ,countT);
                     ipl.setProcessor(ip);
 
-                    writeMessage("Loaded image "+(++count)+" of "+nTotal,verbose);
+                    writeMessage("Loaded image "+(++count)+" of "+nTotal);
 
                     countT++;
                 }
@@ -181,7 +219,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
     }
 
     private ImagePlus getFormattedNameImage(String nameFormat, HCMetadata metadata, String comment,
-                                                   int seriesNumber,int[][] dimRanges, boolean verbose) throws ServiceException, DependencyException, FormatException, IOException {
+                                            int seriesNumber,int[][] dimRanges) throws ServiceException, DependencyException, FormatException, IOException {
 
         String filename = null;
         switch (nameFormat) {
@@ -204,7 +242,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
                 break;
         }
 
-        return getBFImage(filename,seriesNumber,dimRanges,verbose);
+        return getBFImage(filename,seriesNumber,dimRanges);
 
     }
 
@@ -220,7 +258,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    public void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
@@ -264,7 +302,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
                         File file = workspace.getMetadata().getFile();
                         if (file == null)
                             throw new GenericMIAException("Set file in Input Control");
-                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges,verbose);
+                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges);
                         break;
 
                     case ImportModes.IMAGEJ:
@@ -274,17 +312,17 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
                     case ImportModes.MATCHING_FORMAT:
                         switch (nameFormat) {
                             case NameFormats.INCUCYTE_SHORT:
-                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges,verbose);
+                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges);
                                 break;
 
                             case NameFormats.INPUT_FILE_PREFIX:
-                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges,verbose);
+                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges);
                                 break;
                         }
                         break;
 
                     case ImportModes.SPECIFIC_FILE:
-                        ipl = getBFImage(filePath, seriesNumber, dimRanges,verbose);
+                        ipl = getBFImage(filePath, seriesNumber, dimRanges);
                         break;
                 }
             }
@@ -306,7 +344,7 @@ public class ImageLoader< T extends RealType< T > & NativeType< T >> extends Mod
         }
 
         // Adding image to workspace
-        writeMessage("Adding image ("+outputImageName+") to workspace",verbose);
+        writeMessage("Adding image ("+outputImageName+") to workspace");
         workspace.addImage(new Image(outputImageName,ipl));
 
         // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)

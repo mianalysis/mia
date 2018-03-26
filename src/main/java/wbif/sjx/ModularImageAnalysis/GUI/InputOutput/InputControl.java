@@ -53,7 +53,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    public void run(Workspace workspace) throws GenericMIAException {
 
     }
 
@@ -64,7 +64,7 @@ public class InputControl extends Module {
         parameters.add(new Parameter(BATCH_FOLDER_PATH, Parameter.FOLDER_PATH,null));
         int nThreads = Runtime.getRuntime().availableProcessors()/2;
         parameters.add(new Parameter(NUMBER_OF_THREADS,Parameter.INTEGER,nThreads));
-        parameters.add(new Parameter(FILE_EXTENSION, Parameter.STRING,"flex"));
+        parameters.add(new Parameter(FILE_EXTENSION, Parameter.STRING,"tif"));
         parameters.add(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
         parameters.add(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));

@@ -46,7 +46,7 @@ public class MeasureImageIntensityTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace,false);
+        measureImageIntensity.run(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());
@@ -80,7 +80,7 @@ public class MeasureImageIntensityTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace,false);
+        measureImageIntensity.run(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());
@@ -114,7 +114,7 @@ public class MeasureImageIntensityTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace,false);
+        measureImageIntensity.run(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());
@@ -148,7 +148,7 @@ public class MeasureImageIntensityTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace,false);
+        measureImageIntensity.run(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());
@@ -182,7 +182,7 @@ public class MeasureImageIntensityTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace,false);
+        measureImageIntensity.run(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());

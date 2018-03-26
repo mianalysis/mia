@@ -4,12 +4,19 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
+import net.imglib2.Cursor;
+import net.imglib2.img.Img;
+import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
+import net.imglib2.view.Views;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
-public class CropImage extends Module {
+public class CropImage < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String LEFT = "Left coordinate";
@@ -29,7 +36,7 @@ public class CropImage extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -42,8 +49,49 @@ public class CropImage extends Module {
         int top = parameters.getValue(HEIGHT);
         int bottom = parameters.getValue(BOTTOM);
 
-        // Applying the macro
-        ImagePlus outputImagePlus = new ImagePlus(outputImageName,inputImagePlus.getStack().crop(left,top,0,(right-left),(bottom-top),inputImagePlus.getNSlices()));
+        Img<T> img = inputImage.getImg();
+
+//        // CAN'T USE THE FOLLOWING UNTIL IMGS ARE CREATED WITH THE CORRECT DIMENSION ORDERING
+//        // Getting limits and output dimensions
+//        long[] min = new long[img.numDimensions()];
+//        long[] dims = new long[img.numDimensions()];
+//        min[0] = left;
+//        min[1] = top;
+//        dims[0] = right-left;
+//        dims[1] = bottom-top;
+//        for (int i=2;i<img.numDimensions();i++) {
+//            min[i] = 0;
+//            dims[i] = img.dimension(i);
+//        }
+
+        // IN THE MEANTIME, DOING THIS USING IMAGEPLUS
+        long[] min = new long[img.numDimensions()];
+        long[] dimsIn = new long[img.numDimensions()];
+        min[0] = left;
+        min[1] = top;
+        dimsIn[0] = right-left;
+        dimsIn[1] = bottom-top;
+        for (int i=2;i<img.numDimensions();i++) {
+            min[i] = 0;
+            dimsIn[i] = img.dimension(i);
+        }
+
+        long[] dimsOut = new long[5];
+        dimsOut[0] = right-left;
+        dimsOut[1] = bottom-top;
+        dimsOut[2] = inputImagePlus.getNChannels();
+        dimsOut[3] = inputImagePlus.getNSlices();
+        dimsOut[4] = inputImagePlus.getNFrames();
+
+        // Creating the output image and copying over the pixel coordinates
+        ArrayImgFactory<T> factory = new ArrayImgFactory<T>();
+        Img<T> outputImg = factory.create(dimsOut,img.firstElement());
+        Cursor<T> cropCursor = Views.offsetInterval(img,min,dimsIn).cursor();
+        Cursor<T> outputCursor = outputImg.cursor();
+
+        while (cropCursor.hasNext()) outputCursor.next().set(cropCursor.next());
+
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg,outputImageName);
         outputImagePlus.setCalibration(inputImagePlus.getCalibration());
 
         // If selected, displaying the image
@@ -54,7 +102,7 @@ public class CropImage extends Module {
         }
 
         // If the image is being saved as a new image, adding it to the workspace
-        if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
+        writeMessage("Adding image ("+outputImageName+") to workspace");
         Image outputImage = new Image(outputImageName,outputImagePlus);
         workspace.addImage(outputImage);
 

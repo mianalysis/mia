@@ -1,10 +1,12 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
@@ -36,7 +38,7 @@ public class ImageLoaderTest {
         imageLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageLoader.run(workspace,false);
+        imageLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -82,7 +84,7 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -128,7 +130,7 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -174,7 +176,7 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
-        imageFileLoader.run(workspace,false);
+        imageFileLoader.run(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -202,4 +204,12 @@ public class ImageLoaderTest {
 
     }
 
+    @Test @Ignore
+    public void testGetImg() throws Exception {
+        String pathToImage = URLDecoder.decode(ImageLoader.class.getResource("/images/2CHTest.tif").getPath(),"UTF-8");
+
+        ImageLoader imageLoader = new ImageLoader();
+        imageLoader.getImg(pathToImage,1,null,false);
+
+    }
 }

@@ -7,7 +7,7 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
@@ -126,7 +126,7 @@ public class SplineAnalysis extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -159,14 +159,14 @@ public class SplineAnalysis extends Module {
         int count = 1;
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            writeMessage("Processing object " + (count++) + " of " + total,verbose);
+            writeMessage("Processing object " + (count++) + " of " + total);
 
             // Converting object to image, then inverting, so we have a black object on a white background
             ObjCollection tempObjects = new ObjCollection("Backbone");
             tempObjects.add(inputObject);
 
             HashMap<Integer,Float> hues = tempObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-            ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ShowObjects.ColourModes.SINGLE_COLOUR, hues, false).getImagePlus();
+            ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues, false).getImagePlus();
             InvertIntensity.process(objectIpl);
 
             // Skeletonise fish to get single backbone

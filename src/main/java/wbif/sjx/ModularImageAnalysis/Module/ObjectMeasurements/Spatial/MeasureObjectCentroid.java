@@ -52,7 +52,7 @@ public class MeasureObjectCentroid extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting current objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -61,7 +61,7 @@ public class MeasureObjectCentroid extends Module {
         String choice = parameters.getValue(CENTROID_METHOD);
         boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
         boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
-        writeMessage("Calculating centroid as "+choice,verbose);
+        writeMessage("Calculating centroid as "+choice);
 
         // Getting the centroids of each and saving them to the objects
         for (Obj object:inputObjects.values()) {

@@ -212,7 +212,7 @@ public class FilterImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -237,56 +237,47 @@ public class FilterImage extends Module {
         // Applying smoothing filter
         switch (filterMode) {
             case FilterModes.DOG2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
                 DoG.run(inputImagePlus,filterRadius,true);
                 break;
 
             case FilterModes.GAUSSIAN2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D Gaussian filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D Gaussian filter (radius = " + filterRadius + " px)");
                 runGaussian2DFilter(inputImagePlus,filterRadius);
                 break;
 
             case FilterModes.GAUSSIAN3D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 3D Gaussian filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 3D Gaussian filter (radius = " + filterRadius + " px)");
                 GaussianBlur3D.blur(inputImagePlus,filterRadius,filterRadius,filterRadius);
                 break;
 
             case FilterModes.GRADIENT2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D Gradient filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D Gradient filter (radius = " + filterRadius + " px)");
                     runGradient2DFilter(inputImagePlus,filterRadius);
                 break;
 
             case FilterModes.MEDIAN2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D median filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D median filter (radius = " + filterRadius + " px)");
                 applyRankFilterToStack(inputImagePlus,RankFilters.MEDIAN,filterRadius);
                 break;
 
             case FilterModes.MEDIAN3D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 3D median filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 3D median filter (radius = " + filterRadius + " px)");
                 runMedian3DFilter(inputImagePlus,(float) filterRadius);
                 break;
 
             case FilterModes.RIDGE_ENHANCEMENT:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 3D median filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 3D median filter (radius = " + filterRadius + " px)");
                 RidgeEnhancement.run(inputImagePlus,(float) filterRadius, true);
                 break;
 
             case FilterModes.ROLLING_FRAME:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
+                writeMessage("Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
                 inputImagePlus = runRollingFrameFilter(inputImagePlus,windowHalfWidth,rollingMethod);
                 break;
 
             case FilterModes.VARIANCE2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D variance filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D variance filter (radius = " + filterRadius + " px)");
                 applyRankFilterToStack(inputImagePlus,RankFilters.VARIANCE,filterRadius);
                 break;
 

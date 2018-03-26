@@ -60,7 +60,7 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         Calendar calendar = Calendar.getInstance();
 
         // Getting input image
@@ -97,7 +97,7 @@ public class RidgeDetection extends Module {
         for (int c=0;c<inputImagePlus.getNChannels();c++) {
             for (int z=0;z<inputImagePlus.getNSlices();z++) {
                 for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
-                    if (verbose) System.out.println("[" + moduleName + "] Processing image "+(count++)+" of "+total);
+                    writeMessage("Processing image "+(count++)+" of "+total);
                     inputImagePlus.setPosition(c+1,z+1,t+1);
 
                     // Running the ridge detection
@@ -127,7 +127,7 @@ public class RidgeDetection extends Module {
 
                     // Iterating over each object, adding it to the nascent ObjCollection
                     if (linkContours) {
-                        if (verbose) System.out.println("[" + moduleName + "] Linking contours");
+                        writeMessage("Linking contours");
 
                         for (Junction junction : junctions) {
                             // Getting the LineGroup associated with Line1.  If there isn't one, creating a new one
@@ -182,8 +182,7 @@ public class RidgeDetection extends Module {
 
         if (parameters.getValue(SHOW_OBJECTS)) {
             // Adding image to workspace
-            if (verbose)
-                System.out.println("[" + moduleName + "] Adding objects (" + outputObjectsName + ") to workspace");
+            writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
 
             // Creating a duplicate of the input image
             inputImagePlus = new Duplicator().run(inputImagePlus);
@@ -193,7 +192,7 @@ public class RidgeDetection extends Module {
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
             HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"",true);
             String positionMode = AddObjectsOverlay.PositionModes.ALL_POINTS;
-            new AddObjectsOverlay().createOverlay(inputImagePlus,outputObjects,positionMode,null,hues,null,8,1,verbose);
+            new AddObjectsOverlay().createOverlay(inputImagePlus,outputObjects,positionMode,null,hues,null,8,1);
 
             // Displaying the overlay
             inputImagePlus.show();

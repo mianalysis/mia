@@ -3,9 +3,11 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.IJ;
+import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
@@ -29,6 +31,7 @@ public class BatchProcessor extends FileCrawler {
 
     private boolean shutdownEarly;
     private int counter = 0;
+    private int origThreads = Prefs.getThreads();
 
 
     // CONSTRUCTORS
@@ -51,10 +54,12 @@ public class BatchProcessor extends FileCrawler {
 
         // The protocol to run will depend on if a single file or a folder was selected
         if (rootFolder.getFolderAsFile().isFile()) {
+            Module.setVerbose(true);
             runSingle(workspaces, analysis);
 
         } else {
             // The system can run multiple files in parallel or one at a time
+            Module.setVerbose(false);
             runParallel(workspaces, analysis, exporter);
 
         }
@@ -75,6 +80,9 @@ public class BatchProcessor extends FileCrawler {
         int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
 
         System.out.println("Starting batch processor");
+        Module.setVerbose(false);
+
+        Prefs.setThreads(1);
 
         // Setting up the ExecutorService, which will manage the threads
         pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
@@ -95,7 +103,7 @@ public class BatchProcessor extends FileCrawler {
             Runnable task = () -> {
                 try {
                     // Running the current analysis
-                    analysis.execute(workspace, false);
+                    analysis.execute(workspace);
 
                     // Getting the number of completed and total tasks
                     incrementCounter();
@@ -136,6 +144,7 @@ public class BatchProcessor extends FileCrawler {
         // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        Prefs.setThreads(origThreads);
 
     }
 
@@ -147,7 +156,7 @@ public class BatchProcessor extends FileCrawler {
             // Running the analysis
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
             try {
-                analysis.execute(workspace, verbose);
+                analysis.execute(workspace);
             } catch (Throwable t) {
                 t.printStackTrace(System.err);
             }
@@ -175,6 +184,7 @@ public class BatchProcessor extends FileCrawler {
             pool.shutdownNow();
         }
         shutdownEarly = true;
+        Prefs.setThreads(origThreads);
 
         System.out.println("Shutdown complete!");
 

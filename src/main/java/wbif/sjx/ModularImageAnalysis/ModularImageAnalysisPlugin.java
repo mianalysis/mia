@@ -51,11 +51,9 @@ public class ModularImageAnalysisPlugin implements PlugIn {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
                 new ImageJ();
-                Prefs.setThreads(1);
                 new MainGUI(true);
 
             } else {
-                Prefs.setThreads(1);
                 String filepath = args[0];
 
                 AnalysisHandler analysisHandler = new AnalysisHandler();

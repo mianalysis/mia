@@ -12,8 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.6.1" level="project" />
-    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.3.7" level="project" />
+    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.3.10" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi-ooxml:3.16" level="project" />
@@ -57,7 +56,7 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.6" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: net.imagej:ij:1.51h" level="project" />
+    <orderEntry type="library" name="Maven: net.imagej:ij:1.51q" level="project" />
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:1.4.2">
         <CLASSES>
@@ -70,16 +69,21 @@
     <orderEntry type="library" name="Maven: sc.fiji:Fiji_Plugins:3.1.1" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:fiji-lib:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: net.imagej:ij1-patcher:0.12.2" level="project" />
+    <orderEntry type="library" name="Maven: io.scif:scifio:0.33.0" level="project" />
+    <orderEntry type="library" name="Maven: io.scif:scifio-jai-imageio:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: net.imagej:imagej-common:0.24.4" level="project" />
+    <orderEntry type="library" name="Maven: net.imglib2:imglib2-roi:0.4.4" level="project" />
+    <orderEntry type="library" name="Maven: edu.ucar:udunits:4.3.18" level="project" />
+    <orderEntry type="library" name="Maven: net.imglib2:imglib2:4.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.scijava:scijava-common:2.65.0" level="project" />
+    <orderEntry type="library" name="Maven: org.scijava:parsington:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.gentyref:gentyref:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.bushe:eventbus:1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.mapdb:mapdb:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:Auto_Threshold:1.16.4" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:TrackMate_:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:3D_Viewer:4.0.1" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:VIB-lib:2.1.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:pal-optimization:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: net.imagej:imagej-deprecated:0.1.1" level="project" />
-    <orderEntry type="library" name="Maven: net.imagej:imagej-common:0.18.1" level="project" />
-    <orderEntry type="library" name="Maven: net.imglib2:imglib2-roi:0.4.2" level="project" />
-    <orderEntry type="library" name="Maven: edu.ucar:udunits:4.3.18" level="project" />
-    <orderEntry type="library" name="Maven: net.imglib2:imglib2:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: net.imglib2:imglib2-algorithm:0.6.2" level="project" />
     <orderEntry type="library" name="Maven: net.sf.trove4j:trove4j:3.0.3" level="project" />
     <orderEntry type="library" name="Maven: net.imglib2:imglib2-algorithm-gpl:0.1.5" level="project" />
@@ -91,10 +95,6 @@
     <orderEntry type="library" name="Maven: jitk:jitk-tps:1.3.2" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.efficient-java-matrix-library:ejml:0.24" level="project" />
     <orderEntry type="library" name="Maven: au.com.bytecode:opencsv:2.4" level="project" />
-    <orderEntry type="library" name="Maven: org.scijava:scijava-common:2.62.1" level="project" />
-    <orderEntry type="library" name="Maven: org.scijava:parsington:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: com.googlecode.gentyref:gentyref:1.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bushe:eventbus:1.4" level="project" />
     <orderEntry type="library" name="Maven: org.scijava:j3dcore:1.6.0-scijava-2" level="project" />
     <orderEntry type="library" name="Maven: org.jogamp.gluegen:gluegen-rt:2.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.jogamp.jogl:jogl-all:2.3.2" level="project" />
@@ -116,6 +116,16 @@
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.tinyjee.jgraphx:jgraphx:1.10.4.1" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:CorrectBleach_:2.0.2" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:Trainable_Segmentation:3.2.9" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:Anisotropic_Diffusion_2D:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:VIB-lib:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:pal-optimization:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:weka-dev:3.9.0" level="project" />
+    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka.thirdparty:bounce:0.18" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.matrix-toolkits-java:mtj:1.0.4" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:imagescience:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:Image_5D:1.2.6" level="project" />
     <orderEntry type="library" name="Maven: fr.inra.ijpb:MorphoLibJ_:1.3.2" level="project" />
     <orderEntry type="library" name="Maven: de.biomedical-imaging.imagej:ij_ridge_detect:1.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.5" level="project" />
@@ -225,6 +235,7 @@
     <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-servlet:3.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-hdfs:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: commons-daemon:commons-daemon:1.0.13" level="project" />
-    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.3.10" level="project" />
+    <orderEntry type="library" name="Maven: com.github.SJCross:Common:v1.3.9" level="project" />
+    <orderEntry type="library" name="Maven: org.ehcache:ehcache:3.4.0" level="project" />
   </component>
 </module>

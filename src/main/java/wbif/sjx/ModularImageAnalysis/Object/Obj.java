@@ -5,7 +5,9 @@ import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.gui.Wand;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
+import ij.plugin.filter.ThresholdToSelection;
+import ij.process.ImageProcessor;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 
@@ -229,23 +231,16 @@ public class Obj extends Volume {
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(sliceObj);
 
+        ImagePlus sliceIpl = IJ.createImage("SliceIm",templateIpl.getWidth(),templateIpl.getHeight(),1,8);
+
         HashMap<Integer,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectImage = objectCollection.convertObjectsToImage("Output",templateIpl, ShowObjects.ColourModes.SINGLE_COLOUR, hues, false);
+        Image objectImage = objectCollection.convertObjectsToImage("Output",sliceIpl, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues, false);
+        IJ.run(objectImage.getImagePlus(), "Invert", "stack");
 
-        // Getting the object as a Roi
-        int x = (int) Math.round(sliceObj.getX(true)[0]);
-        int y = (int) Math.round(sliceObj.getY(true)[0]);
-
-        // Filling holes in the object
-        objectImage.getImagePlus().getProcessor().invert();
-        IJ.run(objectImage.getImagePlus(),"Options...", "iterations=1 count=1 do=[Fill Holes] stack");
-
-        // Detecting the object edge
-        Wand wand = new Wand(objectImage.getImagePlus().getProcessor());
-        wand.autoOutline(x,y);
-
-        // Creating the ROI
-        return new PolygonRoi(wand.xpoints,wand.ypoints,wand.npoints,Roi.TRACED_ROI);
+        ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
+        ipr.setThreshold(0,0, ImageProcessor.NO_LUT_UPDATE);
+        ThresholdToSelection selection = new ThresholdToSelection();
+        return selection.convert(objectImage.getImagePlus().getProcessor());
 
     }
 
@@ -307,6 +302,17 @@ public class Obj extends Volume {
         }
 
         return slicePoints;
+
+    }
+
+    public Image convertObjToImage(String outputName, ImagePlus templateIpl) {
+        // Creating an ObjCollection to hold this image
+        ObjCollection tempObj = new ObjCollection(outputName);
+        tempObj.add(this);
+
+        // Getting the image
+        HashMap<Integer, Float> hues = tempObj.getHue(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
+        return tempObj.convertObjectsToImage(outputName,templateIpl,ObjCollection.ColourModes.SINGLE_COLOUR,hues,false);
 
     }
 

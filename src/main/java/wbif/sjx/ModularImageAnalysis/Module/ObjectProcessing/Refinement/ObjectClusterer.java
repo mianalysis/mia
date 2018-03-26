@@ -117,7 +117,7 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -136,14 +136,14 @@ public class ObjectClusterer extends Module {
         String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
 
         // Adding points to collection
-        if (verbose) System.out.println("["+moduleName+"] Adding points to clustering algorithm");
+        writeMessage("Adding points to clustering algorithm");
         List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
         for (Obj inputObject:inputObjects.values()) {
             locations.add(new LocationWrapper(inputObject));
         }
 
         // Running clustering system
-        if (verbose) System.out.println("["+moduleName+"] Running clustering algorithm");
+        writeMessage("Running clustering algorithm");
         ObjCollection outputObjects = null;
 
         switch (clusteringAlgorithm) {
@@ -206,7 +206,7 @@ public class ObjectClusterer extends Module {
             }
         }
 
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
+        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
     }

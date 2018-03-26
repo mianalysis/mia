@@ -46,7 +46,8 @@ public abstract class GUI {
     }
 
     public void evaluateModule(Module module) throws GenericMIAException {
-        module.execute(testWorkspace, true);
+        Module.setVerbose(true);
+        module.execute(testWorkspace);
         lastModuleEval = getModules().indexOf(module);
 
         updateModules();

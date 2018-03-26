@@ -47,7 +47,7 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -74,18 +74,18 @@ public class MeasureObjectTexture extends Module {
         }
 
         // Running texture measurement
-        if (verbose) System.out.println("["+moduleName+"] Calculating co-occurance matrix");
-        if (verbose) System.out.println("["+moduleName+"] X-offset: "+xOffs);
-        if (verbose) System.out.println("["+moduleName+"] Y-offset: "+yOffs);
-        if (verbose) System.out.println("["+moduleName+"] Z-offset: "+zOffs);
+        writeMessage("Calculating co-occurance matrix");
+        writeMessage("X-offset: "+xOffs);
+        writeMessage("Y-offset: "+yOffs);
+        writeMessage("Z-offset: "+zOffs);
 
         TextureCalculator textureCalculator = new TextureCalculator();
 
         int nObjects = inputObjects.size();
         int iter = 1;
-        if (verbose) System.out.println("["+moduleName+"] Initialising measurements");
+        writeMessage("Initialising measurements");
         for (Obj object:inputObjects.values()) {
-            if (verbose) System.out.println("["+moduleName+"] Processing object "+(iter++)+" of "+nObjects);
+            writeMessage("Processing object "+(iter++)+" of "+nObjects);
             ArrayList<int[]> coords = new ArrayList<>();
 
             ArrayList<Integer> x = object.getXCoords();
@@ -134,9 +134,6 @@ public class MeasureObjectTexture extends Module {
             }
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Measurements complete");
-
     }
 
     @Override

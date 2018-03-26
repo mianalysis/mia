@@ -4,11 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedCircles2D;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedSpots3D;
-import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureImageIntensity;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement.MergeObjects;
+import wbif.sjx.ModularImageAnalysis.ExpectedRings2D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -40,11 +36,11 @@ public class SplineAnalysisTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new ExpectedCircles2D().getObjects("Input_obj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj",true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryCircle9p5pxRadius2D.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Ref_image",ipl);
         workspace.addImage(image);
@@ -66,12 +62,12 @@ public class SplineAnalysisTest {
         splineAnalysis.updateParameterValue(SplineAnalysis.SHOW_IMAGE,false);
 
         // Running the module
-        splineAnalysis.run(workspace,false);
+        splineAnalysis.run(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:inputObj.values()) {
             // Testing measurements
-            double expected = testObject.getMeasurement(ExpectedCircles2D.Measures.EXP_MEAN_CURVATURE.name()).getValue();
+            double expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE.name()).getValue();
             double actual = testObject.getMeasurement(SplineAnalysis.Measurements.MEAN_CURVATURE).getValue();
             assertEquals(expected, actual, tolerance);
 
