@@ -43,6 +43,7 @@ Required plugins pre-packaged with Fiji:
 - [BioFormats](https://github.com/openmicroscopy/bioformats)
 - [Correct Bleach](https://github.com/fiji/CorrectBleach)
 - [TrackMate](https://github.com/fiji/TrackMate)
+- [Weka Trainable Segmentation](https://github.com/fiji/Trainable_Segmentation)
 
 Required plugins that need installing via the Fiji updater:
 - [Ridge Detection](https://github.com/thorstenwagner/ij-ridgedetection)

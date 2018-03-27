@@ -1,9 +1,14 @@
+// TODO: Figure out why ImageJFunctions.wrap() ImagePlus behaves badly with RunTrackMate tracking
+
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
+import ij.plugin.HyperStackMaker;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
@@ -50,21 +55,6 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         int bottom = parameters.getValue(BOTTOM);
 
         Img<T> img = inputImage.getImg();
-
-//        // CAN'T USE THE FOLLOWING UNTIL IMGS ARE CREATED WITH THE CORRECT DIMENSION ORDERING
-//        // Getting limits and output dimensions
-//        long[] min = new long[img.numDimensions()];
-//        long[] dims = new long[img.numDimensions()];
-//        min[0] = left;
-//        min[1] = top;
-//        dims[0] = right-left;
-//        dims[1] = bottom-top;
-//        for (int i=2;i<img.numDimensions();i++) {
-//            min[i] = 0;
-//            dims[i] = img.dimension(i);
-//        }
-
-        // IN THE MEANTIME, DOING THIS USING IMAGEPLUS
         long[] min = new long[img.numDimensions()];
         long[] dimsIn = new long[img.numDimensions()];
         min[0] = left;
@@ -91,7 +81,9 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
         while (cropCursor.hasNext()) outputCursor.next().set(cropCursor.next());
 
-        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg,outputImageName);
+        // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
+        // by duplicating it
+        ImagePlus outputImagePlus = new Duplicator().run(ImageJFunctions.wrap(outputImg,outputImageName));
         outputImagePlus.setCalibration(inputImagePlus.getCalibration());
 
         // If selected, displaying the image
