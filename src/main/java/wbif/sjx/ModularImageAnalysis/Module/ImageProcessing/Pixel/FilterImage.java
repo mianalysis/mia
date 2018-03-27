@@ -28,6 +28,7 @@ public class FilterImage extends Module {
     public static final String FILTER_RADIUS = "Filter radius";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String ROLLING_METHOD = "Rolling filter method";
+    public static final String WINDOW_MODE = "Window mode";
     public static final String WINDOW_HALF_WIDTH = "Window half width (frames)";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -53,6 +54,15 @@ public class FilterImage extends Module {
         String MAXIMUM = "Maximum";
 
         String[] ALL = new String[]{AVERAGE,MINIMUM,MAXIMUM};
+
+    }
+
+    public interface WindowModes {
+        String BOTH_SIDES = "Both sides";
+        String PREVIOUS = "Previous only";
+        String FUTURE = "Future only";
+
+        String[] ALL = new String[]{BOTH_SIDES,PREVIOUS,FUTURE};
 
     }
 
@@ -122,7 +132,7 @@ public class FilterImage extends Module {
 
     }
 
-    public static ImagePlus runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod) {
+    public static ImagePlus runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod, String windowMode) {
         // Creating new hyperstack
         String type = "8-bit";
         switch (inputImagePlus.getBitDepth()) {
@@ -149,8 +159,25 @@ public class FilterImage extends Module {
 
         // Running through each frame, calculating the local average
         for (int f=1;f<=nFrames;f++) {
-            int firstFrame = Math.max(1,f-windowHalfWidth);
-            int lastFrame = Math.min(nFrames,f+windowHalfWidth);
+            int firstFrame = 0;
+            int lastFrame = 0;
+
+            switch (windowMode) {
+                case WindowModes.BOTH_SIDES:
+                    firstFrame = Math.max(1,f-windowHalfWidth);
+                    lastFrame = Math.min(nFrames,f+windowHalfWidth);
+                    break;
+
+                case WindowModes.PREVIOUS:
+                    firstFrame = Math.max(1,f-windowHalfWidth);
+                    lastFrame = Math.min(nFrames,f);
+                    break;
+
+                case WindowModes.FUTURE:
+                    firstFrame = Math.max(1,f);
+                    lastFrame = Math.min(nFrames,f+windowHalfWidth);
+                    break;
+            }
 
             // Creating a local substack
             ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,"1-"+nChannels,
@@ -226,6 +253,7 @@ public class FilterImage extends Module {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         String rollingMethod = parameters.getValue(ROLLING_METHOD);
         int windowHalfWidth = parameters.getValue(WINDOW_HALF_WIDTH);
+        String windowMode = parameters.getValue(WINDOW_MODE);
 
         if (calibratedUnits) {
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
@@ -273,7 +301,7 @@ public class FilterImage extends Module {
 
             case FilterModes.ROLLING_FRAME:
                 writeMessage("Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
-                inputImagePlus = runRollingFrameFilter(inputImagePlus,windowHalfWidth,rollingMethod);
+                inputImagePlus = runRollingFrameFilter(inputImagePlus,windowHalfWidth,rollingMethod,windowMode);
                 break;
 
             case FilterModes.VARIANCE2D:
@@ -317,6 +345,7 @@ public class FilterImage extends Module {
         parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(ROLLING_METHOD, Parameter.CHOICE_ARRAY,RollingMethods.AVERAGE,RollingMethods.ALL));
         parameters.add(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
+        parameters.add(new Parameter(WINDOW_MODE,Parameter.CHOICE_ARRAY,WindowModes.BOTH_SIDES,WindowModes.ALL));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
@@ -344,6 +373,7 @@ public class FilterImage extends Module {
         } else {
             returnedParameters.add(parameters.getParameter(ROLLING_METHOD));
             returnedParameters.add(parameters.getParameter(WINDOW_HALF_WIDTH));
+            returnedParameters.add(parameters.getParameter(WINDOW_MODE));
 
         }
 

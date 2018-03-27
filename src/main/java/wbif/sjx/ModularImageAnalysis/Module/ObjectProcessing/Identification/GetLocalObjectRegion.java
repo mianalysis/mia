@@ -15,7 +15,7 @@ public class GetLocalObjectRegion extends Module {
     public static final String USE_MEASUREMENT = "Use measurement for radius";
     public static final String MEASUREMENT_NAME = "Measurement name";
 
-    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated, boolean useMeasurement, String measurementName) {
+    public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated, boolean useMeasurement, String measurementName) {
         // Creating store for output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
@@ -26,8 +26,11 @@ public class GetLocalObjectRegion extends Module {
         String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
         double xy_z_ratio = dppXY/dppZ;
 
+        int count = 0;
+        int startingNumber = inputObjects.size();
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
+            writeMessage("Calculating for object " + (++count) + " of " + startingNumber);
             // Creating new object and assigning relationship to input objects
             Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits);
 

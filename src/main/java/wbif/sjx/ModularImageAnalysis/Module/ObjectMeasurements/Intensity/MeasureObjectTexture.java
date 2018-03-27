@@ -69,7 +69,7 @@ public class MeasureObjectTexture extends Module {
             boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
 
             // Getting local object region
-            inputObjects = GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated,false,"");
+            inputObjects = new GetLocalObjectRegion().getLocalRegions(inputObjects, inputObjectsName, radius, calibrated,false,"");
 
         }
 

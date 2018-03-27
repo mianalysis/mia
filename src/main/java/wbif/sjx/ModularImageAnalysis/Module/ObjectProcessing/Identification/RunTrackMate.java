@@ -54,7 +54,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    private interface Measurements {
+    public interface Measurements {
         String RADIUS = "SPOT_DETECT_TRACK//RADIUS";
         String ESTIMATED_DIAMETER = "SPOT_DETECT_TRACK//EST_DIAMETER";
 
@@ -80,13 +80,13 @@ public class RunTrackMate extends Module {
             spotObject.addMeasurement(new Measurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
             spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
 
-            spotObjects.put(spotObject.getID(),spotObject);
+            spotObjects.add(spotObject);
 
         }
 
         // Adding explicit volume to spots
         if (estimateSize) {
-            GetLocalObjectRegion.getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
+            new GetLocalObjectRegion().getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject:spotObjects.values()) {
@@ -117,7 +117,7 @@ public class RunTrackMate extends Module {
         writeMessage("Converting tracks to local track model");
         TrackModel trackModel = model.getTrackModel();
         Set<Integer> trackIDs = trackModel.trackIDs(false);
-        System.out.println("size "+trackIDs.size());
+
         for (Integer trackID : trackIDs) {
             // If necessary, creating a new summary object for the track
             Obj trackObject = new Obj(trackObjectsName, trackID, dppXY, dppZ, calibrationUnits);
@@ -134,6 +134,9 @@ public class RunTrackMate extends Module {
             for (Spot spot : spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
                 Obj spotObject = new Obj(spotObjectsName, spotObjects.getNextID(), dppXY, dppZ, calibrationUnits);
+
+                spotObject.addMeasurement(new Measurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
+                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
 
                 // Getting coordinates
                 int x = (int) spot.getDoublePosition(0);
@@ -154,14 +157,15 @@ public class RunTrackMate extends Module {
                 trackObject.addChild(spotObject);
 
                 // Adding the instance object to the relevant collection
-                spotObjects.put(spotObject.getID(), spotObject);
+                spotObjects.add(spotObject);
+                trackObjects.add(trackObject);
 
             }
         }
 
         // Adding explicit volume to spots
         if (estimateSize) {
-            ObjCollection spotVolumeObjects = GetLocalObjectRegion.getLocalRegions(spotObjects, "SpotVolume", 0, false, true, Measurements.ESTIMATED_DIAMETER);
+            ObjCollection spotVolumeObjects = new GetLocalObjectRegion().getLocalRegions(spotObjects, "SpotVolume", 0, false, true, Measurements.ESTIMATED_DIAMETER);
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject : spotObjects.values()) {
@@ -171,6 +175,7 @@ public class RunTrackMate extends Module {
         }
 
         return new ObjCollection[]{spotObjects,trackObjects};
+
     }
 
     @Override
@@ -234,7 +239,6 @@ public class RunTrackMate extends Module {
 
         // Initialising settings for TrackMate
         Settings settings = new Settings();
-
         settings.setFrom(ipl);
         settings.detectorFactory = new LogDetectorFactory();
         settings.detectorSettings.put(DetectorKeys.KEY_DO_SUBPIXEL_LOCALIZATION, subpixelLocalisation);
@@ -242,9 +246,7 @@ public class RunTrackMate extends Module {
         settings.detectorSettings.put(DetectorKeys.KEY_RADIUS, radius);
         settings.detectorSettings.put(DetectorKeys.KEY_THRESHOLD, threshold);
         settings.detectorSettings.put(DetectorKeys.KEY_TARGET_CHANNEL, 1);
-
         settings.addSpotAnalyzerFactory(new SpotRadiusEstimatorFactory<>());
-
         settings.trackerFactory  = new SparseLAPTrackerFactory();
         settings.trackerSettings = LAPUtils.getDefaultLAPSettingsMap();
         settings.trackerSettings.put(TrackerKeys.KEY_ALLOW_TRACK_SPLITTING, false);
@@ -254,9 +256,6 @@ public class RunTrackMate extends Module {
         settings.trackerSettings.put(TrackerKeys.KEY_GAP_CLOSING_MAX_FRAME_GAP,maxFrameGap);
 
         TrackMate trackmate = new TrackMate(model, settings);
-
-        // Running TrackMate
-
 
         // Resetting ipl to the input image
         ipl = targetImage.getImagePlus();

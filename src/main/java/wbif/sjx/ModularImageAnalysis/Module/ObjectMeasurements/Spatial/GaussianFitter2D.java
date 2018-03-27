@@ -1,13 +1,17 @@
 // TODO: Show original and fit PSFs - maybe as a mosaic - to demonstrate the process is working correctly
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
+import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.MathFunc.GaussianDistribution2D;
+import wbif.sjx.common.MathFunc.GaussianFitter;
 
 import java.util.Iterator;
 
@@ -23,6 +27,9 @@ public class GaussianFitter2D extends Module {
     public static final String RADIUS = "Radius";
     public static final String RADIUS_MEASUREMENT = "Radius measurement";
     public static final String MEASUREMENT_MULTIPLIER = "Measurement multiplier";
+    public static final String LIMIT_SIGMA_RANGE = "Limit sigma range";
+    public static final String MIN_SIGMA = "Minimum sigma (x Radius)";
+    public static final String MAX_SIGMA = "Maximum sigma (x Radius)";
     public static final String FIXED_FITTING_WINDOW = "Fixed fitting window";
     public static final String WINDOW_SIZE = "Window size";
     public static final String MAX_EVALUATIONS = "Maximum number of evaluations";
@@ -54,6 +61,7 @@ public class GaussianFitter2D extends Module {
         String A_BG = "GAUSSFIT2D//A_BG";
         String THETA = "GAUSSFIT2D//THETA";
         String ELLIPTICITY = "GAUSSFIT2D//ELLIPTICITY";
+        String RESIDUAL = "GAUSSFIT2D//RESIDUAL_(NORM)";
 
     }
     
@@ -76,6 +84,7 @@ public class GaussianFitter2D extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
+        inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Getting calibration
         double distPerPxXY = inputImagePlus.getCalibration().pixelWidth;
@@ -87,6 +96,9 @@ public class GaussianFitter2D extends Module {
 
         // Getting parameters
         String radiusMode = parameters.getValue(RADIUS_MODE);
+        boolean limitSigma = parameters.getValue(LIMIT_SIGMA_RANGE);
+        double minSigma = parameters.getValue(MIN_SIGMA);
+        double maxSigma = parameters.getValue(MAX_SIGMA);
         boolean fixedFittingWindow = parameters.getValue(FIXED_FITTING_WINDOW);
         int windowWidth = parameters.getValue(WINDOW_SIZE);
         int maxEvaluations = parameters.getValue(MAX_EVALUATIONS);
@@ -129,6 +141,7 @@ public class GaussianFitter2D extends Module {
             double ABG = Double.NaN;
             double th = Double.NaN;
             double ellipticity = Double.NaN;
+            double residual = Double.NaN;
             double[] pOut = null;
 
             // Setting limits
@@ -137,8 +150,6 @@ public class GaussianFitter2D extends Module {
                     {0, 2 * r + 1},
                     {1E-50, Double.MAX_VALUE}, // Sigma can't go to zero
                     {1E-50, Double.MAX_VALUE},
-//                    {r*0.3, r*3}, // Sigma can't go to zero
-//                    {r*0.3, r*3},
                     {Double.MIN_VALUE, Double.MAX_VALUE},
                     {Double.MIN_VALUE, Double.MAX_VALUE},
                     {0, 2 * Math.PI}
@@ -152,8 +163,10 @@ public class GaussianFitter2D extends Module {
             if (x - halfW > 0 & x + halfW + 1 < inputImagePlus.getWidth() & y - halfW > 0 & y + halfW + 1 < inputImagePlus.getHeight()) {
                 inputImagePlus.setPosition(1, z + 1, t + 1);
                 ImageProcessor ipr = inputImagePlus.getProcessor();
+
                 int[] xx = new int[]{x - halfW, x - halfW, x + halfW + 1, x + halfW + 1, x - halfW};
                 int[] yy = new int[]{y - halfW, y + halfW + 1, y + halfW + 1, y - halfW, y - halfW};
+
                 Roi roi = new PolygonRoi(xx, yy, 5, Roi.POLYGON);
                 ipr.setRoi(roi);
                 ImageProcessor iprCrop = ipr.crop();
@@ -183,6 +196,24 @@ public class GaussianFitter2D extends Module {
                     th = pOut[6];
                     ellipticity = sx > sy ? (sx - sy) / sx : (sy - sx) / sy;
 
+                    GaussianDistribution2D fitDistribution2D = new GaussianDistribution2D(pOut[0],pOut[1],sx,sy,A0,ABG,th);
+                    GaussianDistribution2D offsetDistribution2D = new GaussianDistribution2D(pOut[0],pOut[1],sx,sy,A0-ABG,0,th);
+                    residual = 0;
+                    double totalReal = 0;
+                    for (int xPos=0;xPos<iprCrop.getWidth();xPos++) {
+                        for (int yPos=0;yPos<iprCrop.getHeight();yPos++) {
+                            double realVal = iprCrop.get(xPos,yPos);
+                            double fitVal = fitDistribution2D.getValues(xPos,yPos)[0];
+                            double offsetVal = offsetDistribution2D.getValues(xPos,yPos)[0];
+
+                            residual = residual + Math.abs(realVal-fitVal);
+                            totalReal = totalReal + offsetVal;
+
+                        }
+                    }
+
+                    residual = residual/totalReal;
+
 //                    iprCrop = iprCrop.convertToFloatProcessor();
 //                    ImageProcessor iprOut = iprCrop.duplicate();
 //                    for (int xPx=0;xPx<iprOut.getWidth();xPx++) {
@@ -205,9 +236,14 @@ public class GaussianFitter2D extends Module {
 
                 }
 
-                // If the centroid has moved more than the width of the window, removing this localisation
                 if (pOut != null) {
+                    // If the centroid has moved more than the width of the window, removing this localisation
                     if (pOut[0] <= 1 || pOut[0] >= r * 2 || pOut[1] <= 1 || pOut[1] >= r * 2 || pOut[2] < 0.1 || pOut[3] < 0.1) {
+                        pOut = null;
+                    }
+
+                    // If the width is outside the permitted range
+                    if (limitSigma && ((sx+sy)/2 < r*minSigma || (sx+sy)/2 > r*maxSigma)) {
                         pOut = null;
                     }
                 }
@@ -232,6 +268,7 @@ public class GaussianFitter2D extends Module {
             inputObject.addMeasurement(new Measurement(Measurements.A_BG, ABG));
             inputObject.addMeasurement(new Measurement(Measurements.THETA, th));
             inputObject.addMeasurement(new Measurement(Measurements.ELLIPTICITY, ellipticity));
+            inputObject.addMeasurement(new Measurement(Measurements.RESIDUAL, residual));
 
             // If selected, any objects that weren't fit are removed
             if (removeUnfit & pOut == null) {
@@ -241,8 +278,10 @@ public class GaussianFitter2D extends Module {
         }
 
         // Adding explicit volume to spots
+        count = 0;
+        startingNumber = inputObjects.size();
         if (applyVolume) {
-            GetLocalObjectRegion.getLocalRegions(inputObjects,"SpotVolume",0,false,true, Measurements.SIGMA_X_PX);
+            new GetLocalObjectRegion().getLocalRegions(inputObjects,"SpotVolume",0,false,true, Measurements.SIGMA_X_PX);
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject:inputObjects.values()) {
@@ -254,6 +293,8 @@ public class GaussianFitter2D extends Module {
 
         writeMessage("Fit "+inputObjects.size()+" objects");
 
+        inputImagePlus.setPosition(1,1,1);
+
     }
 
     @Override
@@ -264,6 +305,9 @@ public class GaussianFitter2D extends Module {
         parameters.add(new Parameter(RADIUS, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(RADIUS_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null));
         parameters.add(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(LIMIT_SIGMA_RANGE, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(MIN_SIGMA, Parameter.DOUBLE,0.25));
+        parameters.add(new Parameter(MAX_SIGMA, Parameter.DOUBLE,4d));
         parameters.add(new Parameter(FIXED_FITTING_WINDOW,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(WINDOW_SIZE,Parameter.INTEGER,15));
         parameters.add(new Parameter(MAX_EVALUATIONS, Parameter.INTEGER,1000));
@@ -290,6 +334,7 @@ public class GaussianFitter2D extends Module {
         objectMeasurementReferences.add(new MeasurementReference(Measurements.A_BG));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.THETA));
         objectMeasurementReferences.add(new MeasurementReference(Measurements.ELLIPTICITY));
+        objectMeasurementReferences.add(new MeasurementReference(Measurements.RESIDUAL));
 
     }
 
@@ -309,6 +354,12 @@ public class GaussianFitter2D extends Module {
             parameters.updateValueSource(RADIUS_MEASUREMENT,inputObjectsName);
             returnedParameters.add(parameters.getParameter(MEASUREMENT_MULTIPLIER));
 
+        }
+
+        returnedParameters.add(parameters.getParameter(LIMIT_SIGMA_RANGE));
+        if (parameters.getValue(LIMIT_SIGMA_RANGE)) {
+            returnedParameters.add(parameters.getParameter(MIN_SIGMA));
+            returnedParameters.add(parameters.getParameter(MAX_SIGMA));
         }
 
         returnedParameters.add(parameters.getParameter(FIXED_FITTING_WINDOW));
@@ -349,6 +400,7 @@ public class GaussianFitter2D extends Module {
         objectMeasurementReferences.updateImageObjectName(Measurements.A_BG,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.THETA,inputObjectsName);
         objectMeasurementReferences.updateImageObjectName(Measurements.ELLIPTICITY,inputObjectsName);
+        objectMeasurementReferences.updateImageObjectName(Measurements.RESIDUAL,inputObjectsName);
 
         return objectMeasurementReferences;
 
