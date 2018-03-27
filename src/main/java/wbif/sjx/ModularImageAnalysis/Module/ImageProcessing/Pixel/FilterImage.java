@@ -132,33 +132,13 @@ public class FilterImage extends Module {
 
     }
 
-    public static ImagePlus runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod, String windowMode) {
-        // Creating new hyperstack
-        String type = "8-bit";
-        switch (inputImagePlus.getBitDepth()) {
-            case 8:
-                type = "8-bit";
-                break;
-
-            case 16:
-                type = "16-bit";
-                break;
-
-            case 32:
-                type = "32-bit";
-                break;
-        }
-
-        int width = inputImagePlus.getWidth();
-        int height = inputImagePlus.getHeight();
+    public static void runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod, String windowMode) {
         int nChannels = inputImagePlus.getNChannels();
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
 
-        ImagePlus outputImagePlus = IJ.createImage(inputImagePlus.getTitle(),type,width,height,nChannels,nSlices,nFrames);
-
         // Running through each frame, calculating the local average
-        for (int f=1;f<=nFrames;f++) {
+        for (int f=1;f<=inputImagePlus.getNFrames();f++) {
             int firstFrame = 0;
             int lastFrame = 0;
 
@@ -213,18 +193,16 @@ public class FilterImage extends Module {
             // Adding the new image into outputImagePlus
             for (int z = 1; z <= iplOut.getNSlices(); z++) {
                 for (int c = 1; c <= iplOut.getNChannels(); c++) {
-                    outputImagePlus.setPosition(c,z,f);
+                    inputImagePlus.setPosition(c,z,f);
                     iplOut.setPosition(c,z,1);
 
-                    outputImagePlus.setProcessor(iplOut.getProcessor());
+                    inputImagePlus.setProcessor(iplOut.getProcessor());
 
                 }
             }
         }
 
-        outputImagePlus.setPosition(1,1,1);
-
-        return outputImagePlus;
+        inputImagePlus.setPosition(1,1,1);
 
     }
 
@@ -301,7 +279,7 @@ public class FilterImage extends Module {
 
             case FilterModes.ROLLING_FRAME:
                 writeMessage("Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
-                inputImagePlus = runRollingFrameFilter(inputImagePlus,windowHalfWidth,rollingMethod,windowMode);
+                runRollingFrameFilter(inputImagePlus,windowHalfWidth,rollingMethod,windowMode);
                 break;
 
             case FilterModes.VARIANCE2D:
