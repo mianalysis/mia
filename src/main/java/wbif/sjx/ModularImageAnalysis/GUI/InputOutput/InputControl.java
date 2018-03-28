@@ -13,6 +13,8 @@ public class InputControl extends Module {
     public static final String BATCH_FOLDER_PATH = "Batch folder path";
     public static final String NUMBER_OF_THREADS = "Number of CPU threads";
     public static final String FILE_EXTENSION = "File extension";
+    public static final String SERIES_MODE = "Series mode";
+    public static final String SERIES_NUMBER = "Series number";
     public static final String USE_FILENAME_FILTER_1 = "Use filename filter 1";
     public static final String USE_FILENAME_FILTER_2 = "Use filename filter 2";
     public static final String USE_FILENAME_FILTER_3 = "Use filename filter 3";
@@ -28,6 +30,14 @@ public class InputControl extends Module {
         String BATCH = "Batch";
 
         String[] ALL = new String[]{BATCH,SINGLE_FILE};
+
+    }
+
+    public interface SeriesModes {
+        String ALL_SERIES = "All series";
+        String SINGLE_SERIES = "Single series";
+
+        String[] ALL = new String[]{ALL_SERIES,SINGLE_SERIES};
 
     }
 
@@ -65,6 +75,8 @@ public class InputControl extends Module {
         int nThreads = Runtime.getRuntime().availableProcessors()/2;
         parameters.add(new Parameter(NUMBER_OF_THREADS,Parameter.INTEGER,nThreads));
         parameters.add(new Parameter(FILE_EXTENSION, Parameter.STRING,"tif"));
+        parameters.add(new Parameter(SERIES_MODE,Parameter.CHOICE_ARRAY,SeriesModes.ALL_SERIES,SeriesModes.ALL));
+        parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
         parameters.add(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
         parameters.add(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
@@ -99,6 +111,13 @@ public class InputControl extends Module {
                 returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
                 break;
 
+        }
+
+        returnedParameters.add(parameters.getParameter(SERIES_MODE));
+        switch ((String) parameters.getValue(SERIES_MODE)) {
+            case SeriesModes.SINGLE_SERIES:
+                returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_1));

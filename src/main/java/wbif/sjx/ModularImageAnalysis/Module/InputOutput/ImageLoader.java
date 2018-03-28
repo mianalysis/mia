@@ -50,7 +50,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String PREFIX = "Prefix";
     public static final String FILE_PATH = "File path";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String SERIES_NUMBER = "Series number (>= 1)";
+//    public static final String SERIES_NUMBER = "Series number (>= 1)";
     public static final String USE_ALL_C = "Use all channels";
     public static final String STARTING_C = "Starting channel";
     public static final String ENDING_C = "Ending channel";
@@ -121,14 +121,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
-        ImagePlus ipl;
-        ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
-
         // Setting spatial calibration
         IMetadata meta;
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
         meta = service.createOMEXMLMetadata();
+        ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
 
         reader.setGroupFiles(false);
@@ -162,7 +160,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int nT = Math.floorDiv((endingT-startingT+1),intervalT);
 
         // Creating the new ImagePlus
-        ipl = IJ.createHyperStack("Image", width, height,nC,nZ,nT,bitDepth);
+        ImagePlus ipl = IJ.createHyperStack("Image", width, height,nC,nZ,nT,bitDepth);
 
         // Iterating over all images in the stack, adding them to the output ImagePlus
         int nTotal = nC*nT*nZ;
@@ -265,7 +263,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String nameFormat = parameters.getValue(NAME_FORMAT);
         String comment = parameters.getValue(COMMENT);
         String prefix = parameters.getValue(PREFIX);
-        int seriesNumber = parameters.getValue(SERIES_NUMBER);
+//        int seriesNumber = parameters.getValue(SERIES_NUMBER);
         boolean useAllC = parameters.getValue(USE_ALL_C);
         int startingC = parameters.getValue(STARTING_C);
         int endingC = parameters.getValue(ENDING_C);
@@ -285,6 +283,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean useImageJReader = parameters.getValue(USE_IMAGEJ_READER);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
+
+        // Series number comes from the Workspace
+        int seriesNumber = workspace.getMetadata().getSeries();
 
         if (useAllC) endingC = -1;
         if (useAllZ) endingZ = -1;
@@ -364,7 +365,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
         parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
         parameters.add(new Parameter(USE_ALL_C, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(STARTING_C, Parameter.INTEGER,1));
         parameters.add(new Parameter(ENDING_C, Parameter.INTEGER,1));
@@ -419,8 +419,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 returnedParameters.add(parameters.getParameter(FILE_PATH));
                 break;
         }
-
-        returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
 
         returnedParameters.add(parameters.getParameter(STARTING_C));
         returnedParameters.add(parameters.getParameter(INTERVAL_C));

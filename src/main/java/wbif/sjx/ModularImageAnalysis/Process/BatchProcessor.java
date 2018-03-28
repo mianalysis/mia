@@ -4,6 +4,15 @@ package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.IJ;
 import ij.Prefs;
+import loci.common.DebugTools;
+import loci.common.services.ServiceFactory;
+import loci.formats.ChannelSeparator;
+import loci.formats.FormatException;
+import loci.formats.meta.MetadataStore;
+import loci.formats.services.OMEXMLService;
+import loci.plugins.util.ImageProcessorReader;
+import loci.plugins.util.LociPrefs;
+import ome.xml.meta.IMetadata;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
@@ -19,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.concurrent.*;
+import java.util.stream.IntStream;
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -81,14 +91,12 @@ public class BatchProcessor extends FileCrawler {
 
         System.out.println("Starting batch processor");
         Module.setVerbose(false);
-
         Prefs.setThreads(1);
 
         // Setting up the ExecutorService, which will manage the threads
         pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         while (next != null) {
-            Workspace workspace = workspaces.getNewWorkspace(next);
             File finalNext = next;
 
             // Adding a parameter to the metadata structure indicating the depth of the current file
@@ -98,39 +106,50 @@ public class BatchProcessor extends FileCrawler {
                 parent = parent.getParentFile();
                 fileDepth++;
             }
-            workspace.getMetadata().put("FILE_DEPTH",fileDepth);
 
-            Runnable task = () -> {
-                try {
-                    // Running the current analysis
-                    analysis.execute(workspace);
+            // For the current file, determining how many series to process (and which ones)
+            int[] seriesNumbers = getSeriesNumbers(analysis, next);
 
-                    // Getting the number of completed and total tasks
-                    incrementCounter();
-                    int nComplete = getCounter();
-                    double nTotal = pool.getTaskCount();
-                    double percentageComplete = (nComplete/nTotal)*100;
+            // Iterating over all series to analyse, adding each one as a new workspace
+            for (int seriesNumber:seriesNumbers) {
+                Workspace workspace = workspaces.getNewWorkspace(next);
+                workspace.getMetadata().setSeries(seriesNumber);
+                workspace.getMetadata().put("FILE_DEPTH", fileDepth);
 
-                    // Displaying the current progress
-                    String string = "Completed "+dfInt.format(nComplete)+"/"+dfInt.format(nTotal)
-                            +" ("+dfDec.format(percentageComplete)+"%), "+ finalNext.getName();
-                    System.out.println(string);
+                Runnable task = () -> {
+                    try {
+                        // Running the current analysis
+                        analysis.execute(workspace);
 
-                    if (continuousExport && nComplete%saveNFiles==0) exporter.exportResults(workspaces,analysis);
+                        // Getting the number of completed and total tasks
+                        incrementCounter();
+                        int nComplete = getCounter();
+                        double nTotal = pool.getTaskCount();
+                        double percentageComplete = (nComplete / nTotal) * 100;
 
-                } catch (GenericMIAException | IOException e ) {
-                    e.printStackTrace();
+                        // Displaying the current progress
+                        String string = "Completed " + dfInt.format(nComplete) + "/" + dfInt.format(nTotal)
+                                + " (" + dfDec.format(percentageComplete) + "%), " + finalNext.getName();
+                        System.out.println(string);
 
-                } catch (Throwable t) {
-                    System.err.println("Failed for file "+finalNext.getName());
-                    t.printStackTrace(System.err);
+                        if (continuousExport && nComplete % saveNFiles == 0)
+                            exporter.exportResults(workspaces, analysis);
 
-                    pool.shutdownNow();
+                    } catch (GenericMIAException | IOException e) {
+                        e.printStackTrace();
 
-                }
-            };
+                    } catch (Throwable t) {
+                        System.err.println("Failed for file " + finalNext.getName());
+                        t.printStackTrace(System.err);
 
-            pool.submit(task);
+                        pool.shutdownNow();
+
+                    }
+                };
+
+                pool.submit(task);
+
+            }
 
             // Displaying the current progress
             double nTotal = pool.getTaskCount();
@@ -152,26 +171,38 @@ public class BatchProcessor extends FileCrawler {
         // Setting up the ExecutorService, which will manage the threads
         pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
-        Runnable task = () -> {
-            // Running the analysis
+        Module.setVerbose(false);
+        Prefs.setThreads(1);
+
+        // For the current file, determining how many series to process (and which ones)
+        int[] seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
+
+        // Iterating over all series to analyse, adding each one as a new workspace
+        for (int seriesNumber:seriesNumbers) {
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
-            try {
-                analysis.execute(workspace);
-            } catch (Throwable t) {
-                t.printStackTrace(System.err);
-            }
+            workspace.getMetadata().setSeries(seriesNumber);
 
-            // Clearing images from the workspace to prevent memory leak
-            workspace.clearAllImages(true);
+            Runnable task = () -> {
+                try {
+                    analysis.execute(workspace);
+                } catch (Throwable t) {
+                    t.printStackTrace(System.err);
+                }
 
-            // Adding a blank line to the output
-            if (verbose) System.out.println(" ");
+                // Clearing images from the workspace to prevent memory leak
+                workspace.clearAllImages(true);
 
-        };
+                // Adding a blank line to the output
+                if (verbose) System.out.println(" ");
 
-        // Submit the one job, then telling the pool not to accept any more jobs and to wait until all queued jobs have
-        // completed
-        pool.submit(task);
+            };
+
+            // Submit the jobs for this file, then tell the pool not to accept any more jobs and to wait until all
+            // queued jobs have completed
+            pool.submit(task);
+
+        }
+
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
@@ -215,6 +246,35 @@ public class BatchProcessor extends FileCrawler {
         }
     }
 
+    private int[] getSeriesNumbers(Analysis analysis, File inputFile) {
+        String seriesMode = analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE);
+        int[] seriesNumbers = null;
+
+        switch (seriesMode) {
+            case InputControl.SeriesModes.ALL_SERIES:
+                // Using BioFormats to get the number of series
+                DebugTools.enableLogging("off");
+                DebugTools.setRootLevel("off");
+                ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+                reader.setGroupFiles(false);
+                try {
+                    reader.setId(inputFile.getAbsolutePath());
+                } catch (FormatException | IOException e) {
+                    e.printStackTrace();
+                }
+                int seriesCount = reader.getSeriesCount();
+                seriesNumbers = IntStream.range(1,seriesCount).toArray();
+                break;
+
+            case InputControl.SeriesModes.SINGLE_SERIES:
+                seriesNumbers = new int[]{analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER)};
+                break;
+        }
+
+        return seriesNumbers;
+
+    }
+
 
     // GETTERS AND SETTERS
 
@@ -243,5 +303,4 @@ public class BatchProcessor extends FileCrawler {
         counter++;
 
     }
-
 }

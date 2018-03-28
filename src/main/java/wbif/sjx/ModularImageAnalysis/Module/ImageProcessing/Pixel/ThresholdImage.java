@@ -110,7 +110,7 @@ public class ThresholdImage extends Module {
     }
 
     public void applyLocalThreshold3D(ImagePlus inputImagePlus, String algorithm, double localRadius, double thrMult,
-                                      boolean useLowerLim, double lowerLim,boolean globalZ) {
+                                      boolean useLowerLim, double lowerLim, boolean globalZ) {
 
         double localRadiusZ;
         if (globalZ) {
@@ -289,7 +289,7 @@ public class ThresholdImage extends Module {
                 returnedParameters.add(parameters.getParameter(LOCAL_ALGORITHM));
                 returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
                 returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
-//                returnedParameters.add(parameters.getParameter(USE_GLOBAL_Z));
+                returnedParameters.add(parameters.getParameter(USE_GLOBAL_Z));
 
                 break;
 

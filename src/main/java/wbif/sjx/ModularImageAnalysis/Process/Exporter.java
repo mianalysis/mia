@@ -175,7 +175,7 @@ public class Exporter {
             }
 
             // Preparing the filepath and filename
-            String outPath = FilenameUtils.removeExtension(exportFilePath) +".xml";
+            String outPath = FilenameUtils.removeExtension(exportFilePath)  +".xml";
 
             // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

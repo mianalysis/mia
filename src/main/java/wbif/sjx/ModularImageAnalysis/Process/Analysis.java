@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * Created by sc13967 on 21/10/2016.
  *
- * Interface Analysis-type class, which will be extended by particular analyses
+ * Abstract Analysis-type class, which will be extended by particular analyses
  *
  */
 public abstract class Analysis implements Serializable {

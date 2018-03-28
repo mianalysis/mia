@@ -89,6 +89,7 @@ public class ImageSaver extends Module {
                 new File(mirroredDirectoryRoot+"\\"+sb).mkdirs();
 
                 String path = mirroredDirectoryRoot+"\\"+sb+FilenameUtils.removeExtension(rootFile.getName());
+                path = path + "_S" + workspace.getMetadata().getSeries()+"_";
                 path = path + suffix + ".tif";
                 IJ.save(inputImagePlus,path);
                 break;
@@ -96,12 +97,14 @@ public class ImageSaver extends Module {
             case SaveLocations.SAVE_WITH_INPUT:
                 rootFile = workspace.getMetadata().getFile();
                 path = rootFile.getParent()+ "\\"+FilenameUtils.removeExtension(rootFile.getName());
+                path = path + "_S" + workspace.getMetadata().getSeries()+"_";
                 path = path + suffix + ".tif";
                 IJ.save(inputImagePlus,path);
                 break;
 
             case SaveLocations.SPECIFIC_LOCATION:
                 path = FilenameUtils.removeExtension(filePath);
+                path = path + "_S" + workspace.getMetadata().getSeries()+"_";
                 path = path + suffix + ".tif";
                 IJ.save(inputImagePlus,path);
                 break;
