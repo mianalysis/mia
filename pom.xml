@@ -106,12 +106,12 @@
             <version>2.0.2</version>
             <scope>${myscope}</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>sc.fiji</groupId>-->
-            <!--<artifactId>Trainable_Segmentation</artifactId>-->
-            <!--<version>3.2.9</version>-->
-            <!--<scope>${myscope}</scope>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>Trainable_Segmentation</artifactId>
+            <version>3.2.9</version>
+            <scope>${myscope}</scope>
+        </dependency>
 
         <dependency>
             <groupId>fr.inra.ijpb</groupId>

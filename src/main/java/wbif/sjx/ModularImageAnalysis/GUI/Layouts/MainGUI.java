@@ -66,7 +66,7 @@ public class MainGUI extends GUI {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - mainFrameWidth) / 2, (screenSize.height - frameHeight) / 2);
         frame.setLayout(new GridBagLayout());
-        frame.setTitle("Modular image analysis (version " + getClass().getPackage().getImplementationVersion() + ")");
+        frame.setTitle("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
 
         // Creating the menu bar
         initialiseMenuBar();
@@ -427,7 +427,7 @@ public class MainGUI extends GUI {
         textField.setBackground(null);
         textField.setPreferredSize(new Dimension(width - 20, 25));
         textField.setBorder(null);
-        textField.setText("Modular image analysis (version " + getClass().getPackage().getImplementationVersion() + ")");
+        textField.setText("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         textField.setEditable(false);
         textField.setToolTipText(textField.getText());
@@ -961,6 +961,7 @@ public class MainGUI extends GUI {
 
         if (inputFile == null) return;
 
+
         if (getTestWorkspace().getMetadata().getFile() == null) {
             lastModuleEval = -1;
             setTestWorkspace(new Workspace(1, new File(inputFile)));
@@ -971,6 +972,16 @@ public class MainGUI extends GUI {
             lastModuleEval = -1;
             setTestWorkspace(new Workspace(1, new File(inputFile)));
 
+        }
+
+        switch ((String) analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE)) {
+            case InputControl.SeriesModes.ALL_SERIES:
+                getTestWorkspace().getMetadata().setSeries(1);
+                break;
+
+            case InputControl.SeriesModes.SINGLE_SERIES:
+                int seriesNumber = analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
+                getTestWorkspace().getMetadata().setSeries(seriesNumber);
         }
     }
 }
