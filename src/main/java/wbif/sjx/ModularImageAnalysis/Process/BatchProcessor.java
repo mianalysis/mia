@@ -91,6 +91,7 @@ public class BatchProcessor extends FileCrawler {
 
         System.out.println("Starting batch processor");
         Module.setVerbose(false);
+
         Prefs.setThreads(1);
 
         // Setting up the ExecutorService, which will manage the threads
@@ -262,8 +263,14 @@ public class BatchProcessor extends FileCrawler {
                 } catch (FormatException | IOException e) {
                     e.printStackTrace();
                 }
+
                 int seriesCount = reader.getSeriesCount();
-                seriesNumbers = IntStream.range(1,seriesCount).toArray();
+                if (seriesCount == 1) {
+                    seriesNumbers = new int[]{1};
+                } else {
+                    seriesNumbers = IntStream.range(1, seriesCount).toArray();
+                }
+
                 break;
 
             case InputControl.SeriesModes.SINGLE_SERIES:

@@ -203,13 +203,4 @@ public class ImageLoaderTest {
         assertEquals(2.00,image.getImagePlus().getCalibration().getZ(1),1E-2);
 
     }
-
-    @Test @Ignore
-    public void testGetImg() throws Exception {
-        String pathToImage = URLDecoder.decode(ImageLoader.class.getResource("/images/2CHTest.tif").getPath(),"UTF-8");
-
-        ImageLoader imageLoader = new ImageLoader();
-        imageLoader.getImg(pathToImage,1,null,false);
-
-    }
 }

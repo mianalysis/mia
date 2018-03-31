@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.*;
+import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
@@ -596,7 +597,7 @@ public class MainGUI extends GUI {
 
         // If selected, adding the measurement selector for output control
         if (activeModule.getClass().isInstance(new OutputControl())
-                && (boolean) analysis.getOutputControl().isEnabled()
+                && analysis.getOutputControl().isEnabled()
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
 
             LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);
@@ -708,6 +709,15 @@ public class MainGUI extends GUI {
         c.gridy = 0;
         c.weighty = 0;
 
+        // Check if there are no modules
+        if (analysis.modules.size()==0) return;
+
+        // Adding a separator between the input and main modules
+        GUISeparator separatorModule = new GUISeparator();
+        separatorModule.updateParameterValue(GUISeparator.TITLE,"File loading");
+        c.gridy++;
+        basicModulesPanel.add(componentFactory.getSeparator(separatorModule,basicFrameWidth-40),c);
+
         JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(0,20));
         basicModulesPanel.add(separator,c);
@@ -717,15 +727,7 @@ public class MainGUI extends GUI {
         JPanel inputPanel =
                 componentFactory.createBasicModuleControl(analysis.getInputControl(),basicFrameWidth-40);
 
-        if (inputPanel != null) {
-            basicModulesPanel.add(inputPanel,c);
-
-            // Adding a separator between the input and main modules
-            c.gridy++;
-            c.insets = new Insets(10,0,0,0);
-            basicModulesPanel.add(componentFactory.getSeparator(basicFrameWidth-40),c);
-
-        }
+        if (inputPanel != null) basicModulesPanel.add(inputPanel,c);
 
         // Adding module buttons
         c.insets = new Insets(0,0,0,0);
@@ -745,10 +747,6 @@ public class MainGUI extends GUI {
                 componentFactory.createBasicModuleControl(analysis.getOutputControl(),basicFrameWidth-40);
 
         if (outputPanel != null) {
-            // Adding a separator between the input and main modules
-            c.gridy++;
-            basicModulesPanel.add(componentFactory.getSeparator(basicFrameWidth-40),c);
-
             c.gridy++;
             c.insets = new Insets(0,0,0,0);
             basicModulesPanel.add(outputPanel,c);
@@ -938,6 +936,8 @@ public class MainGUI extends GUI {
 
             case InputControl.InputModes.BATCH:
                 // Initialising BatchProcessor
+                if (batchFolder == null) return;
+
                 BatchProcessor batchProcessor = new BatchProcessor(new File(batchFolder));
                 batchProcessor.setnThreads(nThreads);
 
