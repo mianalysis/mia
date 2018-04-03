@@ -47,6 +47,8 @@ public class Exporter {
     private boolean verbose = false;
     private boolean exportSummary = true;
     private boolean calculateMean = true;
+    private boolean calculateMin = true;
+    private boolean calculateMax = true;
     private boolean calculateStd = true;
     private boolean calculateSum = true;
     private SummaryType summaryType = SummaryType.PER_FILE;
@@ -459,19 +461,33 @@ public class Exporter {
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
-                            if (calculateStd) {
-                                summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                                summaryDataName = getObjectString(exampleObjSetName, "STD", "NUM_CHILDREN_" + child);
-                                summaryHeaderCell.setCellValue(summaryDataName);
-                                colNumbers.put(summaryDataName, headerCol++);
-                            }
+                        if (calculateMin) {
+                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                            summaryDataName = getObjectString(exampleObjSetName, "MIN", "NUM_CHILDREN_" + child);
+                            summaryHeaderCell.setCellValue(summaryDataName);
+                            colNumbers.put(summaryDataName, headerCol++);
+                        }
 
-                                if (calculateSum) {
-                                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                                    summaryDataName = getObjectString(exampleObjSetName, "SUM", "NUM_CHILDREN_" + child);
-                                    summaryHeaderCell.setCellValue(summaryDataName);
-                                    colNumbers.put(summaryDataName, headerCol++);
-                                }
+                        if (calculateMax) {
+                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                            summaryDataName = getObjectString(exampleObjSetName, "MAX", "NUM_CHILDREN_" + child);
+                            summaryHeaderCell.setCellValue(summaryDataName);
+                            colNumbers.put(summaryDataName, headerCol++);
+                        }
+
+                        if (calculateStd) {
+                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                            summaryDataName = getObjectString(exampleObjSetName, "STD", "NUM_CHILDREN_" + child);
+                            summaryHeaderCell.setCellValue(summaryDataName);
+                            colNumbers.put(summaryDataName, headerCol++);
+                        }
+
+                        if (calculateSum) {
+                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                            summaryDataName = getObjectString(exampleObjSetName, "SUM", "NUM_CHILDREN_" + child);
+                            summaryHeaderCell.setCellValue(summaryDataName);
+                            colNumbers.put(summaryDataName, headerCol++);
+                        }
                     }
                 }
 
@@ -488,6 +504,20 @@ public class Exporter {
                     if (calculateMean) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                         summaryDataName = getObjectString(exampleObjSetName, "MEAN", objectMeasurement.getNickName());
+                        summaryHeaderCell.setCellValue(summaryDataName);
+                        colNumbers.put(summaryDataName, headerCol++);
+                    }
+
+                    if (calculateMin) {
+                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                        summaryDataName = getObjectString(exampleObjSetName, "MIN", objectMeasurement.getNickName());
+                        summaryHeaderCell.setCellValue(summaryDataName);
+                        colNumbers.put(summaryDataName, headerCol++);
+                    }
+
+                    if (calculateMax) {
+                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                        summaryDataName = getObjectString(exampleObjSetName, "MAX", objectMeasurement.getNickName());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         colNumbers.put(summaryDataName, headerCol++);
                     }
@@ -598,6 +628,30 @@ public class Exporter {
                         colNum = colNumbers.get(headerName);
                         summaryCell = summaryValueRow.createCell(colNum);
                         val = cs.getMean();
+                        if (val == Double.NaN) {
+                            summaryCell.setCellValue("");
+                        } else {
+                            summaryCell.setCellValue(val);
+                        }
+                    }
+
+                    if (calculateMin) {
+                        headerName = getObjectString(objSetName, "MIN", "NUM_CHILDREN_" + child);
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getMin();
+                        if (val == Double.NaN) {
+                            summaryCell.setCellValue("");
+                        } else {
+                            summaryCell.setCellValue(val);
+                        }
+                    }
+
+                    if (calculateMax) {
+                        headerName = getObjectString(objSetName, "MAX", "NUM_CHILDREN_" + child);
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getMax();
                         if (val == Double.NaN) {
                             summaryCell.setCellValue("");
                         } else {
@@ -936,6 +990,22 @@ public class Exporter {
 
     public void setCalculateMean(boolean calculateMean) {
         this.calculateMean = calculateMean;
+    }
+
+    public boolean isCalculateMin() {
+        return calculateMin;
+    }
+
+    public void setCalculateMin(boolean calculateMin) {
+        this.calculateMin = calculateMin;
+    }
+
+    public boolean isCalculateMax() {
+        return calculateMax;
+    }
+
+    public void setCalculateMax(boolean calculateMax) {
+        this.calculateMax = calculateMax;
     }
 
     public boolean isCalculateStd() {
