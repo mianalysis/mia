@@ -17,12 +17,12 @@ import static org.junit.Assert.*;
 /**
  * Created by sc13967 on 31/01/2018.
  */
-public class SplineAnalysisTest {
+public class AnalyseCurvatureTest {
     private double tolerance = 1E-2;
 
     @Test
     public void testGetTitle() {
-        assertNotNull(new SplineAnalysis().getTitle());
+        assertNotNull(new AnalyseCurvature().getTitle());
     }
 
     @Test
@@ -46,29 +46,29 @@ public class SplineAnalysisTest {
         workspace.addImage(image);
 
         // Initialising FilterObjects module
-        SplineAnalysis splineAnalysis = new SplineAnalysis();
-        splineAnalysis.updateParameterValue(SplineAnalysis.INPUT_OBJECTS,"Input_obj");
-        splineAnalysis.updateParameterValue(SplineAnalysis.REFERENCE_IMAGE,"Ref_image");
-        splineAnalysis.updateParameterValue(SplineAnalysis.SPLINE_FITTING_METHOD,SplineAnalysis.SplineFittingMethods.LOESS);
-        splineAnalysis.updateParameterValue(SplineAnalysis.N_NEIGHBOURS,10);
-        splineAnalysis.updateParameterValue(SplineAnalysis.ITERATIONS,100);
-        splineAnalysis.updateParameterValue(SplineAnalysis.ACCURACY,1d);
-        splineAnalysis.updateParameterValue(SplineAnalysis.RELATE_TO_REFERENCE_POINT,false);
-        splineAnalysis.updateParameterValue(SplineAnalysis.X_REF_MEASUREMENT,"");
-        splineAnalysis.updateParameterValue(SplineAnalysis.Y_REF_MEASUREMENT,"");
-        splineAnalysis.updateParameterValue(SplineAnalysis.DRAW_SPLINE,false);
-        splineAnalysis.updateParameterValue(SplineAnalysis.MAX_CURVATURE,0d);
-        splineAnalysis.updateParameterValue(SplineAnalysis.APPLY_TO_IMAGE,false);
-        splineAnalysis.updateParameterValue(SplineAnalysis.SHOW_IMAGE,false);
+        AnalyseCurvature analyseCurvature = new AnalyseCurvature();
+        analyseCurvature.updateParameterValue(AnalyseCurvature.INPUT_OBJECTS,"Input_obj");
+        analyseCurvature.updateParameterValue(AnalyseCurvature.REFERENCE_IMAGE,"Ref_image");
+        analyseCurvature.updateParameterValue(AnalyseCurvature.SPLINE_FITTING_METHOD, AnalyseCurvature.SplineFittingMethods.LOESS);
+        analyseCurvature.updateParameterValue(AnalyseCurvature.N_NEIGHBOURS,10);
+        analyseCurvature.updateParameterValue(AnalyseCurvature.ITERATIONS,100);
+        analyseCurvature.updateParameterValue(AnalyseCurvature.ACCURACY,1d);
+        analyseCurvature.updateParameterValue(AnalyseCurvature.RELATE_TO_REFERENCE_POINT,false);
+        analyseCurvature.updateParameterValue(AnalyseCurvature.X_REF_MEASUREMENT,"");
+        analyseCurvature.updateParameterValue(AnalyseCurvature.Y_REF_MEASUREMENT,"");
+        analyseCurvature.updateParameterValue(AnalyseCurvature.DRAW_SPLINE,false);
+        analyseCurvature.updateParameterValue(AnalyseCurvature.MAX_CURVATURE,0d);
+        analyseCurvature.updateParameterValue(AnalyseCurvature.APPLY_TO_IMAGE,false);
+        analyseCurvature.updateParameterValue(AnalyseCurvature.SHOW_IMAGE,false);
 
         // Running the module
-        splineAnalysis.run(workspace);
+        analyseCurvature.run(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:inputObj.values()) {
             // Testing measurements
             double expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE.name()).getValue();
-            double actual = testObject.getMeasurement(SplineAnalysis.Measurements.MEAN_CURVATURE).getValue();
+            double actual = testObject.getMeasurement(AnalyseCurvature.Measurements.MEAN_CURVATURE).getValue();
             assertEquals(expected, actual, tolerance);
 
         }

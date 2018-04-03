@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * Created by sc13967 on 24/01/2018.
  */
-public class SplineAnalysis extends Module {
+public class AnalyseCurvature extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String SPLINE_FITTING_METHOD = "Spline fitting method";
@@ -117,7 +117,7 @@ public class SplineAnalysis extends Module {
 
     @Override
     public String getTitle() {
-        return "Spline analysis";
+        return "Analyse curvature";
     }
 
     @Override
