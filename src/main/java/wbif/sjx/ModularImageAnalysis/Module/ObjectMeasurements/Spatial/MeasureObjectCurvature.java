@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
@@ -21,7 +22,7 @@ import java.util.*;
 /**
  * Created by sc13967 on 24/01/2018.
  */
-public class MeasureCurvature extends Module {
+public class MeasureObjectCurvature extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String SPLINE_FITTING_METHOD = "Spline fitting method";
@@ -131,7 +132,35 @@ public class MeasureCurvature extends Module {
 
     public double getHeadTailAngle(LinkedHashSet<Vertex> longestPath, int nPoints) {
         // Getting starting and ending points for comparison
+        double[][] startPoints = new double[nPoints][2];
+        double[][] endPoints = new double[nPoints][2];
 
+        int pathLength = longestPath.size();
+        int count = 0;
+        int startCount = 0;
+        int endCount = 0;
+        for (Vertex vertex:longestPath) {
+            if (count < nPoints) {
+                startPoints[startCount][0] = vertex.getX();
+                startPoints[startCount++][1] = vertex.getY();
+
+            } else if (count >= pathLength-nPoints) {
+                endPoints[endCount][0] = vertex.getX();
+                endPoints[endCount++][1] = vertex.getY();
+            }
+            count++;
+        }
+
+        // Determining the slopes of the start and end segments
+        SimpleRegression regressionStart = new SimpleRegression();
+        regressionStart.addData(startPoints);
+        double startSlope = regressionStart.getSlope();
+
+        SimpleRegression regressionEnd = new SimpleRegression();
+        regressionEnd.addData(endPoints);
+        double endSlope = regressionEnd.getSlope();
+
+        // Calculating the angle between the lines
 
 
         return 0;
@@ -139,7 +168,7 @@ public class MeasureCurvature extends Module {
 
     @Override
     public String getTitle() {
-        return "Measure curvature";
+        return "Measure object curvature";
     }
 
     @Override
@@ -295,6 +324,7 @@ public class MeasureCurvature extends Module {
                 }
             }
 
+            double angle = getHeadTailAngle(longestPath,5);
             // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
             if (showSplines) {
                 int[] position = new int[]{1,(int) (inputObject.getZ(false,false)[0]+1),(inputObject.getT()+1)};
