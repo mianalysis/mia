@@ -289,7 +289,7 @@ public class Exporter {
         if (measurementReferences == null) return measurementReferencesElement;
 
         for (MeasurementReference measurementReference:measurementReferences) {
-            Element measurementReferenceElement = doc.createElement("MEASUREMENT_FOR_COLOUR");
+            Element measurementReferenceElement = doc.createElement("MEASUREMENT");
 
             measurementReferenceElement.setAttribute("NAME",measurementReference.getNickName());
             measurementReferenceElement.setAttribute("IS_CALCULATED",String.valueOf(measurementReference.isCalculated()));
