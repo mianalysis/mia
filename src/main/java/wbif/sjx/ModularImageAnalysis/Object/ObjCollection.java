@@ -41,7 +41,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         String VIOLET = "Violet";
         String MAGENTA = "Magenta";
 
-        String[] ALL = new String[]{WHITE,BLACK,RED,ORANGE,YELLOW,GREEN,CYAN,BLUE,VIOLET,MAGENTA};
+        String[] ALL = new String[]{RED,ORANGE,YELLOW,GREEN,CYAN,BLUE,VIOLET,MAGENTA};
+//        String[] ALL = new String[]{WHITE,BLACK,RED,ORANGE,YELLOW,GREEN,CYAN,BLUE,VIOLET,MAGENTA};
 
     }
 

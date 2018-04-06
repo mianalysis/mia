@@ -172,7 +172,6 @@ public class BatchProcessor extends FileCrawler {
         // Setting up the ExecutorService, which will manage the threads
         pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
-        Module.setVerbose(false);
         Prefs.setThreads(1);
 
         // For the current file, determining how many series to process (and which ones)

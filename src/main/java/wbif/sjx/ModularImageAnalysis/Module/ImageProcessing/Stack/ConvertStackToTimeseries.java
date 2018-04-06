@@ -26,6 +26,19 @@ public class ConvertStackToTimeseries extends Module {
                 "In this case, the Z and T ordering will be switched";
     }
 
+    public static void process(ImagePlus inputImagePlus) {
+        int nChannels = inputImagePlus.getNChannels();
+        int nFrames = inputImagePlus.getNFrames();
+        int nSlices = inputImagePlus.getNSlices();
+
+        if (inputImagePlus.getNSlices() == 1 && inputImagePlus.getNFrames() > 1) return;
+
+        ImagePlus processedImagePlus = HyperStackConverter.toHyperStack(inputImagePlus,nChannels,nFrames,nSlices);
+        processedImagePlus = Hyperstack_rearranger.reorderHyperstack(processedImagePlus,"CTZ",true,false);
+        inputImagePlus.setStack(processedImagePlus.getStack());
+
+    }
+
     @Override
     public void run(Workspace workspace) {
         // Getting input image
@@ -40,15 +53,7 @@ public class ConvertStackToTimeseries extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        int nChannels = inputImagePlus.getNChannels();
-        int nFrames = inputImagePlus.getNFrames();
-        int nSlices = inputImagePlus.getNSlices();
-
-        if (inputImagePlus.getNSlices() == 1 || inputImagePlus.getNFrames() > 1) return;
-
-        ImagePlus processedImagePlus = HyperStackConverter.toHyperStack(inputImagePlus,nChannels,nFrames,nSlices);
-        processedImagePlus = Hyperstack_rearranger.reorderHyperstack(processedImagePlus,"CTZ",true,false);
-        inputImagePlus.setStack(processedImagePlus.getStack());
+        process(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {

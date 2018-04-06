@@ -21,6 +21,7 @@ import net.imglib2.type.numeric.RealType;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.FileCondition;
@@ -38,6 +39,7 @@ import java.text.DecimalFormat;
  * Created by sc13967 on 15/05/2017.
  */
 public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Module {
+    public static final String OUTPUT_IMAGE = "Output image";
     public static final String IMPORT_MODE = "Import mode";
     public static final String NUMBER_OF_ZEROES = "Number of zeroes";
     public static final String STARTING_INDEX = "Starting index";
@@ -47,7 +49,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String COMMENT = "Comment";
     public static final String PREFIX = "Prefix";
     public static final String FILE_PATH = "File path";
-    public static final String OUTPUT_IMAGE = "Output image";
     public static final String USE_ALL_C = "Use all channels";
     public static final String STARTING_C = "Starting channel";
     public static final String ENDING_C = "Ending channel";
@@ -65,6 +66,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String Z_CAL = "Z calibration (dist/px)";
     public static final String UNITS = "Units";
     public static final String USE_IMAGEJ_READER = "Use ImageJ reader";
+    public static final String THREE_D_MODE = "Load 3D stacks as";
     public static final String SHOW_IMAGE = "Show image";
 
     public interface ImportModes {
@@ -75,6 +77,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String SPECIFIC_FILE = "Specific file";
 
         String[] ALL = new String[]{CURRENT_FILE, IMAGEJ, IMAGE_SEQUENCE, MATCHING_FORMAT, SPECIFIC_FILE};
+
+    }
+
+    public interface ThreeDModes {
+        String TIMESERIES = "Timeseries";
+        String ZSTACK = "Z-Stack";
+
+        String[] ALL = new String[]{TIMESERIES,ZSTACK};
 
     }
 
@@ -326,6 +336,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String units = parameters.getValue(UNITS);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean useImageJReader = parameters.getValue(USE_IMAGEJ_READER);
+        String threeDMode = parameters.getValue(THREE_D_MODE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Series number comes from the Workspace
@@ -393,6 +404,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         }
 
+        if (threeDMode.equals(ThreeDModes.TIMESERIES)) {
+            ConvertStackToTimeseries.process(ipl);
+        }
+
         // Adding image to workspace
         writeMessage("Adding image ("+outputImageName+") to workspace");
         workspace.addImage(new Image(outputImageName,ipl));
@@ -435,6 +450,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
         parameters.add(new Parameter(UNITS, Parameter.STRING, "um"));
         parameters.add(new Parameter(USE_IMAGEJ_READER, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(THREE_D_MODE,Parameter.CHOICE_ARRAY,ThreeDModes.TIMESERIES,ThreeDModes.ALL));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
@@ -512,6 +528,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         returnedParameters.add(parameters.getParameter(USE_IMAGEJ_READER));
+        returnedParameters.add(parameters.getParameter(THREE_D_MODE));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;

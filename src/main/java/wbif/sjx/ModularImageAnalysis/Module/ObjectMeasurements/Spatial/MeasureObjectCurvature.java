@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -231,9 +232,7 @@ public class MeasureObjectCurvature extends Module {
 
     public static void measureHeadTailAngle(Obj inputObject, LinkedHashSet<Vertex> longestPath, int nPoints) {
         // Getting starting and ending points for comparison
-        double startX1 = 0,startX2 = 0,startY1 = 0,startY2 = 0;
-        double endX1 = 0, endX2 = 0,endY1 = 0,endY2 = 0;
-
+        double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
         int pathLength = longestPath.size();
 
         // If the path is too short for the fitting range
@@ -245,29 +244,27 @@ public class MeasureObjectCurvature extends Module {
         int count = 0;
         for (Vertex vertex:longestPath) {
             if (count == 0) {
-                startX1 = vertex.getX();
-                startY1 = vertex.getY();
+                x1 = vertex.getX();
+                y1 = vertex.getY();
             }
             if (count == nPoints-1) {
-                startX2  = vertex.getX();
-                startY2 = vertex.getY();
+                x1 = vertex.getX()-x1;
+                y1 = vertex.getY()-y1;
             }
             if (count == pathLength-nPoints) {
-                endX1 = vertex.getX();
-                endY1 = vertex.getY();
+                x2 = vertex.getX();
+                y2 = vertex.getY();
             }
             if (count == pathLength-1) {
-                endX2 = vertex.getX();
-                endY2  = vertex.getY();
+                x2 = vertex.getX()-x2;
+                y2 = vertex.getY()-y2;
             }
             count++;
         }
 
-        Vector2D startVector = new Vector2D(startX2-startX1,startY2-startY1);
-        Vector2D endVector = new Vector2D(endX2-endX1,endY2-endY1);
-        double angleDegs = Math.toDegrees(Vector2D.angle(startVector, endVector));
+        double angle = Math.toDegrees(Math.atan2(x1*y2-y1*x2,x1*x2+y1*y2));
 
-        inputObject.addMeasurement(new Measurement(Measurements.HEAD_TAIL_ANGLE_DEGS,angleDegs));
+        inputObject.addMeasurement(new Measurement(Measurements.HEAD_TAIL_ANGLE_DEGS,angle));
 
     }
 
@@ -302,7 +299,7 @@ public class MeasureObjectCurvature extends Module {
         double accuracy = parameters.getValue(ACCURACY);
         boolean absoluteCurvature = parameters.getValue(ABSOLUTE_CURVATURE);
         boolean signedCurvature = parameters.getValue(SIGNED_CURVATURE);
-        boolean showSplines = parameters.getValue(DRAW_SPLINE);
+        boolean drawSpline = parameters.getValue(DRAW_SPLINE);
         boolean applyToImage = parameters.getValue(APPLY_TO_IMAGE);
         double maxCurvature = parameters.getValue(MAX_CURVATURE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
@@ -315,7 +312,7 @@ public class MeasureObjectCurvature extends Module {
             signedCurvature = false;
         }
 
-        if (showSplines &! applyToImage) {
+        if (drawSpline &! applyToImage) {
             referenceImageImagePlus = new Duplicator().run(referenceImageImagePlus);
         }
 
@@ -351,7 +348,7 @@ public class MeasureObjectCurvature extends Module {
                 measureCurvature(inputObject, curvature, absoluteCurvature, signedCurvature);
                 measureRelativeCurvature(inputObject, longestPath, curvature, useReference);
 
-                if (showSplines) {
+                if (drawSpline) {
                     int[] position = new int[]{1,(int) (inputObject.getZ(false,false)[0]+1),(inputObject.getT()+1)};
                     referenceImageImagePlus.setPosition(1,(int) (inputObject.getZ(false,false)[0]+1),inputObject.getT()+1);
                     calculator.showOverlay(referenceImageImagePlus, maxCurvature, position);
@@ -362,7 +359,7 @@ public class MeasureObjectCurvature extends Module {
             
         }
 
-        if (showImage) new Duplicator().run(referenceImageImagePlus).show();
+        if (showImage && drawSpline) new Duplicator().run(referenceImageImagePlus).show();
 
     }
 

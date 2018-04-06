@@ -2,6 +2,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
@@ -27,6 +28,11 @@ public class MeasureObjectIntensity extends Module {
     public static final String MEASURE_WEIGHTED_CENTRE = "Measure weighted centre";
     public static final String MEASURE_WEIGHTED_EDGE_DISTANCE = "Measure weighted distance to edge";
     public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
+    public static final String MEASURE_EDGE_INTENSITY_PROFILE = "Measure intensity profile from edge";
+    public static final String MINIMUM_DISTANCE = "Minimum distance";
+    public static final String MAXIMUM_DISTANCE = "Maximum distance";
+    public static final String CALIBRATED_DISTANCES = "Calibrated distances";
+    public static final String NUMBER_OF_MEASUREMENTS = "Number of measurements";
 
     public interface Measurements {
         String MEAN = "MEAN";
@@ -141,6 +147,31 @@ public class MeasureObjectIntensity extends Module {
 
     }
 
+    private void measureEdgeIntensityProfile(Obj object, ImagePlus ipl) {
+        // Getting parameters
+        double minDist = parameters.getValue(MINIMUM_DISTANCE);
+        double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
+        boolean calibratedDistances = parameters.getValue(CALIBRATED_DISTANCES);
+        int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
+
+        // If distances are calibrated, converting them to pixel  units
+        if (calibratedDistances) {
+            minDist = minDist/object.getDistPerPxXY();
+            maxDist = maxDist/object.getDistPerPxXY();
+        }
+
+        // Creating an object image
+        ImagePlus objIpl = object.convertObjToImage("Inside dist", ipl).getImagePlus();
+        objIpl.show();
+
+        // Calculating the distance maps.  The inside map is set to negative
+        ImagePlus outsideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,false,true);
+        outsideDistIpl.show();
+
+        IJ.runMacro("waitForUser");
+
+    }
+
     @Override
     public String getTitle() {
         return "Measure object intensity";
@@ -175,6 +206,11 @@ public class MeasureObjectIntensity extends Module {
         if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
             for (Obj object:objects.values()) measureWeightedEdgeDistance(object,image);
         }
+
+        // If specified, measuring intensity profiles relative to the object edge
+        if (parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
+            for (Obj object:objects.values()) measureEdgeIntensityProfile(object,ipl);
+        }
     }
 
     @Override
@@ -189,6 +225,11 @@ public class MeasureObjectIntensity extends Module {
         parameters.add(new Parameter(MEASURE_WEIGHTED_CENTRE, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(MEASURE_WEIGHTED_EDGE_DISTANCE, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(EDGE_DISTANCE_MODE,Parameter.CHOICE_ARRAY,EdgeDistanceModes.INSIDE_AND_OUTSIDE,EdgeDistanceModes.ALL));
+        parameters.add(new Parameter(MEASURE_EDGE_INTENSITY_PROFILE,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(MINIMUM_DISTANCE,Parameter.DOUBLE,0d));
+        parameters.add(new Parameter(MAXIMUM_DISTANCE,Parameter.DOUBLE,1d));
+        parameters.add(new Parameter(CALIBRATED_DISTANCES, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(NUMBER_OF_MEASUREMENTS,Parameter.INTEGER,10));
 
     }
 
@@ -230,6 +271,14 @@ public class MeasureObjectIntensity extends Module {
 
         if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
             returnedParameters.add(parameters.getParameter(EDGE_DISTANCE_MODE));
+        }
+
+        returnedParameters.add(parameters.getParameter(MEASURE_EDGE_INTENSITY_PROFILE));
+        if (parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
+            returnedParameters.add(parameters.getParameter(MINIMUM_DISTANCE));
+            returnedParameters.add(parameters.getParameter(MAXIMUM_DISTANCE));
+            returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCES));
+            returnedParameters.add(parameters.getParameter(NUMBER_OF_MEASUREMENTS));
         }
 
         return returnedParameters;
