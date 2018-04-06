@@ -166,7 +166,14 @@ public class MeasureSpotIntensity extends Module {
         MeasurementReference stdev = objectMeasurementReferences.get(Measurements.STDEV);
         MeasurementReference sum = objectMeasurementReferences.get(Measurements.SUM);
 
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+
+        mean.setImageObjName(inputObjectsName);
+        min.setImageObjName(inputObjectsName);
+        mean.setImageObjName(inputObjectsName);
+        stdev.setImageObjName(inputObjectsName);
+        sum.setImageObjName(inputObjectsName);
 
         mean.setCalculated(false);
         min.setCalculated(false);

@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -181,7 +182,7 @@ public class MeasureObjectCurvature extends Module {
     }
 
     public static void measureRelativeCurvature(Obj inputObject, LinkedHashSet<Vertex> longestPath,
-                                          TreeMap<Double,Double> curvature, boolean useReference) {
+                                                TreeMap<Double,Double> curvature, boolean useReference) {
         double pathLength = 0;
         double posMin = 0;
         double posMax = 0;
@@ -246,27 +247,25 @@ public class MeasureObjectCurvature extends Module {
             if (count == 0) {
                 startX1 = vertex.getX();
                 startY1 = vertex.getY();
-
-            } else if (count == nPoints-1) {
+            }
+            if (count == nPoints-1) {
                 startX2  = vertex.getX();
                 startY2 = vertex.getY();
-
-            } else if (count == pathLength-nPoints) {
+            }
+            if (count == pathLength-nPoints) {
                 endX1 = vertex.getX();
                 endY1 = vertex.getY();
-
-            } else if (count == pathLength-1) {
+            }
+            if (count == pathLength-1) {
                 endX2 = vertex.getX();
                 endY2  = vertex.getY();
-
             }
             count++;
         }
 
         Vector2D startVector = new Vector2D(startX2-startX1,startY2-startY1);
         Vector2D endVector = new Vector2D(endX2-endX1,endY2-endY1);
-
-        double angleDegs = Math.toDegrees(Vector2D.angle(startVector,endVector));
+        double angleDegs = Math.toDegrees(Vector2D.angle(startVector, endVector));
 
         inputObject.addMeasurement(new Measurement(Measurements.HEAD_TAIL_ANGLE_DEGS,angleDegs));
 
@@ -331,9 +330,6 @@ public class MeasureObjectCurvature extends Module {
 
             // If necessary, inverting the longest path so the first point is closest to the reference
             if (useReference) {
-                // Checking the point has a reference (some may not)
-                if (Double.isNaN(inputObject.getMeasurement(xReference).getValue())) continue;
-
                 double xRef = inputObject.getMeasurement(xReference).getValue();
                 double yRef = inputObject.getMeasurement(yReference).getValue();
 
@@ -363,7 +359,7 @@ public class MeasureObjectCurvature extends Module {
             }
 
             if (calculateEndEndAngle) measureHeadTailAngle(inputObject, longestPath, fittingRange);
-
+            
         }
 
         if (showImage) new Duplicator().run(referenceImageImagePlus).show();

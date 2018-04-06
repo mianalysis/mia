@@ -96,7 +96,7 @@ public class BinaryOperations extends Module {
         int nSlices = ipl.getNSlices();
 
         // If necessary, interpolating the image in Z to match the XY spacing
-        if (matchZToXY) ipl = InterpolateZAxis.matchZToXY(ipl);
+        if (matchZToXY && nSlices > 1) ipl = InterpolateZAxis.matchZToXY(ipl);
 
         // Calculating the distance map using MorphoLibJ
         float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
@@ -106,7 +106,7 @@ public class BinaryOperations extends Module {
         ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,normalise).getStack());
 
         // If the input image as interpolated, it now needs to be returned to the original scaling
-        if (matchZToXY) {
+        if (matchZToXY && nSlices > 1) {
             Resizer resizer = new Resizer();
             resizer.setAverageWhenDownsizing(true);
             ipl = resizer.zScale(ipl, nSlices, Resizer.IN_PLACE);

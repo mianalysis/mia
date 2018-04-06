@@ -447,7 +447,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-
+        
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(IMPORT_MODE));
         switch((String) parameters.getValue(IMPORT_MODE)) {
             case ImportModes.CURRENT_FILE:
@@ -510,7 +511,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             returnedParameters.add(parameters.getParameter(UNITS));
         }
 
-        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(USE_IMAGEJ_READER));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
