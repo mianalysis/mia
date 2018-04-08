@@ -302,7 +302,6 @@ public class AnalysisHandler {
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
             String measurementName = attributes.getNamedItem("NAME").getNodeValue();
-            boolean isCalulated = Boolean.parseBoolean(attributes.getNamedItem("IS_CALCULATED").getNodeValue());
             boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
             String type = attributes.getNamedItem("TYPE").getNodeValue();
             String imageObjectName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
@@ -323,7 +322,6 @@ public class AnalysisHandler {
             if (measurementReference == null) continue;
 
             // Updating the reference's parameters
-            measurementReference.setCalculated(isCalulated);
             measurementReference.setExportable(isExportable);
             measurementReference.setImageObjName(imageObjectName);
 

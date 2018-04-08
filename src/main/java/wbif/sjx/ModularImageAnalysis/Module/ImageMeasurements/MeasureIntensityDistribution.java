@@ -303,16 +303,16 @@ public class MeasureIntensityDistribution extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_OUTRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_INT_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_INT_OUTRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM_INT_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM_INT_OUTRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_PROXIMITY));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.STDEV_PROXIMITY));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_OUTRANGE));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_INT_INRANGE));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_INT_OUTRANGE));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM_INT_INRANGE));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM_INT_OUTRANGE));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_PROXIMITY));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.STDEV_PROXIMITY));
 
     }
 
@@ -367,12 +367,12 @@ public class MeasureIntensityDistribution extends Module {
                 meanProximity.setCalculated(false);
                 stdevProximity.setCalculated(false);
 
-                nPxInrange.setNickName(getFullName(inputObjectsName, Measurements.N_PX_INRANGE));
-                nPxOutrange.setNickName(getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE));
-                meanIntInrange.setNickName(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE));
-                meanIntOutrange.setNickName( getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE));
-                sumIntInrange.setNickName(getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE));
-                sumIntOutrange.setNickName(getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE));
+//                nPxInrange.setNickName(getFullName(inputObjectsName, Measurements.N_PX_INRANGE));
+//                nPxOutrange.setNickName(getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE));
+//                meanIntInrange.setNickName(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE));
+//                meanIntOutrange.setNickName( getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE));
+//                sumIntInrange.setNickName(getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE));
+//                sumIntOutrange.setNickName(getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE));
 
                 break;
 
@@ -386,8 +386,8 @@ public class MeasureIntensityDistribution extends Module {
                 meanProximity.setCalculated(true);
                 stdevProximity.setCalculated(true);
 
-                meanProximity.setNickName(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY));
-                stdevProximity.setNickName(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY));
+//                meanProximity.setNickName(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY));
+//                stdevProximity.setNickName(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY));
 
                 break;
         }

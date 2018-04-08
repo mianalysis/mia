@@ -116,8 +116,8 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_DISTANCE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_ID));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_DISTANCE));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_ID));
 
     }
 

@@ -110,10 +110,10 @@ public class MeasureObjectOverlap extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.OVERLAP_VOX_1));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.OVERLAP_PERCENT_1));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.OVERLAP_VOX_2));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.OVERLAP_PERCENT_2));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.OVERLAP_VOX_1));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.OVERLAP_PERCENT_1));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.OVERLAP_VOX_2));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.OVERLAP_PERCENT_2));
         
     }
 
@@ -132,16 +132,16 @@ public class MeasureObjectOverlap extends Module {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         String objects1Name = parameters.getValue(OBJECT_SET_1);
         String objects2Name = parameters.getValue(OBJECT_SET_2);
-        
+
         MeasurementReference overlapVox1 = objectMeasurementReferences.get(Measurements.OVERLAP_VOX_1);
         MeasurementReference overlapPercent1 = objectMeasurementReferences.get(Measurements.OVERLAP_PERCENT_1);
         MeasurementReference overlapVox2 = objectMeasurementReferences.get(Measurements.OVERLAP_VOX_2);
         MeasurementReference overlapPercent2 = objectMeasurementReferences.get(Measurements.OVERLAP_PERCENT_2);
 
-        overlapVox1.setNickName(getFullName(objects2Name, overlapVox1.getName()));
-        overlapPercent1.setNickName(getFullName(objects2Name, overlapPercent1.getName()));
-        overlapVox2.setNickName(getFullName(objects1Name, overlapVox2.getName()));
-        overlapPercent2.setNickName(getFullName(objects1Name, overlapPercent2.getName()));
+//        overlapVox1.setNickName(getFullName(objects2Name, overlapVox1.getName()));
+//        overlapPercent1.setNickName(getFullName(objects2Name, overlapPercent1.getName()));
+//        overlapVox2.setNickName(getFullName(objects1Name, overlapVox2.getName()));
+//        overlapPercent2.setNickName(getFullName(objects1Name, overlapPercent2.getName()));
 
         overlapVox1.setImageObjName(objects1Name);
         overlapPercent1.setImageObjName(objects1Name);

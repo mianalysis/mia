@@ -101,7 +101,7 @@ public class ApplyManualClassification extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CLASS));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.CLASS));
 
     }
 

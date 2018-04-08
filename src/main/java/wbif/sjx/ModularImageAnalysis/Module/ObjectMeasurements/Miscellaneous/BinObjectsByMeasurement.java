@@ -68,7 +68,7 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.BIN));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.BIN));
     }
 
     @Override
@@ -90,7 +90,6 @@ public class BinObjectsByMeasurement extends Module {
 
         String binMeasurementName = parameters.getValue(MEASUREMENT);
         MeasurementReference binMeasurement = objectMeasurementReferences.get(Measurements.BIN);
-        binMeasurement.setNickName(getFullName(binMeasurementName));
         binMeasurement.setImageObjName(inputObjectsName);
 
         return objectMeasurementReferences;

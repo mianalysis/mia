@@ -93,10 +93,10 @@ public class MeasureImageTexture extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
 
     }
 

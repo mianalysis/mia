@@ -156,11 +156,11 @@ public class MeasureSpotIntensity extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
 
     }
 
@@ -223,27 +223,27 @@ public class MeasureSpotIntensity extends Module {
 
         if (parameters.getValue(MEASURE_MEAN)) {
             mean.setCalculated(true);
-            mean.setNickName(getFullName(inputImageName, Measurements.MEAN));
+//            mean.setNickName(getFullName(inputImageName, Measurements.MEAN));
         }
 
         if (parameters.getValue(MEASURE_MIN)) {
             min.setCalculated(true);
-            min.setNickName(getFullName(inputImageName, Measurements.MIN));
+//            min.setNickName(getFullName(inputImageName, Measurements.MIN));
         }
 
         if (parameters.getValue(MEASURE_MAX)) {
             max.setCalculated(true);
-            max.setNickName(getFullName(inputImageName, Measurements.MAX));
+//            max.setNickName(getFullName(inputImageName, Measurements.MAX));
         }
 
         if (parameters.getValue(MEASURE_STDEV)) {
             stdev.setCalculated(true);
-            stdev.setNickName(getFullName(inputImageName, Measurements.STDEV));
+//            stdev.setNickName(getFullName(inputImageName, Measurements.STDEV));
         }
 
         if (parameters.getValue(MEASURE_SUM)) {
             sum.setCalculated(true);
-            sum.setNickName(getFullName(inputImageName, Measurements.SUM));
+//            sum.setNickName(getFullName(inputImageName, Measurements.SUM));
         }
 
         return objectMeasurementReferences;

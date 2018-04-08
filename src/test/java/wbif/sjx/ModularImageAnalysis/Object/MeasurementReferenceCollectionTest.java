@@ -59,41 +59,4 @@ public class MeasurementReferenceCollectionTest {
         assertEquals("",collection.get("One more").getImageObjName());
 
     }
-
-    @Test
-    public void getMeasurementNickNames() {
-        // Creating some measurements
-        MeasurementReference ref1 = new MeasurementReference("Ref 1");
-        MeasurementReference ref2 = new MeasurementReference("Second ref");
-        MeasurementReference ref3 = new MeasurementReference("Ref 3");
-        MeasurementReference ref4 = new MeasurementReference("One more");
-
-        // Populating the collection
-        MeasurementReferenceCollection collection = new MeasurementReferenceCollection();
-        collection.add(ref1);
-        collection.add(ref2);
-        collection.add(ref3);
-        collection.add(ref4);
-
-        // Checking the imageObjectName before changing
-        assertEquals("",collection.get("Second ref").getImageObjName());
-
-        // Checking the nickname values for all references
-        assertEquals("Ref 1",collection.get("Ref 1").getNickName());
-        assertEquals("Second ref",collection.get("Second ref").getNickName());
-        assertEquals("Ref 3",collection.get("Ref 3").getNickName());
-        assertEquals("One more",collection.get("One more").getNickName());
-
-        // Changing some nicknames
-        collection.get("Ref 1").setNickName("NN 1");
-        collection.get("One more").setNickName("NN 1");
-        collection.get("Ref 3").setNickName("Another name");
-
-        // Checking the nickname values for all references
-        assertEquals("NN 1",collection.get("Ref 1").getNickName());
-        assertEquals("Second ref",collection.get("Second ref").getNickName());
-        assertEquals("Another name",collection.get("Ref 3").getNickName());
-        assertEquals("NN 1",collection.get("One more").getNickName());
-
-    }
 }

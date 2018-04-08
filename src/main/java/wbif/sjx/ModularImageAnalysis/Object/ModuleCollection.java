@@ -29,7 +29,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
             if (currentMeasurementReferences == null) continue;
 
-            for (MeasurementReference measurementReference:currentMeasurementReferences) {
+            for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
                 if (measurementReference.getImageObjName().equals(imageName)
                         & measurementReference.isCalculated())
                     measurementReferences.add(measurementReference);
@@ -57,7 +57,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
                     module.updateAndGetObjectMeasurementReferences();
             if (currentMeasurementReferences == null) continue;
 
-            for (MeasurementReference measurementReference:currentMeasurementReferences) {
+            for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
                 if (measurementReference.getImageObjName().equals(objectName)
                         & measurementReference.isCalculated())
                     measurementReferences.add(measurementReference);

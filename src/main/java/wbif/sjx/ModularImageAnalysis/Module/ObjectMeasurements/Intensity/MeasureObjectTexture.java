@@ -151,10 +151,10 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
 
     }
 
@@ -190,19 +190,19 @@ public class MeasureObjectTexture extends Module {
 
         MeasurementReference asm = objectMeasurementReferences.get(Measurements.ASM);
         asm.setImageObjName(inputObjectsName);
-        asm.setNickName(getFullName(inputImageName,Measurements.ASM));
+//        asm.setNickName(getFullName(inputImageName,Measurements.ASM));
 
         MeasurementReference contrast = objectMeasurementReferences.get(Measurements.CONTRAST);
         contrast.setImageObjName(inputObjectsName);
-        contrast.setNickName(getFullName(inputImageName,Measurements.CONTRAST));
+//        contrast.setNickName(getFullName(inputImageName,Measurements.CONTRAST));
 
         MeasurementReference correlation = objectMeasurementReferences.get(Measurements.CORRELATION);
         correlation.setImageObjName(inputObjectsName);
-        correlation.setNickName(getFullName(inputImageName,Measurements.CORRELATION));
+//        correlation.setNickName(getFullName(inputImageName,Measurements.CORRELATION));
 
         MeasurementReference entropy = objectMeasurementReferences.get(Measurements.ENTROPY);
         entropy.setImageObjName(inputObjectsName);
-        entropy.setNickName(getFullName(inputImageName,Measurements.ENTROPY));
+//        entropy.setNickName(getFullName(inputImageName,Measurements.ENTROPY));
 
         return objectMeasurementReferences;
 

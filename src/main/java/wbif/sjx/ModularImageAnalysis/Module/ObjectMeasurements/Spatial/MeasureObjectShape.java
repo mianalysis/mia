@@ -123,10 +123,10 @@ public class MeasureObjectShape extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.VOLUME_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.VOLUME_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.PROJ_DIA_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.PROJ_DIA_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.VOLUME_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.VOLUME_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.PROJ_DIA_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.PROJ_DIA_CAL));
 
     }
 

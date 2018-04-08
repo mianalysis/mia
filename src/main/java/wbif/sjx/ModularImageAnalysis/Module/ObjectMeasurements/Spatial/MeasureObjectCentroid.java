@@ -110,18 +110,18 @@ public class MeasureObjectCentroid extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z_SLICE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z_SLICE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z_SLICE));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z_SLICE));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z_CAL));
 
     }
 

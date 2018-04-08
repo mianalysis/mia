@@ -108,14 +108,14 @@ public class MeasureTrackMotion extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIRECTIONALITY_RATIO));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.EUCLIDEAN_DISTANCE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.TOTAL_PATH_LENGTH));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DURATION));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.INSTANTANEOUS_VELOCITY));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CUMULATIVE_PATH_LENGTH));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ROLLING_EUCLIDEAN_DISTANCE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ROLLING_DIRECTIONALITY_RATIO));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIRECTIONALITY_RATIO));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.EUCLIDEAN_DISTANCE));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.TOTAL_PATH_LENGTH));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.DURATION));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.INSTANTANEOUS_VELOCITY));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.CUMULATIVE_PATH_LENGTH));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.ROLLING_EUCLIDEAN_DISTANCE));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.ROLLING_DIRECTIONALITY_RATIO));
 
     }
 

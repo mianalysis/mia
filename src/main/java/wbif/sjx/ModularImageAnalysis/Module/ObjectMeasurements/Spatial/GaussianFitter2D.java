@@ -318,23 +318,23 @@ public class GaussianFitter2D extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.X0_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y0_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z0_SLICE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_MEAN_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.X0_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y0_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z0_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_MEAN_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.A_0));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.A_BG));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.THETA));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ELLIPTICITY));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.RESIDUAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.X0_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y0_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z0_SLICE));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_MEAN_PX));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.X0_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y0_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z0_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_X_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_Y_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.SIGMA_MEAN_CAL));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.A_0));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.A_BG));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.THETA));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.ELLIPTICITY));
+//        objectMeasurementReferences.add(new MeasurementReference(Measurements.RESIDUAL));
 
     }
 

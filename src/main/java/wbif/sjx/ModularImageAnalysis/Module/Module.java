@@ -91,21 +91,11 @@ public abstract class Module implements Serializable {
     public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
 
     public MeasurementReference getImageMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : imageMeasurementReferences) {
-            if (measurementReference.getName().equals(name)) return measurementReference;
-        }
-
-        return null;
-
+        return imageMeasurementReferences.get(name);
     }
 
     public MeasurementReference getObjectMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : objectMeasurementReferences) {
-            if (measurementReference.getName().equals(name)) return measurementReference;
-        }
-
-        return null;
-
+        return objectMeasurementReferences.get(name);
     }
 
     /**

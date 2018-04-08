@@ -1,33 +1,31 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
-public class MeasurementReferenceCollection extends LinkedHashSet<MeasurementReference> {
-    public MeasurementReference get(String name) {
-        for (MeasurementReference measurementReference:this) {
-            if (measurementReference.getName().equals(name)) return measurementReference;
-        }
-
-        return null;
-    }
-
+public class MeasurementReferenceCollection extends LinkedHashMap<String,MeasurementReference> {
     public void updateImageObjectName(String measurementName, String imageObjectName) {
-        for (MeasurementReference measurementReference : this) {
-            if (measurementReference.getName().equals(measurementName)) {
-                measurementReference.setImageObjName(imageObjectName);
-            }
+        get(measurementName).setImageObjName(imageObjectName);
+    }
+
+    public String[] getMeasurementNames() {
+        return keySet().toArray(new String[0]);
+
+    }
+
+    public void setAllCalculated(boolean calculated) {
+        for (MeasurementReference measurementReference:values()) {
+            measurementReference.setCalculated(calculated);
         }
     }
 
-    public String[] getMeasurementNickNames() {
-        String[] measurementNames = new String[size()];
+    public void add(MeasurementReference measurementReference) {
+        put(measurementReference.getName(),measurementReference);
+    }
 
-        int i = 0;
-        for (MeasurementReference measurementReference:this) {
-            measurementNames[i++] = measurementReference.getNickName();
-        }
-
-        return measurementNames;
-
+    @Override
+    public MeasurementReference get(Object key) {
+        putIfAbsent((String) key,new MeasurementReference((String) key));
+        return super.get(key);
     }
 }

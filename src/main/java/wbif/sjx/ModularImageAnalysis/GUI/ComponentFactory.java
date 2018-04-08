@@ -111,12 +111,12 @@ public class ComponentFactory {
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
 
         } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
-            String[] measurementChoices = modules.getImageMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
+            String[] measurementChoices = modules.getImageMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
         } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
-            String[] measurementChoices = modules.getObjectMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
+            String[] measurementChoices = modules.getObjectMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
@@ -345,7 +345,7 @@ public class ComponentFactory {
         c.gridy = 0;
         c.insets = new Insets(5,5,0,0);
 
-        JTextField measurementName = new JTextField("            "+measurement.getNickName());
+        JTextField measurementName = new JTextField("            "+measurement.getName());
         measurementName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
         measurementName.setEditable(false);
         measurementName.setBorder(null);

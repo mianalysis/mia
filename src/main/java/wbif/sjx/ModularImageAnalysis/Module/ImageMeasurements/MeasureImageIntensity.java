@@ -82,11 +82,11 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     protected void initialiseMeasurementReferences() {
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
+//        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
 
     }
 
