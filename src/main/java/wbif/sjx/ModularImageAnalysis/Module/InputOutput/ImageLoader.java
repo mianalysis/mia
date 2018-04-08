@@ -404,7 +404,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         }
 
-        if (threeDMode.equals(ThreeDModes.TIMESERIES)) {
+        if (threeDMode.equals(ThreeDModes.TIMESERIES) && !ipl.isHyperStack()) {
             ConvertStackToTimeseries.process(ipl);
         }
 

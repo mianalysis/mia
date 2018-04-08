@@ -7,6 +7,8 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -162,13 +164,39 @@ public class MeasureObjectIntensity extends Module {
 
         // Creating an object image
         ImagePlus objIpl = object.convertObjToImage("Inside dist", ipl).getImagePlus();
-        objIpl.show();
 
         // Calculating the distance maps.  The inside map is set to negative
         ImagePlus outsideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,false,true);
-        outsideDistIpl.show();
+        InvertIntensity.process(objIpl);
+        ImagePlus insideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,false,true);
+        ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
+        ImagePlus distIpl = new ImageCalculator().process(insideDistIpl,outsideDistIpl,
+                ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.CREATE_NEW,true,true);
 
-        IJ.runMacro("waitForUser");
+        // Setting up CumStats to hold results
+        CumStat[] cumStats = new CumStat[nMeasurements];
+        for (int i=0;i<nMeasurements;i++) {
+            cumStats[i] = new CumStat();
+        }
+
+        // Iterating over each pixel in the image, adding that intensity value to the corresponding bin
+        int nChannels = distIpl.getNChannels();
+        int nSlices = distIpl.getNSlices();
+        int nFrames = distIpl.getNFrames();
+
+        // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
+        for (int z = 1; z <= nSlices; z++) {
+            for (int c = 1; c <= nChannels; c++) {
+                for (int t = 1; t <= nFrames; t++) {
+                    distIpl.setPosition(c,z,t);
+                    ipl.setPosition(c,z,t);
+
+                    // Determining which bin to use
+                    
+
+                }
+            }
+        }
 
     }
 
