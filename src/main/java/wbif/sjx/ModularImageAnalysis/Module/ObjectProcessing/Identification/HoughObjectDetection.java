@@ -189,11 +189,6 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SCORE));
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -233,6 +228,7 @@ public class HoughObjectDetection extends Module {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         MeasurementReference score = objectMeasurementReferences.get(Measurements.SCORE);
         score.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        score.setCalculated(true);
 
         return objectMeasurementReferences;
 

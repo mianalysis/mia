@@ -180,11 +180,6 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 

@@ -100,12 +100,6 @@ public class ApplyManualClassification extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.CLASS));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -124,6 +118,8 @@ public class ApplyManualClassification extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         MeasurementReference classMeas = objectMeasurementReferences.get(Measurements.CLASS);
         classMeas.setImageObjName(parameters.getValue(INPUT_OBJECTS));
 

@@ -353,17 +353,6 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.TRACK_PREV_ID));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.TRACK_NEXT_ID));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ORIENTATION));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.LEADING_X_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.LEADING_Y_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.LEADING_Z_PX));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 
@@ -399,6 +388,8 @@ public class TrackObjects extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         MeasurementReference trackPrevID = objectMeasurementReferences.get(Measurements.TRACK_PREV_ID);
@@ -410,6 +401,9 @@ public class TrackObjects extends Module {
 
         trackPrevID.setImageObjName(inputObjectsName);
         trackNextID.setImageObjName(inputObjectsName);
+
+        trackPrevID.setCalculated(true);
+        trackNextID.setCalculated(true);
 
         if (parameters.getValue(IDENTIFY_LEADING_POINT)) {
             angleMeasurement.setCalculated(true);

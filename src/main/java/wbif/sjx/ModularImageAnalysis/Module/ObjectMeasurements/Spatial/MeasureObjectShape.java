@@ -122,15 +122,6 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.VOLUME_PX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.VOLUME_CAL));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.PROJ_DIA_PX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.PROJ_DIA_CAL));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
 
@@ -143,6 +134,8 @@ public class MeasureObjectShape extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         objectMeasurementReferences.get(Measurements.VOLUME_PX).setCalculated(false);

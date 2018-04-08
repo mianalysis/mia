@@ -155,16 +155,6 @@ public class MeasureSpotIntensity extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -200,50 +190,44 @@ public class MeasureSpotIntensity extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        MeasurementReference mean = objectMeasurementReferences.get(Measurements.MEAN);
-        MeasurementReference min = objectMeasurementReferences.get(Measurements.MIN);
-        MeasurementReference max = objectMeasurementReferences.get(Measurements.MAX);
-        MeasurementReference stdev = objectMeasurementReferences.get(Measurements.STDEV);
-        MeasurementReference sum = objectMeasurementReferences.get(Measurements.SUM);
+        objectMeasurementReferences.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        mean.setImageObjName(inputObjectsName);
-        min.setImageObjName(inputObjectsName);
-        mean.setImageObjName(inputObjectsName);
-        stdev.setImageObjName(inputObjectsName);
-        sum.setImageObjName(inputObjectsName);
-
-        mean.setCalculated(false);
-        min.setCalculated(false);
-        max.setCalculated(false);
-        stdev.setCalculated(false);
-        sum.setCalculated(false);
-
         if (parameters.getValue(MEASURE_MEAN)) {
-            mean.setCalculated(true);
-//            mean.setNickName(getFullName(inputImageName, Measurements.MEAN));
+            String name = getFullName(inputImageName, Measurements.MEAN);
+            MeasurementReference reference = objectMeasurementReferences.get(name);
+            reference.setImageObjName(inputObjectsName);
+            reference.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_MIN)) {
-            min.setCalculated(true);
-//            min.setNickName(getFullName(inputImageName, Measurements.MIN));
+            String name = getFullName(inputImageName, Measurements.MIN);
+            MeasurementReference reference = objectMeasurementReferences.get(name);
+            reference.setImageObjName(inputObjectsName);
+            reference.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_MAX)) {
-            max.setCalculated(true);
-//            max.setNickName(getFullName(inputImageName, Measurements.MAX));
+            String name = getFullName(inputImageName, Measurements.MAX);
+            MeasurementReference reference = objectMeasurementReferences.get(name);
+            reference.setImageObjName(inputObjectsName);
+            reference.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_STDEV)) {
-            stdev.setCalculated(true);
-//            stdev.setNickName(getFullName(inputImageName, Measurements.STDEV));
+            String name = getFullName(inputImageName, Measurements.STDEV);
+            MeasurementReference reference = objectMeasurementReferences.get(name);
+            reference.setImageObjName(inputObjectsName);
+            reference.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_SUM)) {
-            sum.setCalculated(true);
-//            sum.setNickName(getFullName(inputImageName, Measurements.SUM));
+            String name = getFullName(inputImageName, Measurements.SUM);
+            MeasurementReference reference = objectMeasurementReferences.get(name);
+            reference.setImageObjName(inputObjectsName);
+            reference.setCalculated(true);
         }
 
         return objectMeasurementReferences;

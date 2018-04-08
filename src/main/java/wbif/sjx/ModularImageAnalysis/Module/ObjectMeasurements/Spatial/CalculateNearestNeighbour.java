@@ -115,13 +115,6 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_DISTANCE));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_ID));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -147,6 +140,8 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         MeasurementReference nnDistance = objectMeasurementReferences.get(Measurements.NN_DISTANCE);

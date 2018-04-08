@@ -109,23 +109,6 @@ public class MeasureObjectCentroid extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X_PX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y_PX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z_SLICE));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_X_CAL));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Y_CAL));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_Z_CAL));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X_PX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y_PX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z_SLICE));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_X_CAL));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Y_CAL));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEDIAN_Z_CAL));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
@@ -137,52 +120,29 @@ public class MeasureObjectCentroid extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-
-        MeasurementReference meanXPx = objectMeasurementReferences.get(Measurements.MEAN_X_PX);
-        MeasurementReference meanYPx = objectMeasurementReferences.get(Measurements.MEAN_Y_PX);
-        MeasurementReference meanZSlice = objectMeasurementReferences.get(Measurements.MEAN_Z_SLICE);
-        MeasurementReference meanXCal = objectMeasurementReferences.get(Measurements.MEAN_X_CAL);
-        MeasurementReference meanYCal = objectMeasurementReferences.get(Measurements.MEAN_Y_CAL);
-        MeasurementReference meanZCal = objectMeasurementReferences.get(Measurements.MEAN_Z_CAL);
-        MeasurementReference medianXPx = objectMeasurementReferences.get(Measurements.MEDIAN_X_PX);
-        MeasurementReference medianYPx = objectMeasurementReferences.get(Measurements.MEDIAN_Y_PX);
-        MeasurementReference medianZSlice = objectMeasurementReferences.get(Measurements.MEDIAN_Z_SLICE);
-        MeasurementReference medianXCal = objectMeasurementReferences.get(Measurements.MEDIAN_X_CAL);
-        MeasurementReference medianYCal = objectMeasurementReferences.get(Measurements.MEDIAN_Y_CAL);
-        MeasurementReference medianZCal = objectMeasurementReferences.get(Measurements.MEDIAN_Z_CAL);
-
-        meanXPx.setImageObjName(inputObjectsName);
-        meanYPx.setImageObjName(inputObjectsName);
-        meanZSlice.setImageObjName(inputObjectsName);
-        meanXCal.setImageObjName(inputObjectsName);
-        meanYCal.setImageObjName(inputObjectsName);
-        meanZCal.setImageObjName(inputObjectsName);
-        medianXPx.setImageObjName(inputObjectsName);
-        medianYPx.setImageObjName(inputObjectsName);
-        medianZSlice.setImageObjName(inputObjectsName);
-        medianXCal.setImageObjName(inputObjectsName);
-        medianYCal.setImageObjName(inputObjectsName);
-        medianZCal.setImageObjName(inputObjectsName);
 
         String choice = parameters.getValue(CENTROID_METHOD);
         boolean useMean = choice.equals(Methods.MEAN) | choice.equals(Methods.BOTH);
         boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
 
-        meanXPx.setCalculated(false);
-        meanYPx.setCalculated(false);
-        meanZSlice.setCalculated(false);
-        meanXCal.setCalculated(false);
-        meanYCal.setCalculated(false);
-        meanZCal.setCalculated(false);
-        medianXPx.setCalculated(false);
-        medianYPx.setCalculated(false);
-        medianZSlice.setCalculated(false);
-        medianXCal.setCalculated(false);
-        medianYCal.setCalculated(false);
-        medianZCal.setCalculated(false);
-
         if (useMean) {
+            MeasurementReference meanXPx = objectMeasurementReferences.get(Measurements.MEAN_X_PX);
+            MeasurementReference meanYPx = objectMeasurementReferences.get(Measurements.MEAN_Y_PX);
+            MeasurementReference meanZSlice = objectMeasurementReferences.get(Measurements.MEAN_Z_SLICE);
+            MeasurementReference meanXCal = objectMeasurementReferences.get(Measurements.MEAN_X_CAL);
+            MeasurementReference meanYCal = objectMeasurementReferences.get(Measurements.MEAN_Y_CAL);
+            MeasurementReference meanZCal = objectMeasurementReferences.get(Measurements.MEAN_Z_CAL);
+
+            meanXPx.setImageObjName(inputObjectsName);
+            meanYPx.setImageObjName(inputObjectsName);
+            meanZSlice.setImageObjName(inputObjectsName);
+            meanXCal.setImageObjName(inputObjectsName);
+            meanYCal.setImageObjName(inputObjectsName);
+            meanZCal.setImageObjName(inputObjectsName);
+
             meanXPx.setCalculated(true);
             meanYPx.setCalculated(true);
             meanZSlice.setCalculated(true);
@@ -192,6 +152,20 @@ public class MeasureObjectCentroid extends Module {
         }
 
         if (useMedian) {
+            MeasurementReference medianXPx = objectMeasurementReferences.get(Measurements.MEDIAN_X_PX);
+            MeasurementReference medianYPx = objectMeasurementReferences.get(Measurements.MEDIAN_Y_PX);
+            MeasurementReference medianZSlice = objectMeasurementReferences.get(Measurements.MEDIAN_Z_SLICE);
+            MeasurementReference medianXCal = objectMeasurementReferences.get(Measurements.MEDIAN_X_CAL);
+            MeasurementReference medianYCal = objectMeasurementReferences.get(Measurements.MEDIAN_Y_CAL);
+            MeasurementReference medianZCal = objectMeasurementReferences.get(Measurements.MEDIAN_Z_CAL);
+
+            medianXPx.setImageObjName(inputObjectsName);
+            medianYPx.setImageObjName(inputObjectsName);
+            medianZSlice.setImageObjName(inputObjectsName);
+            medianXCal.setImageObjName(inputObjectsName);
+            medianYCal.setImageObjName(inputObjectsName);
+            medianZCal.setImageObjName(inputObjectsName);
+
             medianXPx.setCalculated(true);
             medianYPx.setCalculated(true);
             medianZSlice.setCalculated(true);

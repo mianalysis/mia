@@ -2,9 +2,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
@@ -17,6 +15,7 @@ import wbif.sjx.common.MathFunc.CumStat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 05/05/2017.
@@ -164,8 +163,6 @@ public class MeasureObjectIntensity extends Module {
     }
 
     private void measureEdgeIntensityProfile(Obj object, ImagePlus intensityIpl) {
-        System.out.print("  ID: "+object.getID());
-
         // Getting parameters
         String imageName = parameters.getValue(INPUT_IMAGE);
         double minDist = parameters.getValue(MINIMUM_DISTANCE);
@@ -180,27 +177,21 @@ public class MeasureObjectIntensity extends Module {
         }
 
         // Setting up CumStats to hold results
-        HashMap<Double,CumStat> cumStats = new HashMap<Double,CumStat>();
+        LinkedHashMap<Double,CumStat> cumStats = new LinkedHashMap<>();
         double binWidth = (maxDist-minDist)/(nMeasurements-1);
         double[] bins = getProfileBins(minDist,maxDist,nMeasurements);
         for (int i=0;i<nMeasurements;i++) cumStats.put(bins[i],new CumStat());
-        System.out.println("  min "+minDist+"_max "+maxDist+"_nMeas "+nMeasurements);
+
         // Creating an object image
         ImagePlus objIpl = object.convertObjToImage("Inside dist", intensityIpl).getImagePlus();
 
         // Calculating the distance maps.  The inside map is set to negative
-        ImagePlus outsideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,false,true);
+        ImagePlus outsideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,true);
         InvertIntensity.process(objIpl);
-        ImagePlus insideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,false,true);
+        ImagePlus insideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,true);
         ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
         ImagePlus distIpl = new ImageCalculator().process(insideDistIpl,outsideDistIpl,
                 ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.CREATE_NEW,true,true);
-
-        objIpl.show();
-        outsideDistIpl.show();
-        insideDistIpl.show();
-        distIpl.show();
-        IJ.runMacro("waitForUser");
 
         // Iterating over each pixel in the image, adding that intensity value to the corresponding bin
         int nChannels = distIpl.getNChannels();
@@ -230,11 +221,6 @@ public class MeasureObjectIntensity extends Module {
                             // Adding the measurement to the relevant bin
                             double intensity = intensityIpr.getf(x,y);
                             cumStats.get(bin).addMeasure(intensity);
-
-                            if (intensity > 0) {
-                                System.out.println("        dist " + dist + "_" + bin+"_"+intensity);
-                            }
-
                         }
                     }
                 }
@@ -243,7 +229,6 @@ public class MeasureObjectIntensity extends Module {
 
         int count = 1;
         for (CumStat cumStat:cumStats.values()) {
-            System.out.println("  bin "+count+"_"+cumStat.getMean());
             String profileMeasName = Measurements.EDGE_PROFILE + "_BIN" + (count++);
             object.addMeasurement(new Measurement(getFullName(imageName,profileMeasName), cumStat.getMean()));
         }
@@ -308,28 +293,6 @@ public class MeasureObjectIntensity extends Module {
         parameters.add(new Parameter(MAXIMUM_DISTANCE,Parameter.DOUBLE,1d));
         parameters.add(new Parameter(CALIBRATED_DISTANCES, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(NUMBER_OF_MEASUREMENTS,Parameter.INTEGER,10));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
-//
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.X_CENT_MEAN));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.X_CENT_STDEV));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y_CENT_MEAN));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.Y_CENT_STDEV));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z_CENT_MEAN));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.Z_CENT_STDEV));
-//
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_EDGE_DISTANCE_PX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_EDGE_DISTANCE_CAL));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.STD_EDGE_DISTANCE_PX));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.STD_EDGE_DISTANCE_CAL));
 
     }
 

@@ -318,15 +318,6 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_CAL));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -365,6 +356,8 @@ public class RelateObjects extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
 
         MeasurementReference distSurfPx = objectMeasurementReferences.get(Measurements.DIST_SURFACE_PX);

@@ -41,7 +41,6 @@ public abstract class Module implements Serializable {
         nickname = moduleName;
 
         initialiseParameters();
-        initialiseMeasurementReferences();
 
     }
 
@@ -74,8 +73,6 @@ public abstract class Module implements Serializable {
      * @return
      */
     protected abstract void initialiseParameters();
-
-    protected abstract void initialiseMeasurementReferences();
 
     /**
      * Return a ParameterCollection of the currently active parameters.  This is run each time a parameter is changed.

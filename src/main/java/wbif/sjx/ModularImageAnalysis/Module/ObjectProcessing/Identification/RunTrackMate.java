@@ -359,13 +359,6 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.RADIUS));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ESTIMATED_DIAMETER));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -411,6 +404,8 @@ public class RunTrackMate extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
         MeasurementReference radius = objectMeasurementReferences.get(Measurements.RADIUS);
@@ -418,6 +413,9 @@ public class RunTrackMate extends Module {
 
         radius.setImageObjName(outputSpotObjectsName);
         estimatedDiameter.setImageObjName(outputSpotObjectsName);
+
+        radius.setCalculated(true);
+        estimatedDiameter.setCalculated(true);
 
         return objectMeasurementReferences;
 

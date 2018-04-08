@@ -141,11 +141,6 @@ public class ImageMath extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 

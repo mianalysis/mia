@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -17,11 +18,6 @@ public class MeasureImageIntensity extends Module {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
-    private MeasurementReference meanMeasurement;
-    private MeasurementReference minMeasurement;
-    private MeasurementReference maxMeasurement;
-    private MeasurementReference stdevMeasurement;
-    private MeasurementReference sumMeasurement;
 
     public interface Measurements {
         String MEAN = "INTENSITY//MEAN";
@@ -81,16 +77,6 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-//        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
-//        imageMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
-//        imageMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
-//        imageMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
-//        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
@@ -98,6 +84,8 @@ public class MeasureImageIntensity extends Module {
     @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+
+        imageMeasurementReferences.setAllCalculated(false);
 
         MeasurementReference mean = imageMeasurementReferences.get(Measurements.MEAN);
         mean.setImageObjName(inputImageName);

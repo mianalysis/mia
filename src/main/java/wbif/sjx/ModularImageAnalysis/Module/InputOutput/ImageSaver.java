@@ -124,11 +124,6 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 

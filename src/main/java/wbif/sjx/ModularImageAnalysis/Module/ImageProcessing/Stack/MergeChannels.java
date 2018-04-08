@@ -190,11 +190,6 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 

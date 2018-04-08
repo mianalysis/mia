@@ -150,15 +150,6 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
-//        objectMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
@@ -185,24 +176,26 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        MeasurementReference asm = objectMeasurementReferences.get(Measurements.ASM);
+        String name = getFullName(inputImageName,Measurements.ASM);
+        MeasurementReference asm = objectMeasurementReferences.get(name);
         asm.setImageObjName(inputObjectsName);
-//        asm.setNickName(getFullName(inputImageName,Measurements.ASM));
 
-        MeasurementReference contrast = objectMeasurementReferences.get(Measurements.CONTRAST);
+        name = getFullName(inputImageName,Measurements.CONTRAST);
+        MeasurementReference contrast = objectMeasurementReferences.get(name);
         contrast.setImageObjName(inputObjectsName);
-//        contrast.setNickName(getFullName(inputImageName,Measurements.CONTRAST));
 
-        MeasurementReference correlation = objectMeasurementReferences.get(Measurements.CORRELATION);
+        name = getFullName(inputImageName,Measurements.CORRELATION);
+        MeasurementReference correlation = objectMeasurementReferences.get(name);
         correlation.setImageObjName(inputObjectsName);
-//        correlation.setNickName(getFullName(inputImageName,Measurements.CORRELATION));
 
-        MeasurementReference entropy = objectMeasurementReferences.get(Measurements.ENTROPY);
+        name = getFullName(inputImageName,Measurements.ENTROPY);
+        MeasurementReference entropy = objectMeasurementReferences.get(name);
         entropy.setImageObjName(inputObjectsName);
-//        entropy.setNickName(getFullName(inputImageName,Measurements.ENTROPY));
 
         return objectMeasurementReferences;
 
