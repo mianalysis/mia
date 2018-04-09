@@ -23,8 +23,7 @@ public class MeasurementReferenceCollection extends LinkedHashMap<String,Measure
         put(measurementReference.getName(),measurementReference);
     }
 
-    @Override
-    public MeasurementReference get(Object key) {
+    public MeasurementReference getOrPut(Object key) {
         putIfAbsent((String) key,new MeasurementReference((String) key));
         return super.get(key);
     }

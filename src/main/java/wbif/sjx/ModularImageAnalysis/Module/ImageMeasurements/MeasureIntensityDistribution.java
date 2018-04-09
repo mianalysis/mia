@@ -337,38 +337,38 @@ public class MeasureIntensityDistribution extends Module {
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
                 String name = getFullName(inputObjectsName, Measurements.N_PX_INRANGE);
-                MeasurementReference reference = imageMeasurementReferences.get(name);
+                MeasurementReference reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE);
-                reference = imageMeasurementReferences.get(name);
+                reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE);
-                reference = imageMeasurementReferences.get(name);
+                reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE);
-                reference = imageMeasurementReferences.get(name);
+                reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE);
-                reference = imageMeasurementReferences.get(name);
+                reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE);
-                reference = imageMeasurementReferences.get(name);
+                reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
                 name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY);
-                reference = imageMeasurementReferences.get(name);
+                reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY);
-                reference = imageMeasurementReferences.get(name);
+                reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 
                 break;

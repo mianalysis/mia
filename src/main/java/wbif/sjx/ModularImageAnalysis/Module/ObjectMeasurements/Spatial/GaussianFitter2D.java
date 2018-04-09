@@ -364,71 +364,71 @@ public class GaussianFitter2D extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference reference = objectMeasurementReferences.get(Measurements.X0_PX);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.X0_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.Y0_PX);
+        reference = objectMeasurementReferences.getOrPut(Measurements.Y0_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.Z0_SLICE);
+        reference = objectMeasurementReferences.getOrPut(Measurements.Z0_SLICE);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.SIGMA_X_PX);
+        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_X_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.SIGMA_Y_PX);
+        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_Y_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.SIGMA_MEAN_PX);
+        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_MEAN_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.X0_CAL);
+        reference = objectMeasurementReferences.getOrPut(Measurements.X0_CAL);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.Y0_CAL);
+        reference = objectMeasurementReferences.getOrPut(Measurements.Y0_CAL);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.Z0_CAL);
+        reference = objectMeasurementReferences.getOrPut(Measurements.Z0_CAL);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.SIGMA_X_CAL);
+        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_X_CAL);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.SIGMA_Y_CAL);
+        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_Y_CAL);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.SIGMA_MEAN_CAL);
+        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_MEAN_CAL);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.A_0);
+        reference = objectMeasurementReferences.getOrPut(Measurements.A_0);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.A_BG);
+        reference = objectMeasurementReferences.getOrPut(Measurements.A_BG);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.THETA);
+        reference = objectMeasurementReferences.getOrPut(Measurements.THETA);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.ELLIPTICITY);
+        reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPTICITY);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.RESIDUAL);
+        reference = objectMeasurementReferences.getOrPut(Measurements.RESIDUAL);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 

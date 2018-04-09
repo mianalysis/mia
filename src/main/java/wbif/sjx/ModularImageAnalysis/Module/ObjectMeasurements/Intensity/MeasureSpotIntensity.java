@@ -197,35 +197,35 @@ public class MeasureSpotIntensity extends Module {
 
         if (parameters.getValue(MEASURE_MEAN)) {
             String name = getFullName(inputImageName, Measurements.MEAN);
-            MeasurementReference reference = objectMeasurementReferences.get(name);
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_MIN)) {
             String name = getFullName(inputImageName, Measurements.MIN);
-            MeasurementReference reference = objectMeasurementReferences.get(name);
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_MAX)) {
             String name = getFullName(inputImageName, Measurements.MAX);
-            MeasurementReference reference = objectMeasurementReferences.get(name);
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_STDEV)) {
             String name = getFullName(inputImageName, Measurements.STDEV);
-            MeasurementReference reference = objectMeasurementReferences.get(name);
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_SUM)) {
             String name = getFullName(inputImageName, Measurements.SUM);
-            MeasurementReference reference = objectMeasurementReferences.get(name);
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
         }

@@ -408,8 +408,8 @@ public class RunTrackMate extends Module {
 
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
-        MeasurementReference radius = objectMeasurementReferences.get(Measurements.RADIUS);
-        MeasurementReference estimatedDiameter = objectMeasurementReferences.get(Measurements.ESTIMATED_DIAMETER);
+        MeasurementReference radius = objectMeasurementReferences.getOrPut(Measurements.RADIUS);
+        MeasurementReference estimatedDiameter = objectMeasurementReferences.getOrPut(Measurements.ESTIMATED_DIAMETER);
 
         radius.setImageObjName(outputSpotObjectsName);
         estimatedDiameter.setImageObjName(outputSpotObjectsName);

@@ -230,7 +230,7 @@ public class RidgeDetection extends Module {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         objectMeasurementReferences.setAllCalculated(false);
 
-        MeasurementReference lengthPx = objectMeasurementReferences.get(Measurements.LENGTH_PX);
+        MeasurementReference lengthPx = objectMeasurementReferences.getOrPut(Measurements.LENGTH_PX);
         lengthPx.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         lengthPx.setCalculated(true);
 

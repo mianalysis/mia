@@ -24,7 +24,7 @@ public class MeasureObjectShapeTest {
     @Test
     public void testRun() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test objects";

@@ -127,22 +127,22 @@ public class MeasureObjectOverlap extends Module {
         String objects2Name = parameters.getValue(OBJECT_SET_2);
 
         String name = getFullName(objects2Name, Measurements.OVERLAP_VOX_1);
-        MeasurementReference reference = objectMeasurementReferences.get(name);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(objects1Name);
         reference.setCalculated(true);
 
         name = getFullName(objects2Name, Measurements.OVERLAP_PERCENT_1);
-        reference = objectMeasurementReferences.get(name);
+        reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(objects1Name);
         reference.setCalculated(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_VOX_2);
-        reference = objectMeasurementReferences.get(name);
+        reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(objects1Name);
         reference.setCalculated(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_PERCENT_2);
-        reference = objectMeasurementReferences.get(name);
+        reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(objects1Name);
         reference.setCalculated(true);
 

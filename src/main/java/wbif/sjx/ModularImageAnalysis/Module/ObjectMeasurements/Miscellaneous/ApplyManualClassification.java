@@ -120,8 +120,9 @@ public class ApplyManualClassification extends Module {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         objectMeasurementReferences.setAllCalculated(false);
 
-        MeasurementReference classMeas = objectMeasurementReferences.get(Measurements.CLASS);
+        MeasurementReference classMeas = objectMeasurementReferences.getOrPut(Measurements.CLASS);
         classMeas.setImageObjName(parameters.getValue(INPUT_OBJECTS));
+        classMeas.setCalculated(true);
 
         return objectMeasurementReferences;
 

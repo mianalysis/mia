@@ -227,9 +227,9 @@ public class MeasureObjectIntensity extends Module {
             }
         }
 
-        int count = 1;
+        int count = 0;
         for (CumStat cumStat:cumStats.values()) {
-            String profileMeasName = Measurements.EDGE_PROFILE + "_BIN" + (count++);
+            String profileMeasName = Measurements.EDGE_PROFILE + "_BIN" + (count+1)+"_("+bins[count++]+"PX)";
             object.addMeasurement(new Measurement(getFullName(imageName,profileMeasName), cumStat.getMean()));
         }
     }
@@ -271,7 +271,6 @@ public class MeasureObjectIntensity extends Module {
 
         // If specified, measuring intensity profiles relative to the object edge
         if (parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
-            System.out.print("Measuring profile");
             for (Obj object:objects.values()) measureEdgeIntensityProfile(object,ipl);
         }
     }
@@ -340,67 +339,67 @@ public class MeasureObjectIntensity extends Module {
 
         if (parameters.getValue(MEASURE_MEAN)) {
             String name = getFullName(inputImageName,Measurements.MEAN);
-            MeasurementReference mean = objectMeasurementReferences.get(name);
+            MeasurementReference mean = objectMeasurementReferences.getOrPut(name);
             mean.setImageObjName(inputObjectsName);
             mean.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_MIN)) {
             String name = getFullName(inputImageName,Measurements.MIN);
-            MeasurementReference min = objectMeasurementReferences.get(name);
+            MeasurementReference min = objectMeasurementReferences.getOrPut(name);
             min.setImageObjName(inputObjectsName);
             min.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_MAX)) {
             String name = getFullName(inputImageName,Measurements.MAX);
-            MeasurementReference max = objectMeasurementReferences.get(name);
+            MeasurementReference max = objectMeasurementReferences.getOrPut(name);
             max.setImageObjName(inputObjectsName);
             max.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_STDEV)) {
             String name = getFullName(inputImageName,Measurements.STDEV);
-            MeasurementReference stdev = objectMeasurementReferences.get(name);
+            MeasurementReference stdev = objectMeasurementReferences.getOrPut(name);
             stdev.setImageObjName(inputObjectsName);
             stdev.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_SUM)) {
             String name = getFullName(inputImageName,Measurements.SUM);
-            MeasurementReference sum = objectMeasurementReferences.get(name);
+            MeasurementReference sum = objectMeasurementReferences.getOrPut(name);
             sum.setImageObjName(inputObjectsName);
             sum.setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             String name = getFullName(inputImageName, Measurements.X_CENT_MEAN);
-            MeasurementReference reference = objectMeasurementReferences.get(name);
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
             name = getFullName(inputImageName, Measurements.X_CENT_STDEV);
-            reference = objectMeasurementReferences.get(name);
+            reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
             name = getFullName(inputImageName, Measurements.Y_CENT_MEAN);
-            reference = objectMeasurementReferences.get(name);
+            reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
             name = getFullName(inputImageName, Measurements.Y_CENT_STDEV);
-            reference = objectMeasurementReferences.get(name);
+            reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
             name = getFullName(inputImageName, Measurements.Z_CENT_MEAN);
-            reference = objectMeasurementReferences.get(name);
+            reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
             name = getFullName(inputImageName, Measurements.Z_CENT_STDEV);
-            reference = objectMeasurementReferences.get(name);
+            reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
@@ -408,22 +407,22 @@ public class MeasureObjectIntensity extends Module {
 
         if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
             String name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_PX);
-            MeasurementReference reference = objectMeasurementReferences.get(name);
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
             name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_CAL);
-            reference = objectMeasurementReferences.get(name);
+            reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
             name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_PX);
-            reference = objectMeasurementReferences.get(name);
+            reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
             name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_CAL);
-            reference = objectMeasurementReferences.get(name);
+            reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
@@ -433,11 +432,12 @@ public class MeasureObjectIntensity extends Module {
             double minDist = parameters.getValue(MINIMUM_DISTANCE);
             double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
             int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
+            double[] bins = getProfileBins(minDist,maxDist,nMeasurements);
 
             for (int i=0;i<nMeasurements;i++) {
-                String profileMeasName = Measurements.EDGE_PROFILE+"_BIN"+(i+1);
+                String profileMeasName = Measurements.EDGE_PROFILE+"_BIN"+(i+1)+"_("+bins[i]+"PX)";
                 String name = getFullName(inputImageName,profileMeasName);
-                MeasurementReference reference = objectMeasurementReferences.get(name);
+                MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
                 reference.setImageObjName(inputObjectsName);
                 reference.setCalculated(true);
             }

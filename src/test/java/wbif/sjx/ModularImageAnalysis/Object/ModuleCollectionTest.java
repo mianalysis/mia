@@ -183,10 +183,10 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureObjectCentroid.Measurements.MEAN_X_CAL,
                 MeasureObjectCentroid.Measurements.MEAN_Y_CAL,
                 MeasureObjectCentroid.Measurements.MEAN_Z_CAL,
-                MeasureObjectTexture.Measurements.ASM,
-                MeasureObjectTexture.Measurements.CONTRAST,
-                MeasureObjectTexture.Measurements.CORRELATION,
-                MeasureObjectTexture.Measurements.ENTROPY};
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ASM),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CONTRAST),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CORRELATION),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ENTROPY)};
 
         for (String expectedName1:expectedNames1) {
             assertTrue(references1.containsKey(expectedName1));

@@ -137,35 +137,35 @@ public class MeasureTrackMotion extends Module {
         String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
         String inputSpotObjects  = parameters.getValue(INPUT_SPOT_OBJECTS);
 
-        MeasurementReference reference = objectMeasurementReferences.get(Measurements.DIRECTIONALITY_RATIO);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.DIRECTIONALITY_RATIO);
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.EUCLIDEAN_DISTANCE);
+        reference = objectMeasurementReferences.getOrPut(Measurements.EUCLIDEAN_DISTANCE);
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.TOTAL_PATH_LENGTH);
+        reference = objectMeasurementReferences.getOrPut(Measurements.TOTAL_PATH_LENGTH);
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.DURATION);
+        reference = objectMeasurementReferences.getOrPut(Measurements.DURATION);
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.INSTANTANEOUS_VELOCITY);
+        reference = objectMeasurementReferences.getOrPut(Measurements.INSTANTANEOUS_VELOCITY);
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.CUMULATIVE_PATH_LENGTH);
+        reference = objectMeasurementReferences.getOrPut(Measurements.CUMULATIVE_PATH_LENGTH);
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.ROLLING_EUCLIDEAN_DISTANCE);
+        reference = objectMeasurementReferences.getOrPut(Measurements.ROLLING_EUCLIDEAN_DISTANCE);
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.get(Measurements.ROLLING_DIRECTIONALITY_RATIO);
+        reference = objectMeasurementReferences.getOrPut(Measurements.ROLLING_DIRECTIONALITY_RATIO);
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 

@@ -129,12 +129,12 @@ public class MeasureObjectCentroid extends Module {
         boolean useMedian = choice.equals(Methods.MEDIAN) | choice.equals(Methods.BOTH);
 
         if (useMean) {
-            MeasurementReference meanXPx = objectMeasurementReferences.get(Measurements.MEAN_X_PX);
-            MeasurementReference meanYPx = objectMeasurementReferences.get(Measurements.MEAN_Y_PX);
-            MeasurementReference meanZSlice = objectMeasurementReferences.get(Measurements.MEAN_Z_SLICE);
-            MeasurementReference meanXCal = objectMeasurementReferences.get(Measurements.MEAN_X_CAL);
-            MeasurementReference meanYCal = objectMeasurementReferences.get(Measurements.MEAN_Y_CAL);
-            MeasurementReference meanZCal = objectMeasurementReferences.get(Measurements.MEAN_Z_CAL);
+            MeasurementReference meanXPx = objectMeasurementReferences.getOrPut(Measurements.MEAN_X_PX);
+            MeasurementReference meanYPx = objectMeasurementReferences.getOrPut(Measurements.MEAN_Y_PX);
+            MeasurementReference meanZSlice = objectMeasurementReferences.getOrPut(Measurements.MEAN_Z_SLICE);
+            MeasurementReference meanXCal = objectMeasurementReferences.getOrPut(Measurements.MEAN_X_CAL);
+            MeasurementReference meanYCal = objectMeasurementReferences.getOrPut(Measurements.MEAN_Y_CAL);
+            MeasurementReference meanZCal = objectMeasurementReferences.getOrPut(Measurements.MEAN_Z_CAL);
 
             meanXPx.setImageObjName(inputObjectsName);
             meanYPx.setImageObjName(inputObjectsName);
@@ -152,12 +152,12 @@ public class MeasureObjectCentroid extends Module {
         }
 
         if (useMedian) {
-            MeasurementReference medianXPx = objectMeasurementReferences.get(Measurements.MEDIAN_X_PX);
-            MeasurementReference medianYPx = objectMeasurementReferences.get(Measurements.MEDIAN_Y_PX);
-            MeasurementReference medianZSlice = objectMeasurementReferences.get(Measurements.MEDIAN_Z_SLICE);
-            MeasurementReference medianXCal = objectMeasurementReferences.get(Measurements.MEDIAN_X_CAL);
-            MeasurementReference medianYCal = objectMeasurementReferences.get(Measurements.MEDIAN_Y_CAL);
-            MeasurementReference medianZCal = objectMeasurementReferences.get(Measurements.MEDIAN_Z_CAL);
+            MeasurementReference medianXPx = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_X_PX);
+            MeasurementReference medianYPx = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_Y_PX);
+            MeasurementReference medianZSlice = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_Z_SLICE);
+            MeasurementReference medianXCal = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_X_CAL);
+            MeasurementReference medianYCal = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_Y_CAL);
+            MeasurementReference medianZCal = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_Z_CAL);
 
             medianXPx.setImageObjName(inputObjectsName);
             medianYPx.setImageObjName(inputObjectsName);

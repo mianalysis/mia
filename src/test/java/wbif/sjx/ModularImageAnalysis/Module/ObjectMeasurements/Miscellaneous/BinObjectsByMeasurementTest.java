@@ -20,7 +20,7 @@ public class BinObjectsByMeasurementTest {
     @Test
     public void testRunAllInRange() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test objects";
@@ -58,7 +58,7 @@ public class BinObjectsByMeasurementTest {
     @Test
     public void testRunSomeBelowRange() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test objects";
@@ -96,7 +96,7 @@ public class BinObjectsByMeasurementTest {
     @Test
     public void testRunSomeAboveRange() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test objects";

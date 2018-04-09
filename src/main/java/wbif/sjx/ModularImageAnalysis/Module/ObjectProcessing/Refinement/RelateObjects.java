@@ -360,10 +360,10 @@ public class RelateObjects extends Module {
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
 
-        MeasurementReference distSurfPx = objectMeasurementReferences.get(Measurements.DIST_SURFACE_PX);
-        MeasurementReference distCentPx = objectMeasurementReferences.get(Measurements.DIST_CENTROID_PX);
-        MeasurementReference distSurfCal = objectMeasurementReferences.get(Measurements.DIST_SURFACE_CAL);
-        MeasurementReference distCentCal = objectMeasurementReferences.get(Measurements.DIST_CENTROID_CAL);
+        MeasurementReference distSurfPx = objectMeasurementReferences.getOrPut(Measurements.DIST_SURFACE_PX);
+        MeasurementReference distCentPx = objectMeasurementReferences.getOrPut(Measurements.DIST_CENTROID_PX);
+        MeasurementReference distSurfCal = objectMeasurementReferences.getOrPut(Measurements.DIST_SURFACE_CAL);
+        MeasurementReference distCentCal = objectMeasurementReferences.getOrPut(Measurements.DIST_CENTROID_CAL);
 
         distSurfPx.setImageObjName(childObjectsName);
         distCentPx.setImageObjName(childObjectsName);

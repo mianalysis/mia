@@ -257,11 +257,11 @@ public class ObjectClusterer extends Module {
 
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 
-        MeasurementReference clusterAreaXY = objectMeasurementReferences.get(Measurements.CLUSTER_AREA_XY);
+        MeasurementReference clusterAreaXY = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY);
         clusterAreaXY.setImageObjName(outputObjectsName);
         clusterAreaXY.setCalculated(true);
 
-        MeasurementReference nPointsInCluster = objectMeasurementReferences.get(Measurements.CLUSTER_AREA_XY);
+        MeasurementReference nPointsInCluster = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY);
         nPointsInCluster.setImageObjName(outputObjectsName);
         nPointsInCluster.setCalculated(true);
 

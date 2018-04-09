@@ -84,7 +84,7 @@ public class BinObjectsByMeasurement extends Module {
         objectMeasurementReferences.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        MeasurementReference binMeasurement = objectMeasurementReferences.get(Measurements.BIN);
+        MeasurementReference binMeasurement = objectMeasurementReferences.getOrPut(Measurements.BIN);
         binMeasurement.setImageObjName(inputObjectsName);
         binMeasurement.setCalculated(true);
 

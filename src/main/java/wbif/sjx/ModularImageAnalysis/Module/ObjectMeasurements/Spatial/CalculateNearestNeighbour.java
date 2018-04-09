@@ -144,11 +144,13 @@ public class CalculateNearestNeighbour extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference nnDistance = objectMeasurementReferences.get(Measurements.NN_DISTANCE);
+        MeasurementReference nnDistance = objectMeasurementReferences.getOrPut(Measurements.NN_DISTANCE);
         nnDistance.setImageObjName(inputObjectsName);
+        nnDistance.setCalculated(true);
 
-        MeasurementReference nnID = objectMeasurementReferences.get(Measurements.NN_ID);
+        MeasurementReference nnID = objectMeasurementReferences.getOrPut(Measurements.NN_ID);
         nnID.setImageObjName(inputObjectsName);
+        nnID.setCalculated(true);
 
         return objectMeasurementReferences;
 

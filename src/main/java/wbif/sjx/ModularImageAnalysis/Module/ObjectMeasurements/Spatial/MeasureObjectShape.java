@@ -138,23 +138,23 @@ public class MeasureObjectShape extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        objectMeasurementReferences.get(Measurements.VOLUME_PX).setCalculated(false);
-        objectMeasurementReferences.get(Measurements.VOLUME_CAL).setCalculated(false);
-        objectMeasurementReferences.get(Measurements.PROJ_DIA_PX).setCalculated(false);
-        objectMeasurementReferences.get(Measurements.PROJ_DIA_CAL).setCalculated(false);
+        objectMeasurementReferences.getOrPut(Measurements.VOLUME_PX).setCalculated(false);
+        objectMeasurementReferences.getOrPut(Measurements.VOLUME_CAL).setCalculated(false);
+        objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_PX).setCalculated(false);
+        objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_CAL).setCalculated(false);
 
         if (parameters.getValue(MEASURE_VOLUME)) {
             objectMeasurementReferences.updateImageObjectName(Measurements.VOLUME_PX, inputObjectsName);
             objectMeasurementReferences.updateImageObjectName(Measurements.VOLUME_CAL, inputObjectsName);
-            objectMeasurementReferences.get(Measurements.VOLUME_PX).setCalculated(true);
-            objectMeasurementReferences.get(Measurements.VOLUME_CAL).setCalculated(true);
+            objectMeasurementReferences.getOrPut(Measurements.VOLUME_PX).setCalculated(true);
+            objectMeasurementReferences.getOrPut(Measurements.VOLUME_CAL).setCalculated(true);
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_DIA)) {
             objectMeasurementReferences.updateImageObjectName(Measurements.PROJ_DIA_PX, inputObjectsName);
             objectMeasurementReferences.updateImageObjectName(Measurements.PROJ_DIA_CAL, inputObjectsName);
-            objectMeasurementReferences.get(Measurements.PROJ_DIA_PX).setCalculated(true);
-            objectMeasurementReferences.get(Measurements.PROJ_DIA_CAL).setCalculated(true);
+            objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_PX).setCalculated(true);
+            objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_CAL).setCalculated(true);
         }
 
         return objectMeasurementReferences;

@@ -31,7 +31,7 @@ public class MeasureObjectTexture extends Module {
     }
 
 
-    private String getFullName(String imageName, String measurement) {
+    public static String getFullName(String imageName, String measurement) {
         return "TEXTURE//"+imageName+"_"+measurement;
     }
 
@@ -182,20 +182,24 @@ public class MeasureObjectTexture extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         String name = getFullName(inputImageName,Measurements.ASM);
-        MeasurementReference asm = objectMeasurementReferences.get(name);
+        MeasurementReference asm = objectMeasurementReferences.getOrPut(name);
         asm.setImageObjName(inputObjectsName);
+        asm.setCalculated(true);
 
         name = getFullName(inputImageName,Measurements.CONTRAST);
-        MeasurementReference contrast = objectMeasurementReferences.get(name);
+        MeasurementReference contrast = objectMeasurementReferences.getOrPut(name);
         contrast.setImageObjName(inputObjectsName);
+        contrast.setCalculated(true);
 
         name = getFullName(inputImageName,Measurements.CORRELATION);
-        MeasurementReference correlation = objectMeasurementReferences.get(name);
+        MeasurementReference correlation = objectMeasurementReferences.getOrPut(name);
         correlation.setImageObjName(inputObjectsName);
+        correlation.setCalculated(true);
 
         name = getFullName(inputImageName,Measurements.ENTROPY);
-        MeasurementReference entropy = objectMeasurementReferences.get(name);
+        MeasurementReference entropy = objectMeasurementReferences.getOrPut(name);
         entropy.setImageObjName(inputObjectsName);
+        entropy.setCalculated(true);
 
         return objectMeasurementReferences;
 

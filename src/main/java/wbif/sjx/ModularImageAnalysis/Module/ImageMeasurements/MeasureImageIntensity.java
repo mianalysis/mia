@@ -87,23 +87,23 @@ public class MeasureImageIntensity extends Module {
 
         imageMeasurementReferences.setAllCalculated(false);
 
-        MeasurementReference mean = imageMeasurementReferences.get(Measurements.MEAN);
+        MeasurementReference mean = imageMeasurementReferences.getOrPut(Measurements.MEAN);
         mean.setImageObjName(inputImageName);
         mean.setCalculated(parameters.getValue(MEASURE_MEAN));
 
-        MeasurementReference min = imageMeasurementReferences.get(Measurements.MIN);
+        MeasurementReference min = imageMeasurementReferences.getOrPut(Measurements.MIN);
         min.setImageObjName(inputImageName);
         min.setCalculated(parameters.getValue(MEASURE_MIN));
 
-        MeasurementReference max = imageMeasurementReferences.get(Measurements.MAX);
+        MeasurementReference max = imageMeasurementReferences.getOrPut(Measurements.MAX);
         max.setImageObjName(inputImageName);
         max.setCalculated(parameters.getValue(MEASURE_MAX));
 
-        MeasurementReference stdev = imageMeasurementReferences.get(Measurements.STDEV);
+        MeasurementReference stdev = imageMeasurementReferences.getOrPut(Measurements.STDEV);
         stdev.setImageObjName(inputImageName);
         stdev.setCalculated(parameters.getValue(MEASURE_STDEV));
 
-        MeasurementReference sum = imageMeasurementReferences.get(Measurements.SUM);
+        MeasurementReference sum = imageMeasurementReferences.getOrPut(Measurements.SUM);
         sum.setImageObjName(inputImageName);
         sum.setCalculated(parameters.getValue(MEASURE_SUM));
 
