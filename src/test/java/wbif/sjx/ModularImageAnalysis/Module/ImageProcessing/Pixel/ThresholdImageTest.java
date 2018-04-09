@@ -22,7 +22,7 @@ public class ThresholdImageTest {
     @Test @Ignore
     public void testRunGlobalHuangNoLimsNoMultWhiteBG2D8bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -36,7 +36,7 @@ public class ThresholdImageTest {
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient2D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
         ImagePlus expectedImage = IJ.openImage(pathToImage);
-        
+
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
         thresholdImage.initialiseParameters();
@@ -49,7 +49,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
         thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
-        
+
         // Running ThresholdImageg
         thresholdImage.run(workspace);
 
@@ -86,12 +86,12 @@ public class ThresholdImageTest {
                 }
             }
         }
-        
+
     }
-    
+
     @Test @Ignore
     public void testRunGlobalHuangNoLimsNoMultWhiteBG3D8bit() throws Exception {
-        
+
     }
 
     @Test @Ignore

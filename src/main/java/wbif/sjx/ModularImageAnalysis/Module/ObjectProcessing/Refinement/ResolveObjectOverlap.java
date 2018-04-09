@@ -150,11 +150,6 @@ public class ResolveObjectOverlap extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }

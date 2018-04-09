@@ -34,7 +34,7 @@ public class RelateObjectsTest {
     @Test
     public void testLinkMatchingIDsOneChild() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -100,7 +100,7 @@ public class RelateObjectsTest {
     @Test
     public void testProximityCentroidLink() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -185,7 +185,7 @@ public class RelateObjectsTest {
     @Test
     public void testProximityCentroidLink20px() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -270,7 +270,7 @@ public class RelateObjectsTest {
     @Test
     public void testProximitySurfaceLink() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -324,7 +324,7 @@ public class RelateObjectsTest {
     @Test
     public void testProximitySurfaceLink5px() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";

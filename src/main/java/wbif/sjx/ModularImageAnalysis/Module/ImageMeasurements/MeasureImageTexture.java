@@ -92,34 +92,31 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        imageMeasurementReferences.setAllCalculated(false);
+
         String imageName = parameters.getValue(INPUT_IMAGE);
 
-        MeasurementReference asm = imageMeasurementReferences.get(Measurements.ASM);
+        MeasurementReference asm = imageMeasurementReferences.getOrPut(Measurements.ASM);
         asm.setImageObjName(imageName);
+        asm.setCalculated(true);
 
-        MeasurementReference contrast = imageMeasurementReferences.get(Measurements.CONTRAST);
+        MeasurementReference contrast = imageMeasurementReferences.getOrPut(Measurements.CONTRAST);
         contrast.setImageObjName(imageName);
+        contrast.setCalculated(true);
 
-        MeasurementReference correlation = imageMeasurementReferences.get(Measurements.CORRELATION);
+        MeasurementReference correlation = imageMeasurementReferences.getOrPut(Measurements.CORRELATION);
         correlation.setImageObjName(imageName);
+        correlation.setCalculated(true);
 
-        MeasurementReference entropy = imageMeasurementReferences.get(Measurements.ENTROPY);
+        MeasurementReference entropy = imageMeasurementReferences.getOrPut(Measurements.ENTROPY);
         entropy.setImageObjName(imageName);
+        entropy.setCalculated(true);
 
         return imageMeasurementReferences;
 

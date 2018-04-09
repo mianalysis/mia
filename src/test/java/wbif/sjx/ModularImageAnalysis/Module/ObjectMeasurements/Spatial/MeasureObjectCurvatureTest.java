@@ -28,7 +28,7 @@ public class MeasureObjectCurvatureTest {
     @Test
     public void testRunCircleNoRelate10PxRadius2DLOESS() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -82,7 +82,7 @@ public class MeasureObjectCurvatureTest {
     @Test
     public void testRunCircleRelateAntiClockwise10PxRadius2DLOESS() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -145,7 +145,7 @@ public class MeasureObjectCurvatureTest {
     @Test
     public void testRunCircleRelateClockwise10PxRadius2DLOESS() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

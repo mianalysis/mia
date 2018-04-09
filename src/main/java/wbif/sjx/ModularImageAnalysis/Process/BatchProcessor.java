@@ -113,8 +113,7 @@ public class BatchProcessor extends FileCrawler {
 
             // Iterating over all series to analyse, adding each one as a new workspace
             for (int seriesNumber:seriesNumbers) {
-                Workspace workspace = workspaces.getNewWorkspace(next);
-                workspace.getMetadata().setSeries(seriesNumber);
+                Workspace workspace = workspaces.getNewWorkspace(next,seriesNumber);
                 workspace.getMetadata().put("FILE_DEPTH", fileDepth);
 
                 Runnable task = () -> {
@@ -179,8 +178,7 @@ public class BatchProcessor extends FileCrawler {
 
         // Iterating over all series to analyse, adding each one as a new workspace
         for (int seriesNumber:seriesNumbers) {
-            Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile());
-            workspace.getMetadata().setSeries(seriesNumber);
+            Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile(),seriesNumber);
 
             Runnable task = () -> {
                 try {

@@ -611,7 +611,7 @@ public class MainGUI extends GUI {
 
                 MeasurementReferenceCollection measurementReferences = getModules().getImageMeasurementReferences(imageName);
                 // Iterating over the measurements for the current image, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences) {
+                for (MeasurementReference measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -633,7 +633,7 @@ public class MainGUI extends GUI {
 
                 MeasurementReferenceCollection measurementReferences = getModules().getObjectMeasurementReferences(objectName);
                 // Iterating over the measurements for the current object, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences) {
+                for (MeasurementReference measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -961,16 +961,15 @@ public class MainGUI extends GUI {
 
         if (inputFile == null) return;
 
-
         if (getTestWorkspace().getMetadata().getFile() == null) {
             lastModuleEval = -1;
-            setTestWorkspace(new Workspace(1, new File(inputFile)));
+            setTestWorkspace(new Workspace(1, new File(inputFile),1));
         }
 
         // If the input path isn't the same assign this new file
         if (!getTestWorkspace().getMetadata().getFile().getAbsolutePath().equals(inputFile)) {
             lastModuleEval = -1;
-            setTestWorkspace(new Workspace(1, new File(inputFile)));
+            setTestWorkspace(new Workspace(1, new File(inputFile),1));
 
         }
 

@@ -24,7 +24,7 @@ public class MeasureObjectCentroidTest {
     @Test
     public void calculateCentroidMean() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -66,7 +66,7 @@ public class MeasureObjectCentroidTest {
     @Test
     public void calculateCentroidMedian() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";

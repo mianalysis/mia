@@ -22,7 +22,7 @@ public class ImageFileLoaderTest {
     @Test
     public void testRunWithSpecificTiffFile() throws Exception {
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Initialising ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -74,7 +74,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -124,7 +124,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -174,7 +174,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -228,7 +228,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -280,7 +280,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -332,7 +332,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -384,7 +384,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -440,7 +440,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankLif5D_8bit.lif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();

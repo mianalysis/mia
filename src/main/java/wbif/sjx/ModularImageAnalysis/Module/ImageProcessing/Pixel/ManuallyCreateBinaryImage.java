@@ -162,11 +162,6 @@ public class ManuallyCreateBinaryImage extends Module implements ActionListener 
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }

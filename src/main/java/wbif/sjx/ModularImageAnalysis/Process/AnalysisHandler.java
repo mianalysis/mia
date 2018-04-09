@@ -158,6 +158,13 @@ public class AnalysisHandler {
                     module.setNickname(module.getTitle());
                 }
 
+                if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
+                    String isDisableable = moduleAttributes.getNamedItem("DISABLEABLE").getNodeValue();
+                    module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
+                } else {
+                    module.setCanBeDisabled(false);
+                }
+
                 NodeList moduleChildNodes = moduleNode.getChildNodes();
                 for (int j=0;j<moduleChildNodes.getLength();j++) {
                     switch (moduleChildNodes.item(j).getNodeName()) {
@@ -302,7 +309,6 @@ public class AnalysisHandler {
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
             String measurementName = attributes.getNamedItem("NAME").getNodeValue();
-            boolean isCalulated = Boolean.parseBoolean(attributes.getNamedItem("IS_CALCULATED").getNodeValue());
             boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
             String type = attributes.getNamedItem("TYPE").getNodeValue();
             String imageObjectName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
@@ -323,7 +329,6 @@ public class AnalysisHandler {
             if (measurementReference == null) continue;
 
             // Updating the reference's parameters
-            measurementReference.setCalculated(isCalulated);
             measurementReference.setExportable(isExportable);
             measurementReference.setImageObjName(imageObjectName);
 
@@ -353,6 +358,8 @@ public class AnalysisHandler {
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
         boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
+        boolean calculateMin = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MIN);
+        boolean calculateMax = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MAX);
         boolean calculateStd = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_STD);
         boolean calculateSum = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_SUM);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
@@ -395,6 +402,8 @@ public class AnalysisHandler {
         if (exporter != null) {
             exporter.setExportSummary(exportSummary);
             exporter.setCalculateMean(calculateMean);
+            exporter.setCalculateMin(calculateMin);
+            exporter.setCalculateMax(calculateMax);
             exporter.setCalculateStd(calculateStd);
             exporter.setCalculateSum(calculateSum);
             exporter.setExportIndividualObjects(exportIndividualObjects);

@@ -92,7 +92,7 @@ public class BinaryOperations extends Module {
         }
     }
 
-    public static ImagePlus applyDistanceMap3D(ImagePlus ipl, boolean normalise, boolean matchZToXY) {
+    public static ImagePlus applyDistanceMap3D(ImagePlus ipl, boolean matchZToXY) {
         int nSlices = ipl.getNSlices();
 
         // If necessary, interpolating the image in Z to match the XY spacing
@@ -103,7 +103,7 @@ public class BinaryOperations extends Module {
 
         ImagePlus maskIpl = new Duplicator().run(ipl);
         IJ.run(maskIpl,"Invert","stack");
-        ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,normalise).getStack());
+        ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,true).getStack());
 
         // If the input image as interpolated, it now needs to be returned to the original scaling
         if (matchZToXY && nSlices > 1) {
@@ -243,7 +243,7 @@ public class BinaryOperations extends Module {
                 break;
 
             case (OperationModes.DISTANCE_MAP_3D):
-                inputImagePlus = applyDistanceMap3D(inputImagePlus,false,matchZToXY);
+                inputImagePlus = applyDistanceMap3D(inputImagePlus,matchZToXY);
                 break;
 
             case (OperationModes.WATERSHED_3D):
@@ -254,7 +254,7 @@ public class BinaryOperations extends Module {
                 switch (intensityMode) {
                     case IntensityModes.DISTANCE:
                         intensityIpl = new Duplicator().run(inputImagePlus);
-                        intensityIpl = applyDistanceMap3D(intensityIpl,false,matchZToXY);
+                        intensityIpl = applyDistanceMap3D(intensityIpl,matchZToXY);
                         IJ.run(intensityIpl,"Invert","stack");
                         break;
 
@@ -302,11 +302,6 @@ public class BinaryOperations extends Module {
         parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY,Connectivity3D.SIX,Connectivity3D.ALL));
         parameters.add(new Parameter(MATCH_Z_TO_X, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

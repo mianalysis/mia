@@ -10,7 +10,6 @@ public class MeasurementReferenceTest {
         MeasurementReference measurementReference = new MeasurementReference("Test name");
 
         assertEquals("Test name",measurementReference.getName());
-        assertEquals("Test name",measurementReference.getNickName());
         assertEquals("",measurementReference.getImageObjName());
         assertTrue(measurementReference.isCalculated());
         assertTrue(measurementReference.isExportable());

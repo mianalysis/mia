@@ -15,7 +15,7 @@ public abstract class GUI {
     protected GUIAnalysis analysis = new GUIAnalysis();
     Module activeModule = null;
     protected int lastModuleEval = -1;
-    private Workspace testWorkspace = new Workspace(1, null);
+    private Workspace testWorkspace = new Workspace(1, null,1);
 
     public ModuleCollection getModules() {
         return analysis.getModules();

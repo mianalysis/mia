@@ -107,19 +107,6 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIRECTIONALITY_RATIO));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.EUCLIDEAN_DISTANCE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.TOTAL_PATH_LENGTH));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DURATION));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.INSTANTANEOUS_VELOCITY));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CUMULATIVE_PATH_LENGTH));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ROLLING_EUCLIDEAN_DISTANCE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ROLLING_DIRECTIONALITY_RATIO));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
@@ -145,17 +132,42 @@ public class MeasureTrackMotion extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
-        objectMeasurementReferences.updateImageObjectName(Measurements.DIRECTIONALITY_RATIO,inputTrackObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurements.EUCLIDEAN_DISTANCE,inputTrackObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurements.TOTAL_PATH_LENGTH,inputTrackObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurements.DURATION,inputTrackObjects);
+        objectMeasurementReferences.setAllCalculated(false);
 
+        String inputTrackObjects = parameters.getValue(INPUT_TRACK_OBJECTS);
         String inputSpotObjects  = parameters.getValue(INPUT_SPOT_OBJECTS);
-        objectMeasurementReferences.updateImageObjectName(Measurements.INSTANTANEOUS_VELOCITY,inputSpotObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurements.CUMULATIVE_PATH_LENGTH,inputSpotObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurements.ROLLING_EUCLIDEAN_DISTANCE,inputSpotObjects);
-        objectMeasurementReferences.updateImageObjectName(Measurements.ROLLING_DIRECTIONALITY_RATIO,inputSpotObjects);
+
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.DIRECTIONALITY_RATIO);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.EUCLIDEAN_DISTANCE);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.TOTAL_PATH_LENGTH);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.DURATION);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.INSTANTANEOUS_VELOCITY);
+        reference.setImageObjName(inputSpotObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.CUMULATIVE_PATH_LENGTH);
+        reference.setImageObjName(inputSpotObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.ROLLING_EUCLIDEAN_DISTANCE);
+        reference.setImageObjName(inputSpotObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.ROLLING_DIRECTIONALITY_RATIO);
+        reference.setImageObjName(inputSpotObjects);
+        reference.setCalculated(true);
 
         return objectMeasurementReferences;
 

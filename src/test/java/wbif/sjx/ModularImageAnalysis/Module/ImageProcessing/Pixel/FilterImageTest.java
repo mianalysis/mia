@@ -33,7 +33,7 @@ public class FilterImageTest {
     @Test
     public void testRunGaussian2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -98,7 +98,7 @@ public class FilterImageTest {
     @Test
     public void testRunGaussian2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -169,7 +169,7 @@ public class FilterImageTest {
     @Test
     public void testRunGaussian3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -234,7 +234,7 @@ public class FilterImageTest {
     @Test
     public void testRunGaussian3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -301,7 +301,7 @@ public class FilterImageTest {
     @Test
     public void testRunMedian2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -366,7 +366,7 @@ public class FilterImageTest {
     @Test
     public void testRunMedian2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -437,7 +437,7 @@ public class FilterImageTest {
     @Test
     public void testRunMedian3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -502,7 +502,7 @@ public class FilterImageTest {
     @Test @Ignore
     public void testRunMedian3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -595,7 +595,7 @@ public class FilterImageTest {
     @Test
     public void testRunVariance2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -660,7 +660,7 @@ public class FilterImageTest {
     @Test
     public void testRunVariance2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

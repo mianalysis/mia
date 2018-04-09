@@ -83,11 +83,6 @@ public class MergeObjects extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         boolean deleteInputs = parameters.getValue(DELETE_INPUTS);
 

@@ -67,14 +67,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureImageIntensity.Measurements.MAX};
 
         for (String expectedName1:expectedNames1) {
-            boolean found = false;
-            for (MeasurementReference reference1:references1){
-                if (reference1.getName().equals(expectedName1)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references1.containsKey(expectedName1));
         }
 
         // Checking the values for "New_image"
@@ -90,14 +83,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureImageTexture.Measurements.ENTROPY};
 
         for (String expectedName2:expectedNames2) {
-            boolean found = false;
-            for (MeasurementReference reference2:references2){
-                if (reference2.getName().equals(expectedName2)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references2.containsKey(expectedName2));
         }
     }
 
@@ -144,14 +130,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureImageIntensity.Measurements.MAX};
 
         for (String expectedName1:expectedNames1) {
-            boolean found = false;
-            for (MeasurementReference reference1:references1){
-                if (reference1.getName().equals(expectedName1)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references1.containsKey(expectedName1));
         }
 
         // Checking the values for "New_image"
@@ -204,20 +183,13 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureObjectCentroid.Measurements.MEAN_X_CAL,
                 MeasureObjectCentroid.Measurements.MEAN_Y_CAL,
                 MeasureObjectCentroid.Measurements.MEAN_Z_CAL,
-                MeasureObjectTexture.Measurements.ASM,
-                MeasureObjectTexture.Measurements.CONTRAST,
-                MeasureObjectTexture.Measurements.CORRELATION,
-                MeasureObjectTexture.Measurements.ENTROPY};
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ASM),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CONTRAST),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CORRELATION),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ENTROPY)};
 
         for (String expectedName1:expectedNames1) {
-            boolean found = false;
-            for (MeasurementReference reference1:references1){
-                if (reference1.getName().equals(expectedName1)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references1.containsKey(expectedName1));
         }
 
         // Checking the values for the second object set
@@ -230,14 +202,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureObjectShape.Measurements.VOLUME_CAL};
 
         for (String expectedName2:expectedNames2) {
-            boolean found = false;
-            for (MeasurementReference reference2:references2){
-                if (reference2.getName().equals(expectedName2)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references2.containsKey(expectedName2));
         }
     }
 
@@ -287,14 +252,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureObjectCentroid.Measurements.MEAN_Z_CAL};
 
         for (String expectedName1:expectedNames1) {
-            boolean found = false;
-            for (MeasurementReference reference1:references1){
-                if (reference1.getName().equals(expectedName1)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references1.containsKey(expectedName1));
         }
 
         // Checking the values for the second object set

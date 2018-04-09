@@ -103,7 +103,7 @@ public class RidgeDetection extends Module {
                     // Running the ridge detection
                     Lines lines;
                     try {
-                         lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
+                        lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
                                 lowerThreshold, minLength, maxLength, darkLine, true, false, false);
                     } catch (NegativeArraySizeException | ArrayIndexOutOfBoundsException e) {
                         String errorMessage = "Ridge detection failed for file "+workspace.getMetadata().getFile().getName()
@@ -217,12 +217,6 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.LENGTH_PX));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
@@ -234,8 +228,11 @@ public class RidgeDetection extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        MeasurementReference lengthPx = objectMeasurementReferences.get(Measurements.LENGTH_PX);
+        objectMeasurementReferences.setAllCalculated(false);
+
+        MeasurementReference lengthPx = objectMeasurementReferences.getOrPut(Measurements.LENGTH_PX);
         lengthPx.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        lengthPx.setCalculated(true);
 
         return objectMeasurementReferences;
 

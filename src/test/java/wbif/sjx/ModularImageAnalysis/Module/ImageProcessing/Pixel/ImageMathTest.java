@@ -22,7 +22,7 @@ public class ImageMathTest {
     @Test
     public void testRunAddPositive2D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -88,7 +88,7 @@ public class ImageMathTest {
     @Test
     public void testRunAddPositive3D8bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -154,7 +154,7 @@ public class ImageMathTest {
     @Test
     public void testRunAddPositive3D16bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -220,7 +220,7 @@ public class ImageMathTest {
     @Test
     public void testRunAddPositive3D32bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -286,7 +286,7 @@ public class ImageMathTest {
     @Test
     public void testRunAddPositive4D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -351,7 +351,7 @@ public class ImageMathTest {
 
     @Test
     public void testRunAddPositive5D() throws Exception {
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -416,7 +416,7 @@ public class ImageMathTest {
 
     @Test
     public void testRunAddPositiveToInput5D() throws Exception {
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -480,7 +480,7 @@ public class ImageMathTest {
 
     @Test
     public void testRunAddMeasurement5D() throws Exception {
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -549,7 +549,7 @@ public class ImageMathTest {
     @Test
     public void testRunAddNegative3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -615,7 +615,7 @@ public class ImageMathTest {
     @Test
     public void testRunSubtractPositive3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -681,7 +681,7 @@ public class ImageMathTest {
     @Test
     public void testRunSubtractNegative3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -747,7 +747,7 @@ public class ImageMathTest {
     @Test
     public void testRunMultiplyPositive3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -813,7 +813,7 @@ public class ImageMathTest {
     @Test
     public void testRunMultiplyNegative3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -879,7 +879,7 @@ public class ImageMathTest {
     @Test
     public void testRunMultiplyNegative3D32bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -945,7 +945,7 @@ public class ImageMathTest {
     @Test
     public void testRunDividePositive3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -1011,7 +1011,7 @@ public class ImageMathTest {
     @Test
     public void testRuDivideNegative3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -1077,7 +1077,7 @@ public class ImageMathTest {
     @Test
     public void testRuDivideNegative3D32bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
