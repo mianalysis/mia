@@ -88,11 +88,11 @@ public abstract class Module implements Serializable {
     public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
 
     public MeasurementReference getImageMeasurementReference(String name) {
-        return imageMeasurementReferences.get(name);
+        return imageMeasurementReferences.getOrPut(name);
     }
 
     public MeasurementReference getObjectMeasurementReference(String name) {
-        return objectMeasurementReferences.get(name);
+        return objectMeasurementReferences.getOrPut(name);
     }
 
     /**

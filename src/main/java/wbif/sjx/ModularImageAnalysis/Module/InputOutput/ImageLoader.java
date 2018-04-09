@@ -450,7 +450,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
         parameters.add(new Parameter(UNITS, Parameter.STRING, "um"));
         parameters.add(new Parameter(USE_IMAGEJ_READER, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(THREE_D_MODE,Parameter.CHOICE_ARRAY,ThreeDModes.TIMESERIES,ThreeDModes.ALL));
+        parameters.add(new Parameter(THREE_D_MODE,Parameter.CHOICE_ARRAY,ThreeDModes.ZSTACK,ThreeDModes.ALL));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }

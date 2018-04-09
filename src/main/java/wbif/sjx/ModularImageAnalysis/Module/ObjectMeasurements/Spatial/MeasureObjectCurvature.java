@@ -511,6 +511,8 @@ public class MeasureObjectCurvature extends Module {
             }
         }
 
+        splineLengthPx.setCalculated(true);
+        splineLengthCal.setCalculated(true);
         meanCurvatureAbsolutePx.setCalculated(absoluteCurvature);
         minCurvatureAbsolutePx.setCalculated(absoluteCurvature);
         maxCurvatureAbsolutePx.setCalculated(absoluteCurvature);

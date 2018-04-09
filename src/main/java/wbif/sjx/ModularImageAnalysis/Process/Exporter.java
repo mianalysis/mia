@@ -716,6 +716,30 @@ public class Exporter {
                     }
                 }
 
+                if (calculateMin) {
+                    headerName = getObjectString(objSetName, "MIN", objectMeasurement.getName());
+                    colNum = colNumbers.get(headerName);
+                    summaryCell = summaryValueRow.createCell(colNum);
+                    val = cs.getMin();
+                    if (val == Double.NaN) {
+                        summaryCell.setCellValue("");
+                    } else {
+                        summaryCell.setCellValue(val);
+                    }
+                }
+
+                if (calculateMax) {
+                    headerName = getObjectString(objSetName, "MAX", objectMeasurement.getName());
+                    colNum = colNumbers.get(headerName);
+                    summaryCell = summaryValueRow.createCell(colNum);
+                    val = cs.getMax();
+                    if (val == Double.NaN) {
+                        summaryCell.setCellValue("");
+                    } else {
+                        summaryCell.setCellValue(val);
+                    }
+                }
+
                 if (calculateStd) {
                     headerName = getObjectString(objSetName, "STD", objectMeasurement.getName());
                     colNum = colNumbers.get(headerName);

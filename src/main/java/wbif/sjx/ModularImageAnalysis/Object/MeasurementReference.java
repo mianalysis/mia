@@ -22,24 +22,28 @@ public class MeasurementReference extends Reference {
         return calculated;
     }
 
-    public void setCalculated(boolean calculated) {
+    public MeasurementReference setCalculated(boolean calculated) {
         this.calculated = calculated;
+        return this;
     }
 
     public boolean isExportable() {
         return exportable;
     }
 
-    public void setExportable(boolean exportable) {
+    public MeasurementReference setExportable(boolean exportable) {
         this.exportable = exportable;
+        return this;
     }
 
     public String getImageObjName() {
         return imageObjName;
     }
 
-    public void setImageObjName(String imageObjName) {
+    public MeasurementReference setImageObjName(String imageObjName) {
         this.imageObjName = imageObjName;
+        return this;
+
     }
 
     @Override

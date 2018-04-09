@@ -170,6 +170,7 @@ public class MeasureSpotIntensity extends Module {
 
             case RadiusSources.MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(RADIUS_MEASUREMENT));
+                parameters.updateValueSource(RADIUS_MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
                 break;
         }
 
