@@ -41,7 +41,6 @@ public abstract class Module implements Serializable {
         nickname = moduleName;
 
         initialiseParameters();
-        initialiseMeasurementReferences();
 
     }
 
@@ -75,8 +74,6 @@ public abstract class Module implements Serializable {
      */
     protected abstract void initialiseParameters();
 
-    protected abstract void initialiseMeasurementReferences();
-
     /**
      * Return a ParameterCollection of the currently active parameters.  This is run each time a parameter is changed.
      * For example, if "Export XML" is set to "false" a sub-parameter specifying the measurements to export won't be
@@ -91,21 +88,11 @@ public abstract class Module implements Serializable {
     public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
 
     public MeasurementReference getImageMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : imageMeasurementReferences) {
-            if (measurementReference.getName().equals(name)) return measurementReference;
-        }
-
-        return null;
-
+        return imageMeasurementReferences.getOrPut(name);
     }
 
     public MeasurementReference getObjectMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : objectMeasurementReferences) {
-            if (measurementReference.getName().equals(name)) return measurementReference;
-        }
-
-        return null;
-
+        return objectMeasurementReferences.getOrPut(name);
     }
 
     /**

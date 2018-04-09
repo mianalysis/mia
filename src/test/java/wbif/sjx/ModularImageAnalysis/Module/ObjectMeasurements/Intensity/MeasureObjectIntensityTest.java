@@ -33,7 +33,7 @@ public class MeasureObjectIntensityTest {
     @Test
     public void testRun8bit3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -102,7 +102,7 @@ public class MeasureObjectIntensityTest {
     @Test
     public void testRun16bit3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -171,7 +171,7 @@ public class MeasureObjectIntensityTest {
     @Test
     public void testRun32bit3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -245,7 +245,7 @@ public class MeasureObjectIntensityTest {
     @Test
     public void testMeasureWeightedEdgeDistance2pxShellInside() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -293,7 +293,7 @@ public class MeasureObjectIntensityTest {
     @Test
     public void testMeasureWeightedEdgeDistance10pxShellOutside() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";

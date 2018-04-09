@@ -24,7 +24,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun8bit5DChannel1() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -88,7 +88,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun8bit5DChannel2() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -152,7 +152,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun16bit5DChannel1() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -216,7 +216,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun16bit5DChannel2() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -280,7 +280,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun32bit5DChannel1() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -344,7 +344,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun32bit5DChannel2() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

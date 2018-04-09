@@ -22,7 +22,7 @@ public class ProjectImageTest {
     @Test
     public void testRunMaxZ2D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -86,7 +86,7 @@ public class ProjectImageTest {
     @Test
     public void testRunMaxZ3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -150,7 +150,7 @@ public class ProjectImageTest {
     @Test
     public void testRunMaxZ4D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -214,7 +214,7 @@ public class ProjectImageTest {
     @Test
     public void testRunMaxZ5D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -278,7 +278,7 @@ public class ProjectImageTest {
     @Test
     public void testRunMaxZ3D16bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -342,7 +342,7 @@ public class ProjectImageTest {
     @Test
     public void testRunMaxZ3D32bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -406,7 +406,7 @@ public class ProjectImageTest {
     @Test
     public void testRunMinZ3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -470,7 +470,7 @@ public class ProjectImageTest {
     @Test
     public void testRunAverageZ3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -534,7 +534,7 @@ public class ProjectImageTest {
     @Test
     public void testRunMedianZ3D() throws Exception  {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -598,7 +598,7 @@ public class ProjectImageTest {
     @Test
     public void testRunStdevZ3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -662,7 +662,7 @@ public class ProjectImageTest {
     @Test
     public void testRunSumZ3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

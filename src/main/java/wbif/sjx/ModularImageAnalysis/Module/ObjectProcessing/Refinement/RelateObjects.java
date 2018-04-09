@@ -318,15 +318,6 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_SURFACE_CAL));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.DIST_CENTROID_CAL));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -365,12 +356,14 @@ public class RelateObjects extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
 
-        MeasurementReference distSurfPx = objectMeasurementReferences.get(Measurements.DIST_SURFACE_PX);
-        MeasurementReference distCentPx = objectMeasurementReferences.get(Measurements.DIST_CENTROID_PX);
-        MeasurementReference distSurfCal = objectMeasurementReferences.get(Measurements.DIST_SURFACE_CAL);
-        MeasurementReference distCentCal = objectMeasurementReferences.get(Measurements.DIST_CENTROID_CAL);
+        MeasurementReference distSurfPx = objectMeasurementReferences.getOrPut(Measurements.DIST_SURFACE_PX);
+        MeasurementReference distCentPx = objectMeasurementReferences.getOrPut(Measurements.DIST_CENTROID_PX);
+        MeasurementReference distSurfCal = objectMeasurementReferences.getOrPut(Measurements.DIST_SURFACE_CAL);
+        MeasurementReference distCentCal = objectMeasurementReferences.getOrPut(Measurements.DIST_CENTROID_CAL);
 
         distSurfPx.setImageObjName(childObjectsName);
         distCentPx.setImageObjName(childObjectsName);

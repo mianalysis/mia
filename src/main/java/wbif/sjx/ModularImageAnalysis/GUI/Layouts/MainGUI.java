@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.*;
+import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
@@ -66,7 +67,7 @@ public class MainGUI extends GUI {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - mainFrameWidth) / 2, (screenSize.height - frameHeight) / 2);
         frame.setLayout(new GridBagLayout());
-        frame.setTitle("Modular image analysis (version " + getClass().getPackage().getImplementationVersion() + ")");
+        frame.setTitle("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
 
         // Creating the menu bar
         initialiseMenuBar();
@@ -427,7 +428,7 @@ public class MainGUI extends GUI {
         textField.setBackground(null);
         textField.setPreferredSize(new Dimension(width - 20, 25));
         textField.setBorder(null);
-        textField.setText("Modular image analysis (version " + getClass().getPackage().getImplementationVersion() + ")");
+        textField.setText("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         textField.setEditable(false);
         textField.setToolTipText(textField.getText());
@@ -596,7 +597,7 @@ public class MainGUI extends GUI {
 
         // If selected, adding the measurement selector for output control
         if (activeModule.getClass().isInstance(new OutputControl())
-                && (boolean) analysis.getOutputControl().isEnabled()
+                && analysis.getOutputControl().isEnabled()
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
 
             LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);
@@ -610,7 +611,7 @@ public class MainGUI extends GUI {
 
                 MeasurementReferenceCollection measurementReferences = getModules().getImageMeasurementReferences(imageName);
                 // Iterating over the measurements for the current image, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences) {
+                for (MeasurementReference measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -632,7 +633,7 @@ public class MainGUI extends GUI {
 
                 MeasurementReferenceCollection measurementReferences = getModules().getObjectMeasurementReferences(objectName);
                 // Iterating over the measurements for the current object, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences) {
+                for (MeasurementReference measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -708,6 +709,15 @@ public class MainGUI extends GUI {
         c.gridy = 0;
         c.weighty = 0;
 
+        // Check if there are no modules
+        if (analysis.modules.size()==0) return;
+
+        // Adding a separator between the input and main modules
+        GUISeparator separatorModule = new GUISeparator();
+        separatorModule.updateParameterValue(GUISeparator.TITLE,"File loading");
+        c.gridy++;
+        basicModulesPanel.add(componentFactory.getSeparator(separatorModule,basicFrameWidth-40),c);
+
         JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(0,20));
         basicModulesPanel.add(separator,c);
@@ -717,15 +727,7 @@ public class MainGUI extends GUI {
         JPanel inputPanel =
                 componentFactory.createBasicModuleControl(analysis.getInputControl(),basicFrameWidth-40);
 
-        if (inputPanel != null) {
-            basicModulesPanel.add(inputPanel,c);
-
-            // Adding a separator between the input and main modules
-            c.gridy++;
-            c.insets = new Insets(10,0,0,0);
-            basicModulesPanel.add(componentFactory.getSeparator(basicFrameWidth-40),c);
-
-        }
+        if (inputPanel != null) basicModulesPanel.add(inputPanel,c);
 
         // Adding module buttons
         c.insets = new Insets(0,0,0,0);
@@ -745,10 +747,6 @@ public class MainGUI extends GUI {
                 componentFactory.createBasicModuleControl(analysis.getOutputControl(),basicFrameWidth-40);
 
         if (outputPanel != null) {
-            // Adding a separator between the input and main modules
-            c.gridy++;
-            basicModulesPanel.add(componentFactory.getSeparator(basicFrameWidth-40),c);
-
             c.gridy++;
             c.insets = new Insets(0,0,0,0);
             basicModulesPanel.add(outputPanel,c);
@@ -938,6 +936,8 @@ public class MainGUI extends GUI {
 
             case InputControl.InputModes.BATCH:
                 // Initialising BatchProcessor
+                if (batchFolder == null) return;
+
                 BatchProcessor batchProcessor = new BatchProcessor(new File(batchFolder));
                 batchProcessor.setnThreads(nThreads);
 
@@ -963,14 +963,24 @@ public class MainGUI extends GUI {
 
         if (getTestWorkspace().getMetadata().getFile() == null) {
             lastModuleEval = -1;
-            setTestWorkspace(new Workspace(1, new File(inputFile)));
+            setTestWorkspace(new Workspace(1, new File(inputFile),1));
         }
 
         // If the input path isn't the same assign this new file
         if (!getTestWorkspace().getMetadata().getFile().getAbsolutePath().equals(inputFile)) {
             lastModuleEval = -1;
-            setTestWorkspace(new Workspace(1, new File(inputFile)));
+            setTestWorkspace(new Workspace(1, new File(inputFile),1));
 
+        }
+
+        switch ((String) analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE)) {
+            case InputControl.SeriesModes.ALL_SERIES:
+                getTestWorkspace().getMetadata().setSeries(1);
+                break;
+
+            case InputControl.SeriesModes.SINGLE_SERIES:
+                int seriesNumber = analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
+                getTestWorkspace().getMetadata().setSeries(seriesNumber);
         }
     }
 }

@@ -47,6 +47,8 @@ public class Exporter {
     private boolean verbose = false;
     private boolean exportSummary = true;
     private boolean calculateMean = true;
+    private boolean calculateMin = true;
+    private boolean calculateMax = true;
     private boolean calculateStd = true;
     private boolean calculateSum = true;
     private SummaryType summaryType = SummaryType.PER_FILE;
@@ -175,7 +177,7 @@ public class Exporter {
             }
 
             // Preparing the filepath and filename
-            String outPath = FilenameUtils.removeExtension(exportFilePath) +".xml";
+            String outPath = FilenameUtils.removeExtension(exportFilePath)  +".xml";
 
             // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -286,11 +288,13 @@ public class Exporter {
     public static Element prepareMeasurementReferencesXML(Document doc, Element measurementReferencesElement, MeasurementReferenceCollection measurementReferences, String type) {
         if (measurementReferences == null) return measurementReferencesElement;
 
-        for (MeasurementReference measurementReference:measurementReferences) {
-            Element measurementReferenceElement = doc.createElement("MEASUREMENT_FOR_COLOUR");
+        for (MeasurementReference measurementReference:measurementReferences.values()) {
+            // Don't export any measurements that aren't calculated
+            if (!measurementReference.isCalculated()) continue;
 
-            measurementReferenceElement.setAttribute("NAME",measurementReference.getNickName());
-            measurementReferenceElement.setAttribute("IS_CALCULATED",String.valueOf(measurementReference.isCalculated()));
+            Element measurementReferenceElement = doc.createElement("MEASUREMENT");
+
+            measurementReferenceElement.setAttribute("NAME",measurementReference.getName());
             measurementReferenceElement.setAttribute("IS_EXPORTABLE",String.valueOf(measurementReference.isExportable()));
             measurementReferenceElement.setAttribute("TYPE",type);
             measurementReferenceElement.setAttribute("IMAGE_OBJECT_NAME",measurementReference.getImageObjName());
@@ -459,19 +463,33 @@ public class Exporter {
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
-                            if (calculateStd) {
-                                summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                                summaryDataName = getObjectString(exampleObjSetName, "STD", "NUM_CHILDREN_" + child);
-                                summaryHeaderCell.setCellValue(summaryDataName);
-                                colNumbers.put(summaryDataName, headerCol++);
-                            }
+                        if (calculateMin) {
+                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                            summaryDataName = getObjectString(exampleObjSetName, "MIN", "NUM_CHILDREN_" + child);
+                            summaryHeaderCell.setCellValue(summaryDataName);
+                            colNumbers.put(summaryDataName, headerCol++);
+                        }
 
-                                if (calculateSum) {
-                                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                                    summaryDataName = getObjectString(exampleObjSetName, "SUM", "NUM_CHILDREN_" + child);
-                                    summaryHeaderCell.setCellValue(summaryDataName);
-                                    colNumbers.put(summaryDataName, headerCol++);
-                                }
+                        if (calculateMax) {
+                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                            summaryDataName = getObjectString(exampleObjSetName, "MAX", "NUM_CHILDREN_" + child);
+                            summaryHeaderCell.setCellValue(summaryDataName);
+                            colNumbers.put(summaryDataName, headerCol++);
+                        }
+
+                        if (calculateStd) {
+                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                            summaryDataName = getObjectString(exampleObjSetName, "STD", "NUM_CHILDREN_" + child);
+                            summaryHeaderCell.setCellValue(summaryDataName);
+                            colNumbers.put(summaryDataName, headerCol++);
+                        }
+
+                        if (calculateSum) {
+                            summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                            summaryDataName = getObjectString(exampleObjSetName, "SUM", "NUM_CHILDREN_" + child);
+                            summaryHeaderCell.setCellValue(summaryDataName);
+                            colNumbers.put(summaryDataName, headerCol++);
+                        }
                     }
                 }
 
@@ -481,27 +499,41 @@ public class Exporter {
                 if (objectMeasurementReferences == null) continue;
 
                 // Running through all the object measurement values, adding them as new columns
-                for (MeasurementReference objectMeasurement : objectMeasurementReferences) {
+                for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
                     if (!objectMeasurement.isCalculated()) continue;
                     if (!objectMeasurement.isExportable()) continue;
 
                     if (calculateMean) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(exampleObjSetName, "MEAN", objectMeasurement.getNickName());
+                        summaryDataName = getObjectString(exampleObjSetName, "MEAN", objectMeasurement.getName());
+                        summaryHeaderCell.setCellValue(summaryDataName);
+                        colNumbers.put(summaryDataName, headerCol++);
+                    }
+
+                    if (calculateMin) {
+                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                        summaryDataName = getObjectString(exampleObjSetName, "MIN", objectMeasurement.getName());
+                        summaryHeaderCell.setCellValue(summaryDataName);
+                        colNumbers.put(summaryDataName, headerCol++);
+                    }
+
+                    if (calculateMax) {
+                        summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                        summaryDataName = getObjectString(exampleObjSetName, "MAX", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         colNumbers.put(summaryDataName, headerCol++);
                     }
 
                     if (calculateStd) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(exampleObjSetName, "STD", objectMeasurement.getNickName());
+                        summaryDataName = getObjectString(exampleObjSetName, "STD", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         colNumbers.put(summaryDataName, headerCol++);
                     }
 
                     if (calculateSum) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(exampleObjSetName, "SUM", objectMeasurement.getNickName());
+                        summaryDataName = getObjectString(exampleObjSetName, "SUM", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         colNumbers.put(summaryDataName, headerCol++);
                     }
@@ -605,6 +637,30 @@ public class Exporter {
                         }
                     }
 
+                    if (calculateMin) {
+                        headerName = getObjectString(objSetName, "MIN", "NUM_CHILDREN_" + child);
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getMin();
+                        if (val == Double.NaN) {
+                            summaryCell.setCellValue("");
+                        } else {
+                            summaryCell.setCellValue(val);
+                        }
+                    }
+
+                    if (calculateMax) {
+                        headerName = getObjectString(objSetName, "MAX", "NUM_CHILDREN_" + child);
+                        colNum = colNumbers.get(headerName);
+                        summaryCell = summaryValueRow.createCell(colNum);
+                        val = cs.getMax();
+                        if (val == Double.NaN) {
+                            summaryCell.setCellValue("");
+                        } else {
+                            summaryCell.setCellValue(val);
+                        }
+                    }
+
                     if (calculateStd) {
                         headerName = getObjectString(objSetName, "STD", "NUM_CHILDREN_" + child);
                         colNum = colNumbers.get(headerName);
@@ -637,19 +693,19 @@ public class Exporter {
             if (objectMeasurementReferences == null) continue;
 
             // Running through all the object measurement values, adding them as new columns
-            for (MeasurementReference objectMeasurement : objectMeasurementReferences) {
+            for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
                 if (!objectMeasurement.isCalculated()) continue;
                 if (!objectMeasurement.isExportable()) continue;
 
                 // Running through all objects in this set, adding measurements to a CumStat object
                 CumStat cs = new CumStat();
                 for (Obj obj: objCollection.values()) {
-                    Measurement measurement = obj.getMeasurement(objectMeasurement.getNickName());
+                    Measurement measurement = obj.getMeasurement(objectMeasurement.getName());
                     if (measurement != null) cs.addMeasure(measurement.getValue());
                 }
 
                 if (calculateMean) {
-                    headerName = getObjectString(objSetName, "MEAN", objectMeasurement.getNickName());
+                    headerName = getObjectString(objSetName, "MEAN", objectMeasurement.getName());
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMean();
@@ -660,8 +716,32 @@ public class Exporter {
                     }
                 }
 
+                if (calculateMin) {
+                    headerName = getObjectString(objSetName, "MIN", objectMeasurement.getName());
+                    colNum = colNumbers.get(headerName);
+                    summaryCell = summaryValueRow.createCell(colNum);
+                    val = cs.getMin();
+                    if (val == Double.NaN) {
+                        summaryCell.setCellValue("");
+                    } else {
+                        summaryCell.setCellValue(val);
+                    }
+                }
+
+                if (calculateMax) {
+                    headerName = getObjectString(objSetName, "MAX", objectMeasurement.getName());
+                    colNum = colNumbers.get(headerName);
+                    summaryCell = summaryValueRow.createCell(colNum);
+                    val = cs.getMax();
+                    if (val == Double.NaN) {
+                        summaryCell.setCellValue("");
+                    } else {
+                        summaryCell.setCellValue(val);
+                    }
+                }
+
                 if (calculateStd) {
-                    headerName = getObjectString(objSetName, "STD", objectMeasurement.getNickName());
+                    headerName = getObjectString(objSetName, "STD", objectMeasurement.getName());
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getStd();
@@ -673,7 +753,7 @@ public class Exporter {
                 }
 
                 if (calculateSum) {
-                    headerName = getObjectString(objSetName, "SUM", objectMeasurement.getNickName());
+                    headerName = getObjectString(objSetName, "SUM", objectMeasurement.getName());
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getSum();
@@ -766,14 +846,14 @@ public class Exporter {
                 if (objectMeasurementReferences == null) continue;
 
                 // Running through all the object measurement values, adding them as new columns
-                for (MeasurementReference objectMeasurement : objectMeasurementReferences) {
+                for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
                     if (!objectMeasurement.isCalculated()) continue;
                     if (!objectMeasurement.isExportable()) continue;
 
                     measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
-                    measurementNames.get(objectName).put(col, objectMeasurement.getNickName());
+                    measurementNames.get(objectName).put(col, objectMeasurement.getName());
                     Cell measHeaderCell = objectHeaderRow.createCell(col++);
-                    measHeaderCell.setCellValue(objectMeasurement.getNickName());
+                    measHeaderCell.setCellValue(objectMeasurement.getName());
 
                 }
             }
@@ -936,6 +1016,22 @@ public class Exporter {
 
     public void setCalculateMean(boolean calculateMean) {
         this.calculateMean = calculateMean;
+    }
+
+    public boolean isCalculateMin() {
+        return calculateMin;
+    }
+
+    public void setCalculateMin(boolean calculateMin) {
+        this.calculateMin = calculateMin;
+    }
+
+    public boolean isCalculateMax() {
+        return calculateMax;
+    }
+
+    public void setCalculateMax(boolean calculateMax) {
+        this.calculateMax = calculateMax;
     }
 
     public boolean isCalculateStd() {

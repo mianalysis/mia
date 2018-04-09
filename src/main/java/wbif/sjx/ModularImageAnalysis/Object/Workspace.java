@@ -16,9 +16,10 @@ public class Workspace {
 
     // CONSTRUCTOR
 
-    public Workspace(int ID, File currentFile) {
+    public Workspace(int ID, File file, int series) {
         this.ID = ID;
-        metadata.put(HCMetadata.FILE,currentFile);
+        metadata.put(HCMetadata.FILE,file);
+        metadata.put(HCMetadata.SERIES,series);
 
     }
 
@@ -118,7 +119,7 @@ public class Workspace {
 
                 // If there isn't already a Workspace for this time point, add one
                 if (!workspaces.containsKey(t)) {
-                    Workspace workspace = new Workspace(ID,null);
+                    Workspace workspace = new Workspace(ID,null,-1);
                     workspace.setMetadata(metadata);
                     workspace.setImages(images);
                     workspaces.put(t,workspace);

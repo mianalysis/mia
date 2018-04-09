@@ -25,7 +25,7 @@ public class MetadataExtractorTest {
         File testFile = temporaryFolder.newFile("Test filename with k2 keyword.tif");
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile);
+        Workspace workspace = new Workspace(0,testFile,1);
 
         // Creating list of keywords
         String keywords = "Keyword1, k2, with gaps";
@@ -52,7 +52,7 @@ public class MetadataExtractorTest {
         File testFile = temporaryFolder.newFile("Test filename with gaps keyword.tif");
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile);
+        Workspace workspace = new Workspace(0,testFile,1);
 
         // Creating list of keywords
         String keywords = "Keyword1, k2, with gaps";
@@ -79,7 +79,7 @@ public class MetadataExtractorTest {
         File testFile = temporaryFolder.newFile("Test filename with %$ keyword.tif");
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile);
+        Workspace workspace = new Workspace(0,testFile,1);
 
         // Creating list of keywords
         String keywords = "Keyword1, k2, %$, with gaps";
@@ -106,7 +106,7 @@ public class MetadataExtractorTest {
         File testFile = temporaryFolder.newFile("Test filename without keyword.tif");
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile);
+        Workspace workspace = new Workspace(0,testFile,1);
 
         // Creating list of keywords
         String keywords = "Keyword1, k2, with gaps";

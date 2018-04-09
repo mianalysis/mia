@@ -23,7 +23,7 @@ public class InvertIntensityTest {
     @Test
     public void testRun3D8bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -87,7 +87,7 @@ public class InvertIntensityTest {
     @Test
     public void testRun3DApplyToInput8bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -150,7 +150,7 @@ public class InvertIntensityTest {
     @Test
     public void testRun3D16bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -214,7 +214,7 @@ public class InvertIntensityTest {
     @Test
     public void testRun3D32bit() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

@@ -21,7 +21,7 @@ public class MergeObjectsTest {
     @Test
     public void testRunWithObjectDeletion() throws GenericMIAException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -67,7 +67,7 @@ public class MergeObjectsTest {
     @Test
     public void testRunWithoutObjectDeletion() throws GenericMIAException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

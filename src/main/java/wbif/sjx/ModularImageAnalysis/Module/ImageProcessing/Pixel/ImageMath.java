@@ -37,6 +37,42 @@ public class ImageMath extends Module {
 
     }
 
+    public static void process(ImagePlus inputImagePlus, String calculationType, double mathValue) {
+        int nChannels = inputImagePlus.getNChannels();
+        int nSlices = inputImagePlus.getNSlices();
+        int nFrames = inputImagePlus.getNFrames();
+
+        // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
+        for (int z = 1; z <= nSlices; z++) {
+            for (int c = 1; c <= nChannels; c++) {
+                for (int t = 1; t <= nFrames; t++) {
+                    inputImagePlus.setPosition(c, z, t);
+
+                    switch (calculationType) {
+                        case CalculationTypes.ADD:
+                            inputImagePlus.getProcessor().add(mathValue);
+                            break;
+
+                        case CalculationTypes.DIVIDE:
+                            inputImagePlus.getProcessor().multiply(1 / mathValue);
+                            break;
+
+                        case CalculationTypes.MULTIPLY:
+                            inputImagePlus.getProcessor().multiply(mathValue);
+                            break;
+
+                        case CalculationTypes.SUBTRACT:
+                            inputImagePlus.getProcessor().subtract(mathValue);
+                            break;
+
+                    }
+                }
+            }
+        }
+
+        inputImagePlus.setPosition(1, 1, 1);
+    }
+
     @Override
     public String getTitle() {
         return "Image math";
@@ -73,39 +109,7 @@ public class ImageMath extends Module {
                 break;
         }
 
-        int nChannels = inputImagePlus.getNChannels();
-        int nSlices = inputImagePlus.getNSlices();
-        int nFrames = inputImagePlus.getNFrames();
-
-        // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
-        for (int z = 1; z <= nSlices; z++) {
-            for (int c = 1; c <= nChannels; c++) {
-                for (int t = 1; t <= nFrames; t++) {
-                    inputImagePlus.setPosition(c, z, t);
-
-                    switch (calculationType) {
-                        case CalculationTypes.ADD:
-                            inputImagePlus.getProcessor().add(mathValue);
-                            break;
-
-                        case CalculationTypes.DIVIDE:
-                            inputImagePlus.getProcessor().multiply(1 / mathValue);
-                            break;
-
-                        case CalculationTypes.MULTIPLY:
-                            inputImagePlus.getProcessor().multiply(mathValue);
-                            break;
-
-                        case CalculationTypes.SUBTRACT:
-                            inputImagePlus.getProcessor().subtract(mathValue);
-                            break;
-
-                    }
-                }
-            }
-        }
-
-        inputImagePlus.setPosition(1, 1, 1);
+        process(inputImagePlus,calculationType,mathValue);
 
         // If selected, displaying the image
         if (showImage) {
@@ -133,11 +137,6 @@ public class ImageMath extends Module {
         parameters.add(new Parameter(MEASUREMENT,Parameter.IMAGE_MEASUREMENT,null));
         parameters.add(new Parameter(MATH_VALUE,Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

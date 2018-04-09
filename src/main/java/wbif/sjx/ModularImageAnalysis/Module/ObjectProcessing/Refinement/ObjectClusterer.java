@@ -224,13 +224,6 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CLUSTER_AREA_XY));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.N_POINTS_IN_CLUSTER));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -260,13 +253,17 @@ public class ObjectClusterer extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 
-        MeasurementReference clusterAreaXY = objectMeasurementReferences.get(Measurements.CLUSTER_AREA_XY);
+        MeasurementReference clusterAreaXY = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY);
         clusterAreaXY.setImageObjName(outputObjectsName);
+        clusterAreaXY.setCalculated(true);
 
-        MeasurementReference nPointsInCluster = objectMeasurementReferences.get(Measurements.CLUSTER_AREA_XY);
+        MeasurementReference nPointsInCluster = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY);
         nPointsInCluster.setImageObjName(outputObjectsName);
+        nPointsInCluster.setCalculated(true);
 
         return objectMeasurementReferences;
 

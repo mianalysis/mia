@@ -27,7 +27,7 @@ public class MeasureImageIntensityTest {
     @Test
     public void testRun2DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
@@ -61,7 +61,7 @@ public class MeasureImageIntensityTest {
     @Test
     public void testRun2DImage16bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient2D_16bit.tif").getPath(),"UTF-8");
@@ -95,7 +95,7 @@ public class MeasureImageIntensityTest {
     @Test
     public void testRun3DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
@@ -129,7 +129,7 @@ public class MeasureImageIntensityTest {
     @Test
     public void testRun4DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
@@ -163,7 +163,7 @@ public class MeasureImageIntensityTest {
     @Test
     public void testRun5DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");

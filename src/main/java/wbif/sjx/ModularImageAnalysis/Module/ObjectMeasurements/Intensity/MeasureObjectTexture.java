@@ -31,7 +31,7 @@ public class MeasureObjectTexture extends Module {
     }
 
 
-    private String getFullName(String imageName, String measurement) {
+    public static String getFullName(String imageName, String measurement) {
         return "TEXTURE//"+imageName+"_"+measurement;
     }
 
@@ -150,15 +150,6 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
@@ -185,24 +176,30 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        MeasurementReference asm = objectMeasurementReferences.get(Measurements.ASM);
+        String name = getFullName(inputImageName,Measurements.ASM);
+        MeasurementReference asm = objectMeasurementReferences.getOrPut(name);
         asm.setImageObjName(inputObjectsName);
-        asm.setNickName(getFullName(inputImageName,Measurements.ASM));
+        asm.setCalculated(true);
 
-        MeasurementReference contrast = objectMeasurementReferences.get(Measurements.CONTRAST);
+        name = getFullName(inputImageName,Measurements.CONTRAST);
+        MeasurementReference contrast = objectMeasurementReferences.getOrPut(name);
         contrast.setImageObjName(inputObjectsName);
-        contrast.setNickName(getFullName(inputImageName,Measurements.CONTRAST));
+        contrast.setCalculated(true);
 
-        MeasurementReference correlation = objectMeasurementReferences.get(Measurements.CORRELATION);
+        name = getFullName(inputImageName,Measurements.CORRELATION);
+        MeasurementReference correlation = objectMeasurementReferences.getOrPut(name);
         correlation.setImageObjName(inputObjectsName);
-        correlation.setNickName(getFullName(inputImageName,Measurements.CORRELATION));
+        correlation.setCalculated(true);
 
-        MeasurementReference entropy = objectMeasurementReferences.get(Measurements.ENTROPY);
+        name = getFullName(inputImageName,Measurements.ENTROPY);
+        MeasurementReference entropy = objectMeasurementReferences.getOrPut(name);
         entropy.setImageObjName(inputObjectsName);
-        entropy.setNickName(getFullName(inputImageName,Measurements.ENTROPY));
+        entropy.setCalculated(true);
 
         return objectMeasurementReferences;
 

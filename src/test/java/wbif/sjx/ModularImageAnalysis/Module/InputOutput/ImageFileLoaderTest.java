@@ -22,7 +22,7 @@ public class ImageFileLoaderTest {
     @Test
     public void testRunWithSpecificTiffFile() throws Exception {
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Initialising ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -33,7 +33,6 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
         imageFileLoader.updateParameterValue(ImageLoader.FILE_PATH,pathToImage);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SERIES_NUMBER,1);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);
@@ -75,7 +74,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -84,7 +83,6 @@ public class ImageFileLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SERIES_NUMBER,1);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);
@@ -126,7 +124,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -135,7 +133,6 @@ public class ImageFileLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SERIES_NUMBER,1);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);
@@ -177,7 +174,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -186,7 +183,6 @@ public class ImageFileLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SERIES_NUMBER,1);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);
@@ -232,7 +228,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -241,7 +237,6 @@ public class ImageFileLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SERIES_NUMBER,1);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,false);
         imageFileLoader.updateParameterValue(ImageLoader.STARTING_C,2);
         imageFileLoader.updateParameterValue(ImageLoader.ENDING_C,2);
@@ -285,7 +280,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -294,7 +289,6 @@ public class ImageFileLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SERIES_NUMBER,1);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,false);
         imageFileLoader.updateParameterValue(ImageLoader.STARTING_Z,3);
@@ -338,7 +332,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -347,7 +341,6 @@ public class ImageFileLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SERIES_NUMBER,1);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,false);
@@ -391,7 +384,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -400,7 +393,6 @@ public class ImageFileLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SERIES_NUMBER,1);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,false);
         imageFileLoader.updateParameterValue(ImageLoader.STARTING_C,2);
         imageFileLoader.updateParameterValue(ImageLoader.ENDING_C,2);
@@ -448,7 +440,7 @@ public class ImageFileLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankLif5D_8bit.lif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
-        Workspace workspace = new Workspace(0,new File(pathToImage));
+        Workspace workspace = new Workspace(0,new File(pathToImage),1);
 
         // Initialising the ImageFileLoader
         ImageLoader imageFileLoader = new ImageLoader();
@@ -457,7 +449,6 @@ public class ImageFileLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SERIES_NUMBER,1);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);

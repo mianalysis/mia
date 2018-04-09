@@ -29,22 +29,6 @@ import java.util.Arrays;
  * Created by sc13967 on 14/07/2017.
  */
 public class ModularImageAnalysisPlugin implements PlugIn {
-//    public static void main(String[] args) {
-//        new ImageJ();
-////        ImagePlus ipl = IJ.createImage("sdf",800,800,1,8);
-////        ipl.show();
-//
-//        IJ.runMacro("waitForUser");
-//
-//        ImagePlus ipl = IJ.getImage();
-////        IJ.runPlugIn(ipl,"ij.plugin.Selection","from");
-//        Roi roi = ipl.getRoi();
-//
-//        PolygonRoi polygonRoi = new PolygonRoi(roi.getPolygon(),Roi.POLYGON);
-//        ipl.setRoi(polygonRoi);
-//
-//    }
-
     public static void main(String[] args) {
         try {
             if (args.length == 0) {
@@ -52,6 +36,7 @@ public class ModularImageAnalysisPlugin implements PlugIn {
 
                 new ImageJ();
                 new MainGUI(true);
+//                new MainGUI(false);
 
             } else {
                 String filepath = args[0];

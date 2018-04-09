@@ -2,13 +2,8 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
-import ij.gui.Roi;
 import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
-import ij.plugin.HyperStackMaker;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
@@ -26,7 +21,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String LEFT = "Left coordinate";
     public static final String RIGHT = "Right coordinate";
-    public static final String HEIGHT = "Top coordinate";
+    public static final String TOP = "Top coordinate";
     public static final String BOTTOM = "Bottom coordinate";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -51,7 +46,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         int left = parameters.getValue(LEFT);
         int right = parameters.getValue(RIGHT);
-        int top = parameters.getValue(HEIGHT);
+        int top = parameters.getValue(TOP);
         int bottom = parameters.getValue(BOTTOM);
 
         Img<T> img = inputImage.getImg();
@@ -106,14 +101,9 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
         parameters.add(new Parameter(RIGHT, Parameter.INTEGER,512));
-        parameters.add(new Parameter(HEIGHT, Parameter.INTEGER,0));
+        parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
         parameters.add(new Parameter(BOTTOM, Parameter.INTEGER,512));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-
     }
 
     @Override

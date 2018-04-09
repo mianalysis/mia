@@ -26,7 +26,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMeasurementsLargerThan() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -56,7 +56,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMeasurementsSmallerThan() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -86,7 +86,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMissingMeasurement() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -116,7 +116,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunObjectsOnImageEdge() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -151,7 +151,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunObjectsOnImageEdgeIgnoreZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -187,7 +187,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunObjectsOnImageEdgeIncludeZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -223,7 +223,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMinimumNumberOfChildren() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -272,7 +272,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMaximumNumberOfChildren() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -300,7 +300,7 @@ public class FilterObjectsTest {
             }
 
             counter++;
-            
+
         }
 
         // Initialising FilterObjects module
@@ -322,7 +322,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMissingParent() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -367,7 +367,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunWithParent() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;

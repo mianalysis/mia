@@ -125,11 +125,6 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
