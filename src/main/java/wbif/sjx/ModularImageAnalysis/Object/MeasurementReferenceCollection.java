@@ -1,9 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.TreeMap;
 
-public class MeasurementReferenceCollection extends LinkedHashMap<String,MeasurementReference> {
+public class MeasurementReferenceCollection extends TreeMap<String,MeasurementReference> {
     public void updateImageObjectName(String measurementName, String imageObjectName) {
         get(measurementName).setImageObjName(imageObjectName);
     }

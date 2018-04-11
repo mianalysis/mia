@@ -4,13 +4,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedSphere3D;
-import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -259,7 +256,7 @@ public class MeasureObjectIntensityTest {
 
         // Loading the test image and adding to workspace
         String imageName = "Test_image";
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_2pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image intensityImage = new Image(imageName,ipl);
         workspace.addImage(intensityImage);
@@ -285,7 +282,7 @@ public class MeasureObjectIntensityTest {
         String meanMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.MEAN_EDGE_DISTANCE_PX);
         String stdevMeasName = MeasureObjectIntensity.getFullName(imageName,MeasureObjectIntensity.Measurements.STD_EDGE_DISTANCE_PX);
 
-        assertEquals(2,object.getMeasurement(meanMeasName).getValue(),0.5);
+        assertEquals(1,object.getMeasurement(meanMeasName).getValue(),0.5);
         assertEquals(0,object.getMeasurement(stdevMeasName).getValue(),0.5);
 
     }
@@ -307,7 +304,7 @@ public class MeasureObjectIntensityTest {
 
         // Loading the test image and adding to workspace
         String imageName = "Test_image";
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_2pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureObjectIntensity/BinarySphere3D_1pxInside10pxOutsideShell_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image intensityImage = new Image(imageName,ipl);
         workspace.addImage(intensityImage);
