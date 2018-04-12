@@ -128,6 +128,7 @@ public class MeasureObjectShape extends Module {
                 VolumeCalculator volumeCalculator = null;
                 switch (fittingMode) {
                     case FittingModes.CENTROIDS:
+                        System.out.println("vox "+inputObject.getNVoxels());
                         volumeCalculator = new VolumeCalculator(inputObject,VolumeCalculator.CENTROID);
                         break;
                     case FittingModes.CORNERS:
