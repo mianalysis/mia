@@ -54,7 +54,7 @@ public class MeasureObjectShapeTest {
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             double expectedNVoxels = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_N_VOXELS.name()).getValue();
-            double actualNVoxels = testObject.getMeasurement(MeasureObjectShape.Measurements.VOLUME_PX).getValue();
+            double actualNVoxels = testObject.getMeasurement(MeasureObjectShape.Measurements.N_VOXELS).getValue();
             assertEquals("Measurement value", expectedNVoxels, actualNVoxels,tolerance);
 
             double expectedProjDiaPX = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_PROJ_DIA_PX.name()).getValue();
