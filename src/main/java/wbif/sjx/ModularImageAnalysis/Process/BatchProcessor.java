@@ -2,14 +2,10 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
-import ij.IJ;
 import ij.Prefs;
 import loci.common.DebugTools;
-import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
-import loci.formats.meta.MetadataStore;
-import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
@@ -22,13 +18,12 @@ import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.System.FileCrawler;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.concurrent.*;
-import java.util.stream.IntStream;
+
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -225,28 +220,34 @@ public class BatchProcessor extends FileCrawler {
      * @param filenameFilter
      */
     public void addFilenameFilter(String filenameFilterType, String filenameFilter) {
+        addFileCondition(getFilenameFilter(filenameFilterType,filenameFilter));
+    }
+
+    private NameContainsString getFilenameFilter(String filenameFilterType, String filenameFilter) {
         switch (filenameFilterType) {
             case InputControl.FilterTypes.INCLUDE_MATCHES_PARTIALLY:
-                addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
-                break;
+                return new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL);
 
             case InputControl.FilterTypes.INCLUDE_MATCHES_COMPLETELY:
-                addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
-                break;
+                return new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL);
 
             case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
-                break;
+                return new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL);
 
             case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
-                break;
+                return new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL);
         }
+
+        return null;
+
     }
 
     private int[] getSeriesNumbers(Analysis analysis, File inputFile) {
-        String seriesMode = analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE);
-        int[] seriesNumbers = null;
+        ParameterCollection parameters = analysis.getInputControl().getAllParameters();
+        String seriesMode = parameters.getValue(InputControl.SERIES_MODE);
+        boolean useSeriesNameFilter = parameters.getValue(InputControl.USE_SERIESNAME_FILTER);
+        String seriesNameFilter = parameters.getValue(InputControl.SERIESNAME_FILTER);
+        String seriesNameFilterType = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE);
 
         switch (seriesMode) {
             case InputControl.SeriesModes.ALL_SERIES:
@@ -261,21 +262,25 @@ public class BatchProcessor extends FileCrawler {
                     e.printStackTrace();
                 }
 
-                int seriesCount = reader.getSeriesCount();
-                if (seriesCount == 1) {
-                    seriesNumbers = new int[]{1};
-                } else {
-                    seriesNumbers = IntStream.range(1, seriesCount).toArray();
+                ArrayList<Integer> seriesNumbers = new ArrayList<>();
+                IMetadata metadata = (IMetadata) reader.getMetadataStore();
+                for (int seriesNumber=0;seriesNumber<reader.getSeriesCount();seriesNumber++) {
+                    if (useSeriesNameFilter) {
+                        String name = metadata.getImageName(seriesNumber);
+                        if (!getFilenameFilter(seriesNameFilterType,seriesNameFilter).test(name)) continue;
+                    }
+
+                    seriesNumbers.add(seriesNumber);
+
                 }
 
-                break;
+                return seriesNumbers.stream().mapToInt(Integer::intValue).toArray();
 
             case InputControl.SeriesModes.SINGLE_SERIES:
-                seriesNumbers = new int[]{analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER)};
-                break;
+                return new int[]{analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER)};
         }
 
-        return seriesNumbers;
+        return null;
 
     }
 

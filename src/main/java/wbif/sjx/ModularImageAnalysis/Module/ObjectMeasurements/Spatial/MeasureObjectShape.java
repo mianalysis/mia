@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
+import org.netlib.lapack.Ssysv;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ProjectObjects;
@@ -128,7 +129,6 @@ public class MeasureObjectShape extends Module {
                 VolumeCalculator volumeCalculator = null;
                 switch (fittingMode) {
                     case FittingModes.CENTROIDS:
-                        System.out.println("vox "+inputObject.getNVoxels());
                         volumeCalculator = new VolumeCalculator(inputObject,VolumeCalculator.CENTROID);
                         break;
                     case FittingModes.CORNERS:

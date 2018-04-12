@@ -15,14 +15,17 @@ public class InputControl extends Module {
     public static final String FILE_EXTENSION = "File extension";
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_NUMBER = "Series number";
+    public static final String USE_SERIESNAME_FILTER = "Use seriesname filter";
+    public static final String SERIESNAME_FILTER = "Seriesname filter";
+    public static final String SERIESNAME_FILTER_TYPE = "Seriesname filter type";
     public static final String USE_FILENAME_FILTER_1 = "Use filename filter 1";
-    public static final String USE_FILENAME_FILTER_2 = "Use filename filter 2";
-    public static final String USE_FILENAME_FILTER_3 = "Use filename filter 3";
     public static final String FILENAME_FILTER_1 = "Filename filter 1";
-    public static final String FILENAME_FILTER_2 = "Filename filter 2";
-    public static final String FILENAME_FILTER_3 = "Filename filter 3";
     public static final String FILENAME_FILTER_TYPE_1 = "Filter type 1";
+    public static final String USE_FILENAME_FILTER_2 = "Use filename filter 2";
+    public static final String FILENAME_FILTER_2 = "Filename filter 2";
     public static final String FILENAME_FILTER_TYPE_2 = "Filter type 2";
+    public static final String USE_FILENAME_FILTER_3 = "Use filename filter 3";
+    public static final String FILENAME_FILTER_3 = "Filename filter 3";
     public static final String FILENAME_FILTER_TYPE_3 = "Filter type 3";
 
     public interface InputModes {
@@ -77,6 +80,9 @@ public class InputControl extends Module {
         parameters.add(new Parameter(FILE_EXTENSION, Parameter.STRING,"tif"));
         parameters.add(new Parameter(SERIES_MODE,Parameter.CHOICE_ARRAY,SeriesModes.ALL_SERIES,SeriesModes.ALL));
         parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
+        parameters.add(new Parameter(USE_SERIESNAME_FILTER,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SERIESNAME_FILTER,Parameter.STRING,""));
+        parameters.add(new Parameter(SERIESNAME_FILTER_TYPE,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
         parameters.add(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
@@ -113,6 +119,12 @@ public class InputControl extends Module {
             case SeriesModes.SINGLE_SERIES:
                 returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
                 break;
+        }
+
+        returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER));
+        if (parameters.getValue(USE_SERIESNAME_FILTER)) {
+            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER));
+            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE));
         }
 
         returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_1));
