@@ -20,9 +20,9 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String LEFT = "Left coordinate";
-    public static final String RIGHT = "Right coordinate";
     public static final String TOP = "Top coordinate";
-    public static final String BOTTOM = "Bottom coordinate";
+    public static final String WIDTH = "Width";
+    public static final String HEIGHT = "Height";
     public static final String SHOW_IMAGE = "Show image";
 
     @Override
@@ -45,25 +45,25 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         int left = parameters.getValue(LEFT);
-        int right = parameters.getValue(RIGHT);
         int top = parameters.getValue(TOP);
-        int bottom = parameters.getValue(BOTTOM);
+        int width = parameters.getValue(WIDTH);
+        int height = parameters.getValue(HEIGHT);
 
         Img<T> img = inputImage.getImg();
         long[] min = new long[img.numDimensions()];
         long[] dimsIn = new long[img.numDimensions()];
         min[0] = left;
         min[1] = top;
-        dimsIn[0] = right-left;
-        dimsIn[1] = bottom-top;
+        dimsIn[0] = width;
+        dimsIn[1] = height;
         for (int i=2;i<img.numDimensions();i++) {
             min[i] = 0;
             dimsIn[i] = img.dimension(i);
         }
 
         long[] dimsOut = new long[5];
-        dimsOut[0] = right-left;
-        dimsOut[1] = bottom-top;
+        dimsOut[0] = width;
+        dimsOut[1] = height;
         dimsOut[2] = inputImagePlus.getNChannels();
         dimsOut[3] = inputImagePlus.getNSlices();
         dimsOut[4] = inputImagePlus.getNFrames();
@@ -100,9 +100,9 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
-        parameters.add(new Parameter(RIGHT, Parameter.INTEGER,512));
         parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
-        parameters.add(new Parameter(BOTTOM, Parameter.INTEGER,512));
+        parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));
+        parameters.add(new Parameter(HEIGHT, Parameter.INTEGER,512));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
     }
 
