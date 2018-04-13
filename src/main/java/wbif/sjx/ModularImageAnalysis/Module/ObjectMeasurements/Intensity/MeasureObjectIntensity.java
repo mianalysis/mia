@@ -14,6 +14,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -68,7 +69,7 @@ public class MeasureObjectIntensity extends Module {
         return "INTENSITY//"+imageName+"_"+measurement;
     }
 
-    public static double[] getProfileBins(double minDist, double maxDist, int nMeasurements) {
+    private double[] getProfileBins(double minDist, double maxDist, int nMeasurements) {
         double[] binNames = new double[nMeasurements];
 
         double binWidth = (maxDist-minDist)/(nMeasurements-1);
@@ -76,6 +77,14 @@ public class MeasureObjectIntensity extends Module {
 
         return binNames;
 
+    }
+
+    private String getBinNameFormat(boolean calibratedDistances) {
+        if (calibratedDistances) {
+            return "0.00E0";
+        } else {
+            return "#.00";
+        }
     }
 
     private void measureIntensity(Obj object, ImagePlus ipl) {
@@ -170,12 +179,7 @@ public class MeasureObjectIntensity extends Module {
         double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
         boolean calibratedDistances = parameters.getValue(CALIBRATED_DISTANCES);
         int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
-
-        // If distances are calibrated, converting them to pixel  units
-        if (calibratedDistances) {
-            minDist = minDist/object.getDistPerPxXY();
-            maxDist = maxDist/object.getDistPerPxXY();
-        }
+        double distPerPxXY = object.getDistPerPxXY();
 
         // Setting up CumStats to hold results
         LinkedHashMap<Double,CumStat> cumStats = new LinkedHashMap<>();
@@ -189,6 +193,7 @@ public class MeasureObjectIntensity extends Module {
         // Calculating the distance maps.  The inside map is set to negative
         ImagePlus outsideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,true);
         InvertIntensity.process(objIpl);
+        BinaryOperations.applyStockBinaryTransform(objIpl,BinaryOperations.OperationModes.ERODE_2D,1);
         ImagePlus insideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,true);
         ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
         ImagePlus distIpl = new ImageCalculator().process(insideDistIpl,outsideDistIpl,
@@ -213,6 +218,9 @@ public class MeasureObjectIntensity extends Module {
                         for (int y=0;y<distIpl.getHeight();y++) {
                             // Determining which bin to use
                             double dist = distIpr.getf(x,y);
+
+                            // If using calibrated distances, this must be converted back to calibrated units from px
+                            if (calibratedDistances) dist = dist*distPerPxXY;
                             double bin = Math.round((dist-minDist)/binWidth)*binWidth+minDist;
 
                             // Ensuring the bin is within the specified range
@@ -228,9 +236,18 @@ public class MeasureObjectIntensity extends Module {
             }
         }
 
+        int nDigits = (int) Math.log10(bins.length)+1;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i=0;i<nDigits;i++) stringBuilder.append("0");
+        DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
+        String units = calibratedDistances ? "CAL" : "PX";
+
+        DecimalFormat decFormat = new DecimalFormat(getBinNameFormat(calibratedDistances));
+
         int count = 0;
         for (CumStat cumStat:cumStats.values()) {
-            String profileMeasName = Measurements.EDGE_PROFILE + "_BIN" + (count+1)+"_("+bins[count++]+"PX)";
+            String profileMeasName = Measurements.EDGE_PROFILE + "_BIN" + intFormat.format(count+1)
+                    +"_("+decFormat.format(bins[count++])+units+")";
             object.addMeasurement(new Measurement(getFullName(imageName,profileMeasName), cumStat.getMean()));
         }
     }
@@ -434,9 +451,21 @@ public class MeasureObjectIntensity extends Module {
             double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
             int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
             double[] bins = getProfileBins(minDist,maxDist,nMeasurements);
+            String units = parameters.getValue(CALIBRATED_DISTANCES) ? "CAL" : "PX";
+
+            // Bin names must be in alphabetical order (for the MeasurementReferenceCollection TreeMap)
+            int nDigits = (int) Math.log10(bins.length)+1;
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i=0;i<nDigits;i++) stringBuilder.append("0");
+            DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
+
+            String nameFormat = getBinNameFormat(parameters.getValue(CALIBRATED_DISTANCES));
+            DecimalFormat decFormat = new DecimalFormat(nameFormat);
 
             for (int i=0;i<nMeasurements;i++) {
-                String profileMeasName = Measurements.EDGE_PROFILE+"_BIN"+(i+1)+"_("+bins[i]+"PX)";
+                String profileMeasName = Measurements.EDGE_PROFILE+"_BIN"+intFormat.format(i+1)
+                        +"_("+decFormat.format(bins[i])+units+")";
+
                 String name = getFullName(inputImageName,profileMeasName);
                 MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
                 reference.setImageObjName(inputObjectsName);

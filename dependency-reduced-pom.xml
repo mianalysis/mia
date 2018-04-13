@@ -4,7 +4,7 @@
   <groupId>wbif.sjx</groupId>
   <artifactId>ModularImageAnalysis</artifactId>
   <name>Modular_Image_Analysis</name>
-  <version>0.4.4</version>
+  <version>0.4.5</version>
   <url>https://github.com/SJCross/ModularImageAnalysis</url>
   <licenses>
     <license>
@@ -164,12 +164,6 @@
       <artifactId>Fiji_Plugins</artifactId>
       <version>3.1.1</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>fiji-lib</artifactId>
-          <groupId>sc.fiji</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.scif</groupId>
@@ -212,10 +206,6 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <artifactId>3D_Viewer</artifactId>
-          <groupId>sc.fiji</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>imagej-deprecated</artifactId>
           <groupId>net.imagej</groupId>
         </exclusion>
@@ -236,24 +226,8 @@
           <groupId>net.imglib2</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>j3dcore</artifactId>
-          <groupId>org.scijava</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>j3dutils</artifactId>
-          <groupId>org.scijava</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>vecmath</artifactId>
-          <groupId>org.scijava</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>itextpdf</artifactId>
           <groupId>com.itextpdf</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jama</artifactId>
-          <groupId>gov.nist.math</groupId>
         </exclusion>
         <exclusion>
           <artifactId>jgrapht</artifactId>
@@ -284,10 +258,6 @@
           <groupId>org.tinyjee.jgraphx</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>fiji-lib</artifactId>
-          <groupId>sc.fiji</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
@@ -314,10 +284,6 @@
           <groupId>sc.fiji</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>VIB-lib</artifactId>
-          <groupId>sc.fiji</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>weka-dev</artifactId>
           <groupId>nz.ac.waikato.cms.weka</groupId>
         </exclusion>
@@ -334,14 +300,6 @@
           <groupId>net.imglib2</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>vecmath</artifactId>
-          <groupId>org.scijava</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>fiji-lib</artifactId>
-          <groupId>sc.fiji</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
@@ -352,12 +310,6 @@
       <artifactId>MorphoLibJ_</artifactId>
       <version>1.3.2</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>jama</artifactId>
-          <groupId>gov.nist.math</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>de.biomedical-imaging.imagej</groupId>

@@ -2,12 +2,14 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
-import ij.IJ;
 import ij.Prefs;
 import loci.common.DebugTools;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
+import loci.formats.MetadataTools;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
@@ -22,13 +24,13 @@ import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.System.FileCrawler;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.concurrent.*;
-import java.util.stream.IntStream;
+
 
 /**
  * Created by sc13967 on 21/10/2016.
@@ -109,11 +111,12 @@ public class BatchProcessor extends FileCrawler {
             }
 
             // For the current file, determining how many series to process (and which ones)
-            int[] seriesNumbers = getSeriesNumbers(analysis, next);
+            TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, next);
 
             // Iterating over all series to analyse, adding each one as a new workspace
-            for (int seriesNumber:seriesNumbers) {
+            for (int seriesNumber:seriesNumbers.keySet()) {
                 Workspace workspace = workspaces.getNewWorkspace(next,seriesNumber);
+                workspace.getMetadata().setSeriesName(seriesNumbers.get(seriesNumber));
                 workspace.getMetadata().put("FILE_DEPTH", fileDepth);
 
                 Runnable task = () -> {
@@ -174,11 +177,12 @@ public class BatchProcessor extends FileCrawler {
         Prefs.setThreads(1);
 
         // For the current file, determining how many series to process (and which ones)
-        int[] seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
+        TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
 
         // Iterating over all series to analyse, adding each one as a new workspace
-        for (int seriesNumber:seriesNumbers) {
+        for (int seriesNumber:seriesNumbers.keySet()) {
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile(),seriesNumber);
+            workspace.getMetadata().setSeriesName(seriesNumbers.get(seriesNumber));
 
             Runnable task = () -> {
                 try {
@@ -225,57 +229,65 @@ public class BatchProcessor extends FileCrawler {
      * @param filenameFilter
      */
     public void addFilenameFilter(String filenameFilterType, String filenameFilter) {
-        switch (filenameFilterType) {
-            case InputControl.FilterTypes.INCLUDE_MATCHES_PARTIALLY:
-                addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
-                break;
-
-            case InputControl.FilterTypes.INCLUDE_MATCHES_COMPLETELY:
-                addFileCondition(new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL));
-                break;
-
-            case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
-                break;
-
-            case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                addFileCondition(new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL));
-                break;
-        }
+        addFileCondition(getFilenameFilter(filenameFilterType,filenameFilter));
     }
 
-    private int[] getSeriesNumbers(Analysis analysis, File inputFile) {
-        String seriesMode = analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE);
-        int[] seriesNumbers = null;
+    private NameContainsString getFilenameFilter(String filenameFilterType, String filenameFilter) {
+        switch (filenameFilterType) {
+            case InputControl.FilterTypes.INCLUDE_MATCHES_PARTIALLY:
+                return new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL);
 
+            case InputControl.FilterTypes.INCLUDE_MATCHES_COMPLETELY:
+                return new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL);
+
+            case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
+                return new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL);
+
+            case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
+                return new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL);
+        }
+
+        return null;
+
+    }
+
+    private TreeMap<Integer,String> getSeriesNumbers(Analysis analysis, File inputFile) {
+        ParameterCollection parameters = analysis.getInputControl().getAllParameters();
+        String seriesMode = parameters.getValue(InputControl.SERIES_MODE);
+        boolean useFilter = parameters.getValue(InputControl.USE_SERIESNAME_FILTER);
+        String filter = parameters.getValue(InputControl.SERIESNAME_FILTER);
+        String filterType = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE);
+
+        TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
         switch (seriesMode) {
             case InputControl.SeriesModes.ALL_SERIES:
-                // Using BioFormats to get the number of series
-                DebugTools.enableLogging("off");
-                DebugTools.setRootLevel("off");
-                ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
-                reader.setGroupFiles(false);
                 try {
+                    // Using BioFormats to get the number of series
+                    DebugTools.enableLogging("off");
+                    DebugTools.setRootLevel("off");
+
+                    ServiceFactory factory = new ServiceFactory();
+                    OMEXMLService service = factory.getInstance(OMEXMLService.class);
+                    IMetadata meta = service.createOMEXMLMetadata();
+                    ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+                    reader.setMetadataStore((MetadataStore) meta);
+                    reader.setGroupFiles(false);
                     reader.setId(inputFile.getAbsolutePath());
-                } catch (FormatException | IOException e) {
+
+                    for (int seriesNumber=0;seriesNumber<reader.getSeriesCount();seriesNumber++) {
+                        String name = meta.getImageName(seriesNumber);
+                        if (name!= null && useFilter &!getFilenameFilter(filterType,filter).test(name)) continue;
+                        namesAndNumbers.put(seriesNumber+1,name);
+                    }
+                } catch (DependencyException | FormatException | ServiceException | IOException e) {
                     e.printStackTrace();
                 }
 
-                int seriesCount = reader.getSeriesCount();
-                if (seriesCount == 1) {
-                    seriesNumbers = new int[]{1};
-                } else {
-                    seriesNumbers = IntStream.range(1, seriesCount).toArray();
-                }
-
-                break;
-
             case InputControl.SeriesModes.SINGLE_SERIES:
-                seriesNumbers = new int[]{analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER)};
-                break;
+                namesAndNumbers.put(analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER),"");
         }
 
-        return seriesNumbers;
+        return namesAndNumbers;
 
     }
 

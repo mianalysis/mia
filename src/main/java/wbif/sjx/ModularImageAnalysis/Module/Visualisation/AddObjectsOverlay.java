@@ -154,10 +154,10 @@ public class AddObjectsOverlay extends Module {
                     for (z=range[2][0];z<=range[2][1];z++) {
                         Roi polyRoi = object.getRoi(ipl,z);
                         if (ipl.isHyperStack()) {
-                            ipl.setPosition(1,z+1,t);
-                            polyRoi.setPosition(1, z+1, t);
+                            ipl.setPosition(1,z,t);
+                            polyRoi.setPosition(1, z, t);
                         } else {
-                            int pos = Math.max(Math.max(1, z+1), t);
+                            int pos = Math.max(Math.max(1, z), t);
                             ipl.setPosition(pos);
                             polyRoi.setPosition(pos);
                         }

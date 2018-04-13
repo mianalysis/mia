@@ -826,9 +826,7 @@ public class MainGUI extends GUI {
             // Removing a module resets all the current evaluation
             int idx = modules.indexOf(activeModule);
 
-            if (idx <= lastModuleEval) {
-                lastModuleEval = -1;
-            }
+            if (idx < lastModuleEval) lastModuleEval = -1;
 
             modules.remove(activeModule);
             activeModule = null;
@@ -975,12 +973,12 @@ public class MainGUI extends GUI {
 
         switch ((String) analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE)) {
             case InputControl.SeriesModes.ALL_SERIES:
-                getTestWorkspace().getMetadata().setSeries(1);
+                getTestWorkspace().getMetadata().setSeriesNumber(1);
                 break;
 
             case InputControl.SeriesModes.SINGLE_SERIES:
                 int seriesNumber = analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
-                getTestWorkspace().getMetadata().setSeries(seriesNumber);
+                getTestWorkspace().getMetadata().setSeriesNumber(seriesNumber);
         }
     }
 }

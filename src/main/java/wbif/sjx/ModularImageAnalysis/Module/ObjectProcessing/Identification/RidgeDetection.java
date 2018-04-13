@@ -34,7 +34,7 @@ public class RidgeDetection extends Module {
 
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT//LENGTH_(PX)";
-
+        String LENGTH_CAL = "RIDGE_DETECT//LENGTH_(CAL)";
     }
 
     private interface ContourContrast {
@@ -171,6 +171,7 @@ public class RidgeDetection extends Module {
                         // Setting single values for the current contour
                         outputObject.setT(t);
                         outputObject.addMeasurement(new Measurement(Measurements.LENGTH_PX, estLength));
+                        outputObject.addMeasurement(new Measurement(Measurements.LENGTH_CAL, estLength*outputObject.getDistPerPxXY()));
                         outputObjects.add(outputObject);
                     }
                 }
@@ -233,6 +234,10 @@ public class RidgeDetection extends Module {
         MeasurementReference lengthPx = objectMeasurementReferences.getOrPut(Measurements.LENGTH_PX);
         lengthPx.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         lengthPx.setCalculated(true);
+
+        MeasurementReference lengthCal = objectMeasurementReferences.getOrPut(Measurements.LENGTH_CAL);
+        lengthCal.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        lengthCal.setCalculated(true);
 
         return objectMeasurementReferences;
 

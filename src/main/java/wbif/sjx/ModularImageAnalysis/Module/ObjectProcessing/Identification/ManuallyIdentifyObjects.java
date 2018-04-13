@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 27/02/2018.
  */
 public class ManuallyIdentifyObjects extends Module implements ActionListener {
-    private JFrame frame = new JFrame();
+    private JFrame frame;
     private JTextField objectNumberField;
 
     private Workspace workspace;
@@ -58,6 +58,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     private void showOptionsPanel() {
         GridLayout gridLayout = new GridLayout(0, 1);
+        frame = new JFrame();
         frame.setLayout(gridLayout);
 
         // Header panel
@@ -259,6 +260,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             case (FINISH):
                 frame.dispose();
                 frame = null;
+                displayImagePlus.close();
 
                 break;
         }

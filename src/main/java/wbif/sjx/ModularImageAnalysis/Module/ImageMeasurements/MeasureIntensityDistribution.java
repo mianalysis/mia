@@ -140,6 +140,7 @@ public class MeasureIntensityDistribution extends Module {
 
                 dist1 = BinaryOperations.applyDistanceMap3D(dist1,true);
                 InvertIntensity.process(distIpl);
+                BinaryOperations.applyStockBinaryTransform(distIpl,BinaryOperations.OperationModes.ERODE_2D,1);
                 distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true);
 
                 new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
@@ -147,8 +148,9 @@ public class MeasureIntensityDistribution extends Module {
                 break;
 
             case EdgeDistanceModes.INSIDE_ONLY:
-                InvertIntensity.process(objectsImage.getImagePlus());
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
+                InvertIntensity.process(distIpl);
+                BinaryOperations.applyStockBinaryTransform(distIpl,BinaryOperations.OperationModes.ERODE_2D,1);
                 distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true);
                 break;
 

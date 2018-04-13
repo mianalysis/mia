@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -42,8 +41,8 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Output");
         cropImage.updateParameterValue(CropImage.LEFT,3);
         cropImage.updateParameterValue(CropImage.TOP,12);
-        cropImage.updateParameterValue(CropImage.RIGHT,52);
-        cropImage.updateParameterValue(CropImage.BOTTOM,49);
+        cropImage.updateParameterValue(CropImage.WIDTH,49);
+        cropImage.updateParameterValue(CropImage.HEIGHT,37);
         cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
@@ -109,8 +108,8 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Output");
         cropImage.updateParameterValue(CropImage.LEFT,3);
         cropImage.updateParameterValue(CropImage.TOP,12);
-        cropImage.updateParameterValue(CropImage.RIGHT,52);
-        cropImage.updateParameterValue(CropImage.BOTTOM,49);
+        cropImage.updateParameterValue(CropImage.WIDTH,49);
+        cropImage.updateParameterValue(CropImage.HEIGHT,37);
         cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
@@ -176,8 +175,8 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Output");
         cropImage.updateParameterValue(CropImage.LEFT,3);
         cropImage.updateParameterValue(CropImage.TOP,12);
-        cropImage.updateParameterValue(CropImage.RIGHT,52);
-        cropImage.updateParameterValue(CropImage.BOTTOM,49);
+        cropImage.updateParameterValue(CropImage.WIDTH,49);
+        cropImage.updateParameterValue(CropImage.HEIGHT,37);
         cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
@@ -243,8 +242,8 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Output");
         cropImage.updateParameterValue(CropImage.LEFT,3);
         cropImage.updateParameterValue(CropImage.TOP,12);
-        cropImage.updateParameterValue(CropImage.RIGHT,52);
-        cropImage.updateParameterValue(CropImage.BOTTOM,49);
+        cropImage.updateParameterValue(CropImage.WIDTH,49);
+        cropImage.updateParameterValue(CropImage.HEIGHT,37);
         cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
@@ -310,8 +309,8 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Output");
         cropImage.updateParameterValue(CropImage.LEFT,3);
         cropImage.updateParameterValue(CropImage.TOP,12);
-        cropImage.updateParameterValue(CropImage.RIGHT,52);
-        cropImage.updateParameterValue(CropImage.BOTTOM,49);
+        cropImage.updateParameterValue(CropImage.WIDTH,49);
+        cropImage.updateParameterValue(CropImage.HEIGHT,37);
         cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
@@ -377,8 +376,8 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.OUTPUT_IMAGE,"Output");
         cropImage.updateParameterValue(CropImage.LEFT,3);
         cropImage.updateParameterValue(CropImage.TOP,12);
-        cropImage.updateParameterValue(CropImage.RIGHT,52);
-        cropImage.updateParameterValue(CropImage.BOTTOM,49);
+        cropImage.updateParameterValue(CropImage.WIDTH,49);
+        cropImage.updateParameterValue(CropImage.HEIGHT,37);
         cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage

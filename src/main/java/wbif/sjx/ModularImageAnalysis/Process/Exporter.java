@@ -46,6 +46,7 @@ public class Exporter {
     private String exportFilePath;
     private boolean verbose = false;
     private boolean exportSummary = true;
+    private boolean showObjectCounts = true;
     private boolean calculateMean = true;
     private boolean calculateMin = true;
     private boolean calculateMax = true;
@@ -446,12 +447,15 @@ public class Exporter {
 
             for (ObjCollection exampleObjCollection : exampleObjSets.values()) {
                 String exampleObjSetName = exampleObjCollection.getName();
+                Cell summaryHeaderCell; String summaryDataName;
 
                 // Adding the number of objects
-                Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                String summaryDataName = getObjectString(exampleObjSetName,"","NUMBER");
-                summaryHeaderCell.setCellValue(summaryDataName);
-                colNumbers.put(summaryDataName, headerCol++);
+                if (showObjectCounts) {
+                    summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+                    summaryDataName = getObjectString(exampleObjSetName, "", "NUMBER");
+                    summaryHeaderCell.setCellValue(summaryDataName);
+                    colNumbers.put(summaryDataName, headerCol++);
+                }
 
                 // Running through all the object's children
                 if (!modules.getRelationships().getChildNames(exampleObjSetName)[0].equals("")) {
@@ -608,12 +612,14 @@ public class Exporter {
         HashMap<String, ObjCollection> objSets = workspace.getObjects();
         for (ObjCollection objCollection :objSets.values()) {
             String objSetName = objCollection.getName();
+            double val; String headerName; int colNum; Cell summaryCell;
 
-            String headerName = getObjectString(objSetName,"","NUMBER");
-            int colNum = colNumbers.get(headerName);
-            Cell summaryCell = summaryValueRow.createCell(colNum);
-            summaryCell.setCellValue(objCollection.size());
-            double val;
+            if (showObjectCounts) {
+                headerName = getObjectString(objSetName, "", "NUMBER");
+                colNum = colNumbers.get(headerName);
+                summaryCell = summaryValueRow.createCell(colNum);
+                summaryCell.setCellValue(objCollection.size());
+            }
 
             // Running through all the object's children
             if (!modules.getRelationships().getChildNames(objSetName)[0].equals("")) {
@@ -1008,6 +1014,14 @@ public class Exporter {
 
     public void setExportIndividualObjects(boolean exportIndividualObjects) {
         this.exportIndividualObjects = exportIndividualObjects;
+    }
+
+    public boolean isShowObjectCounts() {
+        return showObjectCounts;
+    }
+
+    public void setShowObjectCounts(boolean showObjectCounts) {
+        this.showObjectCounts = showObjectCounts;
     }
 
     public boolean isCalculateMean() {

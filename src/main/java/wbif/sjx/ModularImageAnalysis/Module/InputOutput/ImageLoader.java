@@ -5,7 +5,9 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
+import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
+import ij.plugin.RGBStackConverter;
 import ij.process.ImageProcessor;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
@@ -14,22 +16,22 @@ import loci.common.services.ServiceFactory;
 import loci.formats.*;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
+import loci.plugins.in.Calibrator;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import ome.units.UNITS;
+import ome.units.quantity.Length;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.FileConditions.FileCondition;
-import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
-import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +63,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String STARTING_T = "Starting timepoint";
     public static final String ENDING_T = "Ending timepoint";
     public static final String INTERVAL_T = "Timepoint interval";
+    public static final String CROP_IMAGE = "Crop image";
+    public static final String LEFT = "Left coordinate";
+    public static final String TOP = "Top coordinate";
+    public static final String WIDTH = "Width";
+    public static final String HEIGHT = "Height";
     public static final String SET_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
@@ -122,15 +129,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 //    }
 
 
-    public ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges) throws ServiceException, DependencyException, IOException, FormatException {
+    public ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, int[] crop) throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
         // Setting spatial calibration
-        IMetadata meta;
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
-        meta = service.createOMEXMLMetadata();
+        IMetadata meta = service.createOMEXMLMetadata();
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
 
@@ -138,12 +144,21 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         reader.setId(path);
         reader.setSeries(seriesNumber-1);
 
+        int left = 0;
+        int top = 0;
         int width = reader.getSizeX();
         int height = reader.getSizeY();
         int sizeC = reader.getSizeC();
         int sizeT = reader.getSizeT();
         int sizeZ = reader.getSizeZ();
         int bitDepth = reader.getBitsPerPixel();
+
+        if (crop != null) {
+            left = crop[0];
+            top = crop[1];
+            width = crop[2];
+            height = crop[3];
+        }
 
         int startingC = dimRanges[0][0];
         int endingC = dimRanges[0][1];
@@ -178,7 +193,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 int countT = 1;
                 for (int t = startingT; t <= endingT; t=t+intervalT) {
                     int idx = reader.getIndex(z-1, c-1, t-1);
-                    ImageProcessor ip = reader.openProcessors(idx)[0];
+                    ImageProcessor ip = reader.openProcessors(idx,left,top,width,height)[0];
 
                     ipl.setPosition(countC,countZ,countT);
                     ipl.setProcessor(ip);
@@ -196,22 +211,31 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         // Add spatial calibration
         if (meta != null) {
-            if (meta.getPixelsPhysicalSizeX(0) != null) {
-                ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
+            if (meta.getPixelsPhysicalSizeX(seriesNumber-1) != null) {
+                Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber-1);
+                ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(ome.units.UNITS.MICROMETER);
+                ipl.getCalibration().setXUnit(physicalSizeX.unit().getSymbol());
             } else {
                 ipl.getCalibration().pixelWidth = 1.0;
+                ipl.getCalibration().setXUnit("px");
             }
 
-            if (meta.getPixelsPhysicalSizeX(0) != null) {
-                ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeX(0).value();
+            if (meta.getPixelsPhysicalSizeY(seriesNumber-1) != null) {
+                Length physicalSizeY = meta.getPixelsPhysicalSizeY(seriesNumber-1);
+                ipl.getCalibration().pixelHeight = (double) physicalSizeY.value(ome.units.UNITS.MICROMETER);
+                ipl.getCalibration().setYUnit(physicalSizeY.unit().getSymbol());
             } else {
                 ipl.getCalibration().pixelHeight = 1.0;
+                ipl.getCalibration().setYUnit("px");
             }
 
-            if (ipl.getNSlices() > 1 && meta.getPixelsPhysicalSizeZ(0) != null) {
-                ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(0).value();
+            if (ipl.getNSlices() > 1 && meta.getPixelsPhysicalSizeZ(seriesNumber-1) != null) {
+                Length physicalSizeZ = meta.getPixelsPhysicalSizeZ(seriesNumber-1);
+                ipl.getCalibration().pixelDepth = (double) physicalSizeZ.value(ome.units.UNITS.MICROMETER);
+                ipl.getCalibration().setZUnit(physicalSizeZ.unit().getSymbol());
             } else {
                 ipl.getCalibration().pixelDepth = 1.0;
+                ipl.getCalibration().setZUnit("px");
             }
         }
 
@@ -221,7 +245,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int finalIndex) {
+    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int finalIndex, int[] crop){
         // Number format
         StringBuilder stringBuilder = new StringBuilder();
         for (int i=0;i<numberOfZeroes;i++) stringBuilder.append("0");
@@ -240,8 +264,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int count = 0;
         int idx = startingIndex;
         while (new File(rootPath+rootName+df.format(idx++)+"."+extension).exists()){
-            if (idx == finalIndex) break;
             count++;
+            if (idx == finalIndex) break;
         }
 
         // Determining the dimensions of the input image
@@ -250,12 +274,23 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int height = rootIpl.getHeight();
         int bitDepth = rootIpl.getBitDepth();
 
+        if (crop != null) {
+            width = crop[2];
+            height = crop[3];
+        }
+
         // Creating the new image
         ImagePlus outputIpl = IJ.createImage("Image",width,height,count,bitDepth);
         for (int i = 0;i<count;i++) {
-            writeMessage("Loading image "+i+" of "+count);
+            writeMessage("Loading image "+(i+1)+" of "+count);
             String currentPath = rootPath+rootName+df.format(i+startingIndex)+"."+extension;
             ImagePlus tempIpl = IJ.openImage(currentPath);
+
+            if (crop != null) {
+                tempIpl.setRoi(crop[0],crop[1],width,height);
+                tempIpl = tempIpl.crop();
+            }
+
             outputIpl.setPosition(i+1);
             outputIpl.setProcessor(tempIpl.getProcessor());
 
@@ -268,7 +303,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     private ImagePlus getFormattedNameImage(String nameFormat, HCMetadata metadata, String comment,
-                                            int seriesNumber,int[][] dimRanges) throws ServiceException, DependencyException, FormatException, IOException {
+                                            int seriesNumber,int[][] dimRanges, int[] crop) throws ServiceException, DependencyException, FormatException, IOException {
 
         String filename = null;
         switch (nameFormat) {
@@ -291,7 +326,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 break;
         }
 
-        return getBFImage(filename,seriesNumber,dimRanges);
+        return getBFImage(filename,seriesNumber,dimRanges,crop);
 
     }
 
@@ -330,6 +365,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int startingT = parameters.getValue(STARTING_T);
         int endingT = parameters.getValue(ENDING_T);
         int intervalT = parameters.getValue(INTERVAL_T);
+        boolean cropImage = parameters.getValue(CROP_IMAGE);
+        int left = parameters.getValue(LEFT);
+        int top = parameters.getValue(TOP);
+        int width = parameters.getValue(WIDTH);
+        int height = parameters.getValue(HEIGHT);
         boolean setCalibration = parameters.getValue(SET_CAL);
         double xyCal = parameters.getValue(XY_CAL);
         double zCal = parameters.getValue(Z_CAL);
@@ -340,12 +380,15 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Series number comes from the Workspace
-        int seriesNumber = workspace.getMetadata().getSeries();
+        int seriesNumber = workspace.getMetadata().getSeriesNumber();
 
         if (useAllC) endingC = -1;
         if (useAllZ) endingZ = -1;
         if (useAllT) endingT = -1;
         int[][] dimRanges = new int[][]{{startingC,endingC,intervalC},{startingZ,endingZ,intervalZ},{startingT,endingT,intervalT}};
+
+        int[] crop = null;
+        if (cropImage) crop = new int[]{left,top,width,height};
 
         ImagePlus ipl = null;
         try {
@@ -358,7 +401,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         File file = workspace.getMetadata().getFile();
                         if (file == null)
                             throw new GenericMIAException("Set file in Input Control");
-                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges);
+                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges,crop);
                         break;
 
                     case ImportModes.IMAGEJ:
@@ -367,23 +410,23 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                     case ImportModes.IMAGE_SEQUENCE:
                         if (!limitFrames) finalIndex = Integer.MAX_VALUE;
-                        ipl = getImageSequence(workspace.getMetadata().getFile(),numberOfZeroes,startingIndex, finalIndex);
+                        ipl = getImageSequence(workspace.getMetadata().getFile(),numberOfZeroes,startingIndex, finalIndex,crop);
                         break;
 
                     case ImportModes.MATCHING_FORMAT:
                         switch (nameFormat) {
                             case NameFormats.INCUCYTE_SHORT:
-                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges);
+                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges,crop);
                                 break;
 
                             case NameFormats.INPUT_FILE_PREFIX:
-                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges);
+                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges,crop);
                                 break;
                         }
                         break;
 
                     case ImportModes.SPECIFIC_FILE:
-                        ipl = getBFImage(filePath, seriesNumber, dimRanges);
+                        ipl = getBFImage(filePath, seriesNumber, dimRanges,crop);
                         break;
                 }
             }
@@ -401,10 +444,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             calibration.setUnit(units);
 
             ipl.setCalibration(calibration);
-
         }
 
-        if (threeDMode.equals(ThreeDModes.TIMESERIES) && !ipl.isHyperStack() && ipl.getNSlices() > 1) {
+        // Converting RGB to 3-channel
+        boolean toConvert = ipl.getStack().isRGB();
+        if (toConvert) ipl = CompositeConverter.makeComposite(ipl);
+
+        if (threeDMode.equals(ThreeDModes.TIMESERIES) && (!ipl.isHyperStack() || toConvert) && ipl.getNSlices() > 1) {
             ConvertStackToTimeseries.process(ipl);
         }
 
@@ -445,6 +491,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(STARTING_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(ENDING_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(INTERVAL_T, Parameter.INTEGER,1));
+        parameters.add(new Parameter(CROP_IMAGE, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
+        parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
+        parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));
+        parameters.add(new Parameter(HEIGHT, Parameter.INTEGER,512));
         parameters.add(new Parameter(SET_CAL, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(XY_CAL, Parameter.DOUBLE, 1.0));
         parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
@@ -513,6 +564,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             if (!(boolean) parameters.getValue(USE_ALL_T)) {
                 returnedParameters.add(parameters.getParameter(ENDING_T));
             }
+        }
+
+        returnedParameters.add(parameters.getParameter(CROP_IMAGE));
+        if (parameters.getValue(CROP_IMAGE)){
+            returnedParameters.add(parameters.getParameter(LEFT));
+            returnedParameters.add(parameters.getParameter(TOP));
+            returnedParameters.add(parameters.getParameter(WIDTH));
+            returnedParameters.add(parameters.getParameter(HEIGHT));
         }
 
         returnedParameters.add(parameters.getParameter(SET_CAL));
