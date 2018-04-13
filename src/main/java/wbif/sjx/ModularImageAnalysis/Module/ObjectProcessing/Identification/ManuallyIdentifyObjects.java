@@ -260,6 +260,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             case (FINISH):
                 frame.dispose();
                 frame = null;
+                displayImagePlus.close();
 
                 break;
         }

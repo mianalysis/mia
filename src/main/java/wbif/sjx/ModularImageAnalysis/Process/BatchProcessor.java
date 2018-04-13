@@ -4,8 +4,14 @@ package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.Prefs;
 import loci.common.DebugTools;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
+import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
+import loci.formats.MetadataTools;
+import loci.formats.meta.MetadataStore;
+import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
@@ -22,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.concurrent.*;
 
 
@@ -104,11 +111,12 @@ public class BatchProcessor extends FileCrawler {
             }
 
             // For the current file, determining how many series to process (and which ones)
-            int[] seriesNumbers = getSeriesNumbers(analysis, next);
+            TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, next);
 
             // Iterating over all series to analyse, adding each one as a new workspace
-            for (int seriesNumber:seriesNumbers) {
+            for (int seriesNumber:seriesNumbers.keySet()) {
                 Workspace workspace = workspaces.getNewWorkspace(next,seriesNumber);
+                workspace.getMetadata().setSeriesName(seriesNumbers.get(seriesNumber));
                 workspace.getMetadata().put("FILE_DEPTH", fileDepth);
 
                 Runnable task = () -> {
@@ -169,11 +177,12 @@ public class BatchProcessor extends FileCrawler {
         Prefs.setThreads(1);
 
         // For the current file, determining how many series to process (and which ones)
-        int[] seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
+        TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
 
         // Iterating over all series to analyse, adding each one as a new workspace
-        for (int seriesNumber:seriesNumbers) {
+        for (int seriesNumber:seriesNumbers.keySet()) {
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile(),seriesNumber);
+            workspace.getMetadata().setSeriesName(seriesNumbers.get(seriesNumber));
 
             Runnable task = () -> {
                 try {
@@ -242,45 +251,43 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    private int[] getSeriesNumbers(Analysis analysis, File inputFile) {
+    private TreeMap<Integer,String> getSeriesNumbers(Analysis analysis, File inputFile) {
         ParameterCollection parameters = analysis.getInputControl().getAllParameters();
         String seriesMode = parameters.getValue(InputControl.SERIES_MODE);
-        boolean useSeriesNameFilter = parameters.getValue(InputControl.USE_SERIESNAME_FILTER);
-        String seriesNameFilter = parameters.getValue(InputControl.SERIESNAME_FILTER);
-        String seriesNameFilterType = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE);
+        boolean useFilter = parameters.getValue(InputControl.USE_SERIESNAME_FILTER);
+        String filter = parameters.getValue(InputControl.SERIESNAME_FILTER);
+        String filterType = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE);
 
+        TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
         switch (seriesMode) {
             case InputControl.SeriesModes.ALL_SERIES:
-                // Using BioFormats to get the number of series
-                DebugTools.enableLogging("off");
-                DebugTools.setRootLevel("off");
-                ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
-                reader.setGroupFiles(false);
                 try {
+                    // Using BioFormats to get the number of series
+                    DebugTools.enableLogging("off");
+                    DebugTools.setRootLevel("off");
+
+                    ServiceFactory factory = new ServiceFactory();
+                    OMEXMLService service = factory.getInstance(OMEXMLService.class);
+                    IMetadata meta = service.createOMEXMLMetadata();
+                    ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+                    reader.setMetadataStore((MetadataStore) meta);
+                    reader.setGroupFiles(false);
                     reader.setId(inputFile.getAbsolutePath());
-                } catch (FormatException | IOException e) {
+
+                    for (int seriesNumber=0;seriesNumber<reader.getSeriesCount();seriesNumber++) {
+                        String name = meta.getImageName(seriesNumber);
+                        if (name!= null && useFilter &!getFilenameFilter(filterType,filter).test(name)) continue;
+                        namesAndNumbers.put(seriesNumber+1,name);
+                    }
+                } catch (DependencyException | FormatException | ServiceException | IOException e) {
                     e.printStackTrace();
                 }
 
-                ArrayList<Integer> seriesNumbers = new ArrayList<>();
-                IMetadata metadata = (IMetadata) reader.getMetadataStore();
-                for (int seriesNumber=0;seriesNumber<reader.getSeriesCount();seriesNumber++) {
-                    if (useSeriesNameFilter) {
-                        String name = metadata.getImageName(seriesNumber);
-                        if (!getFilenameFilter(seriesNameFilterType,seriesNameFilter).test(name)) continue;
-                    }
-
-                    seriesNumbers.add(seriesNumber);
-
-                }
-
-                return seriesNumbers.stream().mapToInt(Integer::intValue).toArray();
-
             case InputControl.SeriesModes.SINGLE_SERIES:
-                return new int[]{analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER)};
+                namesAndNumbers.put(analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER),"");
         }
 
-        return null;
+        return namesAndNumbers;
 
     }
 

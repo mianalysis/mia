@@ -293,7 +293,7 @@ public class AnalysisHandler {
 
             } catch (NullPointerException e) {
                 System.err.println("Module \""+module.getTitle()
-                        +"\" parameter \""+parameterName + "\" not set");
+                        +"\" parameter \""+parameterName + "\" ("+parameterValue+") not set");
 
             }
         }
@@ -357,6 +357,7 @@ public class AnalysisHandler {
         boolean exportXLSX = outputControl.isEnabled();
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
+        boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
         boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
         boolean calculateMin = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MIN);
         boolean calculateMax = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MAX);
@@ -401,6 +402,7 @@ public class AnalysisHandler {
         Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
         if (exporter != null) {
             exporter.setExportSummary(exportSummary);
+            exporter.setShowObjectCounts(showObjectCounts);
             exporter.setCalculateMean(calculateMean);
             exporter.setCalculateMin(calculateMin);
             exporter.setCalculateMax(calculateMax);

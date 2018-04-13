@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 public class OutputControl extends Module {
     public static final String EXPORT_SUMMARY = "Export summary";
     public static final String SUMMARY_TYPE = "Summary type";
+    public static final String SHOW_OBJECT_COUNTS = "Show object counts";
     public static final String CALCULATE_SUMMARY_MEAN = "Calculate summary means";
     public static final String CALCULATE_SUMMARY_MIN = "Calculate summary minima";
     public static final String CALCULATE_SUMMARY_MAX = "Calculate summary maxima";
@@ -50,6 +51,7 @@ public class OutputControl extends Module {
         parameters.add(
                 new Parameter(SUMMARY_TYPE,Parameter.CHOICE_ARRAY,SummaryTypes.ONE_AVERAGE_PER_FILE,SummaryTypes.ALL));
 
+        parameters.add(new Parameter(SHOW_OBJECT_COUNTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CALCULATE_SUMMARY_MEAN,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CALCULATE_SUMMARY_MIN,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CALCULATE_SUMMARY_MAX,Parameter.BOOLEAN,true));
@@ -69,6 +71,7 @@ public class OutputControl extends Module {
         returnedParameters.add(parameters.getParameter(EXPORT_SUMMARY));
         if (parameters.getValue(EXPORT_SUMMARY)) {
             returnedParameters.add(parameters.getParameter(SUMMARY_TYPE));
+            returnedParameters.add(parameters.getParameter(SHOW_OBJECT_COUNTS));
             returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MEAN));
             returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MIN));
             returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MAX));

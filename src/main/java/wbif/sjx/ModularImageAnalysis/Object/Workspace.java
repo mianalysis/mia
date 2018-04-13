@@ -19,8 +19,13 @@ public class Workspace {
     public Workspace(int ID, File file, int series) {
         this.ID = ID;
         metadata.put(HCMetadata.FILE,file);
-        metadata.put(HCMetadata.SERIES,series);
+        metadata.put(HCMetadata.SERIES_NUMBER,series);
 
+        if (file == null) {
+            metadata.put(HCMetadata.FILENAME, "");
+        } else {
+            metadata.put(HCMetadata.FILENAME, file.getName());
+        }
     }
 
     // PUBLIC METHODS

@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 

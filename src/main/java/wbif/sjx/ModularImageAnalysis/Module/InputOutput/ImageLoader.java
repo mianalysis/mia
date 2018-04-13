@@ -16,10 +16,13 @@ import loci.common.services.ServiceFactory;
 import loci.formats.*;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
+import loci.plugins.in.Calibrator;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
+import ome.units.UNITS;
+import ome.units.quantity.Length;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
@@ -131,10 +134,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         DebugTools.setRootLevel("off");
 
         // Setting spatial calibration
-        IMetadata meta;
         ServiceFactory factory = new ServiceFactory();
         OMEXMLService service = factory.getInstance(OMEXMLService.class);
-        meta = service.createOMEXMLMetadata();
+        IMetadata meta = service.createOMEXMLMetadata();
         ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
         reader.setMetadataStore((MetadataStore) meta);
 
@@ -152,8 +154,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int bitDepth = reader.getBitsPerPixel();
 
         if (crop != null) {
-            top = crop[0];
-            left = crop[1];
+            left = crop[0];
+            top = crop[1];
             width = crop[2];
             height = crop[3];
         }
@@ -193,11 +195,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     int idx = reader.getIndex(z-1, c-1, t-1);
                     ImageProcessor ip = reader.openProcessors(idx,left,top,width,height)[0];
 
-                    if (crop != null) {
-                        ip.setRoi(crop[0],crop[2],width,height);
-                        ip = ip.crop();
-                    }
-
                     ipl.setPosition(countC,countZ,countT);
                     ipl.setProcessor(ip);
 
@@ -214,22 +211,31 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         // Add spatial calibration
         if (meta != null) {
-            if (meta.getPixelsPhysicalSizeX(0) != null) {
-                ipl.getCalibration().pixelWidth = (double) meta.getPixelsPhysicalSizeX(0).value();
+            if (meta.getPixelsPhysicalSizeX(seriesNumber-1) != null) {
+                Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber-1);
+                ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(ome.units.UNITS.MICROMETER);
+                ipl.getCalibration().setXUnit(physicalSizeX.unit().getSymbol());
             } else {
                 ipl.getCalibration().pixelWidth = 1.0;
+                ipl.getCalibration().setXUnit("px");
             }
 
-            if (meta.getPixelsPhysicalSizeX(0) != null) {
-                ipl.getCalibration().pixelHeight = (double) meta.getPixelsPhysicalSizeX(0).value();
+            if (meta.getPixelsPhysicalSizeY(seriesNumber-1) != null) {
+                Length physicalSizeY = meta.getPixelsPhysicalSizeY(seriesNumber-1);
+                ipl.getCalibration().pixelHeight = (double) physicalSizeY.value(ome.units.UNITS.MICROMETER);
+                ipl.getCalibration().setYUnit(physicalSizeY.unit().getSymbol());
             } else {
                 ipl.getCalibration().pixelHeight = 1.0;
+                ipl.getCalibration().setYUnit("px");
             }
 
-            if (ipl.getNSlices() > 1 && meta.getPixelsPhysicalSizeZ(0) != null) {
-                ipl.getCalibration().pixelDepth = (double) meta.getPixelsPhysicalSizeZ(0).value();
+            if (ipl.getNSlices() > 1 && meta.getPixelsPhysicalSizeZ(seriesNumber-1) != null) {
+                Length physicalSizeZ = meta.getPixelsPhysicalSizeZ(seriesNumber-1);
+                ipl.getCalibration().pixelDepth = (double) physicalSizeZ.value(ome.units.UNITS.MICROMETER);
+                ipl.getCalibration().setZUnit(physicalSizeZ.unit().getSymbol());
             } else {
                 ipl.getCalibration().pixelDepth = 1.0;
+                ipl.getCalibration().setZUnit("px");
             }
         }
 
@@ -374,7 +380,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Series number comes from the Workspace
-        int seriesNumber = workspace.getMetadata().getSeries();
+        int seriesNumber = workspace.getMetadata().getSeriesNumber();
 
         if (useAllC) endingC = -1;
         if (useAllZ) endingZ = -1;
@@ -441,10 +447,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Converting RGB to 3-channel
-        boolean isGreyScale = ipl.getProcessor().isGrayscale();
-        if (!isGreyScale) ipl = CompositeConverter.makeComposite(ipl);
+        boolean toConvert = ipl.getStack().isRGB();
+        if (toConvert) ipl = CompositeConverter.makeComposite(ipl);
 
-        if (threeDMode.equals(ThreeDModes.TIMESERIES) && (!ipl.isHyperStack() || !isGreyScale) && ipl.getNSlices() > 1) {
+        if (threeDMode.equals(ThreeDModes.TIMESERIES) && (!ipl.isHyperStack() || toConvert) && ipl.getNSlices() > 1) {
             ConvertStackToTimeseries.process(ipl);
         }
 
