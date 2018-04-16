@@ -8,6 +8,7 @@ import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -151,6 +152,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         workspace.addObjects(outputObjects);
 
         // Displaying the image and showing the control
+        displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
         displayImagePlus.show();
         showOptionsPanel();
 

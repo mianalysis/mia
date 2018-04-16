@@ -1,8 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
@@ -10,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by sc13967 on 16/01/2018.
@@ -69,16 +72,19 @@ public class ExpandShrinkObjects extends Module {
         int count = 1;
         int total = inputObjects.size();
 
-        for (Obj inputObject:inputObjects.values()) {
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()){
+            Obj inputObject = iterator.next();
             writeMessage("Processing object " + (count++) + " of " + total);
 
             // Convert each object to an image, do the dilation/erosion, then convert back to an object
             ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
             objectCollection.add(inputObject);
-            HashMap<Integer,Float> hues = objectCollection.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-            Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues,false);
+            HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
+            Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
+            InvertIntensity.process(objectImage.getImagePlus());
 
-            Prefs.blackBackground = true;
+            Prefs.blackBackground = false;
 
             // Applying morphological transform.  Erode and dilate are used "backwards", as the image that comes
             // from the converter has white objects on a black background.
@@ -94,10 +100,16 @@ public class ExpandShrinkObjects extends Module {
                     break;
             }
 
-            Prefs.blackBackground = false;
+            InvertIntensity.process(objectImage.getImagePlus());
 
             // Creating a new object collection (only contains one image) from the transformed image
             ObjCollection newObjects = objectImage.convertImageToObjects("NewObjects");
+
+            // During object shrinking it's possible the object will disappear entirely
+            if (newObjects.size() == 0) {
+                iterator.remove();
+                continue;
+            }
 
             // If the input objects are to be transformed, taking the new pixel coordinates and applying them to
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.

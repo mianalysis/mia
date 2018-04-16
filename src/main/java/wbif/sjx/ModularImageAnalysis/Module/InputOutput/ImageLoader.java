@@ -9,6 +9,7 @@ import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
 import ij.plugin.RGBStackConverter;
 import ij.process.ImageProcessor;
+import ij.process.LUT;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -24,15 +25,19 @@ import net.imglib2.type.numeric.RealType;
 import ome.units.UNITS;
 import ome.units.quantity.Length;
 import ome.xml.meta.IMetadata;
+import ome.xml.model.primitives.*;
+import ome.xml.model.primitives.Color;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -144,6 +149,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         reader.setId(path);
         reader.setSeries(seriesNumber-1);
 
+//        // Getting a list of colours
+//        LUT[] luts = new LUT[reader.getSizeC()];
+//        for (int i = 0;i<reader.getSizeC();i++) {
+//            Color colour = meta.getChannelColor(seriesNumber - 1, i);
+//            luts[i] = LUT.createLutFromColor(new java.awt.Color(colour.getRed(),colour.getGreen(),colour.getBlue()));
+//        }
+
         int left = 0;
         int top = 0;
         int width = reader.getSizeX();
@@ -194,6 +206,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 for (int t = startingT; t <= endingT; t=t+intervalT) {
                     int idx = reader.getIndex(z-1, c-1, t-1);
                     ImageProcessor ip = reader.openProcessors(idx,left,top,width,height)[0];
+//                    ip.setLut(luts[c-1]);
 
                     ipl.setPosition(countC,countZ,countT);
                     ipl.setProcessor(ip);

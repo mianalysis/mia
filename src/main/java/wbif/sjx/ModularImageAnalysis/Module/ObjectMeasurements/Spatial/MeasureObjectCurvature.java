@@ -3,9 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import org.apache.commons.math3.exception.MathArithmeticException;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
@@ -85,8 +82,8 @@ public class MeasureObjectCurvature extends Module {
         ObjCollection tempObjects = new ObjCollection("Backbone");
         tempObjects.add(inputObject);
 
-        HashMap<Integer,Float> hues = tempObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues, false).getImagePlus();
+        HashMap<Integer,Float> hues = tempObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
+        ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues).getImagePlus();
         InvertIntensity.process(objectIpl);
 
         // Skeletonise fish to get single backbone
@@ -221,12 +218,6 @@ public class MeasureObjectCurvature extends Module {
             inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MIN_CURVATURE, (posMin / pathLength)));
             inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MAX_CURVATURE, (posMax / pathLength)));
 
-        } else {
-            inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_X_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_Y_PX, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MIN_CURVATURE, Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MAX_CURVATURE, Double.NaN));
-
         }
     }
 
@@ -236,10 +227,7 @@ public class MeasureObjectCurvature extends Module {
         int pathLength = longestPath.size();
 
         // If the path is too short for the fitting range
-        if (pathLength < nPoints) {
-            inputObject.addMeasurement(new Measurement(Measurements.HEAD_TAIL_ANGLE_DEGS,Double.NaN));
-            return;
-        }
+        if (pathLength < nPoints) return;
 
         int count = 0;
         for (Vertex vertex:longestPath) {
@@ -265,6 +253,47 @@ public class MeasureObjectCurvature extends Module {
         double angle = Math.toDegrees(Math.atan2(x1*y2-y1*x2,x1*x2+y1*y2));
 
         inputObject.addMeasurement(new Measurement(Measurements.HEAD_TAIL_ANGLE_DEGS,angle));
+
+    }
+
+    private void initialiseObjectMeasurements(Obj inputObject, boolean fitSpline, boolean absoluteCurvature,
+                                              boolean signedCurvature, boolean useReference) {
+        if (fitSpline) {
+            if (absoluteCurvature) {
+                inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+            }
+
+            if (signedCurvature) {
+                inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_CAL, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_CAL, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_CAL, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_CAL, Double.NaN));
+            }
+
+            inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_PX,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL,Double.NaN));
+
+            if (useReference) {
+                inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_X_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_Y_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MIN_CURVATURE, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.REL_LOC_OF_MAX_CURVATURE, Double.NaN));
+
+            }
+        }
+
+        inputObject.addMeasurement(new Measurement(Measurements.HEAD_TAIL_ANGLE_DEGS,Double.NaN));
 
     }
 
@@ -321,9 +350,13 @@ public class MeasureObjectCurvature extends Module {
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
             writeMessage("Processing object " + (count++) + " of " + total);
+            initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
             LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject, templateImage);
+
+            // If the object is too small to be fit
+            if (longestPath.size() < 3) continue;
 
             // If necessary, inverting the longest path so the first point is closest to the reference
             if (useReference) {

@@ -3,7 +3,6 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
@@ -65,7 +64,7 @@ public class AddObjectsOverlay extends Module {
 
 
     public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
-                                     String[] posMeasurements,HashMap<Integer,Float> colours, HashMap<Integer,String> IDs,
+                                     String[] posMeasurements,HashMap<Integer,Color> colours, HashMap<Integer,String> IDs,
                                      int labelSize, double lineWidth) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
@@ -80,7 +79,7 @@ public class AddObjectsOverlay extends Module {
         // Running through each object, adding it to the overlay along with an ID label
         int count = 0;
         for (Obj object:inputObjects.values()) {
-            Color colour = Color.getHSBColor(colours.get(object.getID()),1,1);
+            Color colour = colours.get(object.getID());
 
             double xMean = 0;
             double yMean = 0;
@@ -233,7 +232,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public void createTrackOverlay(ImagePlus ipl, String inputObjectsName, ObjCollection trackObjects,
-                                          HashMap<Integer,Float> hues, double lineWidth) {
+                                          HashMap<Integer,Color> colours, double lineWidth) {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -256,7 +255,7 @@ public class AddObjectsOverlay extends Module {
             int nFrames = ipl.getNFrames();
             Obj p1 = null;
             for (Obj p2:points.values()) {
-                Color color = Color.getHSBColor(hues.get(p2.getID()),1,1);
+                Color color = colours.get(p2.getID());
 
                 if (p1 != null) {
                     int x1 = (int) Math.round(p1.getXMean(true));
@@ -346,7 +345,7 @@ public class AddObjectsOverlay extends Module {
                 sourceColour = parentObjectsForColourName;
                 break;
         }
-        HashMap<Integer,Float> hues = inputObjects.getHue(colourMode,sourceColour,true);
+        HashMap<Integer,Color> colours = inputObjects.getColours(colourMode,sourceColour,true);
 
         // Generating labels for each object
         String souceLabel = null;
@@ -376,12 +375,12 @@ public class AddObjectsOverlay extends Module {
                 } else {
                     positionMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas, ""};
                 }
-                createOverlay(ipl,inputObjects,positionMode,positionMeasurements,hues,IDs,labelSize,lineWidth);
+                createOverlay(ipl,inputObjects,positionMode,positionMeasurements,colours,IDs,labelSize,lineWidth);
                 break;
 
             case PositionModes.TRACKS:
                 ObjCollection tracks = workspace.getObjectSet(trackObjectsName);
-                createTrackOverlay(ipl,inputObjectsName,tracks,hues,lineWidth);
+                createTrackOverlay(ipl,inputObjectsName,tracks,colours,lineWidth);
                 break;
         }
 

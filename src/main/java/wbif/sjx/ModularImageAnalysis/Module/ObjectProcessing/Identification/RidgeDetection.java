@@ -15,6 +15,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.awt.*;
 import java.util.*;
 
 /**
@@ -191,9 +192,9 @@ public class RidgeDetection extends Module {
 
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-            HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"",true);
+            HashMap<Integer,Color> colours = outputObjects.getColours(colourMode,"",true);
             String positionMode = AddObjectsOverlay.PositionModes.ALL_POINTS;
-            new AddObjectsOverlay().createOverlay(inputImagePlus,outputObjects,positionMode,null,hues,null,8,1);
+            new AddObjectsOverlay().createOverlay(inputImagePlus,outputObjects,positionMode,null,colours,null,8,1);
 
             // Displaying the overlay
             inputImagePlus.show();
