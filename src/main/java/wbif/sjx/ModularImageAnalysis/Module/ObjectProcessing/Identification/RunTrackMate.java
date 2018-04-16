@@ -9,7 +9,6 @@ import fiji.plugin.trackmate.features.spot.SpotRadiusEstimatorFactory;
 import fiji.plugin.trackmate.tracking.LAPUtils;
 import fiji.plugin.trackmate.tracking.TrackerKeys;
 import fiji.plugin.trackmate.tracking.sparselap.SparseLAPTrackerFactory;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -20,6 +19,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -290,11 +290,11 @@ public class RunTrackMate extends Module {
 
                 // Creating the overlay
                 String colourMode = ObjCollection.ColourModes.PARENT_ID;
-                HashMap<Integer, Float> hues = spotObjects.getHue(colourMode, trackObjectsName, true);
+                HashMap<Integer, Color> colours = spotObjects.getColours(colourMode, trackObjectsName, true);
                 String labelMode = ObjCollection.LabelModes.PARENT_ID;
                 HashMap<Integer, String> IDs = showID ? spotObjects.getIDs(labelMode, trackObjectsName, 0, false) : null;
                 new AddObjectsOverlay().createOverlay(
-                        ipl, spotObjects, AddObjectsOverlay.PositionModes.CENTROID, null, hues, IDs, 8, 1);
+                        ipl, spotObjects, AddObjectsOverlay.PositionModes.CENTROID, null, colours, IDs, 8, 1);
 
                 // Displaying the overlay
                 ipl.show();
@@ -315,11 +315,11 @@ public class RunTrackMate extends Module {
                 ipl = new Duplicator().run(ipl);
                 IntensityMinMax.run(ipl,true);
                 String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-                HashMap<Integer,Float> hues = spotObjects.getHue(colourMode,"",true);
+                HashMap<Integer,Color> colours = spotObjects.getColours(colourMode,"",true);
                 String labelMode = ObjCollection.LabelModes.ID;
                 HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",0,false) : null;
                 new AddObjectsOverlay().createOverlay(
-                        ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,hues,IDs,8,1);
+                        ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,colours,IDs,8,1);
 
                 // Displaying the overlay
                 ipl.show();

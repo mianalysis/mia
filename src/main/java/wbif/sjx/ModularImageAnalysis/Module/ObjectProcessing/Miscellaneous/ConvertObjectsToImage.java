@@ -30,7 +30,6 @@ public class ConvertObjectsToImage extends Module {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT = "Measurement";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
-    public static final String HIDE_IF_MISSING_PARENT = "Hide points without a parent";
     public static final String SHOW_IMAGE = "Show image";
 
     public interface ConversionModes {
@@ -76,7 +75,6 @@ public class ConvertObjectsToImage extends Module {
             String measurementForColour = parameters.getValue(MEASUREMENT);
             String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
             boolean showImage = parameters.getValue(SHOW_IMAGE);
-            boolean hideMissing = parameters.getValue(HIDE_IF_MISSING_PARENT);
 
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
@@ -91,9 +89,9 @@ public class ConvertObjectsToImage extends Module {
                     sourceColour = parentForColour;
                     break;
             }
-            HashMap<Integer, Float> hues = inputObjects.getHue(colourMode, sourceColour,false);
+            HashMap<Integer, Float> hues = inputObjects.getHues(colourMode, sourceColour,false);
 
-            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage.getImagePlus(), colourMode,hues,hideMissing);
+            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage.getImagePlus(), colourMode,hues);
 
             // Applying spatial calibration from template image
             Calibration calibration = templateImage.getImagePlus().getCalibration();
@@ -140,7 +138,6 @@ public class ConvertObjectsToImage extends Module {
         parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
         parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(HIDE_IF_MISSING_PARENT,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
@@ -172,7 +169,6 @@ public class ConvertObjectsToImage extends Module {
             } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
                 // Use Parent ID
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                returnedParameters.add(parameters.getParameter(HIDE_IF_MISSING_PARENT));
 
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);

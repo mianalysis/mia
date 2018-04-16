@@ -3,9 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import org.apache.commons.math3.exception.MathArithmeticException;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
@@ -85,8 +82,8 @@ public class MeasureObjectCurvature extends Module {
         ObjCollection tempObjects = new ObjCollection("Backbone");
         tempObjects.add(inputObject);
 
-        HashMap<Integer,Float> hues = tempObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues, false).getImagePlus();
+        HashMap<Integer,Float> hues = tempObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
+        ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues).getImagePlus();
         InvertIntensity.process(objectIpl);
 
         // Skeletonise fish to get single backbone

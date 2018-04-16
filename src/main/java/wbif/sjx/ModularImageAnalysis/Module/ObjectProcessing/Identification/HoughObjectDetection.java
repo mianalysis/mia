@@ -13,6 +13,7 @@ import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -155,7 +156,7 @@ public class HoughObjectDetection extends Module {
             IntensityMinMax.run(dispIpl,true);
 
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-            HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"",true);
+            HashMap<Integer,Color> colours = outputObjects.getColours(colourMode,"",true);
 
             HashMap<Integer, String> IDs = null;
             if (showHoughScore) {
@@ -164,7 +165,7 @@ public class HoughObjectDetection extends Module {
             }
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 
-            new AddObjectsOverlay().createOverlay(dispIpl,outputObjects,positionMode,null,hues,IDs,labelSize,1);
+            new AddObjectsOverlay().createOverlay(dispIpl,outputObjects,positionMode,null,colours,IDs,labelSize,1);
 
             dispIpl.show();
 
