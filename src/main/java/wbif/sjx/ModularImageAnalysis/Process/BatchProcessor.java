@@ -2,6 +2,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import ij.Prefs;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
@@ -36,6 +37,9 @@ import java.util.concurrent.*;
  * Created by sc13967 on 21/10/2016.
  */
 public class BatchProcessor extends FileCrawler {
+    DecimalFormat dfInt = new DecimalFormat("0");
+    DecimalFormat dfDec = new DecimalFormat("0.00");
+
     private boolean verbose = true;
     private int nThreads = Runtime.getRuntime().availableProcessors()/2;
 
@@ -66,12 +70,10 @@ public class BatchProcessor extends FileCrawler {
 
         // The protocol to run will depend on if a single file or a folder was selected
         if (rootFolder.getFolderAsFile().isFile()) {
-            Module.setVerbose(true);
             runSingle(workspaces, analysis);
 
         } else {
             // The system can run multiple files in parallel or one at a time
-            Module.setVerbose(false);
             runParallel(workspaces, analysis, exporter);
 
         }
@@ -83,9 +85,6 @@ public class BatchProcessor extends FileCrawler {
     }
 
     private void runParallel(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws InterruptedException {
-        DecimalFormat dfInt = new DecimalFormat("0");
-        DecimalFormat dfDec = new DecimalFormat("0.00");
-
         File next = getNextValidFileInStructure();
 
         boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
@@ -179,6 +178,10 @@ public class BatchProcessor extends FileCrawler {
         // For the current file, determining how many series to process (and which ones)
         TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
 
+        // Only set verbose if a single series is being processed
+        String seriesMode = analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE);
+        Module.setVerbose(seriesMode.equals(InputControl.SeriesModes.SINGLE_SERIES) && seriesNumbers.size() == 1);
+
         // Iterating over all series to analyse, adding each one as a new workspace
         for (int seriesNumber:seriesNumbers.keySet()) {
             Workspace workspace = workspaces.getNewWorkspace(rootFolder.getFolderAsFile(),seriesNumber);
@@ -191,17 +194,30 @@ public class BatchProcessor extends FileCrawler {
                     t.printStackTrace(System.err);
                 }
 
+                // Getting the number of completed and total tasks
+                incrementCounter();
+                int nComplete = getCounter();
+                double nTotal = pool.getTaskCount();
+                double percentageComplete = (nComplete / nTotal) * 100;
+
+                // Displaying the current progress
+                String string = "Completed " + dfInt.format(nComplete) + "/" + dfInt.format(nTotal)
+                        + " (" + dfDec.format(percentageComplete) + "%)";
+                System.out.println(string);
+
                 // Clearing images from the workspace to prevent memory leak
                 workspace.clearAllImages(true);
-
-                // Adding a blank line to the output
-                if (verbose) System.out.println(" ");
 
             };
 
             // Submit the jobs for this file, then tell the pool not to accept any more jobs and to wait until all
             // queued jobs have completed
             pool.submit(task);
+
+            // Displaying the current progress
+            double nTotal = pool.getTaskCount();
+            String string = "Started processing "+dfInt.format(nTotal)+" jobs";
+            System.out.println(string);
 
         }
 
@@ -282,9 +298,11 @@ public class BatchProcessor extends FileCrawler {
                 } catch (DependencyException | FormatException | ServiceException | IOException e) {
                     e.printStackTrace();
                 }
+                break;
 
             case InputControl.SeriesModes.SINGLE_SERIES:
                 namesAndNumbers.put(analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER),"");
+                break;
         }
 
         return namesAndNumbers;
