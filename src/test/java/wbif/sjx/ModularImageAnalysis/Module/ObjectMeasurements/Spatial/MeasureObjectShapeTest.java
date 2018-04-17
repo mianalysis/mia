@@ -40,6 +40,11 @@ public class MeasureObjectShapeTest {
         MeasureObjectShape measureObjectShape = new MeasureObjectShape();
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,inputObjectsName);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_ELLIPSOID,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_CONVEX_HULL,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
 
         // Running IdentifyObjects
         measureObjectShape.run(workspace);
