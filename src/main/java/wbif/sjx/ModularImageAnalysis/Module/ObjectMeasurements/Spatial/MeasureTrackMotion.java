@@ -2,8 +2,11 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Timepoint;
 import wbif.sjx.common.Object.Track;
 
+import java.util.Iterator;
 import java.util.TreeMap;
 
 /**
@@ -16,6 +19,11 @@ public class MeasureTrackMotion extends Module {
 
     private interface Measurements {
         String DURATION = "TRACK_ANALYSIS//DURATION_(FRAMES)";
+        String FIRST_FRAME = "TRACK_ANALYSIS//FIRST_FRAME";
+        String MEAN_X_STEP_PX = "TRACK_ANALYSIS//MEAN_X_STEP_(PX)";
+        String MEAN_X_STEP_CAL = "TRACK_ANALYSIS//MEAN_X_STEP_(CAL)";
+        String MEAN_Y_STEP_PX = "TRACK_ANALYSIS//MEAN_Y_STEP_(PX)";
+        String MEAN_Y_STEP_CAL = "TRACK_ANALYSIS//MEAN_Y_STEP_(CAL)";
         String TOTAL_PATH_LENGTH_PX = "TRACK_ANALYSIS//TOTAL_PATH_LENGTH_(PX)";
         String TOTAL_PATH_LENGTH_CAL = "TRACK_ANALYSIS//TOTAL_PATH_LENGTH_(CAL)";
         String EUCLIDEAN_DISTANCE_PX = "TRACK_ANALYSIS//EUCLIDEAN_DISTANCE_(PX)";
@@ -79,6 +87,11 @@ public class MeasureTrackMotion extends Module {
             if (x.length == 0) {
                 // Adding measurements to track objects
                 inputTrackObject.addMeasurement(new Measurement(Measurements.DURATION, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.FIRST_FRAME, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_STEP_PX, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_STEP_CAL, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_STEP_PX, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_STEP_CAL, Double.NaN));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE_PX, Double.NaN));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE_CAL, Double.NaN));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.TOTAL_PATH_LENGTH_PX, Double.NaN));
@@ -89,8 +102,27 @@ public class MeasureTrackMotion extends Module {
                 double euclideanDistance = track.getEuclideanDistance(true);
                 double totalPathLength = track.getTotalPathLength(true);
 
+                // Calculating track motion
+                Timepoint<Double> firstPoint = track.values().iterator().next();
+
+                CumStat cumStatX = new CumStat();
+                CumStat cumStatY = new CumStat();
+                Timepoint<Double> prev = null;
+                for (Timepoint<Double> timepoint:track.values()) {
+                    if (prev != null) {
+                        cumStatX.addMeasure(timepoint.getX()-prev.getX());
+                        cumStatY.addMeasure(timepoint.getY()-prev.getY());
+                    }
+                    prev = timepoint;
+                }
+
                 // Adding measurements to track objects
                 inputTrackObject.addMeasurement(new Measurement(Measurements.DURATION, track.getDuration()));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.FIRST_FRAME, firstPoint.getF()));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_STEP_PX, cumStatX.getMean()));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_STEP_CAL, cumStatX.getMean()*distPerPxXY));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_STEP_PX, cumStatY.getMean()));
+                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_STEP_CAL, cumStatY.getMean()*distPerPxXY));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE_PX, euclideanDistance));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE_CAL, euclideanDistance*distPerPxXY));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.TOTAL_PATH_LENGTH_PX, totalPathLength));
@@ -176,6 +208,26 @@ public class MeasureTrackMotion extends Module {
         reference.setCalculated(true);
 
         reference = objectMeasurementReferences.getOrPut(Measurements.DURATION);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.FIRST_FRAME);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_X_STEP_PX);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_X_STEP_CAL);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_Y_STEP_PX);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_Y_STEP_CAL);
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
