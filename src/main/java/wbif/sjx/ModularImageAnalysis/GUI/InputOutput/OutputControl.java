@@ -10,7 +10,10 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 public class OutputControl extends Module {
     public static final String EXPORT_SUMMARY = "Export summary";
     public static final String SUMMARY_TYPE = "Summary type";
+    public static final String SHOW_OBJECT_COUNTS = "Show object counts";
     public static final String CALCULATE_SUMMARY_MEAN = "Calculate summary means";
+    public static final String CALCULATE_SUMMARY_MIN = "Calculate summary minima";
+    public static final String CALCULATE_SUMMARY_MAX = "Calculate summary maxima";
     public static final String CALCULATE_SUMMARY_STD = "Calculate summary standard deviations";
     public static final String CALCULATE_SUMMARY_SUM = "Calculate summary sums";
     public static final String EXPORT_INDIVIDUAL_OBJECTS = "Export individual objects";
@@ -38,7 +41,7 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    public void run(Workspace workspace) throws GenericMIAException {
 
     }
 
@@ -48,7 +51,10 @@ public class OutputControl extends Module {
         parameters.add(
                 new Parameter(SUMMARY_TYPE,Parameter.CHOICE_ARRAY,SummaryTypes.ONE_AVERAGE_PER_FILE,SummaryTypes.ALL));
 
+        parameters.add(new Parameter(SHOW_OBJECT_COUNTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CALCULATE_SUMMARY_MEAN,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CALCULATE_SUMMARY_MIN,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CALCULATE_SUMMARY_MAX,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CALCULATE_SUMMARY_STD,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CALCULATE_SUMMARY_SUM,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(EXPORT_INDIVIDUAL_OBJECTS,Parameter.BOOLEAN,true));
@@ -59,18 +65,16 @@ public class OutputControl extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(EXPORT_SUMMARY));
         if (parameters.getValue(EXPORT_SUMMARY)) {
             returnedParameters.add(parameters.getParameter(SUMMARY_TYPE));
+            returnedParameters.add(parameters.getParameter(SHOW_OBJECT_COUNTS));
             returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MEAN));
+            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MIN));
+            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MAX));
             returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_STD));
             returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_SUM));
         }

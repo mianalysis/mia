@@ -13,6 +13,7 @@ import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -50,7 +51,7 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -94,18 +95,18 @@ public class HoughObjectDetection extends Module {
                     circleHoughTransform.setSampleFraction(sampleFraction);
 
                     // Running the transforms
-                    writeMessage("Running transform (image " + (count) + " of " + total+")",verbose);
+                    writeMessage("Running transform (image " + (count) + " of " + total+")");
                     circleHoughTransform.run();
 
                     // Normalising scores based on the number of points in that circle
-                    writeMessage("Normalising scores (image " + (count) + " of " + total+")",verbose);
+                    writeMessage("Normalising scores (image " + (count) + " of " + total+")");
                         circleHoughTransform.normaliseScores();
 
                     // Getting the accumulator as an image
                     if (showTransformImage) circleHoughTransform.getAccumulatorAsImage().show();
 
                     // Getting circle objects and adding to workspace
-                    writeMessage("Detecting objects (image " + (count++) + " of " + total+")",verbose);
+                    writeMessage("Detecting objects (image " + (count++) + " of " + total+")");
                     ArrayList<double[]> circles = circleHoughTransform.getObjects(detectionThreshold, exclusionRadius);
                     Indexer indexer = new Indexer(ipl.getWidth(), ipl.getHeight());
                     for (double[] circle : circles) {
@@ -141,7 +142,7 @@ public class HoughObjectDetection extends Module {
 
                     }
 
-                    writeMessage(circles.size()+" circles detected in frame C="+c+", Z="+z+", T="+t,verbose);
+                    writeMessage(circles.size()+" circles detected in frame C="+c+", Z="+z+", T="+t);
 
                 }
             }
@@ -155,7 +156,7 @@ public class HoughObjectDetection extends Module {
             IntensityMinMax.run(dispIpl,true);
 
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-            HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"",true);
+            HashMap<Integer,Color> colours = outputObjects.getColours(colourMode,"",true);
 
             HashMap<Integer, String> IDs = null;
             if (showHoughScore) {
@@ -164,7 +165,7 @@ public class HoughObjectDetection extends Module {
             }
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 
-            new AddObjectsOverlay().createOverlay(dispIpl,outputObjects,positionMode,null,hues,IDs,labelSize,1,verbose);
+            new AddObjectsOverlay().createOverlay(dispIpl,outputObjects,positionMode,null,colours,IDs,labelSize,1);
 
             dispIpl.show();
 
@@ -186,11 +187,6 @@ public class HoughObjectDetection extends Module {
         parameters.add(new Parameter(SHOW_HOUGH_SCORE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LABEL_SIZE,Parameter.INTEGER,12));
 
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.SCORE));
     }
 
     @Override
@@ -231,8 +227,11 @@ public class HoughObjectDetection extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        MeasurementReference score = objectMeasurementReferences.get(Measurements.SCORE);
+        objectMeasurementReferences.setAllCalculated(false);
+
+        MeasurementReference score = objectMeasurementReferences.getOrPut(Measurements.SCORE);
         score.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        score.setCalculated(true);
 
         return objectMeasurementReferences;
 

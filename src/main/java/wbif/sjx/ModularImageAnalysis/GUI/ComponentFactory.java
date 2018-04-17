@@ -111,12 +111,12 @@ public class ComponentFactory {
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
 
         } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
-            String[] measurementChoices = modules.getImageMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
+            String[] measurementChoices = modules.getImageMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
         } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
-            String[] measurementChoices = modules.getObjectMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNickNames();
+            String[] measurementChoices = modules.getObjectMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
 
             parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
 
@@ -159,6 +159,7 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         ModuleEnabledCheck enabledCheck = new ModuleEnabledCheck(gui,module);
+        enabledCheck.setEnabled(true);
         modulePanel.add(enabledCheck,c);
 
         // Adding the main module button
@@ -197,7 +198,7 @@ public class ComponentFactory {
 
         // Adding the nickname control to the top of the panel
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
-        if (activeModule.getClass() == InputControl.class) {
+        if (activeModule.getClass() == InputControl.class || activeModule.getClass() == GUISeparator.class) {
             disableableCheck.setEnabled(false);
         }
         paramPanel.add(disableableCheck,c);
@@ -247,18 +248,34 @@ public class ComponentFactory {
 
     }
 
-    public JPanel getSeparator(int panelWidth) {
+    public JPanel getSeparator(Module module, int panelWidth) {
         JPanel panel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weighty = 0;
+        c.weighty = 1;
+        c.anchor = GridBagConstraints.EAST;
 
-        JSeparator separator = new JSeparator();
-        c.insets = new Insets(10,0,0,0);
-        separator.setPreferredSize(new Dimension(panelWidth, 10));
-        panel.add(separator,c);
+        JSeparator separatorLeft = new JSeparator();
+        panel.add(separatorLeft,c);
+
+        JLabel label = new JLabel();
+        label.setText(module.getParameterValue(GUISeparator.TITLE));
+        c.gridx++;
+        panel.add(label,c);
+
+        JSeparator separatorRight = new JSeparator();
+        c.gridx++;
+        panel.add(separatorRight,c);
+
+        panel.setPreferredSize(new Dimension(panelWidth,30));
+
+        int labelWidth = label.getPreferredSize().width;
+        label.setPreferredSize(new Dimension(labelWidth+20,30));
+        label.setHorizontalAlignment(JLabel.CENTER);
+        separatorLeft.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
+        separatorRight.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
 
         return panel;
 
@@ -266,7 +283,7 @@ public class ComponentFactory {
 
     public JPanel createBasicModuleControl(Module module, int panelWidth) {
         // If the module is the special-case GUISeparator, create this module, then return
-        if (module.getClass().isInstance(new GUISeparator())) return getSeparator(panelWidth);
+        if (module.getClass().isInstance(new GUISeparator())) return getSeparator(module, panelWidth);
 
         // Only displaying the module title if it has at least one visible parameter
         boolean hasVisibleParameters = false;
@@ -328,7 +345,7 @@ public class ComponentFactory {
         c.gridy = 0;
         c.insets = new Insets(5,5,0,0);
 
-        JTextField measurementName = new JTextField("            "+measurement.getNickName());
+        JTextField measurementName = new JTextField("            "+measurement.getName());
         measurementName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
         measurementName.setEditable(false);
         measurementName.setBorder(null);

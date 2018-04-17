@@ -125,7 +125,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public Image convertObjectsToImage(String outputName, ImagePlus templateIpl, String colourMode, HashMap<Integer,Float> hues, boolean hideMissing) {
+    public Image convertObjectsToImage(String outputName, ImagePlus templateIpl, String colourMode, HashMap<Integer,Float> hues) {
         ImagePlus ipl;
         int bitDepth = 8;
         switch (colourMode){
@@ -209,7 +209,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 ipl.setPosition(1,zPos+1,tPos+1);
 
                 if (colourMode.equals(ColourModes.SINGLE_COLOUR) | colourMode.equals(ColourModes.RANDOM_COLOUR)) {
-                    ipl.getProcessor().putPixel(x.get(i), y.get(i), (int) Math.round(hues.get(object.getID())*255));
+
+                    ipl.getProcessor().putPixel(x.get(i), y.get(i), Math.round(hues.get(object.getID())*255));
 
                 } else if (colourMode.equals(ColourModes.MEASUREMENT_VALUE) | colourMode.equals(ColourModes.ID)
                         | colourMode.equals(ColourModes.PARENT_ID)) {
@@ -280,7 +281,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public HashMap<Integer,Float> getHue(String colourMode, String source, boolean normalised) {
+    public HashMap<Integer,Float> getHues(String colourMode, String source, boolean normalised) {
         HashMap<Integer,Float> hues = new HashMap<>();
 
         // Getting minimum and maximum values from measurement (if required)
@@ -331,7 +332,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                             break;
                     }
 
-                   break;
+                    break;
 
                 case ColourModes.RANDOM_COLOUR:
                     // Random colours
@@ -370,6 +371,24 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         return hues;
+
+    }
+
+    public HashMap<Integer,Color> getColours(String colourMode, String source, boolean normalised) {
+        HashMap<Integer,Float> hues = getHues(colourMode,source,normalised);
+        HashMap<Integer,Color> colours = new HashMap<>();
+
+        for (int key:hues.keySet()) {
+            if (colourMode.equals(ColourModes.SINGLE_COLOUR) && source.equals(SingleColours.WHITE)) {
+                colours.put(key,Color.getHSBColor(0f,0f,1f));
+            } else if (colourMode.equals(ColourModes.SINGLE_COLOUR) && source.equals(SingleColours.BLACK)) {
+                colours.put(key,Color.getHSBColor(0f,0f,0f));
+            } else {
+                colours.put(key,Color.getHSBColor(hues.get(key),1f,1f));
+            }
+        }
+
+        return colours;
 
     }
 

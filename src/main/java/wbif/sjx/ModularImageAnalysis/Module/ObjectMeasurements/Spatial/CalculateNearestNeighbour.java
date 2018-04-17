@@ -28,7 +28,7 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -115,13 +115,6 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_DISTANCE));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.NN_ID));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
@@ -147,13 +140,17 @@ public class CalculateNearestNeighbour extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference nnDistance = objectMeasurementReferences.get(Measurements.NN_DISTANCE);
+        MeasurementReference nnDistance = objectMeasurementReferences.getOrPut(Measurements.NN_DISTANCE);
         nnDistance.setImageObjName(inputObjectsName);
+        nnDistance.setCalculated(true);
 
-        MeasurementReference nnID = objectMeasurementReferences.get(Measurements.NN_ID);
+        MeasurementReference nnID = objectMeasurementReferences.getOrPut(Measurements.NN_ID);
         nnID.setImageObjName(inputObjectsName);
+        nnID.setCalculated(true);
 
         return objectMeasurementReferences;
 

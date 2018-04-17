@@ -34,7 +34,7 @@ public class RelateObjectsTest {
     @Test
     public void testLinkMatchingIDsOneChild() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -57,7 +57,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.MATCHING_IDS);
 
         // Running RelateObjects
-        relateObjects.run(workspace,false);
+        relateObjects.run(workspace);
 
         // Checking the workspace contains two object sets
         assertEquals("Number of ObjSets in Workspace",2,workspace.getObjects().size());
@@ -100,7 +100,7 @@ public class RelateObjectsTest {
     @Test
     public void testProximityCentroidLink() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -125,7 +125,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,Double.MAX_VALUE);
 
         // Running RelateObjects
-        relateObjects.run(workspace,false);
+        relateObjects.run(workspace);
 
         // Getting expected values
         HashMap<Integer, HashMap<String, Object>> expectedValues = new ExpectedObjects3D().getOtherValues();
@@ -185,7 +185,7 @@ public class RelateObjectsTest {
     @Test
     public void testProximityCentroidLink20px() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -210,7 +210,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,20.0);
 
         // Running RelateObjects
-        relateObjects.run(workspace,false);
+        relateObjects.run(workspace);
 
         // Getting expected values
         HashMap<Integer, HashMap<String, Object>> expectedValues = new ExpectedObjects3D().getOtherValues();
@@ -270,7 +270,7 @@ public class RelateObjectsTest {
     @Test
     public void testProximitySurfaceLink() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -295,7 +295,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,Double.MAX_VALUE);
 
         // Running RelateObjects
-        relateObjects.run(workspace,false);
+        relateObjects.run(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {
@@ -324,7 +324,7 @@ public class RelateObjectsTest {
     @Test
     public void testProximitySurfaceLink5px() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String proxObj1Name = "Prox_obj_1";
@@ -349,7 +349,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,5.0);
 
         // Running RelateObjects
-        relateObjects.run(workspace,false);
+        relateObjects.run(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {

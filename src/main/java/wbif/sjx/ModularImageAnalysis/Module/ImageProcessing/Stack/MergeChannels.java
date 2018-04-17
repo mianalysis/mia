@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
+import ij.plugin.HyperStackConverter;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -148,7 +149,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
         String inputImageRedName = parameters.getValue(INPUT_IMAGE_RED);
         Image inputImageRed = workspace.getImage(inputImageRedName);
@@ -186,11 +187,6 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         parameters.add(new Parameter(INPUT_IMAGE_BLUE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

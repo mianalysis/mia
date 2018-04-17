@@ -89,7 +89,7 @@ public class ManuallyCreateBinaryImage extends Module implements ActionListener 
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Local access to this is required for the action listeners
         this.workspace = workspace;
 
@@ -159,11 +159,6 @@ public class ManuallyCreateBinaryImage extends Module implements ActionListener 
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE, null));
         parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-
     }
 
     @Override

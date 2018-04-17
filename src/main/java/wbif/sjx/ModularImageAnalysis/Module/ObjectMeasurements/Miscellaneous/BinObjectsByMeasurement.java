@@ -30,7 +30,7 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -67,11 +67,6 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.BIN));
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         parameters.updateValueSource(MEASUREMENT,inputObjectsName);
@@ -86,14 +81,18 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        objectMeasurementReferences.setAllCalculated(false);
 
-        String binMeasurementName = parameters.getValue(MEASUREMENT);
-        MeasurementReference binMeasurement = objectMeasurementReferences.get(Measurements.BIN);
-        binMeasurement.setNickName(getFullName(binMeasurementName));
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String measurement = parameters.getValue(MEASUREMENT);
+
+        String name = getFullName(measurement);
+        MeasurementReference binMeasurement = objectMeasurementReferences.getOrPut(name);
         binMeasurement.setImageObjName(inputObjectsName);
+        binMeasurement.setCalculated(true);
 
         return objectMeasurementReferences;
+
     }
 
     @Override

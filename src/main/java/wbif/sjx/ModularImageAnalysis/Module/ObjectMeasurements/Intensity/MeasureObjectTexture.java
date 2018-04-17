@@ -31,7 +31,7 @@ public class MeasureObjectTexture extends Module {
     }
 
 
-    private String getFullName(String imageName, String measurement) {
+    public static String getFullName(String imageName, String measurement) {
         return "TEXTURE//"+imageName+"_"+measurement;
     }
 
@@ -47,7 +47,7 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -69,23 +69,23 @@ public class MeasureObjectTexture extends Module {
             boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
 
             // Getting local object region
-            inputObjects = GetLocalObjectRegion.getLocalRegions(inputObjects, inputObjectsName, radius, calibrated,false,"");
+            inputObjects = new GetLocalObjectRegion().getLocalRegions(inputObjects, inputObjectsName, radius, calibrated,false,"");
 
         }
 
         // Running texture measurement
-        if (verbose) System.out.println("["+moduleName+"] Calculating co-occurance matrix");
-        if (verbose) System.out.println("["+moduleName+"] X-offset: "+xOffs);
-        if (verbose) System.out.println("["+moduleName+"] Y-offset: "+yOffs);
-        if (verbose) System.out.println("["+moduleName+"] Z-offset: "+zOffs);
+        writeMessage("Calculating co-occurance matrix");
+        writeMessage("X-offset: "+xOffs);
+        writeMessage("Y-offset: "+yOffs);
+        writeMessage("Z-offset: "+zOffs);
 
         TextureCalculator textureCalculator = new TextureCalculator();
 
         int nObjects = inputObjects.size();
         int iter = 1;
-        if (verbose) System.out.println("["+moduleName+"] Initialising measurements");
+        writeMessage("Initialising measurements");
         for (Obj object:inputObjects.values()) {
-            if (verbose) System.out.println("["+moduleName+"] Processing object "+(iter++)+" of "+nObjects);
+            writeMessage("Processing object "+(iter++)+" of "+nObjects);
             ArrayList<int[]> coords = new ArrayList<>();
 
             ArrayList<Integer> x = object.getXCoords();
@@ -134,9 +134,6 @@ public class MeasureObjectTexture extends Module {
             }
 
         }
-
-        if (verbose) System.out.println("["+moduleName+"] Measurements complete");
-
     }
 
     @Override
@@ -149,15 +146,6 @@ public class MeasureObjectTexture extends Module {
         parameters.add(new Parameter(X_OFFSET, Parameter.INTEGER,1));
         parameters.add(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
         parameters.add(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
 
     }
 
@@ -188,24 +176,30 @@ public class MeasureObjectTexture extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        MeasurementReference asm = objectMeasurementReferences.get(Measurements.ASM);
+        String name = getFullName(inputImageName,Measurements.ASM);
+        MeasurementReference asm = objectMeasurementReferences.getOrPut(name);
         asm.setImageObjName(inputObjectsName);
-        asm.setNickName(getFullName(inputImageName,Measurements.ASM));
+        asm.setCalculated(true);
 
-        MeasurementReference contrast = objectMeasurementReferences.get(Measurements.CONTRAST);
+        name = getFullName(inputImageName,Measurements.CONTRAST);
+        MeasurementReference contrast = objectMeasurementReferences.getOrPut(name);
         contrast.setImageObjName(inputObjectsName);
-        contrast.setNickName(getFullName(inputImageName,Measurements.CONTRAST));
+        contrast.setCalculated(true);
 
-        MeasurementReference correlation = objectMeasurementReferences.get(Measurements.CORRELATION);
+        name = getFullName(inputImageName,Measurements.CORRELATION);
+        MeasurementReference correlation = objectMeasurementReferences.getOrPut(name);
         correlation.setImageObjName(inputObjectsName);
-        correlation.setNickName(getFullName(inputImageName,Measurements.CORRELATION));
+        correlation.setCalculated(true);
 
-        MeasurementReference entropy = objectMeasurementReferences.get(Measurements.ENTROPY);
+        name = getFullName(inputImageName,Measurements.ENTROPY);
+        MeasurementReference entropy = objectMeasurementReferences.getOrPut(name);
         entropy.setImageObjName(inputObjectsName);
-        entropy.setNickName(getFullName(inputImageName,Measurements.ENTROPY));
+        entropy.setCalculated(true);
 
         return objectMeasurementReferences;
 

@@ -26,7 +26,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMeasurementsLargerThan() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -45,7 +45,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -56,7 +56,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMeasurementsSmallerThan() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -75,7 +75,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -86,7 +86,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMissingMeasurement() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -105,7 +105,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -116,7 +116,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunObjectsOnImageEdge() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -140,7 +140,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_IMAGE,"Test_image");
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -151,7 +151,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunObjectsOnImageEdgeIgnoreZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -176,7 +176,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,false);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -187,7 +187,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunObjectsOnImageEdgeIncludeZ() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -212,7 +212,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,true);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -223,7 +223,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMinimumNumberOfChildren() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -261,7 +261,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,2d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -272,7 +272,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMaximumNumberOfChildren() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -300,7 +300,7 @@ public class FilterObjectsTest {
             }
 
             counter++;
-            
+
         }
 
         // Initialising FilterObjects module
@@ -311,7 +311,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,2d);
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -322,7 +322,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunMissingParent() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -356,7 +356,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -367,7 +367,7 @@ public class FilterObjectsTest {
     @Test
     public void testRunWithParent() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -401,7 +401,7 @@ public class FilterObjectsTest {
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");
 
         // Running the module
-        filterObjects.run(workspace,false);
+        filterObjects.run(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));

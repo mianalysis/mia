@@ -28,7 +28,7 @@ public class ProjectObjectsTest {
     @Test
     public void testRun() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Input objects";
@@ -48,7 +48,7 @@ public class ProjectObjectsTest {
         projectObjects.updateParameterValue(ProjectObjects.OUTPUT_OBJECTS,outputObjectsName);
 
         // Running ProjectObjects
-        projectObjects.run(workspace,false);
+        projectObjects.run(workspace);
 
         // Testing there are now 2 sets of objects in the workspace and they have the expected names
         assertEquals(2,workspace.getObjects().size());

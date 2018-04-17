@@ -199,7 +199,7 @@ public class FilterObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -279,11 +279,6 @@ public class FilterObjects extends Module {
         parameters.add(new Parameter(REFERENCE_VAL_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(REFERENCE_MEASUREMENT, Parameter.IMAGE_MEASUREMENT, "",""));
         parameters.add(new Parameter(REFERENCE_MULTIPLIER, Parameter.DOUBLE, 1d));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

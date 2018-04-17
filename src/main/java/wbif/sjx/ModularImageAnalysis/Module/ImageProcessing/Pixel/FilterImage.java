@@ -28,6 +28,7 @@ public class FilterImage extends Module {
     public static final String FILTER_RADIUS = "Filter radius";
     public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String ROLLING_METHOD = "Rolling filter method";
+    public static final String WINDOW_MODE = "Window mode";
     public static final String WINDOW_HALF_WIDTH = "Window half width (frames)";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -53,6 +54,15 @@ public class FilterImage extends Module {
         String MAXIMUM = "Maximum";
 
         String[] ALL = new String[]{AVERAGE,MINIMUM,MAXIMUM};
+
+    }
+
+    public interface WindowModes {
+        String BOTH_SIDES = "Both sides";
+        String PREVIOUS = "Previous only";
+        String FUTURE = "Future only";
+
+        String[] ALL = new String[]{BOTH_SIDES,PREVIOUS,FUTURE};
 
     }
 
@@ -122,35 +132,32 @@ public class FilterImage extends Module {
 
     }
 
-    public static ImagePlus runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod) {
-        // Creating new hyperstack
-        String type = "8-bit";
-        switch (inputImagePlus.getBitDepth()) {
-            case 8:
-                type = "8-bit";
-                break;
-
-            case 16:
-                type = "16-bit";
-                break;
-
-            case 32:
-                type = "32-bit";
-                break;
-        }
-
-        int width = inputImagePlus.getWidth();
-        int height = inputImagePlus.getHeight();
+    public static void runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod, String windowMode) {
         int nChannels = inputImagePlus.getNChannels();
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
 
-        ImagePlus outputImagePlus = IJ.createImage(inputImagePlus.getTitle(),type,width,height,nChannels,nSlices,nFrames);
-
         // Running through each frame, calculating the local average
-        for (int f=1;f<=nFrames;f++) {
-            int firstFrame = Math.max(1,f-windowHalfWidth);
-            int lastFrame = Math.min(nFrames,f+windowHalfWidth);
+        for (int f=1;f<=inputImagePlus.getNFrames();f++) {
+            int firstFrame = 0;
+            int lastFrame = 0;
+
+            switch (windowMode) {
+                case WindowModes.BOTH_SIDES:
+                    firstFrame = Math.max(1,f-windowHalfWidth);
+                    lastFrame = Math.min(nFrames,f+windowHalfWidth);
+                    break;
+
+                case WindowModes.PREVIOUS:
+                    firstFrame = Math.max(1,f-windowHalfWidth);
+                    lastFrame = Math.min(nFrames,f);
+                    break;
+
+                case WindowModes.FUTURE:
+                    firstFrame = Math.max(1,f);
+                    lastFrame = Math.min(nFrames,f+windowHalfWidth);
+                    break;
+            }
 
             // Creating a local substack
             ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,"1-"+nChannels,
@@ -186,18 +193,16 @@ public class FilterImage extends Module {
             // Adding the new image into outputImagePlus
             for (int z = 1; z <= iplOut.getNSlices(); z++) {
                 for (int c = 1; c <= iplOut.getNChannels(); c++) {
-                    outputImagePlus.setPosition(c,z,f);
+                    inputImagePlus.setPosition(c,z,f);
                     iplOut.setPosition(c,z,1);
 
-                    outputImagePlus.setProcessor(iplOut.getProcessor());
+                    inputImagePlus.setProcessor(iplOut.getProcessor());
 
                 }
             }
         }
 
-        outputImagePlus.setPosition(1,1,1);
-
-        return outputImagePlus;
+        inputImagePlus.setPosition(1,1,1);
 
     }
 
@@ -212,7 +217,7 @@ public class FilterImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -226,6 +231,7 @@ public class FilterImage extends Module {
         boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         String rollingMethod = parameters.getValue(ROLLING_METHOD);
         int windowHalfWidth = parameters.getValue(WINDOW_HALF_WIDTH);
+        String windowMode = parameters.getValue(WINDOW_MODE);
 
         if (calibratedUnits) {
             filterRadius = inputImagePlus.getCalibration().getRawX(filterRadius);
@@ -237,56 +243,47 @@ public class FilterImage extends Module {
         // Applying smoothing filter
         switch (filterMode) {
             case FilterModes.DOG2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D difference of Gaussian filter (radius = " + filterRadius + " px)");
                 DoG.run(inputImagePlus,filterRadius,true);
                 break;
 
             case FilterModes.GAUSSIAN2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D Gaussian filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D Gaussian filter (radius = " + filterRadius + " px)");
                 runGaussian2DFilter(inputImagePlus,filterRadius);
                 break;
 
             case FilterModes.GAUSSIAN3D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 3D Gaussian filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 3D Gaussian filter (radius = " + filterRadius + " px)");
                 GaussianBlur3D.blur(inputImagePlus,filterRadius,filterRadius,filterRadius);
                 break;
 
             case FilterModes.GRADIENT2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D Gradient filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D Gradient filter (radius = " + filterRadius + " px)");
                     runGradient2DFilter(inputImagePlus,filterRadius);
                 break;
 
             case FilterModes.MEDIAN2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D median filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D median filter (radius = " + filterRadius + " px)");
                 applyRankFilterToStack(inputImagePlus,RankFilters.MEDIAN,filterRadius);
                 break;
 
             case FilterModes.MEDIAN3D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 3D median filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 3D median filter (radius = " + filterRadius + " px)");
                 runMedian3DFilter(inputImagePlus,(float) filterRadius);
                 break;
 
             case FilterModes.RIDGE_ENHANCEMENT:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 3D median filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 3D median filter (radius = " + filterRadius + " px)");
                 RidgeEnhancement.run(inputImagePlus,(float) filterRadius, true);
                 break;
 
             case FilterModes.ROLLING_FRAME:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
-                inputImagePlus = runRollingFrameFilter(inputImagePlus,windowHalfWidth,rollingMethod);
+                writeMessage("Applying rolling frame filter (window half width = "+windowHalfWidth+" frames)");
+                runRollingFrameFilter(inputImagePlus,windowHalfWidth,rollingMethod,windowMode);
                 break;
 
             case FilterModes.VARIANCE2D:
-                if (verbose) System.out.println("[" + moduleName + "] " +
-                        "Applying 2D variance filter (radius = " + filterRadius + " px)");
+                writeMessage("Applying 2D variance filter (radius = " + filterRadius + " px)");
                 applyRankFilterToStack(inputImagePlus,RankFilters.VARIANCE,filterRadius);
                 break;
 
@@ -326,12 +323,8 @@ public class FilterImage extends Module {
         parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(ROLLING_METHOD, Parameter.CHOICE_ARRAY,RollingMethods.AVERAGE,RollingMethods.ALL));
         parameters.add(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
+        parameters.add(new Parameter(WINDOW_MODE,Parameter.CHOICE_ARRAY,WindowModes.BOTH_SIDES,WindowModes.ALL));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 
@@ -353,6 +346,7 @@ public class FilterImage extends Module {
         } else {
             returnedParameters.add(parameters.getParameter(ROLLING_METHOD));
             returnedParameters.add(parameters.getParameter(WINDOW_HALF_WIDTH));
+            returnedParameters.add(parameters.getParameter(WINDOW_MODE));
 
         }
 

@@ -2,7 +2,7 @@ ModularImageAnalysis
 ====================
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1201372.svg)](https://doi.org/10.5281/zenodo.1201320)
 
-This ImageJ/Fiji plugin provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.  Development of this plugin is ongoing.
+This ImageJ/Fiji plugin provides a modular framework for assembling image and object analysis pipelines.  Detected objects can be transformed, filtered, measured and related.
 
 
 Installation
@@ -34,6 +34,10 @@ Usage
 > - Checkboxes to the right of each module determine if they are visible in the basic view (default view)
 > - Input files and folders are specified using the "Input control" and Excel file export is configured in the "Output control"
 
+Note
+----
+This plugin is still in development and test coverage is currently incomplete.  Please keep an eye on results and add an [issue](https://github.com/SJCross/ModularImageAnalysis/issues) if any problems are encountered.
+
 Acknowledgements
 ----------------
 The plugin makes use of a combination of plugins packaged with Fiji as well as others that can be installed via the updater.
@@ -43,6 +47,7 @@ Required plugins pre-packaged with Fiji:
 - [BioFormats](https://github.com/openmicroscopy/bioformats)
 - [Correct Bleach](https://github.com/fiji/CorrectBleach)
 - [TrackMate](https://github.com/fiji/TrackMate)
+- [Weka Trainable Segmentation](https://github.com/fiji/Trainable_Segmentation)
 
 Required plugins that need installing via the Fiji updater:
 - [Ridge Detection](https://github.com/thorstenwagner/ij-ridgedetection)

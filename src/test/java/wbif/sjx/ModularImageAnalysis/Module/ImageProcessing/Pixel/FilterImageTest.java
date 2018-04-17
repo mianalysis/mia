@@ -33,7 +33,7 @@ public class FilterImageTest {
     @Test
     public void testRunGaussian2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -58,7 +58,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -98,7 +98,7 @@ public class FilterImageTest {
     @Test
     public void testRunGaussian2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -124,7 +124,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -169,7 +169,7 @@ public class FilterImageTest {
     @Test
     public void testRunGaussian3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -194,7 +194,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -234,7 +234,7 @@ public class FilterImageTest {
     @Test
     public void testRunGaussian3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -260,7 +260,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -301,7 +301,7 @@ public class FilterImageTest {
     @Test
     public void testRunMedian2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -326,7 +326,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -366,7 +366,7 @@ public class FilterImageTest {
     @Test
     public void testRunMedian2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -392,7 +392,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -437,7 +437,7 @@ public class FilterImageTest {
     @Test
     public void testRunMedian3DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -462,7 +462,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -502,7 +502,7 @@ public class FilterImageTest {
     @Test @Ignore
     public void testRunMedian3DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -532,7 +532,7 @@ public class FilterImageTest {
         new ImageJ();
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -595,7 +595,7 @@ public class FilterImageTest {
     @Test
     public void testRunVariance2DFilter2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -620,7 +620,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -660,7 +660,7 @@ public class FilterImageTest {
     @Test
     public void testRunVariance2DFilter5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -686,7 +686,7 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running BinaryOperations
-        filterImage.run(workspace,false);
+        filterImage.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

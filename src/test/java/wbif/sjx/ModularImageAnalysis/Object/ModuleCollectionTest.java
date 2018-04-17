@@ -67,14 +67,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureImageIntensity.Measurements.MAX};
 
         for (String expectedName1:expectedNames1) {
-            boolean found = false;
-            for (MeasurementReference reference1:references1){
-                if (reference1.getName().equals(expectedName1)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references1.containsKey(expectedName1));
         }
 
         // Checking the values for "New_image"
@@ -90,14 +83,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureImageTexture.Measurements.ENTROPY};
 
         for (String expectedName2:expectedNames2) {
-            boolean found = false;
-            for (MeasurementReference reference2:references2){
-                if (reference2.getName().equals(expectedName2)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references2.containsKey(expectedName2));
         }
     }
 
@@ -144,14 +130,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureImageIntensity.Measurements.MAX};
 
         for (String expectedName1:expectedNames1) {
-            boolean found = false;
-            for (MeasurementReference reference1:references1){
-                if (reference1.getName().equals(expectedName1)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references1.containsKey(expectedName1));
         }
 
         // Checking the values for "New_image"
@@ -179,6 +158,9 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_CONVEX_HULL,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_ELLIPSOID,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
         modules.add(measureObjectShape);
 
@@ -204,25 +186,18 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureObjectCentroid.Measurements.MEAN_X_CAL,
                 MeasureObjectCentroid.Measurements.MEAN_Y_CAL,
                 MeasureObjectCentroid.Measurements.MEAN_Z_CAL,
-                MeasureObjectTexture.Measurements.ASM,
-                MeasureObjectTexture.Measurements.CONTRAST,
-                MeasureObjectTexture.Measurements.CORRELATION,
-                MeasureObjectTexture.Measurements.ENTROPY};
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ASM),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CONTRAST),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CORRELATION),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ENTROPY)};
 
         for (String expectedName1:expectedNames1) {
-            boolean found = false;
-            for (MeasurementReference reference1:references1){
-                if (reference1.getName().equals(expectedName1)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references1.containsKey(expectedName1));
         }
 
         // Checking the values for the second object set
         MeasurementReferenceCollection references2 = modules.getObjectMeasurementReferences(obj2Name);
-        assertEquals(4,references2.size());
+        assertEquals(5,references2.size());
 
         String[] expectedNames2 = new String[]{MeasureObjectShape.Measurements.PROJ_DIA_CAL,
                 MeasureObjectShape.Measurements.PROJ_DIA_PX,
@@ -230,14 +205,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureObjectShape.Measurements.VOLUME_CAL};
 
         for (String expectedName2:expectedNames2) {
-            boolean found = false;
-            for (MeasurementReference reference2:references2){
-                if (reference2.getName().equals(expectedName2)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references2.containsKey(expectedName2));
         }
     }
 
@@ -260,6 +228,9 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_CONVEX_HULL,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_ELLIPSOID,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
         modules.add(measureObjectShape);
 
@@ -287,14 +258,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
                 MeasureObjectCentroid.Measurements.MEAN_Z_CAL};
 
         for (String expectedName1:expectedNames1) {
-            boolean found = false;
-            for (MeasurementReference reference1:references1){
-                if (reference1.getName().equals(expectedName1)) {
-                    found = true;
-                    break;
-                }
-            }
-            assertTrue(found);
+            assertTrue(references1.containsKey(expectedName1));
         }
 
         // Checking the values for the second object set
@@ -322,6 +286,9 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_CONVEX_HULL,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_ELLIPSOID,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
         modules.add(measureObjectShape);
 
@@ -343,12 +310,15 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         // Getting expected values
         LinkedHashSet<Parameter> expectedParams = new LinkedHashSet<>();
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_VOLUME,Parameter.BOOLEAN,true));
+        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_CONVEX_HULL,Parameter.BOOLEAN,false));
+        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_ELLIPSOID,Parameter.BOOLEAN,false));
+        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,Parameter.BOOLEAN,false));
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_DIA,Parameter.BOOLEAN,true));
         expectedParams.add(new Parameter(MeasureObjectTexture.POINT_MEASUREMENT,Parameter.BOOLEAN,true));
         expectedParams.add(new Parameter(MeasureObjectTexture.CALIBRATED_RADIUS,Parameter.BOOLEAN,false));
 
         // Checking the parameters are what are expected
-        assertEquals(4,actualParams.size());
+        assertEquals(7,actualParams.size());
 
         for (Parameter actualParam:actualParams) {
             boolean found = false;
@@ -382,6 +352,9 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_CONVEX_HULL,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_ELLIPSOID,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
         modules.add(measureObjectShape);
 
@@ -403,10 +376,13 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         // Getting expected values
         LinkedHashSet<Parameter> expectedParams = new LinkedHashSet<>();
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_VOLUME,Parameter.BOOLEAN,true));
+        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_CONVEX_HULL,Parameter.BOOLEAN,false));
+        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_ELLIPSOID,Parameter.BOOLEAN,false));
+        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,Parameter.BOOLEAN,false));
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_DIA,Parameter.BOOLEAN,true));
 
         // Checking the parameters are what are expected
-        assertEquals(2,actualParams.size());
+        assertEquals(5,actualParams.size());
 
         for (Parameter actualParam:actualParams) {
             boolean found = false;

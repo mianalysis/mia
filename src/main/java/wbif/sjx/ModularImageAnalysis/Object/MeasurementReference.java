@@ -7,47 +7,43 @@ public class MeasurementReference extends Reference {
     private boolean calculated = true;
     private boolean exportable = true;
     private String imageObjName = "";
-    private String nickName;
 
 
     public MeasurementReference(String name) {
         super(name);
+    }
 
-        this.nickName = name;
-
+    public MeasurementReference(String name, String imageObjName) {
+        super(name);
+        this.imageObjName = imageObjName;
     }
 
     public boolean isCalculated() {
         return calculated;
     }
 
-    public void setCalculated(boolean calculated) {
+    public MeasurementReference setCalculated(boolean calculated) {
         this.calculated = calculated;
+        return this;
     }
 
     public boolean isExportable() {
         return exportable;
     }
 
-    public void setExportable(boolean exportable) {
+    public MeasurementReference setExportable(boolean exportable) {
         this.exportable = exportable;
+        return this;
     }
 
     public String getImageObjName() {
         return imageObjName;
     }
 
-    public void setImageObjName(String imageObjName) {
+    public MeasurementReference setImageObjName(String imageObjName) {
         this.imageObjName = imageObjName;
-    }
+        return this;
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-
-    }
-
-    public String getNickName() {
-        return nickName;
     }
 
     @Override

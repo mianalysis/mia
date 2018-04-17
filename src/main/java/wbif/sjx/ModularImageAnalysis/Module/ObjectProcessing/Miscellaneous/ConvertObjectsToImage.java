@@ -2,13 +2,14 @@
 // TODO: For image to objects, could create parent object for all instances of that image ID in different frames
 // TODO: Colour based on parent measurement
 
-package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
+package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous;
 
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Object.LUTs;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 /**
  * Created by sc13967 on 04/05/2017.
  */
-public class ShowObjects extends Module {
+public class ConvertObjectsToImage extends Module {
     public static final String CONVERSION_MODE = "Conversion mode";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
@@ -29,7 +30,6 @@ public class ShowObjects extends Module {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT = "Measurement";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
-    public static final String HIDE_IF_MISSING_PARENT = "Hide points without a parent";
     public static final String SHOW_IMAGE = "Show image";
 
     public interface ConversionModes {
@@ -44,7 +44,7 @@ public class ShowObjects extends Module {
 
     @Override
     public String getTitle() {
-        return "Show objects";
+        return "Convert objects to image";
 
     }
 
@@ -54,7 +54,7 @@ public class ShowObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         String conversionMode = parameters.getValue(CONVERSION_MODE);
 
         if (conversionMode.equals(ConversionModes.IMAGE_TO_OBJECTS)) {
@@ -75,7 +75,6 @@ public class ShowObjects extends Module {
             String measurementForColour = parameters.getValue(MEASUREMENT);
             String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
             boolean showImage = parameters.getValue(SHOW_IMAGE);
-            boolean hideMissing = parameters.getValue(HIDE_IF_MISSING_PARENT);
 
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
@@ -90,9 +89,9 @@ public class ShowObjects extends Module {
                     sourceColour = parentForColour;
                     break;
             }
-            HashMap<Integer, Float> hues = inputObjects.getHue(colourMode, sourceColour,false);
+            HashMap<Integer, Float> hues = inputObjects.getHues(colourMode, sourceColour,false);
 
-            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage.getImagePlus(), colourMode,hues,hideMissing);
+            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage.getImagePlus(), colourMode,hues);
 
             // Applying spatial calibration from template image
             Calibration calibration = templateImage.getImagePlus().getCalibration();
@@ -139,13 +138,7 @@ public class ShowObjects extends Module {
         parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
         parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(HIDE_IF_MISSING_PARENT,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 
@@ -176,7 +169,6 @@ public class ShowObjects extends Module {
             } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
                 // Use Parent ID
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                returnedParameters.add(parameters.getParameter(HIDE_IF_MISSING_PARENT));
 
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);

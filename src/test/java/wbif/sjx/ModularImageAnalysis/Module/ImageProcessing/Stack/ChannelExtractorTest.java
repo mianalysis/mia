@@ -24,7 +24,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun8bit5DChannel1() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -49,7 +49,7 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
-        channelExtractor.run(workspace,false);
+        channelExtractor.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -88,7 +88,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun8bit5DChannel2() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -113,7 +113,7 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
-        channelExtractor.run(workspace,false);
+        channelExtractor.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -152,7 +152,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun16bit5DChannel1() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -177,7 +177,7 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
-        channelExtractor.run(workspace,false);
+        channelExtractor.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -216,7 +216,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun16bit5DChannel2() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -241,7 +241,7 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
-        channelExtractor.run(workspace,false);
+        channelExtractor.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -280,7 +280,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun32bit5DChannel1() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -305,7 +305,7 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
-        channelExtractor.run(workspace,false);
+        channelExtractor.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -344,7 +344,7 @@ public class ChannelExtractorTest {
     @Test
     public void testRun32bit5DChannel2() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -369,7 +369,7 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
-        channelExtractor.run(workspace,false);
+        channelExtractor.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

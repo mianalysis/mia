@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 27/02/2018.
  */
 public class ManuallyIdentifyObjects extends Module implements ActionListener {
-    private JFrame frame = new JFrame();
+    private JFrame frame;
     private JTextField objectNumberField;
 
     private Workspace workspace;
@@ -58,6 +58,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     private void showOptionsPanel() {
         GridLayout gridLayout = new GridLayout(0, 1);
+        frame = new JFrame();
         frame.setLayout(gridLayout);
 
         // Header panel
@@ -119,7 +120,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Local access to this is required for the action listeners
         this.workspace = workspace;
 
@@ -166,11 +167,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 
@@ -264,6 +260,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             case (FINISH):
                 frame.dispose();
                 frame = null;
+                displayImagePlus.close();
 
                 break;
         }

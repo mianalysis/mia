@@ -65,6 +65,9 @@ public class AnalysisHandler {
         fileDialog.setMultipleMode(false);
         fileDialog.setVisible(true);
 
+        // If no file was selected quit the method
+        if (fileDialog.getFiles().length==0) return;
+
         String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
         if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
             outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
@@ -153,6 +156,13 @@ public class AnalysisHandler {
                     module.setNickname(moduleNickname);
                 } else {
                     module.setNickname(module.getTitle());
+                }
+
+                if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
+                    String isDisableable = moduleAttributes.getNamedItem("DISABLEABLE").getNodeValue();
+                    module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
+                } else {
+                    module.setCanBeDisabled(false);
                 }
 
                 NodeList moduleChildNodes = moduleNode.getChildNodes();
@@ -283,7 +293,7 @@ public class AnalysisHandler {
 
             } catch (NullPointerException e) {
                 System.err.println("Module \""+module.getTitle()
-                        +"\" parameter \""+parameterName + "\" not set");
+                        +"\" parameter \""+parameterName + "\" ("+parameterValue+") not set");
 
             }
         }
@@ -299,7 +309,6 @@ public class AnalysisHandler {
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
             String measurementName = attributes.getNamedItem("NAME").getNodeValue();
-            boolean isCalulated = Boolean.parseBoolean(attributes.getNamedItem("IS_CALCULATED").getNodeValue());
             boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
             String type = attributes.getNamedItem("TYPE").getNodeValue();
             String imageObjectName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
@@ -320,7 +329,6 @@ public class AnalysisHandler {
             if (measurementReference == null) continue;
 
             // Updating the reference's parameters
-            measurementReference.setCalculated(isCalulated);
             measurementReference.setExportable(isExportable);
             measurementReference.setImageObjName(imageObjectName);
 
@@ -349,7 +357,10 @@ public class AnalysisHandler {
         boolean exportXLSX = outputControl.isEnabled();
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
+        boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
         boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
+        boolean calculateMin = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MIN);
+        boolean calculateMax = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MAX);
         boolean calculateStd = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_STD);
         boolean calculateSum = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_SUM);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
@@ -366,7 +377,8 @@ public class AnalysisHandler {
                 }
 
                 inputFile = new File(singleFile);
-                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath())
+                        + analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
                 break;
 
             case InputControl.InputModes.BATCH:
@@ -390,7 +402,10 @@ public class AnalysisHandler {
         Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
         if (exporter != null) {
             exporter.setExportSummary(exportSummary);
+            exporter.setShowObjectCounts(showObjectCounts);
             exporter.setCalculateMean(calculateMean);
+            exporter.setCalculateMin(calculateMin);
+            exporter.setCalculateMax(calculateMax);
             exporter.setCalculateStd(calculateStd);
             exporter.setCalculateSum(calculateSum);
             exporter.setExportIndividualObjects(exportIndividualObjects);

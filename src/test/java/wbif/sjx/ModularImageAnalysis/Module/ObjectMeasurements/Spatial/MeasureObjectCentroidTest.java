@@ -24,7 +24,7 @@ public class MeasureObjectCentroidTest {
     @Test
     public void calculateCentroidMean() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -43,7 +43,7 @@ public class MeasureObjectCentroidTest {
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.CENTROID_METHOD,MeasureObjectCentroid.Methods.MEAN);
 
         // Running MeasureObjectCentroid
-        measureObjectCentroid.run(workspace,false);
+        measureObjectCentroid.run(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -66,7 +66,7 @@ public class MeasureObjectCentroidTest {
     @Test
     public void calculateCentroidMedian() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test_objects";
@@ -85,7 +85,7 @@ public class MeasureObjectCentroidTest {
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.CENTROID_METHOD,MeasureObjectCentroid.Methods.MEDIAN);
 
         // Running MeasureObjectCentroid
-        measureObjectCentroid.run(workspace,false);
+        measureObjectCentroid.run(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {

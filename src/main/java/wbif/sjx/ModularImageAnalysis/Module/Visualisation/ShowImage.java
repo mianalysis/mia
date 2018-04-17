@@ -24,7 +24,7 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         String imageName = parameters.getValue(DISPLAY_IMAGE);
         ImagePlus imageToShow = workspace.getImage(imageName).getImagePlus();
         imageToShow = new Duplicator().run(imageToShow);
@@ -37,11 +37,6 @@ public class ShowImage extends Module {
     @Override
     public void initialiseParameters() {
         parameters.add(new Parameter(DISPLAY_IMAGE, Parameter.INPUT_IMAGE,null));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

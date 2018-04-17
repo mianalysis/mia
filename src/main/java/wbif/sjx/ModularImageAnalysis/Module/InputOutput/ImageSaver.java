@@ -43,7 +43,7 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String saveLocation = parameters.getValue(SAVE_LOCATION);
@@ -89,6 +89,7 @@ public class ImageSaver extends Module {
                 new File(mirroredDirectoryRoot+"\\"+sb).mkdirs();
 
                 String path = mirroredDirectoryRoot+"\\"+sb+FilenameUtils.removeExtension(rootFile.getName());
+                path = path + "_S" + workspace.getMetadata().getSeriesNumber();
                 path = path + suffix + ".tif";
                 IJ.save(inputImagePlus,path);
                 break;
@@ -96,12 +97,14 @@ public class ImageSaver extends Module {
             case SaveLocations.SAVE_WITH_INPUT:
                 rootFile = workspace.getMetadata().getFile();
                 path = rootFile.getParent()+ "\\"+FilenameUtils.removeExtension(rootFile.getName());
+                path = path + "_S" + workspace.getMetadata().getSeriesNumber();
                 path = path + suffix + ".tif";
                 IJ.save(inputImagePlus,path);
                 break;
 
             case SaveLocations.SPECIFIC_LOCATION:
                 path = FilenameUtils.removeExtension(filePath);
+                path = path + "_S" + workspace.getMetadata().getSeriesNumber();
                 path = path + suffix + ".tif";
                 IJ.save(inputImagePlus,path);
                 break;
@@ -112,16 +115,11 @@ public class ImageSaver extends Module {
     @Override
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.MIRRORED_DIRECTORY,SaveLocations.ALL));
+        parameters.add(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
         parameters.add(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FOLDER_PATH,""));
         parameters.add(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
         parameters.add(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
         parameters.add(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

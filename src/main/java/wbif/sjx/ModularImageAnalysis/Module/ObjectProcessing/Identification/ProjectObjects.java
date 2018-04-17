@@ -65,7 +65,7 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
@@ -86,11 +86,6 @@ public class ProjectObjects extends Module {
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

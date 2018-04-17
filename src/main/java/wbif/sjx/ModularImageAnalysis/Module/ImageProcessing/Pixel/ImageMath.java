@@ -22,11 +22,10 @@ public class ImageMath extends Module {
     public interface CalculationTypes {
         String ADD = "Add";
         String DIVIDE = "Divide";
-        String INVERT = "Invert";
         String MULTIPLY = "Multiply";
         String SUBTRACT = "Subtract";
 
-        String[] ALL = new String[]{ADD,DIVIDE,INVERT,MULTIPLY,SUBTRACT};
+        String[] ALL = new String[]{ADD,DIVIDE,MULTIPLY,SUBTRACT};
 
     }
 
@@ -36,6 +35,42 @@ public class ImageMath extends Module {
 
         String[] ALL = new String[]{FIXED,MEASUREMENT};
 
+    }
+
+    public static void process(ImagePlus inputImagePlus, String calculationType, double mathValue) {
+        int nChannels = inputImagePlus.getNChannels();
+        int nSlices = inputImagePlus.getNSlices();
+        int nFrames = inputImagePlus.getNFrames();
+
+        // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
+        for (int z = 1; z <= nSlices; z++) {
+            for (int c = 1; c <= nChannels; c++) {
+                for (int t = 1; t <= nFrames; t++) {
+                    inputImagePlus.setPosition(c, z, t);
+
+                    switch (calculationType) {
+                        case CalculationTypes.ADD:
+                            inputImagePlus.getProcessor().add(mathValue);
+                            break;
+
+                        case CalculationTypes.DIVIDE:
+                            inputImagePlus.getProcessor().multiply(1 / mathValue);
+                            break;
+
+                        case CalculationTypes.MULTIPLY:
+                            inputImagePlus.getProcessor().multiply(mathValue);
+                            break;
+
+                        case CalculationTypes.SUBTRACT:
+                            inputImagePlus.getProcessor().subtract(mathValue);
+                            break;
+
+                    }
+                }
+            }
+        }
+
+        inputImagePlus.setPosition(1, 1, 1);
     }
 
     @Override
@@ -49,7 +84,7 @@ public class ImageMath extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -67,55 +102,14 @@ public class ImageMath extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        if (calculationType.equals(CalculationTypes.INVERT)) {
-            InvertIntensity.process(inputImagePlus);
-        } else {
-
-            // Updating value if taken from a measurement
-            switch (valueSource) {
-                case ValueSources.MEASUREMENT:
-                    mathValue = inputImage.getMeasurement(measurement).getValue();
-                    break;
-            }
-
-            int nChannels = inputImagePlus.getNChannels();
-            int nSlices = inputImagePlus.getNSlices();
-            int nFrames = inputImagePlus.getNFrames();
-
-            // Checking the number of dimensions.  If a dimension of image2 is 1 this dimension is used for all images.
-            for (int z = 1; z <= nSlices; z++) {
-                for (int c = 1; c <= nChannels; c++) {
-                    for (int t = 1; t <= nFrames; t++) {
-                        inputImagePlus.setPosition(c, z, t);
-
-                        switch (calculationType) {
-                            case CalculationTypes.ADD:
-                                inputImagePlus.getProcessor().add(mathValue);
-                                break;
-
-                            case CalculationTypes.DIVIDE:
-                                inputImagePlus.getProcessor().multiply(1 / mathValue);
-                                break;
-
-//                        case CalculationTypes.INVERT:
-//                            inputImagePlus.getProcessor().invert();
-//                            break;
-
-                            case CalculationTypes.MULTIPLY:
-                                inputImagePlus.getProcessor().multiply(mathValue);
-                                break;
-
-                            case CalculationTypes.SUBTRACT:
-                                inputImagePlus.getProcessor().subtract(mathValue);
-                                break;
-
-                        }
-                    }
-                }
-            }
-
-            inputImagePlus.setPosition(1, 1, 1);
+        // Updating value if taken from a measurement
+        switch (valueSource) {
+            case ValueSources.MEASUREMENT:
+                mathValue = inputImage.getMeasurement(measurement).getValue();
+                break;
         }
+
+        process(inputImagePlus,calculationType,mathValue);
 
         // If selected, displaying the image
         if (showImage) {
@@ -124,7 +118,7 @@ public class ImageMath extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
+            writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
@@ -143,11 +137,6 @@ public class ImageMath extends Module {
         parameters.add(new Parameter(MEASUREMENT,Parameter.IMAGE_MEASUREMENT,null));
         parameters.add(new Parameter(MATH_VALUE,Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

@@ -21,11 +21,6 @@ public class WiderDropDownCombo extends JComboBox {
         super(objs);
     }
 
-    public WiderDropDownCombo(List<Object> objs) {
-        super(new Object[]{0});
-        addItem(objs);
-    }
-
     public boolean isWide() {
         return wide;
     }

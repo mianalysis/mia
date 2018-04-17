@@ -24,7 +24,7 @@ public class MergeObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
         ObjCollection inputObjects1 = workspace.getObjectSet(inputObjects1Name);
@@ -79,11 +79,6 @@ public class MergeObjects extends Module {
         parameters.add(new Parameter(INPUT_OBJECTS_2,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
         parameters.add(new Parameter(DELETE_INPUTS,Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

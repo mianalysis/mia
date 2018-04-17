@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Miscellaneous;
 
+import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -10,6 +11,9 @@ import javax.swing.*;
  * Created by sc13967 on 09/02/2018.
  */
 public class AddPause extends Module {
+    public static final String SHOW_IMAGE = "Show image";
+    public static final String INPUT_IMAGE = "Input image";
+
     private static final String RESUME = "Resume";
     private static final String TERMINATE = "Terminate";
 
@@ -24,12 +28,23 @@ public class AddPause extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
+        // Getting parameters
+        boolean showImage = parameters.getValue(SHOW_IMAGE);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+
+        if (showImage) {
+            Image inputImage = workspace.getImage(inputImageName);
+            new Duplicator().run(inputImage.getImagePlus()).show();
+        }
+
         String[] options = {RESUME,TERMINATE};
         JOptionPane optionPane = new JOptionPane("Execution paused.  What would you like to do?",JOptionPane.QUESTION_MESSAGE,JOptionPane.OK_CANCEL_OPTION,null,options);
         JDialog dialog = optionPane.createDialog(null, "Execution paused");
         dialog.setModal(false);
         dialog.setVisible(true);
+
+        writeMessage("Execution paused");
 
         while (optionPane.getValue() == JOptionPane.UNINITIALIZED_VALUE) {
             try {
@@ -53,17 +68,21 @@ public class AddPause extends Module {
 
     @Override
     protected void initialiseParameters() {
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-
+        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
+        if (parameters.getValue(SHOW_IMAGE)) {
+            returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        }
+
+        return returnedParameters;
+
     }
 
     @Override

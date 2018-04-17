@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.IdentifyObjects;
@@ -23,13 +24,17 @@ public class IdentifyObjectsTest {
     @Test
     public void testGetTitle() throws Exception {
         assertNotNull(new IdentifyObjects().getTitle());
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground8bit2D() throws Exception  {
 
     }
 
     @Test
     public void testRunBlackBackground8Bit3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
@@ -45,7 +50,7 @@ public class IdentifyObjectsTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace,false);
+        identifyObjects.run(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -73,6 +78,16 @@ public class IdentifyObjectsTest {
         }
     }
 
+    @Test @Ignore
+    public void testRunBlackBackground8bit4D() throws Exception  {
+
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground8bit5D() throws Exception  {
+
+    }
+
     /**
      * This tests that the system still works when presented with a labelled (rather than binary) image.
      * @throws Exception
@@ -80,7 +95,7 @@ public class IdentifyObjectsTest {
     @Test
     public void testRunBlackBackground8Bit3DLabelled() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
@@ -96,7 +111,7 @@ public class IdentifyObjectsTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace,false);
+        identifyObjects.run(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -127,7 +142,7 @@ public class IdentifyObjectsTest {
     @Test
     public void testRunWhiteBackground8Bit3D() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -143,7 +158,7 @@ public class IdentifyObjectsTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,true);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace,false);
+        identifyObjects.run(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -169,5 +184,25 @@ public class IdentifyObjectsTest {
             assertNotNull(expectedObject);
 
         }
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground8bit3DSingleObject() throws Exception  {
+
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground8bit3DLabelledSingleObject() throws Exception  {
+
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground16Bit3D() throws Exception {
+
+    }
+
+    @Test @Ignore
+    public void testRunBlackBackground32Bit3D() throws Exception {
+
     }
 }

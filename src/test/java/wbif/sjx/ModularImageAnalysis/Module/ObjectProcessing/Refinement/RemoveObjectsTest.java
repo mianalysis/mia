@@ -19,7 +19,7 @@ public class RemoveObjectsTest {
     @Test
     public void testRunSingleObjCollection() throws Exception{
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -36,7 +36,7 @@ public class RemoveObjectsTest {
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,"TestObj");
 
         // Running the module
-        removeObjects.run(workspace,false);
+        removeObjects.run(workspace);
 
         // Checking the objects have been removed
         assertEquals(0,workspace.getObjects().size());
@@ -46,7 +46,7 @@ public class RemoveObjectsTest {
     @Test
     public void testRunMultipleObjCollections() throws Exception{
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -66,7 +66,7 @@ public class RemoveObjectsTest {
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,"TestObj");
 
         // Running the module
-        removeObjects.run(workspace,false);
+        removeObjects.run(workspace);
 
         // Checking the objects have been removed
         assertEquals(1,workspace.getObjects().size());

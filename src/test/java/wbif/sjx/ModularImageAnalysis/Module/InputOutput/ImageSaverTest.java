@@ -34,7 +34,7 @@ public class ImageSaverTest {
         File testFile = temporaryFolder.newFile("TestFile.tif");
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,testFile);
+        Workspace workspace = new Workspace(0,testFile,1);
 
         // Load the test image and put in the workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -53,13 +53,13 @@ public class ImageSaverTest {
         imageSaver.updateParameterValue(ImageSaver.FLATTEN_OVERLAY,false);
 
         // Running the module
-        imageSaver.run(workspace,false);
+        imageSaver.run(workspace);
 
         // Checking the new file exists in the temporary folder
         String[] tempFileContents = temporaryFolder.getRoot().list();
         boolean contains = false;
         for (String name:tempFileContents) {
-            if (name.equals("TestFile_test.tif")) {
+            if (name.equals("TestFile_S1_test.tif")) {
                 contains = true;
             }
         }
@@ -74,7 +74,7 @@ public class ImageSaverTest {
         temporaryFolder.create();
 
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Load the test image and put in the workspace
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
@@ -93,13 +93,13 @@ public class ImageSaverTest {
         imageSaver.updateParameterValue(ImageSaver.FLATTEN_OVERLAY,false);
 
         // Running the module
-        imageSaver.run(workspace,false);
+        imageSaver.run(workspace);
 
         // Checking the new file exists in the temporary folder
         String[] tempFileContents = temporaryFolder.getRoot().list();
         boolean contains = false;
         for (String name:tempFileContents) {
-            if (name.equals("TestFile_test2.tif")) {
+            if (name.equals("TestFile_S1_test2.tif")) {
                 contains = true;
             }
         }

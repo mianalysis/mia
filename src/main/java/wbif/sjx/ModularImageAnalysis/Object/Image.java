@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import net.imglib2.Cursor;
@@ -38,6 +39,11 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     }
 
     public ObjCollection convertImageToObjects(String outputObjectsName) {
+        return convertImageToObjects(outputObjectsName,false);
+
+    }
+
+    public ObjCollection convertImageToObjects(String outputObjectsName, boolean singleObject) {
         // Need to get coordinates and convert to a HCObject
         ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
 
@@ -64,13 +70,19 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                     imagePlus.setPosition(c+1,z+1,t+1);
                     for (int x = 0; x < w; x++) {
                         for (int y = 0; y < h; y++) {
-                            int imageID = (int) ipr.getPixelValue(x, y); //Pixel value
+                            // Getting the ID of this object in the current stack.
+                            int imageID = (int) ipr.getPixelValue(x, y);
+
+                            // If assigning a single object ID, this is the same value for all objects
+                            if (singleObject && imageID != 0) imageID = 1;
 
                             if (imageID != 0) {
                                 IDlink.computeIfAbsent(imageID, k -> outputObjects.getNextID());
                                 int outID = IDlink.get(imageID);
 
-                                outputObjects.computeIfAbsent(outID, k -> new Obj(outputObjectsName, outID,dppXY,dppZ,calibratedUnits));
+                                outputObjects.computeIfAbsent(outID, k ->
+                                        new Obj(outputObjectsName, outID,dppXY,dppZ,calibratedUnits));
+
                                 outputObjects.get(outID).addCoord(x,y,z);
                                 outputObjects.get(outID).setT(t);
 

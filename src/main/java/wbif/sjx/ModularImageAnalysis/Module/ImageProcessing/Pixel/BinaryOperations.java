@@ -3,10 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.plugin.Duplicator;
-import ij.plugin.HyperStackMaker;
-import ij.plugin.SubHyperstackMaker;
-import ij.plugin.SubstackMaker;
+import ij.plugin.*;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.binary.ChamferWeights3D;
@@ -14,6 +11,7 @@ import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConverter;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -33,6 +31,7 @@ public class BinaryOperations extends Module {
     public static final String INTENSITY_IMAGE = "Intensity image";
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
+    public static final String MATCH_Z_TO_X= "Match Z to XY";
     public static final String SHOW_IMAGE = "Show image";
 
     public interface OperationModes {
@@ -93,17 +92,31 @@ public class BinaryOperations extends Module {
         }
     }
 
-    public static void applyDistanceMap3D(ImagePlus ipl) {
+    public static ImagePlus applyDistanceMap3D(ImagePlus ipl, boolean matchZToXY) {
+        int nSlices = ipl.getNSlices();
+
+        // If necessary, interpolating the image in Z to match the XY spacing
+        if (matchZToXY && nSlices > 1) ipl = InterpolateZAxis.matchZToXY(ipl);
+
         // Calculating the distance map using MorphoLibJ
         float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
 
         ImagePlus maskIpl = new Duplicator().run(ipl);
         IJ.run(maskIpl,"Invert","stack");
-        ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,false).getStack());
+        ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,true).getStack());
+
+        // If the input image as interpolated, it now needs to be returned to the original scaling
+        if (matchZToXY && nSlices > 1) {
+            Resizer resizer = new Resizer();
+            resizer.setAverageWhenDownsizing(true);
+            ipl = resizer.zScale(ipl, nSlices, Resizer.IN_PLACE);
+        }
+
+        return ipl;
 
     }
 
-    public void applyWatershed3D(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity, boolean verbose) {
+    public void applyWatershed3D(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) {
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
@@ -134,7 +147,7 @@ public class BinaryOperations extends Module {
             //  Replacing the maskIpl intensity
             overwriteTimepoint(maskIpl,timepointMaskIpl,t);
 
-            writeMessage("Processed "+t+" of "+nFrames+" frames",verbose);
+            writeMessage("Processed "+t+" of "+nFrames+" frames");
 
         }
     }
@@ -198,7 +211,7 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -215,6 +228,7 @@ public class BinaryOperations extends Module {
         String intensityImageName = parameters.getValue(INTENSITY_IMAGE);
         int dynamic = parameters.getValue(DYNAMIC);
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY_3D));
+        boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
@@ -229,7 +243,7 @@ public class BinaryOperations extends Module {
                 break;
 
             case (OperationModes.DISTANCE_MAP_3D):
-                applyDistanceMap3D(inputImagePlus);
+                inputImagePlus = applyDistanceMap3D(inputImagePlus,matchZToXY);
                 break;
 
             case (OperationModes.WATERSHED_3D):
@@ -240,7 +254,7 @@ public class BinaryOperations extends Module {
                 switch (intensityMode) {
                     case IntensityModes.DISTANCE:
                         intensityIpl = new Duplicator().run(inputImagePlus);
-                        applyDistanceMap3D(intensityIpl);
+                        intensityIpl = applyDistanceMap3D(intensityIpl,matchZToXY);
                         IJ.run(intensityIpl,"Invert","stack");
                         break;
 
@@ -250,7 +264,7 @@ public class BinaryOperations extends Module {
 
                 }
 
-                applyWatershed3D(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity,verbose);
+                applyWatershed3D(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity);
 
                 break;
 
@@ -265,7 +279,7 @@ public class BinaryOperations extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
+            writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
@@ -286,12 +300,8 @@ public class BinaryOperations extends Module {
         parameters.add(new Parameter(INTENSITY_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
         parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY,Connectivity3D.SIX,Connectivity3D.ALL));
+        parameters.add(new Parameter(MATCH_Z_TO_X, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 
@@ -312,6 +322,10 @@ public class BinaryOperations extends Module {
                 returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
                 break;
 
+            case OperationModes.DISTANCE_MAP_3D:
+                returnedParameters.add(parameters.getParameter(MATCH_Z_TO_X));
+                break;
+
             case OperationModes.WATERSHED_3D:
                 returnedParameters.add(parameters.getParameter(USE_MARKERS));
                 if (parameters.getValue(USE_MARKERS)) {
@@ -322,6 +336,10 @@ public class BinaryOperations extends Module {
 
                 returnedParameters.add(parameters.getParameter(INTENSITY_MODE));
                 switch ((String) parameters.getValue(INTENSITY_MODE)) {
+                    case IntensityModes.DISTANCE:
+                        returnedParameters.add(parameters.getParameter(MATCH_Z_TO_X));
+                        break;
+
                     case IntensityModes.INPUT_IMAGE:
                         returnedParameters.add(parameters.getParameter(INTENSITY_IMAGE));
                         break;

@@ -70,7 +70,7 @@ public class NormaliseIntensity extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    public void run(Workspace workspace) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -110,11 +110,6 @@ public class NormaliseIntensity extends Module {
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

@@ -15,7 +15,7 @@ public class GetLocalObjectRegion extends Module {
     public static final String USE_MEASUREMENT = "Use measurement for radius";
     public static final String MEASUREMENT_NAME = "Measurement name";
 
-    public static ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated, boolean useMeasurement, String measurementName) {
+    public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated, boolean useMeasurement, String measurementName) {
         // Creating store for output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
@@ -26,8 +26,11 @@ public class GetLocalObjectRegion extends Module {
         String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
         double xy_z_ratio = dppXY/dppZ;
 
+        int count = 0;
+        int startingNumber = inputObjects.size();
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
+            writeMessage("Calculating for object " + (++count) + " of " + startingNumber);
             // Creating new object and assigning relationship to input objects
             Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits);
 
@@ -91,7 +94,7 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -105,15 +108,15 @@ public class GetLocalObjectRegion extends Module {
         boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
         String measurementName = parameters.getValue(MEASUREMENT_NAME);
 
-        if (verbose) System.out.println("["+moduleName+"] Using local radius of "+radius+" px");
-        if (verbose) System.out.println("["+moduleName+"] Using local radius of "+radius+" ");
+        writeMessage("Using local radius of "+radius+" px");
+        writeMessage("Using local radius of "+radius+" ");
 
         // Getting local region
         ObjCollection outputObjects = getLocalRegions(inputObjects, outputObjectsName, radius, calibrated,useMeasurement,measurementName);
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
+        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
 
     }
 
@@ -125,11 +128,6 @@ public class GetLocalObjectRegion extends Module {
         parameters.add(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(USE_MEASUREMENT, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MEASUREMENT_NAME, Parameter.OBJECT_MEASUREMENT,null,null));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

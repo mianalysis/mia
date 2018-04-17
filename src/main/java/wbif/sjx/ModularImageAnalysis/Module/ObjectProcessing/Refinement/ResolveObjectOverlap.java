@@ -76,7 +76,7 @@ public class ResolveObjectOverlap extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
         ObjCollection inputObjects1 = workspace.getObjects().get(inputObjects1Name);
@@ -146,11 +146,6 @@ public class ResolveObjectOverlap extends Module {
         parameters.add(new Parameter(OUTPUT_OBJECTS_NAME,Parameter.OUTPUT_OBJECTS,null));
         parameters.add(new Parameter(MINIMUM_OVERLAP_PC,Parameter.DOUBLE,50.0));
         parameters.add(new Parameter(OVERLAP_REQUIREMENT,Parameter.CHOICE_ARRAY,OverlapRequirements.MUTUAL_MAX_OVERLAP,OverlapRequirements.ALL));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

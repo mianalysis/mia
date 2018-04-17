@@ -35,7 +35,7 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
         int yOffs = parameters.getValue(Y_OFFSET);
@@ -47,10 +47,10 @@ public class MeasureImageTexture extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running texture measurement
-        if (verbose) System.out.println("["+moduleName+"] Calculating co-occurance matrix");
-        if (verbose) System.out.println("["+moduleName+"] X-offset: "+xOffs);
-        if (verbose) System.out.println("["+moduleName+"] Y-offset: "+yOffs);
-        if (verbose) System.out.println("["+moduleName+"] Z-offset: "+zOffs);
+        writeMessage("Calculating co-occurance matrix");
+        writeMessage("X-offset: "+xOffs);
+        writeMessage("Y-offset: "+yOffs);
+        writeMessage("Z-offset: "+zOffs);
 
         TextureCalculator textureCalculator = new TextureCalculator();
 
@@ -63,22 +63,22 @@ public class MeasureImageTexture extends Module {
         Measurement ASMMeasurement = new Measurement(Measurements.ASM,textureCalculator.getASM());
         ASMMeasurement.setSource(this);
         inputImage.addMeasurement(ASMMeasurement);
-        if (verbose) System.out.println("["+moduleName+"] ASM = "+ASMMeasurement.getValue());
+        writeMessage("ASM = "+ASMMeasurement.getValue());
 
         Measurement contrastMeasurement = new Measurement(Measurements.CONTRAST,textureCalculator.getContrast());
         contrastMeasurement.setSource(this);
         inputImage.addMeasurement(contrastMeasurement);
-        if (verbose) System.out.println("["+moduleName+"] Contrast = "+contrastMeasurement.getValue());
+        writeMessage("Contrast = "+contrastMeasurement.getValue());
 
         Measurement correlationMeasurement = new Measurement(Measurements.CORRELATION,textureCalculator.getCorrelation());
         correlationMeasurement.setSource(this);
         inputImage.addMeasurement(correlationMeasurement);
-        if (verbose) System.out.println("["+moduleName+"] Correlation = "+correlationMeasurement.getValue());
+        writeMessage("Correlation = "+correlationMeasurement.getValue());
 
         Measurement entropyMeasurement = new Measurement(Measurements.ENTROPY,textureCalculator.getEntropy());
         entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement);
-        if (verbose) System.out.println("["+moduleName+"] Entropy = "+entropyMeasurement.getValue());
+        writeMessage("Entropy = "+entropyMeasurement.getValue());
 
     }
 
@@ -92,34 +92,31 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.ASM));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.CONTRAST));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.CORRELATION));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.ENTROPY));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
 
     @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+        imageMeasurementReferences.setAllCalculated(false);
+
         String imageName = parameters.getValue(INPUT_IMAGE);
 
-        MeasurementReference asm = imageMeasurementReferences.get(Measurements.ASM);
+        MeasurementReference asm = imageMeasurementReferences.getOrPut(Measurements.ASM);
         asm.setImageObjName(imageName);
+        asm.setCalculated(true);
 
-        MeasurementReference contrast = imageMeasurementReferences.get(Measurements.CONTRAST);
+        MeasurementReference contrast = imageMeasurementReferences.getOrPut(Measurements.CONTRAST);
         contrast.setImageObjName(imageName);
+        contrast.setCalculated(true);
 
-        MeasurementReference correlation = imageMeasurementReferences.get(Measurements.CORRELATION);
+        MeasurementReference correlation = imageMeasurementReferences.getOrPut(Measurements.CORRELATION);
         correlation.setImageObjName(imageName);
+        correlation.setCalculated(true);
 
-        MeasurementReference entropy = imageMeasurementReferences.get(Measurements.ENTROPY);
+        MeasurementReference entropy = imageMeasurementReferences.getOrPut(Measurements.ENTROPY);
         entropy.setImageObjName(imageName);
+        entropy.setCalculated(true);
 
         return imageMeasurementReferences;
 

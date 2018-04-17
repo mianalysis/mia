@@ -21,7 +21,7 @@ public class RemoveObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         workspace.removeObject(inputObjectsName);
@@ -31,11 +31,6 @@ public class RemoveObjects extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.REMOVED_OBJECTS,null));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

@@ -180,7 +180,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -219,7 +219,7 @@ public class TrackObjects extends Module {
         int[] frameLimits = inputObjects.getTimepointLimits();
 
         for (int t2=frameLimits[0]+1;t2<=frameLimits[1];t2++) {
-            if (verbose) System.out.println("["+moduleName+"] Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
+            writeMessage("Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
 
             for (int t1 = t2-1;t1>=t2-1-maxMissingFrames;t1--) {
                 // Creating a pair of ArrayLists to store the current and previous objects
@@ -353,17 +353,6 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.TRACK_PREV_ID));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.TRACK_NEXT_ID));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.ORIENTATION));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.LEADING_X_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.LEADING_Y_PX));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.LEADING_Z_PX));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParamters = new ParameterCollection();
 
@@ -399,17 +388,22 @@ public class TrackObjects extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference trackPrevID = objectMeasurementReferences.get(Measurements.TRACK_PREV_ID);
-        MeasurementReference trackNextID = objectMeasurementReferences.get(Measurements.TRACK_NEXT_ID);
-        MeasurementReference angleMeasurement = objectMeasurementReferences.get(Measurements.ORIENTATION);
-        MeasurementReference leadingXPx= objectMeasurementReferences.get(Measurements.LEADING_X_PX);
-        MeasurementReference leadingYPx= objectMeasurementReferences.get(Measurements.LEADING_Y_PX);
-        MeasurementReference leadingZPx= objectMeasurementReferences.get(Measurements.LEADING_Z_PX);
+        MeasurementReference trackPrevID = objectMeasurementReferences.getOrPut(Measurements.TRACK_PREV_ID);
+        MeasurementReference trackNextID = objectMeasurementReferences.getOrPut(Measurements.TRACK_NEXT_ID);
+        MeasurementReference angleMeasurement = objectMeasurementReferences.getOrPut(Measurements.ORIENTATION);
+        MeasurementReference leadingXPx= objectMeasurementReferences.getOrPut(Measurements.LEADING_X_PX);
+        MeasurementReference leadingYPx= objectMeasurementReferences.getOrPut(Measurements.LEADING_Y_PX);
+        MeasurementReference leadingZPx= objectMeasurementReferences.getOrPut(Measurements.LEADING_Z_PX);
 
         trackPrevID.setImageObjName(inputObjectsName);
         trackNextID.setImageObjName(inputObjectsName);
+
+        trackPrevID.setCalculated(true);
+        trackNextID.setCalculated(true);
 
         if (parameters.getValue(IDENTIFY_LEADING_POINT)) {
             angleMeasurement.setCalculated(true);

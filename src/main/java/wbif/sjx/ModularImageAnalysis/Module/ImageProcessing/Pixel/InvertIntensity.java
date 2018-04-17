@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.process.ImageConverter;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -19,20 +20,8 @@ public class InvertIntensity extends Module {
     public static final String SHOW_IMAGE = "Show image";
 
     public static void process(ImagePlus inputImagePlus) {
-//        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-//            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-//                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-//                    inputImagePlus.setPosition(c, z, t);
-//                    inputImagePlus.getProcessor().invert();
-//                }
-//            }
-//        }
-//        inputImagePlus.setPosition(1,1,1);
-        new ImageJ();
-        new Duplicator().run(inputImagePlus).show();
         IJ.run(inputImagePlus,"Invert","stack");
-        new Duplicator().run(inputImagePlus).show();
-        IJ.runMacro("waitForUser");
+
     }
 
     @Override
@@ -46,7 +35,7 @@ public class InvertIntensity extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -71,7 +60,7 @@ public class InvertIntensity extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            if (verbose) System.out.println("["+moduleName+"] Adding image ("+outputImageName+") to workspace");
+            writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
 
@@ -84,11 +73,6 @@ public class InvertIntensity extends Module {
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

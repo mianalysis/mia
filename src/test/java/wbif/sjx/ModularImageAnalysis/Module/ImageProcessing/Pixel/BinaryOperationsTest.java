@@ -24,7 +24,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithDilate2DOperation2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -49,7 +49,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -89,7 +89,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithDilate2DOperation3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -115,7 +115,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -156,7 +156,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithDilate2DOperation4DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -181,7 +181,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -222,7 +222,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithDilate2DOperation5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -248,7 +248,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -289,7 +289,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithDilateOperation2DStackOnInput() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -314,7 +314,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -353,7 +353,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithDilate2DOperationZeroIters2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -378,7 +378,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.DILATE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -418,7 +418,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithErode2DOperationFiveIters2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -443,7 +443,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -483,7 +483,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithErode2DOperationFiveIters3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -509,7 +509,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -550,7 +550,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithErode2DOperationFiveIters4DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -576,7 +576,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -617,7 +617,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithErode2DOperationFiveIters5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -643,7 +643,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -688,7 +688,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithErode2DOperationHundredIters2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -713,7 +713,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -757,7 +757,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithErode2DOperationHundredIters3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -783,7 +783,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -828,7 +828,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithErode2DOperationHundredIters4DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -854,7 +854,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -899,7 +899,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithErode2DOperationHundredIters5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -925,7 +925,7 @@ public class BinaryOperationsTest {
                 BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.ERODE_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -966,7 +966,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithFillHoles2DOperation2DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -990,7 +990,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.FILL_HOLES_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1030,7 +1030,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithFillHoles2DOperation3DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -1055,7 +1055,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.FILL_HOLES_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1096,7 +1096,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithFillHoles2DOperation4DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -1121,7 +1121,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.FILL_HOLES_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1162,7 +1162,7 @@ public class BinaryOperationsTest {
     @Test
     public void testRunWithFillHoles2DOperation5DStack() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -1187,7 +1187,7 @@ public class BinaryOperationsTest {
         binaryOperations.updateParameterValue(BinaryOperations.OPERATION_MODE,BinaryOperations.OperationModes.FILL_HOLES_2D);
 
         // Running BinaryOperations
-        binaryOperations.run(workspace,false);
+        binaryOperations.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

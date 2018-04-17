@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -17,11 +18,6 @@ public class MeasureImageIntensity extends Module {
     public static final String MEASURE_MAX = "Measure maximum";
     public static final String MEASURE_SUM = "Measure sum";
 
-    private MeasurementReference meanMeasurement;
-    private MeasurementReference minMeasurement;
-    private MeasurementReference maxMeasurement;
-    private MeasurementReference stdevMeasurement;
-    private MeasurementReference sumMeasurement;
 
     public interface Measurements {
         String MEAN = "INTENSITY//MEAN";
@@ -45,10 +41,10 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
        // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        if (verbose) System.out.println("["+moduleName+"] Loading image ("+inputImageName+")");
+        writeMessage("Loading image ("+inputImageName+")");
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
@@ -81,16 +77,6 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MIN));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MAX));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.STDEV));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
@@ -99,23 +85,25 @@ public class MeasureImageIntensity extends Module {
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        MeasurementReference mean = imageMeasurementReferences.get(Measurements.MEAN);
+        imageMeasurementReferences.setAllCalculated(false);
+
+        MeasurementReference mean = imageMeasurementReferences.getOrPut(Measurements.MEAN);
         mean.setImageObjName(inputImageName);
         mean.setCalculated(parameters.getValue(MEASURE_MEAN));
 
-        MeasurementReference min = imageMeasurementReferences.get(Measurements.MIN);
+        MeasurementReference min = imageMeasurementReferences.getOrPut(Measurements.MIN);
         min.setImageObjName(inputImageName);
         min.setCalculated(parameters.getValue(MEASURE_MIN));
 
-        MeasurementReference max = imageMeasurementReferences.get(Measurements.MAX);
+        MeasurementReference max = imageMeasurementReferences.getOrPut(Measurements.MAX);
         max.setImageObjName(inputImageName);
         max.setCalculated(parameters.getValue(MEASURE_MAX));
 
-        MeasurementReference stdev = imageMeasurementReferences.get(Measurements.STDEV);
+        MeasurementReference stdev = imageMeasurementReferences.getOrPut(Measurements.STDEV);
         stdev.setImageObjName(inputImageName);
         stdev.setCalculated(parameters.getValue(MEASURE_STDEV));
 
-        MeasurementReference sum = imageMeasurementReferences.get(Measurements.SUM);
+        MeasurementReference sum = imageMeasurementReferences.getOrPut(Measurements.SUM);
         sum.setImageObjName(inputImageName);
         sum.setCalculated(parameters.getValue(MEASURE_SUM));
 

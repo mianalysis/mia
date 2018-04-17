@@ -15,6 +15,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.awt.*;
 import java.util.*;
 
 /**
@@ -34,7 +35,7 @@ public class RidgeDetection extends Module {
 
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT//LENGTH_(PX)";
-
+        String LENGTH_CAL = "RIDGE_DETECT//LENGTH_(CAL)";
     }
 
     private interface ContourContrast {
@@ -60,7 +61,7 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         Calendar calendar = Calendar.getInstance();
 
         // Getting input image
@@ -97,13 +98,13 @@ public class RidgeDetection extends Module {
         for (int c=0;c<inputImagePlus.getNChannels();c++) {
             for (int z=0;z<inputImagePlus.getNSlices();z++) {
                 for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
-                    if (verbose) System.out.println("[" + moduleName + "] Processing image "+(count++)+" of "+total);
+                    writeMessage("Processing image "+(count++)+" of "+total);
                     inputImagePlus.setPosition(c+1,z+1,t+1);
 
                     // Running the ridge detection
                     Lines lines;
                     try {
-                         lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
+                        lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
                                 lowerThreshold, minLength, maxLength, darkLine, true, false, false);
                     } catch (NegativeArraySizeException | ArrayIndexOutOfBoundsException e) {
                         String errorMessage = "Ridge detection failed for file "+workspace.getMetadata().getFile().getName()
@@ -127,7 +128,7 @@ public class RidgeDetection extends Module {
 
                     // Iterating over each object, adding it to the nascent ObjCollection
                     if (linkContours) {
-                        if (verbose) System.out.println("[" + moduleName + "] Linking contours");
+                        writeMessage("Linking contours");
 
                         for (Junction junction : junctions) {
                             // Getting the LineGroup associated with Line1.  If there isn't one, creating a new one
@@ -171,6 +172,7 @@ public class RidgeDetection extends Module {
                         // Setting single values for the current contour
                         outputObject.setT(t);
                         outputObject.addMeasurement(new Measurement(Measurements.LENGTH_PX, estLength));
+                        outputObject.addMeasurement(new Measurement(Measurements.LENGTH_CAL, estLength*outputObject.getDistPerPxXY()));
                         outputObjects.add(outputObject);
                     }
                 }
@@ -182,8 +184,7 @@ public class RidgeDetection extends Module {
 
         if (parameters.getValue(SHOW_OBJECTS)) {
             // Adding image to workspace
-            if (verbose)
-                System.out.println("[" + moduleName + "] Adding objects (" + outputObjectsName + ") to workspace");
+            writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
 
             // Creating a duplicate of the input image
             inputImagePlus = new Duplicator().run(inputImagePlus);
@@ -191,9 +192,9 @@ public class RidgeDetection extends Module {
 
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-            HashMap<Integer,Float> hues = outputObjects.getHue(colourMode,"",true);
+            HashMap<Integer,Color> colours = outputObjects.getColours(colourMode,"",true);
             String positionMode = AddObjectsOverlay.PositionModes.ALL_POINTS;
-            new AddObjectsOverlay().createOverlay(inputImagePlus,outputObjects,positionMode,null,hues,null,8,1,verbose);
+            new AddObjectsOverlay().createOverlay(inputImagePlus,outputObjects,positionMode,null,colours,null,8,1);
 
             // Displaying the overlay
             inputImagePlus.show();
@@ -218,12 +219,6 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.LENGTH_PX));
-
-    }
-
-    @Override
     public ParameterCollection updateAndGetParameters() {
         return parameters;
     }
@@ -235,8 +230,15 @@ public class RidgeDetection extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        MeasurementReference lengthPx = objectMeasurementReferences.get(Measurements.LENGTH_PX);
+        objectMeasurementReferences.setAllCalculated(false);
+
+        MeasurementReference lengthPx = objectMeasurementReferences.getOrPut(Measurements.LENGTH_PX);
         lengthPx.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        lengthPx.setCalculated(true);
+
+        MeasurementReference lengthCal = objectMeasurementReferences.getOrPut(Measurements.LENGTH_CAL);
+        lengthCal.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        lengthCal.setCalculated(true);
 
         return objectMeasurementReferences;
 

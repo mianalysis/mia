@@ -25,7 +25,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DAddCreateNot32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -58,7 +58,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -100,7 +100,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DAddOverwrite1Not32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -132,7 +132,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -173,7 +173,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DAddOverwrite2Not32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -205,7 +205,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -246,7 +246,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DAddCreateIs32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -279,7 +279,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -321,7 +321,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DAddOverwrite1Is32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -353,7 +353,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -394,7 +394,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DAddOverwrite2Is32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -426,7 +426,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -470,7 +470,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DSubtractCreateNot32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -503,7 +503,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -545,7 +545,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DSubtractCreateIs32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -578,7 +578,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -623,7 +623,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DMultiplyCreateNot32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -656,7 +656,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -698,7 +698,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DMultiplyCreateIs32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -731,7 +731,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -776,7 +776,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DDivideCreateNot32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -809,7 +809,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -851,7 +851,7 @@ public class ImageCalculatorTest {
     @Test
     public void testRun5DDivideCreateIs32() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting calibration parameters
         double dppXY = 0.02;
@@ -884,7 +884,7 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
-        calculator.run(workspace,false);
+        calculator.run(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());

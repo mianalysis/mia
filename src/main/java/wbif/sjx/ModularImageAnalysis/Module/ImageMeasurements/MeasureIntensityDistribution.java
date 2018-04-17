@@ -2,15 +2,17 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import inra.ijpb.binary.ChamferWeights3D;
-import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.ShowObjects;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
 
+import java.awt.*;
 import java.util.HashMap;
 
 /**
@@ -23,6 +25,7 @@ public class MeasureIntensityDistribution extends Module {
     public static final String PROXIMAL_DISTANCE = "Proximal distance";
     public static final String SPATIAL_UNITS = "Spatial units";
     public static final String IGNORE_ON_OBJECTS = "Ignore values on objects";
+    public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
 
     public interface MeasurementTypes {
         String FRACTION_PROXIMAL_TO_OBJECTS = "Fraction proximal to objects";
@@ -37,6 +40,15 @@ public class MeasureIntensityDistribution extends Module {
         String PIXELS = "Pixel";
 
         String[] ALL = new String[]{CALIBRATED,PIXELS};
+
+    }
+
+    public interface EdgeDistanceModes {
+        String INSIDE_AND_OUTSIDE = "Inside and outside";
+        String INSIDE_ONLY = "Inside only";
+        String OUTSIDE_ONLY = "Outside only";
+
+        String[] ALL = new String[]{INSIDE_AND_OUTSIDE,INSIDE_ONLY,OUTSIDE_ONLY};
 
     }
 
@@ -61,28 +73,19 @@ public class MeasureIntensityDistribution extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.SINGLE_COLOUR, hues, true);
-
-        // Calculating a 3D distance map for the binary image
-        ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());
-
-        // Inverting the mask intensity
-        for (int z = 1; z <= maskIpl.getNSlices(); z++) {
-            for (int c = 1; c <= maskIpl.getNChannels(); c++) {
-                for (int t = 1; t <= maskIpl.getNFrames(); t++) {
-                    maskIpl.setPosition(c, z, t);
-                    maskIpl.getProcessor().invert();
-                }
-            }
-        }
-        maskIpl.setPosition(1,1,1);
-
-        float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
-        ImagePlus distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
+        HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
+        
+        // Calculaing the distance map
+        ImagePlus distIpl = BinaryOperations.applyDistanceMap3D(objectsImage.getImagePlus(),true);
 
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
+        return measureIntensityFractions(inputImagePlus,distIpl,ignoreOnObjects,proximalDistance);
+
+    }
+
+    private static CumStat[] measureIntensityFractions(ImagePlus inputImagePlus, ImagePlus distIpl, boolean ignoreOnObjects, double proximalDistance) {
         CumStat[] cs = new CumStat[2];
         cs[0] = new CumStat();
         cs[1] = new CumStat();
@@ -121,32 +124,48 @@ public class MeasureIntensityDistribution extends Module {
 
     }
 
-    public CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, boolean ignoreOnObjects) {
+    public static CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, String edgeMode) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Get binary image showing the objects
-        HashMap<Integer,Float> hues = inputObjects.getHue(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ShowObjects.ColourModes.SINGLE_COLOUR, hues, true);
+        HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
 
-        // Calculating a 3D distance map for the binary image
-        ImagePlus maskIpl = new Duplicator().run(objectsImage.getImagePlus());
+        ImagePlus distIpl = null;
+        switch (edgeMode) {
+            case EdgeDistanceModes.INSIDE_AND_OUTSIDE:
+                ImagePlus dist1 = new Duplicator().run(objectsImage.getImagePlus());
+                distIpl = new Duplicator().run(objectsImage.getImagePlus());
 
-        // Inverting the mask intensity
-        for (int z = 1; z <= maskIpl.getNSlices(); z++) {
-            for (int c = 1; c <= maskIpl.getNChannels(); c++) {
-                for (int t = 1; t <= maskIpl.getNFrames(); t++) {
-                    maskIpl.setPosition(c, z, t);
-                    maskIpl.getProcessor().invert();
-                }
-            }
+                dist1 = BinaryOperations.applyDistanceMap3D(dist1,true);
+                InvertIntensity.process(distIpl);
+                BinaryOperations.applyStockBinaryTransform(distIpl,BinaryOperations.OperationModes.ERODE_2D,1);
+                distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true);
+
+                new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
+
+                break;
+
+            case EdgeDistanceModes.INSIDE_ONLY:
+                distIpl = new Duplicator().run(objectsImage.getImagePlus());
+                InvertIntensity.process(distIpl);
+                BinaryOperations.applyStockBinaryTransform(distIpl,BinaryOperations.OperationModes.ERODE_2D,1);
+                distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true);
+                break;
+
+            case EdgeDistanceModes.OUTSIDE_ONLY:
+                distIpl = new Duplicator().run(objectsImage.getImagePlus());
+                distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true);
+                break;
         }
-        maskIpl.setPosition(1,1,1);
-
-        float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
-        ImagePlus distIpl = new GeodesicDistanceMap3D().process(objectsImage.getImagePlus(),maskIpl,"Dist",weights,true);
 
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
+        return measureWeightedDistance(inputImagePlus,distIpl);
+
+    }
+
+    private static CumStat measureWeightedDistance(ImagePlus inputImagePlus, ImagePlus distIpl) {
         CumStat cs = new CumStat();
 
         for (int z = 0; z < distIpl.getNSlices(); z++) {
@@ -163,7 +182,7 @@ public class MeasureIntensityDistribution extends Module {
                             float dist = distVals[x][y];
                             float val = inputVals[x][y];
 
-                            if (ignoreOnObjects && dist == 0) continue;
+                            if (dist == 0) continue;
 
                             cs.addMeasure(dist,val);
 
@@ -177,6 +196,7 @@ public class MeasureIntensityDistribution extends Module {
         inputImagePlus.setPosition(1, 1, 1);
 
         return cs;
+
     }
 
     @Override
@@ -190,7 +210,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String measurementType = parameters.getValue(MEASUREMENT_TYPE);
@@ -198,6 +218,7 @@ public class MeasureIntensityDistribution extends Module {
         double proximalDistance = parameters.getValue(PROXIMAL_DISTANCE);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS);
         boolean ignoreOnObjects = parameters.getValue(IGNORE_ON_OBJECTS);
+        String edgeDistanceMode = parameters.getValue(EDGE_DISTANCE_MODE);
 
         Image inputImage = workspace.getImages().get(inputImageName);
 
@@ -219,10 +240,7 @@ public class MeasureIntensityDistribution extends Module {
                             new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), Double.NaN));
                     inputImage.addMeasurement(
                             new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), Double.NaN));
-                    inputImage.addMeasurement(
-                            new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), Double.NaN));
-                    inputImage.addMeasurement(
-                            new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), Double.NaN));
+
                     return;
                 }
 
@@ -236,17 +254,13 @@ public class MeasureIntensityDistribution extends Module {
                         new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), css[0].getMean()));
                 inputImage.addMeasurement(
                         new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), css[1].getMean()));
-                inputImage.addMeasurement(
-                        new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), css[0].getSum()));
-                inputImage.addMeasurement(
-                        new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), css[1].getSum()));
 
-                if (verbose) System.out.println("[" + moduleName + "] Number of pixels inside range = " + css[0].getN());
-                if (verbose) System.out.println("[" + moduleName + "] Number of pixels outside range = " + css[1].getN());
-                if (verbose) System.out.println("[" + moduleName + "] Total intensity in range = " + css[0].getSum());
-                if (verbose) System.out.println("[" + moduleName + "] Total intensity outside range = " + css[1].getSum());
-                if (verbose) System.out.println("[" + moduleName + "] Mean intensity in range = " + css[0].getMean());
-                if (verbose) System.out.println("[" + moduleName + "] Mean intensity outside range = " + css[1].getMean());
+                writeMessage("Number of pixels inside range = " + css[0].getN());
+                writeMessage("Number of pixels outside range = " + css[1].getN());
+                writeMessage("Total intensity in range = " + css[0].getSum());
+                writeMessage("Total intensity outside range = " + css[1].getSum());
+                writeMessage("Mean intensity in range = " + css[0].getMean());
+                writeMessage("Mean intensity outside range = " + css[1].getMean());
 
                 break;
 
@@ -262,15 +276,14 @@ public class MeasureIntensityDistribution extends Module {
                     return;
                 }
 
-                CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage, ignoreOnObjects);
+                CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage, edgeDistanceMode);
 
                 inputImage.addMeasurement(
                         new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), cs.getMean()));
                 inputImage.addMeasurement(
                         new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), cs.getStd()));
 
-                if (verbose)
-                    System.out.println("[" + moduleName + "] Mean intensity proximity = " + cs.getMean() + " +/- "+cs.getStd());
+                writeMessage("Mean intensity proximity = " + cs.getMean() + " +/- "+cs.getStd());
 
                 break;
 
@@ -285,22 +298,7 @@ public class MeasureIntensityDistribution extends Module {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(PROXIMAL_DISTANCE, Parameter.DOUBLE,2d));
         parameters.add(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
-        parameters.add(new Parameter(IGNORE_ON_OBJECTS, Parameter.BOOLEAN,true));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_OUTRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_INT_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_INT_OUTRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM_INT_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.SUM_INT_OUTRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.MEAN_PROXIMITY));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.N_PX_INRANGE));
-        imageMeasurementReferences.add(new MeasurementReference(Measurements.STDEV_PROXIMITY));
+        parameters.add(new Parameter(EDGE_DISTANCE_MODE,Parameter.CHOICE_ARRAY, EdgeDistanceModes.INSIDE_AND_OUTSIDE, EdgeDistanceModes.ALL));
 
     }
 
@@ -315,17 +313,17 @@ public class MeasureIntensityDistribution extends Module {
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
                 returnedParameters.add(parameters.getParameter(PROXIMAL_DISTANCE));
                 returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+                returnedParameters.add(parameters.getParameter(IGNORE_ON_OBJECTS));
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(EDGE_DISTANCE_MODE));
 
                 break;
 
         }
-
-        returnedParameters.add(parameters.getParameter(IGNORE_ON_OBJECTS));
 
         return returnedParameters;
 
@@ -333,50 +331,46 @@ public class MeasureIntensityDistribution extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        String imageName = parameters.getValue(INPUT_IMAGE);
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        imageMeasurementReferences.setAllCalculated(false);
 
-        MeasurementReference nPxInrange = imageMeasurementReferences.get(Measurements.N_PX_INRANGE);
-        MeasurementReference nPxOutrange = imageMeasurementReferences.get(Measurements.N_PX_OUTRANGE);
-        MeasurementReference meanIntInrange = imageMeasurementReferences.get(Measurements.MEAN_INT_INRANGE);
-        MeasurementReference meanIntOutrange = imageMeasurementReferences.get(Measurements.MEAN_INT_OUTRANGE);
-        MeasurementReference sumIntInrange = imageMeasurementReferences.get(Measurements.SUM_INT_INRANGE);
-        MeasurementReference sumIntOutrange = imageMeasurementReferences.get(Measurements.SUM_INT_OUTRANGE);
-        MeasurementReference meanProximity = imageMeasurementReferences.get(Measurements.MEAN_PROXIMITY);
-        MeasurementReference stdevProximity = imageMeasurementReferences.get(Measurements.STDEV_PROXIMITY);
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
-                nPxInrange.setCalculated(true);
-                nPxOutrange.setCalculated(true);
-                meanIntInrange.setCalculated(true);
-                meanIntOutrange.setCalculated(true);
-                sumIntInrange.setCalculated(true);
-                sumIntOutrange.setCalculated(true);
-                meanProximity.setCalculated(false);
-                stdevProximity.setCalculated(false);
+                String name = getFullName(inputObjectsName, Measurements.N_PX_INRANGE);
+                MeasurementReference reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
 
-                nPxInrange.setNickName(getFullName(inputObjectsName, Measurements.N_PX_INRANGE));
-                nPxOutrange.setNickName(getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE));
-                meanIntInrange.setNickName(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE));
-                meanIntOutrange.setNickName( getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE));
-                sumIntInrange.setNickName(getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE));
-                sumIntOutrange.setNickName(getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE));
+                name = getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE);
+                reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
+
+                name = getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE);
+                reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
+
+                name = getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE);
+                reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
+
+                name = getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE);
+                reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
+
+                name = getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE);
+                reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
-                nPxInrange.setCalculated(false);
-                nPxOutrange.setCalculated(false);
-                meanIntInrange.setCalculated(false);
-                meanIntOutrange.setCalculated(false);
-                sumIntInrange.setCalculated(false);
-                sumIntOutrange.setCalculated(false);
-                meanProximity.setCalculated(true);
-                stdevProximity.setCalculated(true);
+                name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY);
+                reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
 
-                meanProximity.setNickName(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY));
-                stdevProximity.setNickName(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY));
+                name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY);
+                reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
 
                 break;
         }

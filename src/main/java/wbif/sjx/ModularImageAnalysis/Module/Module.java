@@ -26,6 +26,7 @@ public abstract class Module implements Serializable {
     protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
     protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
 
+    private static boolean verbose = false;
     private String nickname;
     private String notes = "";
     private boolean enabled = true;
@@ -40,7 +41,6 @@ public abstract class Module implements Serializable {
         nickname = moduleName;
 
         initialiseParameters();
-        initialiseMeasurementReferences();
 
     }
 
@@ -51,19 +51,18 @@ public abstract class Module implements Serializable {
 
     public abstract String getHelp();
 
-    protected abstract void run(Workspace workspace, boolean verbose) throws GenericMIAException;
+    protected abstract void run(Workspace workspace) throws GenericMIAException;
 
-    public void execute(Workspace workspace, boolean verbose) throws GenericMIAException {
-        String moduleName = getTitle();
-        if (verbose) System.out.println("["+moduleName+"] Initialising");
+    public void execute(Workspace workspace) throws GenericMIAException {
+        writeMessage("Processing");
 
         // By default all modules should use this format
         Prefs.blackBackground = false;
 
         // Running the main module code
-        run(workspace,verbose);
+        run(workspace);
 
-        if (verbose) System.out.println("["+moduleName+"] Complete");
+        writeMessage("Complete");
 
     }
 
@@ -74,8 +73,6 @@ public abstract class Module implements Serializable {
      * @return
      */
     protected abstract void initialiseParameters();
-
-    protected abstract void initialiseMeasurementReferences();
 
     /**
      * Return a ParameterCollection of the currently active parameters.  This is run each time a parameter is changed.
@@ -91,21 +88,11 @@ public abstract class Module implements Serializable {
     public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
 
     public MeasurementReference getImageMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : imageMeasurementReferences) {
-            if (measurementReference.getName().equals(name)) return measurementReference;
-        }
-
-        return null;
-
+        return imageMeasurementReferences.getOrPut(name);
     }
 
     public MeasurementReference getObjectMeasurementReference(String name) {
-        for (MeasurementReference measurementReference : objectMeasurementReferences) {
-            if (measurementReference.getName().equals(name)) return measurementReference;
-        }
-
-        return null;
-
+        return objectMeasurementReferences.getOrPut(name);
     }
 
     /**
@@ -141,11 +128,6 @@ public abstract class Module implements Serializable {
 
     // PRIVATE METHODS
 
-    void run(Workspace workspace) throws GenericMIAException {
-        run(workspace,false);
-
-    }
-
     public String getNickname() {
         return nickname;
     }
@@ -172,7 +154,7 @@ public abstract class Module implements Serializable {
         this.enabled = enabled;
     }
 
-    protected void writeMessage(String message, boolean verbose) {
+    protected void writeMessage(String message) {
         if (verbose) System.out.println("[" + moduleName + "] "+message);
     }
 
@@ -182,5 +164,13 @@ public abstract class Module implements Serializable {
 
     public void setCanBeDisabled(boolean canBeDisabled) {
         this.canBeDisabled = canBeDisabled;
+    }
+
+    public static boolean isVerbose() {
+        return verbose;
+    }
+
+    public static void setVerbose(boolean verbose) {
+        Module.verbose = verbose;
     }
 }

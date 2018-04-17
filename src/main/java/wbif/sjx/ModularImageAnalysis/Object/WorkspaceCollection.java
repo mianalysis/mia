@@ -17,8 +17,8 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
      * @param currentFile
      * @return
      */
-    public Workspace getNewWorkspace(File currentFile) {
-        Workspace workspace =  new Workspace(++maxID, currentFile);
+    public Workspace getNewWorkspace(File currentFile, int series) {
+        Workspace workspace =  new Workspace(++maxID, currentFile, series);
 
         add(workspace);
 

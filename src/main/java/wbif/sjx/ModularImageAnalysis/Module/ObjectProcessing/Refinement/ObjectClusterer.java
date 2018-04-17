@@ -117,7 +117,7 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -136,14 +136,14 @@ public class ObjectClusterer extends Module {
         String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
 
         // Adding points to collection
-        if (verbose) System.out.println("["+moduleName+"] Adding points to clustering algorithm");
+        writeMessage("Adding points to clustering algorithm");
         List<LocationWrapper> locations = new ArrayList<>(inputObjects.size());
         for (Obj inputObject:inputObjects.values()) {
             locations.add(new LocationWrapper(inputObject));
         }
 
         // Running clustering system
-        if (verbose) System.out.println("["+moduleName+"] Running clustering algorithm");
+        writeMessage("Running clustering algorithm");
         ObjCollection outputObjects = null;
 
         switch (clusteringAlgorithm) {
@@ -206,7 +206,7 @@ public class ObjectClusterer extends Module {
             }
         }
 
-        if (verbose) System.out.println("["+moduleName+"] Adding objects ("+outputObjectsName+") to workspace");
+        writeMessage("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
     }
@@ -220,13 +220,6 @@ public class ObjectClusterer extends Module {
         parameters.add(new Parameter(MAX_ITERATIONS, Parameter.INTEGER,10000));
         parameters.add(new Parameter(EPS, Parameter.DOUBLE,10.0));
         parameters.add(new Parameter(MIN_POINTS, Parameter.INTEGER,5));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.CLUSTER_AREA_XY));
-        objectMeasurementReferences.add(new MeasurementReference(Measurements.N_POINTS_IN_CLUSTER));
 
     }
 
@@ -260,13 +253,17 @@ public class ObjectClusterer extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        objectMeasurementReferences.setAllCalculated(false);
+
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 
-        MeasurementReference clusterAreaXY = objectMeasurementReferences.get(Measurements.CLUSTER_AREA_XY);
+        MeasurementReference clusterAreaXY = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY);
         clusterAreaXY.setImageObjName(outputObjectsName);
+        clusterAreaXY.setCalculated(true);
 
-        MeasurementReference nPointsInCluster = objectMeasurementReferences.get(Measurements.CLUSTER_AREA_XY);
+        MeasurementReference nPointsInCluster = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY);
         nPointsInCluster.setImageObjName(outputObjectsName);
+        nPointsInCluster.setCalculated(true);
 
         return objectMeasurementReferences;
 

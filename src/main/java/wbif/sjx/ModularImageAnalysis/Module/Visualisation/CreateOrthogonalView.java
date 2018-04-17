@@ -99,7 +99,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
         // Loading image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image<T> inputImage = workspace.getImage(inputImageName);
@@ -176,11 +176,6 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
         parameters.add(new Parameter(POSITION_MODE,Parameter.CHOICE_ARRAY,PositionModes.IMAGE_CENTRE,PositionModes.ALL));
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

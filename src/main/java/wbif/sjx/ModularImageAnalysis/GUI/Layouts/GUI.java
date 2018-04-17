@@ -15,7 +15,7 @@ public abstract class GUI {
     protected GUIAnalysis analysis = new GUIAnalysis();
     Module activeModule = null;
     protected int lastModuleEval = -1;
-    private Workspace testWorkspace = new Workspace(1, null);
+    private Workspace testWorkspace = new Workspace(1, null,1);
 
     public ModuleCollection getModules() {
         return analysis.getModules();
@@ -46,7 +46,8 @@ public abstract class GUI {
     }
 
     public void evaluateModule(Module module) throws GenericMIAException {
-        module.execute(testWorkspace, true);
+        Module.setVerbose(true);
+        module.execute(testWorkspace);
         lastModuleEval = getModules().indexOf(module);
 
         updateModules();

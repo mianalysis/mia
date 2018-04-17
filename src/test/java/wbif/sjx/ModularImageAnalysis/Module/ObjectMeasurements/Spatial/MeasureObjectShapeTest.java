@@ -24,7 +24,7 @@ public class MeasureObjectShapeTest {
     @Test
     public void testRun() throws Exception {
         // Creating a new workspace
-        Workspace workspace = new Workspace(0,null);
+        Workspace workspace = new Workspace(0,null,1);
 
         // Setting object parameters
         String inputObjectsName = "Test objects";
@@ -42,7 +42,7 @@ public class MeasureObjectShapeTest {
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,inputObjectsName);
 
         // Running IdentifyObjects
-        measureObjectShape.run(workspace,false);
+        measureObjectShape.run(workspace);
 
         // Checking the workspace contains a single object set
         assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());
@@ -54,7 +54,7 @@ public class MeasureObjectShapeTest {
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             double expectedNVoxels = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_N_VOXELS.name()).getValue();
-            double actualNVoxels = testObject.getMeasurement(MeasureObjectShape.Measurements.VOLUME_PX).getValue();
+            double actualNVoxels = testObject.getMeasurement(MeasureObjectShape.Measurements.N_VOXELS).getValue();
             assertEquals("Measurement value", expectedNVoxels, actualNVoxels,tolerance);
 
             double expectedProjDiaPX = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_PROJ_DIA_PX.name()).getValue();

@@ -66,7 +66,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public void run(Workspace workspace, boolean verbose) {
+    public void run(Workspace workspace) {
         // Getting current result
         HCMetadata metadata = workspace.getMetadata();
 
@@ -147,11 +147,6 @@ public class MetadataExtractor extends Module {
         parameters.add(new Parameter(FOLDERNAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
         parameters.add(new Parameter(KEYWORD_LIST,Parameter.STRING,""));
         parameters.add(new Parameter(METADATA_FILE_EXTRACTOR,Parameter.CHOICE_ARRAY,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
 
     }
 

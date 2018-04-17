@@ -2,15 +2,14 @@ package wbif.sjx.ModularImageAnalysis.Module.Miscellaneous;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.MeasurementReferenceCollection;
-import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
-import wbif.sjx.ModularImageAnalysis.Object.RelationshipCollection;
-import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
  * Created by sc13967 on 14/03/2018.
  */
 public class GUISeparator extends Module{
+    public static final String TITLE = "Title";
+
     @Override
     public String getTitle() {
         return "GUI separator";
@@ -22,18 +21,13 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    protected void run(Workspace workspace, boolean verbose) throws GenericMIAException {
+    protected void run(Workspace workspace) throws GenericMIAException {
 
     }
 
     @Override
     protected void initialiseParameters() {
-
-    }
-
-    @Override
-    protected void initialiseMeasurementReferences() {
-
+        parameters.add(new Parameter(TITLE,Parameter.STRING,""));
     }
 
     @Override
