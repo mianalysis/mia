@@ -7,9 +7,7 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
-import ij.plugin.RGBStackConverter;
 import ij.process.ImageProcessor;
-import ij.process.LUT;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -17,16 +15,12 @@ import loci.common.services.ServiceFactory;
 import loci.formats.*;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
-import loci.plugins.in.Calibrator;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import ome.units.UNITS;
 import ome.units.quantity.Length;
 import ome.xml.meta.IMetadata;
-import ome.xml.model.primitives.*;
-import ome.xml.model.primitives.Color;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
@@ -37,7 +31,6 @@ import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -46,7 +39,9 @@ import java.text.DecimalFormat;
  * Created by sc13967 on 15/05/2017.
  */
 public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Module {
+    public static final String OUTPUT_MODE = "Output mode";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String OUTPUT_OBJECTS = "Output objects";
     public static final String IMPORT_MODE = "Import mode";
     public static final String NUMBER_OF_ZEROES = "Number of zeroes";
     public static final String STARTING_INDEX = "Starting index";
@@ -81,6 +76,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String THREE_D_MODE = "Load 3D stacks as";
     public static final String SHOW_IMAGE = "Show image";
 
+    public interface OutputModes {
+        String IMAGE = "Image";
+        String OBJECTS = "Objects";
+
+        String[] ALL = new String[]{IMAGE,OBJECTS};
+
+    }
+
     public interface ImportModes {
         String CURRENT_FILE = "Current file";
         String IMAGEJ = "From ImageJ";
@@ -107,7 +110,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String[] ALL = new String[]{INCUCYTE_SHORT,INPUT_FILE_PREFIX};
 
     }
-    
+
 //    public Img<T> getImg(String path, int seriesNumber,int[][] dimRanges, boolean verbose) throws IOException, io.scif.FormatException {
 //        File file = new File(path);
 //
@@ -263,7 +266,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         StringBuilder stringBuilder = new StringBuilder();
         for (int i=0;i<numberOfZeroes;i++) stringBuilder.append("0");
         DecimalFormat df = new DecimalFormat(stringBuilder.toString());
-        
+
         // Getting fragments of the filepath
         String rootPath = rootFile.getParent()+"\\";
         String rootName = rootFile.getName();
@@ -357,6 +360,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     @Override
     public void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
+        String outputMode = parameters.getValue(OUTPUT_MODE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String importMode = parameters.getValue(IMPORT_MODE);
         String filePath = parameters.getValue(FILE_PATH);
         int numberOfZeroes = parameters.getValue(NUMBER_OF_ZEROES);
@@ -387,7 +393,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         double xyCal = parameters.getValue(XY_CAL);
         double zCal = parameters.getValue(Z_CAL);
         String units = parameters.getValue(UNITS);
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean useImageJReader = parameters.getValue(USE_IMAGEJ_READER);
         String threeDMode = parameters.getValue(THREE_D_MODE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
@@ -468,8 +473,20 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Adding image to workspace
-        writeMessage("Adding image ("+outputImageName+") to workspace");
-        workspace.addImage(new Image(outputImageName,ipl));
+        switch (outputMode) {
+            case OutputModes.IMAGE:
+                writeMessage("Adding image (" + outputImageName + ") to workspace");
+                workspace.addImage(new Image(outputImageName, ipl));
+                break;
+
+            case OutputModes.OBJECTS:
+                Image outputImage = new Image(outputObjectsName, ipl);
+                ObjCollection outputObjects = outputImage.convertImageToObjects(outputObjectsName);
+
+                writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
+                workspace.addObjects(outputObjects);
+                break;
+        }
 
         // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
         if (showImage && ipl != null) {
@@ -480,6 +497,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     public void initialiseParameters() {
+        parameters.add(new Parameter(OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.IMAGE, OutputModes.ALL));
+        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
         parameters.add(
                 new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
         parameters.add(new Parameter(NUMBER_OF_ZEROES,Parameter.INTEGER,4));
@@ -491,7 +511,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
         parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
         parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(USE_ALL_C, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(STARTING_C, Parameter.INTEGER,1));
         parameters.add(new Parameter(ENDING_C, Parameter.INTEGER,1));
@@ -522,8 +541,18 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     @Override
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
-        
-        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(OUTPUT_MODE));
+        switch ((String) parameters.getValue(OUTPUT_MODE)) {
+            case OutputModes.IMAGE:
+                returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+                break;
+
+            case OutputModes.OBJECTS:
+                returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+                break;
+        }
+
         returnedParameters.add(parameters.getParameter(IMPORT_MODE));
         switch((String) parameters.getValue(IMPORT_MODE)) {
             case ImportModes.CURRENT_FILE:
