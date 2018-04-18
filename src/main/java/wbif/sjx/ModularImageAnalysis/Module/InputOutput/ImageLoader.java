@@ -465,7 +465,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Converting RGB to 3-channel
-        boolean toConvert = ipl.getStack().isRGB();
+        boolean toConvert = ipl.getBitDepth() == 24;
         if (toConvert) ipl = CompositeConverter.makeComposite(ipl);
 
         if (threeDMode.equals(ThreeDModes.TIMESERIES) && (!ipl.isHyperStack() || toConvert) && ipl.getNSlices() > 1) {
