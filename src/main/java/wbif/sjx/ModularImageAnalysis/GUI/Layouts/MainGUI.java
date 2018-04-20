@@ -12,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
@@ -925,6 +926,8 @@ public class MainGUI extends GUI {
         boolean useFilenameFilter3 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_3);
         String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
         String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
+
+        Units.setUnits(inputControl.getParameterValue(InputControl.SPATIAL_UNITS));
 
         String inputFile = "";
         switch (inputMode) {

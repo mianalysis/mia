@@ -11,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.ExpectedSpots3D;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement.RelateObjects;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Units;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.util.Arrays;
@@ -315,7 +316,7 @@ public class RelateObjectsTest {
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
             double expectedSurfDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL.name()).getValue();
-            double actualSurfDistCal = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_CAL).getValue();
+            double actualSurfDistCal = proxObj1Obj.getMeasurement(Units.replace(RelateObjects.Measurements.DIST_SURFACE_CAL)).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 
         }
@@ -373,7 +374,7 @@ public class RelateObjectsTest {
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
             double expectedSurfDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL_5PX.name()).getValue();
-            double actualSurfDistCal = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_CAL).getValue();
+            double actualSurfDistCal = proxObj1Obj.getMeasurement(Units.replace(RelateObjects.Measurements.DIST_SURFACE_CAL)).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 
         }

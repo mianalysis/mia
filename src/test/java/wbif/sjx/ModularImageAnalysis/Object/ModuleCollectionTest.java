@@ -183,9 +183,9 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         String[] expectedNames1 = new String[]{MeasureObjectCentroid.Measurements.MEAN_X_PX,
                 MeasureObjectCentroid.Measurements.MEAN_Y_PX,
                 MeasureObjectCentroid.Measurements.MEAN_Z_SLICE,
-                MeasureObjectCentroid.Measurements.MEAN_X_CAL,
-                MeasureObjectCentroid.Measurements.MEAN_Y_CAL,
-                MeasureObjectCentroid.Measurements.MEAN_Z_CAL,
+                Units.replace(MeasureObjectCentroid.Measurements.MEAN_X_CAL),
+                Units.replace(MeasureObjectCentroid.Measurements.MEAN_Y_CAL),
+                Units.replace(MeasureObjectCentroid.Measurements.MEAN_Z_CAL),
                 MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ASM),
                 MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CONTRAST),
                 MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CORRELATION),
@@ -199,10 +199,11 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         MeasurementReferenceCollection references2 = modules.getObjectMeasurementReferences(obj2Name);
         assertEquals(5,references2.size());
 
-        String[] expectedNames2 = new String[]{MeasureObjectShape.Measurements.PROJ_DIA_CAL,
+        String[] expectedNames2 = new String[]{
+                Units.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL),
                 MeasureObjectShape.Measurements.PROJ_DIA_PX,
-                MeasureObjectShape.Measurements.VOLUME_CAL,
-                MeasureObjectShape.Measurements.VOLUME_CAL};
+                Units.replace(MeasureObjectShape.Measurements.VOLUME_CAL),
+                Units.replace(MeasureObjectShape.Measurements.VOLUME_CAL)};
 
         for (String expectedName2:expectedNames2) {
             assertTrue(references2.containsKey(expectedName2));
@@ -253,9 +254,9 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         String[] expectedNames1 = new String[]{MeasureObjectCentroid.Measurements.MEAN_X_PX,
                 MeasureObjectCentroid.Measurements.MEAN_Y_PX,
                 MeasureObjectCentroid.Measurements.MEAN_Z_SLICE,
-                MeasureObjectCentroid.Measurements.MEAN_X_CAL,
-                MeasureObjectCentroid.Measurements.MEAN_Y_CAL,
-                MeasureObjectCentroid.Measurements.MEAN_Z_CAL};
+                Units.replace(MeasureObjectCentroid.Measurements.MEAN_X_CAL),
+                        Units.replace(MeasureObjectCentroid.Measurements.MEAN_Y_CAL),
+                                Units.replace(MeasureObjectCentroid.Measurements.MEAN_Z_CAL)};
 
         for (String expectedName1:expectedNames1) {
             assertTrue(references1.containsKey(expectedName1));

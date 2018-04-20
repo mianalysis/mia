@@ -50,26 +50,26 @@ public class MeasureObjectCurvature extends Module {
     }
 
     public interface Measurements {
-        String MEAN_ABSOLUTE_CURVATURE_PX = "CURVATURE//MEAN_ABSOLUTE_CURVATURE_PX";
-        String MIN_ABSOLUTE_CURVATURE_PX = "CURVATURE//MIN_ABSOLUTE_CURVATURE_PX";
-        String MAX_ABSOLUTE_CURVATURE_PX = "CURVATURE//MAX_ABSOLUTE_CURVATURE_PX";
-        String STD_ABSOLUTE_CURVATURE_PX = "CURVATURE//STD_ABSOLUTE_CURVATURE_PX";
-        String MEAN_ABSOLUTE_CURVATURE_CAL = "CURVATURE//MEAN_ABSOLUTE_CURVATURE_CAL";
-        String MIN_ABSOLUTE_CURVATURE_CAL = "CURVATURE//MIN_ABSOLUTE_CURVATURE_CAL";
-        String MAX_ABSOLUTE_CURVATURE_CAL = "CURVATURE//MAX_ABSOLUTE_CURVATURE_CAL";
-        String STD_ABSOLUTE_CURVATURE_CAL = "CURVATURE//STD_ABSOLUTE_CURVATURE_CAL";
-        String MEAN_SIGNED_CURVATURE_PX = "CURVATURE//MEAN_SIGNED_CURVATURE_PX";
-        String MIN_SIGNED_CURVATURE_PX = "CURVATURE//MIN_SIGNED_CURVATURE_PX";
-        String MAX_SIGNED_CURVATURE_PX = "CURVATURE//MAX_SIGNED_CURVATURE_PX";
-        String STD_SIGNED_CURVATURE_PX = "CURVATURE//STD_SIGNED_CURVATURE_PX";
-        String MEAN_SIGNED_CURVATURE_CAL = "CURVATURE//MEAN_SIGNED_CURVATURE_CAL";
-        String MIN_SIGNED_CURVATURE_CAL = "CURVATURE//MIN_SIGNED_CURVATURE_CAL";
-        String MAX_SIGNED_CURVATURE_CAL = "CURVATURE//MAX_SIGNED_CURVATURE_CAL";
-        String STD_SIGNED_CURVATURE_CAL = "CURVATURE//STD_SIGNED_CURVATURE_CAL";
-        String SPLINE_LENGTH_PX = "CURVATURE//SPLINE_LENGTH_PX";
-        String SPLINE_LENGTH_CAL = "CURVATURE//SPLINE_LENGTH_CAL";
-        String FIRST_POINT_X_PX = "CURVATURE//FIRST_POINT_X_PX";
-        String FIRST_POINT_Y_PX = "CURVATURE//FIRST_POINT_Y_PX";
+        String MEAN_ABSOLUTE_CURVATURE_PX = "CURVATURE//MEAN_ABSOLUTE_CURVATURE_(PX)";
+        String MIN_ABSOLUTE_CURVATURE_PX = "CURVATURE//MIN_ABSOLUTE_CURVATURE_(PX)";
+        String MAX_ABSOLUTE_CURVATURE_PX = "CURVATURE//MAX_ABSOLUTE_CURVATURE_(PX)";
+        String STD_ABSOLUTE_CURVATURE_PX = "CURVATURE//STD_ABSOLUTE_CURVATURE_(PX)";
+        String MEAN_ABSOLUTE_CURVATURE_CAL = "CURVATURE//MEAN_ABSOLUTE_CURVATURE_(${CAL})";
+        String MIN_ABSOLUTE_CURVATURE_CAL = "CURVATURE//MIN_ABSOLUTE_CURVATURE_(${CAL})";
+        String MAX_ABSOLUTE_CURVATURE_CAL = "CURVATURE//MAX_ABSOLUTE_CURVATURE_(${CAL})";
+        String STD_ABSOLUTE_CURVATURE_CAL = "CURVATURE//STD_ABSOLUTE_CURVATURE_(${CAL})";
+        String MEAN_SIGNED_CURVATURE_PX = "CURVATURE//MEAN_SIGNED_CURVATURE_(PX)";
+        String MIN_SIGNED_CURVATURE_PX = "CURVATURE//MIN_SIGNED_CURVATURE_(PX)";
+        String MAX_SIGNED_CURVATURE_PX = "CURVATURE//MAX_SIGNED_CURVATURE_(PX)";
+        String STD_SIGNED_CURVATURE_PX = "CURVATURE//STD_SIGNED_CURVATURE_(PX)";
+        String MEAN_SIGNED_CURVATURE_CAL = "CURVATURE//MEAN_SIGNED_CURVATURE_(${CAL})";
+        String MIN_SIGNED_CURVATURE_CAL = "CURVATURE//MIN_SIGNED_CURVATURE_(${CAL})";
+        String MAX_SIGNED_CURVATURE_CAL = "CURVATURE//MAX_SIGNED_CURVATURE_(${CAL})";
+        String STD_SIGNED_CURVATURE_CAL = "CURVATURE//STD_SIGNED_CURVATURE_(${CAL})";
+        String SPLINE_LENGTH_PX = "CURVATURE//SPLINE_LENGTH_(PX)";
+        String SPLINE_LENGTH_CAL = "CURVATURE//SPLINE_LENGTH_(${CAL})";
+        String FIRST_POINT_X_PX = "CURVATURE//FIRST_POINT_X_(PX)";
+        String FIRST_POINT_Y_PX = "CURVATURE//FIRST_POINT_Y_(PX)";
         String REL_LOC_OF_MIN_CURVATURE = "CURVATURE//REL_LOC_OF_MIN_CURVATURE";
         String REL_LOC_OF_MAX_CURVATURE = "CURVATURE//REL_LOC_OF_MAX_CURVATURE";
         String HEAD_TAIL_ANGLE_DEGS = "CURVATURE//HEAD_TAIL_ANGLE_DEGS";
@@ -161,10 +161,10 @@ public class MeasureObjectCurvature extends Module {
             inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getMin()));
             inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getMax()));
             inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_PX, cumStatAbsolute.getStd()));
-            inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getMean() / dppXY));
-            inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getMin() / dppXY));
-            inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getMax() / dppXY));
-            inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_CAL, cumStatAbsolute.getStd() / dppXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL), cumStatAbsolute.getMean() / dppXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MIN_ABSOLUTE_CURVATURE_CAL), cumStatAbsolute.getMin() / dppXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MAX_ABSOLUTE_CURVATURE_CAL), cumStatAbsolute.getMax() / dppXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.STD_ABSOLUTE_CURVATURE_CAL), cumStatAbsolute.getStd() / dppXY));
         }
 
         if (signedCurvature) {
@@ -172,10 +172,10 @@ public class MeasureObjectCurvature extends Module {
             inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_PX, cumStatSigned.getMin()));
             inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_PX, cumStatSigned.getMax()));
             inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_PX, cumStatSigned.getStd()));
-            inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_CAL, cumStatSigned.getMean() / dppXY));
-            inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_CAL, cumStatSigned.getMin() / dppXY));
-            inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_CAL, cumStatSigned.getMax() / dppXY));
-            inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_CAL, cumStatSigned.getStd() / dppXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_SIGNED_CURVATURE_CAL), cumStatSigned.getMean() / dppXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MIN_SIGNED_CURVATURE_CAL), cumStatSigned.getMin() / dppXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MAX_SIGNED_CURVATURE_CAL), cumStatSigned.getMax() / dppXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.STD_SIGNED_CURVATURE_CAL), cumStatSigned.getStd() / dppXY));
         }
     }
 
@@ -208,7 +208,7 @@ public class MeasureObjectCurvature extends Module {
         }
 
         inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_PX,pathLength));
-        inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL,pathLength*dppXY));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SPLINE_LENGTH_CAL),pathLength*dppXY));
 
         if (useReference) {
             Vertex firstPoint = longestPath.iterator().next();
@@ -264,10 +264,10 @@ public class MeasureObjectCurvature extends Module {
                 inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_PX, Double.NaN));
                 inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_PX, Double.NaN));
                 inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MIN_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MAX_ABSOLUTE_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.STD_ABSOLUTE_CURVATURE_CAL, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL), Double.NaN));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MIN_ABSOLUTE_CURVATURE_CAL), Double.NaN));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MAX_ABSOLUTE_CURVATURE_CAL), Double.NaN));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.STD_ABSOLUTE_CURVATURE_CAL), Double.NaN));
             }
 
             if (signedCurvature) {
@@ -275,14 +275,14 @@ public class MeasureObjectCurvature extends Module {
                 inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_PX, Double.NaN));
                 inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_PX, Double.NaN));
                 inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MEAN_SIGNED_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MIN_SIGNED_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.MAX_SIGNED_CURVATURE_CAL, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.STD_SIGNED_CURVATURE_CAL, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_SIGNED_CURVATURE_CAL), Double.NaN));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MIN_SIGNED_CURVATURE_CAL), Double.NaN));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.MAX_SIGNED_CURVATURE_CAL), Double.NaN));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.STD_SIGNED_CURVATURE_CAL), Double.NaN));
             }
 
             inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_PX,Double.NaN));
-            inputObject.addMeasurement(new Measurement(Measurements.SPLINE_LENGTH_CAL,Double.NaN));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SPLINE_LENGTH_CAL),Double.NaN));
 
             if (useReference) {
                 inputObject.addMeasurement(new Measurement(Measurements.FIRST_POINT_X_PX, Double.NaN));
@@ -483,20 +483,20 @@ public class MeasureObjectCurvature extends Module {
         MeasurementReference minCurvatureAbsolutePx = objectMeasurementReferences.getOrPut(Measurements.MIN_ABSOLUTE_CURVATURE_PX);
         MeasurementReference maxCurvatureAbsolutePx = objectMeasurementReferences.getOrPut(Measurements.MAX_ABSOLUTE_CURVATURE_PX);
         MeasurementReference stdCurvatureAbsolutePx = objectMeasurementReferences.getOrPut(Measurements.STD_ABSOLUTE_CURVATURE_PX);
-        MeasurementReference meanCurvatureAbsoluteCal = objectMeasurementReferences.getOrPut(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL);
-        MeasurementReference minCurvatureAbsoluteCal = objectMeasurementReferences.getOrPut(Measurements.MIN_ABSOLUTE_CURVATURE_CAL);
-        MeasurementReference maxCurvatureAbsoluteCal = objectMeasurementReferences.getOrPut(Measurements.MAX_ABSOLUTE_CURVATURE_CAL);
-        MeasurementReference stdCurvatureAbsoluteCal = objectMeasurementReferences.getOrPut(Measurements.STD_ABSOLUTE_CURVATURE_CAL);
+        MeasurementReference meanCurvatureAbsoluteCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_ABSOLUTE_CURVATURE_CAL));
+        MeasurementReference minCurvatureAbsoluteCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MIN_ABSOLUTE_CURVATURE_CAL));
+        MeasurementReference maxCurvatureAbsoluteCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MAX_ABSOLUTE_CURVATURE_CAL));
+        MeasurementReference stdCurvatureAbsoluteCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.STD_ABSOLUTE_CURVATURE_CAL));
         MeasurementReference meanCurvatureSignedPx = objectMeasurementReferences.getOrPut(Measurements.MEAN_SIGNED_CURVATURE_PX);
         MeasurementReference minCurvatureSignedPx = objectMeasurementReferences.getOrPut(Measurements.MIN_SIGNED_CURVATURE_PX);
         MeasurementReference maxCurvatureSignedPx = objectMeasurementReferences.getOrPut(Measurements.MAX_SIGNED_CURVATURE_PX);
         MeasurementReference stdCurvatureSignedPx = objectMeasurementReferences.getOrPut(Measurements.STD_SIGNED_CURVATURE_PX);
-        MeasurementReference meanCurvatureSignedCal = objectMeasurementReferences.getOrPut(Measurements.MEAN_SIGNED_CURVATURE_CAL);
-        MeasurementReference minCurvatureSignedCal = objectMeasurementReferences.getOrPut(Measurements.MIN_SIGNED_CURVATURE_CAL);
-        MeasurementReference maxCurvatureSignedCal = objectMeasurementReferences.getOrPut(Measurements.MAX_SIGNED_CURVATURE_CAL);
-        MeasurementReference stdCurvatureSignedCal = objectMeasurementReferences.getOrPut(Measurements.STD_SIGNED_CURVATURE_CAL);
+        MeasurementReference meanCurvatureSignedCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_SIGNED_CURVATURE_CAL));
+        MeasurementReference minCurvatureSignedCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MIN_SIGNED_CURVATURE_CAL));
+        MeasurementReference maxCurvatureSignedCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MAX_SIGNED_CURVATURE_CAL));
+        MeasurementReference stdCurvatureSignedCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.STD_SIGNED_CURVATURE_CAL));
         MeasurementReference splineLengthPx = objectMeasurementReferences.getOrPut(Measurements.SPLINE_LENGTH_PX);
-        MeasurementReference splineLengthCal = objectMeasurementReferences.getOrPut(Measurements.SPLINE_LENGTH_CAL);
+        MeasurementReference splineLengthCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SPLINE_LENGTH_CAL));
         MeasurementReference firstPointX = objectMeasurementReferences.getOrPut(Measurements.FIRST_POINT_X_PX);
         MeasurementReference firstPointY = objectMeasurementReferences.getOrPut(Measurements.FIRST_POINT_Y_PX);
         MeasurementReference relLocMinCurvature = objectMeasurementReferences.getOrPut(Measurements.REL_LOC_OF_MIN_CURVATURE);

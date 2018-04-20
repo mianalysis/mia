@@ -46,9 +46,9 @@ public class TrackObjects extends Module {
         String TRACK_PREV_ID = "TRACKING//PREVIOUS_OBJECT_IN_TRACK_ID";
         String TRACK_NEXT_ID = "TRACKING//NEXT_OBJECT_IN_TRACK_ID";
         String ORIENTATION = "TRACKING//ORIENTATION";
-        String LEADING_X_PX = "TRACKING//LEADING_POINT_X_PX";
-        String LEADING_Y_PX = "TRACKING//LEADING_POINT_Y_PX";
-        String LEADING_Z_PX = "TRACKING//LEADING_POINT_Z_PX";
+        String LEADING_X_PX = "TRACKING//LEADING_POINT_X_(PX)";
+        String LEADING_Y_PX = "TRACKING//LEADING_POINT_Y_(PX)";
+        String LEADING_Z_PX = "TRACKING//LEADING_POINT_Z_(PX)";
 
     }
 

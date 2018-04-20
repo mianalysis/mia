@@ -54,9 +54,9 @@ public class MeasureObjectIntensity extends Module {
         String Z_CENT_STDEV = "Z_CENTRE_STDEV (SLICE)";
 
         String MEAN_EDGE_DISTANCE_PX = "MEAN_EDGE_DISTANCE (PX)";
-        String MEAN_EDGE_DISTANCE_CAL = "MEAN_EDGE_DISTANCE (CAL)";
+        String MEAN_EDGE_DISTANCE_CAL = "MEAN_EDGE_DISTANCE (${CAL})";
         String STD_EDGE_DISTANCE_PX = "STD_EDGE_DISTANCE (PX)";
-        String STD_EDGE_DISTANCE_CAL = "STD_EDGE_DISTANCE (CAL)";
+        String STD_EDGE_DISTANCE_CAL = "STD_EDGE_DISTANCE (${CAL})";
 
         String EDGE_PROFILE = "EDGE_PROFILE";
 
@@ -166,9 +166,9 @@ public class MeasureObjectIntensity extends Module {
         double distPerPxXY = object.getDistPerPxXY();
 
         object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_PX), cs.getMean()));
-        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_CAL), cs.getMean()*distPerPxXY));
+        object.addMeasurement(new Measurement(Units.replace(getFullName(imageName, Measurements.MEAN_EDGE_DISTANCE_CAL)), cs.getMean()*distPerPxXY));
         object.addMeasurement(new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_PX), cs.getStd()));
-        object.addMeasurement(new Measurement(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_CAL), cs.getStd()*distPerPxXY));
+        object.addMeasurement(new Measurement(Units.replace(getFullName(imageName, Measurements.STD_EDGE_DISTANCE_CAL)), cs.getStd()*distPerPxXY));
 
     }
 
@@ -429,7 +429,7 @@ public class MeasureObjectIntensity extends Module {
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
-            name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_CAL);
+            name = Units.replace(getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_CAL));
             reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
@@ -439,7 +439,7 @@ public class MeasureObjectIntensity extends Module {
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
 
-            name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_CAL);
+            name = Units.replace(getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_CAL));
             reference = objectMeasurementReferences.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
@@ -451,7 +451,7 @@ public class MeasureObjectIntensity extends Module {
             double maxDist = parameters.getValue(MAXIMUM_DISTANCE);
             int nMeasurements = parameters.getValue(NUMBER_OF_MEASUREMENTS);
             double[] bins = getProfileBins(minDist,maxDist,nMeasurements);
-            String units = parameters.getValue(CALIBRATED_DISTANCES) ? "CAL" : "PX";
+            String units = parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
 
             // Bin names must be in alphabetical order (for the MeasurementReferenceCollection TreeMap)
             int nDigits = (int) Math.log10(bins.length)+1;
