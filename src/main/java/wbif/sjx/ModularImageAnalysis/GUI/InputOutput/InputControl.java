@@ -27,6 +27,7 @@ public class InputControl extends Module {
     public static final String USE_FILENAME_FILTER_3 = "Use filename filter 3";
     public static final String FILENAME_FILTER_3 = "Filename filter 3";
     public static final String FILENAME_FILTER_TYPE_3 = "Filter type 3";
+    public static final String SPATIAL_UNITS = "Spatial units";
 
     public interface InputModes {
         String SINGLE_FILE = "Single file";
@@ -54,6 +55,7 @@ public class InputControl extends Module {
 
     }
 
+    public interface SpatialUnits extends Units.SpatialUnits{}
 
     @Override
     public String getTitle() {
@@ -92,6 +94,7 @@ public class InputControl extends Module {
         parameters.add(new Parameter(USE_FILENAME_FILTER_3,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FILENAME_FILTER_3,Parameter.STRING,""));
         parameters.add(new Parameter(FILENAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new Parameter(SPATIAL_UNITS,Parameter.CHOICE_ARRAY,SpatialUnits.MICROMETRE,SpatialUnits.ALL));
 
     }
 
@@ -144,6 +147,8 @@ public class InputControl extends Module {
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_3));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_3));
         }
+
+        returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
 
         return returnedParameters;
 

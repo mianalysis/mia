@@ -33,19 +33,19 @@ public class MeasureObjectShape extends Module {
 
     public interface Measurements {
         String N_VOXELS = "SHAPE//N_VOXELS";
-        String VOLUME_PX = "SHAPE//VOLUME_PX";
-        String VOLUME_CAL = "SHAPE//VOLUME_CAL";
-        String HULL_VOLUME_PX = "SHAPE//HULL_VOLUME_PX";
-        String HULL_VOLUME_CAL = "SHAPE//HULL_VOLUME_CAL";
-        String HULL_SURFACE_AREA_PX = "SHAPE//HULL_SURFACE_AREA_PX";
-        String HULL_SURFACE_AREA_CAL = "SHAPE//HULL_SURFACE_AREA_CAL";
+        String VOLUME_PX = "SHAPE//VOLUME_(PX^3)";
+        String VOLUME_CAL = "SHAPE//VOLUME_(${CAL}^3)";
+        String HULL_VOLUME_PX = "SHAPE//HULL_VOLUME_(PX^3)";
+        String HULL_VOLUME_CAL = "SHAPE//HULL_VOLUME_(${CAL}^3)";
+        String HULL_SURFACE_AREA_PX = "SHAPE//HULL_SURFACE_AREA_(PX^2)";
+        String HULL_SURFACE_AREA_CAL = "SHAPE//HULL_SURFACE_AREA_(${CAL}^2)";
         String SPHERICITY = "SHAPE//SPHERICITY";
         String SOLIDITY = "SHAPE//SOLIDITY";
         String ELLIPSOID_ORIENTATION_1 = "SHAPE//ELLIPSOID_ORIENTATION_1_(DEGS)";
         String ELLIPSOID_ORIENTATION_2 = "SHAPE//ELLIPSOID_ORIENTATION_2_(DEGS)";
         String ELLIPSE_THETA = "SHAPE//ELLIPSE_ANGLE_(DEGS)";
-        String PROJ_DIA_PX = "SHAPE//PROJ_DIA_PX";
-        String PROJ_DIA_CAL = "SHAPE//PROJ_DIA_CAL";
+        String PROJ_DIA_PX = "SHAPE//PROJ_DIA_(PX)";
+        String PROJ_DIA_CAL = "SHAPE//PROJ_DIA_(${CAL})";
 
         String[] ALL = new String[]{VOLUME_PX, VOLUME_CAL, PROJ_DIA_PX, PROJ_DIA_CAL};
 
@@ -121,7 +121,7 @@ public class MeasureObjectShape extends Module {
                 inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, containedVolumePx, this));
 
                 double containedVolumeCal = inputObject.getContainedVolume(false);
-                inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, containedVolumeCal, this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.VOLUME_CAL), containedVolumeCal, this));
             }
 
             // Adding the convex hull fitting measurements
@@ -145,9 +145,9 @@ public class MeasureObjectShape extends Module {
                 double solidity = volumeCalculator.getSolidity();
 
                 inputObject.addMeasurement(new Measurement(Measurements.HULL_VOLUME_PX,hullVolumePx,this));
-                inputObject.addMeasurement(new Measurement(Measurements.HULL_VOLUME_CAL,hullVolumeCal,this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.HULL_VOLUME_CAL),hullVolumeCal,this));
                 inputObject.addMeasurement(new Measurement(Measurements.HULL_SURFACE_AREA_PX,hullSurfaceAreaPx,this));
-                inputObject.addMeasurement(new Measurement(Measurements.HULL_SURFACE_AREA_CAL,hullSurfaceAreaCal,this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.HULL_SURFACE_AREA_CAL),hullSurfaceAreaCal,this));
                 inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY,sphericity,this));
                 inputObject.addMeasurement(new Measurement(Measurements.SOLIDITY,solidity,this));
             }
@@ -183,7 +183,7 @@ public class MeasureObjectShape extends Module {
                 double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
                 double maxDistanceCal = calculateMaximumPointPointDistance(projectedObject)*inputObject.getDistPerPxXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx, this));
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistanceCal, this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_DIA_CAL), maxDistanceCal, this));
             }
         }
     }
@@ -240,7 +240,7 @@ public class MeasureObjectShape extends Module {
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.VOLUME_CAL);
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.VOLUME_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
         }
@@ -250,7 +250,7 @@ public class MeasureObjectShape extends Module {
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.HULL_VOLUME_CAL);
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_VOLUME_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
@@ -258,7 +258,7 @@ public class MeasureObjectShape extends Module {
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.HULL_SURFACE_AREA_CAL);
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_SURFACE_AREA_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
@@ -294,7 +294,7 @@ public class MeasureObjectShape extends Module {
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_CAL);
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_DIA_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
         }

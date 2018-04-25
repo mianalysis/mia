@@ -25,9 +25,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.StringTokenizer;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -44,6 +46,7 @@ public class Exporter {
     private int exportMode = XLSX_EXPORT;
 
     private String exportFilePath;
+    private ErrorLog errorLog;
     private boolean verbose = false;
     private boolean exportSummary = true;
     private boolean showObjectCounts = true;
@@ -317,6 +320,7 @@ public class Exporter {
 
         // Adding relevant sheets
         prepareParametersXLSX(workbook,modules);
+        if (errorLog != null) prepareErrorLogXLSX(workbook,errorLog);
         if (exportSummary) prepareSummaryXLSX(workbook,workspaces,modules,summaryType);
         if (exportIndividualObjects) prepareObjectsXLSX(workbook,workspaces,modules);
 
@@ -382,6 +386,23 @@ public class Exporter {
                 moduleValueCell.setCellValue(module.getClass().getSimpleName());
 
             }
+        }
+    }
+
+    private void prepareErrorLogXLSX(SXSSFWorkbook workbook, ErrorLog errorLog) {
+        // Creating a sheet for parameters
+        Sheet errorSheet = workbook.createSheet("Log");
+
+        // Getting error log text and split by line returns
+        String logText = errorLog.getStreamContents();
+        StringTokenizer tokenizer = new StringTokenizer(logText,"\n");
+
+        // Adding a header row for the parameter titles
+        int rowCount = 0;
+        while (tokenizer.hasMoreTokens()) {
+            Row row = errorSheet.createRow(rowCount++);
+            Cell cell = row.createCell(0);
+            cell.setCellValue(tokenizer.nextToken());
         }
     }
 
@@ -1062,5 +1083,13 @@ public class Exporter {
 
     public void setCalculateSum(boolean calculateSum) {
         this.calculateSum = calculateSum;
+    }
+
+    public ErrorLog getErrorLog() {
+        return errorLog;
+    }
+
+    public void setErrorLog(ErrorLog errorLog) {
+        this.errorLog = errorLog;
     }
 }

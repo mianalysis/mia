@@ -20,8 +20,8 @@ public class FileParameter extends JButton implements ActionListener {
     private String fileType;
 
     public interface FileTypes {
-        String FILE_TYPE = "Global";
-        String FOLDER_TYPE = "Local";
+        String FILE_TYPE = "File";
+        String FOLDER_TYPE = "Folder";
         String EITHER_TYPE = "Either";
 
     }

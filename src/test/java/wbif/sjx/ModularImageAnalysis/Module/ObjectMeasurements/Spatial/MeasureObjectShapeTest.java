@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Units;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import static org.junit.Assert.*;
@@ -67,7 +68,7 @@ public class MeasureObjectShapeTest {
             assertEquals("Measurement value", expectedProjDiaPX, actualProjDiaPX, tolerance);
 
             double expectedProjDiaCal = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_PROJ_DIA_CAL.name()).getValue();
-            double actualProjDiaCal = testObject.getMeasurement(MeasureObjectShape.Measurements.PROJ_DIA_CAL).getValue();
+            double actualProjDiaCal = testObject.getMeasurement(Units.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL)).getValue();
             assertEquals("Measurement value", expectedProjDiaCal, actualProjDiaCal, tolerance);
 
         }

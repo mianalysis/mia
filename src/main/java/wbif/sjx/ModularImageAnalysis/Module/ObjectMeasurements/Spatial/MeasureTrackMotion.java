@@ -21,25 +21,25 @@ public class MeasureTrackMotion extends Module {
     private interface Measurements {
         String DURATION = "TRACK_ANALYSIS//DURATION_(FRAMES)";
         String FIRST_FRAME = "TRACK_ANALYSIS//FIRST_FRAME";
-        String X_VELOCITY_PX = "TRACK_ANALYSIS//X_VELOCITY_(PX)";
-        String X_VELOCITY_CAL = "TRACK_ANALYSIS//X_VELOCITY_(CAL)";
-        String Y_VELOCITY_PX = "TRACK_ANALYSIS//Y_VELOCITY_(PX)";
-        String Y_VELOCITY_CAL = "TRACK_ANALYSIS//Y_VELOCITY_(CAL)";
-        String MEAN_X_VELOCITY_PX = "TRACK_ANALYSIS//MEAN_X_VELOCITY_(PX)";
-        String MEAN_X_VELOCITY_CAL = "TRACK_ANALYSIS//MEAN_X_VELOCITY_(CAL)";
-        String MEAN_Y_VELOCITY_PX = "TRACK_ANALYSIS//MEAN_Y_VELOCITY_(PX)";
-        String MEAN_Y_VELOCITY_CAL = "TRACK_ANALYSIS//MEAN_Y_VELOCITY_(CAL)";
+        String X_VELOCITY_PX = "TRACK_ANALYSIS//X_VELOCITY_(PX/FRAME)";
+        String X_VELOCITY_CAL = "TRACK_ANALYSIS//X_VELOCITY_(${CAL}/FRAME)";
+        String Y_VELOCITY_PX = "TRACK_ANALYSIS//Y_VELOCITY_(PX/FRAME)";
+        String Y_VELOCITY_CAL = "TRACK_ANALYSIS//Y_VELOCITY_(${CAL}/FRAME)";
+        String MEAN_X_VELOCITY_PX = "TRACK_ANALYSIS//MEAN_X_VELOCITY_(PX/FRAME)";
+        String MEAN_X_VELOCITY_CAL = "TRACK_ANALYSIS//MEAN_X_VELOCITY_(${CAL}/FRAME)";
+        String MEAN_Y_VELOCITY_PX = "TRACK_ANALYSIS//MEAN_Y_VELOCITY_(PX/FRAME)";
+        String MEAN_Y_VELOCITY_CAL = "TRACK_ANALYSIS//MEAN_Y_VELOCITY_(${CAL}/FRAME)";
         String TOTAL_PATH_LENGTH_PX = "TRACK_ANALYSIS//TOTAL_PATH_LENGTH_(PX)";
-        String TOTAL_PATH_LENGTH_CAL = "TRACK_ANALYSIS//TOTAL_PATH_LENGTH_(CAL)";
+        String TOTAL_PATH_LENGTH_CAL = "TRACK_ANALYSIS//TOTAL_PATH_LENGTH_(${CAL})";
         String EUCLIDEAN_DISTANCE_PX = "TRACK_ANALYSIS//EUCLIDEAN_DISTANCE_(PX)";
-        String EUCLIDEAN_DISTANCE_CAL = "TRACK_ANALYSIS//EUCLIDEAN_DISTANCE_(CAL)";
+        String EUCLIDEAN_DISTANCE_CAL = "TRACK_ANALYSIS//EUCLIDEAN_DISTANCE_(${CAL})";
         String DIRECTIONALITY_RATIO = "TRACK_ANALYSIS//DIRECTIONALITY_RATIO";
         String INSTANTANEOUS_SPEED_PX = "TRACK_ANALYSIS//INSTANTANEOUS_SPEED_(PX/FRAME)";
-        String INSTANTANEOUS_SPEED_CAL = "TRACK_ANALYSIS//INSTANTANEOUS_SPEED_(CAL/FRAME)";
+        String INSTANTANEOUS_SPEED_CAL = "TRACK_ANALYSIS//INSTANTANEOUS_SPEED_(${CAL}/FRAME)";
         String CUMULATIVE_PATH_LENGTH_PX = "TRACK_ANALYSIS//CUMULATIVE_PATH_LENGTH_(PX)";
-        String CUMULATIVE_PATH_LENGTH_CAL = "TRACK_ANALYSIS//CUMULATIVE_PATH_LENGTH_(CAL)";
+        String CUMULATIVE_PATH_LENGTH_CAL = "TRACK_ANALYSIS//CUMULATIVE_PATH_LENGTH_(${CAL})";
         String ROLLING_EUCLIDEAN_DISTANCE_PX = "TRACK_ANALYSIS//ROLLING_EUCLIDEAN_DISTANCE_(PX)";
-        String ROLLING_EUCLIDEAN_DISTANCE_CAL = "TRACK_ANALYSIS//ROLLING_EUCLIDEAN_DISTANCE_(CAL)";
+        String ROLLING_EUCLIDEAN_DISTANCE_CAL = "TRACK_ANALYSIS//ROLLING_EUCLIDEAN_DISTANCE_(${CAL})";
         String ROLLING_DIRECTIONALITY_RATIO = "TRACK_ANALYSIS//ROLLING_DIRECTIONALITY_RATIO";
 
     }
@@ -94,13 +94,13 @@ public class MeasureTrackMotion extends Module {
                 inputTrackObject.addMeasurement(new Measurement(Measurements.DURATION, Double.NaN));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.FIRST_FRAME, Double.NaN));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_VELOCITY_PX, Double.NaN));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_VELOCITY_CAL, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_X_VELOCITY_CAL), Double.NaN));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_VELOCITY_PX, Double.NaN));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_VELOCITY_CAL, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_Y_VELOCITY_CAL), Double.NaN));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE_PX, Double.NaN));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE_CAL, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.EUCLIDEAN_DISTANCE_CAL), Double.NaN));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.TOTAL_PATH_LENGTH_PX, Double.NaN));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.TOTAL_PATH_LENGTH_CAL, Double.NaN));
+                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.TOTAL_PATH_LENGTH_CAL), Double.NaN));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.DIRECTIONALITY_RATIO, Double.NaN));
 
             } else {
@@ -125,13 +125,13 @@ public class MeasureTrackMotion extends Module {
                 inputTrackObject.addMeasurement(new Measurement(Measurements.DURATION, track.getDuration()));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.FIRST_FRAME, firstPoint.getF()));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_VELOCITY_PX, cumStatX.getMean()));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_VELOCITY_CAL, cumStatX.getMean()*distPerPxXY));
+                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_X_VELOCITY_CAL), cumStatX.getMean()*distPerPxXY));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_VELOCITY_PX, cumStatY.getMean()));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_VELOCITY_CAL, cumStatY.getMean()*distPerPxXY));
+                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_Y_VELOCITY_CAL), cumStatY.getMean()*distPerPxXY));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE_PX, euclideanDistance));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE_CAL, euclideanDistance*distPerPxXY));
+                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.EUCLIDEAN_DISTANCE_CAL), euclideanDistance*distPerPxXY));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.TOTAL_PATH_LENGTH_PX, totalPathLength));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.TOTAL_PATH_LENGTH_CAL, totalPathLength*distPerPxXY));
+                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.TOTAL_PATH_LENGTH_CAL), totalPathLength*distPerPxXY));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.DIRECTIONALITY_RATIO, track.getDirectionalityRatio(true)));
 
             }
@@ -147,15 +147,15 @@ public class MeasureTrackMotion extends Module {
             for (Obj spotObject : inputTrackObject.getChildren(inputSpotObjectsName).values()) {
                 int t = spotObject.getT();
                 spotObject.addMeasurement(new Measurement(Measurements.X_VELOCITY_PX, xVelocity.get(t)));
-                spotObject.addMeasurement(new Measurement(Measurements.X_VELOCITY_CAL, xVelocity.get(t)*distPerPxXY));
+                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.X_VELOCITY_CAL), xVelocity.get(t)*distPerPxXY));
                 spotObject.addMeasurement(new Measurement(Measurements.Y_VELOCITY_PX, yVelocity.get(t)));
-                spotObject.addMeasurement(new Measurement(Measurements.Y_VELOCITY_CAL, yVelocity.get(t)*distPerPxXY));
+                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_VELOCITY_CAL), yVelocity.get(t)*distPerPxXY));
                 spotObject.addMeasurement(new Measurement(Measurements.INSTANTANEOUS_SPEED_PX, speed.get(t)));
-                spotObject.addMeasurement(new Measurement(Measurements.INSTANTANEOUS_SPEED_CAL, speed.get(t)*distPerPxXY));
+                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.INSTANTANEOUS_SPEED_CAL), speed.get(t)*distPerPxXY));
                 spotObject.addMeasurement(new Measurement(Measurements.CUMULATIVE_PATH_LENGTH_PX, pathLength.get(t)));
-                spotObject.addMeasurement(new Measurement(Measurements.CUMULATIVE_PATH_LENGTH_CAL, pathLength.get(t)*distPerPxXY));
+                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.CUMULATIVE_PATH_LENGTH_CAL), pathLength.get(t)*distPerPxXY));
                 spotObject.addMeasurement(new Measurement(Measurements.ROLLING_EUCLIDEAN_DISTANCE_PX, euclidean.get(t)));
-                spotObject.addMeasurement(new Measurement(Measurements.ROLLING_EUCLIDEAN_DISTANCE_CAL, euclidean.get(t)*distPerPxXY));
+                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.ROLLING_EUCLIDEAN_DISTANCE_CAL), euclidean.get(t)*distPerPxXY));
                 spotObject.addMeasurement(new Measurement(Measurements.ROLLING_DIRECTIONALITY_RATIO, dirRatio.get(t)));
             }
         }
@@ -207,7 +207,7 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.EUCLIDEAN_DISTANCE_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.EUCLIDEAN_DISTANCE_CAL));
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
@@ -215,7 +215,7 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.TOTAL_PATH_LENGTH_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.TOTAL_PATH_LENGTH_CAL));
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
@@ -231,7 +231,7 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_X_VELOCITY_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_X_VELOCITY_CAL));
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
@@ -239,7 +239,7 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_Y_VELOCITY_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_Y_VELOCITY_CAL));
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
@@ -247,7 +247,7 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.X_VELOCITY_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.X_VELOCITY_CAL));
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
@@ -255,7 +255,7 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.Y_VELOCITY_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.Y_VELOCITY_CAL));
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
@@ -263,7 +263,7 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.INSTANTANEOUS_SPEED_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.INSTANTANEOUS_SPEED_CAL));
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
@@ -271,7 +271,7 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.CUMULATIVE_PATH_LENGTH_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.CUMULATIVE_PATH_LENGTH_CAL));
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
@@ -279,7 +279,7 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.ROLLING_EUCLIDEAN_DISTANCE_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.ROLLING_EUCLIDEAN_DISTANCE_CAL));
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
 

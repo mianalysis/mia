@@ -20,6 +20,7 @@ import loci.plugins.util.LociPrefs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import ome.units.quantity.Length;
+import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
@@ -71,7 +72,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String SET_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
-    public static final String UNITS = "Units";
     public static final String USE_IMAGEJ_READER = "Use ImageJ reader";
     public static final String THREE_D_MODE = "Load 3D stacks as";
     public static final String SHOW_IMAGE = "Show image";
@@ -137,7 +137,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 //    }
 
 
-    public ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, int[] crop) throws ServiceException, DependencyException, IOException, FormatException {
+    public ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, int[] crop, boolean localVerbose) throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
@@ -214,7 +214,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     ipl.setPosition(countC,countZ,countT);
                     ipl.setProcessor(ip);
 
-                    writeMessage("Loaded image "+(++count)+" of "+nTotal);
+                    if (localVerbose) writeMessage("Loaded image "+(++count)+" of "+nTotal);
 
                     countT++;
                 }
@@ -225,21 +225,25 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         ipl.setPosition(1, 1, 1);
 
+        Unit<Length> unit = Units.getOMEUnits();
+
         // Add spatial calibration
         if (meta != null) {
             if (meta.getPixelsPhysicalSizeX(seriesNumber-1) != null) {
                 Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber-1);
-                ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(ome.units.UNITS.MICROMETER);
-                ipl.getCalibration().setXUnit(physicalSizeX.unit().getSymbol());
+                if (!unit.isConvertible(physicalSizeX.unit())) System.err.println("Can't convert units for file \""+new File(path).getName()+"\".  Spatially calibrated values may be wrong");
+                ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(unit);
+                ipl.getCalibration().setXUnit(unit.getSymbol());
             } else {
+                System.err.println("Can't interpret units for file \""+new File(path).getName()+"\".  Spatial calibration set to pixel units.");
                 ipl.getCalibration().pixelWidth = 1.0;
                 ipl.getCalibration().setXUnit("px");
             }
 
             if (meta.getPixelsPhysicalSizeY(seriesNumber-1) != null) {
                 Length physicalSizeY = meta.getPixelsPhysicalSizeY(seriesNumber-1);
-                ipl.getCalibration().pixelHeight = (double) physicalSizeY.value(ome.units.UNITS.MICROMETER);
-                ipl.getCalibration().setYUnit(physicalSizeY.unit().getSymbol());
+                ipl.getCalibration().pixelHeight = (double) physicalSizeY.value(unit);
+                ipl.getCalibration().setYUnit(unit.getSymbol());
             } else {
                 ipl.getCalibration().pixelHeight = 1.0;
                 ipl.getCalibration().setYUnit("px");
@@ -247,12 +251,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
             if (ipl.getNSlices() > 1 && meta.getPixelsPhysicalSizeZ(seriesNumber-1) != null) {
                 Length physicalSizeZ = meta.getPixelsPhysicalSizeZ(seriesNumber-1);
-                ipl.getCalibration().pixelDepth = (double) physicalSizeZ.value(ome.units.UNITS.MICROMETER);
-                ipl.getCalibration().setZUnit(physicalSizeZ.unit().getSymbol());
+                ipl.getCalibration().pixelDepth = (double) physicalSizeZ.value(unit);
+                ipl.getCalibration().setZUnit(unit.getSymbol());
             } else {
                 ipl.getCalibration().pixelDepth = 1.0;
                 ipl.getCalibration().setZUnit("px");
             }
+        } else {
+            System.err.println("Can't interpret units for file \""+new File(path).getName()+"\".  Spatially calibrated values may be wrong");
         }
 
         reader.close();
@@ -261,7 +267,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int finalIndex, int[] crop){
+    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int finalIndex, int[] crop) throws ServiceException, DependencyException, FormatException, IOException {
         // Number format
         StringBuilder stringBuilder = new StringBuilder();
         for (int i=0;i<numberOfZeroes;i++) stringBuilder.append("0");
@@ -285,7 +291,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Determining the dimensions of the input image
-        ImagePlus rootIpl = IJ.openImage(rootFile.getAbsolutePath());
+        int[][] dimRanges = new int[][]{{1,1,1},{1,1,1},{1,1,1}};
+        ImagePlus rootIpl = getBFImage(rootFile.getAbsolutePath(),1,dimRanges,crop,false);
         int width = rootIpl.getWidth();
         int height = rootIpl.getHeight();
         int bitDepth = rootIpl.getBitDepth();
@@ -300,12 +307,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         for (int i = 0;i<count;i++) {
             writeMessage("Loading image "+(i+1)+" of "+count);
             String currentPath = rootPath+rootName+df.format(i+startingIndex)+"."+extension;
-            ImagePlus tempIpl = IJ.openImage(currentPath);
-
-            if (crop != null) {
-                tempIpl.setRoi(crop[0],crop[1],width,height);
-                tempIpl = tempIpl.crop();
-            }
+            ImagePlus tempIpl = getBFImage(currentPath,1,dimRanges,crop,false);
 
             outputIpl.setPosition(i+1);
             outputIpl.setProcessor(tempIpl.getProcessor());
@@ -313,6 +315,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         outputIpl.setPosition(1);
+
+        // Inheriting calibration from root image
+        outputIpl.setCalibration(rootIpl.getCalibration());
 
         return outputIpl;
 
@@ -342,7 +347,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 break;
         }
 
-        return getBFImage(filename,seriesNumber,dimRanges,crop);
+        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
 
     }
 
@@ -392,7 +397,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         boolean setCalibration = parameters.getValue(SET_CAL);
         double xyCal = parameters.getValue(XY_CAL);
         double zCal = parameters.getValue(Z_CAL);
-        String units = parameters.getValue(UNITS);
         boolean useImageJReader = parameters.getValue(USE_IMAGEJ_READER);
         String threeDMode = parameters.getValue(THREE_D_MODE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
@@ -419,7 +423,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         File file = workspace.getMetadata().getFile();
                         if (file == null)
                             throw new GenericMIAException("Set file in Input Control");
-                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges,crop);
+                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges,crop,true);
                         break;
 
                     case ImportModes.IMAGEJ:
@@ -444,7 +448,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         break;
 
                     case ImportModes.SPECIFIC_FILE:
-                        ipl = getBFImage(filePath, seriesNumber, dimRanges,crop);
+                        ipl = getBFImage(filePath, seriesNumber, dimRanges,crop,true);
                         break;
                 }
             }
@@ -459,7 +463,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             calibration.pixelHeight = xyCal;
             calibration.pixelWidth= xyCal;
             calibration.pixelDepth = zCal;
-            calibration.setUnit(units);
+            calibration.setUnit(Units.getOMEUnits().getSymbol());
 
             ipl.setCalibration(calibration);
         }
@@ -531,7 +535,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(SET_CAL, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(XY_CAL, Parameter.DOUBLE, 1.0));
         parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
-        parameters.add(new Parameter(UNITS, Parameter.STRING, "um"));
         parameters.add(new Parameter(USE_IMAGEJ_READER, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(THREE_D_MODE,Parameter.CHOICE_ARRAY,ThreeDModes.ZSTACK,ThreeDModes.ALL));
         parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
@@ -620,7 +623,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         if (parameters.getValue(SET_CAL)) {
             returnedParameters.add(parameters.getParameter(XY_CAL));
             returnedParameters.add(parameters.getParameter(Z_CAL));
-            returnedParameters.add(parameters.getParameter(UNITS));
         }
 
         returnedParameters.add(parameters.getParameter(USE_IMAGEJ_READER));

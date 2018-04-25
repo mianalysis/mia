@@ -59,8 +59,10 @@ public class MeasureIntensityDistribution extends Module {
         String SUM_INT_OUTRANGE = "SUM_INT_OUTRANGE";
         String MEAN_INT_INRANGE = "MEAN_INT_INRANGE";
         String MEAN_INT_OUTRANGE = "MEAN_INT_OUTRANGE";
-        String MEAN_PROXIMITY = "MEAN_PROXIMITY";
-        String STDEV_PROXIMITY = "STDEV_PROXIMITY";
+        String MEAN_PROXIMITY_PX = "MEAN_PROXIMITY_PX";
+        String MEAN_PROXIMITY_CAL = "MEAN_PROXIMITY_${CAL}";
+        String STDEV_PROXIMITY_PX = "STDEV_PROXIMITY_PX";
+        String STDEV_PROXIMITY_CAL = "STDEV_PROXIMITY_${CAL}";
 
     }
 
@@ -269,19 +271,27 @@ public class MeasureIntensityDistribution extends Module {
 
                 // Checking if there are any objects to measure
                 if (inputObjects.size() == 0) {
-                    inputImage.addMeasurement(
-                            new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), Double.NaN));
-                    inputImage.addMeasurement(
-                            new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), Double.NaN));
+                    String name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
+                    inputImage.addMeasurement(new Measurement(name, Double.NaN));
+                    name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
+                    inputImage.addMeasurement(new Measurement(name, Double.NaN));
+                    name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
+                    inputImage.addMeasurement(new Measurement(name, Double.NaN));
+                    name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
+                    inputImage.addMeasurement(new Measurement(name, Double.NaN));
                     return;
                 }
 
                 CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage, edgeDistanceMode);
-
-                inputImage.addMeasurement(
-                        new Measurement(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY), cs.getMean()));
-                inputImage.addMeasurement(
-                        new Measurement(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY), cs.getStd()));
+                double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
+                String name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
+                inputImage.addMeasurement(new Measurement(name, cs.getMean()));
+                name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
+                inputImage.addMeasurement(new Measurement(name, cs.getMean()*dppXY));
+                name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
+                inputImage.addMeasurement(new Measurement(name, cs.getStd()));
+                name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
+                inputImage.addMeasurement(new Measurement(name, cs.getStd()*dppXY));
 
                 writeMessage("Mean intensity proximity = " + cs.getMean() + " +/- "+cs.getStd());
 
@@ -364,11 +374,19 @@ public class MeasureIntensityDistribution extends Module {
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
-                name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY);
+                name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
                 reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 
-                name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY);
+                name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
+                reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
+
+                name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
+                reference = imageMeasurementReferences.getOrPut(name);
+                reference.setCalculated(true);
+
+                name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
                 reference = imageMeasurementReferences.getOrPut(name);
                 reference.setCalculated(true);
 

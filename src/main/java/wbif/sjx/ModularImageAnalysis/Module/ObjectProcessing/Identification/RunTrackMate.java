@@ -55,8 +55,10 @@ public class RunTrackMate extends Module {
     }
 
     public interface Measurements {
-        String RADIUS = "SPOT_DETECT_TRACK//RADIUS";
-        String ESTIMATED_DIAMETER = "SPOT_DETECT_TRACK//EST_DIAMETER";
+        String RADIUS_PX = "SPOT_DETECT_TRACK//RADIUS_(PX)";
+        String RADIUS_CAL = "SPOT_DETECT_TRACK//RADIUS_(${CAL})";
+        String ESTIMATED_DIAMETER_PX = "SPOT_DETECT_TRACK//EST_DIAMETER_(PX)";
+        String ESTIMATED_DIAMETER_CAL = "SPOT_DETECT_TRACK//EST_DIAMETER_(${CAL})";
 
     }
 
@@ -77,8 +79,10 @@ public class RunTrackMate extends Module {
             spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
-            spotObject.addMeasurement(new Measurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
-            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
+            spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS),this));
+            spotObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_CAL),spot.getFeature(Spot.RADIUS)*dppXY,this));
+            spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
+            spotObject.addMeasurement(new Measurement(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL),spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY,this));
 
             spotObjects.add(spotObject);
 
@@ -86,7 +90,7 @@ public class RunTrackMate extends Module {
 
         // Adding explicit volume to spots
         if (estimateSize) {
-            new GetLocalObjectRegion().getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS);
+            new GetLocalObjectRegion().getLocalRegions(spotObjects,"SpotVolume",0,false,true,Measurements.RADIUS_PX);
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject:spotObjects.values()) {
@@ -135,8 +139,10 @@ public class RunTrackMate extends Module {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
                 Obj spotObject = new Obj(spotObjectsName, spotObjects.getNextID(), dppXY, dppZ, calibrationUnits);
 
-                spotObject.addMeasurement(new Measurement(Measurements.RADIUS,spot.getFeature(Spot.RADIUS),this));
-                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
+                spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS),this));
+                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_CAL),spot.getFeature(Spot.RADIUS)*dppXY,this));
+                spotObject.addMeasurement(new Measurement(Measurements.ESTIMATED_DIAMETER_PX,spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER),this));
+                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL),spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY,this));
 
                 // Getting coordinates
                 int x = (int) spot.getDoublePosition(0);
@@ -165,7 +171,7 @@ public class RunTrackMate extends Module {
 
         // Adding explicit volume to spots
         if (estimateSize) {
-            ObjCollection spotVolumeObjects = new GetLocalObjectRegion().getLocalRegions(spotObjects, "SpotVolume", 0, false, true, Measurements.ESTIMATED_DIAMETER);
+            ObjCollection spotVolumeObjects = new GetLocalObjectRegion().getLocalRegions(spotObjects, "SpotVolume", 0, false, true, Measurements.ESTIMATED_DIAMETER_PX);
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject : spotObjects.values()) {
@@ -281,12 +287,6 @@ public class RunTrackMate extends Module {
             if (parameters.getValue(SHOW_OBJECTS)) {
                 // Creating a duplicate of the input image
                 ipl = new Duplicator().run(ipl);
-
-                // Getting parameters
-                boolean useTrackID = false;
-                if (parameters.getValue(ID_MODE).equals(IDModes.USE_TRACK_ID)) {
-                    useTrackID = true;
-                }
 
                 // Creating the overlay
                 String colourMode = ObjCollection.ColourModes.PARENT_ID;
@@ -408,14 +408,21 @@ public class RunTrackMate extends Module {
 
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
-        MeasurementReference radius = objectMeasurementReferences.getOrPut(Measurements.RADIUS);
-        MeasurementReference estimatedDiameter = objectMeasurementReferences.getOrPut(Measurements.ESTIMATED_DIAMETER);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.RADIUS_PX);
+        reference.setImageObjName(outputSpotObjectsName);
+        reference.setCalculated(true);
 
-        radius.setImageObjName(outputSpotObjectsName);
-        estimatedDiameter.setImageObjName(outputSpotObjectsName);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.RADIUS_CAL));
+        reference.setImageObjName(outputSpotObjectsName);
+        reference.setCalculated(true);
 
-        radius.setCalculated(true);
-        estimatedDiameter.setCalculated(true);
+        reference = objectMeasurementReferences.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
+        reference.setImageObjName(outputSpotObjectsName);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
+        reference.setImageObjName(outputSpotObjectsName);
+        reference.setCalculated(true);
 
         return objectMeasurementReferences;
 

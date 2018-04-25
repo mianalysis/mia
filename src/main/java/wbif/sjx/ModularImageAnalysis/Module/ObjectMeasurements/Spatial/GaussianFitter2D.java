@@ -45,18 +45,18 @@ public class GaussianFitter2D extends Module {
     }
     
     public interface Measurements {
-        String X0_PX = "GAUSSFIT2D//X0_PX";
-        String Y0_PX = "GAUSSFIT2D//Y0_PX";
-        String Z0_SLICE = "GAUSSFIT2D//Z0_SLICE_(CENTROID)";
-        String SIGMA_X_PX = "GAUSSFIT2D//SIGMA_X_PX";
-        String SIGMA_Y_PX = "GAUSSFIT2D//SIGMA_Y_PX";
-        String SIGMA_MEAN_PX = "GAUSSFIT2D//SIGMA_MEAN_PX";
-        String X0_CAL = "GAUSSFIT2D//X0_CAL";
-        String Y0_CAL = "GAUSSFIT2D//Y0_CAL";
-        String Z0_CAL = "GAUSSFIT2D//Z0_CAL_(CENTROID)";
-        String SIGMA_X_CAL = "GAUSSFIT2D//SIGMA_X_CAL";
-        String SIGMA_Y_CAL = "GAUSSFIT2D//SIGMA_Y_CAL";
-        String SIGMA_MEAN_CAL = "GAUSSFIT2D//SIGMA_MEAN_CAL";
+        String X0_PX = "GAUSSFIT2D//X0_(PX)";
+        String Y0_PX = "GAUSSFIT2D//Y0_(PX)";
+        String Z0_SLICE = "GAUSSFIT2D//Z0_(SLICE)_(CENTROID)";
+        String SIGMA_X_PX = "GAUSSFIT2D//SIGMA_X_(PX)";
+        String SIGMA_Y_PX = "GAUSSFIT2D//SIGMA_Y_(PX)";
+        String SIGMA_MEAN_PX = "GAUSSFIT2D//SIGMA_MEAN_(PX)";
+        String X0_CAL = "GAUSSFIT2D//X0_(${CAL})";
+        String Y0_CAL = "GAUSSFIT2D//Y0_(${CAL})";
+        String Z0_CAL = "GAUSSFIT2D//Z0_(${CAL})_(CENTROID)";
+        String SIGMA_X_CAL = "GAUSSFIT2D//SIGMA_X_(${CAL})";
+        String SIGMA_Y_CAL = "GAUSSFIT2D//SIGMA_Y_(${CAL})";
+        String SIGMA_MEAN_CAL = "GAUSSFIT2D//SIGMA_MEAN_(${CAL})";
         String A_0 = "GAUSSFIT2D//A_0";
         String A_BG = "GAUSSFIT2D//A_BG";
         String THETA = "GAUSSFIT2D//THETA";
@@ -258,12 +258,12 @@ public class GaussianFitter2D extends Module {
             inputObject.addMeasurement(new Measurement(Measurements.SIGMA_X_PX, sx));
             inputObject.addMeasurement(new Measurement(Measurements.SIGMA_Y_PX, sy));
             inputObject.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_PX, sm));
-            inputObject.addMeasurement(new Measurement(Measurements.X0_CAL, x0*distPerPxXY));
-            inputObject.addMeasurement(new Measurement(Measurements.Y0_CAL, y0*distPerPxXY));
-            inputObject.addMeasurement(new Measurement(Measurements.Z0_CAL, z0*distPerPxZ));
-            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_X_CAL, sx*distPerPxXY));
-            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_Y_CAL, sy*distPerPxXY));
-            inputObject.addMeasurement(new Measurement(Measurements.SIGMA_MEAN_CAL, sm*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X0_CAL), x0*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y0_CAL), y0*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Z0_CAL), z0*distPerPxZ));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_X_CAL), sx*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_Y_CAL), sy*distPerPxXY));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SIGMA_MEAN_CAL), sm*distPerPxXY));
             inputObject.addMeasurement(new Measurement(Measurements.A_0, A0));
             inputObject.addMeasurement(new Measurement(Measurements.A_BG, ABG));
             inputObject.addMeasurement(new Measurement(Measurements.THETA, th));
@@ -388,27 +388,27 @@ public class GaussianFitter2D extends Module {
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.X0_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.X0_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.Y0_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.Y0_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.Z0_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.Z0_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_X_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SIGMA_X_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_Y_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SIGMA_Y_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_MEAN_CAL);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SIGMA_MEAN_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
