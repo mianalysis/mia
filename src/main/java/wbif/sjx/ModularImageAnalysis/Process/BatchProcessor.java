@@ -180,8 +180,7 @@ public class BatchProcessor extends FileCrawler {
         TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
 
         // Only set verbose if a single series is being processed
-        String seriesMode = analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE);
-        Module.setVerbose(seriesMode.equals(InputControl.SeriesModes.SINGLE_SERIES) && seriesNumbers.size() == 1);
+        Module.setVerbose(seriesNumbers.size() == 1);
 
         // Iterating over all series to analyse, adding each one as a new workspace
         for (int seriesNumber:seriesNumbers.keySet()) {

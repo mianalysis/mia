@@ -243,30 +243,8 @@ public class Obj extends Volume {
     }
 
     public void addPointsFromRoi(Roi roi, int z) {
-        // Determine the limits of the ROI based on the polygon
-        Polygon polygon = roi.getPolygon();
-        int[] xCoords = polygon.xpoints;
-        int[] yCoords = polygon.ypoints;
-
-        int minX = Integer.MAX_VALUE;
-        int maxX = Integer.MIN_VALUE;
-        int minY = Integer.MAX_VALUE;
-        int maxY = Integer.MIN_VALUE;
-
-        for (int i=0;i<xCoords.length;i++) {
-            if (xCoords[i] < minX) minX = xCoords[i];
-            if (xCoords[i] > maxX) maxX = xCoords[i];
-            if (yCoords[i] < minY) minY = yCoords[i];
-            if (yCoords[i] > maxY) maxY = yCoords[i];
-        }
-
-        // For the range of the Roi, test all possible points.
-        for (int x=minX;x<=maxX;x++) {
-            for (int y=minY;y<=maxY;y++) {
-                if (roi.contains(x,y)) {
-                    addCoord(x,y,z);
-                }
-            }
+        for (java.awt.Point point:roi.getContainedPoints()) {
+            addCoord((int) point.getX(),(int) point.getY(),z);
         }
     }
 
