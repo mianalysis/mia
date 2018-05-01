@@ -240,7 +240,7 @@ public class MeasureObjectIntensity extends Module {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i=0;i<nDigits;i++) stringBuilder.append("0");
         DecimalFormat intFormat = new DecimalFormat(stringBuilder.toString());
-        String units = calibratedDistances ? "CAL" : "PX";
+        String units = parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
 
         DecimalFormat decFormat = new DecimalFormat(getBinNameFormat(calibratedDistances));
 
