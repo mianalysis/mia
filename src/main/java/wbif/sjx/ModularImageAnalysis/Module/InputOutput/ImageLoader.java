@@ -414,43 +414,46 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         ImagePlus ipl = null;
         try {
-            if (useImageJReader) {
-                ipl = IJ.openImage(workspace.getMetadata().getFile().getAbsolutePath());
+            switch (importMode) {
+                case ImportModes.CURRENT_FILE:
+                    File file = workspace.getMetadata().getFile();
+                    if (file == null)
+                        throw new GenericMIAException("Set file in Input Control");
+                    if (useImageJReader) {
+                        ipl = IJ.openImage(workspace.getMetadata().getFile().getAbsolutePath());
+                    } else {
+                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges, crop, true);
+                    }
+                    break;
 
-            } else {
-                switch (importMode) {
-                    case ImportModes.CURRENT_FILE:
-                        File file = workspace.getMetadata().getFile();
-                        if (file == null)
-                            throw new GenericMIAException("Set file in Input Control");
-                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges,crop,true);
-                        break;
+                case ImportModes.IMAGEJ:
+                    ipl = IJ.getImage();
+                    break;
 
-                    case ImportModes.IMAGEJ:
-                        ipl = IJ.getImage();
-                        break;
+                case ImportModes.IMAGE_SEQUENCE:
+                    if (!limitFrames) finalIndex = Integer.MAX_VALUE;
+                    ipl = getImageSequence(workspace.getMetadata().getFile(),numberOfZeroes,startingIndex, finalIndex,crop);
+                    break;
 
-                    case ImportModes.IMAGE_SEQUENCE:
-                        if (!limitFrames) finalIndex = Integer.MAX_VALUE;
-                        ipl = getImageSequence(workspace.getMetadata().getFile(),numberOfZeroes,startingIndex, finalIndex,crop);
-                        break;
+                case ImportModes.MATCHING_FORMAT:
+                    switch (nameFormat) {
+                        case NameFormats.INCUCYTE_SHORT:
+                            ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges,crop);
+                            break;
 
-                    case ImportModes.MATCHING_FORMAT:
-                        switch (nameFormat) {
-                            case NameFormats.INCUCYTE_SHORT:
-                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges,crop);
-                                break;
+                        case NameFormats.INPUT_FILE_PREFIX:
+                            ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges,crop);
+                            break;
+                    }
+                    break;
 
-                            case NameFormats.INPUT_FILE_PREFIX:
-                                ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges,crop);
-                                break;
-                        }
-                        break;
-
-                    case ImportModes.SPECIFIC_FILE:
-                        ipl = getBFImage(filePath, seriesNumber, dimRanges,crop,true);
-                        break;
-                }
+                case ImportModes.SPECIFIC_FILE:
+                    if (useImageJReader) {
+                        ipl = IJ.openImage(filePath);
+                    } else {
+                        ipl = getBFImage(filePath, seriesNumber, dimRanges, crop, true);
+                    }
+                    break;
             }
         } catch (ServiceException | DependencyException | IOException | FormatException e) {
             e.printStackTrace();
@@ -625,7 +628,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             returnedParameters.add(parameters.getParameter(Z_CAL));
         }
 
-        returnedParameters.add(parameters.getParameter(USE_IMAGEJ_READER));
+        if (parameters.getValue(IMPORT_MODE).equals(ImportModes.CURRENT_FILE)
+                || parameters.getValue(IMPORT_MODE).equals(ImportModes.SPECIFIC_FILE)) {
+            returnedParameters.add(parameters.getParameter(USE_IMAGEJ_READER));
+        }
+
         returnedParameters.add(parameters.getParameter(THREE_D_MODE));
         returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
