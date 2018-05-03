@@ -30,7 +30,7 @@ import java.util.Set;
 public class RunTrackMate extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_SPOT_OBJECTS = "Output spot objects";
-    public static final String CALIBRATED_UNITS = "Calibrated radius";
+    public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String DO_SUBPIXEL_LOCALIZATION = "Do sub-pixel localisation";
     public static final String DO_MEDIAN_FILTERING = "Median filtering";
     public static final String RADIUS = "Radius";
@@ -236,7 +236,7 @@ public class RunTrackMate extends Module {
         // If image should be normalised
         if (normaliseIntensity) {
             ipl = new Duplicator().run(ipl);
-            NormaliseIntensity.normaliseIntenisty(ipl);
+            NormaliseIntensity.normaliseIntensity(ipl);
         }
 
         // Initialising TrackMate model to store data

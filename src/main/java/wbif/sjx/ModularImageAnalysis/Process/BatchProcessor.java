@@ -2,7 +2,6 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import ij.Prefs;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
@@ -10,7 +9,6 @@ import loci.common.services.ServiceException;
 import loci.common.services.ServiceFactory;
 import loci.formats.ChannelSeparator;
 import loci.formats.FormatException;
-import loci.formats.MetadataTools;
 import loci.formats.meta.MetadataStore;
 import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
@@ -27,9 +25,7 @@ import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.*;
 
@@ -275,9 +271,15 @@ public class BatchProcessor extends FileCrawler {
     private TreeMap<Integer,String> getSeriesNumbers(Analysis analysis, File inputFile) {
         ParameterCollection parameters = analysis.getInputControl().getAllParameters();
         String seriesMode = parameters.getValue(InputControl.SERIES_MODE);
-        boolean useFilter = parameters.getValue(InputControl.USE_SERIESNAME_FILTER);
-        String filter = parameters.getValue(InputControl.SERIESNAME_FILTER);
-        String filterType = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE);
+        boolean useFilter1 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_1);
+        String filter1 = parameters.getValue(InputControl.SERIESNAME_FILTER_1);
+        String filterType1 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_1);
+        boolean useFilter2 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_2);
+        String filter2 = parameters.getValue(InputControl.SERIESNAME_FILTER_2);
+        String filterType2 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_2);
+        boolean useFilter3 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_3);
+        String filter3 = parameters.getValue(InputControl.SERIESNAME_FILTER_3);
+        String filterType3 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_3);
 
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
         switch (seriesMode) {
@@ -297,7 +299,9 @@ public class BatchProcessor extends FileCrawler {
 
                     for (int seriesNumber=0;seriesNumber<reader.getSeriesCount();seriesNumber++) {
                         String name = meta.getImageName(seriesNumber);
-                        if (name!= null && useFilter &!getFilenameFilter(filterType,filter).test(name)) continue;
+                        if (name!= null && useFilter1 &!getFilenameFilter(filterType1,filter1).test(name)) continue;
+                        if (useFilter2 &!getFilenameFilter(filterType2,filter2).test(name)) continue;
+                        if (useFilter3 &!getFilenameFilter(filterType3,filter3).test(name)) continue;
                         namesAndNumbers.put(seriesNumber+1,name);
                     }
                 } catch (DependencyException | FormatException | ServiceException | IOException e) {

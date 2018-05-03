@@ -982,6 +982,7 @@ public class MainGUI extends GUI {
             case InputControl.SeriesModes.SINGLE_SERIES:
                 int seriesNumber = analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
                 getTestWorkspace().getMetadata().setSeriesNumber(seriesNumber);
+                getTestWorkspace().getMetadata().setSeriesName("");
         }
     }
 }
