@@ -180,7 +180,7 @@ public class Exporter {
             }
 
             // Preparing the filepath and filename
-            String outPath = FilenameUtils.removeExtension(exportFilePath)  +".xml";
+            String outPath = exportFilePath  +".xml";
 
             // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -324,7 +324,7 @@ public class Exporter {
         if (exportIndividualObjects) prepareObjectsXLSX(workbook,workspaces,modules);
 
         // Writing the workbook to file
-        String outPath = FilenameUtils.removeExtension(exportFilePath) +".xlsx";
+        String outPath = exportFilePath + ".xlsx";
         FileOutputStream outputStream = new FileOutputStream(outPath);
         workbook.write(outputStream);
         workbook.close();

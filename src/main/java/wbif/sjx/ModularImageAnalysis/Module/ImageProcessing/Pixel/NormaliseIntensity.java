@@ -18,7 +18,7 @@ public class NormaliseIntensity extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
 
-    public static void normaliseIntenisty(ImagePlus ipl) {
+    public static void normaliseIntensity(ImagePlus ipl) {
         int bitDepth = ipl.getProcessor().getBitDepth();
         if (bitDepth == 8 | bitDepth == 16) IJ.run(ipl, "32-bit", null);
 
@@ -83,7 +83,7 @@ public class NormaliseIntensity extends Module {
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Running intensity normalisation
-        normaliseIntenisty(inputImagePlus);
+        normaliseIntensity(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {

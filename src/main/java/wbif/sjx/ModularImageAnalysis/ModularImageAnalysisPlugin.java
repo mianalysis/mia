@@ -50,18 +50,44 @@ public class ModularImageAnalysisPlugin implements PlugIn {
             }
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ParserConfigurationException | IOException | GenericMIAException | InterruptedException | SAXException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
 
         }
     }
 
     @Override
     public void run(String s) {
+        // Checking the relevant plugins are available
+        boolean missing = false;
         try {
+            Class.forName("inra.ijpb.binary.BinaryImages");
+        } catch (ClassNotFoundException e) {
+            System.err.println("MorphoLibJ plugin missing:\n" +
+                    "   - Install via Fiji Updater (Help > Update...)\n" +
+                    "   - Click \"Manage update sites\"\n" +
+                    "   - Select \"IJPB-plugins\" and close window\n" +
+                    "   - Click \"Apply changes\" and restart Fiji");
+            missing = true;
+        }
+
+        try {
+            Class.forName("de.biomedical_imaging.ij.steger.Line");
+        } catch (ClassNotFoundException e) {
+            System.err.println("Ridge detection plugin missing:\n" +
+                    "   - Install via Fiji Updater (Help > Update...)\n" +
+                    "   - Click \"Manage update sites\"\n" +
+                    "   - Select \"Biomedgroup\" and close window\n" +
+                    "   - Click \"Apply changes\" and restart Fiji");
+            missing = true;
+        }
+
+        if (missing) return;
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             new MainGUI(false);
-        } catch (InstantiationException | IllegalAccessException e) {
-            IJ.log("Error");
-            e.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
+            e.printStackTrace(System.err);
         }
     }
 }

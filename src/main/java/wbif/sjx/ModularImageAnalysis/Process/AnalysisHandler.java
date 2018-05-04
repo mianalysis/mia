@@ -372,7 +372,6 @@ public class AnalysisHandler {
 
         File inputFile = null;
         String exportName = null;
-        int nThreads = 1;
 
         switch (inputMode) {
             case InputControl.InputModes.SINGLE_FILE:
@@ -394,7 +393,6 @@ public class AnalysisHandler {
 
                 inputFile = new File(batchFolder);
                 exportName = inputFile.getAbsolutePath() + "\\output";
-                nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS);
 
                 // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
                 Prefs.setThreads(1);
@@ -429,7 +427,7 @@ public class AnalysisHandler {
 
         // Initialising BatchProcessor
         batchProcessor = new BatchProcessor(inputFile);
-        batchProcessor.setnThreads(nThreads);
+        batchProcessor.setnThreads(inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS));
 
         // Adding extension filter
         batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
