@@ -208,7 +208,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
                     int z = displayImagePlus.getZ();
-                    outputObject.addCoord(x,y,z);
+                    outputObject.addCoord(x,y,z-1);
                 }
 
                 // Adding overlay showing ROI and its ID number
@@ -240,7 +240,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
                     int z = displayImagePlus.getZ();
-                    outputObject.addCoord(x,y,z);
+                    outputObject.addCoord(x,y,z-1);
                 }
 
                 // Adding overlay showing ROI and its ID number

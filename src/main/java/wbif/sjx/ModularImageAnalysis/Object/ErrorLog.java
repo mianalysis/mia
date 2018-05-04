@@ -13,7 +13,7 @@ public class ErrorLog extends OutputStream {
 
     @Override
     public void write(int b) throws IOException {
-        originalStream.write(b);
+        originalStream.write((char) b);
         stringBuilder.append((char) b);
     }
 }

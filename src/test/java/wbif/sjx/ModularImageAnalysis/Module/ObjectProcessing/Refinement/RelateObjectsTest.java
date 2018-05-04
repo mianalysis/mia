@@ -8,7 +8,7 @@ import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedProxCubes1;
 import wbif.sjx.ModularImageAnalysis.ExpectedProxCubes2;
 import wbif.sjx.ModularImageAnalysis.ExpectedSpots3D;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement.RelateObjects;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.RelateObjects;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Units;
@@ -160,7 +160,8 @@ public class RelateObjectsTest {
                 actualX[iter] = (int) childSpot.getX(true)[0];
                 actualY[iter] = (int) childSpot.getY(true)[0];
                 actualZ[iter] = (int) childSpot.getZ(true,false)[0];
-                actualDist[iter++] = childSpot.getMeasurement(RelateObjects.Measurements.DIST_CENTROID_PX).getValue();
+                String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENTROID_PX,inputObjectsName);
+                actualDist[iter++] = childSpot.getMeasurement(name).getValue();
 
             }
 
@@ -245,7 +246,8 @@ public class RelateObjectsTest {
                 actualX[iter] = (int) childSpot.getX(true)[0];
                 actualY[iter] = (int) childSpot.getY(true)[0];
                 actualZ[iter] = (int) childSpot.getZ(true,false)[0];
-                actualDist[iter++] = childSpot.getMeasurement(RelateObjects.Measurements.DIST_CENTROID_PX).getValue();
+                String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENTROID_PX,inputObjectsName);
+                actualDist[iter++] = childSpot.getMeasurement(name).getValue();
 
             }
 
@@ -312,11 +314,13 @@ public class RelateObjectsTest {
 
             // Checking the distance to the parent
             double expectedSurfDistPx = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX.name()).getValue();
-            double actualSurfDistPx = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_PX).getValue();
+            String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_PX,proxObj2Name);
+            double actualSurfDistPx = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
             double expectedSurfDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL.name()).getValue();
-            double actualSurfDistCal = proxObj1Obj.getMeasurement(Units.replace(RelateObjects.Measurements.DIST_SURFACE_CAL)).getValue();
+            name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_CAL,proxObj2Name);
+            double actualSurfDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 
         }
@@ -370,11 +374,13 @@ public class RelateObjectsTest {
 
             // Checking the distance to the parent
             double expectedSurfDistPx = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX_5PX.name()).getValue();
-            double actualSurfDistPx = proxObj1Obj.getMeasurement(RelateObjects.Measurements.DIST_SURFACE_PX).getValue();
+            String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_PX,proxObj2Name);
+            double actualSurfDistPx = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
             double expectedSurfDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL_5PX.name()).getValue();
-            double actualSurfDistCal = proxObj1Obj.getMeasurement(Units.replace(RelateObjects.Measurements.DIST_SURFACE_CAL)).getValue();
+            name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_CAL,proxObj2Name);
+            double actualSurfDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
 
         }

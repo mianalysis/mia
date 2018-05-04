@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
+package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -41,11 +41,15 @@ public class RelateObjects extends Module {
     }
 
     public interface Measurements {
-        String DIST_SURFACE_PX = "RELATE_OBJ//DIST_TO_PARENT_SURF_(PX)";
-        String DIST_CENTROID_PX = "RELATE_OBJ//DIST_TO_PARENT_CENT_(PX)";
-        String DIST_SURFACE_CAL = "RELATE_OBJ//DIST_TO_PARENT_SURF_(${CAL})";
-        String DIST_CENTROID_CAL = "RELATE_OBJ//DIST_TO_PARENT_CENT_(${CAL})";
+        String DIST_SURFACE_PX = "DIST_TO_${PARENT}_SURF_(PX)";
+        String DIST_CENTROID_PX = "DIST_TO_${PARENT}_CENT_(PX)";
+        String DIST_SURFACE_CAL = "DIST_TO_${PARENT}_SURF_(${CAL})";
+        String DIST_CENTROID_CAL = "DIST_TO_${PARENT}_CENT_(${CAL})";
 
+    }
+
+    public static String getFullName(String measurement,String parentName) {
+        return Units.replace("RELATE_OBJ//"+measurement.replace("${PARENT}",parentName));
     }
 
 
@@ -156,23 +160,31 @@ public class RelateObjects extends Module {
                 minLink.addChild(childObject);
 
                 if (referencePoint.equals(ReferencePoints.CENTROID)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX,minDist));
-                    childObject.addMeasurement(new Measurement(Units.replace(Measurements.DIST_CENTROID_CAL),minDist*dpp));
+                    String measurementName = getFullName(Measurements.DIST_CENTROID_PX,parentObjects.getName());
+                    childObject.addMeasurement(new Measurement(measurementName,minDist));
+                    measurementName = getFullName(Measurements.DIST_CENTROID_CAL,parentObjects.getName());
+                    childObject.addMeasurement(new Measurement(measurementName,minDist*dpp));
 
                 } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX,minDist));
-                    childObject.addMeasurement(new Measurement(Units.replace(Measurements.DIST_SURFACE_CAL),minDist*dpp));
+                    String measurementName = getFullName(Measurements.DIST_SURFACE_PX,parentObjects.getName());
+                    childObject.addMeasurement(new Measurement(measurementName,minDist));
+                    measurementName = getFullName(Measurements.DIST_SURFACE_CAL,parentObjects.getName());
+                    childObject.addMeasurement(new Measurement(measurementName,minDist*dpp));
 
                 }
 
             } else {
                 if (referencePoint.equals(ReferencePoints.CENTROID)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX,Double.NaN));
-                    childObject.addMeasurement(new Measurement(Units.replace(Measurements.DIST_CENTROID_CAL),Double.NaN));
+                    String measurementName = getFullName(Measurements.DIST_CENTROID_PX,parentObjects.getName());
+                    childObject.addMeasurement(new Measurement(measurementName,Double.NaN));
+                    measurementName = getFullName(Measurements.DIST_CENTROID_CAL,parentObjects.getName());
+                    childObject.addMeasurement(new Measurement(measurementName,Double.NaN));
 
                 } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX,Double.NaN));
-                    childObject.addMeasurement(new Measurement(Units.replace(Measurements.DIST_SURFACE_CAL),Double.NaN));
+                    String measurementName = getFullName(Measurements.DIST_SURFACE_PX,parentObjects.getName());
+                    childObject.addMeasurement(new Measurement(measurementName,Double.NaN));
+                    measurementName = getFullName(Measurements.DIST_SURFACE_CAL,parentObjects.getName());
+                    childObject.addMeasurement(new Measurement(measurementName,Double.NaN));
 
                 }
             }
@@ -359,11 +371,16 @@ public class RelateObjects extends Module {
         objectMeasurementReferences.setAllCalculated(false);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS);
 
-        MeasurementReference distSurfPx = objectMeasurementReferences.getOrPut(Measurements.DIST_SURFACE_PX);
-        MeasurementReference distCentPx = objectMeasurementReferences.getOrPut(Measurements.DIST_CENTROID_PX);
-        MeasurementReference distSurfCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.DIST_SURFACE_CAL));
-        MeasurementReference distCentCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.DIST_CENTROID_CAL));
+        String measurementName = getFullName(Measurements.DIST_SURFACE_PX,parentObjectName);
+        MeasurementReference distSurfPx = objectMeasurementReferences.getOrPut(measurementName);
+        measurementName = getFullName(Measurements.DIST_CENTROID_PX,parentObjectName);
+        MeasurementReference distCentPx = objectMeasurementReferences.getOrPut(measurementName);
+        measurementName = getFullName(Measurements.DIST_SURFACE_CAL,parentObjectName);
+        MeasurementReference distSurfCal = objectMeasurementReferences.getOrPut(measurementName);
+        measurementName = getFullName(Measurements.DIST_CENTROID_CAL,parentObjectName);
+        MeasurementReference distCentCal = objectMeasurementReferences.getOrPut(measurementName);
 
         distSurfPx.setImageObjName(childObjectsName);
         distCentPx.setImageObjName(childObjectsName);
