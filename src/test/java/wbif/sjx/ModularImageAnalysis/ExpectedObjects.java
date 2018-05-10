@@ -22,7 +22,7 @@ public abstract class ExpectedObjects {
 
     public ObjCollection getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) {
         // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName);
+        ObjCollection testObjects = new ObjCollection(objectName, false);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates3D();

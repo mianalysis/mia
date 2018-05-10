@@ -60,7 +60,7 @@ public class RelateObjects extends Module {
             Obj childObject = childObjects.get(ID);
 
             if (childObject != null) {
-                parentObject.addChild(childObject);
+                parentObject.addChild(childObject, childObjects.is2D());
                 childObject.addParent(parentObject);
 
             }
@@ -157,7 +157,7 @@ public class RelateObjects extends Module {
 
             if (minLink != null) {
                 childObject.addParent(minLink);
-                minLink.addChild(childObject);
+                minLink.addChild(childObject, childObjects.is2D());
 
                 if (referencePoint.equals(ReferencePoints.CENTROID)) {
                     String measurementName = getFullName(Measurements.DIST_CENTROID_PX,parentObjects.getName());
@@ -214,7 +214,7 @@ public class RelateObjects extends Module {
                     double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
                     if (dist <= linkingDistance) {
                         childObject.addParent(parentObject);
-                        parentObject.addChild(childObject);
+                        parentObject.addChild(childObject, childObjects.is2D());
 
                     }
                 }
@@ -254,7 +254,7 @@ public class RelateObjects extends Module {
                 // Testing if the child centroid exists in the object
                 for (int i=0;i<parentX.size();i++) {
                     if (parentX.get(i)==xCent & parentY.get(i)==yCent & parentZ.get(i)==zCent) {
-                        parentObject.addChild(childObject);
+                        parentObject.addChild(childObject, childObjects.is2D());
                         childObject.addParent(parentObject);
 
                         break;

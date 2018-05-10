@@ -187,7 +187,7 @@ public class TrackObjects extends Module {
 
         // Getting parameters
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName, inputObjects.is2D());
         String linkingMethod = parameters.getValue(LINKING_METHOD);
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
         double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
@@ -314,13 +314,13 @@ public class TrackObjects extends Module {
                                 track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units);
 
                                 prevObj.addParent(track);
-                                track.addChild(prevObj);
+                                track.addChild(prevObj, inputObjects.is2D());
 
                             }
                         }
 
                         // Setting relationship between the current object and track
-                        track.addChild(currObj);
+                        track.addChild(currObj, inputObjects.is2D());
                         currObj.addParent(track);
 
                         // Adding the track to the track collection

@@ -170,7 +170,7 @@ public class MeasureObjectShape extends Module {
             // If necessary analyses are included
             Obj projectedObject = null;
             if (measureProjectedArea || measureProjectedDiameter || measureProjectedEllipse) {
-                projectedObject = ProjectObjects.createProjection(inputObject, "Projected");
+                projectedObject = ProjectObjects.createProjection(inputObject, "Projected",inputObjects.is2D());
             }
 
             // Adding the projected-object area measurements

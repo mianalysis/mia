@@ -47,7 +47,7 @@ public class IdentifyObjects extends Module {
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputImagePlus.getNSlices()==1);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS);

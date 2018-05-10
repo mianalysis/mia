@@ -45,7 +45,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     public ObjCollection convertImageToObjects(String outputObjectsName, boolean singleObject) {
         // Need to get coordinates and convert to a HCObject
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,getImagePlus().getNSlices()==1); //Local ArrayList of objects
 
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().getX(1);

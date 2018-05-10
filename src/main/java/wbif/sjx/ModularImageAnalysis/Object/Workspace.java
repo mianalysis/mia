@@ -39,9 +39,9 @@ public class Workspace {
      * If there isn't already such a collection, one is created.
      * @param obj
      */
-    public void addObject(Obj obj) {
+    public void addObject(Obj obj, boolean is2D) {
         String objectName = obj.getName();
-        objects.putIfAbsent(objectName,new ObjCollection(objectName));
+        objects.putIfAbsent(objectName,new ObjCollection(objectName,is2D));
         objects.get(objectName).add(obj);
 
     }
@@ -131,7 +131,7 @@ public class Workspace {
                 }
 
                 // Adding the current Obj to the new Workspace
-                workspaces.get(t).addObject(obj);
+                workspaces.get(t).addObject(obj,collection.is2D());
 
             }
         }

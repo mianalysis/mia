@@ -174,10 +174,10 @@ public class Obj extends Volume {
         children.remove(name);
     }
 
-    public void addChild(Obj child) {
+    public void addChild(Obj child, boolean is2D) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjCollection(childName));
+        children.computeIfAbsent(childName, k -> new ObjCollection(childName,is2D));
         children.get(childName).put(child.getID(), child);
 
     }
@@ -226,7 +226,7 @@ public class Obj extends Volume {
         Obj sliceObj = new Obj("Slice",ID,dppXY,dppZ,calibratedUnits);
         sliceObj.setPoints(slicePoints);
 
-        ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
+        ObjCollection objectCollection = new ObjCollection("ProjectedObjects", templateIpl.getNSlices()==1);
         objectCollection.add(sliceObj);
 
         ImagePlus sliceIpl = IJ.createImage("SliceIm",templateIpl.getWidth(),templateIpl.getHeight(),1,8);
@@ -283,7 +283,7 @@ public class Obj extends Volume {
 
     public Image convertObjToImage(String outputName, ImagePlus templateIpl) {
         // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName);
+        ObjCollection tempObj = new ObjCollection(outputName, templateIpl.getNSlices()==1);
         tempObj.add(this);
 
         // Getting the image

@@ -17,7 +17,7 @@ public class GetLocalObjectRegion extends Module {
 
     public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated, boolean useMeasurement, String measurementName) {
         // Creating store for output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.is2D());
 
         if (inputObjects.values().size() == 0) return outputObjects;
 
@@ -44,10 +44,15 @@ public class GetLocalObjectRegion extends Module {
             if (calibrated) {
                 for (int x = (int) Math.floor(xCent - radius/dppXY); x <= (int) Math.ceil(xCent + radius/dppXY); x++) {
                     for (int y = (int) Math.floor(yCent - radius/dppXY); y <= (int) Math.ceil(yCent + radius/dppXY); y++) {
-                        for (int z = (int) Math.floor(zCent - radius/dppZ); z <= (int) Math.ceil(zCent + radius/dppZ); z++) {
-                            if (Math.sqrt((xCent-x)*dppXY*(xCent-x)*dppXY + (yCent-y)*dppXY*(yCent-y)*dppXY + (zCent-z)*dppZ*(zCent-z)*dppZ) < radius) {
-                                outputObject.addCoord(x,y,z);
-
+                        if (inputObjects.is2D()) {
+                            if (Math.sqrt((xCent - x) * dppXY * (xCent - x) * dppXY + (yCent - y) * dppXY * (yCent - y) * dppXY) < radius) {
+                                outputObject.addCoord(x, y, 0);
+                            }
+                        } else {
+                            for (int z = (int) Math.floor(zCent - radius / dppZ); z <= (int) Math.ceil(zCent + radius / dppZ); z++) {
+                                if (Math.sqrt((xCent - x) * dppXY * (xCent - x) * dppXY + (yCent - y) * dppXY * (yCent - y) * dppXY + (zCent - z) * dppZ * (zCent - z) * dppZ) < radius) {
+                                    outputObject.addCoord(x, y, z);
+                                }
                             }
                         }
                     }
@@ -56,10 +61,17 @@ public class GetLocalObjectRegion extends Module {
             } else {
                 for (int x = (int) Math.floor(xCent - radius); x <= (int) Math.ceil(xCent + radius); x++) {
                     for (int y = (int) Math.floor(yCent - radius); y <= (int) Math.ceil(yCent + radius); y++) {
-                        for (int z = (int) Math.floor(zCent - radius * xy_z_ratio); z <= (int) Math.ceil(zCent + radius * xy_z_ratio); z++) {
-                            if (Math.sqrt((xCent-x)*(xCent-x) + (yCent-y)*(yCent-y) + (zCent-z)*(zCent-z)/(xy_z_ratio*xy_z_ratio)) < radius) {
-                                outputObject.addCoord(x,y,z);
-
+                        if (inputObjects.is2D()) {
+                            if (Math.sqrt((xCent - x) * (xCent - x) + (yCent - y) * (yCent - y)) < radius) {
+                                System.out.println("Inside 2");
+                                outputObject.addCoord(x, y, 0);
+                            }
+                        } else {
+                            for (int z = (int) Math.floor(zCent - radius * xy_z_ratio); z <= (int) Math.ceil(zCent + radius * xy_z_ratio); z++) {
+                                if (Math.sqrt((xCent - x) * (xCent - x) + (yCent - y) * (yCent - y) + (zCent - z) * (zCent - z) / (xy_z_ratio * xy_z_ratio)) < radius) {
+                                    System.out.println("Inside");
+                                    outputObject.addCoord(x, y, z);
+                                }
                             }
                         }
                     }
@@ -74,7 +86,7 @@ public class GetLocalObjectRegion extends Module {
 
             // Adding relationships
             outputObject.addParent(inputObject);
-            inputObject.addChild(outputObject);
+            inputObject.addChild(outputObject,inputObjects.is2D());
 
         }
 

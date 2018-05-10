@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
@@ -56,7 +55,7 @@ public class ExpandShrinkObjects extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.is2D());
 
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
@@ -78,7 +77,7 @@ public class ExpandShrinkObjects extends Module {
             writeMessage("Processing object " + (count++) + " of " + total);
 
             // Convert each object to an image, do the dilation/erosion, then convert back to an object
-            ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
+            ObjCollection objectCollection = new ObjCollection("ObjectToMorph",inputObjects.is2D());
             objectCollection.add(inputObject);
             HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
             Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
