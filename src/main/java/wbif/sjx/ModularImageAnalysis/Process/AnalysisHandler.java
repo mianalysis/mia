@@ -381,7 +381,7 @@ public class AnalysisHandler {
                 }
 
                 inputFile = new File(singleFile);
-                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath())
+                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S"
                         + analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
                 break;
 

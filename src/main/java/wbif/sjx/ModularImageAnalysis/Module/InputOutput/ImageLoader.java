@@ -64,6 +64,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String STARTING_T = "Starting timepoint";
     public static final String ENDING_T = "Ending timepoint";
     public static final String INTERVAL_T = "Timepoint interval";
+    public static final String CHANNEL = "Channel";
     public static final String CROP_IMAGE = "Crop image";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
@@ -349,13 +350,18 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getYokogawaFormattedNameImage(HCMetadata metadata, int seriesNumber,int[][] dimRanges, int[] crop)
+    private ImagePlus getYokogawaFormattedNameImage(HCMetadata metadata, int seriesNumber, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
+
+        
+
+        int[][] dimRanges = new int[][]{{1,1,1},{1,1,1},{1,1,1}};
+        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
 
     }
 
-    private ImagePlus getPrefixFormattedNameImage(HCMetadata metadata, int seriesNumber,int[][] dimRanges, int[] crop) throws ServiceException, DependencyException, FormatException, IOException {
-
+    private ImagePlus getPrefixFormattedNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
+            throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
         String name = FilenameUtils.getName(absolutePath);
@@ -405,6 +411,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int startingT = parameters.getValue(STARTING_T);
         int endingT = parameters.getValue(ENDING_T);
         int intervalT = parameters.getValue(INTERVAL_T);
+        int channel = parameters.getValue(CHANNEL);
         boolean cropImage = parameters.getValue(CROP_IMAGE);
         int left = parameters.getValue(LEFT);
         int top = parameters.getValue(TOP);
@@ -550,6 +557,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(STARTING_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(ENDING_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(INTERVAL_T, Parameter.INTEGER,1));
+        parameters.add(new Parameter(CHANNEL,Parameter.INTEGER,1));
         parameters.add(new Parameter(CROP_IMAGE, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
         parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
@@ -603,6 +611,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     case NameFormats.INPUT_FILE_PREFIX:
                         returnedParameters.add(parameters.getParameter(PREFIX));
                         break;
+                    case NameFormats.YOKOGAWA:
+                        returnedParameters.add(parameters.getParameter(CHANNEL));
+                        break;
                 }
                 break;
 
@@ -611,7 +622,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 break;
         }
 
-        if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)) {
+        if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE) &&
+                !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
+                        && parameters.getValue(NAME_FORMAT).equals(NameFormats.YOKOGAWA))) {
             returnedParameters.add(parameters.getParameter(STARTING_C));
             returnedParameters.add(parameters.getParameter(INTERVAL_C));
             returnedParameters.add(parameters.getParameter(USE_ALL_C));
