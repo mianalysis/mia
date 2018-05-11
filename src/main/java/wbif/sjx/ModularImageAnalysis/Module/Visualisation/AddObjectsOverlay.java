@@ -3,10 +3,12 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
+import ij.CompositeImage;
 import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import net.imagej.overlay.CompositeOverlay;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -64,13 +66,12 @@ public class AddObjectsOverlay extends Module {
 
 
     public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, String positionMode,
-                                     String[] posMeasurements,HashMap<Integer,Color> colours, HashMap<Integer,String> IDs,
-                                     int labelSize, double lineWidth) {
+                              String[] posMeasurements,HashMap<Integer,Color> colours, HashMap<Integer,String> IDs,
+                              int labelSize, double lineWidth) {
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-
         }
 
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
@@ -328,6 +329,17 @@ public class AddObjectsOverlay extends Module {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
+
+//        Overlay ovl = new Overlay();
+//        PointRoi pr = new PointRoi(10,10);
+//        pr.setStrokeColor(Color.ORANGE);
+//        pr.setPosition(1,1,1);
+//        ovl.add(pr);
+//
+//        ipl.setOverlay(ovl);
+//
+//        ipl.show();
+
 
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);

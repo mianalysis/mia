@@ -8,8 +8,8 @@ import java.util.List;
  */
 public class ExpectedProxCubes1 extends ExpectedObjects {
     public enum Measures {N_VOXELS,ID_8BIT,SURF_PROX_ID,SURF_PROX_DIST_PX,SURF_PROX_DIST_CAL,
-        SURF_PROX_ID_5PX, SURF_PROX_DIST_PX_5PX, SURF_PROX_DIST_CAL_5PX
-    };
+        SURF_PROX_ID_5PX, SURF_PROX_DIST_PX_5PX, SURF_PROX_DIST_CAL_5PX, CENT_SURF_PROX_ID, CENT_SURF_PROX_DIST_PX,
+        CENT_SURF_PROX_DIST_CAL};
 
     public HashMap<Integer,HashMap<String,Double>> getMeasurements() {
         HashMap<Integer, HashMap<String, Double>> expectedValues = new HashMap<>();
@@ -23,6 +23,8 @@ public class ExpectedProxCubes1 extends ExpectedObjects {
         obj.put(Measures.SURF_PROX_ID_5PX.name(),89d);
         obj.put(Measures.SURF_PROX_DIST_PX_5PX.name(),4d);
         obj.put(Measures.SURF_PROX_DIST_CAL_5PX.name(),0.08d);
+        obj.put(Measures.CENT_SURF_PROX_ID.name(),89d);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX.name(),6.06d); // This value is currently wrong
         expectedValues.put(25, obj);
 
         obj = new HashMap<>();
@@ -34,6 +36,8 @@ public class ExpectedProxCubes1 extends ExpectedObjects {
         obj.put(Measures.SURF_PROX_ID_5PX.name(),65d);
         obj.put(Measures.SURF_PROX_DIST_PX_5PX.name(),-5d);
         obj.put(Measures.SURF_PROX_DIST_CAL_5PX.name(),-0.1d);
+        obj.put(Measures.CENT_SURF_PROX_ID.name(),65d);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX.name(),-5d);
         expectedValues.put(43, obj);
 
         obj = new HashMap<>();
@@ -45,6 +49,8 @@ public class ExpectedProxCubes1 extends ExpectedObjects {
         obj.put(Measures.SURF_PROX_ID_5PX.name(),Double.NaN);
         obj.put(Measures.SURF_PROX_DIST_PX_5PX.name(),Double.NaN);
         obj.put(Measures.SURF_PROX_DIST_CAL_5PX.name(),Double.NaN);
+        obj.put(Measures.CENT_SURF_PROX_ID.name(),65d);
+        obj.put(Measures.CENT_SURF_PROX_DIST_PX.name(),14.20d);
         expectedValues.put(20, obj);
 
         return expectedValues;

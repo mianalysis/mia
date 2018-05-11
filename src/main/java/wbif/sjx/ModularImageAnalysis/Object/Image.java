@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import net.imglib2.Cursor;
 import net.imglib2.img.ImagePlusAdapter;
@@ -127,7 +128,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     }
 
     public Img<T> getImg() {
-        return ImagePlusAdapter.wrapImgPlus(imagePlus);
+        return ImagePlusAdapter.wrapImgPlus(new Duplicator().run(imagePlus));
 
     }
 
