@@ -63,13 +63,11 @@ public class GetLocalObjectRegion extends Module {
                     for (int y = (int) Math.floor(yCent - radius); y <= (int) Math.ceil(yCent + radius); y++) {
                         if (inputObjects.is2D()) {
                             if (Math.sqrt((xCent - x) * (xCent - x) + (yCent - y) * (yCent - y)) < radius) {
-                                System.out.println("Inside 2");
                                 outputObject.addCoord(x, y, 0);
                             }
                         } else {
                             for (int z = (int) Math.floor(zCent - radius * xy_z_ratio); z <= (int) Math.ceil(zCent + radius * xy_z_ratio); z++) {
                                 if (Math.sqrt((xCent - x) * (xCent - x) + (yCent - y) * (yCent - y) + (zCent - z) * (zCent - z) / (xy_z_ratio * xy_z_ratio)) < radius) {
-                                    System.out.println("Inside");
                                     outputObject.addCoord(x, y, z);
                                 }
                             }

@@ -1,7 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import ij.CompositeImage;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.HyperStackConverter;
+import ij.plugin.RGBStackConverter;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -34,31 +37,28 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
         T type = img1.firstElement();
 
-        long[] dims1 = new long[img1.numDimensions()];
-        long[] dims2 = new long[img2.numDimensions()];
-        long[] dims = new long[img1.numDimensions()];
+        long[] dims1 = new long[Math.max(3,img1.numDimensions())];
+        long[] dims2 = new long[Math.max(3,img2.numDimensions())];
+        long[] dims = new long[Math.max(3,img1.numDimensions())];
 
-        long[] offset1 = new long[img1.numDimensions()];
-        long[] offset2 = new long[img2.numDimensions()];
+        long[] offset1 = new long[Math.max(3,img1.numDimensions())];
+        long[] offset2 = new long[Math.max(3,img2.numDimensions())];
 
         for (int i=0;i<img1.numDimensions();i++) {
-            System.out.println("Im1 "+img1.dimension(i));
             dims1[i] = img1.dimension(i);
             offset1[i] = 0;
         }
 
         for (int i=0;i<img2.numDimensions();i++) {
-            System.out.println("Im2 "+img2.dimension(i));
             dims2[i] = img2.dimension(i);
             offset2[i] = 0;
         }
-        offset2[2] = dims1[2];
+        offset2[2] = img1.dimension(2);
 
         for (int i=0;i<img1.numDimensions();i++) {
-            System.out.println("Im "+img1.dimension(i));
             dims[i] = img1.dimension(i);
         }
-        dims[2] = dims1[2]+dims2[2];
+        dims[2] = img1.dimension(2)+img2.dimension(2);
 
         // Creating the composite image
         final ImgFactory< T > factory = new ArrayImgFactory<>();
@@ -78,6 +78,67 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     }
 
     private Img<T> createComposite(Image inputImageRed, Image inputImageGreen, Image inputImageBlue) {
+        long dimX = 0;
+        long dimY = 0;
+        long dimZ = 0;
+        T type = null;
+
+        Img<T> redImg = null;
+        if (inputImageRed != null) {
+            redImg = inputImageRed.getImg();
+            dimX = redImg.dimension(0);
+            dimY = redImg.dimension(1);
+            dimZ = redImg.dimension(2);
+            type = redImg.firstElement();
+        }
+
+        Img<T> greenImg = null;
+        if (inputImageGreen != null) {
+            greenImg = inputImageGreen.getImg();
+            dimX = greenImg.dimension(0);
+            dimY = greenImg.dimension(1);
+            dimZ = greenImg.dimension(2);
+            type = greenImg.firstElement();
+        }
+
+        Img<T> blueImg = null;
+        if (inputImageBlue != null) {
+            blueImg = inputImageBlue.getImg();
+            dimX = blueImg.dimension(0);
+            dimY = blueImg.dimension(1);
+            dimZ = blueImg.dimension(2);
+            type = blueImg.firstElement();
+        }
+
+        // Creating the composite image
+        long[] dimensions = new long[]{dimX,dimY,3, dimZ,1};
+        final ImgFactory< T > factory = new ArrayImgFactory<>();
+        Img<T> rgbImg = factory.create(dimensions, type);
+
+        // Adding values view
+        if (inputImageRed != null) {
+            Cursor<T> cursorSingle = redImg.cursor();
+            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 0, 0,0}, new long[]{dimX,dimY,1, dimZ,1}).cursor();
+            while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
+        }
+
+        if (inputImageGreen != null) {
+            Cursor<T> cursorSingle = greenImg.cursor();
+            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 1, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
+            while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
+        }
+
+        if (inputImageBlue != null) {
+            Cursor<T> cursorSingle = blueImg.cursor();
+            Cursor<T> cursorRGB = Views.offsetInterval(rgbImg, new long[]{0, 0, 2, 0,0}, new long[]{dimX, dimY, 1, dimZ,1}).cursor();
+            while (cursorSingle.hasNext()) cursorRGB.next().set(cursorSingle.next());
+        }
+
+        return rgbImg;
+
+    }
+
+    private Img<T> convertToRGB(Image inputImageRed, Image inputImageGreen, Image inputImageBlue) {
         long dimX = 0;
         long dimY = 0;
         long dimZ = 0;

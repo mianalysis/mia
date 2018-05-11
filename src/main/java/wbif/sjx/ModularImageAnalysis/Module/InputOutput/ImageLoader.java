@@ -28,6 +28,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackTo
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
@@ -350,10 +351,19 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getYokogawaFormattedNameImage(HCMetadata metadata, int seriesNumber, int[] crop)
+    private ImagePlus getYokogawaFormattedNameImage(File templateFile, int seriesNumber, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
+        // Creating metadata object
+        HCMetadata metadata = new HCMetadata();
 
-        
+        // First, running metadata extraction on the input file
+        CV7000FilenameExtractor extractor = new CV7000FilenameExtractor();
+        extractor.extract(metadata,templateFile.getName());
+
+        // Constructing a new name using the same name format
+        metadata.setChannel(parameters.getValue(CHANNEL));
+        metadata.setActionNumber(parameters.getValue(CHANNEL));
+        String filename = templateFile.getParent() + "\\" + extractor.construct(metadata);
 
         int[][] dimRanges = new int[][]{{1,1,1},{1,1,1},{1,1,1}};
         return getBFImage(filename,seriesNumber,dimRanges,crop,true);
@@ -464,6 +474,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                             HCMetadata metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(comment);
                             ipl = getIncucyteShortFormattedNameImage(metadata, seriesNumber, dimRanges,crop);
+                            break;
+
+                        case NameFormats.YOKOGAWA:
+                            ipl = getYokogawaFormattedNameImage(workspace.getMetadata().getFile(), seriesNumber, crop);
                             break;
 
                         case NameFormats.INPUT_FILE_PREFIX:
