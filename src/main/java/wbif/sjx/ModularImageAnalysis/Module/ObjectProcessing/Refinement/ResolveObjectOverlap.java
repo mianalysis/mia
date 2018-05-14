@@ -121,7 +121,8 @@ public class ResolveObjectOverlap extends Module {
             }
         }
 
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        boolean is2D = inputObjects1.is2D() || inputObjects2.is2D();
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,is2D);
         switch (overlapRequirement) {
             case OverlapRequirements.MUTUAL_MAX_OVERLAP:
                 reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2,minOverlap,true);

@@ -79,7 +79,7 @@ public class MeasureObjectCurvature extends Module {
 
     public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject, ImagePlus templateImage) {
         // Converting object to image, then inverting, so we have a black object on a white background
-        ObjCollection tempObjects = new ObjCollection("Backbone");
+        ObjCollection tempObjects = new ObjCollection("Backbone",templateImage.getNSlices()==1);
         tempObjects.add(inputObject);
 
         HashMap<Integer,Float> hues = tempObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);

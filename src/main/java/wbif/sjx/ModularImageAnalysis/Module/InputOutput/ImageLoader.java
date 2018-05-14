@@ -28,6 +28,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackTo
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
@@ -64,6 +65,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String STARTING_T = "Starting timepoint";
     public static final String ENDING_T = "Ending timepoint";
     public static final String INTERVAL_T = "Timepoint interval";
+    public static final String CHANNEL = "Channel";
     public static final String CROP_IMAGE = "Crop image";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
@@ -105,9 +107,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     public interface NameFormats {
         String INCUCYTE_SHORT = "Incucyte short filename";
+        String YOKOGAWA = "Yokogowa";
         String INPUT_FILE_PREFIX= "Input filename with prefix";
 
-        String[] ALL = new String[]{INCUCYTE_SHORT,INPUT_FILE_PREFIX};
+        String[] ALL = new String[]{INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX};
 
     }
 
@@ -152,10 +155,16 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         reader.setId(path);
         reader.setSeries(seriesNumber-1);
 
-//        // Getting a list of colours
+//        byte[][] lutt = reader.get8BitLookupTable();
+//        for (int i=0;i<lutt[0].length;i++) {
+//            System.out.println(lutt[0][i]+"_"+lutt[1][i]+"_"+lutt[2][i]);
+//        }
+
+        // Getting a list of colours
 //        LUT[] luts = new LUT[reader.getSizeC()];
 //        for (int i = 0;i<reader.getSizeC();i++) {
 //            Color colour = meta.getChannelColor(seriesNumber - 1, i);
+//
 //            luts[i] = LUT.createLutFromColor(new java.awt.Color(colour.getRed(),colour.getGreen(),colour.getBlue()));
 //        }
 
@@ -210,6 +219,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     int idx = reader.getIndex(z-1, c-1, t-1);
                     ImageProcessor ip = reader.openProcessors(idx,left,top,width,height)[0];
 //                    ip.setLut(luts[c-1]);
+
+//                    byte[][] lutt = reader.get8BitLookupTable();
+//                    LUT lut = new LUT(lutt[0],lutt[1],lutt[2]);
+//                    ip.setLut(lut);
 
                     ipl.setPosition(countC,countZ,countT);
                     ipl.setProcessor(ip);
@@ -323,33 +336,52 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getFormattedNameImage(String nameFormat, HCMetadata metadata, String comment,
-                                            int seriesNumber,int[][] dimRanges, int[] crop) throws ServiceException, DependencyException, FormatException, IOException {
+    private ImagePlus getIncucyteShortFormattedNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges,
+                                                         int[] crop) throws ServiceException, DependencyException, FormatException, IOException {
+        // First, running metadata extraction on the input file
+        NameExtractor filenameExtractor = new IncuCyteShortFilenameExtractor();
+        filenameExtractor.extract(metadata, metadata.getFile().getName());
 
-        String filename = null;
-        switch (nameFormat) {
-            case NameFormats.INCUCYTE_SHORT:
-                // First, running metadata extraction on the input file
-                NameExtractor filenameExtractor = new IncuCyteShortFilenameExtractor();
-                filenameExtractor.extract(metadata, metadata.getFile().getName());
-
-                // Constructing a new name using the same name format
-                filename = metadata.getFile().getParent()+"\\"+IncuCyteShortFilenameExtractor
-                        .generate(comment,metadata.getWell(),metadata.getAsString(HCMetadata.FIELD),metadata.getExt());
-
-                break;
-
-            case NameFormats.INPUT_FILE_PREFIX:
-                String absolutePath = metadata.getFile().getAbsolutePath();
-                String path = FilenameUtils.getFullPath(absolutePath);
-                String name = FilenameUtils.getName(absolutePath);
-                filename = path+comment+name;
-                break;
-        }
+        // Constructing a new name using the same name format
+        String comment = metadata.getComment();
+        String filename = metadata.getFile().getParent()+"\\"+IncuCyteShortFilenameExtractor
+                .generate(comment,metadata.getWell(),metadata.getAsString(HCMetadata.FIELD),metadata.getExt());
 
         return getBFImage(filename,seriesNumber,dimRanges,crop,true);
 
     }
+
+    private ImagePlus getYokogawaFormattedNameImage(File templateFile, int seriesNumber, int[] crop)
+            throws ServiceException, DependencyException, FormatException, IOException {
+        // Creating metadata object
+        HCMetadata metadata = new HCMetadata();
+
+        // First, running metadata extraction on the input file
+        CV7000FilenameExtractor extractor = new CV7000FilenameExtractor();
+        extractor.extract(metadata,templateFile.getName());
+
+        // Constructing a new name using the same name format
+        metadata.setChannel(parameters.getValue(CHANNEL));
+        metadata.setActionNumber(parameters.getValue(CHANNEL));
+        String filename = templateFile.getParent() + "\\" + extractor.construct(metadata);
+
+        int[][] dimRanges = new int[][]{{1,1,1},{1,1,1},{1,1,1}};
+        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
+
+    }
+
+    private ImagePlus getPrefixFormattedNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
+            throws ServiceException, DependencyException, FormatException, IOException {
+        String absolutePath = metadata.getFile().getAbsolutePath();
+        String path = FilenameUtils.getFullPath(absolutePath);
+        String name = FilenameUtils.getName(absolutePath);
+        String comment = metadata.getComment();
+        String filename = path+comment+name;
+
+        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -389,6 +421,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int startingT = parameters.getValue(STARTING_T);
         int endingT = parameters.getValue(ENDING_T);
         int intervalT = parameters.getValue(INTERVAL_T);
+        int channel = parameters.getValue(CHANNEL);
         boolean cropImage = parameters.getValue(CROP_IMAGE);
         int left = parameters.getValue(LEFT);
         int top = parameters.getValue(TOP);
@@ -438,11 +471,19 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 case ImportModes.MATCHING_FORMAT:
                     switch (nameFormat) {
                         case NameFormats.INCUCYTE_SHORT:
-                            ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), comment, seriesNumber, dimRanges,crop);
+                            HCMetadata metadata = (HCMetadata) workspace.getMetadata().clone();
+                            metadata.setComment(comment);
+                            ipl = getIncucyteShortFormattedNameImage(metadata, seriesNumber, dimRanges,crop);
+                            break;
+
+                        case NameFormats.YOKOGAWA:
+                            ipl = getYokogawaFormattedNameImage(workspace.getMetadata().getFile(), seriesNumber, crop);
                             break;
 
                         case NameFormats.INPUT_FILE_PREFIX:
-                            ipl = getFormattedNameImage(nameFormat, workspace.getMetadata(), prefix, seriesNumber, dimRanges,crop);
+                            metadata = (HCMetadata) workspace.getMetadata().clone();
+                            metadata.setComment(prefix);
+                            ipl = getPrefixFormattedNameImage(metadata, seriesNumber, dimRanges,crop);
                             break;
                     }
                     break;
@@ -530,6 +571,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(STARTING_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(ENDING_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(INTERVAL_T, Parameter.INTEGER,1));
+        parameters.add(new Parameter(CHANNEL,Parameter.INTEGER,1));
         parameters.add(new Parameter(CROP_IMAGE, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
         parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
@@ -583,6 +625,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     case NameFormats.INPUT_FILE_PREFIX:
                         returnedParameters.add(parameters.getParameter(PREFIX));
                         break;
+                    case NameFormats.YOKOGAWA:
+                        returnedParameters.add(parameters.getParameter(CHANNEL));
+                        break;
                 }
                 break;
 
@@ -591,7 +636,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 break;
         }
 
-        if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE)) {
+        if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE) &&
+                !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
+                        && parameters.getValue(NAME_FORMAT).equals(NameFormats.YOKOGAWA))) {
             returnedParameters.add(parameters.getParameter(STARTING_C));
             returnedParameters.add(parameters.getParameter(INTERVAL_C));
             returnedParameters.add(parameters.getParameter(USE_ALL_C));

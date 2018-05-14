@@ -149,7 +149,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         calibrationUnits = calibration.getUnits();
 
         // Initialising output objects
-        outputObjects = new ObjCollection(outputObjectsName);
+        outputObjects = new ObjCollection(outputObjectsName,inputImagePlus.getNSlices()==1);
         workspace.addObjects(outputObjects);
 
         // Displaying the image and showing the control

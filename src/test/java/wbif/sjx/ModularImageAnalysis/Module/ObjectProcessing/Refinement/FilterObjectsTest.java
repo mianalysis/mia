@@ -238,7 +238,7 @@ public class FilterObjectsTest {
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children");
+        ObjCollection childObjects = new ObjCollection("Children", false);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -246,7 +246,7 @@ public class FilterObjectsTest {
                 Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits);
                 childObjects.add(childObject);
 
-                testObject.addChild(childObject);
+                testObject.addChild(childObject, false);
                 childObject.addParent(testObject);
             }
 
@@ -287,7 +287,7 @@ public class FilterObjectsTest {
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children");
+        ObjCollection childObjects = new ObjCollection("Children",false);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -295,7 +295,7 @@ public class FilterObjectsTest {
                 Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits);
                 childObjects.add(childObject);
 
-                testObject.addChild(childObject);
+                testObject.addChild(childObject,false);
                 childObject.addParent(testObject);
             }
 
@@ -335,7 +335,7 @@ public class FilterObjectsTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,true};
-        ObjCollection parentObjects = new ObjCollection("Parents");
+        ObjCollection parentObjects = new ObjCollection("Parents",false);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -344,7 +344,7 @@ public class FilterObjectsTest {
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
-                parentObject.addChild(testObject);
+                parentObject.addChild(testObject, false);
 
             }
         }
@@ -380,7 +380,7 @@ public class FilterObjectsTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjCollection parentObjects = new ObjCollection("Parents");
+        ObjCollection parentObjects = new ObjCollection("Parents", false);
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
@@ -389,7 +389,7 @@ public class FilterObjectsTest {
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
-                parentObject.addChild(testObject);
+                parentObject.addChild(testObject, false);
 
             }
         }

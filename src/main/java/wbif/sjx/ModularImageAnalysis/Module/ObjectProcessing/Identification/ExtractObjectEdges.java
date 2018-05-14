@@ -74,7 +74,7 @@ public class ExtractObjectEdges extends Module {
         ObjCollection outputEdgeObjects = null;
         if (createEdgeObjects) {
             outputEdgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            outputEdgeObjects = new ObjCollection(outputEdgeObjectName);
+            outputEdgeObjects = new ObjCollection(outputEdgeObjectName,inputObjects.is2D());
         }
 
         // Initialising output interior objects
@@ -82,7 +82,7 @@ public class ExtractObjectEdges extends Module {
         ObjCollection outputInteriorObjects = null;
         if (createInteriorObjects) {
             outputInteriorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
-            outputInteriorObjects = new ObjCollection(outputInteriorObjectName);
+            outputInteriorObjects = new ObjCollection(outputInteriorObjectName,inputObjects.is2D());
         }
 
         for (Obj inputObject:inputObjects.values()) {
@@ -154,7 +154,7 @@ public class ExtractObjectEdges extends Module {
 
                 outputEdgeObjects.add(outputEdgeObject);
                 outputEdgeObject.addParent(inputObject);
-                inputObject.addChild(outputEdgeObject);
+                inputObject.addChild(outputEdgeObject, outputEdgeObjects.is2D());
             }
 
             if (createInteriorObjects) {
@@ -162,7 +162,7 @@ public class ExtractObjectEdges extends Module {
 
                 outputInteriorObjects.add(outputInteriorObject);
                 outputInteriorObject.addParent(inputObject);
-                inputObject.addChild(outputInteriorObject);
+                inputObject.addChild(outputInteriorObject, outputInteriorObjects.is2D());
             }
         }
 

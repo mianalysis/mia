@@ -21,6 +21,8 @@ public class TrackObjects extends Module {
     public static final String TRACK_OBJECTS = "Output track objects";
     public static final String LINKING_METHOD = "Linking method";
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance (px)";
+    public static final String USE_VOLUME = "Use volume (minimise volume change)";
+    public static final String VOLUME_WEIGHTING = "Volume weighting";
     public static final String MINIMUM_OVERLAP = "Minimum overlap";
     public static final String MAXIMUM_MISSING_FRAMES = "Maximum number of missing frames";
     public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
@@ -52,7 +54,7 @@ public class TrackObjects extends Module {
 
     }
 
-    private static float getCentroidSeparation(Obj prevObj, Obj currObj) {
+    private static float getCentroidSeparation(Obj prevObj, Obj currObj, boolean is2D, boolean useVolume, double volumeWeighting) {
         double prevXCent = prevObj.getXMean(true);
         double prevYCent = prevObj.getYMean(true);
         double prevZCent = prevObj.getZMean(true,true);
@@ -61,10 +63,21 @@ public class TrackObjects extends Module {
         double currYCent = currObj.getYMean(true);
         double currZCent = currObj.getZMean(true,true);
 
+        double prevVol = useVolume ? prevObj.getNVoxels() : 0;
+        double currVol = useVolume ? currObj.getNVoxels() : 0;
+
+        if (is2D) {
+            prevVol = Math.sqrt(prevVol);
+            currVol = Math.sqrt(currVol);
+        } else {
+            prevVol = Math.cbrt(prevVol);
+            currVol = Math.cbrt(currVol);
+        }
+
         return (float) Math.sqrt((prevXCent - currXCent) * (prevXCent - currXCent) +
                 (prevYCent - currYCent) * (prevYCent - currYCent) +
-                (prevZCent - currZCent) * (prevZCent - currZCent));
-
+                (prevZCent - currZCent) * (prevZCent - currZCent) +
+                ((prevVol - currVol) * (prevVol - currVol))*volumeWeighting);
     }
 
     private static float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
@@ -187,11 +200,13 @@ public class TrackObjects extends Module {
 
         // Getting parameters
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName, inputObjects.is2D());
         String linkingMethod = parameters.getValue(LINKING_METHOD);
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
         double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES);
+        boolean useVolume = parameters.getValue(USE_VOLUME);
+        double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
         boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT);
         String orientationMode = parameters.getValue(ORIENTATION_MODE);
 
@@ -245,7 +260,7 @@ public class TrackObjects extends Module {
                         for (int prev = 0; prev < cost[curr].length; prev++) {
                             switch (linkingMethod) {
                                 case LinkingMethods.CENTROID:
-                                    cost[curr][prev] = getCentroidSeparation(prevObjects.get(prev), currObjects.get(curr));
+                                    cost[curr][prev] = getCentroidSeparation(prevObjects.get(prev), currObjects.get(curr),inputObjects.is2D(),useVolume, volumeWeighting);
                                     break;
 
                                 case LinkingMethods.ABSOLUTE_OVERLAP:
@@ -279,7 +294,7 @@ public class TrackObjects extends Module {
                             // Checking they are within the user-specified maximum distance.  If not, no link is made
                             switch (linkingMethod) {
                                 case LinkingMethods.CENTROID:
-                                    float dist = getCentroidSeparation(prevObj,currObj);
+                                    float dist = getCentroidSeparation(prevObj,currObj,inputObjects.is2D(),useVolume, volumeWeighting);
 
                                     if (dist > maxDist) {
                                         track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units);
@@ -314,13 +329,13 @@ public class TrackObjects extends Module {
                                 track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units);
 
                                 prevObj.addParent(track);
-                                track.addChild(prevObj);
+                                track.addChild(prevObj, inputObjects.is2D());
 
                             }
                         }
 
                         // Setting relationship between the current object and track
-                        track.addChild(currObj);
+                        track.addChild(currObj, inputObjects.is2D());
                         currObj.addParent(track);
 
                         // Adding the track to the track collection
@@ -346,6 +361,8 @@ public class TrackObjects extends Module {
         parameters.add(new Parameter(LINKING_METHOD,Parameter.CHOICE_ARRAY,LinkingMethods.CENTROID,LinkingMethods.ALL));
         parameters.add(new Parameter(MINIMUM_OVERLAP,Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
+        parameters.add(new Parameter(USE_VOLUME,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(VOLUME_WEIGHTING, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
         parameters.add(new Parameter(IDENTIFY_LEADING_POINT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(ORIENTATION_MODE,Parameter.CHOICE_ARRAY,OrientationModes.RELATIVE_TO_BOTH,OrientationModes.ALL));
@@ -367,6 +384,10 @@ public class TrackObjects extends Module {
 
             case LinkingMethods.CENTROID:
                 returnedParamters.add(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
+                returnedParamters.add(parameters.getParameter(USE_VOLUME));
+                if (returnedParamters.getValue(USE_VOLUME)) {
+                    returnedParamters.add(parameters.getParameter(VOLUME_WEIGHTING));
+                }
                 break;
         }
 

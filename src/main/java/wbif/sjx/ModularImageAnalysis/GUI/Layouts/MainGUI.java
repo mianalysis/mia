@@ -977,6 +977,7 @@ public class MainGUI extends GUI {
         switch ((String) analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE)) {
             case InputControl.SeriesModes.ALL_SERIES:
                 getTestWorkspace().getMetadata().setSeriesNumber(1);
+                getTestWorkspace().getMetadata().setSeriesName("");
                 break;
 
             case InputControl.SeriesModes.SINGLE_SERIES:

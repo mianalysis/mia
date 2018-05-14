@@ -14,7 +14,7 @@ public class ProjectObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public static Obj createProjection(Obj inputObject, String outputObjectsName) {
+    public static Obj createProjection(Obj inputObject, String outputObjectsName, boolean is2D) {
         ArrayList<Integer> x = inputObject.getXCoords();
         ArrayList<Integer> y = inputObject.getYCoords();
 
@@ -40,7 +40,7 @@ public class ProjectObjects extends Module {
         String calibratedUnits = inputObject.getCalibratedUnits();
         Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits);
         outputObject.addParent(inputObject);
-        inputObject.addChild(outputObject);
+        inputObject.addChild(outputObject,is2D);
 
         // Adding coordinates to the projected object
         for (Double key : projCoords.keySet()) {
@@ -70,12 +70,11 @@ public class ProjectObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.is2D());
 
         for (Obj inputObject:inputObjects.values()) {
-            Obj outputObject = createProjection(inputObject,outputObjectsName);
+            Obj outputObject = createProjection(inputObject,outputObjectsName, inputObjects.is2D());
             outputObjects.put(outputObject.getID(),outputObject);
-
         }
 
         workspace.addObjects(outputObjects);

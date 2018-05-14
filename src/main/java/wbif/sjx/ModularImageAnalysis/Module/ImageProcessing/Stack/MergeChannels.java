@@ -1,15 +1,18 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import ij.CompositeImage;
+import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.HyperStackConverter;
+import ij.plugin.Duplicator;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.RealType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.view.Views;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -19,12 +22,8 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  * Created by sc13967 on 22/02/2018.
  */
 public class MergeChannels< T extends RealType< T > & NativeType< T >> extends Module {
-    public static final String USE_RED = "Use red channel";
-    public static final String INPUT_IMAGE_RED = "Input image (red)";
-    public static final String USE_GREEN = "Use green channel";
-    public static final String INPUT_IMAGE_GREEN = "Input image (green)";
-    public static final String USE_BLUE = "Use blue channel";
-    public static final String INPUT_IMAGE_BLUE = "Input image (blue)";
+    public static final String INPUT_IMAGE1 = "Input image 1";
+    public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String SHOW_IMAGE = "Show image";
 
@@ -34,31 +33,28 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
         T type = img1.firstElement();
 
-        long[] dims1 = new long[img1.numDimensions()];
-        long[] dims2 = new long[img2.numDimensions()];
-        long[] dims = new long[img1.numDimensions()];
+        long[] dims1 = new long[Math.max(3,img1.numDimensions())];
+        long[] dims2 = new long[Math.max(3,img2.numDimensions())];
+        long[] dims = new long[Math.max(3,img1.numDimensions())];
 
-        long[] offset1 = new long[img1.numDimensions()];
-        long[] offset2 = new long[img2.numDimensions()];
+        long[] offset1 = new long[Math.max(3,img1.numDimensions())];
+        long[] offset2 = new long[Math.max(3,img2.numDimensions())];
 
         for (int i=0;i<img1.numDimensions();i++) {
-            System.out.println("Im1 "+img1.dimension(i));
             dims1[i] = img1.dimension(i);
             offset1[i] = 0;
         }
 
         for (int i=0;i<img2.numDimensions();i++) {
-            System.out.println("Im2 "+img2.dimension(i));
             dims2[i] = img2.dimension(i);
             offset2[i] = 0;
         }
-        offset2[2] = dims1[2];
+        offset2[2] = img1.dimension(2);
 
         for (int i=0;i<img1.numDimensions();i++) {
-            System.out.println("Im "+img1.dimension(i));
             dims[i] = img1.dimension(i);
         }
-        dims[2] = dims1[2]+dims2[2];
+        dims[2] = img1.dimension(2)+img2.dimension(2);
 
         // Creating the composite image
         final ImgFactory< T > factory = new ArrayImgFactory<>();
@@ -151,64 +147,46 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     @Override
     protected void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
-        String inputImageRedName = parameters.getValue(INPUT_IMAGE_RED);
-        Image inputImageRed = workspace.getImage(inputImageRedName);
+        String inputImage1Name = parameters.getValue(INPUT_IMAGE1);
+        Image inputImage1 = workspace.getImage(inputImage1Name);
 
-        String inputImageGreenName = parameters.getValue(INPUT_IMAGE_GREEN);
-        Image inputImageGreen = workspace.getImage(inputImageGreenName);
-
-        String inputImageBlueName = parameters.getValue(INPUT_IMAGE_BLUE);
-        Image inputImageBlue = workspace.getImage(inputImageBlueName);
+        String inputImage2Name = parameters.getValue(INPUT_IMAGE2);
+        Image inputImage2 = workspace.getImage(inputImage2Name);
 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
-//        Img<T> mergedImage = combineImages(inputImageGreen,inputImageBlue);
-//        Image outputImage = new Image(outputImageName,mergedImage);
-//        workspace.addImage(outputImage);
-//
-//        if (showImage) ImageJFunctions.show(mergedImage,"Merged");
+        Img<T> mergedImage = combineImages(inputImage1,inputImage2);
+        ImagePlus ipl;
+        if (mergedImage.firstElement().getClass().isInstance(new UnsignedByteType())) {
+            ipl = ImageJFunctions.wrapUnsignedByte(mergedImage,outputImageName);
+        } else if (mergedImage.firstElement().getClass().isInstance(new UnsignedShortType())) {
+            ipl = ImageJFunctions.wrapUnsignedShort(mergedImage,outputImageName);
+        } else {
+            ipl = ImageJFunctions.wrapFloat(mergedImage,outputImageName);
+        }
 
-        Img<T> compositeImage = createComposite(inputImageRed,inputImageGreen,inputImageBlue);
+        CompositeImage compositeImage = new CompositeImage(ipl,CompositeImage.COMPOSITE);
+        compositeImage.setMode(IJ.COMPOSITE);
         Image outputImage = new Image(outputImageName,compositeImage);
-        workspace.addImage(outputImage);
 
-        if (showImage) ImageJFunctions.show(compositeImage,"Composite");
+        workspace.addImage(outputImage);
+        if (showImage) new Duplicator().run(compositeImage).show();
+
 
     }
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(USE_RED,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(INPUT_IMAGE_RED,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(USE_GREEN,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(INPUT_IMAGE_GREEN,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(USE_BLUE,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(INPUT_IMAGE_BLUE,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_IMAGE1,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(INPUT_IMAGE2,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
-
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
-        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
-
-        returnedParameters.add(parameters.getParameter(USE_RED));
-        if (parameters.getValue(USE_RED)) returnedParameters.add(parameters.getParameter(INPUT_IMAGE_RED));
-
-        returnedParameters.add(parameters.getParameter(USE_GREEN));
-        if (parameters.getValue(USE_GREEN)) returnedParameters.add(parameters.getParameter(INPUT_IMAGE_GREEN));
-
-        returnedParameters.add(parameters.getParameter(USE_BLUE));
-        if (parameters.getValue(USE_BLUE)) returnedParameters.add(parameters.getParameter(INPUT_IMAGE_BLUE));
-
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
-
-        return returnedParameters;
-
+        return parameters;
     }
 
     @Override

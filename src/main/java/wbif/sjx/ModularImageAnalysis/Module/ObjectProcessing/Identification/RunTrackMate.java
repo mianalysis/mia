@@ -63,7 +63,7 @@ public class RunTrackMate extends Module {
     }
 
 
-    private ObjCollection getSpots(Model model, String spotObjectsName,Calibration calibration, boolean estimateSize) {
+    private ObjCollection getSpots(Model model, String spotObjectsName,Calibration calibration, boolean estimateSize, boolean is2D) {
         // Getting trackObjects and adding them to the output trackObjects
         writeMessage("Processing detected objects");
 
@@ -72,7 +72,7 @@ public class RunTrackMate extends Module {
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
 
-        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName, is2D);
         SpotCollection spots = model.getSpots();
         for (Spot spot:spots.iterable(false)) {
             Obj spotObject = new Obj(spotObjectsName,spot.ID(),dppXY,dppZ,calibrationUnits);
@@ -108,14 +108,14 @@ public class RunTrackMate extends Module {
 
     }
 
-    private ObjCollection[] getSpotsAndTracks(Model model, String spotObjectsName, String trackObjectsName, Calibration calibration, boolean estimateSize) {
+    private ObjCollection[] getSpotsAndTracks(Model model, String spotObjectsName, String trackObjectsName, Calibration calibration, boolean estimateSize, boolean is2D) {
         // Getting calibration
         double dppXY = calibration.getX(1);
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
 
-        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName,is2D);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName,is2D);
 
         // Converting tracks to local track model
         writeMessage("Converting tracks to local track model");
@@ -160,7 +160,7 @@ public class RunTrackMate extends Module {
 
                 // Adding the connection between instance and summary objects
                 spotObject.addParent(trackObject);
-                trackObject.addChild(spotObject);
+                trackObject.addChild(spotObject, spotObjects.is2D());
 
                 // Adding the instance object to the relevant collection
                 spotObjects.add(spotObject);
@@ -270,7 +270,7 @@ public class RunTrackMate extends Module {
             writeMessage("Running TrackMate tracking");
             if (!trackmate.process()) System.err.println(trackmate.getErrorMessage());
 
-            ObjCollection[] spotsAndTracks = getSpotsAndTracks(model,spotObjectsName,trackObjectsName,calibration,estimateSize);
+            ObjCollection[] spotsAndTracks = getSpotsAndTracks(model,spotObjectsName,trackObjectsName,calibration,estimateSize,ipl.getNSlices()==1);
             ObjCollection spotObjects = spotsAndTracks[0];
             ObjCollection trackObjects = spotsAndTracks[1];
 
@@ -307,7 +307,7 @@ public class RunTrackMate extends Module {
             if (!trackmate.execDetection()) System.err.println(trackmate.getErrorMessage());
             if (!trackmate.computeSpotFeatures(false)) System.err.println(trackmate.getErrorMessage());
 
-            ObjCollection spotObjects = getSpots(model,spotObjectsName,calibration,estimateSize);
+            ObjCollection spotObjects = getSpots(model,spotObjectsName,calibration,estimateSize,ipl.getNSlices()==1);
             workspace.addObjects(spotObjects);
 
             // Displaying trackObjects (if selected)

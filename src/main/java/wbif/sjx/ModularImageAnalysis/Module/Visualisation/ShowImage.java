@@ -29,7 +29,7 @@ public class ShowImage extends Module {
         ImagePlus imageToShow = workspace.getImage(imageName).getImagePlus();
         imageToShow = new Duplicator().run(imageToShow);
 
-        IntensityMinMax.run(imageToShow,imageToShow.getNSlices() > 1);
+        IntensityMinMax.run(imageToShow,imageToShow.getNSlices() > 1 || imageToShow.getNFrames() > 1 || imageToShow.getNChannels() > 1);
         imageToShow.show();
 
     }
