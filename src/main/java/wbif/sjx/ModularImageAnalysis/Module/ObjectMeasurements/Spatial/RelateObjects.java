@@ -122,6 +122,8 @@ public class RelateObjects extends Module {
 
                             // Measuring point-to-point distances on both object surfaces
                             for (int j = 0; j < childX.length; j++) {
+                                Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZSlice[j]);
+
                                 double currMinDist = Double.MAX_VALUE;
                                 Obj currMinLink = null;
                                 boolean isInside = false;
@@ -135,15 +137,14 @@ public class RelateObjects extends Module {
                                     if (dist < currMinDist && dist <= linkingDistance) {
                                         currMinDist = dist;
                                         currMinLink = parentObject;
-
-                                        // If this point is inside the parent the distance should be negative
-                                        Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZSlice[j]);
                                         isInside = parentObject.getPoints().contains(currentPoint);
                                     }
                                 }
 
-                                // Comparing the closest distance for this child point to the previous minimum distance
+                                // If this point is inside the parent the distance should be negative
                                 if (isInside) currMinDist = -currMinDist;
+
+                                // Comparing the closest distance for this child point to the previous minimum distance
                                 if (currMinDist < minDist) {
                                     minDist = currMinDist;
                                     minLink = currMinLink;
@@ -156,6 +157,9 @@ public class RelateObjects extends Module {
                             double childXCent = childObject.getXMean(true);
                             double childYCent = childObject.getYMean(true);
                             double childZCent = childObject.getZMean(true, true);
+                            double childZCentSlice = childObject.getZMean(true, false);
+
+                            Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) childZCentSlice);
 
                             parentX = parentObject.getSurfaceX(true);
                             parentY = parentObject.getSurfaceY(true);
@@ -174,15 +178,14 @@ public class RelateObjects extends Module {
                                 if (dist < currMinDist && dist <= linkingDistance) {
                                     currMinDist = dist;
                                     currMinLink = parentObject;
-
-                                    // If this point is inside the parent the distance should be negative
-                                    Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) Math.round(childZCent));
                                     isInside = parentObject.getPoints().contains(currentPoint);
                                 }
                             }
 
-                            // Comparing the closest distance for this child point to the previous minimum distance
+                            // If this point is inside the parent the distance should be negative
                             if (isInside) currMinDist = -currMinDist;
+
+                            // Comparing the closest distance for this child point to the previous minimum distance
                             if (currMinDist < minDist) {
                                 minDist = currMinDist;
                                 minLink = currMinLink;
