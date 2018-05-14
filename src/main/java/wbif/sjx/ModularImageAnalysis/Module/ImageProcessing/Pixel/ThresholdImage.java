@@ -6,10 +6,12 @@ import fiji.threshold.Auto_Local_Threshold;
 import fiji.threshold.Auto_Threshold;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -160,12 +162,17 @@ public class ThresholdImage extends Module {
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
         }
 
+        Prefs.blackBackground = !whiteBackground;
+
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
         // Image must be 8-bit
-//        IntensityMinMax.run(inputImagePlus,true);
-//        IJ.run(inputImagePlus,"8-bit",null);
+        if (inputImagePlus.getBitDepth() != 8) {
+            System.err.println("[ThresholdImage] Image \""+inputImageName+"\" converted to 8-bit with normalised intensity");
+            IntensityMinMax.run(inputImagePlus, true);
+            IJ.run(inputImagePlus, "8-bit", null);
+        }
 
         // Calculating the threshold based on the selected algorithm
         switch (thresholdType) {
@@ -216,7 +223,7 @@ public class ThresholdImage extends Module {
 
         }
 
-        if (whiteBackground) IJ.run(inputImagePlus, "Invert", "stack");
+        if (whiteBackground) InvertIntensity.process(inputImagePlus);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {

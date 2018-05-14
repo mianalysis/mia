@@ -86,7 +86,6 @@ public class BinaryOperations extends Module {
 
             case OperationModes.WATERSHED_2D:
                 IJ.run(ipl,"Watershed", "stack");
-                Prefs.blackBackground = false;
                 break;
 
         }
