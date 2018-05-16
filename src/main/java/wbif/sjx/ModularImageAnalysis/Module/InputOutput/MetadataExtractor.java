@@ -32,9 +32,10 @@ public class MetadataExtractor extends Module {
         String INCUCYTE_LONG_FILENAME_EXTRACTOR = "IncuCyte long filename";
         String INCUCYTE_SHORT_FILENAME_EXTRACTOR = "IncuCyte short filename";
         String OPERA_FILENAME_EXTRACTOR = "Opera filename";
+        String YOKOGAWA_FILENAME_EXTRACTOR = "Yokogawa filename";
 
         String[] ALL = new String[]{NONE, CELLVOYAGER_FILENAME_EXTRACTOR, INCUCYTE_LONG_FILENAME_EXTRACTOR,
-                INCUCYTE_SHORT_FILENAME_EXTRACTOR, OPERA_FILENAME_EXTRACTOR};
+                INCUCYTE_SHORT_FILENAME_EXTRACTOR, OPERA_FILENAME_EXTRACTOR, YOKOGAWA_FILENAME_EXTRACTOR};
 
     }
 
@@ -81,6 +82,10 @@ public class MetadataExtractor extends Module {
 
             case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
                 filenameExtractor = new OperaFilenameExtractor();
+                break;
+
+            case FilenameExtractors.YOKOGAWA_FILENAME_EXTRACTOR:
+                filenameExtractor = new CV7000FilenameExtractor();
                 break;
 
         }

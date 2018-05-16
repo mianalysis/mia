@@ -4,7 +4,7 @@
   <groupId>wbif.sjx</groupId>
   <artifactId>ModularImageAnalysis</artifactId>
   <name>Modular_Image_Analysis</name>
-  <version>0.5.3</version>
+  <version>0.5.4-SNAPSHOT</version>
   <url>https://github.com/SJCross/ModularImageAnalysis</url>
   <licenses>
     <license>

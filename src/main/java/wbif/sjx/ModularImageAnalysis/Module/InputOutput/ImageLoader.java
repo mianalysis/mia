@@ -52,6 +52,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String NAME_FORMAT = "Name format";
     public static final String COMMENT = "Comment";
     public static final String PREFIX = "Prefix";
+    public static final String SUFFIX = "Suffix";
     public static final String FILE_PATH = "File path";
     public static final String USE_ALL_C = "Use all channels";
     public static final String STARTING_C = "Starting channel";
@@ -108,9 +109,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public interface NameFormats {
         String INCUCYTE_SHORT = "Incucyte short filename";
         String YOKOGAWA = "Yokogowa";
-        String INPUT_FILE_PREFIX= "Input filename with prefix";
+        String INPUT_FILE_PREFIX = "Input filename with prefix";
+        String INPUT_FILE_SUFFIX = "Input filename with suffix";
 
-        String[] ALL = new String[]{INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX};
+        String[] ALL = new String[]{INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
 
     }
 
@@ -382,6 +384,19 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    private ImagePlus getSuffixFormattedNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
+            throws ServiceException, DependencyException, FormatException, IOException {
+        String absolutePath = metadata.getFile().getAbsolutePath();
+        String path = FilenameUtils.getFullPath(absolutePath);
+        String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
+        String extension = FilenameUtils.getExtension(absolutePath);
+        String comment = metadata.getComment();
+        String filename = path+name+comment+"."+extension;
+
+        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -409,6 +424,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String nameFormat = parameters.getValue(NAME_FORMAT);
         String comment = parameters.getValue(COMMENT);
         String prefix = parameters.getValue(PREFIX);
+        String suffix = parameters.getValue(SUFFIX);
         boolean useAllC = parameters.getValue(USE_ALL_C);
         int startingC = parameters.getValue(STARTING_C);
         int endingC = parameters.getValue(ENDING_C);
@@ -485,6 +501,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                             metadata.setComment(prefix);
                             ipl = getPrefixFormattedNameImage(metadata, seriesNumber, dimRanges,crop);
                             break;
+
+                        case NameFormats.INPUT_FILE_SUFFIX:
+                            metadata = (HCMetadata) workspace.getMetadata().clone();
+                            metadata.setComment(suffix);
+                            ipl = getSuffixFormattedNameImage(metadata, seriesNumber, dimRanges,crop);
+                            break;
                     }
                     break;
 
@@ -558,6 +580,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
         parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
         parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
+        parameters.add(new Parameter(SUFFIX,Parameter.STRING,""));
         parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
         parameters.add(new Parameter(USE_ALL_C, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(STARTING_C, Parameter.INTEGER,1));
@@ -622,11 +645,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     case NameFormats.INCUCYTE_SHORT:
                         returnedParameters.add(parameters.getParameter(COMMENT));
                         break;
+                    case NameFormats.YOKOGAWA:
+                        returnedParameters.add(parameters.getParameter(CHANNEL));
+                        break;
                     case NameFormats.INPUT_FILE_PREFIX:
                         returnedParameters.add(parameters.getParameter(PREFIX));
                         break;
-                    case NameFormats.YOKOGAWA:
-                        returnedParameters.add(parameters.getParameter(CHANNEL));
+                    case NameFormats.INPUT_FILE_SUFFIX:
+                        returnedParameters.add(parameters.getParameter(SUFFIX));
                         break;
                 }
                 break;

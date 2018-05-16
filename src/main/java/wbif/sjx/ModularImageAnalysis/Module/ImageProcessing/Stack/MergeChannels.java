@@ -168,6 +168,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
         CompositeImage compositeImage = new CompositeImage(ipl,CompositeImage.COMPOSITE);
         compositeImage.setMode(IJ.COMPOSITE);
+        compositeImage.setCalibration(inputImage1.getImagePlus().getCalibration());
         Image outputImage = new Image(outputImageName,compositeImage);
 
         workspace.addImage(outputImage);
