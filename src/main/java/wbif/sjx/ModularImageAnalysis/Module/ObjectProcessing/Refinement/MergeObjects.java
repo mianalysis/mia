@@ -31,7 +31,8 @@ public class MergeObjects extends Module {
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
         ObjCollection inputObjects2 = workspace.getObjectSet(inputObjects2Name);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        boolean is2D = inputObjects1.is2D() || inputObjects2.is2D();
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,is2D);
 
         // Getting parameters
         boolean deleteInputs = parameters.getValue(DELETE_INPUTS);

@@ -20,6 +20,7 @@ public class MeasureObjectShape extends Module {
     public static final String MEASURE_CONVEX_HULL = "Measure convex hull";
     public static final String FITTING_MODE = "Fit convex hull to";
     public static final String MEASURE_ELLIPSOID = "Measure ellipsoid";
+    public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
     public static final String MEASURE_PROJECTED_ELLIPSE = "Measure projected ellipse";
 
@@ -33,21 +34,21 @@ public class MeasureObjectShape extends Module {
 
     public interface Measurements {
         String N_VOXELS = "SHAPE//N_VOXELS";
-        String VOLUME_PX = "SHAPE//VOLUME_PX";
-        String VOLUME_CAL = "SHAPE//VOLUME_CAL";
-        String HULL_VOLUME_PX = "SHAPE//HULL_VOLUME_PX";
-        String HULL_VOLUME_CAL = "SHAPE//HULL_VOLUME_CAL";
-        String HULL_SURFACE_AREA_PX = "SHAPE//HULL_SURFACE_AREA_PX";
-        String HULL_SURFACE_AREA_CAL = "SHAPE//HULL_SURFACE_AREA_CAL";
+        String VOLUME_PX = "SHAPE//VOLUME_(PX^3)";
+        String VOLUME_CAL = "SHAPE//VOLUME_(${CAL}^3)";
+        String HULL_VOLUME_PX = "SHAPE//HULL_VOLUME_(PX^3)";
+        String HULL_VOLUME_CAL = "SHAPE//HULL_VOLUME_(${CAL}^3)";
+        String HULL_SURFACE_AREA_PX = "SHAPE//HULL_SURFACE_AREA_(PX^2)";
+        String HULL_SURFACE_AREA_CAL = "SHAPE//HULL_SURFACE_AREA_(${CAL}^2)";
         String SPHERICITY = "SHAPE//SPHERICITY";
         String SOLIDITY = "SHAPE//SOLIDITY";
         String ELLIPSOID_ORIENTATION_1 = "SHAPE//ELLIPSOID_ORIENTATION_1_(DEGS)";
         String ELLIPSOID_ORIENTATION_2 = "SHAPE//ELLIPSOID_ORIENTATION_2_(DEGS)";
         String ELLIPSE_THETA = "SHAPE//ELLIPSE_ANGLE_(DEGS)";
-        String PROJ_DIA_PX = "SHAPE//PROJ_DIA_PX";
-        String PROJ_DIA_CAL = "SHAPE//PROJ_DIA_CAL";
-
-        String[] ALL = new String[]{VOLUME_PX, VOLUME_CAL, PROJ_DIA_PX, PROJ_DIA_CAL};
+        String PROJ_AREA_PX = "SHAPE//PROJ_AREA_(PX^2)";
+        String PROJ_AREA_CAL = "SHAPE//PROJ_AREA_(${CAL}^2)";
+        String PROJ_DIA_PX = "SHAPE//PROJ_DIA_(PX)";
+        String PROJ_DIA_CAL = "SHAPE//PROJ_DIA_(${CAL})";
 
     }
 
@@ -106,6 +107,7 @@ public class MeasureObjectShape extends Module {
         boolean measureConvexHull = parameters.getValue(MEASURE_CONVEX_HULL);
         String fittingMode = parameters.getValue(FITTING_MODE);
         boolean measureEllipsoid = parameters.getValue(MEASURE_ELLIPSOID);
+        boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA);
         boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA);
         boolean measureProjectedEllipse = parameters.getValue(MEASURE_PROJECTED_ELLIPSE);
 
@@ -121,7 +123,7 @@ public class MeasureObjectShape extends Module {
                 inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX, containedVolumePx, this));
 
                 double containedVolumeCal = inputObject.getContainedVolume(false);
-                inputObject.addMeasurement(new Measurement(Measurements.VOLUME_CAL, containedVolumeCal, this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.VOLUME_CAL), containedVolumeCal, this));
             }
 
             // Adding the convex hull fitting measurements
@@ -145,9 +147,9 @@ public class MeasureObjectShape extends Module {
                 double solidity = volumeCalculator.getSolidity();
 
                 inputObject.addMeasurement(new Measurement(Measurements.HULL_VOLUME_PX,hullVolumePx,this));
-                inputObject.addMeasurement(new Measurement(Measurements.HULL_VOLUME_CAL,hullVolumeCal,this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.HULL_VOLUME_CAL),hullVolumeCal,this));
                 inputObject.addMeasurement(new Measurement(Measurements.HULL_SURFACE_AREA_PX,hullSurfaceAreaPx,this));
-                inputObject.addMeasurement(new Measurement(Measurements.HULL_SURFACE_AREA_CAL,hullSurfaceAreaCal,this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.HULL_SURFACE_AREA_CAL),hullSurfaceAreaCal,this));
                 inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY,sphericity,this));
                 inputObject.addMeasurement(new Measurement(Measurements.SOLIDITY,solidity,this));
             }
@@ -167,15 +169,16 @@ public class MeasureObjectShape extends Module {
 
             // If necessary analyses are included
             Obj projectedObject = null;
-            if (measureProjectedDiameter || measureProjectedEllipse) {
-                projectedObject = ProjectObjects.createProjection(inputObject, "Projected");
+            if (measureProjectedArea || measureProjectedDiameter || measureProjectedEllipse) {
+                projectedObject = ProjectObjects.createProjection(inputObject, "Projected",inputObjects.is2D());
             }
 
-            // Adding the projected-object ellipse fitting measurements
-            if (measureProjectedEllipse) {
-                EllipseCalculator ellipseCalculator = new EllipseCalculator(projectedObject);
-                double val = Math.toDegrees(ellipseCalculator.getEllipseThetaRads());
-                inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_THETA,val,this));
+            // Adding the projected-object area measurements
+            if (measureProjectedArea) {
+                double areaPx = projectedObject.getNVoxels();
+                double areaCal = areaPx*projectedObject.getDistPerPxXY()*projectedObject.getDistPerPxXY();
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx, this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_AREA_CAL), areaCal, this));
             }
 
             // Adding the projected-object diameter measurements
@@ -183,7 +186,18 @@ public class MeasureObjectShape extends Module {
                 double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
                 double maxDistanceCal = calculateMaximumPointPointDistance(projectedObject)*inputObject.getDistPerPxXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx, this));
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_CAL, maxDistanceCal, this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_DIA_CAL), maxDistanceCal, this));
+            }
+
+            // Adding the projected-object ellipse fitting measurements
+            if (measureProjectedEllipse) {
+                try {
+                    EllipseCalculator ellipseCalculator = new EllipseCalculator(projectedObject);
+                    double val = Math.toDegrees(ellipseCalculator.getEllipseThetaRads());
+                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_THETA,val,this));
+                } catch (RuntimeException e) {
+                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_THETA,Double.NaN,this));
+                }
             }
         }
     }
@@ -195,6 +209,7 @@ public class MeasureObjectShape extends Module {
         parameters.add(new Parameter(MEASURE_CONVEX_HULL, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.CENTROIDS,FittingModes.ALL));
         parameters.add(new Parameter(MEASURE_ELLIPSOID, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(MEASURE_PROJECTED_ELLIPSE, Parameter.BOOLEAN, true));
 
@@ -213,6 +228,7 @@ public class MeasureObjectShape extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(MEASURE_ELLIPSOID));
+        returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_AREA));
         returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_DIA));
         returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_ELLIPSE));
 
@@ -240,7 +256,7 @@ public class MeasureObjectShape extends Module {
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.VOLUME_CAL);
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.VOLUME_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
         }
@@ -250,7 +266,7 @@ public class MeasureObjectShape extends Module {
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.HULL_VOLUME_CAL);
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_VOLUME_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
@@ -258,7 +274,7 @@ public class MeasureObjectShape extends Module {
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.HULL_SURFACE_AREA_CAL);
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_SURFACE_AREA_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
@@ -289,12 +305,22 @@ public class MeasureObjectShape extends Module {
             reference.setImageObjName(inputObjectsName);
         }
 
+        if (parameters.getValue(MEASURE_PROJECTED_AREA)) {
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_AREA_PX);
+            reference.setCalculated(true);
+            reference.setImageObjName(inputObjectsName);
+
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_AREA_CAL));
+            reference.setCalculated(true);
+            reference.setImageObjName(inputObjectsName);
+        }
+
         if (parameters.getValue(MEASURE_PROJECTED_DIA)) {
             MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_CAL);
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_DIA_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
         }

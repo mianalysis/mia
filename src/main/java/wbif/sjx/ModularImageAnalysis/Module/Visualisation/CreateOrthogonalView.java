@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
@@ -112,7 +113,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
 
         // Getting input image dimensions
         double xCal = ((ImgPlus<T>) inputImg).averageScale(0);
-        double zCal = ((ImgPlus<T>) inputImg).averageScale(2);
+        double zCal = inputImg.numDimensions() > 2 ? ((ImgPlus<T>) inputImg).averageScale(2) : 1;
         double ZXYRatio = zCal/xCal;
         long dimX = inputImg.dimension(0);
         long dimY = inputImg.dimension(1);

@@ -12,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
@@ -826,7 +827,7 @@ public class MainGUI extends GUI {
             // Removing a module resets all the current evaluation
             int idx = modules.indexOf(activeModule);
 
-            if (idx < lastModuleEval) lastModuleEval = -1;
+            if (idx <= lastModuleEval) lastModuleEval = -1;
 
             modules.remove(activeModule);
             activeModule = null;
@@ -926,6 +927,8 @@ public class MainGUI extends GUI {
         String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
         String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
 
+        Units.setUnits(inputControl.getParameterValue(InputControl.SPATIAL_UNITS));
+
         String inputFile = "";
         switch (inputMode) {
             case InputControl.InputModes.SINGLE_FILE:
@@ -974,11 +977,13 @@ public class MainGUI extends GUI {
         switch ((String) analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE)) {
             case InputControl.SeriesModes.ALL_SERIES:
                 getTestWorkspace().getMetadata().setSeriesNumber(1);
+                getTestWorkspace().getMetadata().setSeriesName("");
                 break;
 
             case InputControl.SeriesModes.SINGLE_SERIES:
                 int seriesNumber = analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
                 getTestWorkspace().getMetadata().setSeriesNumber(seriesNumber);
+                getTestWorkspace().getMetadata().setSeriesName("");
         }
     }
 }

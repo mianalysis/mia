@@ -25,9 +25,11 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.StringTokenizer;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -44,6 +46,7 @@ public class Exporter {
     private int exportMode = XLSX_EXPORT;
 
     private String exportFilePath;
+    private ErrorLog errorLog;
     private boolean verbose = false;
     private boolean exportSummary = true;
     private boolean showObjectCounts = true;
@@ -105,8 +108,7 @@ public class Exporter {
                 // Adding metadata from the workspace
                 HCMetadata metadata = workspace.getMetadata();
                 for (String key:metadata.keySet()) {
-                    String attrName = key.toUpperCase();
-                    Attr attr = doc.createAttribute(attrName);
+                    Attr attr = doc.createAttribute(key);
                     attr.appendChild(doc.createTextNode(metadata.getAsString(key)));
                     setElement.setAttributeNode(attr);
 
@@ -124,7 +126,7 @@ public class Exporter {
                         imageElement.setAttributeNode(nameAttr);
 
                         for (Measurement measurement : image.getMeasurements().values()) {
-                            String attrName = measurement.getName().toUpperCase().replaceAll(" ", "_");
+                            String attrName = measurement.getName().replaceAll(" ", "_");
                             Attr measAttr = doc.createAttribute(attrName);
                             String attrValue = df.format(measurement.getValue());
                             measAttr.appendChild(doc.createTextNode(attrValue));
@@ -157,7 +159,7 @@ public class Exporter {
                         for (Measurement measurement:object.getMeasurements().values()) {
                             Element measElement = doc.createElement("MEAS");
 
-                            String name = measurement.getName().toUpperCase().replaceAll(" ", "_");
+                            String name = measurement.getName().replaceAll(" ", "_");
                             measElement.setAttribute("NAME",name);
 
                             String value = df.format(measurement.getValue());
@@ -178,7 +180,7 @@ public class Exporter {
             }
 
             // Preparing the filepath and filename
-            String outPath = FilenameUtils.removeExtension(exportFilePath)  +".xml";
+            String outPath = exportFilePath  +".xml";
 
             // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -317,11 +319,12 @@ public class Exporter {
 
         // Adding relevant sheets
         prepareParametersXLSX(workbook,modules);
+        if (errorLog != null) prepareErrorLogXLSX(workbook,errorLog);
         if (exportSummary) prepareSummaryXLSX(workbook,workspaces,modules,summaryType);
         if (exportIndividualObjects) prepareObjectsXLSX(workbook,workspaces,modules);
 
         // Writing the workbook to file
-        String outPath = FilenameUtils.removeExtension(exportFilePath) +".xlsx";
+        String outPath = exportFilePath + ".xlsx";
         FileOutputStream outputStream = new FileOutputStream(outPath);
         workbook.write(outputStream);
         workbook.close();
@@ -382,6 +385,23 @@ public class Exporter {
                 moduleValueCell.setCellValue(module.getClass().getSimpleName());
 
             }
+        }
+    }
+
+    private void prepareErrorLogXLSX(SXSSFWorkbook workbook, ErrorLog errorLog) {
+        // Creating a sheet for parameters
+        Sheet errorSheet = workbook.createSheet("Log");
+
+        // Getting error log text and split by line returns
+        String logText = errorLog.getStreamContents();
+        StringTokenizer tokenizer = new StringTokenizer(logText,"\n");
+
+        // Adding a header row for the parameter titles
+        int rowCount = 0;
+        while (tokenizer.hasMoreTokens()) {
+            Row row = errorSheet.createRow(rowCount++);
+            Cell cell = row.createCell(0);
+            cell.setCellValue(tokenizer.nextToken());
         }
     }
 
@@ -811,7 +831,7 @@ public class Exporter {
                     HCMetadata exampleMetadata = exampleWorkspace.getMetadata();
                     for (String name : exampleMetadata.keySet()) {
                         Cell metaHeaderCell = objectHeaderRow.createCell(col++);
-                        String metadataName = name.toUpperCase().replaceAll(" ", "_");
+                        String metadataName = name.replaceAll(" ", "_");
                         metaHeaderCell.setCellValue(metadataName);
 
                     }
@@ -960,24 +980,24 @@ public class Exporter {
     }
 
     private String getMetadataString(String metadataName) {
-        return "META//"+metadataName.toUpperCase().replaceAll(" ", "_");
+        return "META//"+metadataName.replaceAll(" ", "_");
 
     }
 
     private String getImageString(String imageName, String measurementName) {
-        imageName = imageName.toUpperCase().replaceAll(" ", "_");
+        imageName = imageName.replaceAll(" ", "_");
 
-        return imageName+"_(IM)//"+measurementName.toUpperCase().replaceAll(" ", "_");
+        return imageName+"_(IM)//"+measurementName.replaceAll(" ", "_");
 
     }
 
     private String getObjectString(String objectName, String mode, String measurementName) {
-        objectName = objectName.toUpperCase().replaceAll(" ", "_");
+        objectName = objectName.replaceAll(" ", "_");
 
         if (mode.equals("")) {
-            return objectName+"_(OBJ)//"+measurementName.toUpperCase().replaceAll(" ", "_");
+            return objectName+"_(OBJ)//"+measurementName.replaceAll(" ", "_");
         } else {
-            return objectName+"_(OBJ_"+mode+")//"+measurementName.toUpperCase().replaceAll(" ", "_");
+            return objectName+"_(OBJ_"+mode+")//"+measurementName.replaceAll(" ", "_");
         }
     }
 
@@ -1062,5 +1082,13 @@ public class Exporter {
 
     public void setCalculateSum(boolean calculateSum) {
         this.calculateSum = calculateSum;
+    }
+
+    public ErrorLog getErrorLog() {
+        return errorLog;
+    }
+
+    public void setErrorLog(ErrorLog errorLog) {
+        this.errorLog = errorLog;
     }
 }

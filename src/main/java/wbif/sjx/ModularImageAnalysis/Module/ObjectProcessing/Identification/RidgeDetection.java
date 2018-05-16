@@ -35,7 +35,7 @@ public class RidgeDetection extends Module {
 
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT//LENGTH_(PX)";
-        String LENGTH_CAL = "RIDGE_DETECT//LENGTH_(CAL)";
+        String LENGTH_CAL = "RIDGE_DETECT//LENGTH_(${CAL})";
     }
 
     private interface ContourContrast {
@@ -71,7 +71,7 @@ public class RidgeDetection extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputImagePlus.getNSlices()==1);
 
         // Getting parameters (RidgeDetection plugin wants to use pixel units only)
         double lowerThreshold = parameters.getValue(LOWER_THRESHOLD);
@@ -172,7 +172,7 @@ public class RidgeDetection extends Module {
                         // Setting single values for the current contour
                         outputObject.setT(t);
                         outputObject.addMeasurement(new Measurement(Measurements.LENGTH_PX, estLength));
-                        outputObject.addMeasurement(new Measurement(Measurements.LENGTH_CAL, estLength*outputObject.getDistPerPxXY()));
+                        outputObject.addMeasurement(new Measurement(Units.replace(Measurements.LENGTH_CAL), estLength*outputObject.getDistPerPxXY()));
                         outputObjects.add(outputObject);
                     }
                 }
@@ -236,7 +236,7 @@ public class RidgeDetection extends Module {
         lengthPx.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         lengthPx.setCalculated(true);
 
-        MeasurementReference lengthCal = objectMeasurementReferences.getOrPut(Measurements.LENGTH_CAL);
+        MeasurementReference lengthCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.LENGTH_CAL));
         lengthCal.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         lengthCal.setCalculated(true);
 

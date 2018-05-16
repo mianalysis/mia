@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import net.imglib2.Cursor;
 import net.imglib2.img.ImagePlusAdapter;
@@ -45,7 +46,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     public ObjCollection convertImageToObjects(String outputObjectsName, boolean singleObject) {
         // Need to get coordinates and convert to a HCObject
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,getImagePlus().getNSlices()==1); //Local ArrayList of objects
 
         // Getting spatial calibration
         double dppXY = imagePlus.getCalibration().getX(1);
@@ -127,7 +128,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     }
 
     public Img<T> getImg() {
-        return ImagePlusAdapter.wrapImgPlus(imagePlus);
+        return ImagePlusAdapter.wrapImgPlus(new Duplicator().run(imagePlus));
 
     }
 

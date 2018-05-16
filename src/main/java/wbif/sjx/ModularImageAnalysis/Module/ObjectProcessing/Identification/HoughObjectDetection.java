@@ -59,7 +59,7 @@ public class HoughObjectDetection extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,ipl.getNSlices()==1);
 
         // Getting parameters
         int minR = parameters.getValue(MIN_RADIUS);

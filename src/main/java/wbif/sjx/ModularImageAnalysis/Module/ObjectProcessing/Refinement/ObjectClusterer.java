@@ -38,17 +38,18 @@ public class ObjectClusterer extends Module {
 
     public interface Measurements {
         String N_POINTS_IN_CLUSTER = "CLUSTER//N_POINTS_IN_CLUSTER";
-        String CLUSTER_AREA_XY = "CLUSTER//CLUSTER_AREA_2D";
+        String CLUSTER_AREA_XY_PX = "CLUSTER//CLUSTER_AREA_2D_(PX^2)";
+        String CLUSTER_AREA_XY_CAL = "CLUSTER//CLUSTER_AREA_2D_(${CAL}^2)";
 
     }
 
 
-    private static ObjCollection runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, double dppXY, double dppZ, String calibratedUnits, int kClusters, int maxIterations) {
+    private static ObjCollection runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, double dppXY, double dppZ, String calibratedUnits, int kClusters, int maxIterations, boolean is2D) {
         KMeansPlusPlusClusterer<LocationWrapper> clusterer = new KMeansPlusPlusClusterer<>(kClusters,maxIterations);
         List<CentroidCluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName,is2D);
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
             Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits);
 
@@ -58,7 +59,7 @@ public class ObjectClusterer extends Module {
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
                 pointObject.addParent(outputObject);
-                outputObject.addChild(pointObject);
+                outputObject.addChild(pointObject, is2D);
             }
 
             outputObjects.add(outputObject);
@@ -69,12 +70,12 @@ public class ObjectClusterer extends Module {
 
     }
 
-    private static ObjCollection runDBSCAN(List<LocationWrapper> locations, String outputObjectsName, double dppXY, double dppZ, String calibratedUnits, double eps, int minPoints) {
+    private static ObjCollection runDBSCAN(List<LocationWrapper> locations, String outputObjectsName, double dppXY, double dppZ, String calibratedUnits, double eps, int minPoints, boolean is2D) {
         DBSCANClusterer<LocationWrapper> clusterer = new DBSCANClusterer<>(eps, minPoints);
         List<Cluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName, is2D);
         for (Cluster<LocationWrapper> cluster:clusters) {
             Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits);
 
@@ -84,7 +85,7 @@ public class ObjectClusterer extends Module {
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
                 pointObject.addParent(outputObject);
-                outputObject.addChild(pointObject);
+                outputObject.addChild(pointObject, is2D);
 
                 // Getting the centroid of the current object
                 cs[0].addMeasure(pointObject.getXMean(true));
@@ -148,11 +149,11 @@ public class ObjectClusterer extends Module {
 
         switch (clusteringAlgorithm) {
             case ClusteringAlgorithms.KMEANSPLUSPLUS:
-                outputObjects = runKMeansPlusPlus(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, kClusters, maxIterations);
+                outputObjects = runKMeansPlusPlus(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, kClusters, maxIterations, inputObjects.is2D());
                 break;
 
             case ClusteringAlgorithms.DBSCAN:
-                outputObjects = runDBSCAN(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, eps, minPoints);
+                outputObjects = runDBSCAN(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, eps, minPoints,inputObjects.is2D());
                 break;
 
         }
@@ -194,7 +195,8 @@ public class ObjectClusterer extends Module {
             }
 
             int area = points.size();
-            outputObject.addMeasurement(new Measurement(Measurements.CLUSTER_AREA_XY, area, this));
+            outputObject.addMeasurement(new Measurement(Measurements.CLUSTER_AREA_XY_PX, area, this));
+            outputObject.addMeasurement(new Measurement(Units.replace(Measurements.CLUSTER_AREA_XY_CAL), area*dppXY*dppXY, this));
 
             // Adding coordinates
             for (int idx : points) {
@@ -257,13 +259,17 @@ public class ObjectClusterer extends Module {
 
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
 
-        MeasurementReference clusterAreaXY = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY);
-        clusterAreaXY.setImageObjName(outputObjectsName);
-        clusterAreaXY.setCalculated(true);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY_PX);
+        reference.setImageObjName(outputObjectsName);
+        reference.setCalculated(true);
 
-        MeasurementReference nPointsInCluster = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY);
-        nPointsInCluster.setImageObjName(outputObjectsName);
-        nPointsInCluster.setCalculated(true);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.CLUSTER_AREA_XY_CAL));
+        reference.setImageObjName(outputObjectsName);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.N_POINTS_IN_CLUSTER);
+        reference.setImageObjName(outputObjectsName);
+        reference.setCalculated(true);
 
         return objectMeasurementReferences;
 

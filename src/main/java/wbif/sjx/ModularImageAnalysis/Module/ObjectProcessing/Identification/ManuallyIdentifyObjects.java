@@ -4,10 +4,12 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.gui.Overlay;
+import ij.gui.PointRoi;
 import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -147,10 +149,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         calibrationUnits = calibration.getUnits();
 
         // Initialising output objects
-        outputObjects = new ObjCollection(outputObjectsName);
+        outputObjects = new ObjCollection(outputObjectsName,inputImagePlus.getNSlices()==1);
         workspace.addObjects(outputObjects);
 
         // Displaying the image and showing the control
+        displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
         displayImagePlus.show();
         showOptionsPanel();
 
@@ -205,7 +208,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
                     int z = displayImagePlus.getZ();
-                    outputObject.addCoord(x,y,z);
+                    outputObject.addCoord(x,y,z-1);
                 }
 
                 // Adding overlay showing ROI and its ID number
@@ -237,7 +240,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
                     int z = displayImagePlus.getZ();
-                    outputObject.addCoord(x,y,z);
+                    outputObject.addCoord(x,y,z-1);
                 }
 
                 // Adding overlay showing ROI and its ID number

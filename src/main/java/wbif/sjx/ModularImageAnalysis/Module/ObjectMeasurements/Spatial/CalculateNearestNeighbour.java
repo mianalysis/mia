@@ -12,7 +12,8 @@ public class CalculateNearestNeighbour extends Module {
     public static final String PARENT_OBJECTS = "Parent objects";
 
     public interface Measurements {
-        String NN_DISTANCE = "NN_DISTANCE";
+        String NN_DISTANCE_PX = "NN_DISTANCE_(PX)";
+        String NN_DISTANCE_CAL = "NN_DISTANCE_(${CAL})";
         String NN_ID = "NN_ID";
 
     }
@@ -41,6 +42,7 @@ public class CalculateNearestNeighbour extends Module {
         for (Obj inputObject:inputObjects.values()) {
             double minDist = Double.MAX_VALUE;
             Obj nearestNeighbour = null;
+            double dppXY = inputObject.getDistPerPxXY();
 
             // Getting the object centroid
             double xCent = inputObject.getXMean(true);
@@ -96,11 +98,13 @@ public class CalculateNearestNeighbour extends Module {
             // Adding details of the nearest neighbour to the input object's measurements
             if (nearestNeighbour != null) {
                 inputObject.addMeasurement(new Measurement(Measurements.NN_ID, nearestNeighbour.getID()));
-                inputObject.addMeasurement(new Measurement(Measurements.NN_DISTANCE, minDist));
+                inputObject.addMeasurement(new Measurement(Measurements.NN_DISTANCE_PX, minDist));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.NN_DISTANCE_CAL), minDist*dppXY));
 
             } else {
                 inputObject.addMeasurement(new Measurement(Measurements.NN_ID, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.NN_DISTANCE, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Measurements.NN_DISTANCE_PX, Double.NaN));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.NN_DISTANCE_CAL), Double.NaN));
 
             }
         }
@@ -144,13 +148,17 @@ public class CalculateNearestNeighbour extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference nnDistance = objectMeasurementReferences.getOrPut(Measurements.NN_DISTANCE);
-        nnDistance.setImageObjName(inputObjectsName);
-        nnDistance.setCalculated(true);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.NN_DISTANCE_CAL));
+        reference.setImageObjName(inputObjectsName);
+        reference.setCalculated(true);
 
-        MeasurementReference nnID = objectMeasurementReferences.getOrPut(Measurements.NN_ID);
-        nnID.setImageObjName(inputObjectsName);
-        nnID.setCalculated(true);
+        reference = objectMeasurementReferences.getOrPut(Measurements.NN_DISTANCE_PX);
+        reference.setImageObjName(inputObjectsName);
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.NN_ID);
+        reference.setImageObjName(inputObjectsName);
+        reference.setCalculated(true);
 
         return objectMeasurementReferences;
 

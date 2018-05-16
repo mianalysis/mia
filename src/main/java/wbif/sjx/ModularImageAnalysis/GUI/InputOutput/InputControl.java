@@ -15,9 +15,15 @@ public class InputControl extends Module {
     public static final String FILE_EXTENSION = "File extension";
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_NUMBER = "Series number";
-    public static final String USE_SERIESNAME_FILTER = "Use seriesname filter";
-    public static final String SERIESNAME_FILTER = "Seriesname filter";
-    public static final String SERIESNAME_FILTER_TYPE = "Seriesname filter type";
+    public static final String USE_SERIESNAME_FILTER_1 = "Use seriesname filter 1";
+    public static final String SERIESNAME_FILTER_1 = "Seriesname filter 1";
+    public static final String SERIESNAME_FILTER_TYPE_1 = "Seriesname filter type 1";
+    public static final String USE_SERIESNAME_FILTER_2 = "Use seriesname filter 2";
+    public static final String SERIESNAME_FILTER_2 = "Seriesname filter 2";
+    public static final String SERIESNAME_FILTER_TYPE_2 = "Seriesname filter type 2";
+    public static final String USE_SERIESNAME_FILTER_3 = "Use seriesname filter 3";
+    public static final String SERIESNAME_FILTER_3 = "Seriesname filter 3";
+    public static final String SERIESNAME_FILTER_TYPE_3 = "Seriesname filter type 3";
     public static final String USE_FILENAME_FILTER_1 = "Use filename filter 1";
     public static final String FILENAME_FILTER_1 = "Filename filter 1";
     public static final String FILENAME_FILTER_TYPE_1 = "Filter type 1";
@@ -27,6 +33,7 @@ public class InputControl extends Module {
     public static final String USE_FILENAME_FILTER_3 = "Use filename filter 3";
     public static final String FILENAME_FILTER_3 = "Filename filter 3";
     public static final String FILENAME_FILTER_TYPE_3 = "Filter type 3";
+    public static final String SPATIAL_UNITS = "Spatial units";
 
     public interface InputModes {
         String SINGLE_FILE = "Single file";
@@ -54,6 +61,7 @@ public class InputControl extends Module {
 
     }
 
+    public interface SpatialUnits extends Units.SpatialUnits{}
 
     @Override
     public String getTitle() {
@@ -80,9 +88,15 @@ public class InputControl extends Module {
         parameters.add(new Parameter(FILE_EXTENSION, Parameter.STRING,"tif"));
         parameters.add(new Parameter(SERIES_MODE,Parameter.CHOICE_ARRAY,SeriesModes.ALL_SERIES,SeriesModes.ALL));
         parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
-        parameters.add(new Parameter(USE_SERIESNAME_FILTER,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SERIESNAME_FILTER,Parameter.STRING,""));
-        parameters.add(new Parameter(SERIESNAME_FILTER_TYPE,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new Parameter(USE_SERIESNAME_FILTER_1,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SERIESNAME_FILTER_1,Parameter.STRING,""));
+        parameters.add(new Parameter(SERIESNAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new Parameter(USE_SERIESNAME_FILTER_2,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SERIESNAME_FILTER_2,Parameter.STRING,""));
+        parameters.add(new Parameter(SERIESNAME_FILTER_TYPE_2,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new Parameter(USE_SERIESNAME_FILTER_3,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SERIESNAME_FILTER_3,Parameter.STRING,""));
+        parameters.add(new Parameter(SERIESNAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
         parameters.add(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
@@ -92,6 +106,7 @@ public class InputControl extends Module {
         parameters.add(new Parameter(USE_FILENAME_FILTER_3,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FILENAME_FILTER_3,Parameter.STRING,""));
         parameters.add(new Parameter(FILENAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new Parameter(SPATIAL_UNITS,Parameter.CHOICE_ARRAY,SpatialUnits.MICROMETRE,SpatialUnits.ALL));
 
     }
 
@@ -108,7 +123,6 @@ public class InputControl extends Module {
 
             case InputModes.BATCH:
                 returnedParameters.add(parameters.getParameter(BATCH_FOLDER_PATH));
-                returnedParameters.add(parameters.getParameter(NUMBER_OF_THREADS));
                 returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
                 break;
 
@@ -121,10 +135,22 @@ public class InputControl extends Module {
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER));
-        if (parameters.getValue(USE_SERIESNAME_FILTER)) {
-            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER));
-            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE));
+        returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_1));
+        if (parameters.getValue(USE_SERIESNAME_FILTER_1)) {
+            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_1));
+            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_1));
+        }
+
+        returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_2));
+        if (parameters.getValue(USE_SERIESNAME_FILTER_2)) {
+            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_2));
+            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_2));
+        }
+
+        returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_3));
+        if (parameters.getValue(USE_SERIESNAME_FILTER_3)) {
+            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_3));
+            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_3));
         }
 
         returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_1));
@@ -144,6 +170,9 @@ public class InputControl extends Module {
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_3));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_3));
         }
+
+        returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+        returnedParameters.add(parameters.getParameter(NUMBER_OF_THREADS));
 
         return returnedParameters;
 

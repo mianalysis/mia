@@ -54,4 +54,4 @@ Required plugins that need installing via the Fiji updater:
 - [MorphoLibJ](https://github.com/ijpb/MorphoLibJ)
 
 
-A list of bundled dependencies along with their respective licenses can be found [here](https://rawgit.com/SJCross/ModularImageAnalysis/master/target/site/dependencies.html).
+A list of bundled dependencies along with their respective licenses can be found [here](https://cdn.rawgit.com/SJCross/ModularImageAnalysis/master/target/site/dependencies.html).

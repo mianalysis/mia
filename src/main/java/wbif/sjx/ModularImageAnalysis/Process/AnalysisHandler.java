@@ -336,6 +336,11 @@ public class AnalysisHandler {
     }
 
     public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
+        // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
+        ErrorLog errorLog = new ErrorLog();
+        PrintStream printStream = new PrintStream(errorLog);
+        System.setErr(printStream);
+
         // Getting input options
         InputControl inputControl = analysis.getInputControl();
         String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
@@ -367,7 +372,6 @@ public class AnalysisHandler {
 
         File inputFile = null;
         String exportName = null;
-        int nThreads = 1;
 
         switch (inputMode) {
             case InputControl.InputModes.SINGLE_FILE:
@@ -377,7 +381,7 @@ public class AnalysisHandler {
                 }
 
                 inputFile = new File(singleFile);
-                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath())
+                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S"
                         + analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
                 break;
 
@@ -389,7 +393,6 @@ public class AnalysisHandler {
 
                 inputFile = new File(batchFolder);
                 exportName = inputFile.getAbsolutePath() + "\\output";
-                nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS);
 
                 // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
                 Prefs.setThreads(1);
@@ -409,6 +412,7 @@ public class AnalysisHandler {
             exporter.setCalculateStd(calculateStd);
             exporter.setCalculateSum(calculateSum);
             exporter.setExportIndividualObjects(exportIndividualObjects);
+            exporter.setErrorLog(errorLog);
 
             switch (summaryType) {
                 case OutputControl.SummaryTypes.ONE_AVERAGE_PER_FILE:
@@ -423,7 +427,7 @@ public class AnalysisHandler {
 
         // Initialising BatchProcessor
         batchProcessor = new BatchProcessor(inputFile);
-        batchProcessor.setnThreads(nThreads);
+        batchProcessor.setnThreads(inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS));
 
         // Adding extension filter
         batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));

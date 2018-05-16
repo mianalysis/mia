@@ -21,6 +21,7 @@ import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by sc13967 on 16/01/2018.
@@ -63,7 +64,7 @@ public class ActiveContourObjectDetection extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects.is2D());
 
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
@@ -93,14 +94,16 @@ public class ActiveContourObjectDetection extends Module {
         int count = 1;
         int total = inputObjects.size();
 
-        for (Obj inputObject:inputObjects.values()) {
+        Iterator<Obj> iterator = inputObjects.values().iterator();
+        while (iterator.hasNext()) {
+            Obj inputObject = iterator.next();
             writeMessage("Processing object " + (count++) + " of " + total);
 
             // Getting the z-plane of the current object
             int z = inputObject.getPoints().iterator().next().getZ();
 
             // Getting the Roi for the current object
-            Polygon roi = inputObject.getRoi(inputImagePlus,1).getPolygon();
+            Polygon roi = inputObject.getRoi(inputImagePlus,z).getPolygon();
             int[] xCoords = roi.xpoints;
             int[] yCoords = roi.ypoints;
 
@@ -141,6 +144,12 @@ public class ActiveContourObjectDetection extends Module {
 
             // Getting the new ROI
             Roi newRoi = nodes.getROI();
+
+            // If the active contour shrank down to nothing the object is removed
+            if (newRoi.getContainedPoints().length == 0) {
+                iterator.remove();
+                continue;
+            }
 
             // If the input objects are to be transformed, taking the new pixel coordinates and applying them to
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.

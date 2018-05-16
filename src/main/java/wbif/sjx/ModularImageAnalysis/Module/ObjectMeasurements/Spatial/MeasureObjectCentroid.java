@@ -24,18 +24,18 @@ public class MeasureObjectCentroid extends Module {
     }
 
     public interface Measurements {
-        String MEAN_X_PX = "CENTROID//MEAN_X_PX";
-        String MEAN_Y_PX = "CENTROID//MEAN_Y_PX";
-        String MEAN_Z_SLICE = "CENTROID//MEAN_Z_SLICE";
-        String MEAN_X_CAL = "CENTROID//MEAN_X_CAL";
-        String MEAN_Y_CAL = "CENTROID//MEAN_Y_CAL";
-        String MEAN_Z_CAL = "CENTROID//MEAN_Z_CAL";
-        String MEDIAN_X_PX = "CENTROID//MEDIAN_X_PX";
-        String MEDIAN_Y_PX = "CENTROID//MEDIAN_Y_PX";
-        String MEDIAN_Z_SLICE = "CENTROID//MEDIAN_Z_SLICE";
-        String MEDIAN_X_CAL = "CENTROID//MEDIAN_X_CAL";
-        String MEDIAN_Y_CAL = "CENTROID//MEDIAN_Y_CAL";
-        String MEDIAN_Z_CAL = "CENTROID//MEDIAN_Z_CAL";
+        String MEAN_X_PX = "CENTROID//MEAN_X_(PX)";
+        String MEAN_Y_PX = "CENTROID//MEAN_Y_(PX)";
+        String MEAN_Z_SLICE = "CENTROID//MEAN_Z_(SLICE)";
+        String MEAN_X_CAL = "CENTROID//MEAN_X_(${CAL})";
+        String MEAN_Y_CAL = "CENTROID//MEAN_Y_(${CAL})";
+        String MEAN_Z_CAL = "CENTROID//MEAN_Z_(${CAL})";
+        String MEDIAN_X_PX = "CENTROID//MEDIAN_X_(PX)";
+        String MEDIAN_Y_PX = "CENTROID//MEDIAN_Y_(PX)";
+        String MEDIAN_Z_SLICE = "CENTROID//MEDIAN_Z_(SLICE)";
+        String MEDIAN_X_CAL = "CENTROID//MEDIAN_X_(${CAL})";
+        String MEDIAN_Y_CAL = "CENTROID//MEDIAN_Y_(${CAL})";
+        String MEDIAN_Z_CAL = "CENTROID//MEDIAN_Z_(${CAL})";
 
     }
 
@@ -72,22 +72,22 @@ public class MeasureObjectCentroid extends Module {
             if (useMean) {
                 if (x != null) {
                     object.addMeasurement(new Measurement(Measurements.MEAN_X_PX,object.getXMean(true)));
-                    object.addMeasurement(new Measurement(Measurements.MEAN_X_CAL,object.getXMean(false)));
+                    object.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_X_CAL),object.getXMean(false)));
                 }
                 if (y!= null) {
                     object.addMeasurement(new Measurement(Measurements.MEAN_Y_PX,object.getYMean(true)));
-                    object.addMeasurement(new Measurement(Measurements.MEAN_Y_CAL,object.getYMean(false)));
+                    object.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_Y_CAL),object.getYMean(false)));
                 }
                 if (z!= null) {
                     object.addMeasurement(new Measurement(Measurements.MEAN_Z_SLICE,object.getZMean(true,false)));
-                    object.addMeasurement(new Measurement(Measurements.MEAN_Z_CAL,object.getZMean(false,false)));
+                    object.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_Z_CAL),object.getZMean(false,false)));
                 }
             }
 
             if (useMedian) {
                 if (x != null) {
                     object.addMeasurement(new Measurement(Measurements.MEDIAN_X_PX,object.getXMedian(true)));
-                    object.addMeasurement(new Measurement(Measurements.MEDIAN_X_CAL,object.getXMedian(false)));
+                    object.addMeasurement(new Measurement(Units.replace(Measurements.MEDIAN_X_CAL),object.getXMedian(false)));
                 }
                 if (y!= null) {
                     object.addMeasurement(new Measurement(Measurements.MEDIAN_Y_PX,object.getYMedian(true)));
@@ -132,9 +132,9 @@ public class MeasureObjectCentroid extends Module {
             MeasurementReference meanXPx = objectMeasurementReferences.getOrPut(Measurements.MEAN_X_PX);
             MeasurementReference meanYPx = objectMeasurementReferences.getOrPut(Measurements.MEAN_Y_PX);
             MeasurementReference meanZSlice = objectMeasurementReferences.getOrPut(Measurements.MEAN_Z_SLICE);
-            MeasurementReference meanXCal = objectMeasurementReferences.getOrPut(Measurements.MEAN_X_CAL);
-            MeasurementReference meanYCal = objectMeasurementReferences.getOrPut(Measurements.MEAN_Y_CAL);
-            MeasurementReference meanZCal = objectMeasurementReferences.getOrPut(Measurements.MEAN_Z_CAL);
+            MeasurementReference meanXCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_X_CAL));
+            MeasurementReference meanYCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_Y_CAL));
+            MeasurementReference meanZCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_Z_CAL));
 
             meanXPx.setImageObjName(inputObjectsName);
             meanYPx.setImageObjName(inputObjectsName);
@@ -155,9 +155,9 @@ public class MeasureObjectCentroid extends Module {
             MeasurementReference medianXPx = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_X_PX);
             MeasurementReference medianYPx = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_Y_PX);
             MeasurementReference medianZSlice = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_Z_SLICE);
-            MeasurementReference medianXCal = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_X_CAL);
-            MeasurementReference medianYCal = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_Y_CAL);
-            MeasurementReference medianZCal = objectMeasurementReferences.getOrPut(Measurements.MEDIAN_Z_CAL);
+            MeasurementReference medianXCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEDIAN_X_CAL));
+            MeasurementReference medianYCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEDIAN_Y_CAL));
+            MeasurementReference medianZCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEDIAN_Z_CAL));
 
             medianXPx.setImageObjName(inputObjectsName);
             medianYPx.setImageObjName(inputObjectsName);

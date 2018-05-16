@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
+package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -31,21 +31,27 @@ public class RelateObjects extends Module {
 
     }
 
-
     public interface ReferencePoints {
         String CENTROID = "Centroid";
         String SURFACE = "Surface";
+        String CENTROID_TO_SURFACE = "Child centroid to parent surface";
 
-        String[] ALL = new String[]{CENTROID, SURFACE};
+        String[] ALL = new String[]{CENTROID, SURFACE, CENTROID_TO_SURFACE};
 
     }
 
     public interface Measurements {
-        String DIST_SURFACE_PX = "RELATE_OBJ//DIST_TO_PARENT_SURF_PX";
-        String DIST_CENTROID_PX = "RELATE_OBJ//DIST_TO_PARENT_CENT_PX";
-        String DIST_SURFACE_CAL = "RELATE_OBJ//DIST_TO_PARENT_SURF_CAL";
-        String DIST_CENTROID_CAL = "RELATE_OBJ//DIST_TO_PARENT_CENT_CAL";
+        String DIST_SURFACE_PX = "DIST_TO_${PARENT}_SURF_(PX)";
+        String DIST_CENTROID_PX = "DIST_TO_${PARENT}_CENT_(PX)";
+        String DIST_SURFACE_CAL = "DIST_TO_${PARENT}_SURF_(${CAL})";
+        String DIST_CENTROID_CAL = "DIST_TO_${PARENT}_CENT_(${CAL})";
+        String DIST_CENT_SURF_PX = "DIST_FROM_CENT_TO_${PARENT}_SURF_(PX)";
+        String DIST_CENT_SURF_CAL = "DIST_FROM_CENT_TO_${PARENT}_SURF_(${CAL})";
 
+    }
+
+    public static String getFullName(String measurement,String parentName) {
+        return Units.replace("RELATE_OBJ//"+measurement.replace("${PARENT}",parentName));
     }
 
 
@@ -56,7 +62,7 @@ public class RelateObjects extends Module {
             Obj childObject = childObjects.get(ID);
 
             if (childObject != null) {
-                parentObject.addChild(childObject);
+                parentObject.addChild(childObject, childObjects.is2D());
                 childObject.addParent(parentObject);
 
             }
@@ -116,6 +122,8 @@ public class RelateObjects extends Module {
 
                             // Measuring point-to-point distances on both object surfaces
                             for (int j = 0; j < childX.length; j++) {
+                                Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZSlice[j]);
+
                                 double currMinDist = Double.MAX_VALUE;
                                 Obj currMinLink = null;
                                 boolean isInside = false;
@@ -129,20 +137,58 @@ public class RelateObjects extends Module {
                                     if (dist < currMinDist && dist <= linkingDistance) {
                                         currMinDist = dist;
                                         currMinLink = parentObject;
-
-                                        // If this point is inside the parent the distance should be negative
-                                        Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZSlice[j]);
                                         isInside = parentObject.getPoints().contains(currentPoint);
-
                                     }
                                 }
 
-                                // Comparing the closest distance for this child point to the previous minimum distance
+                                // If this point is inside the parent the distance should be negative
                                 if (isInside) currMinDist = -currMinDist;
+
+                                // Comparing the closest distance for this child point to the previous minimum distance
                                 if (currMinDist < minDist) {
                                     minDist = currMinDist;
                                     minLink = currMinLink;
                                 }
+                            }
+
+                            break;
+
+                        case ReferencePoints.CENTROID_TO_SURFACE:
+                            double childXCent = childObject.getXMean(true);
+                            double childYCent = childObject.getYMean(true);
+                            double childZCent = childObject.getZMean(true, true);
+                            double childZCentSlice = childObject.getZMean(true, false);
+
+                            Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) childZCentSlice);
+
+                            parentX = parentObject.getSurfaceX(true);
+                            parentY = parentObject.getSurfaceY(true);
+                            parentZ = parentObject.getSurfaceZ(true, true);
+
+                            double currMinDist = Double.MAX_VALUE;
+                            Obj currMinLink = null;
+                            boolean isInside = false;
+
+                            for (int i = 0; i < parentX.length; i++) {
+                                xDist = childXCent - parentX[i];
+                                yDist = childYCent - parentY[i];
+                                zDist = childZCent - parentZ[i];
+                                dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+
+                                if (dist < currMinDist && dist <= linkingDistance) {
+                                    currMinDist = dist;
+                                    currMinLink = parentObject;
+                                    isInside = parentObject.getPoints().contains(currentPoint);
+                                }
+                            }
+
+                            // If this point is inside the parent the distance should be negative
+                            if (isInside) currMinDist = -currMinDist;
+
+                            // Comparing the closest distance for this child point to the previous minimum distance
+                            if (currMinDist < minDist) {
+                                minDist = currMinDist;
+                                minLink = currMinLink;
                             }
 
                             break;
@@ -153,27 +199,61 @@ public class RelateObjects extends Module {
 
             if (minLink != null) {
                 childObject.addParent(minLink);
-                minLink.addChild(childObject);
+                minLink.addChild(childObject, childObjects.is2D());
 
-                if (referencePoint.equals(ReferencePoints.CENTROID)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX,minDist));
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_CAL,minDist*dpp));
+                switch (referencePoint) {
+                    case ReferencePoints.CENTROID: {
+                        String measurementName = getFullName(Measurements.DIST_CENTROID_PX, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, minDist));
+                        measurementName = getFullName(Measurements.DIST_CENTROID_CAL, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, minDist * dpp));
 
-                } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX,minDist));
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_CAL,minDist*dpp));
+                        break;
+                    }
+                    case ReferencePoints.SURFACE: {
+                        String measurementName = getFullName(Measurements.DIST_SURFACE_PX, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, minDist));
+                        measurementName = getFullName(Measurements.DIST_SURFACE_CAL, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, minDist * dpp));
 
+                        break;
+                    }
+                    case ReferencePoints.CENTROID_TO_SURFACE: {
+                        String measurementName = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, minDist));
+                        measurementName = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, minDist * dpp));
+
+                        break;
+                    }
                 }
 
             } else {
-                if (referencePoint.equals(ReferencePoints.CENTROID)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_PX,Double.NaN));
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_CENTROID_CAL,Double.NaN));
+                switch (referencePoint) {
+                    case ReferencePoints.CENTROID: {
+                        String measurementName = getFullName(Measurements.DIST_CENTROID_PX, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, Double.NaN));
+                        measurementName = getFullName(Measurements.DIST_CENTROID_CAL, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, Double.NaN));
 
-                } else if (referencePoint.equals(ReferencePoints.SURFACE)) {
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_PX,Double.NaN));
-                    childObject.addMeasurement(new Measurement(Measurements.DIST_SURFACE_CAL,Double.NaN));
+                        break;
+                    }
+                    case ReferencePoints.SURFACE: {
+                        String measurementName = getFullName(Measurements.DIST_SURFACE_PX, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, Double.NaN));
+                        measurementName = getFullName(Measurements.DIST_SURFACE_CAL, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, Double.NaN));
 
+                        break;
+                    }
+                    case ReferencePoints.CENTROID_TO_SURFACE: {
+                        String measurementName = getFullName(Measurements.DIST_CENT_SURF_PX, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, Double.NaN));
+                        measurementName = getFullName(Measurements.DIST_CENT_SURF_CAL, parentObjects.getName());
+                        childObject.addMeasurement(new Measurement(measurementName, Double.NaN));
+
+                        break;
+                    }
                 }
             }
         }
@@ -202,7 +282,7 @@ public class RelateObjects extends Module {
                     double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
                     if (dist <= linkingDistance) {
                         childObject.addParent(parentObject);
-                        parentObject.addChild(childObject);
+                        parentObject.addChild(childObject, childObjects.is2D());
 
                     }
                 }
@@ -242,7 +322,7 @@ public class RelateObjects extends Module {
                 // Testing if the child centroid exists in the object
                 for (int i=0;i<parentX.size();i++) {
                     if (parentX.get(i)==xCent & parentY.get(i)==yCent & parentZ.get(i)==zCent) {
-                        parentObject.addChild(childObject);
+                        parentObject.addChild(childObject, childObjects.is2D());
                         childObject.addParent(parentObject);
 
                         break;
@@ -261,7 +341,7 @@ public class RelateObjects extends Module {
 
     @Override
     public String getHelp() {
-        return "****Currently distance map (location of children within parents) doesn't take difference in XY and Z calibration into account***";
+        return "";
     }
 
     @Override
@@ -359,21 +439,35 @@ public class RelateObjects extends Module {
         objectMeasurementReferences.setAllCalculated(false);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
+        String parentObjectName = parameters.getValue(PARENT_OBJECTS);
 
-        MeasurementReference distSurfPx = objectMeasurementReferences.getOrPut(Measurements.DIST_SURFACE_PX);
-        MeasurementReference distCentPx = objectMeasurementReferences.getOrPut(Measurements.DIST_CENTROID_PX);
-        MeasurementReference distSurfCal = objectMeasurementReferences.getOrPut(Measurements.DIST_SURFACE_CAL);
-        MeasurementReference distCentCal = objectMeasurementReferences.getOrPut(Measurements.DIST_CENTROID_CAL);
+        String measurementName = getFullName(Measurements.DIST_SURFACE_PX,parentObjectName);
+        MeasurementReference distSurfPx = objectMeasurementReferences.getOrPut(measurementName);
+        measurementName = getFullName(Measurements.DIST_CENTROID_PX,parentObjectName);
+        MeasurementReference distCentPx = objectMeasurementReferences.getOrPut(measurementName);
+        measurementName = getFullName(Measurements.DIST_SURFACE_CAL,parentObjectName);
+        MeasurementReference distSurfCal = objectMeasurementReferences.getOrPut(measurementName);
+        measurementName = getFullName(Measurements.DIST_CENTROID_CAL,parentObjectName);
+        MeasurementReference distCentCal = objectMeasurementReferences.getOrPut(measurementName);
+        measurementName = getFullName(Measurements.DIST_CENT_SURF_PX,parentObjectName);
+        MeasurementReference distCentSurfPx = objectMeasurementReferences.getOrPut(measurementName);
+        measurementName = getFullName(Measurements.DIST_CENT_SURF_CAL,parentObjectName);
+        MeasurementReference distCentSurfCal = objectMeasurementReferences.getOrPut(measurementName);
+
 
         distSurfPx.setImageObjName(childObjectsName);
         distCentPx.setImageObjName(childObjectsName);
         distSurfCal.setImageObjName(childObjectsName);
         distCentCal.setImageObjName(childObjectsName);
+        distCentSurfPx.setImageObjName(childObjectsName);
+        distCentSurfCal.setImageObjName(childObjectsName);
 
         distCentPx.setCalculated(false);
         distCentCal.setCalculated(false);
         distSurfPx.setCalculated(false);
         distSurfCal.setCalculated(false);
+        distCentSurfPx.setCalculated(false);
+        distCentSurfCal.setCalculated(false);
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
@@ -386,6 +480,11 @@ public class RelateObjects extends Module {
                     case ReferencePoints.SURFACE:
                         distSurfPx.setCalculated(true);
                         distSurfCal.setCalculated(true);
+                        break;
+
+                    case ReferencePoints.CENTROID_TO_SURFACE:
+                        distCentSurfPx.setCalculated(true);
+                        distCentSurfCal.setCalculated(true);
                         break;
                 }
                 break;
