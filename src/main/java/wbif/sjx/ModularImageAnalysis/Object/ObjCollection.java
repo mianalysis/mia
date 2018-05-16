@@ -78,6 +78,13 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         return maxID;
     }
 
+    public Obj getFirst() {
+        if (size() == 0) return null;
+
+        return values().iterator().next();
+
+    }
+
     public int[][] getSpatialLimits() {
         int[][] limits = new int[][]{
                 {Integer.MAX_VALUE,Integer.MIN_VALUE},
