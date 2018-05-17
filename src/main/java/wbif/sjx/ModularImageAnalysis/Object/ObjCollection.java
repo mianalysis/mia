@@ -260,9 +260,10 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 zeros.append("E0");
                 df = new DecimalFormat(zeros.toString());
             } else {
-                StringBuilder zeros = new StringBuilder("#.");
+                StringBuilder zeros = new StringBuilder("0");
+                if (nDecimalPlaces != 0) zeros.append(".");
                 for (int i = 0;i <nDecimalPlaces; i++) {
-                    zeros.append("#");
+                    zeros.append("0");
                 }
                 df = new DecimalFormat(zeros.toString());
             }
@@ -275,7 +276,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                     break;
 
                 case LabelModes.MEASUREMENT_VALUE:
-                    IDs.put(object.getID(), df.format(object.getMeasurement(source).getValue()));
+                    if (Double.isNaN(object.getMeasurement(source).getValue())) {
+                        IDs.put(object.getID(), "NA");
+                    } else {
+                        IDs.put(object.getID(), df.format(object.getMeasurement(source).getValue()));
+                    }
                     break;
 
                 case LabelModes.PARENT_ID:
