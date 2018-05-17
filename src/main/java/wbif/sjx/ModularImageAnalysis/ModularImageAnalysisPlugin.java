@@ -11,9 +11,11 @@ import ij.Prefs;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.plugin.PlugIn;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.Object.ErrorLog;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
@@ -29,14 +31,21 @@ import java.util.Arrays;
  * Created by sc13967 on 14/07/2017.
  */
 public class ModularImageAnalysisPlugin implements PlugIn {
+    private static final ErrorLog errorLog = new ErrorLog();
+
     public static void main(String[] args) {
+        // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
+        ErrorLog errorLog = new ErrorLog();
+        TeeOutputStream teeOutputStream = new TeeOutputStream(System.err,errorLog);
+        PrintStream printStream = new PrintStream(teeOutputStream);
+        System.setErr(printStream);
+
         try {
             if (args.length == 0) {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
                 new ImageJ();
                 new MainGUI(true);
-//                new MainGUI(false);
 
             } else {
                 String filepath = args[0];
@@ -83,11 +92,21 @@ public class ModularImageAnalysisPlugin implements PlugIn {
 
         if (missing) return;
 
+        // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
+        ErrorLog errorLog = new ErrorLog();
+        TeeOutputStream teeOutputStream = new TeeOutputStream(System.err,errorLog);
+        PrintStream printStream = new PrintStream(teeOutputStream);
+        System.setErr(printStream);
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             new MainGUI(false);
         } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace(System.err);
         }
+    }
+
+    public static ErrorLog getErrorLog() {
+        return errorLog;
     }
 }
