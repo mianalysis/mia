@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
@@ -336,11 +337,6 @@ public class AnalysisHandler {
     }
 
     public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
-        // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
-        ErrorLog errorLog = new ErrorLog();
-        PrintStream printStream = new PrintStream(errorLog);
-        System.setErr(printStream);
-
         // Getting input options
         InputControl inputControl = analysis.getInputControl();
         String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
@@ -412,7 +408,6 @@ public class AnalysisHandler {
             exporter.setCalculateStd(calculateStd);
             exporter.setCalculateSum(calculateSum);
             exporter.setExportIndividualObjects(exportIndividualObjects);
-            exporter.setErrorLog(errorLog);
 
             switch (summaryType) {
                 case OutputControl.SummaryTypes.ONE_AVERAGE_PER_FILE:

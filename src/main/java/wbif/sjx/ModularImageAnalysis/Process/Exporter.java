@@ -11,6 +11,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -46,7 +47,6 @@ public class Exporter {
     private int exportMode = XLSX_EXPORT;
 
     private String exportFilePath;
-    private ErrorLog errorLog;
     private boolean verbose = false;
     private boolean exportSummary = true;
     private boolean showObjectCounts = true;
@@ -319,7 +319,7 @@ public class Exporter {
 
         // Adding relevant sheets
         prepareParametersXLSX(workbook,modules);
-        if (errorLog != null) prepareErrorLogXLSX(workbook,errorLog);
+        prepareErrorLogXLSX(workbook);
         if (exportSummary) prepareSummaryXLSX(workbook,workspaces,modules,summaryType);
         if (exportIndividualObjects) prepareObjectsXLSX(workbook,workspaces,modules);
 
@@ -388,12 +388,12 @@ public class Exporter {
         }
     }
 
-    private void prepareErrorLogXLSX(SXSSFWorkbook workbook, ErrorLog errorLog) {
+    private void prepareErrorLogXLSX(SXSSFWorkbook workbook) {
         // Creating a sheet for parameters
         Sheet errorSheet = workbook.createSheet("Log");
 
         // Getting error log text and split by line returns
-        String logText = errorLog.getStreamContents();
+        String logText = ModularImageAnalysisPlugin.getErrorLog().getStreamContents();
         StringTokenizer tokenizer = new StringTokenizer(logText,"\n");
 
         // Adding a header row for the parameter titles
@@ -1084,11 +1084,4 @@ public class Exporter {
         this.calculateSum = calculateSum;
     }
 
-    public ErrorLog getErrorLog() {
-        return errorLog;
-    }
-
-    public void setErrorLog(ErrorLog errorLog) {
-        this.errorLog = errorLog;
-    }
 }
