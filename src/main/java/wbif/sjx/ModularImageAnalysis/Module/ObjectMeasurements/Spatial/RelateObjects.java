@@ -290,9 +290,14 @@ public class RelateObjects extends Module {
         }
     }
 
-    public static void spatialLinking(ObjCollection parentObjects, ObjCollection childObjects) {
+    public void spatialLinking(ObjCollection parentObjects, ObjCollection childObjects) {
+        int nCombi = parentObjects.size()*childObjects.size();
+        int count = 0;
+
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
+            writeMessage("Comparing pair "+(childObjects.size()*count++)+" of "+nCombi);
+
             // Getting parent coordinates
             ArrayList<Integer> parentX = parentObject.getXCoords();
             ArrayList<Integer> parentY = parentObject.getYCoords();

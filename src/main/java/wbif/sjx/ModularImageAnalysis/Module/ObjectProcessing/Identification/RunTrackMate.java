@@ -314,8 +314,9 @@ public class RunTrackMate extends Module {
             if (parameters.getValue(SHOW_OBJECTS)) {
                 ipl = new Duplicator().run(ipl);
                 IntensityMinMax.run(ipl,true);
-                String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-                HashMap<Integer,Color> colours = spotObjects.getColours(colourMode,"",true);
+                String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
+                String colourName = ObjCollection.SingleColours.ORANGE;
+                HashMap<Integer,Color> colours = spotObjects.getColours(colourMode,colourName,true);
                 String labelMode = ObjCollection.LabelModes.ID;
                 HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",0,false) : null;
                 new AddObjectsOverlay().createOverlay(

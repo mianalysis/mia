@@ -827,7 +827,7 @@ public class MainGUI extends GUI {
             // Removing a module resets all the current evaluation
             int idx = modules.indexOf(activeModule);
 
-            if (idx < lastModuleEval) lastModuleEval = -1;
+            if (idx <= lastModuleEval) lastModuleEval = idx - 1;
 
             modules.remove(activeModule);
             activeModule = null;

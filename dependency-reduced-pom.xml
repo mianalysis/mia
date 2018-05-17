@@ -4,7 +4,7 @@
   <groupId>wbif.sjx</groupId>
   <artifactId>ModularImageAnalysis</artifactId>
   <name>Modular_Image_Analysis</name>
-  <version>0.5.3</version>
+  <version>0.5.4</version>
   <url>https://github.com/SJCross/ModularImageAnalysis</url>
   <licenses>
     <license>
@@ -104,6 +104,12 @@
           <groupId>org.hamcrest</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

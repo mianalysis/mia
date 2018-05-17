@@ -1,11 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import ij.IJ;
+
+import javax.sound.midi.SysexMessage;
 import java.io.IOException;
 import java.io.OutputStream;
 
 public class ErrorLog extends OutputStream {
-    private final static OutputStream originalStream = System.err;
-    private StringBuilder stringBuilder = new StringBuilder();
+    private final static StringBuilder stringBuilder = new StringBuilder();
 
     public String getStreamContents() {
         return stringBuilder.toString();
@@ -13,7 +15,7 @@ public class ErrorLog extends OutputStream {
 
     @Override
     public void write(int b) throws IOException {
-        originalStream.write((char) b);
         stringBuilder.append((char) b);
+
     }
 }

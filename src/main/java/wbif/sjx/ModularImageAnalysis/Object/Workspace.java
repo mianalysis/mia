@@ -80,7 +80,7 @@ public class Workspace {
 
         } else {
             // Removes all the data
-            images = null;
+            images = new LinkedHashMap<>();
         }
     }
 
@@ -89,7 +89,7 @@ public class Workspace {
             // Sets the ImagePlus to null, but leaves measurements
             for (ObjCollection objCollection :objects.values()) {
                 for (Obj obj: objCollection.values()) {
-                    obj.setPoints(null);
+                    obj.clearPoints();
                     obj.clearSurface();
 
                 }
@@ -97,7 +97,7 @@ public class Workspace {
 
         } else {
             // Removes all the data
-            objects = null;
+            objects = new LinkedHashMap<>();
         }
     }
 

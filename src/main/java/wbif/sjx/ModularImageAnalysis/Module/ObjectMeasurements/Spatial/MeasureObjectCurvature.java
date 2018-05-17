@@ -185,7 +185,7 @@ public class MeasureObjectCurvature extends Module {
         double posMin = 0;
         double posMax = 0;
         double minCurvature = Double.MAX_VALUE;
-        double maxCurvature = Double.MIN_VALUE;
+        double maxCurvature = -Double.MAX_VALUE;
 
         double dppXY = inputObject.getDistPerPxXY();
 

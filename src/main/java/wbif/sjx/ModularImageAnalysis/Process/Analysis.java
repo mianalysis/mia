@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Process;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
