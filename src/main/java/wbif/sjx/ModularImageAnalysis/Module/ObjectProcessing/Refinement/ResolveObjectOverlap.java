@@ -43,8 +43,8 @@ public class ResolveObjectOverlap extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName,is2D);
 
         // Initialising the storage, which has ID number (key) and maximum overlap[0] and object ID[1] (value)
-        HashMap<Integer,Double[]> overlaps1 = initialiseOverlapStore(inputObjects1,Double.MIN_VALUE);
-        HashMap<Integer,Double[]> overlaps2 = initialiseOverlapStore(inputObjects2,Double.MIN_VALUE);
+        HashMap<Integer,Double[]> overlaps1 = initialiseOverlapStore(inputObjects1,-Double.MAX_VALUE);
+        HashMap<Integer,Double[]> overlaps2 = initialiseOverlapStore(inputObjects2,-Double.MAX_VALUE);
 
         // Calculating the overlaps
         for (Obj object1:inputObjects1.values()) {
@@ -118,13 +118,13 @@ public class ResolveObjectOverlap extends Module {
                 // Calculating the separation between the two objects
                 double overlap = object1.getCentroidSeparation(object2,true);
 
-                // Comparing the overlap to previously-maximum overlaps
+                // Comparing the overlap to previously-minimum overlaps
                 if (overlap<overlap1[0]) {
                     overlap1[0] = overlap;
                     overlap1[1] = (double) object2.getID();
                 }
 
-                // Comparing the overlap to previously-maximum overlaps
+                // Comparing the overlap to previously-minimum overlaps
                 if (overlap<overlap2[0]) {
                     overlap2[0] = overlap;
                     overlap2[1] = (double) object1.getID();
@@ -134,15 +134,15 @@ public class ResolveObjectOverlap extends Module {
 
         switch (overlapRequirement) {
             case OverlapRequirements.MUTUALLY_OPTIMAL:
-                reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2,Double.MIN_VALUE,maxSeparation,true);
+                reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2,-Double.MAX_VALUE,maxSeparation,true);
                 break;
 
             case OverlapRequirements.OPTIMAL_FOR_OBJECTS1:
-                reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2,Double.MIN_VALUE,maxSeparation,false);
+                reassignObjects(inputObjects1,inputObjects2,outputObjects,overlaps1,overlaps2,-Double.MAX_VALUE,maxSeparation,false);
                 break;
 
             case OverlapRequirements.OPTIMAL_FOR_OBJECTS2:
-                reassignObjects(inputObjects2,inputObjects1,outputObjects,overlaps2,overlaps1,Double.MIN_VALUE,maxSeparation,true);
+                reassignObjects(inputObjects2,inputObjects1,outputObjects,overlaps2,overlaps1,-Double.MAX_VALUE,maxSeparation,true);
                 break;
         }
 
@@ -171,7 +171,6 @@ public class ResolveObjectOverlap extends Module {
 
             // The associated ID will be NaN if no overlap was detected
             if (Double.isNaN(overlap1[1])) continue;
-
             Obj object2 = objects2.get(overlap1[1].intValue());
 
             // There is a possibility the other object has been removed already
@@ -179,8 +178,8 @@ public class ResolveObjectOverlap extends Module {
             Double[] overlap2 = overlaps2.get(object2.getID());
 
             // Checking overlaps against the limits
-            if (overlap1[0] < minOverlap || overlap1[0] > maxOverlap) continue;
-            if (requireMutual && (overlap2[0] < minOverlap || overlap2[0] > maxOverlap)) continue;
+            if (overlap1[0] <= minOverlap || overlap1[0] >= maxOverlap) continue;
+            if (requireMutual && (overlap2[0] <= minOverlap || overlap2[0] >= maxOverlap)) continue;
 
             // If mutual, checking both objects identified the other as the optimal link
             if (requireMutual && overlap2[1] != object1.getID()) continue;

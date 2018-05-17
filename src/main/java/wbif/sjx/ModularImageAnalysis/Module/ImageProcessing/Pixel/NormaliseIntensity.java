@@ -25,7 +25,7 @@ public class NormaliseIntensity extends Module {
         for (int c = 1; c <= ipl.getNChannels(); c++) {
             // Get min max values for whole stack
             double min = Double.MAX_VALUE;
-            double max = Double.MIN_VALUE;
+            double max = -Double.MAX_VALUE;
             for (int z = 1; z <= ipl.getNSlices(); z++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
                     ipl.setPosition(c, z, t);
