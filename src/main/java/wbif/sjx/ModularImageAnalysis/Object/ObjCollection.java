@@ -401,7 +401,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             } else if (colourMode.equals(ColourModes.SINGLE_COLOUR) && source.equals(SingleColours.BLACK)) {
                 colours.put(key,Color.getHSBColor(0f,0f,0f));
             } else {
-                colours.put(key,Color.getHSBColor(hues.get(key),1f,1f));
+                // Have to add 1E-8 to prevent 0 values having a rounding error that makes them negative
+                colours.put(key,Color.getHSBColor(hues.get(key)+1E-8f,1f,1f));
             }
         }
 

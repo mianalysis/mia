@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.awt.*;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -407,6 +408,7 @@ public class ObjCollectionTest {
         assertEquals(1f,actual.get(0),tolerance);
         assertEquals(1f,actual.get(1),tolerance);
         assertEquals(1f,actual.get(2),tolerance);
+
     }
 
     @Test
@@ -689,60 +691,387 @@ public class ObjCollectionTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testGetColoursSingleColour() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "", false);
+
+        assertEquals(3,actual.size());
+        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(0));
+        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(1));
+        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(2));
 
     }
 
-    @Test @Ignore
+    @Test
     public void testGetColoursSingleColourNormalised() {
+// For "single colour", normalisation shouldn't do anything
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "", true);
+
+        assertEquals(3,actual.size());
+        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(0));
+        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(1));
+        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(2));
 
     }
 
-
-    @Test @Ignore
+    @Test
     public void testGetColoursRandomColour() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "", false);
+
+        // For random numbers we don't know what value they will have
+        assertEquals(3,actual.size());
+        assertNotNull(actual.get(0));
+        assertNotNull(actual.get(1));
+        assertNotNull(actual.get(2));
 
     }
 
-    @Test @Ignore
+    @Test
     public void testGetColoursRandomColourNormalised() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
 
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "", true);
+
+        // For random numbers we don't know what value they will have
+        assertEquals(3,actual.size());
+        assertNotNull(actual.get(0));
+        assertNotNull(actual.get(1));
+        assertNotNull(actual.get(2));
     }
 
-    @Test @Ignore
+    @Test
     public void testGetColoursMeasurementColour() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        Measurement meas = new Measurement("Meas",3.2);
+        obj.addMeasurement(meas);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        meas = new Measurement("Meas",-0.1);
+        obj.addMeasurement(meas);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        meas = new Measurement("Meas",Double.NaN);
+        obj.addMeasurement(meas);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.MEASUREMENT_VALUE;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "Meas", false);
+
+        // For random numbers we don't know what value they will have
+        assertEquals(3,actual.size());
+        assertEquals(Color.getHSBColor(3.2f,1f,1f),actual.get(0));
+        assertEquals(Color.getHSBColor(-0.1f,1f,1f),actual.get(1));
+        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(2));
 
     }
 
-    @Test @Ignore
+    @Test
     public void testGetColoursMeasurementColourNormalised() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        Measurement meas = new Measurement("Meas",3.2);
+        obj.addMeasurement(meas);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        meas = new Measurement("Meas",-0.1);
+        obj.addMeasurement(meas);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        meas = new Measurement("Meas",Double.NaN);
+        obj.addMeasurement(meas);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.MEASUREMENT_VALUE;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "Meas", true);
+
+        // For random numbers we don't know what value they will have
+        assertEquals(3,actual.size());
+        assertEquals(Color.getHSBColor(0.4706f,1f,1f),actual.get(0));
+        assertEquals(Color.getHSBColor(0f,1f,1f),actual.get(1));
+        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(2));
 
     }
 
-    @Test @Ignore
+    @Test
     public void testGetColoursIDColour() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        Measurement meas = new Measurement("Meas",3.2);
+        obj.addMeasurement(meas);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        meas = new Measurement("Meas",-0.1);
+        obj.addMeasurement(meas);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        meas = new Measurement("Meas",Double.NaN);
+        obj.addMeasurement(meas);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.ID;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "", false);
+
+        // For random numbers we don't know what value they will have
+        assertEquals(3,actual.size());
+        assertEquals(Color.getHSBColor(0f,1f,1f),actual.get(0));
+        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(1));
+        assertEquals(Color.getHSBColor(2f,1f,1f),actual.get(2));
 
     }
 
-    @Test @Ignore
+    @Test
     public void testGetColoursIDColourNormalised() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.ID;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "", true);
+
+        // For random numbers we don't know what value they will have
+        assertEquals(3,actual.size());
+        assertEquals(Color.getHSBColor(0f,1f,1f),actual.get(0));
+        assertEquals(Color.getHSBColor(0.0627f,1f,1f),actual.get(1));
+        assertEquals(Color.getHSBColor(0.1255f,1f,1f),actual.get(2));
 
     }
 
-    @Test @Ignore
+    @Test
     public void testGetColoursParentIDColour() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        Obj parent = new Obj("Parent",6,dppXY,dppZ,calibratedUnits);
+        obj.addParent(parent);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        parent = new Obj("Parent",5,dppXY,dppZ,calibratedUnits);
+        obj.addParent(parent);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.PARENT_ID;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "Parent", false);
+
+        // For random numbers we don't know what value they will have
+        assertEquals(3,actual.size());
+        assertEquals(Color.getHSBColor(6f,1f,1f),actual.get(0));
+        assertEquals(Color.getHSBColor(0.2f,1f,1f),actual.get(1));
+        assertEquals(Color.getHSBColor(5f,1f,1f),actual.get(2));
 
     }
 
-    @Test @Ignore
+    @Test
     public void testGetColoursParentIDColourNormalised() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        Obj parent = new Obj("Parent",6,dppXY,dppZ,calibratedUnits);
+        obj.addParent(parent);
+        collection.add(obj);
+
+        obj = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        collection.add(obj);
+
+        obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        parent = new Obj("Parent",5,dppXY,dppZ,calibratedUnits);
+        obj.addParent(parent);
+        collection.add(obj);
+
+        String colourMode = ObjCollection.ColourModes.PARENT_ID;
+        HashMap<Integer, Color> actual = collection.getColours(colourMode, "Parent", true);
+
+        // For random numbers we don't know what value they will have
+        assertEquals(3,actual.size());
+        assertEquals(Color.getHSBColor(0.3765f,1f,1f),actual.get(0));
+        assertEquals(Color.getHSBColor(0.4125f,1f,1f),actual.get(1));
+        assertEquals(Color.getHSBColor(0.3137f,1f,1f),actual.get(2));
 
     }
 
-    @Test @Ignore
+    @Test
     public void testGetByEquals() {
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating the ObjCollection
+        ObjCollection collection = new ObjCollection("Obj",false);
+
+        // Adding objects
+        Obj obj1 = new Obj("Obj",1,dppXY,dppZ,calibratedUnits);
+        obj1.addCoord(3,2,2);
+        obj1.addCoord(2,2,9);
+        collection.add(obj1);
+
+        Obj obj2 = new Obj("Obj",0,dppXY,dppZ,calibratedUnits);
+        obj2.addCoord(3,2,2);
+        obj2.addCoord(2,2,9);
+        obj2.addCoord(3,1,6);
+        obj2.addCoord(2,2,8);
+        collection.add(obj2);
+
+        Obj obj3 = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        obj3.addCoord(4,1,2);
+        obj3.addCoord(6,2,10);
+        collection.add(obj3);
+
+        Obj oj4 = new Obj("Obj",2,dppXY,dppZ,calibratedUnits);
+        oj4.addCoord(4,1,2);
+        oj4.addCoord(6,2,10);
+        oj4.addCoord(3,2,2);
+        oj4.addCoord(2,2,9);
+        collection.add(oj4);
+
+        // Creating a test object with the same coordinates as one of the other objects
+        Obj testObj = new Obj("Obj",5,dppXY,dppZ,calibratedUnits);
+        testObj.addCoord(3,1,6);
+        testObj.addCoord(2,2,8);
+        testObj.addCoord(3,2,2);
+        testObj.addCoord(2,2,9);
+        collection.add(testObj);
+
+        Obj actual = collection.getByEquals(testObj);
+
+        assertEquals(obj2,actual);
+        assertEquals(obj2.getID(),actual.getID());
 
     }
-
 }
