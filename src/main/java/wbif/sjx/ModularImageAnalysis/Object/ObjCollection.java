@@ -260,9 +260,10 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 zeros.append("E0");
                 df = new DecimalFormat(zeros.toString());
             } else {
-                StringBuilder zeros = new StringBuilder("#.");
+                StringBuilder zeros = new StringBuilder("0");
+                if (nDecimalPlaces != 0) zeros.append(".");
                 for (int i = 0;i <nDecimalPlaces; i++) {
-                    zeros.append("#");
+                    zeros.append("0");
                 }
                 df = new DecimalFormat(zeros.toString());
             }
@@ -275,7 +276,11 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                     break;
 
                 case LabelModes.MEASUREMENT_VALUE:
-                    IDs.put(object.getID(), df.format(object.getMeasurement(source).getValue()));
+                    if (Double.isNaN(object.getMeasurement(source).getValue())) {
+                        IDs.put(object.getID(), "NA");
+                    } else {
+                        IDs.put(object.getID(), df.format(object.getMeasurement(source).getValue()));
+                    }
                     break;
 
                 case LabelModes.PARENT_ID:
@@ -396,7 +401,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             } else if (colourMode.equals(ColourModes.SINGLE_COLOUR) && source.equals(SingleColours.BLACK)) {
                 colours.put(key,Color.getHSBColor(0f,0f,0f));
             } else {
-                colours.put(key,Color.getHSBColor(hues.get(key),1f,1f));
+                // Have to add 1E-8 to prevent 0 values having a rounding error that makes them negative
+                colours.put(key,Color.getHSBColor(hues.get(key)+1E-8f,1f,1f));
             }
         }
 
