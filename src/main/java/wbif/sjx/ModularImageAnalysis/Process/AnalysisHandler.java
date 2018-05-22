@@ -47,6 +47,12 @@ public class AnalysisHandler {
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element root = doc.createElement("ROOT");
+
+        // Adding MIA version number as an attribute
+        Attr version = doc.createAttribute("MIA_VERSION");
+        version.appendChild(doc.createTextNode(getClass().getPackage().getImplementationVersion()));
+        root.setAttributeNode(version);
+
         root.appendChild(Exporter.prepareModulesXML(doc,inOutModules));
         root.appendChild(Exporter.prepareModulesXML(doc,analysis.getModules()));
         doc.appendChild(root);
