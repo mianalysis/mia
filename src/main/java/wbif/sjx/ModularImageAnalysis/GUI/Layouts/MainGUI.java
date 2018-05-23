@@ -37,7 +37,7 @@ public class MainGUI extends GUI {
     private int bigButtonSize = 40;
     private int moduleButtonWidth = 300;
 
-    private GUIAnalysis analysis = new GUIAnalysis();
+    private Analysis analysis = new Analysis();
     private ComponentFactory componentFactory;
     private JFrame frame = new JFrame();
     private JMenuBar menuBar = new JMenuBar();
@@ -885,11 +885,7 @@ public class MainGUI extends GUI {
         return basicGUI;
     }
 
-    public GUIAnalysis getAnalysis() {
-        return analysis;
-    }
-
-    public void setAnalysis(GUIAnalysis analysis) {
+    public void setAnalysis(Analysis analysis) {
         this.analysis = analysis;
     }
 

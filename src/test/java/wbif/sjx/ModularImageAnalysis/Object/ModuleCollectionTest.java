@@ -2,19 +2,12 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureImageIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureImageTexture;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.FilterImage;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ThresholdImage;
-import wbif.sjx.ModularImageAnalysis.Module.InputOutput.ImageLoader;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectTexture;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.IdentifyObjects;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.RunTrackMate;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.TrackObjects;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement.ObjectClusterer;
 
