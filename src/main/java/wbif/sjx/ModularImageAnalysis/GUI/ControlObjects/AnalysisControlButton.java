@@ -3,8 +3,8 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 import ij.IJ;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
 
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
         try {
             switch (getText()) {
                 case LOAD_ANALYSIS:
-                    GUIAnalysis analysis = (GUIAnalysis) new AnalysisHandler().loadAnalysis();
+                    Analysis analysis = new AnalysisHandler().loadAnalysis();
                     if (analysis == null) return;
 
                     gui.setAnalysis(analysis);

@@ -7,15 +7,11 @@ import org.reflections.Reflections;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
-import wbif.sjx.common.FileConditions.FileCondition;
-import wbif.sjx.common.FileConditions.NameContainsString;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,10 +23,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -102,7 +95,7 @@ public class AnalysisHandler {
         Document doc = documentBuilder.parse(analysisFileStream);
         doc.getDocumentElement().normalize();
 
-        Analysis analysis = new GUIAnalysis();
+        Analysis analysis = new Analysis();
         ModuleCollection modules = analysis.getModules();
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
