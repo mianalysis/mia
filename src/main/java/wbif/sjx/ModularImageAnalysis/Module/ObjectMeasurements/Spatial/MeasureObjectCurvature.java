@@ -50,29 +50,29 @@ public class MeasureObjectCurvature extends Module {
     }
 
     public interface Measurements {
-        String MEAN_ABSOLUTE_CURVATURE_PX = "CURVATURE//MEAN_ABSOLUTE_CURVATURE_(PX)";
-        String MIN_ABSOLUTE_CURVATURE_PX = "CURVATURE//MIN_ABSOLUTE_CURVATURE_(PX)";
-        String MAX_ABSOLUTE_CURVATURE_PX = "CURVATURE//MAX_ABSOLUTE_CURVATURE_(PX)";
-        String STD_ABSOLUTE_CURVATURE_PX = "CURVATURE//STD_ABSOLUTE_CURVATURE_(PX)";
-        String MEAN_ABSOLUTE_CURVATURE_CAL = "CURVATURE//MEAN_ABSOLUTE_CURVATURE_(${CAL})";
-        String MIN_ABSOLUTE_CURVATURE_CAL = "CURVATURE//MIN_ABSOLUTE_CURVATURE_(${CAL})";
-        String MAX_ABSOLUTE_CURVATURE_CAL = "CURVATURE//MAX_ABSOLUTE_CURVATURE_(${CAL})";
-        String STD_ABSOLUTE_CURVATURE_CAL = "CURVATURE//STD_ABSOLUTE_CURVATURE_(${CAL})";
-        String MEAN_SIGNED_CURVATURE_PX = "CURVATURE//MEAN_SIGNED_CURVATURE_(PX)";
-        String MIN_SIGNED_CURVATURE_PX = "CURVATURE//MIN_SIGNED_CURVATURE_(PX)";
-        String MAX_SIGNED_CURVATURE_PX = "CURVATURE//MAX_SIGNED_CURVATURE_(PX)";
-        String STD_SIGNED_CURVATURE_PX = "CURVATURE//STD_SIGNED_CURVATURE_(PX)";
-        String MEAN_SIGNED_CURVATURE_CAL = "CURVATURE//MEAN_SIGNED_CURVATURE_(${CAL})";
-        String MIN_SIGNED_CURVATURE_CAL = "CURVATURE//MIN_SIGNED_CURVATURE_(${CAL})";
-        String MAX_SIGNED_CURVATURE_CAL = "CURVATURE//MAX_SIGNED_CURVATURE_(${CAL})";
-        String STD_SIGNED_CURVATURE_CAL = "CURVATURE//STD_SIGNED_CURVATURE_(${CAL})";
-        String SPLINE_LENGTH_PX = "CURVATURE//SPLINE_LENGTH_(PX)";
-        String SPLINE_LENGTH_CAL = "CURVATURE//SPLINE_LENGTH_(${CAL})";
-        String FIRST_POINT_X_PX = "CURVATURE//FIRST_POINT_X_(PX)";
-        String FIRST_POINT_Y_PX = "CURVATURE//FIRST_POINT_Y_(PX)";
-        String REL_LOC_OF_MIN_CURVATURE = "CURVATURE//REL_LOC_OF_MIN_CURVATURE";
-        String REL_LOC_OF_MAX_CURVATURE = "CURVATURE//REL_LOC_OF_MAX_CURVATURE";
-        String HEAD_TAIL_ANGLE_DEGS = "CURVATURE//HEAD_TAIL_ANGLE_DEGS";
+        String MEAN_ABSOLUTE_CURVATURE_PX = "CURVATURE // MEAN_ABSOLUTE_CURVATURE_(PX)";
+        String MIN_ABSOLUTE_CURVATURE_PX = "CURVATURE // MIN_ABSOLUTE_CURVATURE_(PX)";
+        String MAX_ABSOLUTE_CURVATURE_PX = "CURVATURE // MAX_ABSOLUTE_CURVATURE_(PX)";
+        String STD_ABSOLUTE_CURVATURE_PX = "CURVATURE // STD_ABSOLUTE_CURVATURE_(PX)";
+        String MEAN_ABSOLUTE_CURVATURE_CAL = "CURVATURE // MEAN_ABSOLUTE_CURVATURE_(${CAL})";
+        String MIN_ABSOLUTE_CURVATURE_CAL = "CURVATURE // MIN_ABSOLUTE_CURVATURE_(${CAL})";
+        String MAX_ABSOLUTE_CURVATURE_CAL = "CURVATURE // MAX_ABSOLUTE_CURVATURE_(${CAL})";
+        String STD_ABSOLUTE_CURVATURE_CAL = "CURVATURE // STD_ABSOLUTE_CURVATURE_(${CAL})";
+        String MEAN_SIGNED_CURVATURE_PX = "CURVATURE // MEAN_SIGNED_CURVATURE_(PX)";
+        String MIN_SIGNED_CURVATURE_PX = "CURVATURE // MIN_SIGNED_CURVATURE_(PX)";
+        String MAX_SIGNED_CURVATURE_PX = "CURVATURE // MAX_SIGNED_CURVATURE_(PX)";
+        String STD_SIGNED_CURVATURE_PX = "CURVATURE // STD_SIGNED_CURVATURE_(PX)";
+        String MEAN_SIGNED_CURVATURE_CAL = "CURVATURE // MEAN_SIGNED_CURVATURE_(${CAL})";
+        String MIN_SIGNED_CURVATURE_CAL = "CURVATURE // MIN_SIGNED_CURVATURE_(${CAL})";
+        String MAX_SIGNED_CURVATURE_CAL = "CURVATURE // MAX_SIGNED_CURVATURE_(${CAL})";
+        String STD_SIGNED_CURVATURE_CAL = "CURVATURE // STD_SIGNED_CURVATURE_(${CAL})";
+        String SPLINE_LENGTH_PX = "CURVATURE // SPLINE_LENGTH_(PX)";
+        String SPLINE_LENGTH_CAL = "CURVATURE // SPLINE_LENGTH_(${CAL})";
+        String FIRST_POINT_X_PX = "CURVATURE // FIRST_POINT_X_(PX)";
+        String FIRST_POINT_Y_PX = "CURVATURE // FIRST_POINT_Y_(PX)";
+        String REL_LOC_OF_MIN_CURVATURE = "CURVATURE // REL_LOC_OF_MIN_CURVATURE";
+        String REL_LOC_OF_MAX_CURVATURE = "CURVATURE // REL_LOC_OF_MAX_CURVATURE";
+        String HEAD_TAIL_ANGLE_DEGS = "CURVATURE // HEAD_TAIL_ANGLE_DEGS";
 
     }
 
@@ -90,8 +90,8 @@ public class MeasureObjectCurvature extends Module {
         BinaryOperations.applyStockBinaryTransform(objectIpl, BinaryOperations.OperationModes.SKELETONISE_2D, 1);
 
         // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
-        Skeleton skeleton = new Skeleton(objectIpl);
-        return skeleton.getLongestPath();
+        return new Skeleton(objectIpl).getLongestPath();
+
     }
 
     /**
@@ -334,6 +334,9 @@ public class MeasureObjectCurvature extends Module {
         boolean showImage = parameters.getValue(SHOW_IMAGE);
         boolean calculateEndEndAngle = parameters.getValue(CALCULATE_END_END_ANGLE);
         int fittingRange = parameters.getValue(FITTING_RANGE_PX);
+
+        // If there are no objects, exit the module
+        if (inputObjects.size() == 0) return;
 
         // If no reference is provided there's nothing to tell the sign of the curvature
         if (!useReference) {

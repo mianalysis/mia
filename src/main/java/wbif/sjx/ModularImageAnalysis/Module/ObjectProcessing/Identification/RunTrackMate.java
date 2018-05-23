@@ -36,12 +36,12 @@ public class RunTrackMate extends Module {
     public static final String RADIUS = "Radius";
     public static final String THRESHOLD = "Threshold";
     public static final String NORMALISE_INTENSITY = "Normalise intensity";
+    public static final String DO_TRACKING = "Run tracking";
+    public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
     public static final String LINKING_MAX_DISTANCE = "Max linking distance";
     public static final String GAP_CLOSING_MAX_DISTANCE = "Gap closing max distance";
     public static final String MAX_FRAME_GAP = "Max frame gap";
     public static final String ESTIMATE_SIZE = "Estimate spot size";
-    public static final String DO_TRACKING = "Run tracking";
-    public static final String OUTPUT_TRACK_OBJECTS = "Output track objects";
     public static final String SHOW_OBJECTS = "Show objects";
     public static final String SHOW_ID = "Show ID";
     public static final String ID_MODE = "ID source";
@@ -55,10 +55,10 @@ public class RunTrackMate extends Module {
     }
 
     public interface Measurements {
-        String RADIUS_PX = "SPOT_DETECT_TRACK//RADIUS_(PX)";
-        String RADIUS_CAL = "SPOT_DETECT_TRACK//RADIUS_(${CAL})";
-        String ESTIMATED_DIAMETER_PX = "SPOT_DETECT_TRACK//EST_DIAMETER_(PX)";
-        String ESTIMATED_DIAMETER_CAL = "SPOT_DETECT_TRACK//EST_DIAMETER_(${CAL})";
+        String RADIUS_PX = "SPOT_DETECT_TRACK // RADIUS_(PX)";
+        String RADIUS_CAL = "SPOT_DETECT_TRACK // RADIUS_(${CAL})";
+        String ESTIMATED_DIAMETER_PX = "SPOT_DETECT_TRACK // EST_DIAMETER_(PX)";
+        String ESTIMATED_DIAMETER_CAL = "SPOT_DETECT_TRACK // EST_DIAMETER_(${CAL})";
 
     }
 
@@ -198,10 +198,9 @@ public class RunTrackMate extends Module {
     @Override
     public void run(Workspace workspace) {
         // Loading input image
-        String targetImageName = parameters.getValue(INPUT_IMAGE);
-        writeMessage("Loading image ("+targetImageName+") into workspace");
-        Image targetImage = workspace.getImage(targetImageName);
-        ImagePlus ipl = targetImage.getImagePlus();
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        Image inputImage = workspace.getImage(inputImageName);
+        ImagePlus ipl = inputImage.getImagePlus();
 
         // Storing, then removing calibration.  This will be reapplied after the detection.
         Calibration calibration = ipl.getCalibration();
@@ -264,7 +263,7 @@ public class RunTrackMate extends Module {
         TrackMate trackmate = new TrackMate(model, settings);
 
         // Resetting ipl to the input image
-        ipl = targetImage.getImagePlus();
+        ipl = inputImage.getImagePlus();
 
         if (doTracking) {
             writeMessage("Running TrackMate tracking");
@@ -312,23 +311,23 @@ public class RunTrackMate extends Module {
 
             // Displaying trackObjects (if selected)
             if (parameters.getValue(SHOW_OBJECTS)) {
-                ipl = new Duplicator().run(ipl);
-                IntensityMinMax.run(ipl,true);
                 String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
                 String colourName = ObjCollection.SingleColours.ORANGE;
-                HashMap<Integer,Color> colours = spotObjects.getColours(colourMode,colourName,true);
                 String labelMode = ObjCollection.LabelModes.ID;
+
+                HashMap<Integer,Color> colours = spotObjects.getColours(colourMode,colourName,true);
                 HashMap<Integer,String> IDs = showID ? spotObjects.getIDs(labelMode,"",0,false) : null;
+
+                ipl = new Duplicator().run(ipl);
+                IntensityMinMax.run(ipl,true);
                 new AddObjectsOverlay().createOverlay(
                         ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID,null,colours,IDs,8,1);
-
-                // Displaying the overlay
                 ipl.show();
 
             }
 
             // Reapplying calibration to input image
-            targetImage.getImagePlus().setCalibration(calibration);
+            inputImage.getImagePlus().setCalibration(calibration);
 
         }
     }
@@ -336,7 +335,7 @@ public class RunTrackMate extends Module {
     @Override
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_SPOT_OBJECTS, Parameter.OUTPUT_OBJECTS,new String("Spots")));
+        parameters.add(new Parameter(OUTPUT_SPOT_OBJECTS, Parameter.OUTPUT_OBJECTS,""));
 
         parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(DO_SUBPIXEL_LOCALIZATION, Parameter.BOOLEAN,true));
@@ -351,7 +350,7 @@ public class RunTrackMate extends Module {
         parameters.add(new Parameter(GAP_CLOSING_MAX_DISTANCE, Parameter.DOUBLE,2.0));
         parameters.add(new Parameter(MAX_FRAME_GAP, Parameter.INTEGER,3));
 
-        parameters.add(new Parameter(OUTPUT_TRACK_OBJECTS, Parameter.OUTPUT_OBJECTS,new String("Tracks")));
+        parameters.add(new Parameter(OUTPUT_TRACK_OBJECTS, Parameter.OUTPUT_OBJECTS,""));
 
         parameters.add(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SHOW_ID, Parameter.BOOLEAN,false));
@@ -376,10 +375,10 @@ public class RunTrackMate extends Module {
 
         returnedParameters.add(parameters.getParameter(DO_TRACKING));
         if (parameters.getValue(DO_TRACKING)) {
+            returnedParameters.add(parameters.getParameter(OUTPUT_TRACK_OBJECTS));
             returnedParameters.add(parameters.getParameter(LINKING_MAX_DISTANCE));
             returnedParameters.add(parameters.getParameter(GAP_CLOSING_MAX_DISTANCE));
             returnedParameters.add(parameters.getParameter(MAX_FRAME_GAP));
-            returnedParameters.add(parameters.getParameter(OUTPUT_TRACK_OBJECTS));
         }
 
         returnedParameters.add(parameters.getParameter(SHOW_OBJECTS));

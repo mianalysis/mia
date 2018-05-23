@@ -66,7 +66,7 @@ public class MeasureObjectIntensity extends Module {
 
 
     public static String getFullName(String imageName, String measurement) {
-        return "INTENSITY//"+imageName+"_"+measurement;
+        return "INTENSITY // "+imageName+"_"+measurement;
     }
 
     private double[] getProfileBins(double minDist, double maxDist, int nMeasurements) {

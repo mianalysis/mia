@@ -45,7 +45,7 @@ public class MeasureSpotIntensity extends Module {
 
 
     private String getFullName(String imageName, String measurement) {
-        return "SPOT_INTENSITY//"+imageName+"_"+measurement;
+        return "SPOT_INTENSITY // "+imageName+"_"+measurement;
     }
 
     @Override

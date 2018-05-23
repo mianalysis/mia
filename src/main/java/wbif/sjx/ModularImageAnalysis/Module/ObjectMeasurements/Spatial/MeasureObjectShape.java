@@ -33,22 +33,22 @@ public class MeasureObjectShape extends Module {
     }
 
     public interface Measurements {
-        String N_VOXELS = "SHAPE//N_VOXELS";
-        String VOLUME_PX = "SHAPE//VOLUME_(PX^3)";
-        String VOLUME_CAL = "SHAPE//VOLUME_(${CAL}^3)";
-        String HULL_VOLUME_PX = "SHAPE//HULL_VOLUME_(PX^3)";
-        String HULL_VOLUME_CAL = "SHAPE//HULL_VOLUME_(${CAL}^3)";
-        String HULL_SURFACE_AREA_PX = "SHAPE//HULL_SURFACE_AREA_(PX^2)";
-        String HULL_SURFACE_AREA_CAL = "SHAPE//HULL_SURFACE_AREA_(${CAL}^2)";
-        String SPHERICITY = "SHAPE//SPHERICITY";
-        String SOLIDITY = "SHAPE//SOLIDITY";
-        String ELLIPSOID_ORIENTATION_1 = "SHAPE//ELLIPSOID_ORIENTATION_1_(DEGS)";
-        String ELLIPSOID_ORIENTATION_2 = "SHAPE//ELLIPSOID_ORIENTATION_2_(DEGS)";
-        String ELLIPSE_THETA = "SHAPE//ELLIPSE_ANGLE_(DEGS)";
-        String PROJ_AREA_PX = "SHAPE//PROJ_AREA_(PX^2)";
-        String PROJ_AREA_CAL = "SHAPE//PROJ_AREA_(${CAL}^2)";
-        String PROJ_DIA_PX = "SHAPE//PROJ_DIA_(PX)";
-        String PROJ_DIA_CAL = "SHAPE//PROJ_DIA_(${CAL})";
+        String N_VOXELS = "SHAPE // N_VOXELS";
+        String VOLUME_PX = "SHAPE // VOLUME_(PX^3)";
+        String VOLUME_CAL = "SHAPE // VOLUME_(${CAL}^3)";
+        String HULL_VOLUME_PX = "SHAPE // HULL_VOLUME_(PX^3)";
+        String HULL_VOLUME_CAL = "SHAPE // HULL_VOLUME_(${CAL}^3)";
+        String HULL_SURFACE_AREA_PX = "SHAPE // HULL_SURFACE_AREA_(PX^2)";
+        String HULL_SURFACE_AREA_CAL = "SHAPE // HULL_SURFACE_AREA_(${CAL}^2)";
+        String SPHERICITY = "SHAPE // SPHERICITY";
+        String SOLIDITY = "SHAPE // SOLIDITY";
+        String ELLIPSOID_ORIENTATION_1 = "SHAPE // ELLIPSOID_ORIENTATION_1_(DEGS)";
+        String ELLIPSOID_ORIENTATION_2 = "SHAPE // ELLIPSOID_ORIENTATION_2_(DEGS)";
+        String ELLIPSE_THETA = "SHAPE // ELLIPSE_ANGLE_(DEGS)";
+        String PROJ_AREA_PX = "SHAPE // PROJ_AREA_(PX^2)";
+        String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${CAL}^2)";
+        String PROJ_DIA_PX = "SHAPE // PROJ_DIA_(PX)";
+        String PROJ_DIA_CAL = "SHAPE // PROJ_DIA_(${CAL})";
 
     }
 

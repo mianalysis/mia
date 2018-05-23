@@ -16,7 +16,7 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     public static String getFullName(String measurement) {
-        return "BIN//"+measurement;
+        return "BIN // "+measurement;
     }
 
     @Override

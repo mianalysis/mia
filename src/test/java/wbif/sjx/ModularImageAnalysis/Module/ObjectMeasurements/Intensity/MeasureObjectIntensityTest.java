@@ -74,23 +74,23 @@ public class MeasureObjectIntensityTest {
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MEAN_8BIT.name()).getValue();
-            double actual = testObject.getMeasurement("INTENSITY//Test_image_MEAN").getValue();
+            double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MIN_8BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_MIN").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_MIN").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MAX_8BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_MAX").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_MAX").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_STD_8BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_STDEV").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_STDEV").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_SUM_8BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_SUM").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_SUM").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
         }
@@ -143,23 +143,23 @@ public class MeasureObjectIntensityTest {
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MEAN_16BIT.name()).getValue();
-            double actual = testObject.getMeasurement("INTENSITY//Test_image_MEAN").getValue();
+            double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MIN_16BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_MIN").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_MIN").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MAX_16BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_MAX").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_MAX").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_STD_16BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_STDEV").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_STDEV").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_SUM_16BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_SUM").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_SUM").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
         }
@@ -212,23 +212,23 @@ public class MeasureObjectIntensityTest {
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MEAN_32BIT.name()).getValue();
-            double actual = testObject.getMeasurement("INTENSITY//Test_image_MEAN").getValue();
+            double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MIN_32BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_MIN").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_MIN").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MAX_32BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_MAX").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_MAX").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_STD_32BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_STDEV").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_STDEV").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
             expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_SUM_32BIT.name()).getValue();
-            actual = testObject.getMeasurement("INTENSITY//Test_image_SUM").getValue();
+            actual = testObject.getMeasurement("INTENSITY // Test_image_SUM").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
         }

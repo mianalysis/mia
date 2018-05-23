@@ -15,10 +15,10 @@ public class MeasureImageTexture extends Module {
     public static final String Z_OFFSET = "Z-offset";
 
     public interface Measurements {
-        String ASM = "TEXTURE//ASM";
-        String CONTRAST = "TEXTURE//CONTRAST";
-        String CORRELATION = "TEXTURE//CORRELATION";
-        String ENTROPY = "TEXTURE//ENTROPY";
+        String ASM = "TEXTURE // ASM";
+        String CONTRAST = "TEXTURE // CONTRAST";
+        String CORRELATION = "TEXTURE // CORRELATION";
+        String ENTROPY = "TEXTURE // ENTROPY";
 
     }
 
