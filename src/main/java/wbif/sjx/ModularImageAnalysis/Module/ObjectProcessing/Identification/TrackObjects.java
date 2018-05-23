@@ -328,6 +328,11 @@ public class TrackObjects extends Module {
                                 // This is a new track, so assigning it to a new track object
                                 track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units);
 
+                                // If the track or object have a previous relationship, remove it
+                                track.removeChildren(inputObjectsName);
+                                prevObj.removeParent(trackObjectsName);
+
+                                // Adding the new relationships
                                 prevObj.addParent(track);
                                 track.addChild(prevObj, inputObjects.is2D());
 
@@ -344,6 +349,14 @@ public class TrackObjects extends Module {
                     }
                 }
             }
+        }
+
+        for (Obj obj:inputObjects.values()) {
+            System.out.println(obj+"_"+obj.getParent(trackObjectsName));
+        }
+
+        for (Obj obj:trackObjects.values()) {
+            System.out.println(obj+"_"+obj.getChildren(inputObjectsName).size());
         }
 
         // Determining the leading point in the object (to next object)

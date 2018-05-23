@@ -89,7 +89,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         int[][] limits = new int[][]{
                 {Integer.MAX_VALUE,-Integer.MAX_VALUE},
                 {Integer.MAX_VALUE,-Integer.MAX_VALUE},
-                {Integer.MAX_VALUE,-Integer.MAX_VALUE}};
+                {Integer.MAX_VALUE,Integer.MIN_VALUE}};
 
         for (Obj object:values()) {
             ArrayList<Integer> x = object.getXCoords();

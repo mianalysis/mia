@@ -37,7 +37,6 @@ public class MainGUI extends GUI {
     private int bigButtonSize = 40;
     private int moduleButtonWidth = 300;
 
-    private Analysis analysis = new Analysis();
     private ComponentFactory componentFactory;
     private JFrame frame = new JFrame();
     private JMenuBar menuBar = new JMenuBar();

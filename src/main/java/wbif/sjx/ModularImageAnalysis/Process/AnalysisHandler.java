@@ -177,6 +177,7 @@ public class AnalysisHandler {
                             break;
                     }
                 }
+
                 analysis.setOutputControl((OutputControl) module);
 
                 continue;
@@ -371,7 +372,7 @@ public class AnalysisHandler {
         switch (inputMode) {
             case InputControl.InputModes.SINGLE_FILE:
                 if (singleFile == null) {
-                    IJ.runMacro("waitForUser","Select an image first");
+                    System.err.println("Select an image first");
                     return;
                 }
 
@@ -382,7 +383,7 @@ public class AnalysisHandler {
 
             case InputControl.InputModes.BATCH:
                 if (batchFolder == null) {
-                    IJ.runMacro("waitForUser","Select a folder first");
+                    System.err.println("Select a folder first");
                     return;
                 }
 

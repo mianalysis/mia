@@ -27,7 +27,6 @@ public class CalculateMeasurementPeriodogram extends Module {
     public interface Measurements {
         String FREQUENCY = "FREQUENCY (FR^-1)";
         String POWER = "POWER";
-
     }
 
     public interface ReportingModes {
@@ -66,7 +65,12 @@ public class CalculateMeasurementPeriodogram extends Module {
         for (int i=0;i<signal.length;i++) signal[i] = Double.NaN;
 
         // Adding values to array
+        System.out.println(spotObjects.size());
         for (Obj spotObject:spotObjects.values()) {
+            System.out.println("new");
+            System.out.println(spotObject);
+            System.out.println(spotObject.getMeasurement(measurementName));
+            System.out.println(spotObject.getMeasurement(measurementName).getValue());
             signal[spotObject.getT()-tLimits[0]] = spotObject.getMeasurement(measurementName).getValue();
         }
 
@@ -97,12 +101,19 @@ public class CalculateMeasurementPeriodogram extends Module {
 
         // Adding peaks as Measurements
         for (int i = 0; i < nPeaks; i++) {
-            String name = getKeyFrequenciesFullName(measurement, Measurements.FREQUENCY, i + 1);
-            obj.addMeasurement(new Measurement(name,peaks[i][0]));
+            if (peaks == null || psd.size() == 1) {
+                String name = getKeyFrequenciesFullName(measurement, Measurements.FREQUENCY, i + 1);
+                obj.addMeasurement(new Measurement(name, Double.NaN));
 
-            name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i + 1);
-            obj.addMeasurement(new Measurement(name,peaks[i][1]));
+                name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i + 1);
+                obj.addMeasurement(new Measurement(name, Double.NaN));
+            } else {
+                String name = getKeyFrequenciesFullName(measurement, Measurements.FREQUENCY, i + 1);
+                obj.addMeasurement(new Measurement(name, peaks[i][0]));
 
+                name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i + 1);
+                obj.addMeasurement(new Measurement(name, peaks[i][1]));
+            }
         }
     }
 
@@ -116,18 +127,24 @@ public class CalculateMeasurementPeriodogram extends Module {
             freqs[i] = freq;
             powers[i++] = psd.get(freq);
         }
-
-        UnivariateFunction powerFn = new LinearInterpolator().interpolate(freqs,powers);
-
         // Getting frequencies for this number of bins
         double[] targetFreq = PeriodogramCalculator.calculateFrequency(1,nBins);
+
+        if (psd.size() == 1) {
+            for (int j=0;j<nBins;j++) {
+                String name = getWholeSpectrumFullName(measurement, targetFreq[j]);
+                obj.addMeasurement(new Measurement(name,Double.NaN));
+            }
+            return;
+        }
+
+        UnivariateFunction powerFn = new LinearInterpolator().interpolate(freqs,powers);
 
         // Interpolating function and adding as measurements
         for (int j=0;j<nBins;j++) {
             double freq = powerFn.value(targetFreq[j]);
             String name = getWholeSpectrumFullName(measurement, targetFreq[j]);
             obj.addMeasurement(new Measurement(name,freq));
-
         }
     }
 
@@ -157,7 +174,7 @@ public class CalculateMeasurementPeriodogram extends Module {
         ObjCollection trackObjects = workspace.getObjectSet(trackObjectsName);
 
         // Running through each track object, calculating the periodicity
-        int count = 0;
+        int count = 1;
         int nTracks = trackObjects.size();
         for (Obj trackObject:trackObjects.values()) {
             writeMessage("Processing object "+(count++)+" of "+nTracks);
@@ -242,7 +259,7 @@ public class CalculateMeasurementPeriodogram extends Module {
                     reference.setImageObjName(inputObjectsName);
                     reference.setCalculated(true);
 
-                    name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i);
+                    name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i + 1);
                     reference = objectMeasurementReferences.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setCalculated(true);
