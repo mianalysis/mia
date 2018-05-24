@@ -148,7 +148,7 @@
 //
 //    @Override
 //    public void initialiseParameters() {
-//        parameters.add(new Parameter(INPUT_OBJECTS_1, Parameter.INPUT_OBJECTS,null));
+//        parameters.add(new Parameter(INPUT_OBJECTS_1, Parameter.TRACK_OBJECTS,null));
 //        parameters.add(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
 //        parameters.add(new Parameter(CALCULATE_MEAN, Parameter.BOOLEAN,true));
 //        parameters.add(new Parameter(CALCULATE_STD, Parameter.BOOLEAN,true));

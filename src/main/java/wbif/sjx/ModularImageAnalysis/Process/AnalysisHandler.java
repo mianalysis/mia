@@ -7,15 +7,11 @@ import org.reflections.Reflections;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
-import wbif.sjx.common.FileConditions.FileCondition;
-import wbif.sjx.common.FileConditions.NameContainsString;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,10 +23,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -47,6 +40,12 @@ public class AnalysisHandler {
         // Adding an XML formatted summary of the modules and their values
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element root = doc.createElement("ROOT");
+
+        // Adding MIA version number as an attribute
+        Attr version = doc.createAttribute("MIA_VERSION");
+        version.appendChild(doc.createTextNode(getClass().getPackage().getImplementationVersion()));
+        root.setAttributeNode(version);
+
         root.appendChild(Exporter.prepareModulesXML(doc,inOutModules));
         root.appendChild(Exporter.prepareModulesXML(doc,analysis.getModules()));
         doc.appendChild(root);
@@ -96,7 +95,7 @@ public class AnalysisHandler {
         Document doc = documentBuilder.parse(analysisFileStream);
         doc.getDocumentElement().normalize();
 
-        Analysis analysis = new GUIAnalysis();
+        Analysis analysis = new Analysis();
         ModuleCollection modules = analysis.getModules();
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
@@ -178,6 +177,7 @@ public class AnalysisHandler {
                             break;
                     }
                 }
+
                 analysis.setOutputControl((OutputControl) module);
 
                 continue;
@@ -372,7 +372,7 @@ public class AnalysisHandler {
         switch (inputMode) {
             case InputControl.InputModes.SINGLE_FILE:
                 if (singleFile == null) {
-                    IJ.runMacro("waitForUser","Select an image first");
+                    System.err.println("Select an image first");
                     return;
                 }
 
@@ -383,7 +383,7 @@ public class AnalysisHandler {
 
             case InputControl.InputModes.BATCH:
                 if (batchFolder == null) {
-                    IJ.runMacro("waitForUser","Select a folder first");
+                    System.err.println("Select a folder first");
                     return;
                 }
 

@@ -15,7 +15,7 @@ import java.io.Serializable;
  * Abstract Analysis-type class, which will be extended by particular analyses
  *
  */
-public abstract class Analysis implements Serializable {
+public class Analysis implements Serializable {
     public InputControl inputControl = new InputControl();
     public OutputControl outputControl = new OutputControl();
     public ModuleCollection modules = new ModuleCollection();
@@ -34,7 +34,7 @@ public abstract class Analysis implements Serializable {
     /**
      * Initialisation method is where workspace is populated with modules and module-specific parameters.
      */
-    public abstract void initialise();
+    public void initialise() {}
 
     /**
      * The method that gets called by the BatchProcessor.  This shouldn't have any user interaction elements

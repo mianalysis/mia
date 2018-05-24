@@ -20,11 +20,11 @@ public class MeasureImageIntensity extends Module {
 
 
     public interface Measurements {
-        String MEAN = "INTENSITY//MEAN";
-        String MIN = "INTENSITY//MIN";
-        String MAX = "INTENSITY//MAX";
-        String SUM = "INTENSITY//SUM";
-        String STDEV = "INTENSITY//STDEV";
+        String MEAN = "INTENSITY // MEAN";
+        String MIN = "INTENSITY // MIN";
+        String MAX = "INTENSITY // MAX";
+        String SUM = "INTENSITY // SUM";
+        String STDEV = "INTENSITY // STDEV";
 
     }
 

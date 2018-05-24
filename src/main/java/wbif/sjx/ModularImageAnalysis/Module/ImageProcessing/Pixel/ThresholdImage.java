@@ -8,6 +8,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
+import ij.process.AutoThresholder;
+import ij.process.ByteProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
@@ -53,7 +55,7 @@ public class ThresholdImage extends Module {
     }
 
     public interface LocalAlgorithms {
-        String BERNSEN_3D = "Bersen (3D)";
+        String BERNSEN_3D = "Bernsen (3D)";
         String CONTRAST_3D = "Contrast (3D)";
         String MEAN_3D = "Mean (3D)";
         String MEDIAN_3D = "Median (3D)";
@@ -74,11 +76,27 @@ public class ThresholdImage extends Module {
 
     public void applyGlobalThresholdToStack(ImagePlus inputImagePlus, String algorithm, double thrMult,
                                             boolean useLowerLim, double lowerLim) {
-        Object[] results = new Auto_Threshold().exec(inputImagePlus, algorithm, true, false, true, true, false, true);
+        // Compiling stack histogram
+        int[] histogram = null;
+        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
+                    inputImagePlus.setPosition(c, z, t);
+                    if (histogram == null) {
+                        histogram = inputImagePlus.getProcessor().getHistogram();
+                    } else {
+                        int[] tempHist = inputImagePlus.getProcessor().getHistogram();
+                        for (int i=0;i<histogram.length;i++) histogram[i] = histogram[i] + tempHist[i];
+                    }
+                }
+            }
+        }
+
+        int threshold = new AutoThresholder().getThreshold(algorithm,histogram);
 
         // Applying limits, where applicable
-        if (useLowerLim && (int) results[0] < lowerLim) {
-            results[0] = (int) Math.round(lowerLim);
+        if (useLowerLim && threshold < lowerLim) {
+            threshold = (int) Math.round(lowerLim);
         }
 
         // Applying threshold
@@ -86,8 +104,7 @@ public class ThresholdImage extends Module {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
                     inputImagePlus.setPosition(c, z, t);
-                    inputImagePlus.getProcessor().threshold((int) Math.round((int) results[0]*thrMult));
-
+                    inputImagePlus.getProcessor().threshold((int) Math.round(threshold*thrMult));
                 }
             }
         }

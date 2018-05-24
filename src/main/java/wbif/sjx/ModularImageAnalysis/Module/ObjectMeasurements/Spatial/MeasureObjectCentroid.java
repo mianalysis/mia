@@ -24,18 +24,18 @@ public class MeasureObjectCentroid extends Module {
     }
 
     public interface Measurements {
-        String MEAN_X_PX = "CENTROID//MEAN_X_(PX)";
-        String MEAN_Y_PX = "CENTROID//MEAN_Y_(PX)";
-        String MEAN_Z_SLICE = "CENTROID//MEAN_Z_(SLICE)";
-        String MEAN_X_CAL = "CENTROID//MEAN_X_(${CAL})";
-        String MEAN_Y_CAL = "CENTROID//MEAN_Y_(${CAL})";
-        String MEAN_Z_CAL = "CENTROID//MEAN_Z_(${CAL})";
-        String MEDIAN_X_PX = "CENTROID//MEDIAN_X_(PX)";
-        String MEDIAN_Y_PX = "CENTROID//MEDIAN_Y_(PX)";
-        String MEDIAN_Z_SLICE = "CENTROID//MEDIAN_Z_(SLICE)";
-        String MEDIAN_X_CAL = "CENTROID//MEDIAN_X_(${CAL})";
-        String MEDIAN_Y_CAL = "CENTROID//MEDIAN_Y_(${CAL})";
-        String MEDIAN_Z_CAL = "CENTROID//MEDIAN_Z_(${CAL})";
+        String MEAN_X_PX = "CENTROID // MEAN_X_(PX)";
+        String MEAN_Y_PX = "CENTROID // MEAN_Y_(PX)";
+        String MEAN_Z_SLICE = "CENTROID // MEAN_Z_(SLICE)";
+        String MEAN_X_CAL = "CENTROID // MEAN_X_(${CAL})";
+        String MEAN_Y_CAL = "CENTROID // MEAN_Y_(${CAL})";
+        String MEAN_Z_CAL = "CENTROID // MEAN_Z_(${CAL})";
+        String MEDIAN_X_PX = "CENTROID // MEDIAN_X_(PX)";
+        String MEDIAN_Y_PX = "CENTROID // MEDIAN_Y_(PX)";
+        String MEDIAN_Z_SLICE = "CENTROID // MEDIAN_Z_(SLICE)";
+        String MEDIAN_X_CAL = "CENTROID // MEDIAN_X_(${CAL})";
+        String MEDIAN_Y_CAL = "CENTROID // MEDIAN_Y_(${CAL})";
+        String MEDIAN_Z_CAL = "CENTROID // MEDIAN_Z_(${CAL})";
 
     }
 

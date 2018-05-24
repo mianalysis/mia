@@ -3,15 +3,13 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 import ij.IJ;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
-import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -41,9 +39,9 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
         try {
             switch (getText()) {
                 case LOAD_ANALYSIS:
-                    GUIAnalysis analysis = (GUIAnalysis) new AnalysisHandler().loadAnalysis();
+                    Analysis analysis = new AnalysisHandler().loadAnalysis();
 
-                    if (analysis==null) return;
+                    if (analysis == null) return;
 
                     gui.setAnalysis(analysis);
 

@@ -92,11 +92,10 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         String calibratedUnits = "µm";
         ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
 
-        for (Obj object:actualObjects.values()) {
+        for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
-            assertNotNull(expectedObject);
-
+            Obj actualObject = actualObjects.getByEquals(object);
+            assertNotNull(actualObject);
         }
     }
 
@@ -129,11 +128,10 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         String calibratedUnits = "µm";
         ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
 
-        for (Obj object:actualObjects.values()) {
+        for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
-            Obj expectedObject = expectedObjects.getByEquals(object);
-            assertNotNull(expectedObject);
-
+            Obj actualObject = actualObjects.getByEquals(object);
+            assertNotNull(actualObject);
         }
     }
 

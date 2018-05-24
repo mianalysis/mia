@@ -1,18 +1,16 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.GUIAnalysis;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
-
-import java.io.File;
+import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 
 /**
  * Created by sc13967 on 21/11/2017.
  */
 public abstract class GUI {
-    protected GUIAnalysis analysis = new GUIAnalysis();
+    protected Analysis analysis = new Analysis();
     Module activeModule = null;
     protected int lastModuleEval = -1;
     private Workspace testWorkspace = new Workspace(1, null,1);
@@ -46,6 +44,10 @@ public abstract class GUI {
     }
 
     public void evaluateModule(Module module) throws GenericMIAException {
+        // Setting the index to the previous module.  This will make the currently-evaluated module go red
+        lastModuleEval = getModules().indexOf(module) - 1;
+        updateModules();
+
         Module.setVerbose(true);
         module.execute(testWorkspace);
         lastModuleEval = getModules().indexOf(module);
@@ -57,7 +59,7 @@ public abstract class GUI {
         this.testWorkspace = testWorkspace;
     }
 
-    public GUIAnalysis getAnalysis() {
+    public Analysis getAnalysis() {
         return analysis;
     }
 

@@ -29,7 +29,7 @@ public class FilterObjects extends Module {
         String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
         String NO_PARENT = "Remove objects without parent";
         String WITH_PARENT = "Remove objects with a parent";
-        String MIN_NUMBER_OF_CHILDREN = "Remove objects with few children than:";
+        String MIN_NUMBER_OF_CHILDREN = "Remove objects with fewer children than:";
         String MAX_NUMBER_OF_CHILDREN = "Remove objects with more children than:";
         String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
         String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
@@ -179,7 +179,6 @@ public class FilterObjects extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-
             // Removing the object if it has no children
             if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
                 inputObject.removeRelationships();

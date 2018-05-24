@@ -6,7 +6,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
  * Measurement that holds a single value for an object
  */
 public class Measurement {
-    private String name;
+    private final String name;
     private double value = Double.NaN;
     private Module source = null;
 
@@ -42,10 +42,6 @@ public class Measurement {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public double getValue() {

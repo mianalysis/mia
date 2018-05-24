@@ -226,7 +226,11 @@ public class ResolveObjectOverlap extends Module {
         String overlapRequirement = parameters.getValue(OVERLAP_REQUIREMENT);
 
         // Skipping the module if no objects are present in one collection
-        if (inputObjects1.size() == 0 || inputObjects2.size() == 0) return;
+        if (inputObjects1.size() == 0 || inputObjects2.size() == 0) {
+            workspace.addObjects(new ObjCollection(outputObjectsName,inputObjects1.is2D()));
+            return;
+        }
+
         if (calibratedUnits) maximumSeparation = maximumSeparation*inputObjects1.values().iterator().next().getDistPerPxXY();
 
         ObjCollection outputObjects = null;

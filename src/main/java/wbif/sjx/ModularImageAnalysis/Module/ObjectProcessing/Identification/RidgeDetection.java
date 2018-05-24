@@ -34,8 +34,8 @@ public class RidgeDetection extends Module {
     public static final String SHOW_OBJECTS = "Show objects";
 
     private interface Measurements {
-        String LENGTH_PX = "RIDGE_DETECT//LENGTH_(PX)";
-        String LENGTH_CAL = "RIDGE_DETECT//LENGTH_(${CAL})";
+        String LENGTH_PX = "RIDGE_DETECT // LENGTH_(PX)";
+        String LENGTH_CAL = "RIDGE_DETECT // LENGTH_(${CAL})";
     }
 
     private interface ContourContrast {

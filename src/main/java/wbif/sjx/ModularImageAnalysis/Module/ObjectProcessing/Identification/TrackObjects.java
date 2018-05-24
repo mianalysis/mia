@@ -23,6 +23,9 @@ public class TrackObjects extends Module {
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String USE_VOLUME = "Use volume (minimise volume change)";
     public static final String VOLUME_WEIGHTING = "Volume weighting";
+    public static final String USE_MEASUREMENT = "Use measurement (minimise change)";
+    public static final String MEASUREMENT = "Measurement";
+    public static final String MEASUREMENT_WEIGHTING = "Measurement weighting";
     public static final String MINIMUM_OVERLAP = "Minimum overlap";
     public static final String MAXIMUM_MISSING_FRAMES = "Maximum number of missing frames";
     public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
@@ -45,16 +48,89 @@ public class TrackObjects extends Module {
     }
 
     public interface Measurements {
-        String TRACK_PREV_ID = "TRACKING//PREVIOUS_OBJECT_IN_TRACK_ID";
-        String TRACK_NEXT_ID = "TRACKING//NEXT_OBJECT_IN_TRACK_ID";
-        String ORIENTATION = "TRACKING//ORIENTATION";
-        String LEADING_X_PX = "TRACKING//LEADING_POINT_X_(PX)";
-        String LEADING_Y_PX = "TRACKING//LEADING_POINT_Y_(PX)";
-        String LEADING_Z_PX = "TRACKING//LEADING_POINT_Z_(PX)";
+        String TRACK_PREV_ID = "TRACKING // PREVIOUS_OBJECT_IN_TRACK_ID";
+        String TRACK_NEXT_ID = "TRACKING // NEXT_OBJECT_IN_TRACK_ID";
+        String ORIENTATION = "TRACKING // ORIENTATION";
+        String LEADING_X_PX = "TRACKING // LEADING_POINT_X_(PX)";
+        String LEADING_Y_PX = "TRACKING // LEADING_POINT_Y_(PX)";
+        String LEADING_Z_PX = "TRACKING // LEADING_POINT_Z_(PX)";
 
     }
 
-    private static float getCentroidSeparation(Obj prevObj, Obj currObj, boolean is2D, boolean useVolume, double volumeWeighting) {
+    public ArrayList<Obj>[] getCandidateObjects(ObjCollection inputObjects, int t1, int t2) {
+        // Creating a pair of ArrayLists to store the current and previous objects
+        ArrayList<Obj>[] objects = new ArrayList[2];
+        objects[0] = new ArrayList<>();
+        objects[1] = new ArrayList<>();
+
+        // Include objects from the previous and current frames that haven't been linked
+        for (Obj inputObject:inputObjects.values()) {
+            if (inputObject.getT() == t1 && inputObject.getMeasurement(Measurements.TRACK_NEXT_ID) == null) {
+                objects[0].add(inputObject);
+
+            } else if (inputObject.getT() == t2 && inputObject.getMeasurement(Measurements.TRACK_PREV_ID) == null) {
+                objects[1].add(inputObject);
+
+            }
+        }
+
+        return objects;
+
+    }
+
+    public float[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, int[][] spatialLimits, boolean is2D) {
+        String linkingMethod = parameters.getValue(LINKING_METHOD);
+
+        // Creating the cost matrix
+        float[][] cost = new float[currObjects.size()][prevObjects.size()];
+
+        for (int curr = 0; curr < cost.length; curr++) {
+            for (int prev = 0; prev < cost[curr].length; prev++) {
+                switch (linkingMethod) {
+                    case LinkingMethods.CENTROID:
+                        cost[curr][prev] = getCentroidSeparation(prevObjects.get(prev), currObjects.get(curr),is2D);
+                        break;
+
+                    case LinkingMethods.ABSOLUTE_OVERLAP:
+                        float overlap = getAbsoluteOverlap(prevObjects.get(prev), currObjects.get(curr), spatialLimits);
+                        cost[curr][prev] = overlap == 0 ? Float.MAX_VALUE : 1/overlap;
+                        break;
+                }
+            }
+        }
+
+        return cost;
+
+    }
+
+    public boolean testLinkValidity(Obj prevObj, Obj currObj, int[][] spatialLimits, boolean is2D) {
+        String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
+        String linkingMethod = parameters.getValue(LINKING_METHOD);
+        double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
+        double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
+
+        // Checking they are within the user-specified maximum distance.  If not, no link is made
+        switch (linkingMethod) {
+            case LinkingMethods.CENTROID:
+                float dist = getCentroidSeparation(prevObj,currObj,is2D);
+                return dist <= maxDist;
+
+            case LinkingMethods.ABSOLUTE_OVERLAP:
+                float overlap = getAbsoluteOverlap(prevObj,currObj,spatialLimits);
+                return overlap != 0 && overlap >= minOverlap;
+        }
+
+        return false;
+
+    }
+
+    public float getCentroidSeparation(Obj prevObj, Obj currObj, boolean is2D) {
+        boolean useVolume = parameters.getValue(USE_VOLUME);
+        double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
+        boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
+        String measurement = parameters.getValue(MEASUREMENT);
+        double measurementWeighting = parameters.getValue(MEASUREMENT_WEIGHTING);
+
         double prevXCent = prevObj.getXMean(true);
         double prevYCent = prevObj.getYMean(true);
         double prevZCent = prevObj.getZMean(true,true);
@@ -65,7 +141,6 @@ public class TrackObjects extends Module {
 
         double prevVol = useVolume ? prevObj.getNVoxels() : 0;
         double currVol = useVolume ? currObj.getNVoxels() : 0;
-
         if (is2D) {
             prevVol = Math.sqrt(prevVol);
             currVol = Math.sqrt(currVol);
@@ -74,13 +149,17 @@ public class TrackObjects extends Module {
             currVol = Math.cbrt(currVol);
         }
 
+        double prevMeas = useMeasurement ? prevObj.getMeasurement(measurement).getValue() : 0;
+        double currMeas = useMeasurement ? currObj.getMeasurement(measurement).getValue() : 0;
+
         return (float) Math.sqrt((prevXCent - currXCent) * (prevXCent - currXCent) +
                 (prevYCent - currYCent) * (prevYCent - currYCent) +
                 (prevZCent - currZCent) * (prevZCent - currZCent) +
-                ((prevVol - currVol) * (prevVol - currVol))*volumeWeighting);
+                ((prevVol - currVol) * (prevVol - currVol))*volumeWeighting +
+                ((prevMeas - currMeas) * (prevMeas - currMeas))*measurementWeighting);
     }
 
-    private static float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
+    public float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
         // Getting coordinates for each object
         TreeSet<Point<Integer>> prevPoints = prevObj.getPoints();
         TreeSet<Point<Integer>> currPoints = currObj.getPoints();
@@ -107,7 +186,43 @@ public class TrackObjects extends Module {
 
     }
 
-    private void identifyLeading(ObjCollection objects, String orientationMode) {
+    public void linkObjects(Obj prevObj, Obj currObj, boolean is2D) {
+        String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
+
+        // Getting the track object from the previous-frame object
+        Obj track = prevObj.getParent(trackObjectsName);
+
+        // Setting relationship between the current object and track
+        track.addChild(currObj, is2D);
+        currObj.addParent(track);
+
+        // Adding references to each other
+        prevObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, currObj.getID()));
+        currObj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, prevObj.getID()));
+
+    }
+
+    public void createNewTrack(Obj currObj, ObjCollection trackObjects) {
+        String trackObjectsName = trackObjects.getName();
+        double dppXY = currObj.getDistPerPxXY();
+        double dppZ = currObj.getDistPerPxZ();
+        String units = currObj.getCalibratedUnits();
+
+        // Creating a new track object
+        Obj track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units);
+
+        // Setting relationship between the current object and track
+        track.addChild(currObj, trackObjects.is2D());
+        currObj.addParent(track);
+
+        // Adding the track to the track collection
+        trackObjects.add(track);
+
+    }
+
+    public void identifyLeading(ObjCollection objects) {
+        String orientationMode = parameters.getValue(ORIENTATION_MODE);
+
         for (Obj obj:objects.values()) {
             double prevAngle = Double.NaN;
             double nextAngle = Double.NaN;
@@ -181,6 +296,7 @@ public class TrackObjects extends Module {
         }
     }
 
+
     @Override
     public String getTitle() {
         return "Track objects";
@@ -194,160 +310,86 @@ public class TrackObjects extends Module {
 
     @Override
     protected void run(Workspace workspace) throws GenericMIAException {
-        // Getting input objects
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-
         // Getting parameters
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName, inputObjects.is2D());
-        String linkingMethod = parameters.getValue(LINKING_METHOD);
-        double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
-        double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES);
-        boolean useVolume = parameters.getValue(USE_VOLUME);
-        double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
         boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT);
-        String orientationMode = parameters.getValue(ORIENTATION_MODE);
 
-        // Getting calibration from the first input object
-        double dppXY = 1;
-        double dppZ = 1;
-        String units = "pixels";
-        if (inputObjects.values().size() != 0) {
-            dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
-            dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
-            units = inputObjects.values().iterator().next().getCalibratedUnits();
+        // Getting objects
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName, inputObjects.is2D());
 
-        }
+        // If there are no input objects skip this module
+        if (inputObjects.size() == 0) return;
 
         // Clearing previous relationships and measurements (in case module has been run before)
         for (Obj inputObj:inputObjects.values()) {
             inputObj.removeMeasurement(Measurements.TRACK_NEXT_ID);
             inputObj.removeMeasurement(Measurements.TRACK_PREV_ID);
             inputObj.removeParent(trackObjectsName);
-
         }
 
         // Finding the spatial and frame frame limits of all objects in the inputObjects set
         int[][] spatialLimits = inputObjects.getSpatialLimits();
         int[] frameLimits = inputObjects.getTimepointLimits();
 
+        // Creating new track objects for all objects in the first frame
+        for (Obj inputObj:inputObjects.values()) {
+            if (inputObj.getT() == frameLimits[0]) {
+                createNewTrack(inputObj,trackObjects);
+            }
+        }
+
         for (int t2=frameLimits[0]+1;t2<=frameLimits[1];t2++) {
             writeMessage("Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
 
+            // Testing the previous permitted frames for links
             for (int t1 = t2-1;t1>=t2-1-maxMissingFrames;t1--) {
-                // Creating a pair of ArrayLists to store the current and previous objects
-                ArrayList<Obj> prevObjects = new ArrayList<>();
-                ArrayList<Obj> currObjects = new ArrayList<>();
+                ArrayList<Obj>[] nPObjects = getCandidateObjects(inputObjects,t1,t2);
 
-                // Include objects from the previous and current frames that haven't been linked
-                for (Obj inputObject:inputObjects.values()) {
-                    if (inputObject.getT() == t1 && inputObject.getMeasurement(Measurements.TRACK_NEXT_ID) == null) {
-                        prevObjects.add(inputObject);
-
-                    } else if (inputObject.getT() == t2 && inputObject.getMeasurement(Measurements.TRACK_PREV_ID) == null) {
-                        currObjects.add(inputObject);
-
+                // If no previous or current objects were found no linking takes place
+                if (nPObjects[0].size() == 0 || nPObjects[1].size() == 0) {
+                    if (t1==t2-1-maxMissingFrames || t1 == 0) {
+                        //Creating new tracks for current objects that have no chance of being linked in other frames
+                        for (int curr = 0; curr < nPObjects[1].size(); curr++) {
+                            createNewTrack(nPObjects[1].get(curr), trackObjects);
+                        }
+                        break;
                     }
+                    continue;
                 }
 
                 // Calculating distances between objects and populating the cost matrix
-                if (currObjects.size() > 0 && prevObjects.size() > 0) {
-                    // Creating the cost matrix
-                    float[][] cost = new float[currObjects.size()][prevObjects.size()];
-                    for (int curr = 0; curr < cost.length; curr++) {
-                        for (int prev = 0; prev < cost[curr].length; prev++) {
-                            switch (linkingMethod) {
-                                case LinkingMethods.CENTROID:
-                                    cost[curr][prev] = getCentroidSeparation(prevObjects.get(prev), currObjects.get(curr),inputObjects.is2D(),useVolume, volumeWeighting);
-                                    break;
+                float[][] cost = calculateCostMatrix(nPObjects[0],nPObjects[1],spatialLimits,inputObjects.is2D());
+                int[] assignment = new MunkresAssignment(cost).solve();
 
-                                case LinkingMethods.ABSOLUTE_OVERLAP:
-                                    float overlap = getAbsoluteOverlap(prevObjects.get(prev), currObjects.get(curr), spatialLimits);
+                // Applying the calculated assignments as relationships
+                for (int curr = 0; curr < assignment.length; curr++) {
+                    // Getting the object from the current frame
+                    Obj currObj = nPObjects[1].get(curr);
 
-                                    cost[curr][prev] = overlap == 0 ? Float.MAX_VALUE : 1/overlap;
-                                    break;
-
-                            }
-                        }
+                    // Checking if the previous and current objects can be linked
+                    boolean successfulLink = false;
+                    if (assignment[curr] != -1) {
+                        // Checking if the link is within the user-defined limits (max linking distance, etc.)
+                        Obj prevObj = nPObjects[0].get(assignment[curr]);
+                        successfulLink = testLinkValidity(prevObj,currObj,spatialLimits,inputObjects.is2D());
                     }
 
-                    // Running the Munkres algorithm to assign matches
-                    int[] assignment = new MunkresAssignment(cost).solve();
-
-                    // Applying the calculated assignments as relationships
-                    for (int curr = 0; curr < assignment.length; curr++) {
-                        // Getting the object from the current frame
-                        Obj track = null;
-                        Obj currObj = currObjects.get(curr);
-                        Obj prevObj;
-
-                        if (assignment[curr] == -1) {
-                            // This is a new track, so assigning it to a new track object
-                            track = new Obj(trackObjectsName,trackObjects.getNextID(),dppXY,dppZ,units);
-
-                        } else {
-                            // Getting the object from the previous frame
-                            prevObj = prevObjects.get(assignment[curr]);
-
-                            // Checking they are within the user-specified maximum distance.  If not, no link is made
-                            switch (linkingMethod) {
-                                case LinkingMethods.CENTROID:
-                                    float dist = getCentroidSeparation(prevObj,currObj,inputObjects.is2D(),useVolume, volumeWeighting);
-
-                                    if (dist > maxDist) {
-                                        track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units);
-                                    }
-
-                                    break;
-
-                                case LinkingMethods.ABSOLUTE_OVERLAP:
-                                    float overlap = getAbsoluteOverlap(prevObj,currObj,spatialLimits);
-                                    if (overlap == 0 || overlap < minOverlap) {
-                                        track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units);
-                                    }
-
-                                    break;
-
-                            }
-
-                            // If a new track wasn't created
-                            if (track == null) {
-                                // Adding references to each other
-                                prevObj.addMeasurement(new Measurement(Measurements.TRACK_NEXT_ID, currObj.getID()));
-                                currObj.addMeasurement(new Measurement(Measurements.TRACK_PREV_ID, prevObj.getID()));
-
-                                // Getting the track object from the previous-frame object
-                                track = prevObj.getParent(trackObjectsName);
-
-                            }
-
-                            // If the previous object hasn't been assigned a track
-                            if (track == null) {
-                                // This is a new track, so assigning it to a new track object
-                                track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units);
-
-                                prevObj.addParent(track);
-                                track.addChild(prevObj, inputObjects.is2D());
-
-                            }
-                        }
-
-                        // Setting relationship between the current object and track
-                        track.addChild(currObj, inputObjects.is2D());
-                        currObj.addParent(track);
-
-                        // Adding the track to the track collection
-                        trackObjects.add(track);
-
+                    // Creating new links and tracks where appropriate
+                    if (successfulLink) {
+                        Obj prevObj = nPObjects[0].get(assignment[curr]);
+                        linkObjects(prevObj,currObj,trackObjects.is2D());
+                    } else if (t1==t2-1-maxMissingFrames || t1 == 0) {
+                        createNewTrack(currObj,trackObjects);
                     }
                 }
             }
         }
 
         // Determining the leading point in the object (to next object)
-        if (identifyLeading) identifyLeading(inputObjects,orientationMode);
+        if (identifyLeading) identifyLeading(inputObjects);
 
         // Adding track objects to the workspace
         workspace.addObjects(trackObjects);
@@ -363,6 +405,9 @@ public class TrackObjects extends Module {
         parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
         parameters.add(new Parameter(USE_VOLUME,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(VOLUME_WEIGHTING, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(USE_MEASUREMENT,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(MEASUREMENT_WEIGHTING, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
         parameters.add(new Parameter(IDENTIFY_LEADING_POINT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(ORIENTATION_MODE,Parameter.CHOICE_ARRAY,OrientationModes.RELATIVE_TO_BOTH,OrientationModes.ALL));
@@ -387,6 +432,14 @@ public class TrackObjects extends Module {
                 returnedParamters.add(parameters.getParameter(USE_VOLUME));
                 if (returnedParamters.getValue(USE_VOLUME)) {
                     returnedParamters.add(parameters.getParameter(VOLUME_WEIGHTING));
+                }
+                returnedParamters.add(parameters.getParameter(USE_MEASUREMENT));
+                if (returnedParamters.getValue(USE_MEASUREMENT)) {
+                    returnedParamters.add(parameters.getParameter(MEASUREMENT));
+                    returnedParamters.add(parameters.getParameter(MEASUREMENT_WEIGHTING));
+
+                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    parameters.updateValueSource(MEASUREMENT,inputObjectsName);
                 }
                 break;
         }
