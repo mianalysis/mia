@@ -179,7 +179,6 @@ public class FilterObjects extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
-
             // Removing the object if it has no children
             if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
                 inputObject.removeRelationships();

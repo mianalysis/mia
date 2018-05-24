@@ -23,6 +23,9 @@ public class TrackObjects extends Module {
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String USE_VOLUME = "Use volume (minimise volume change)";
     public static final String VOLUME_WEIGHTING = "Volume weighting";
+    public static final String USE_MEASUREMENT = "Use measurement (minimise change)";
+    public static final String MEASUREMENT = "Measurement";
+    public static final String MEASUREMENT_WEIGHTING = "Measurement weighting";
     public static final String MINIMUM_OVERLAP = "Minimum overlap";
     public static final String MAXIMUM_MISSING_FRAMES = "Maximum number of missing frames";
     public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
@@ -124,6 +127,9 @@ public class TrackObjects extends Module {
     public float getCentroidSeparation(Obj prevObj, Obj currObj, boolean is2D) {
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
+        boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
+        String measurement = parameters.getValue(MEASUREMENT);
+        double measurementWeighting = parameters.getValue(MEASUREMENT_WEIGHTING);
 
         double prevXCent = prevObj.getXMean(true);
         double prevYCent = prevObj.getYMean(true);
@@ -135,7 +141,6 @@ public class TrackObjects extends Module {
 
         double prevVol = useVolume ? prevObj.getNVoxels() : 0;
         double currVol = useVolume ? currObj.getNVoxels() : 0;
-
         if (is2D) {
             prevVol = Math.sqrt(prevVol);
             currVol = Math.sqrt(currVol);
@@ -144,10 +149,14 @@ public class TrackObjects extends Module {
             currVol = Math.cbrt(currVol);
         }
 
+        double prevMeas = useMeasurement ? prevObj.getMeasurement(measurement).getValue() : 0;
+        double currMeas = useMeasurement ? currObj.getMeasurement(measurement).getValue() : 0;
+
         return (float) Math.sqrt((prevXCent - currXCent) * (prevXCent - currXCent) +
                 (prevYCent - currYCent) * (prevYCent - currYCent) +
                 (prevZCent - currZCent) * (prevZCent - currZCent) +
-                ((prevVol - currVol) * (prevVol - currVol))*volumeWeighting);
+                ((prevVol - currVol) * (prevVol - currVol))*volumeWeighting +
+                ((prevMeas - currMeas) * (prevMeas - currMeas))*measurementWeighting);
     }
 
     public float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
@@ -325,6 +334,13 @@ public class TrackObjects extends Module {
         int[][] spatialLimits = inputObjects.getSpatialLimits();
         int[] frameLimits = inputObjects.getTimepointLimits();
 
+        // Creating new track objects for all objects in the first frame
+        for (Obj inputObj:inputObjects.values()) {
+            if (inputObj.getT() == frameLimits[0]) {
+                createNewTrack(inputObj,trackObjects);
+            }
+        }
+
         for (int t2=frameLimits[0]+1;t2<=frameLimits[1];t2++) {
             writeMessage("Tracking to frame "+(t2+1)+" of "+(frameLimits[1]+1));
 
@@ -332,11 +348,14 @@ public class TrackObjects extends Module {
             for (int t1 = t2-1;t1>=t2-1-maxMissingFrames;t1--) {
                 ArrayList<Obj>[] nPObjects = getCandidateObjects(inputObjects,t1,t2);
 
-                // If no previous or current objects were found no linking takes place.  Creating new tracks for
-                // current objects that have no chance of being linked in other frames.
-                if ((nPObjects[0].size() == 0 || nPObjects[1].size() == 0) && t1==t2-1-maxMissingFrames) {
-                    for (int curr=0;curr<nPObjects[1].size();curr++) {
-                        createNewTrack(nPObjects[1].get(curr),trackObjects);
+                // If no previous or current objects were found no linking takes place
+                if (nPObjects[0].size() == 0 || nPObjects[1].size() == 0) {
+                    if (t1==t2-1-maxMissingFrames || t1 == 0) {
+                        //Creating new tracks for current objects that have no chance of being linked in other frames
+                        for (int curr = 0; curr < nPObjects[1].size(); curr++) {
+                            createNewTrack(nPObjects[1].get(curr), trackObjects);
+                        }
+                        break;
                     }
                     continue;
                 }
@@ -362,7 +381,7 @@ public class TrackObjects extends Module {
                     if (successfulLink) {
                         Obj prevObj = nPObjects[0].get(assignment[curr]);
                         linkObjects(prevObj,currObj,trackObjects.is2D());
-                    } else if (t1==t2-1-maxMissingFrames) {
+                    } else if (t1==t2-1-maxMissingFrames || t1 == 0) {
                         createNewTrack(currObj,trackObjects);
                     }
                 }
@@ -386,6 +405,9 @@ public class TrackObjects extends Module {
         parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
         parameters.add(new Parameter(USE_VOLUME,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(VOLUME_WEIGHTING, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(USE_MEASUREMENT,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(MEASUREMENT_WEIGHTING, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
         parameters.add(new Parameter(IDENTIFY_LEADING_POINT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(ORIENTATION_MODE,Parameter.CHOICE_ARRAY,OrientationModes.RELATIVE_TO_BOTH,OrientationModes.ALL));
@@ -410,6 +432,14 @@ public class TrackObjects extends Module {
                 returnedParamters.add(parameters.getParameter(USE_VOLUME));
                 if (returnedParamters.getValue(USE_VOLUME)) {
                     returnedParamters.add(parameters.getParameter(VOLUME_WEIGHTING));
+                }
+                returnedParamters.add(parameters.getParameter(USE_MEASUREMENT));
+                if (returnedParamters.getValue(USE_MEASUREMENT)) {
+                    returnedParamters.add(parameters.getParameter(MEASUREMENT));
+                    returnedParamters.add(parameters.getParameter(MEASUREMENT_WEIGHTING));
+
+                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    parameters.updateValueSource(MEASUREMENT,inputObjectsName);
                 }
                 break;
         }
