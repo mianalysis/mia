@@ -45,23 +45,23 @@ public class GaussianFitter2D extends Module {
     }
     
     public interface Measurements {
-        String X0_PX = "GAUSSFIT2D//X0_(PX)";
-        String Y0_PX = "GAUSSFIT2D//Y0_(PX)";
-        String Z0_SLICE = "GAUSSFIT2D//Z0_(SLICE)_(CENTROID)";
-        String SIGMA_X_PX = "GAUSSFIT2D//SIGMA_X_(PX)";
-        String SIGMA_Y_PX = "GAUSSFIT2D//SIGMA_Y_(PX)";
-        String SIGMA_MEAN_PX = "GAUSSFIT2D//SIGMA_MEAN_(PX)";
-        String X0_CAL = "GAUSSFIT2D//X0_(${CAL})";
-        String Y0_CAL = "GAUSSFIT2D//Y0_(${CAL})";
-        String Z0_CAL = "GAUSSFIT2D//Z0_(${CAL})_(CENTROID)";
-        String SIGMA_X_CAL = "GAUSSFIT2D//SIGMA_X_(${CAL})";
-        String SIGMA_Y_CAL = "GAUSSFIT2D//SIGMA_Y_(${CAL})";
-        String SIGMA_MEAN_CAL = "GAUSSFIT2D//SIGMA_MEAN_(${CAL})";
-        String A_0 = "GAUSSFIT2D//A_0";
-        String A_BG = "GAUSSFIT2D//A_BG";
-        String THETA = "GAUSSFIT2D//THETA";
-        String ELLIPTICITY = "GAUSSFIT2D//ELLIPTICITY";
-        String RESIDUAL = "GAUSSFIT2D//RESIDUAL_(NORM)";
+        String X0_PX = "GAUSSFIT2D // X0_(PX)";
+        String Y0_PX = "GAUSSFIT2D // Y0_(PX)";
+        String Z0_SLICE = "GAUSSFIT2D // Z0_(SLICE)_(CENTROID)";
+        String SIGMA_X_PX = "GAUSSFIT2D // SIGMA_X_(PX)";
+        String SIGMA_Y_PX = "GAUSSFIT2D // SIGMA_Y_(PX)";
+        String SIGMA_MEAN_PX = "GAUSSFIT2D // SIGMA_MEAN_(PX)";
+        String X0_CAL = "GAUSSFIT2D // X0_(${CAL})";
+        String Y0_CAL = "GAUSSFIT2D // Y0_(${CAL})";
+        String Z0_CAL = "GAUSSFIT2D // Z0_(${CAL})_(CENTROID)";
+        String SIGMA_X_CAL = "GAUSSFIT2D // SIGMA_X_(${CAL})";
+        String SIGMA_Y_CAL = "GAUSSFIT2D // SIGMA_Y_(${CAL})";
+        String SIGMA_MEAN_CAL = "GAUSSFIT2D // SIGMA_MEAN_(${CAL})";
+        String A_0 = "GAUSSFIT2D // A_0";
+        String A_BG = "GAUSSFIT2D // A_BG";
+        String THETA = "GAUSSFIT2D // THETA";
+        String ELLIPTICITY = "GAUSSFIT2D // ELLIPTICITY";
+        String RESIDUAL = "GAUSSFIT2D // RESIDUAL_(NORM)";
 
     }
     

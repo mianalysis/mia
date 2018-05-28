@@ -12,9 +12,9 @@ public class CalculateNearestNeighbour extends Module {
     public static final String PARENT_OBJECTS = "Parent objects";
 
     public interface Measurements {
-        String NN_DISTANCE_PX = "NN_DISTANCE_(PX)";
-        String NN_DISTANCE_CAL = "NN_DISTANCE_(${CAL})";
-        String NN_ID = "NN_ID";
+        String NN_DISTANCE_PX = "NEAREST_NEIGHBOUR // NN_DISTANCE_(PX)";
+        String NN_DISTANCE_CAL = "NEAREST_NEIGHBOUR // NN_DISTANCE_(${CAL})";
+        String NN_ID = "NEAREST_NEIGHBOUR // NN_ID";
 
     }
 

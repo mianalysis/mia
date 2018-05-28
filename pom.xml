@@ -165,7 +165,7 @@
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.3.17</version>
+            <version>1.3.18-SNAPSHOT</version>
             <!--<groupId>com.github.SJCross</groupId>-->
             <!--<artifactId>Common</artifactId>-->
             <!--<version>v1.3.14</version>-->

@@ -55,7 +55,7 @@ public class ThresholdImage extends Module {
     }
 
     public interface LocalAlgorithms {
-        String BERNSEN_3D = "Bersen (3D)";
+        String BERNSEN_3D = "Bernsen (3D)";
         String CONTRAST_3D = "Contrast (3D)";
         String MEAN_3D = "Mean (3D)";
         String MEDIAN_3D = "Median (3D)";

@@ -44,6 +44,10 @@ public abstract class GUI {
     }
 
     public void evaluateModule(Module module) throws GenericMIAException {
+        // Setting the index to the previous module.  This will make the currently-evaluated module go red
+        lastModuleEval = getModules().indexOf(module) - 1;
+        updateModules();
+
         Module.setVerbose(true);
         module.execute(testWorkspace);
         lastModuleEval = getModules().indexOf(module);

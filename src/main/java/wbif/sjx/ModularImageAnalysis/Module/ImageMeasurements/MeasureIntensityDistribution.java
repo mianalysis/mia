@@ -68,7 +68,7 @@ public class MeasureIntensityDistribution extends Module {
 
 
     private String getFullName(String objectsName, String measurement) {
-        return "INT_DISTR//"+objectsName+"_"+measurement;
+        return "INT_DISTR // "+objectsName+"_"+measurement;
     }
 
     public CumStat[] measureFractionProximal(ObjCollection inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {

@@ -17,7 +17,7 @@ public class ApplyManualClassification extends Module {
     public static final String REMOVE_MISSING = "Remove objects without classification";
 
     public interface Measurements {
-        String CLASS = "CLASSIFIER//CLASS";
+        String CLASS = "CLASSIFIER // CLASS";
 
     }
 

@@ -32,7 +32,7 @@ public class MeasureObjectTexture extends Module {
 
 
     public static String getFullName(String imageName, String measurement) {
-        return "TEXTURE//"+imageName+"_"+measurement;
+        return "TEXTURE // "+imageName+"_"+measurement;
     }
 
     @Override

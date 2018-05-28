@@ -87,8 +87,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     public int[][] getSpatialLimits() {
         int[][] limits = new int[][]{
-                {Integer.MAX_VALUE,Integer.MIN_VALUE},
-                {Integer.MAX_VALUE,Integer.MIN_VALUE},
+                {Integer.MAX_VALUE,-Integer.MAX_VALUE},
+                {Integer.MAX_VALUE,-Integer.MAX_VALUE},
                 {Integer.MAX_VALUE,Integer.MIN_VALUE}};
 
         for (Obj object:values()) {
@@ -115,7 +115,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Finding the first and last frame of all objects in the inputObjects set
         int[] limits = new int[2];
         limits[0] = Integer.MAX_VALUE;
-        limits[1] = Integer.MIN_VALUE;
+        limits[1] = -Integer.MAX_VALUE;
 
         for (Obj object:values()) {
             if (object.getT() < limits[0]) limits[0] = object.getT();

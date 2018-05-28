@@ -37,9 +37,9 @@ public class ObjectClusterer extends Module {
     }
 
     public interface Measurements {
-        String N_POINTS_IN_CLUSTER = "CLUSTER//N_POINTS_IN_CLUSTER";
-        String CLUSTER_AREA_XY_PX = "CLUSTER//CLUSTER_AREA_2D_(PX^2)";
-        String CLUSTER_AREA_XY_CAL = "CLUSTER//CLUSTER_AREA_2D_(${CAL}^2)";
+        String N_POINTS_IN_CLUSTER = "CLUSTER // N_POINTS_IN_CLUSTER";
+        String CLUSTER_AREA_XY_PX = "CLUSTER // CLUSTER_AREA_2D_(PX^2)";
+        String CLUSTER_AREA_XY_CAL = "CLUSTER // CLUSTER_AREA_2D_(${CAL}^2)";
 
     }
 

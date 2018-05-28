@@ -83,7 +83,7 @@ public class Obj extends Volume {
 
     @Override
     public String toString() {
-        return "Object " + name + ", ID = "+ID;
+        return "Object " + name + ", ID = "+ID + ", frame = "+ T ;
 
     }
 
