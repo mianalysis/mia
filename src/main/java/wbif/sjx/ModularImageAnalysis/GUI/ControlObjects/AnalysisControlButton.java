@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
+import ij.Prefs;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
