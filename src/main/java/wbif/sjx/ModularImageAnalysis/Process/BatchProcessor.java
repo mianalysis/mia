@@ -51,7 +51,6 @@ public class BatchProcessor extends FileCrawler {
 
     public BatchProcessor(File rootFolder) {
         super(rootFolder);
-
     }
 
 
@@ -90,7 +89,11 @@ public class BatchProcessor extends FileCrawler {
         System.out.println("Starting batch processor");
         Module.setVerbose(false);
 
-        Prefs.setThreads(1);
+        // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
+        if ((int) analysis.getInputControl().getParameterValue(InputControl.NUMBER_OF_THREADS) != 1) {
+            Prefs.setThreads(1);
+            Prefs.savePreferences();
+        }
 
         // Setting up the ExecutorService, which will manage the threads
         pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
@@ -172,8 +175,6 @@ public class BatchProcessor extends FileCrawler {
     private void runSingle(WorkspaceCollection workspaces, Analysis analysis) throws InterruptedException {
         // Setting up the ExecutorService, which will manage the threads
         pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
-
-        Prefs.setThreads(1);
 
         // For the current file, determining how many series to process (and which ones)
         TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
