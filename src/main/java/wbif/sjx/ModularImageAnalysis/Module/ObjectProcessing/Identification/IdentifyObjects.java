@@ -3,6 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;

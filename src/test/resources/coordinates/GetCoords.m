@@ -11,7 +11,8 @@ nT = 4;
 
 for j=1:nT
     for i = 1:nZ
-        im(:,:,i,j) = imread([pnameIn,fnameIn],(j-1)*nT+i);
+        (j-1)*nZ+i
+        im(:,:,i,j) = imread([pnameIn,fnameIn],(j-1)*nZ+i);
     end
 end
 

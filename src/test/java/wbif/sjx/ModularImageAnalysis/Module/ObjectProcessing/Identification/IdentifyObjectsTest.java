@@ -121,7 +121,7 @@ public class IdentifyObjectsTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunBlackBackground8bit4D() throws Exception  {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -157,20 +157,8 @@ public class IdentifyObjectsTest {
         String calibratedUnits = "µm";
         ObjCollection expectedObjects = new ExpectedObjects4D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
 
-        for (Obj obj:actualObjects.values()) {
-//            if (obj.getT() == 2) {
-                System.out.println("a "+obj.getPoints().size() + "_" + obj.getT());
-//            }
-        }
-
-        for (Obj obj:expectedObjects.values()) {
-//            if (obj.getT() == 2) {
-                System.out.println("e "+obj.getPoints().size() + "_" + obj.getT());
-//            }
-        }
-
         // Checking the number of detected objects
-        assertEquals(32,actualObjects.size());
+        assertEquals(33,actualObjects.size());
 
         for (Obj object:actualObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
