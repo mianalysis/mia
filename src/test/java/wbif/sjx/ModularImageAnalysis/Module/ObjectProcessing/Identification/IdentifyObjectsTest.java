@@ -4,8 +4,9 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.IdentifyObjects;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects2D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects4D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -26,9 +27,51 @@ public class IdentifyObjectsTest {
         assertNotNull(new IdentifyObjects().getTitle());
     }
 
-    @Test @Ignore
+    @Test
     public void testRunBlackBackground8bit2D() throws Exception  {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
 
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising IdentifyObjects
+        IdentifyObjects identifyObjects = new IdentifyObjects();
+        identifyObjects.initialiseParameters();
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
+        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
+
+        // Running IdentifyObjects
+        identifyObjects.run(workspace);
+
+        // Checking there is only one set of objects in the workspace
+        assertEquals(1,workspace.getObjects().size());
+
+        // Getting the object set
+        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+
+        // Checking the expected object set is present
+        assertEquals("Test_output_objects",actualObjects.getName());
+
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new ExpectedObjects2D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
+
+        // Checking the number of detected objects
+        assertEquals(8,actualObjects.size());
+
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
+
+        }
     }
 
     @Test
@@ -80,7 +123,61 @@ public class IdentifyObjectsTest {
 
     @Test @Ignore
     public void testRunBlackBackground8bit4D() throws Exception  {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
 
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects4D_8bit_blackBG.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising IdentifyObjects
+        IdentifyObjects identifyObjects = new IdentifyObjects();
+        identifyObjects.initialiseParameters();
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
+        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
+
+        // Running IdentifyObjects
+        identifyObjects.run(workspace);
+
+        // Checking there is only one set of objects in the workspace
+        assertEquals(1,workspace.getObjects().size());
+
+        // Getting the object set
+        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+
+        // Checking the expected object set is present
+        assertEquals("Test_output_objects",actualObjects.getName());
+
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new ExpectedObjects4D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
+
+        for (Obj obj:actualObjects.values()) {
+//            if (obj.getT() == 2) {
+                System.out.println("a "+obj.getPoints().size() + "_" + obj.getT());
+//            }
+        }
+
+        for (Obj obj:expectedObjects.values()) {
+//            if (obj.getT() == 2) {
+                System.out.println("e "+obj.getPoints().size() + "_" + obj.getT());
+//            }
+        }
+
+        // Checking the number of detected objects
+        assertEquals(32,actualObjects.size());
+
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
+
+        }
     }
 
     @Test @Ignore

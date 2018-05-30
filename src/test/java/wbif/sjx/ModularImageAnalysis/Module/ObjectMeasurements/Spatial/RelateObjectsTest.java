@@ -4,14 +4,12 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedProxCubes1;
-import wbif.sjx.ModularImageAnalysis.ExpectedProxCubes2;
-import wbif.sjx.ModularImageAnalysis.ExpectedSpots3D;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.RelateObjects;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedProxCubes1;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedProxCubes2;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedSpots3D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
-import wbif.sjx.ModularImageAnalysis.Object.Units;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.util.Arrays;

@@ -4,7 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedRings2D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedRings2D;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.net.URLDecoder;

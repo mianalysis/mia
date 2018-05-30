@@ -1,18 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
-import ij.IJ;
-import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedSpots3D;
-import wbif.sjx.ModularImageAnalysis.Module.InputOutput.ImageSaver;
-import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedSpots3D;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
-
-import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
 
