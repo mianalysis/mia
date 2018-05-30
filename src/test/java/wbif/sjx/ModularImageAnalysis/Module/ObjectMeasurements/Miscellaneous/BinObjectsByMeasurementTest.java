@@ -1,8 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous.BinObjectsByMeasurement;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;

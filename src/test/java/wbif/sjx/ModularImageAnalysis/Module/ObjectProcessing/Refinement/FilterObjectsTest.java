@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;

@@ -3,16 +3,11 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.ModularImageAnalysis.Object.Measurement;
-import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Iterator;
 
 import static org.junit.Assert.*;
 

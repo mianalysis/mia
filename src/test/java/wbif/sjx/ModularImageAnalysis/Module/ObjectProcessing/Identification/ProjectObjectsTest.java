@@ -1,9 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects2D;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ProjectObjects;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects2D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;

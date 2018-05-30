@@ -7,7 +7,7 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
 
 import java.net.URLDecoder;
 
