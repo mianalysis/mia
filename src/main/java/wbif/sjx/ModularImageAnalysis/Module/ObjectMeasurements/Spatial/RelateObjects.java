@@ -17,6 +17,7 @@ public class RelateObjects extends Module {
     public final static String RELATE_MODE = "Method to relate objects";
     public final static String REFERENCE_POINT = "Reference point";
     public final static String TEST_CHILD_OBJECTS = "Child objects to test against";
+    public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
     public final static String LINKING_DISTANCE = "Maximum linking distance (px)";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
@@ -55,7 +56,7 @@ public class RelateObjects extends Module {
     }
 
 
-    public static void linkMatchingIDs(ObjCollection parentObjects, ObjCollection childObjects) {
+    public void linkMatchingIDs(ObjCollection parentObjects, ObjCollection childObjects) {
         for (Obj parentObject:parentObjects.values()) {
             int ID = parentObject.getID();
 
@@ -74,9 +75,13 @@ public class RelateObjects extends Module {
      * than linkingDistance the link is assigned.
      * @param parentObjects
      * @param childObjects
-     * @param linkingDistance
      */
-    public void proximity(ObjCollection parentObjects, ObjCollection childObjects, double linkingDistance, String referencePoint, boolean linkInSameFrame) {
+    public void proximity(ObjCollection parentObjects, ObjCollection childObjects) {
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
+        String referencePoint = parameters.getValue(REFERENCE_POINT);
+        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
+        double linkingDistance = parameters.getValue(LINKING_DISTANCE);
+
         String moduleName = RelateObjects.class.getSimpleName();
 
         int iter = 1;
@@ -102,7 +107,8 @@ public class RelateObjects extends Module {
                             double zDist = childObject.getZMean(true, true) - parentObject.getZMean(true, true);
                             double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
-                            if (dist < minDist && dist <= linkingDistance) {
+                            if (dist < minDist) {
+                                if (limitLinking && dist > linkingDistance) break;
                                 minDist = dist;
                                 minLink = parentObject;
                             }
@@ -134,7 +140,8 @@ public class RelateObjects extends Module {
                                     zDist = childZ[j] - parentZ[i];
                                     dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
-                                    if (dist < currMinDist && dist <= linkingDistance) {
+                                    if (dist < currMinDist) {
+                                        if (limitLinking && dist > linkingDistance) break;
                                         currMinDist = dist;
                                         currMinLink = parentObject;
                                         isInside = parentObject.getPoints().contains(currentPoint);
@@ -175,7 +182,9 @@ public class RelateObjects extends Module {
                                 zDist = childZCent - parentZ[i];
                                 dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
 
-                                if (dist < currMinDist && dist <= linkingDistance) {
+                                if (dist < currMinDist) {
+                                    if (limitLinking && dist > linkingDistance) break;
+
                                     currMinDist = dist;
                                     currMinLink = parentObject;
                                     isInside = parentObject.getPoints().contains(currentPoint);
@@ -259,7 +268,11 @@ public class RelateObjects extends Module {
         }
     }
 
-    public static void proximityToChildren(ObjCollection parentObjects, ObjCollection childObjects, String testChildObjectsName, double linkingDistance) {
+    public void proximityToChildren(ObjCollection parentObjects, ObjCollection childObjects) {
+        String testChildObjectsName = parameters.getValue(TEST_CHILD_OBJECTS);
+        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
+        double linkingDistance = parameters.getValue(LINKING_DISTANCE);
+
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
             // Getting children of the parent to be used as references
@@ -280,7 +293,7 @@ public class RelateObjects extends Module {
 
                     // If the test object and the current object is less than the linking distance, assign the relationship
                     double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
-                    if (dist <= linkingDistance) {
+                    if (limitLinking && dist <= linkingDistance) {
                         childObject.addParent(parentObject);
                         parentObject.addChild(childObject, childObjects.is2D());
 
@@ -363,6 +376,7 @@ public class RelateObjects extends Module {
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
         String testChildObjectsName = parameters.getValue(TEST_CHILD_OBJECTS);
         String referencePoint = parameters.getValue(REFERENCE_POINT);
+        boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
         double linkingDistance = parameters.getValue(LINKING_DISTANCE);
 
 
@@ -374,12 +388,12 @@ public class RelateObjects extends Module {
 
             case RelateModes.PROXIMITY:
                 writeMessage("Relating objects by proximity");
-                proximity(parentObjects,childObjects,linkingDistance,referencePoint,linkInSameFrame);
+                proximity(parentObjects,childObjects);
                 break;
 
             case RelateModes.PROXIMITY_TO_CHILDREN:
                 writeMessage("Relating objects by proximity to children");
-                proximityToChildren(parentObjects,childObjects,testChildObjectsName,linkingDistance);
+                proximityToChildren(parentObjects,childObjects);
                 break;
 
             case RelateModes.SPATIAL_OVERLAP:
@@ -396,6 +410,7 @@ public class RelateObjects extends Module {
         parameters.add(new Parameter(CHILD_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(RELATE_MODE, Parameter.CHOICE_ARRAY,RelateModes.MATCHING_IDS,RelateModes.ALL));
         parameters.add(new Parameter(TEST_CHILD_OBJECTS,Parameter.CHILD_OBJECTS,null));
+        parameters.add(new Parameter(LIMIT_LINKING_BY_DISTANCE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LINKING_DISTANCE,Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(REFERENCE_POINT,Parameter.CHOICE_ARRAY,ReferencePoints.CENTROID,ReferencePoints.ALL));
         parameters.add(new Parameter(LINK_IN_SAME_FRAME,Parameter.BOOLEAN,true));
@@ -413,19 +428,18 @@ public class RelateObjects extends Module {
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
                 returnedParameters.add(parameters.getParameter(REFERENCE_POINT));
-                returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
-
                 break;
 
             case RelateModes.PROXIMITY_TO_CHILDREN:
                 returnedParameters.add(parameters.getParameter(TEST_CHILD_OBJECTS));
-                returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
-
                 String parentObjectNames = parameters.getValue(PARENT_OBJECTS);
                 parameters.updateValueSource(TEST_CHILD_OBJECTS,parentObjectNames);
-
                 break;
+        }
 
+        returnedParameters.add(parameters.getParameter(LIMIT_LINKING_BY_DISTANCE));
+        if (parameters.getValue(LIMIT_LINKING_BY_DISTANCE)) {
+            returnedParameters.add(parameters.getParameter(LINKING_DISTANCE));
         }
 
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));

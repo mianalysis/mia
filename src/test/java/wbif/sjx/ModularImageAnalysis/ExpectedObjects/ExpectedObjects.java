@@ -15,13 +15,19 @@ import java.util.List;
  * Created by sc13967 on 12/02/2018.
  */
 public abstract class ExpectedObjects {
+    private boolean is2D;
     public abstract List<Integer[]> getCoordinates5D();
+    public abstract boolean is2D();
+
+    public ExpectedObjects() {
+        this.is2D = is2D();
+    }
 
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
     public ObjCollection getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) {
         // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName, false);
+        ObjCollection testObjects = new ObjCollection(objectName,is2D);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();

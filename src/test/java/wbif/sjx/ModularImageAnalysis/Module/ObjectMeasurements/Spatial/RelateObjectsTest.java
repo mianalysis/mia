@@ -4,10 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedProxCubes1;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedProxCubes2;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedSpots3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.*;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -22,7 +19,7 @@ import static org.junit.Assert.*;
  * Created by Stephen Cross on 10/09/2017.
  */
 public class RelateObjectsTest {
-    private double tolerance = 1E-2;
+    private double tolerance = 1E-10;
 
     @Test
     public void testGetTitle() throws Exception {
@@ -121,7 +118,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
         relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID);
-        relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,Double.MAX_VALUE);
+        relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
         // Running RelateObjects
         relateObjects.run(workspace);
@@ -207,6 +204,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
         relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID);
+        relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,true);
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,20.0);
 
         // Running RelateObjects
@@ -293,7 +291,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
         relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
-        relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,Double.MAX_VALUE);
+        relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
         // Running RelateObjects
         relateObjects.run(workspace);
@@ -349,6 +347,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
         relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,true);
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,5.0);
 
         // Running RelateObjects
@@ -409,7 +408,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
         relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID_TO_SURFACE);
-        relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,Double.MAX_VALUE);
+        relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
         // Running RelateObjects
         relateObjects.run(workspace);
@@ -465,6 +464,7 @@ public class RelateObjectsTest {
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
         relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID_TO_SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,true);
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,5.0);
 
         // Running RelateObjects
@@ -496,6 +496,52 @@ public class RelateObjectsTest {
             name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_CAL,proxObj2Name);
             double actualDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedDistCal, actualDistCal, tolerance);
+
+        }
+    }
+
+    @Test
+    public void testProximityCentroidSurfaceResponse2D() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting object parameters
+        String proxObj1Name = "Prox_obj_1";
+        String proxObj2Name = "Prox_obj_2";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating objects and adding to workspace
+        ObjCollection proxObj1 = new ExpectedProxSquares1(true).getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        workspace.addObjects(proxObj1);
+        ObjCollection proxObj2 = new ExpectedProxSquares2(true).getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        workspace.addObjects(proxObj2);
+
+        // Initialising RelateObjects
+        RelateObjects relateObjects = new RelateObjects();
+        relateObjects.initialiseParameters();
+        relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
+        relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
+        relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
+        relateObjects.updateParameterValue(RelateObjects.REFERENCE_POINT,RelateObjects.ReferencePoints.CENTROID_TO_SURFACE);
+        relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
+
+        // Running RelateObjects
+        relateObjects.run(workspace);
+
+        // Running through each object, checking it has the expected number of measurements and the expected value
+        for (Obj proxObj2Obj:proxObj2.values()) {
+            System.out.println(proxObj2Obj.getID());
+            // Checking the object has no children
+            LinkedHashMap<String, ObjCollection> children = proxObj2Obj.getChildren();
+            assertEquals(0, children.size());
+
+            // Checking the distance to the parent
+            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ExpectedProxSquares2.Measures.CENT_SURF_PROX_DIST_PX.name()).getValue();
+            String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_PX,proxObj1Name);
+            double actualSurfDistPx = proxObj2Obj.getMeasurement(name).getValue();
+            assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
         }
     }

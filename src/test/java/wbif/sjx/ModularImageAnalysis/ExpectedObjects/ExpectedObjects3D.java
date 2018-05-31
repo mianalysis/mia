@@ -477,5 +477,10 @@ public class ExpectedObjects3D extends ExpectedObjects {
     public List<Integer[]> getCoordinates5D() {
         return getCoordinates5D("/coordinates/ExpectedObjects3D.csv");
     }
+
+    @Override
+    public boolean is2D() {
+        return false;
+    }
 }
 

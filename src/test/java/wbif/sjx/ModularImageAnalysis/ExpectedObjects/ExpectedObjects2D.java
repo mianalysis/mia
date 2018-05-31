@@ -13,6 +13,11 @@ public class ExpectedObjects2D extends ExpectedObjects {
     }
 
     @Override
+    public boolean is2D() {
+        return true;
+    }
+
+    @Override
     public HashMap<Integer, HashMap<String, Double>> getMeasurements() {
         return null;
     }

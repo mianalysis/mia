@@ -13,6 +13,11 @@ public class ExpectedProxCubes2 extends ExpectedObjects {
     }
 
     @Override
+    public boolean is2D() {
+        return false;
+    }
+
+    @Override
     public HashMap<Integer, HashMap<String, Double>> getMeasurements() {
         return null;
     }
