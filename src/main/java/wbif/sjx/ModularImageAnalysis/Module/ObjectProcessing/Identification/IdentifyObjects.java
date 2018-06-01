@@ -34,7 +34,7 @@ public class IdentifyObjects extends Module {
 
     private ObjCollection importFromBinary(Image inputImage, String outputObjectsName, boolean whiteBackground, boolean singleObject) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputImagePlus.getNSlices()==1);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         if (whiteBackground) IJ.run(inputImagePlus, "Invert", "stack");
 

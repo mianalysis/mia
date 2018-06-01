@@ -74,7 +74,7 @@ public class ExtractObjectEdges extends Module {
         ObjCollection outputEdgeObjects = null;
         if (createEdgeObjects) {
             outputEdgeObjectName = parameters.getValue(OUTPUT_EDGE_OBJECTS);
-            outputEdgeObjects = new ObjCollection(outputEdgeObjectName,inputObjects.is2D());
+            outputEdgeObjects = new ObjCollection(outputEdgeObjectName);
         }
 
         // Initialising output interior objects
@@ -82,20 +82,20 @@ public class ExtractObjectEdges extends Module {
         ObjCollection outputInteriorObjects = null;
         if (createInteriorObjects) {
             outputInteriorObjectName = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
-            outputInteriorObjects = new ObjCollection(outputInteriorObjectName,inputObjects.is2D());
+            outputInteriorObjects = new ObjCollection(outputInteriorObjectName);
         }
 
         for (Obj inputObject:inputObjects.values()) {
             // Creating new edge object
             Obj outputEdgeObject = null;
             if (createEdgeObjects) {
-                outputEdgeObject = new Obj(outputEdgeObjectName, outputEdgeObjects.getNextID(),dppXY,dppZ,calibratedUnits);
+                outputEdgeObject = new Obj(outputEdgeObjectName, outputEdgeObjects.getNextID(),dppXY,dppZ,calibratedUnits,inputObject.is2D());
             }
 
             // Creating new interior object
             Obj outputInteriorObject = null;
             if (createInteriorObjects) {
-                outputInteriorObject = new Obj(outputInteriorObjectName, outputInteriorObjects.getNextID(),dppXY,dppZ,calibratedUnits);
+                outputInteriorObject = new Obj(outputInteriorObjectName, outputInteriorObjects.getNextID(),dppXY,dppZ,calibratedUnits,inputObject.is2D());
             }
 
             // Getting parent coordinates
@@ -154,7 +154,7 @@ public class ExtractObjectEdges extends Module {
 
                 outputEdgeObjects.add(outputEdgeObject);
                 outputEdgeObject.addParent(inputObject);
-                inputObject.addChild(outputEdgeObject, outputEdgeObjects.is2D());
+                inputObject.addChild(outputEdgeObject);
             }
 
             if (createInteriorObjects) {
@@ -162,7 +162,7 @@ public class ExtractObjectEdges extends Module {
 
                 outputInteriorObjects.add(outputInteriorObject);
                 outputInteriorObject.addParent(inputObject);
-                inputObject.addChild(outputInteriorObject, outputInteriorObjects.is2D());
+                inputObject.addChild(outputInteriorObject);
             }
         }
 

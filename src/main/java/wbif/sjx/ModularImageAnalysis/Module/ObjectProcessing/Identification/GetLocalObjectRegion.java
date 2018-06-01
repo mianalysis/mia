@@ -17,7 +17,7 @@ public class GetLocalObjectRegion extends Module {
 
     public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated, boolean useMeasurement, String measurementName) {
         // Creating store for output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.is2D());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         if (inputObjects.values().size() == 0) return outputObjects;
 
@@ -32,7 +32,7 @@ public class GetLocalObjectRegion extends Module {
         for (Obj inputObject:inputObjects.values()) {
             writeMessage("Calculating for object " + (++count) + " of " + startingNumber);
             // Creating new object and assigning relationship to input objects
-            Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits);
+            Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits,inputObject.is2D());
 
             // Getting centroid coordinates
             double xCent = inputObject.getXMean(true);
@@ -44,7 +44,7 @@ public class GetLocalObjectRegion extends Module {
             if (calibrated) {
                 for (int x = (int) Math.floor(xCent - radius/dppXY); x <= (int) Math.ceil(xCent + radius/dppXY); x++) {
                     for (int y = (int) Math.floor(yCent - radius/dppXY); y <= (int) Math.ceil(yCent + radius/dppXY); y++) {
-                        if (inputObjects.is2D()) {
+                        if (inputObject.is2D()) {
                             if (Math.sqrt((xCent - x) * dppXY * (xCent - x) * dppXY + (yCent - y) * dppXY * (yCent - y) * dppXY) < radius) {
                                 outputObject.addCoord(x, y, 0);
                             }
@@ -61,7 +61,7 @@ public class GetLocalObjectRegion extends Module {
             } else {
                 for (int x = (int) Math.floor(xCent - radius); x <= (int) Math.ceil(xCent + radius); x++) {
                     for (int y = (int) Math.floor(yCent - radius); y <= (int) Math.ceil(yCent + radius); y++) {
-                        if (inputObjects.is2D()) {
+                        if (inputObject.is2D()) {
                             if (Math.sqrt((xCent - x) * (xCent - x) + (yCent - y) * (yCent - y)) < radius) {
                                 outputObject.addCoord(x, y, 0);
                             }
@@ -84,7 +84,7 @@ public class GetLocalObjectRegion extends Module {
 
             // Adding relationships
             outputObject.addParent(inputObject);
-            inputObject.addChild(outputObject,inputObjects.is2D());
+            inputObject.addChild(outputObject);
 
         }
 

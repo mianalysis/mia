@@ -238,15 +238,15 @@ public class FilterObjectsTest {
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children", false);
+        ObjCollection childObjects = new ObjCollection("Children");
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
                 childObjects.add(childObject);
 
-                testObject.addChild(childObject, false);
+                testObject.addChild(childObject);
                 childObject.addParent(testObject);
             }
 
@@ -287,15 +287,15 @@ public class FilterObjectsTest {
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children",false);
+        ObjCollection childObjects = new ObjCollection("Children");
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
                 childObjects.add(childObject);
 
-                testObject.addChild(childObject,false);
+                testObject.addChild(childObject);
                 childObject.addParent(testObject);
             }
 
@@ -335,16 +335,16 @@ public class FilterObjectsTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,true};
-        ObjCollection parentObjects = new ObjCollection("Parents",false);
+        ObjCollection parentObjects = new ObjCollection("Parents");
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
-                parentObject.addChild(testObject, false);
+                parentObject.addChild(testObject);
 
             }
         }
@@ -380,16 +380,16 @@ public class FilterObjectsTest {
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjCollection parentObjects = new ObjCollection("Parents", false);
+        ObjCollection parentObjects = new ObjCollection("Parents");
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
-                parentObject.addChild(testObject, false);
+                parentObject.addChild(testObject);
 
             }
         }

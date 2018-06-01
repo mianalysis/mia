@@ -27,7 +27,7 @@ public abstract class ExpectedObjects {
 
     public ObjCollection getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) {
         // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName,is2D);
+        ObjCollection testObjects = new ObjCollection(objectName);
 
         // Adding all provided coordinates to each object
         List<Integer[]> coordinates = getCoordinates5D();
@@ -39,7 +39,7 @@ public abstract class ExpectedObjects {
             int t = coordinate[6];
 
             ID = ID+(t*65536);
-            testObjects.putIfAbsent(ID,new Obj(objectName,ID,dppXY,dppZ,calibratedUnits));
+            testObjects.putIfAbsent(ID,new Obj(objectName,ID,dppXY,dppZ,calibratedUnits,is2D));
 
             Obj testObject = testObjects.get(ID);
             testObject.addCoord(x,y,z);

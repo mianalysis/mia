@@ -30,7 +30,7 @@ public class BinObjectsByMeasurementTest {
         String measurement = ExpectedObjects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true,false);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
@@ -68,7 +68,7 @@ public class BinObjectsByMeasurementTest {
         String measurement = ExpectedObjects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true,false);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
@@ -106,7 +106,7 @@ public class BinObjectsByMeasurementTest {
         String measurement = ExpectedObjects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true,false);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement

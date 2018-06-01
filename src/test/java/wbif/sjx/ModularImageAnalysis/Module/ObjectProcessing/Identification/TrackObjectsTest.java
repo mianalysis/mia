@@ -40,9 +40,9 @@ public class TrackObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating two objects and a track associated with the first object
-        Obj obj1 = new Obj(inputObjectsName,7,dppXY,dppZ,calibratedUnits);
-        Obj obj2 = new Obj(inputObjectsName,21,dppXY,dppZ,calibratedUnits);
-        Obj track = new Obj(trackObjectsName,4,dppXY,dppZ,calibratedUnits);
+        Obj obj1 = new Obj(inputObjectsName,7,dppXY,dppZ,calibratedUnits,false);
+        Obj obj2 = new Obj(inputObjectsName,21,dppXY,dppZ,calibratedUnits,false);
+        Obj track = new Obj(trackObjectsName,4,dppXY,dppZ,calibratedUnits,false);
         obj1.addParent(track);
 
         // Creating the TrackObjects object
@@ -51,7 +51,7 @@ public class TrackObjectsTest {
         trackObjects.updateParameterValue(TrackObjects.TRACK_OBJECTS,trackObjectsName);
 
         // Linking the objects
-        trackObjects.linkObjects(obj1,obj2,false);
+        trackObjects.linkObjects(obj1,obj2);
 
         // Checking the two objects are associated with each other
         assertEquals(21,obj1.getMeasurement(TrackObjects.Measurements.TRACK_NEXT_ID).getValue(),tolerance);
@@ -74,8 +74,8 @@ public class TrackObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating an object and the track objects collection for it to be added to
-        Obj obj = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits);
-        ObjCollection tracks = new ObjCollection(trackObjectsName,false);
+        Obj obj = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false);
+        ObjCollection tracks = new ObjCollection(trackObjectsName);
 
         // Creating the TrackObjects object
         TrackObjects trackObjects = new TrackObjects();

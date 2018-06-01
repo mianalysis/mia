@@ -1,10 +1,10 @@
 clear
 
 pnameIn = 'C:\Users\sc13967\Documents\Java_Projects\ModularImageAnalysis\src\test\resources\images\RelateObjects\';
-fnameIn = 'ProxSquares2_2D_8bit.tif';
+fnameIn = 'ProxSquares1_2D_8bit.tif';
 
 pnameOut = 'C:\Users\sc13967\Documents\Java_Projects\ModularImageAnalysis\src\test\resources\coordinates\';
-fnameOut = 'ExpectedProxSquares2.csv';
+fnameOut = 'ExpectedProxSquares1.csv';
 
 nZ = 1;
 nT = 1;

@@ -75,7 +75,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public float[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, int[][] spatialLimits, boolean is2D) {
+    public float[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, int[][] spatialLimits) {
         String linkingMethod = parameters.getValue(LINKING_METHOD);
 
         // Creating the cost matrix
@@ -85,7 +85,7 @@ public class TrackObjects extends Module {
             for (int prev = 0; prev < cost[curr].length; prev++) {
                 switch (linkingMethod) {
                     case LinkingMethods.CENTROID:
-                        cost[curr][prev] = getCentroidSeparation(prevObjects.get(prev), currObjects.get(curr),is2D);
+                        cost[curr][prev] = getCentroidSeparation(prevObjects.get(prev), currObjects.get(curr));
                         break;
 
                     case LinkingMethods.ABSOLUTE_OVERLAP:
@@ -100,7 +100,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public boolean testLinkValidity(Obj prevObj, Obj currObj, int[][] spatialLimits, boolean is2D) {
+    public boolean testLinkValidity(Obj prevObj, Obj currObj, int[][] spatialLimits) {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String linkingMethod = parameters.getValue(LINKING_METHOD);
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
@@ -109,7 +109,7 @@ public class TrackObjects extends Module {
         // Checking they are within the user-specified maximum distance.  If not, no link is made
         switch (linkingMethod) {
             case LinkingMethods.CENTROID:
-                float dist = getCentroidSeparation(prevObj,currObj,is2D);
+                float dist = getCentroidSeparation(prevObj,currObj);
                 return dist <= maxDist;
 
             case LinkingMethods.ABSOLUTE_OVERLAP:
@@ -121,7 +121,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public float getCentroidSeparation(Obj prevObj, Obj currObj, boolean is2D) {
+    public float getCentroidSeparation(Obj prevObj, Obj currObj) {
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
 
@@ -136,7 +136,7 @@ public class TrackObjects extends Module {
         double prevVol = useVolume ? prevObj.getNVoxels() : 0;
         double currVol = useVolume ? currObj.getNVoxels() : 0;
 
-        if (is2D) {
+        if (currObj.is2D()) {
             prevVol = Math.sqrt(prevVol);
             currVol = Math.sqrt(currVol);
         } else {
@@ -177,14 +177,14 @@ public class TrackObjects extends Module {
 
     }
 
-    public void linkObjects(Obj prevObj, Obj currObj, boolean is2D) {
+    public void linkObjects(Obj prevObj, Obj currObj) {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
 
         // Getting the track object from the previous-frame object
         Obj track = prevObj.getParent(trackObjectsName);
 
         // Setting relationship between the current object and track
-        track.addChild(currObj, is2D);
+        track.addChild(currObj);
         currObj.addParent(track);
 
         // Adding references to each other
@@ -200,10 +200,10 @@ public class TrackObjects extends Module {
         String units = currObj.getCalibratedUnits();
 
         // Creating a new track object
-        Obj track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units);
+        Obj track = new Obj(trackObjectsName, trackObjects.getNextID(), dppXY, dppZ, units, currObj.is2D());
 
         // Setting relationship between the current object and track
-        track.addChild(currObj, trackObjects.is2D());
+        track.addChild(currObj);
         currObj.addParent(track);
 
         // Adding the track to the track collection
@@ -309,7 +309,7 @@ public class TrackObjects extends Module {
 
         // Getting objects
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName, inputObjects.is2D());
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
 
         // If there are no input objects skip this module
         if (inputObjects.size() == 0) return;
@@ -342,7 +342,7 @@ public class TrackObjects extends Module {
                 }
 
                 // Calculating distances between objects and populating the cost matrix
-                float[][] cost = calculateCostMatrix(nPObjects[0],nPObjects[1],spatialLimits,inputObjects.is2D());
+                float[][] cost = calculateCostMatrix(nPObjects[0],nPObjects[1],spatialLimits);
                 int[] assignment = new MunkresAssignment(cost).solve();
 
                 // Applying the calculated assignments as relationships
@@ -355,13 +355,13 @@ public class TrackObjects extends Module {
                     if (assignment[curr] != -1) {
                         // Checking if the link is within the user-defined limits (max linking distance, etc.)
                         Obj prevObj = nPObjects[0].get(assignment[curr]);
-                        successfulLink = testLinkValidity(prevObj,currObj,spatialLimits,inputObjects.is2D());
+                        successfulLink = testLinkValidity(prevObj,currObj,spatialLimits);
                     }
 
                     // Creating new links and tracks where appropriate
                     if (successfulLink) {
                         Obj prevObj = nPObjects[0].get(assignment[curr]);
-                        linkObjects(prevObj,currObj,trackObjects.is2D());
+                        linkObjects(prevObj,currObj);
                     } else if (t1==t2-1-maxMissingFrames) {
                         createNewTrack(currObj,trackObjects);
                     }

@@ -38,9 +38,9 @@ public class ProjectObjects extends Module {
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
         String calibratedUnits = inputObject.getCalibratedUnits();
-        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits);
+        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits,is2D);
         outputObject.addParent(inputObject);
-        inputObject.addChild(outputObject,is2D);
+        inputObject.addChild(outputObject);
 
         // Adding coordinates to the projected object
         for (Double key : projCoords.keySet()) {
@@ -70,10 +70,10 @@ public class ProjectObjects extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.is2D());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         for (Obj inputObject:inputObjects.values()) {
-            Obj outputObject = createProjection(inputObject,outputObjectsName, inputObjects.is2D());
+            Obj outputObject = createProjection(inputObject,outputObjectsName, inputObject.is2D());
             outputObjects.put(outputObject.getID(),outputObject);
         }
 

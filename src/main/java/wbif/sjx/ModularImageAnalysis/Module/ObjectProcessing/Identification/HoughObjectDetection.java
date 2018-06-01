@@ -59,7 +59,7 @@ public class HoughObjectDetection extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,ipl.getNSlices()==1);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Getting parameters
         int minR = parameters.getValue(MIN_RADIUS);
@@ -78,6 +78,7 @@ public class HoughObjectDetection extends Module {
         double dppXY = calibration.getX(1);
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
+        boolean twoD = ipl.getNSlices()==1;
 
         // Iterating over all images in the ImagePlus
         int count = 1;
@@ -112,7 +113,7 @@ public class HoughObjectDetection extends Module {
                     for (double[] circle : circles) {
                         // Initialising the object
                         Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ,
-                                calibrationUnits);
+                                calibrationUnits,twoD);
 
                         // Getting circle parameters
                         int x = (int) Math.round(circle[0]);

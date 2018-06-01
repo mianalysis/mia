@@ -36,8 +36,8 @@ public class Obj extends Volume {
 
     // CONSTRUCTORS
 
-    public Obj(String name, int ID, double dppXY, double dppZ, String calibratedUnits) {
-        super(dppXY,dppZ,calibratedUnits);
+    public Obj(String name, int ID, double dppXY, double dppZ, String calibratedUnits, boolean twoD) {
+        super(dppXY,dppZ,calibratedUnits,twoD);
 
         this.name = name;
         this.ID = ID;
@@ -174,10 +174,10 @@ public class Obj extends Volume {
         children.remove(name);
     }
 
-    public void addChild(Obj child, boolean is2D) {
+    public void addChild(Obj child) {
         String childName = child.getName();
 
-        children.computeIfAbsent(childName, k -> new ObjCollection(childName,is2D));
+        children.computeIfAbsent(childName, k -> new ObjCollection(childName));
         children.get(childName).put(child.getID(), child);
 
     }
@@ -223,10 +223,10 @@ public class Obj extends Volume {
     public Roi getRoi(ImagePlus templateIpl, int slice) {
         // Getting the image corresponding to this slice
         TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
-        Obj sliceObj = new Obj("Slice",ID,dppXY,dppZ,calibratedUnits);
+        Obj sliceObj = new Obj("Slice",ID,dppXY,dppZ,calibratedUnits,twoD);
         sliceObj.setPoints(slicePoints);
 
-        ObjCollection objectCollection = new ObjCollection("ProjectedObjects", templateIpl.getNSlices()==1);
+        ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(sliceObj);
 
         ImagePlus sliceIpl = IJ.createImage("SliceIm",templateIpl.getWidth(),templateIpl.getHeight(),1,8);
@@ -283,7 +283,7 @@ public class Obj extends Volume {
 
     public Image convertObjToImage(String outputName, ImagePlus templateIpl) {
         // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName, templateIpl.getNSlices()==1);
+        ObjCollection tempObj = new ObjCollection(outputName);
         tempObj.add(this);
 
         // Getting the image

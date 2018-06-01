@@ -64,7 +64,13 @@ public class ActiveContourObjectDetection extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, inputObjects.is2D());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+
+        // If there are no input objects, creating an empty collection
+        if (inputObjects.getFirst() == null) {
+            workspace.addObjects(outputObjects);
+            return;
+        }
 
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
@@ -157,7 +163,7 @@ public class ActiveContourObjectDetection extends Module {
                 inputObject.clearPoints();
                 inputObject.addPointsFromRoi(newRoi,z);
             } else {
-                Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits);
+                Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
                 outputObject.setT(inputObject.getT());
                 outputObject.addPointsFromRoi(newRoi,z);
                 outputObjects.add(outputObject);
