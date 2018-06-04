@@ -65,12 +65,7 @@ public class CalculateMeasurementPeriodogram extends Module {
         for (int i=0;i<signal.length;i++) signal[i] = Double.NaN;
 
         // Adding values to array
-        System.out.println(spotObjects.size());
         for (Obj spotObject:spotObjects.values()) {
-            System.out.println("new");
-            System.out.println(spotObject);
-            System.out.println(spotObject.getMeasurement(measurementName));
-            System.out.println(spotObject.getMeasurement(measurementName).getValue());
             signal[spotObject.getT()-tLimits[0]] = spotObject.getMeasurement(measurementName).getValue();
         }
 

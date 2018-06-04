@@ -359,6 +359,7 @@ public class AnalysisHandler {
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
         boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
+        boolean showChildCounts = outputControl.getParameterValue(OutputControl.SHOW_NUMBER_OF_CHILDREN);
         boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
         boolean calculateMin = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MIN);
         boolean calculateMax = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MAX);
@@ -388,11 +389,7 @@ public class AnalysisHandler {
                 }
 
                 inputFile = new File(batchFolder);
-                exportName = inputFile.getAbsolutePath() + "\\output";
-
-                // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
-                Prefs.setThreads(1);
-                Prefs.savePreferences();
+                exportName = inputFile.getAbsolutePath() + "\\" + inputFile.getName()+"_output";
 
                 break;
         }
@@ -402,6 +399,7 @@ public class AnalysisHandler {
         if (exporter != null) {
             exporter.setExportSummary(exportSummary);
             exporter.setShowObjectCounts(showObjectCounts);
+            exporter.setShowChildCounts(showChildCounts);
             exporter.setCalculateMean(calculateMean);
             exporter.setCalculateMin(calculateMin);
             exporter.setCalculateMax(calculateMax);

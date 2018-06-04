@@ -50,6 +50,7 @@ public class Exporter {
     private boolean verbose = false;
     private boolean exportSummary = true;
     private boolean showObjectCounts = true;
+    private boolean showChildCounts = true;
     private boolean calculateMean = true;
     private boolean calculateMin = true;
     private boolean calculateMax = true;
@@ -478,7 +479,7 @@ public class Exporter {
                 }
 
                 // Running through all the object's children
-                if (!modules.getRelationships().getChildNames(exampleObjSetName)[0].equals("")) {
+                if (showChildCounts && !modules.getRelationships().getChildNames(exampleObjSetName)[0].equals("")) {
                     for (String child : modules.getRelationships().getChildNames(exampleObjSetName)) {
                         if (calculateMean) {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
@@ -642,7 +643,7 @@ public class Exporter {
             }
 
             // Running through all the object's children
-            if (!modules.getRelationships().getChildNames(objSetName)[0].equals("")) {
+            if (showChildCounts && !modules.getRelationships().getChildNames(objSetName)[0].equals("")) {
                 for (String child : modules.getRelationships().getChildNames(objSetName)) {
                     // Running through all objects in this set, adding children to a CumStat object
                     CumStat cs = new CumStat();
@@ -1042,6 +1043,14 @@ public class Exporter {
 
     public void setShowObjectCounts(boolean showObjectCounts) {
         this.showObjectCounts = showObjectCounts;
+    }
+
+    public boolean isShowChildCounts() {
+        return showChildCounts;
+    }
+
+    public void setShowChildCounts(boolean showChildCounts) {
+        this.showChildCounts = showChildCounts;
     }
 
     public boolean isCalculateMean() {
