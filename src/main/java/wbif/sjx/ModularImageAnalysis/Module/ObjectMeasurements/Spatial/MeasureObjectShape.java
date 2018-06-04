@@ -206,12 +206,12 @@ public class MeasureObjectShape extends Module {
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(MEASURE_VOLUME, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_CONVEX_HULL, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_CONVEX_HULL, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.CENTROIDS,FittingModes.ALL));
-        parameters.add(new Parameter(MEASURE_ELLIPSOID, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_PROJECTED_ELLIPSE, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_ELLIPSOID, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_PROJECTED_ELLIPSE, Parameter.BOOLEAN, false));
 
     }
 

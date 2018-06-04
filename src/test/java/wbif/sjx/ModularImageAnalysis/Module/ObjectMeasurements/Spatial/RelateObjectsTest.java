@@ -40,9 +40,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -106,9 +106,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -192,9 +192,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -279,9 +279,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -324,9 +324,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -381,9 +381,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -443,9 +443,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -489,9 +489,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -535,9 +535,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -581,9 +581,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -638,9 +638,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -700,9 +700,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -746,9 +746,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -792,9 +792,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects

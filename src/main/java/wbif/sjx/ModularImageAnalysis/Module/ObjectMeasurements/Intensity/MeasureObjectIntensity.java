@@ -302,10 +302,10 @@ public class MeasureObjectIntensity extends Module {
         parameters.add(new Parameter(MEASURE_MAX, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_WEIGHTED_CENTRE, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_WEIGHTED_EDGE_DISTANCE, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_WEIGHTED_CENTRE, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_WEIGHTED_EDGE_DISTANCE, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(EDGE_DISTANCE_MODE,Parameter.CHOICE_ARRAY,EdgeDistanceModes.INSIDE_AND_OUTSIDE,EdgeDistanceModes.ALL));
-        parameters.add(new Parameter(MEASURE_EDGE_INTENSITY_PROFILE,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(MEASURE_EDGE_INTENSITY_PROFILE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MINIMUM_DISTANCE,Parameter.DOUBLE,0d));
         parameters.add(new Parameter(MAXIMUM_DISTANCE,Parameter.DOUBLE,1d));
         parameters.add(new Parameter(CALIBRATED_DISTANCES, Parameter.BOOLEAN,false));
