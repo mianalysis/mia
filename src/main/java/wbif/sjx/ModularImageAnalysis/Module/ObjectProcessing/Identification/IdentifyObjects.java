@@ -3,7 +3,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
@@ -21,28 +20,23 @@ import java.util.HashMap;
 public class IdentifyObjects extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
-    public static final String LABELLED_IMAGE = "Labelled image";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String SHOW_OBJECTS = "Show objects";
 
 
-    private ObjCollection importFromLabelled(Image inputImage, String outputObjectsName) {
-        return inputImage.convertImageToObjects(outputObjectsName);
-
-    }
-
-    private ObjCollection importFromBinary(Image inputImage, String outputObjectsName, boolean whiteBackground, boolean singleObject) {
+    private ObjCollection importFromImage(Image inputImage, String outputObjectsName, boolean whiteBackground, boolean singleObject) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
-
-        if (whiteBackground) IJ.run(inputImagePlus, "Invert", "stack");
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());
             // Creating a copy of the input image
             ImagePlus currStack = SubHyperstackMaker.makeSubhyperstack(
                     inputImagePlus,1+"-"+inputImagePlus.getNChannels(),1+"-"+inputImagePlus.getNSlices(),t+"-"+t);
+            currStack = new Duplicator().run(currStack);
+
+            if (whiteBackground) IJ.run(currStack, "Invert", "stack");
 
             // Applying connected components labelling
             FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26);
@@ -89,17 +83,11 @@ public class IdentifyObjects extends Module {
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        boolean labelledImage = parameters.getValue(LABELLED_IMAGE);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS);
 
-        ObjCollection outputObjects;
-        if (labelledImage) {
-            outputObjects = importFromLabelled(inputImage, outputObjectsName);
-        } else {
-            outputObjects = importFromBinary(inputImage, outputObjectsName, whiteBackground, singleObject);
-        }
+        ObjCollection outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject);
 
         writeMessage(outputObjects.size()+" objects detected");
 
@@ -118,7 +106,6 @@ public class IdentifyObjects extends Module {
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(LABELLED_IMAGE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(WHITE_BACKGROUND,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(SINGLE_OBJECT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
@@ -131,12 +118,8 @@ public class IdentifyObjects extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(LABELLED_IMAGE));
-
-        if (!((boolean) parameters.getValue(LABELLED_IMAGE))) {
-            returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
+         returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
             returnedParameters.add(parameters.getParameter(SINGLE_OBJECT));
-        }
 
         returnedParameters.add(parameters.getParameter(SHOW_OBJECTS));
 
