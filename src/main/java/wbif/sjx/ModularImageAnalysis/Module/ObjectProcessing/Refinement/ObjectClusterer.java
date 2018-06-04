@@ -44,14 +44,17 @@ public class ObjectClusterer extends Module {
     }
 
 
-    private static ObjCollection runKMeansPlusPlus(List<LocationWrapper> locations, String outputObjectsName, double dppXY, double dppZ, String calibratedUnits, int kClusters, int maxIterations, boolean is2D) {
+    private ObjCollection runKMeansPlusPlus(ObjCollection outputObjects, List<LocationWrapper> locations, double dppXY, double dppZ, String calibratedUnits, boolean is2D) {
+        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
+        int kClusters = parameters.getValue(K_CLUSTERS);
+        int maxIterations = parameters.getValue(MAX_ITERATIONS);
+
         KMeansPlusPlusClusterer<LocationWrapper> clusterer = new KMeansPlusPlusClusterer<>(kClusters,maxIterations);
         List<CentroidCluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,is2D);
         for (CentroidCluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits);
+            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits,is2D);
 
             double[] centroid = cluster.getCenter().getPoint();
             outputObject.addCoord((int) Math.round(centroid[0]),(int) Math.round(centroid[1]),(int) Math.round(centroid[2]));
@@ -59,7 +62,7 @@ public class ObjectClusterer extends Module {
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
                 pointObject.addParent(outputObject);
-                outputObject.addChild(pointObject, is2D);
+                outputObject.addChild(pointObject);
             }
 
             outputObjects.add(outputObject);
@@ -70,14 +73,17 @@ public class ObjectClusterer extends Module {
 
     }
 
-    private static ObjCollection runDBSCAN(List<LocationWrapper> locations, String outputObjectsName, double dppXY, double dppZ, String calibratedUnits, double eps, int minPoints, boolean is2D) {
+    private ObjCollection runDBSCAN(ObjCollection outputObjects, List<LocationWrapper> locations, double dppXY, double dppZ, String calibratedUnits, boolean is2D) {
+        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
+        int eps = parameters.getValue(EPS);
+        int minPoints = parameters.getValue(MIN_POINTS);
+
         DBSCANClusterer<LocationWrapper> clusterer = new DBSCANClusterer<>(eps, minPoints);
         List<Cluster<LocationWrapper>> clusters = clusterer.cluster(locations);
 
         // Assigning relationships between points and clusters
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName, is2D);
         for (Cluster<LocationWrapper> cluster:clusters) {
-            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits);
+            Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibratedUnits,is2D);
 
             // Calculating the centroid (DBSCAN doesn't give one)
             CumStat[] cs = new CumStat[]{new CumStat(), new CumStat(), new CumStat()};
@@ -85,7 +91,7 @@ public class ObjectClusterer extends Module {
             for (LocationWrapper point:cluster.getPoints()) {
                 Obj pointObject = point.getObject();
                 pointObject.addParent(outputObject);
-                outputObject.addChild(pointObject, is2D);
+                outputObject.addChild(pointObject);
 
                 // Getting the centroid of the current object
                 cs[0].addMeasure(pointObject.getXMean(true));
@@ -125,6 +131,7 @@ public class ObjectClusterer extends Module {
 
         // Getting output objects name
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Getting parameters
         String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM);
@@ -132,9 +139,19 @@ public class ObjectClusterer extends Module {
         int maxIterations = parameters.getValue(MAX_ITERATIONS);
         double eps = parameters.getValue(EPS);
         int minPoints = parameters.getValue(MIN_POINTS);
-        double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
-        double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
-        String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
+
+        // If there are no input objects skipping this module
+        Obj firstObject = inputObjects.getFirst();
+        if (firstObject == null) {
+            workspace.addObjects(outputObjects);
+            return;
+        }
+
+        // Getting object parameters
+        double dppXY = firstObject.getDistPerPxXY();
+        double dppZ = firstObject.getDistPerPxZ();
+        String calibratedUnits = firstObject.getCalibratedUnits();
+        boolean twoD = firstObject.is2D();
 
         // Adding points to collection
         writeMessage("Adding points to clustering algorithm");
@@ -145,15 +162,14 @@ public class ObjectClusterer extends Module {
 
         // Running clustering system
         writeMessage("Running clustering algorithm");
-        ObjCollection outputObjects = null;
 
         switch (clusteringAlgorithm) {
             case ClusteringAlgorithms.KMEANSPLUSPLUS:
-                outputObjects = runKMeansPlusPlus(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, kClusters, maxIterations, inputObjects.is2D());
+                runKMeansPlusPlus(outputObjects, locations, dppXY, dppZ, calibratedUnits, twoD);
                 break;
 
             case ClusteringAlgorithms.DBSCAN:
-                outputObjects = runDBSCAN(locations, outputObjectsName, dppXY, dppZ, calibratedUnits, eps, minPoints,inputObjects.is2D());
+                runDBSCAN(outputObjects, locations, dppXY, dppZ, calibratedUnits,twoD);
                 break;
 
         }

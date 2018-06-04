@@ -174,7 +174,7 @@ public class BatchProcessor extends FileCrawler {
 
     private void runSingle(WorkspaceCollection workspaces, Analysis analysis) throws InterruptedException {
         // Setting up the ExecutorService, which will manage the threads
-        pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+        pool = new ThreadPoolExecutor(1,1,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         // For the current file, determining how many series to process (and which ones)
         TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());

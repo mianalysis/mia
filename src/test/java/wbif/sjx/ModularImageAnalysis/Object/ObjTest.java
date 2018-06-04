@@ -7,12 +7,12 @@ import static org.junit.Assert.*;
 public class ObjTest {
     @Test
     public void testHashCodeSameObject() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(1,3,4);
         obj2.addCoord(3,5,1);
@@ -23,12 +23,12 @@ public class ObjTest {
 
     @Test
     public void testHashCodeDifferentOrder() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(3,5,1);
         obj2.addCoord(1,3,4);
@@ -39,12 +39,12 @@ public class ObjTest {
 
     @Test
     public void testHashCodeDifferentNames() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj2",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj2",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(1,3,4);
         obj2.addCoord(3,5,1);
@@ -55,12 +55,12 @@ public class ObjTest {
 
     @Test
     public void testHashCodeDifferentTimepoint() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,1,1);
         obj1.addCoord(2,1,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(2);
         obj2.addCoord(1,1,1);
         obj2.addCoord(1,2,1);
@@ -71,12 +71,12 @@ public class ObjTest {
 
     @Test
     public void testHashCodeDifferentCoordinates() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(1,3,3);
         obj2.addCoord(3,5,1);
@@ -87,12 +87,12 @@ public class ObjTest {
 
     @Test
     public void testHashCodeMissingCoordinates() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(1,3,4);
 
@@ -102,12 +102,12 @@ public class ObjTest {
 
     @Test
     public void testEqualsSameObject() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(1,3,4);
         obj2.addCoord(3,5,1);
@@ -119,12 +119,12 @@ public class ObjTest {
 
     @Test
     public void testEqualsDifferentOrder() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(3,5,1);
         obj2.addCoord(1,3,4);
@@ -136,12 +136,12 @@ public class ObjTest {
 
     @Test
     public void testEqualsDifferentNames() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj2",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj2",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(1,3,4);
         obj2.addCoord(3,5,1);
@@ -153,12 +153,12 @@ public class ObjTest {
 
     @Test
     public void testEqualsDifferentTimepoint() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,1,1);
         obj1.addCoord(2,1,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(2);
         obj2.addCoord(1,1,1);
         obj2.addCoord(1,2,1);
@@ -170,12 +170,12 @@ public class ObjTest {
 
     @Test
     public void testEqualsDifferentCoordinates() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(1,3,3);
         obj2.addCoord(3,5,1);
@@ -187,12 +187,12 @@ public class ObjTest {
 
     @Test
     public void testEqualsMissingCoordinates() {
-        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
         obj1.addCoord(3,5,1);
 
-        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX");
+        Obj obj2 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj2.setT(1);
         obj2.addCoord(1,3,4);
 

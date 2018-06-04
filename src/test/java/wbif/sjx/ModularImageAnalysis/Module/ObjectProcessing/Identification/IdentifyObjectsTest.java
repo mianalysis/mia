@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects2D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects4D;
@@ -61,7 +62,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects2D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new ExpectedObjects2D().getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -108,7 +109,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -121,7 +122,7 @@ public class IdentifyObjectsTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunBlackBackground8bit4D() throws Exception  {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -155,22 +156,10 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects4D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
-
-        for (Obj obj:actualObjects.values()) {
-//            if (obj.getT() == 2) {
-                System.out.println("a "+obj.getPoints().size() + "_" + obj.getT());
-//            }
-        }
-
-        for (Obj obj:expectedObjects.values()) {
-//            if (obj.getT() == 2) {
-                System.out.println("e "+obj.getPoints().size() + "_" + obj.getT());
-//            }
-        }
+        ObjCollection expectedObjects = new ExpectedObjects4D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
-        assertEquals(32,actualObjects.size());
+        assertEquals(33,actualObjects.size());
 
         for (Obj object:actualObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
@@ -223,7 +212,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -270,7 +259,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -283,23 +272,338 @@ public class IdentifyObjectsTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunBlackBackground8bit3DSingleObject() throws Exception  {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
 
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising IdentifyObjects
+        IdentifyObjects identifyObjects = new IdentifyObjects();
+        identifyObjects.initialiseParameters();
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
+        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
+        identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT,true);
+
+        // Running IdentifyObjects
+        identifyObjects.run(workspace);
+
+        // Checking there is only one set of objects in the workspace
+        assertEquals(1,workspace.getObjects().size());
+
+        // Getting the object set
+        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+
+        // Checking the expected object set is present
+        assertEquals("Test_output_objects",actualObjects.getName());
+
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.BINARY,dppXY,dppZ,calibratedUnits,true);
+
+        // Checking the number of detected objects
+        assertEquals(1,actualObjects.size());
+
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
+
+        }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunBlackBackground8bit3DLabelledSingleObject() throws Exception  {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
 
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising IdentifyObjects
+        IdentifyObjects identifyObjects = new IdentifyObjects();
+        identifyObjects.initialiseParameters();
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
+        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
+        identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT,true);
+
+        // Running IdentifyObjects
+        identifyObjects.run(workspace);
+
+        // Checking there is only one set of objects in the workspace
+        assertEquals(1,workspace.getObjects().size());
+
+        // Getting the object set
+        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+
+        // Checking the expected object set is present
+        assertEquals("Test_output_objects",actualObjects.getName());
+
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.BINARY,dppXY,dppZ,calibratedUnits,true);
+
+        // Checking the number of detected objects
+        assertEquals(1,actualObjects.size());
+
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
+
+        }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunBlackBackground16Bit3D() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
 
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_16bit_blackBG.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising IdentifyObjects
+        IdentifyObjects identifyObjects = new IdentifyObjects();
+        identifyObjects.initialiseParameters();
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
+        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
+
+        // Running IdentifyObjects
+        identifyObjects.run(workspace);
+
+        // Checking there is only one set of objects in the workspace
+        assertEquals(1,workspace.getObjects().size());
+
+        // Getting the object set
+        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+
+        // Checking the expected object set is present
+        assertEquals("Test_output_objects",actualObjects.getName());
+
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,true);
+
+        // Checking the number of detected objects
+        assertEquals(8,actualObjects.size());
+
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
+
+        }
     }
 
-    @Test @Ignore
+    @Test
     public void testRunBlackBackground32Bit3D() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
 
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_32bit_blackBG.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising IdentifyObjects
+        IdentifyObjects identifyObjects = new IdentifyObjects();
+        identifyObjects.initialiseParameters();
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
+        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
+
+        // Running IdentifyObjects
+        identifyObjects.run(workspace);
+
+        // Checking there is only one set of objects in the workspace
+        assertEquals(1,workspace.getObjects().size());
+
+        // Getting the object set
+        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+
+        // Checking the expected object set is present
+        assertEquals("Test_output_objects",actualObjects.getName());
+
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Bit depth here doesn't matter - we only want to check the module can interpret 32-bit images
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+
+        // Checking the number of detected objects
+        assertEquals(8,actualObjects.size());
+
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
+
+        }
+    }
+
+    @Test
+    public void testRunBlackBackground8Bit3DNot255() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising IdentifyObjects
+        IdentifyObjects identifyObjects = new IdentifyObjects();
+        identifyObjects.initialiseParameters();
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
+        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
+
+        // Running IdentifyObjects
+        identifyObjects.run(workspace);
+
+        // Checking there is only one set of objects in the workspace
+        assertEquals(1,workspace.getObjects().size());
+
+        // Getting the object set
+        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+
+        // Checking the expected object set is present
+        assertEquals("Test_output_objects",actualObjects.getName());
+
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+
+        // Checking the number of detected objects
+        assertEquals(8,actualObjects.size());
+
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
+
+        }
+    }
+
+    @Test
+    public void testRunBlackBackground16Bit3DNot65535() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising IdentifyObjects
+        IdentifyObjects identifyObjects = new IdentifyObjects();
+        identifyObjects.initialiseParameters();
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
+        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
+
+        // Running IdentifyObjects
+        identifyObjects.run(workspace);
+
+        // Checking there is only one set of objects in the workspace
+        assertEquals(1,workspace.getObjects().size());
+
+        // Getting the object set
+        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+
+        // Checking the expected object set is present
+        assertEquals("Test_output_objects",actualObjects.getName());
+
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+
+        // Checking the number of detected objects
+        assertEquals(8,actualObjects.size());
+
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
+
+        }
+    }
+
+    @Test
+    public void testRunBlackBackground32Bit3DNot1() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising IdentifyObjects
+        IdentifyObjects identifyObjects = new IdentifyObjects();
+        identifyObjects.initialiseParameters();
+        identifyObjects.updateParameterValue(IdentifyObjects.INPUT_IMAGE,"Test_image");
+        identifyObjects.updateParameterValue(IdentifyObjects.OUTPUT_OBJECTS,"Test_output_objects");
+        identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
+
+        // Running IdentifyObjects
+        identifyObjects.run(workspace);
+
+        // Checking there is only one set of objects in the workspace
+        assertEquals(1,workspace.getObjects().size());
+
+        // Getting the object set
+        ObjCollection actualObjects = workspace.getObjectSet("Test_output_objects");
+
+        // Checking the expected object set is present
+        assertEquals("Test_output_objects",actualObjects.getName());
+
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Bit depth here doesn't matter - we only want to check the module can interpret 32-bit images
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+
+        // Checking the number of detected objects
+        assertEquals(8,actualObjects.size());
+
+        for (Obj object:actualObjects.values()) {
+            // Identifying the matching object.  If this is null, one isn't found
+            Obj expectedObject = expectedObjects.getByEquals(object);
+            assertNotNull(expectedObject);
+
+        }
     }
 }

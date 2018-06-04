@@ -1,17 +1,17 @@
 clear
 
-pnameIn = 'C:\Users\steph\Documents\Java Projects\ModularImageAnalysis\src\test\resources\images\';
-fnameIn = 'LabelledObjects4D_8bit.tif';
+pnameIn = 'C:\Users\sc13967\Documents\Java_Projects\ModularImageAnalysis\src\test\resources\images\RelateObjects\';
+fnameIn = 'ProxSquares1_2D_8bit.tif';
 
-pnameOut = 'C:\Users\steph\Documents\Java Projects\ModularImageAnalysis\src\test\resources\coordinates\';
-fnameOut = 'ExpectedObjects4D.csv';
+pnameOut = 'C:\Users\sc13967\Documents\Java_Projects\ModularImageAnalysis\src\test\resources\coordinates\';
+fnameOut = 'ExpectedProxSquares1.csv';
 
-nZ = 12;
-nT = 4;
+nZ = 1;
+nT = 1;
 
 for j=1:nT
     for i = 1:nZ
-        im(:,:,i,j) = imread([pnameIn,fnameIn],(j-1)*nT+i);
+        im(:,:,i,j) = imread([pnameIn,fnameIn],(j-1)*nZ+i);
     end
 end
 

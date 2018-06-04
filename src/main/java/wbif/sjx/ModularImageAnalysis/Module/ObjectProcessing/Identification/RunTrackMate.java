@@ -72,10 +72,10 @@ public class RunTrackMate extends Module {
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
 
-        ObjCollection spotObjects = new ObjCollection(spotObjectsName, is2D);
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
         SpotCollection spots = model.getSpots();
         for (Spot spot:spots.iterable(false)) {
-            Obj spotObject = new Obj(spotObjectsName,spot.ID(),dppXY,dppZ,calibrationUnits);
+            Obj spotObject = new Obj(spotObjectsName,spot.ID(),dppXY,dppZ,calibrationUnits,is2D);
             spotObject.addCoord((int) spot.getDoublePosition(0),(int) spot.getDoublePosition(1),(int) spot.getDoublePosition(2));
             spotObject.setT((int) Math.round(spot.getFeature(Spot.FRAME)));
 
@@ -114,8 +114,8 @@ public class RunTrackMate extends Module {
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
 
-        ObjCollection spotObjects = new ObjCollection(spotObjectsName,is2D);
-        ObjCollection trackObjects = new ObjCollection(trackObjectsName,is2D);
+        ObjCollection spotObjects = new ObjCollection(spotObjectsName);
+        ObjCollection trackObjects = new ObjCollection(trackObjectsName);
 
         // Converting tracks to local track model
         writeMessage("Converting tracks to local track model");
@@ -124,7 +124,7 @@ public class RunTrackMate extends Module {
 
         for (Integer trackID : trackIDs) {
             // If necessary, creating a new summary object for the track
-            Obj trackObject = new Obj(trackObjectsName, trackID, dppXY, dppZ, calibrationUnits);
+            Obj trackObject = new Obj(trackObjectsName, trackID, dppXY, dppZ, calibrationUnits,is2D);
             ArrayList<Spot> spots = new ArrayList<>(trackModel.trackSpots(trackID));
 
             // Sorting spots based on frame number
@@ -137,7 +137,7 @@ public class RunTrackMate extends Module {
             // Getting x,y,f and 2-channel spot intensities from TrackMate results
             for (Spot spot : spots) {
                 // Initialising a new HCObject to store this track and assigning a unique ID and group (track) ID.
-                Obj spotObject = new Obj(spotObjectsName, spotObjects.getNextID(), dppXY, dppZ, calibrationUnits);
+                Obj spotObject = new Obj(spotObjectsName, spotObjects.getNextID(), dppXY, dppZ, calibrationUnits,is2D);
 
                 spotObject.addMeasurement(new Measurement(Measurements.RADIUS_PX,spot.getFeature(Spot.RADIUS),this));
                 spotObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_CAL),spot.getFeature(Spot.RADIUS)*dppXY,this));
@@ -160,7 +160,7 @@ public class RunTrackMate extends Module {
 
                 // Adding the connection between instance and summary objects
                 spotObject.addParent(trackObject);
-                trackObject.addChild(spotObject, spotObjects.is2D());
+                trackObject.addChild(spotObject);
 
                 // Adding the instance object to the relevant collection
                 spotObjects.add(spotObject);

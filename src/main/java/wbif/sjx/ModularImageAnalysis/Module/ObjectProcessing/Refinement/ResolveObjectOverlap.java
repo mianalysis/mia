@@ -39,8 +39,7 @@ public class ResolveObjectOverlap extends Module {
 
     private ObjCollection calculateSpatialOverlap(ObjCollection inputObjects1, ObjCollection inputObjects2,
                                          String outputObjectsName, double minOverlap, String overlapRequirement) {
-        boolean is2D = inputObjects1.is2D() || inputObjects2.is2D();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,is2D);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Initialising the storage, which has ID number (key) and maximum overlap[0] and object ID[1] (value)
         HashMap<Integer,Double[]> overlaps1 = initialiseOverlapStore(inputObjects1,-Double.MAX_VALUE);
@@ -102,8 +101,7 @@ public class ResolveObjectOverlap extends Module {
 
     private ObjCollection calculateCentroidSeparation(ObjCollection inputObjects1, ObjCollection inputObjects2,
                                                   String outputObjectsName, double maxSeparation, String overlapRequirement) {
-        boolean is2D = inputObjects1.is2D() || inputObjects2.is2D();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,is2D);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Initialising the storage, which has ID number (key) and maximum overlap[0] and object ID[1] (value)
         HashMap<Integer,Double[]> overlaps1 = initialiseOverlapStore(inputObjects1,Double.MAX_VALUE);
@@ -186,7 +184,7 @@ public class ResolveObjectOverlap extends Module {
 
             // Merge objects and adding to output objects
             Obj outputObject = new Obj(outputObjects.getName(),outputObjects.getNextID(),
-                    object1.getDistPerPxXY(),object1.getDistPerPxZ(),object1.getCalibratedUnits());
+                    object1.getDistPerPxXY(),object1.getDistPerPxZ(),object1.getCalibratedUnits(),object1.is2D());
             outputObject.getPoints().addAll(object1.getPoints());
             outputObject.getPoints().addAll(object2.getPoints());
             outputObjects.add(outputObject);

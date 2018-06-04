@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedRings2D;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -33,7 +34,7 @@ public class MeasureObjectCurvatureTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -87,7 +88,7 @@ public class MeasureObjectCurvatureTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
@@ -150,7 +151,7 @@ public class MeasureObjectCurvatureTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace

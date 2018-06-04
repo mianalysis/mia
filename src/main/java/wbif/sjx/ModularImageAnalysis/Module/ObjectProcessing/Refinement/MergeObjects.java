@@ -31,8 +31,7 @@ public class MergeObjects extends Module {
         String inputObjects2Name = parameters.getValue(INPUT_OBJECTS_2);
         ObjCollection inputObjects2 = workspace.getObjectSet(inputObjects2Name);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        boolean is2D = inputObjects1.is2D() || inputObjects2.is2D();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,is2D);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Getting parameters
         boolean deleteInputs = parameters.getValue(DELETE_INPUTS);
@@ -43,8 +42,9 @@ public class MergeObjects extends Module {
             double distXY = obj1.getDistPerPxXY();
             double distZ = obj1.getDistPerPxZ();
             String units = obj1.getCalibratedUnits();
+            boolean twoD = obj1.is2D();
 
-            Obj newObj = new Obj(outputObjectsName,ID,distXY,distZ,units);
+            Obj newObj = new Obj(outputObjectsName,ID,distXY,distZ,units,twoD);
             newObj.setPoints(obj1.getPoints());
             newObj.setT(obj1.getT());
             outputObjects.add(obj1);
@@ -56,8 +56,9 @@ public class MergeObjects extends Module {
             double distXY = obj2.getDistPerPxXY();
             double distZ = obj2.getDistPerPxZ();
             String units = obj2.getCalibratedUnits();
+            boolean twoD = obj2.is2D();
 
-            Obj newObj = new Obj(outputObjectsName,ID,distXY,distZ,units);
+            Obj newObj = new Obj(outputObjectsName,ID,distXY,distZ,units,twoD);
             newObj.setPoints(obj2.getPoints());
             newObj.setT(obj2.getT());
             outputObjects.add(obj2);

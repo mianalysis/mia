@@ -55,7 +55,7 @@ public class ExpandShrinkObjects extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.is2D());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Getting parameters
         boolean updateInputObjects = parameters.getValue(UPDATE_INPUT_OBJECTS);
@@ -63,9 +63,11 @@ public class ExpandShrinkObjects extends Module {
         int radiusChangePx = parameters.getValue(RADIUS_CHANGE_PX);
 
         // Storing the image calibration
-        double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
-        double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
-        String calibrationUnits = inputObjects.values().iterator().next().getCalibratedUnits();
+        Obj firstObject = inputObjects.getFirst();
+        double dppXY = firstObject.getDistPerPxXY();
+        double dppZ = firstObject.getDistPerPxZ();
+        String calibrationUnits = firstObject.getCalibratedUnits();
+        boolean twoD = firstObject.is2D();
 
         // Iterating over all objects
         int count = 1;
@@ -77,7 +79,7 @@ public class ExpandShrinkObjects extends Module {
             writeMessage("Processing object " + (count++) + " of " + total);
 
             // Convert each object to an image, do the dilation/erosion, then convert back to an object
-            ObjCollection objectCollection = new ObjCollection("ObjectToMorph",inputObjects.is2D());
+            ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
             objectCollection.add(inputObject);
             HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
             Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
@@ -115,7 +117,7 @@ public class ExpandShrinkObjects extends Module {
             if (updateInputObjects) {
                 inputObject.setPoints(newObjects.values().iterator().next().getPoints());
             } else {
-                Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits);
+                Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,twoD);
                 outputObject.setPoints(newObjects.values().iterator().next().getPoints());
                 outputObjects.add(outputObject);
             }
