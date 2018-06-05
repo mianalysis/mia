@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.GaussianFitter2D;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -69,7 +70,13 @@ public class MeasureObjectTexture extends Module {
             boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
 
             // Getting local object region
-            inputObjects = new GetLocalObjectRegion().getLocalRegions(inputObjects, inputObjectsName, radius, calibrated,false,"");
+            GetLocalObjectRegion getLocalObjectRegion = (GetLocalObjectRegion) new GetLocalObjectRegion()
+                    .updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,inputObjectsName)
+                    .updateParameterValue(GetLocalObjectRegion.LOCAL_RADIUS,radius)
+                    .updateParameterValue(GetLocalObjectRegion.CALIBRATED_RADIUS,calibrated)
+                    .updateParameterValue(GetLocalObjectRegion.USE_MEASUREMENT,false);
+
+            inputObjects = getLocalObjectRegion.getLocalRegions(inputObjects,inputImagePlus);
 
         }
 

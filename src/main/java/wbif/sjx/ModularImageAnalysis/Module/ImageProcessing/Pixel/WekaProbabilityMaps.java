@@ -12,6 +12,8 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.io.PrintStream;
+
 /**
  * Created by sc13967 on 22/03/2018.
  */
@@ -46,10 +48,14 @@ public class WekaProbabilityMaps extends Module {
         String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
-        // Initialising the training system
-        writeMessage("Loading classifier");
+        // Initialising the training system, which shows a warning, so temporarily diverting output to error stream
         WekaSegmentation wekaSegmentation = new WekaSegmentation();
+
+        writeMessage("Loading classifier");
+        PrintStream ps = System.out;
+        System.setOut(System.err);
         wekaSegmentation.loadClassifier(classifierFilePath);
+        System.setOut(ps);
 
         // Running the classifier
         writeMessage("Calculating probabilities");

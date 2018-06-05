@@ -282,7 +282,7 @@
     <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>Trainable_Segmentation</artifactId>
-      <version>3.2.9</version>
+      <version>3.2.26</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -292,10 +292,6 @@
         <exclusion>
           <artifactId>weka-dev</artifactId>
           <groupId>nz.ac.waikato.cms.weka</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>imagescience</artifactId>
-          <groupId>sc.fiji</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imglib2-ij</artifactId>

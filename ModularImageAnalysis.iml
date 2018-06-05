@@ -202,16 +202,13 @@
     <orderEntry type="library" name="Maven: org.jfree:jfreechart:1.0.19" level="project" />
     <orderEntry type="library" name="Maven: org.tinyjee.jgraphx:jgraphx:1.10.4.1" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:CorrectBleach_:2.0.2" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:Trainable_Segmentation:3.2.9" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:Anisotropic_Diffusion_2D:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:VIB-lib:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:Trainable_Segmentation:3.2.26" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:Anisotropic_Diffusion_2D:2.0.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:VIB-lib:2.1.2" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:pal-optimization:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:weka-dev:3.9.0" level="project" />
+    <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka:weka-dev:3.9.1" level="project" />
     <orderEntry type="library" name="Maven: nz.ac.waikato.cms.weka.thirdparty:bounce:0.18" level="project" />
     <orderEntry type="library" name="Maven: com.googlecode.matrix-toolkits-java:mtj:1.0.4" level="project" />
-    <orderEntry type="library" name="Maven: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:imagescience:3.0.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:Image_5D:1.2.6" level="project" />
     <orderEntry type="library" name="Maven: fr.inra.ijpb:MorphoLibJ_:1.3.2" level="project" />
     <orderEntry type="library" name="Maven: de.biomedical-imaging.imagej:ij_ridge_detect:1.4.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.5" level="project" />
