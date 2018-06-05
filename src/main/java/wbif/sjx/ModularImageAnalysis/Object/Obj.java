@@ -91,24 +91,27 @@ public class Obj extends Volume {
         return name;
     }
 
-    public void setName(String name) {
+    public Obj setName(String name) {
         this.name = name;
+        return this;
     }
 
     public int getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public Obj setID(int ID) {
         this.ID = ID;
+        return this;
     }
 
     public int getT() {
         return T;
     }
 
-    public void setT(int t) {
+    public Obj setT(int t) {
         T = t;
+        return this;
     }
 
     public LinkedHashMap<String, Obj> getParents(boolean useFullHierarchy) {

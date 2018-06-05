@@ -4,6 +4,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
+import ij.plugin.HyperStackMaker;
 import trainableSegmentation.WekaSegmentation;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -54,6 +56,14 @@ public class WekaProbabilityMaps extends Module {
         int nThreads = Prefs.getThreads();
         probabilityMaps = wekaSegmentation.applyClassifier(probabilityMaps,nThreads,true);
 
+        // If the input image was a 5D hyperstack it needs to be converted.  The channels cycle through each map.
+        if (inputImagePlus.getNChannels() > 1) {
+            int c = inputImagePlus.getNChannels();
+            int z = inputImagePlus.getNSlices();
+            int t = inputImagePlus.getNFrames();
+            probabilityMaps = HyperStackConverter.toHyperStack(probabilityMaps,c*2,z,t,"xyczt","color");
+        }
+
         // Adding the probability maps to the Workspace
         workspace.addImage(new Image(outputImageName,probabilityMaps));
 
@@ -62,7 +72,6 @@ public class WekaProbabilityMaps extends Module {
             IntensityMinMax.run(dispIpl,true);
             dispIpl.show();
         }
-
     }
 
     @Override
