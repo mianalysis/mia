@@ -3,6 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
@@ -31,10 +32,15 @@ public class IdentifyObjects extends Module {
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());
+
             // Creating a copy of the input image
-            ImagePlus currStack = SubHyperstackMaker.makeSubhyperstack(
-                    inputImagePlus,1+"-"+inputImagePlus.getNChannels(),1+"-"+inputImagePlus.getNSlices(),t+"-"+t);
-            currStack = new Duplicator().run(currStack);
+            ImagePlus currStack;
+            if (inputImagePlus.getNFrames()==1) {
+                currStack = new Duplicator().run(inputImagePlus);
+            } else {
+                currStack = new Duplicator().run(SubHyperstackMaker.makeSubhyperstack(inputImagePlus, 1 + "-" +
+                        inputImagePlus.getNChannels(), 1 + "-" + inputImagePlus.getNSlices(), t + "-" + t));
+            }
 
             if (whiteBackground) IJ.run(currStack, "Invert", "stack");
 
