@@ -35,7 +35,7 @@ public class ExtractSubstack extends Module {
 
     @Override
     public String getTitle() {
-        return "Extract subtack";
+        return "Extract substack";
     }
 
     @Override

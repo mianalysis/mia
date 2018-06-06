@@ -28,6 +28,7 @@ public class ShowImage extends Module {
         String imageName = parameters.getValue(DISPLAY_IMAGE);
         ImagePlus imageToShow = workspace.getImage(imageName).getImagePlus();
         imageToShow = new Duplicator().run(imageToShow);
+        imageToShow.setTitle(imageName);
 
         IntensityMinMax.run(imageToShow,imageToShow.getNSlices() > 1 || imageToShow.getNFrames() > 1 || imageToShow.getNChannels() > 1);
         imageToShow.show();
