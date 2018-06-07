@@ -101,8 +101,9 @@ public abstract class Module implements Serializable {
      */
     public abstract void addRelationships(RelationshipCollection relationships);
 
-    public void updateParameterValue(String name, Object value) {
+    public Module updateParameterValue(String name, Object value) {
         parameters.updateValue(name,value);
+        return this;
 
     }
 
