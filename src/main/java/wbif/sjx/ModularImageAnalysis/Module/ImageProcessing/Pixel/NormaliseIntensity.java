@@ -98,13 +98,17 @@ public class NormaliseIntensity extends Module {
 
             // If selected, displaying the image
             if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(outputImage.getImagePlus()).show();
+                ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
+                showIpl.setTitle(outputImageName);
+                showIpl.show();
             }
 
         } else {
             // If selected, displaying the image
             if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(inputImagePlus).show();
+                ImagePlus showIpl = new Duplicator().run(inputImagePlus);
+                showIpl.setTitle(inputImageName);
+                showIpl.show();
             }
         }
     }

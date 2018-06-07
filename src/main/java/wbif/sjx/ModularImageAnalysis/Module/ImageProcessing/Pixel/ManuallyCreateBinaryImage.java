@@ -150,7 +150,11 @@ public class ManuallyCreateBinaryImage extends Module implements ActionListener 
             }
         }
 
-        if (showImage) new Duplicator().run(outputImagePlus).show();
+        if (showImage) {
+            ImagePlus showIpl = new Duplicator().run(outputImagePlus);
+            showIpl.setTitle(outputImageName);
+            showIpl.show();
+        }
 
     }
 

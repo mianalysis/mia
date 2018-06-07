@@ -172,9 +172,11 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         Image outputImage = new Image(outputImageName,compositeImage);
 
         workspace.addImage(outputImage);
-        if (showImage) new Duplicator().run(compositeImage).show();
-
-
+        if (showImage) {
+            ImagePlus showIpl = new Duplicator().run(compositeImage);
+            showIpl.setTitle(outputImageName);
+            showIpl.show();
+        }
     }
 
     @Override

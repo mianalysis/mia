@@ -57,8 +57,11 @@ public class InterpolateZAxis extends Module {
         Image outputImage = new Image(outputImageName,outputImagePlus);
         workspace.addImage(outputImage);
 
-        if (showImage) new Duplicator().run(outputImagePlus).show();
-
+        if (showImage) {
+            ImagePlus showIpl = new Duplicator().run(outputImagePlus);
+            showIpl.setTitle(outputImageName);
+            showIpl.show();
+        }
     }
 
     @Override

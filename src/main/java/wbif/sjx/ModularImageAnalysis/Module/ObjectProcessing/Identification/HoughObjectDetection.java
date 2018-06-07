@@ -104,7 +104,11 @@ public class HoughObjectDetection extends Module {
                         circleHoughTransform.normaliseScores();
 
                     // Getting the accumulator as an image
-                    if (showTransformImage) circleHoughTransform.getAccumulatorAsImage().show();
+                    if (showTransformImage) {
+                        ImagePlus showIpl = new Duplicator().run(circleHoughTransform.getAccumulatorAsImage());
+                        showIpl.setTitle("Accumulator");
+                        showIpl.show();
+                    }
 
                     // Getting circle objects and adding to workspace
                     writeMessage("Detecting objects (image " + (count++) + " of " + total+")");
