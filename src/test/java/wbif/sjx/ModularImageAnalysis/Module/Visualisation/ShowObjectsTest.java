@@ -3,7 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -41,7 +42,7 @@ public class ShowObjectsTest {
         String calibratedUnits = "µm";
 
         // Initialising object store
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(objectName,false,dppXY,dppZ,calibratedUnits,false);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(objectName, ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit.tif").getPath(),"UTF-8");
@@ -93,7 +94,7 @@ public class ShowObjectsTest {
         String calibratedUnits = "µm";
 
         // Initialising object store
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(objectName,false,dppXY,dppZ,calibratedUnits,false);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(objectName,ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,false);
 
         // Loading a reference image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_32bit_NoRef.tif").getPath(),"UTF-8");

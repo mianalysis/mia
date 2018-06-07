@@ -9,6 +9,7 @@ import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.RunTrackMate;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
 import wbif.sjx.common.MathFunc.GaussianFitter;
@@ -281,7 +282,13 @@ public class GaussianFitter2D extends Module {
         count = 0;
         startingNumber = inputObjects.size();
         if (applyVolume) {
-            new GetLocalObjectRegion().getLocalRegions(inputObjects,"SpotVolume",0,false,true, Measurements.SIGMA_X_PX);
+            GetLocalObjectRegion getLocalObjectRegion = (GetLocalObjectRegion) new GetLocalObjectRegion()
+                    .updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,"SpotVolume")
+                    .updateParameterValue(GetLocalObjectRegion.CALIBRATED_RADIUS,false)
+                    .updateParameterValue(GetLocalObjectRegion.USE_MEASUREMENT,true)
+                    .updateParameterValue(GetLocalObjectRegion.MEASUREMENT_NAME, Measurements.SIGMA_X_PX);
+
+            getLocalObjectRegion.getLocalRegions(inputObjects,inputImagePlus);
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject:inputObjects.values()) {

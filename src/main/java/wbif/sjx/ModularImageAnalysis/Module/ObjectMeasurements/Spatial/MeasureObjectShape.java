@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
-import org.netlib.lapack.Ssysv;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ProjectObjects;
@@ -170,7 +169,7 @@ public class MeasureObjectShape extends Module {
             // If necessary analyses are included
             Obj projectedObject = null;
             if (measureProjectedArea || measureProjectedDiameter || measureProjectedEllipse) {
-                projectedObject = ProjectObjects.createProjection(inputObject, "Projected",inputObjects.is2D());
+                projectedObject = ProjectObjects.createProjection(inputObject, "Projected",inputObject.is2D());
             }
 
             // Adding the projected-object area measurements
@@ -206,12 +205,12 @@ public class MeasureObjectShape extends Module {
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(MEASURE_VOLUME, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_CONVEX_HULL, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_CONVEX_HULL, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.CENTROIDS,FittingModes.ALL));
-        parameters.add(new Parameter(MEASURE_ELLIPSOID, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_PROJECTED_ELLIPSE, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_ELLIPSOID, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_PROJECTED_ELLIPSE, Parameter.BOOLEAN, false));
 
     }
 

@@ -3,10 +3,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -20,31 +23,56 @@ import java.util.HashMap;
 public class IdentifyObjects extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
-    public static final String LABELLED_IMAGE = "Labelled image";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String SINGLE_OBJECT = "Identify as single object";
+    public static final String CONNECTIVITY = "Connectivity";
     public static final String SHOW_OBJECTS = "Show objects";
 
+    public interface Connectivity {
+        String SIX = "6";
+        String TWENTYSIX = "26";
 
-    private ObjCollection importFromLabelled(Image inputImage, String outputObjectsName) {
-        return inputImage.convertImageToObjects(outputObjectsName);
+        String[] ALL = new String[]{SIX,TWENTYSIX};
 
     }
 
-    private ObjCollection importFromBinary(Image inputImage, String outputObjectsName, boolean whiteBackground, boolean singleObject) {
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputImagePlus.getNSlices()==1);
 
-        if (whiteBackground) IJ.run(inputImagePlus, "Invert", "stack");
+    private ObjCollection importFromImage(Image inputImage) {
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
+        boolean singleObject = parameters.getValue(SINGLE_OBJECT);
+
+        ImagePlus inputImagePlus = inputImage.getImagePlus();
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+
+        int connectivity = 6;
+        switch ((String) parameters.getValue(CONNECTIVITY)) {
+            case Connectivity.SIX:
+                connectivity = 6;
+                break;
+            case Connectivity.TWENTYSIX:
+                connectivity = 26;
+                break;
+        }
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());
+
             // Creating a copy of the input image
-            ImagePlus currStack = SubHyperstackMaker.makeSubhyperstack(
-                    inputImagePlus,1+"-"+inputImagePlus.getNChannels(),1+"-"+inputImagePlus.getNSlices(),t+"-"+t);
+            ImagePlus currStack;
+            if (inputImagePlus.getNFrames()==1) {
+                currStack = new Duplicator().run(inputImagePlus);
+
+            } else {
+                currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" +
+                        inputImagePlus.getNChannels(), "1-" + inputImagePlus.getNSlices(), t + "-" + t);
+            }
+            currStack.updateChannelAndDraw();
+
+            if (whiteBackground) InvertIntensity.process(currStack);
 
             // Applying connected components labelling
-            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26);
+            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity);
             currStack.setStack(ffcl3D.computeLabels(currStack.getImageStack()));
 
             // Converting image to objects
@@ -87,18 +115,10 @@ public class IdentifyObjects extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        boolean labelledImage = parameters.getValue(LABELLED_IMAGE);
-        boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
-        boolean singleObject = parameters.getValue(SINGLE_OBJECT);
         boolean showObjects = parameters.getValue(SHOW_OBJECTS);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        ObjCollection outputObjects;
-        if (labelledImage) {
-            outputObjects = importFromLabelled(inputImage, outputObjectsName);
-        } else {
-            outputObjects = importFromBinary(inputImage, outputObjectsName, whiteBackground, singleObject);
-        }
+        ObjCollection outputObjects = importFromImage(inputImage);
 
         writeMessage(outputObjects.size()+" objects detected");
 
@@ -109,7 +129,8 @@ public class IdentifyObjects extends Module {
         // Showing objects
         if (showObjects) {
             HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
-            outputObjects.convertObjectsToImage("Objects", inputImage.getImagePlus(), ConvertObjectsToImage.ColourModes.RANDOM_COLOUR, hues).getImagePlus().show();
+            outputObjects.convertObjectsToImage("Objects", inputImage.getImagePlus(),
+                    ConvertObjectsToImage.ColourModes.RANDOM_COLOUR, hues).getImagePlus().show();
         }
     }
 
@@ -117,29 +138,16 @@ public class IdentifyObjects extends Module {
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(LABELLED_IMAGE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(WHITE_BACKGROUND,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(SINGLE_OBJECT,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(CONNECTIVITY, Parameter.CHOICE_ARRAY, Connectivity.TWENTYSIX, Connectivity.ALL));
         parameters.add(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
-        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(LABELLED_IMAGE));
-
-        if (!((boolean) parameters.getValue(LABELLED_IMAGE))) {
-            returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
-            returnedParameters.add(parameters.getParameter(SINGLE_OBJECT));
-        }
-
-        returnedParameters.add(parameters.getParameter(SHOW_OBJECTS));
-
-        return returnedParameters;
+        return parameters;
     }
 
     @Override

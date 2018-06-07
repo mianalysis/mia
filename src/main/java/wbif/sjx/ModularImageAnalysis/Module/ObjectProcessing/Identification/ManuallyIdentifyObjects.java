@@ -37,6 +37,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private double dppXY;
     private double dppZ;
     private String calibrationUnits;
+    private boolean twoD;
 
 
     private static final String ADD_NEW = "Add new";
@@ -133,6 +134,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
+
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle("Draw objects on this image");
@@ -147,9 +149,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         dppXY = calibration.getX(1);
         dppZ = calibration.getZ(1);
         calibrationUnits = calibration.getUnits();
+        twoD = inputImagePlus.getNSlices()==1;
 
         // Initialising output objects
-        outputObjects = new ObjCollection(outputObjectsName,inputImagePlus.getNSlices()==1);
+        outputObjects = new ObjCollection(outputObjectsName);
         workspace.addObjects(outputObjects);
 
         // Displaying the image and showing the control
@@ -203,7 +206,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 int ID = outputObjects.getNextID();
 
                 // Adding the new object
-                Obj outputObject = new Obj(outputObjectsName,ID,dppXY,dppZ,calibrationUnits);
+                Obj outputObject = new Obj(outputObjectsName,ID,dppXY,dppZ,calibrationUnits,twoD);
                 for (Point point:points) {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());

@@ -119,6 +119,8 @@ public class BinaryOperations extends Module {
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
+        markerIpl = new Duplicator().run(markerIpl);
+        IJ.run(markerIpl,"Invert","stack");
 
         int nFrames = maskIpl.getNFrames();
         for (int t = 1; t <= nFrames; t++) {
@@ -130,7 +132,6 @@ public class BinaryOperations extends Module {
                 timepointMaskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensityIpl.getImageStack(), timepointMaskIpl.getImageStack(), dynamic, connectivity, false));
 
             } else {
-                IJ.run(markerIpl,"Invert","stack");
                 ImagePlus timepointMarkerIpl = getTimepoint(markerIpl,t);
                 timepointMarkerIpl = BinaryImages.componentsLabeling(timepointMarkerIpl, connectivity, 32);
                 timepointMaskIpl.setStack(Watershed.computeWatershed(timepointIntensityIpl, timepointMarkerIpl, timepointMaskIpl, connectivity, true, false).getStack());

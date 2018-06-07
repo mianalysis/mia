@@ -1,6 +1,5 @@
-package wbif.sjx.ModularImageAnalysis;
+package wbif.sjx.ModularImageAnalysis.ExpectedObjects;
 
-//import util.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVReader;
 import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
@@ -12,28 +11,54 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects.Mode.BINARY;
+import static wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects.Mode.SIXTEEN_BIT;
+
 /**
  * Created by sc13967 on 12/02/2018.
  */
 public abstract class ExpectedObjects {
-    public abstract List<Integer[]> getCoordinates3D();
+    private boolean is2D;
+    public abstract List<Integer[]> getCoordinates5D();
+    public abstract boolean is2D();
+
+    public enum Mode {EIGHT_BIT,SIXTEEN_BIT,BINARY};
+
+    public ExpectedObjects() {
+        this.is2D = is2D();
+    }
 
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
-    public ObjCollection getObjects(String objectName, boolean eightBit, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) {
+    public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) {
         // Initialising object store
-        ObjCollection testObjects = new ObjCollection(objectName, false);
+        ObjCollection testObjects = new ObjCollection(objectName);
 
         // Adding all provided coordinates to each object
-        List<Integer[]> coordinates = getCoordinates3D();
+        List<Integer[]> coordinates = getCoordinates5D();
         for (Integer[] coordinate:coordinates) {
-            int ID = eightBit ? coordinate[0] : coordinate[1];
+            int ID = 255;
+            switch (mode) {
+                case BINARY:
+                    ID = 255;
+                    break;
+
+                case EIGHT_BIT:
+                    ID = coordinate[0];
+                    break;
+
+                case SIXTEEN_BIT:
+                    ID = coordinate[1];
+                    break;
+            }
+
             int x = coordinate[2];
             int y = coordinate[3];
             int z = coordinate[5];
             int t = coordinate[6];
 
-            testObjects.putIfAbsent(ID,new Obj(objectName,ID,dppXY,dppZ,calibratedUnits));
+            ID = ID+(t*65536);
+            testObjects.putIfAbsent(ID,new Obj(objectName,ID,dppXY,dppZ,calibratedUnits,is2D));
 
             Obj testObject = testObjects.get(ID);
             testObject.addCoord(x,y,z);
@@ -42,7 +67,7 @@ public abstract class ExpectedObjects {
         }
 
         // Adding measurements to each object
-        if (includeMeasurements) {
+        if (includeMeasurements &! mode.equals(BINARY) &! mode.equals(SIXTEEN_BIT)) {
             HashMap<Integer, HashMap<String, Double>> measurements = getMeasurements();
             if (measurements != null) {
                 for (Obj testObject : testObjects.values()) {
@@ -60,7 +85,7 @@ public abstract class ExpectedObjects {
 
     }
 
-    protected List<Integer[]> getCoordinates3D(String path) {
+    protected List<Integer[]> getCoordinates5D(String path) {
         try {
             String pathToCoordinates = URLDecoder.decode(this.getClass().getResource(path).getPath(),"UTF-8");
 

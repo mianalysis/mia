@@ -1,12 +1,17 @@
-package wbif.sjx.ModularImageAnalysis;
+package wbif.sjx.ModularImageAnalysis.ExpectedObjects;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class ExpectedMergedObjects3D extends ExpectedObjects {
     @Override
-    public List<Integer[]> getCoordinates3D() {
-        return getCoordinates3D("/coordinates/ExpectedMergedObjects3D.csv");
+    public List<Integer[]> getCoordinates5D() {
+        return getCoordinates5D("/coordinates/ExpectedMergedObjects3D.csv");
+    }
+
+    @Override
+    public boolean is2D() {
+        return false;
     }
 
     @Override

@@ -7,7 +7,8 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
 
 import java.net.URLDecoder;
 
@@ -90,7 +91,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
@@ -126,7 +127,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found

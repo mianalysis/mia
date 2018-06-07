@@ -247,7 +247,9 @@ public class ThresholdImage extends Module {
             inputImage.setImagePlus(inputImagePlus);
             // If selected, displaying the image
             if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(inputImagePlus).show();
+                ImagePlus showIpl = new Duplicator().run(inputImagePlus);
+                showIpl.setTitle(inputImageName);
+                showIpl.show();
             }
 
         } else {
@@ -257,7 +259,9 @@ public class ThresholdImage extends Module {
 
             // If selected, displaying the image
             if (parameters.getValue(SHOW_IMAGE)) {
-                new Duplicator().run(outputImage.getImagePlus()).show();
+                ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
+                showIpl.setTitle(outputImageName);
+                showIpl.show();
             }
         }
     }

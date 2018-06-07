@@ -404,8 +404,11 @@ public class AddObjectsOverlay extends Module {
 
         // Duplicating the image, then displaying it.  Duplicating prevents the image being removed from the workspace
         // if it's closed
-        if (showImage) new Duplicator().run(ipl).show();
-
+        if (showImage) {
+            ImagePlus showIpl = new Duplicator().run(ipl);
+            showIpl.setTitle(outputImageName);
+            showIpl.show();
+        }
     }
 
     @Override

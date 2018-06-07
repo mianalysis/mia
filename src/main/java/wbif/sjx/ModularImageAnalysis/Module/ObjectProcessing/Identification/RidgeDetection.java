@@ -71,7 +71,7 @@ public class RidgeDetection extends Module {
 
         // Getting output image name
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputImagePlus.getNSlices()==1);
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Getting parameters (RidgeDetection plugin wants to use pixel units only)
         double lowerThreshold = parameters.getValue(LOWER_THRESHOLD);
@@ -87,6 +87,7 @@ public class RidgeDetection extends Module {
         double dppXY = calibration.getX(1);
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
+        boolean twoD = inputImagePlus.getNSlices()==1;
 
         LineDetector lineDetector = new LineDetector();
         boolean darkLine = contourContrast.equals(ContourContrast.DARK_LINE);
@@ -153,7 +154,7 @@ public class RidgeDetection extends Module {
                     Set<HashSet<Line>> uniqueLineGroup = new HashSet<>(groups.values());
                     for (HashSet<Line> lineGroup : uniqueLineGroup) {
                         Obj outputObject = new Obj(outputObjectsName, outputObjects.getNextID(), dppXY, dppZ,
-                                calibrationUnits);
+                                calibrationUnits,twoD);
 
                         double estLength = 0;
                         for (Line line : lineGroup) {

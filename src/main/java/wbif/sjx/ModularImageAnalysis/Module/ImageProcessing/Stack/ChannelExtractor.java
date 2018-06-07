@@ -48,8 +48,9 @@ public class ChannelExtractor extends Module {
 
         // (If selected) displaying the loaded image
         if (parameters.getValue(SHOW_IMAGE)) {
-            new Duplicator().run(outputChannelImagePlus).show();
-
+            ImagePlus showIpl = new Duplicator().run(outputChannelImagePlus);
+            showIpl.setTitle(outputImageName);
+            showIpl.show();
         }
     }
 

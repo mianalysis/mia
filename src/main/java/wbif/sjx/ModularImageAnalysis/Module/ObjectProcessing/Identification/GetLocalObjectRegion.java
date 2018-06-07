@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
+import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -10,14 +11,29 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 public class GetLocalObjectRegion extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String CALIBRATED_RADIUS = "Calibrated radius";
     public static final String USE_MEASUREMENT = "Use measurement for radius";
     public static final String MEASUREMENT_NAME = "Measurement name";
 
-    public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, double radius, boolean calibrated, boolean useMeasurement, String measurementName) {
+    public ObjCollection getLocalRegions(ObjCollection inputObjects, ImagePlus referenceImage) {
+        // Getting output objects name
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
+        double radius = parameters.getValue(LOCAL_RADIUS);
+        boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
+        String measurementName = parameters.getValue(MEASUREMENT_NAME);
+
         // Creating store for output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName,inputObjects.is2D());
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+
+        // Getting image range
+        int width = referenceImage.getWidth();
+        int height = referenceImage.getHeight();
+        int nChannels = referenceImage.getNChannels();
+        int nSlices = referenceImage.getNSlices();
+        int nFrames = referenceImage.getNFrames();
 
         if (inputObjects.values().size() == 0) return outputObjects;
 
@@ -32,7 +48,7 @@ public class GetLocalObjectRegion extends Module {
         for (Obj inputObject:inputObjects.values()) {
             writeMessage("Calculating for object " + (++count) + " of " + startingNumber);
             // Creating new object and assigning relationship to input objects
-            Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits);
+            Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits,inputObject.is2D());
 
             // Getting centroid coordinates
             double xCent = inputObject.getXMean(true);
@@ -42,34 +58,53 @@ public class GetLocalObjectRegion extends Module {
             if (useMeasurement) radius = inputObject.getMeasurement(measurementName).getValue();
 
             if (calibrated) {
-                for (int x = (int) Math.floor(xCent - radius/dppXY); x <= (int) Math.ceil(xCent + radius/dppXY); x++) {
-                    for (int y = (int) Math.floor(yCent - radius/dppXY); y <= (int) Math.ceil(yCent + radius/dppXY); y++) {
-                        if (inputObjects.is2D()) {
-                            if (Math.sqrt((xCent - x) * dppXY * (xCent - x) * dppXY + (yCent - y) * dppXY * (yCent - y) * dppXY) < radius) {
-                                outputObject.addCoord(x, y, 0);
-                            }
+                int xMin = Math.max((int) Math.floor(xCent - radius/dppXY), 0);
+                int xMax = Math.min((int) Math.ceil(xCent + radius/dppXY), width-1);
+                int yMin = Math.max((int) Math.floor(yCent - radius/dppXY), 0);
+                int yMax = Math.min((int) Math.ceil(yCent + radius/dppXY), height-1);
+                int zMin = Math.max((int) Math.floor(zCent - radius/dppZ),0);
+                int zMax = Math.min((int) Math.ceil(zCent + radius/dppZ), nSlices-1);
+
+                for (int x = xMin; x <= xMax; x++) {
+                    double xx = (xCent - x) * dppXY;
+
+                    for (int y = yMin; y <= yMax; y++) {
+                        double yy = (yCent - y) * dppXY;
+
+                        if (inputObject.is2D()) {
+                            if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.addCoord(x, y, 0);
+
                         } else {
-                            for (int z = (int) Math.floor(zCent - radius / dppZ); z <= (int) Math.ceil(zCent + radius / dppZ); z++) {
-                                if (Math.sqrt((xCent - x) * dppXY * (xCent - x) * dppXY + (yCent - y) * dppXY * (yCent - y) * dppXY + (zCent - z) * dppZ * (zCent - z) * dppZ) < radius) {
-                                    outputObject.addCoord(x, y, z);
-                                }
+                            for (int z = zMin; z <= zMin; z++) {
+                                double zz = (zCent - z) * dppZ;
+                                if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.addCoord(x, y, z);
                             }
                         }
                     }
                 }
 
             } else {
-                for (int x = (int) Math.floor(xCent - radius); x <= (int) Math.ceil(xCent + radius); x++) {
-                    for (int y = (int) Math.floor(yCent - radius); y <= (int) Math.ceil(yCent + radius); y++) {
-                        if (inputObjects.is2D()) {
-                            if (Math.sqrt((xCent - x) * (xCent - x) + (yCent - y) * (yCent - y)) < radius) {
-                                outputObject.addCoord(x, y, 0);
-                            }
+                int xMin = Math.max((int) Math.floor(xCent - radius), 0);
+                int xMax = Math.min((int) Math.ceil(xCent + radius), width-1);
+                int yMin = Math.max((int) Math.floor(yCent - radius), 0);
+                int yMax = Math.min((int) Math.ceil(yCent + radius), height-1);
+                int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio),0);
+                int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), nSlices-1);
+
+                for (int x = xMin; x <= xMax; x++) {
+                    double xx = xCent - x;
+
+                    for (int y = yMin; y <= yMax; y++) {
+                        double yy = yCent - y;
+
+                        if (inputObject.is2D()) {
+                            if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.addCoord(x, y, 0);
+
                         } else {
-                            for (int z = (int) Math.floor(zCent - radius * xy_z_ratio); z <= (int) Math.ceil(zCent + radius * xy_z_ratio); z++) {
-                                if (Math.sqrt((xCent - x) * (xCent - x) + (yCent - y) * (yCent - y) + (zCent - z) * (zCent - z) / (xy_z_ratio * xy_z_ratio)) < radius) {
-                                    outputObject.addCoord(x, y, z);
-                                }
+                            for (int z = zMin; z <= zMax; z++) {
+                                double zz = (zCent - z) / xy_z_ratio;
+
+                                if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.addCoord(x, y, z);
                             }
                         }
                     }
@@ -84,7 +119,7 @@ public class GetLocalObjectRegion extends Module {
 
             // Adding relationships
             outputObject.addParent(inputObject);
-            inputObject.addChild(outputObject,inputObjects.is2D());
+            inputObject.addChild(outputObject);
 
         }
 
@@ -105,24 +140,15 @@ public class GetLocalObjectRegion extends Module {
 
     @Override
     public void run(Workspace workspace) {
-        // Getting input objects
+        // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-
-        // Getting output objects name
+        String inputImageName = parameters.getValue(REFERENCE_IMAGE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        // Getting parameters
-        boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
-        double radius = parameters.getValue(LOCAL_RADIUS);
-        boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
-        String measurementName = parameters.getValue(MEASUREMENT_NAME);
+        ImagePlus referenceImage = workspace.getImage(inputImageName).getImagePlus();
 
-        writeMessage("Using local radius of "+radius+" px");
-        writeMessage("Using local radius of "+radius+" ");
-
-        // Getting local region
-        ObjCollection outputObjects = getLocalRegions(inputObjects, outputObjectsName, radius, calibrated,useMeasurement,measurementName);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+        ObjCollection outputObjects = getLocalRegions(inputObjects,referenceImage);
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
@@ -134,6 +160,7 @@ public class GetLocalObjectRegion extends Module {
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE,10.0));
         parameters.add(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(USE_MEASUREMENT, Parameter.BOOLEAN,false));
@@ -147,6 +174,7 @@ public class GetLocalObjectRegion extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
+        returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
         returnedParameters.add(parameters.getParameter(USE_MEASUREMENT));
 
         if (parameters.getValue(USE_MEASUREMENT)) {

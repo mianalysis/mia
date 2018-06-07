@@ -6,8 +6,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedSphere3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedSphere3D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -39,7 +40,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -108,7 +109,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -177,7 +178,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -251,7 +252,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedSphere3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedSphere3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -299,7 +300,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedSphere3D().getObjects(inputObjectsName,true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedSphere3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace

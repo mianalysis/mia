@@ -3,7 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
@@ -34,7 +35,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
@@ -64,7 +65,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
@@ -94,7 +95,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
@@ -124,7 +125,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -159,7 +160,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -195,7 +196,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -231,22 +232,22 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.  The number of children will be
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children", false);
+        ObjCollection childObjects = new ObjCollection("Children");
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
                 childObjects.add(childObject);
 
-                testObject.addChild(childObject, false);
+                testObject.addChild(childObject);
                 childObject.addParent(testObject);
             }
 
@@ -280,22 +281,22 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.  The number of children will be
         // created according to the "kids" table - it doesn't matter which test objects these are assigned to, as we
         // only count the number of remaining objects post-filter.
         int[] kids = new int[]{3,1,4,2,0,6,5,2};
-        ObjCollection childObjects = new ObjCollection("Children",false);
+        ObjCollection childObjects = new ObjCollection("Children");
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             for (int i=0;i<kids[counter];i++) {
-                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits);
+                Obj childObject = new Obj("Children", childObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
                 childObjects.add(childObject);
 
-                testObject.addChild(childObject,false);
+                testObject.addChild(childObject);
                 childObject.addParent(testObject);
             }
 
@@ -330,21 +331,21 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,false,true};
-        ObjCollection parentObjects = new ObjCollection("Parents",false);
+        ObjCollection parentObjects = new ObjCollection("Parents");
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
-                parentObject.addChild(testObject, false);
+                parentObject.addChild(testObject);
 
             }
         }
@@ -375,21 +376,21 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",true,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
         boolean[] parents = new boolean[]{true,true,false,true,false,false,true,true};
-        ObjCollection parentObjects = new ObjCollection("Parents", false);
+        ObjCollection parentObjects = new ObjCollection("Parents");
 
         int counter = 0;
         for (Obj testObject:testObjects.values()) {
             if (parents[counter++]) {
-                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits);
+                Obj parentObject = new Obj("Parents", parentObjects.getNextID(), dppXY, dppZ, calibratedUnits,false);
                 parentObjects.add(parentObject);
 
                 testObject.addParent(parentObject);
-                parentObject.addChild(testObject, false);
+                parentObject.addChild(testObject);
 
             }
         }

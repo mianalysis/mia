@@ -21,8 +21,8 @@ public class WorkspaceTest {
         assertEquals(0,workspace.getObjects().size());
 
         // Creating and adding the new object
-        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits);
-        workspace.addObject(obj,false);
+        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
+        workspace.addObject(obj);
 
         // Checking the workspace behaved as expected
         assertEquals(1,workspace.getObjects().size());
@@ -109,37 +109,37 @@ public class WorkspaceTest {
         // Creating a new workspace and populating it with a set of objects
         Workspace workspace = new Workspace(0,null,0);
 
-        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits);
+        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         obj.calculateSurface();
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
-        obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits);
+        obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits,false);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
-        obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits);
+        obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits,false);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
-        obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits);
+        obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits,false);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
         // Checking current state of the workspace
         assertEquals(2,workspace.getObjects().size());
@@ -174,37 +174,37 @@ public class WorkspaceTest {
         // Creating a new workspace and populating it with a set of objects
         Workspace workspace = new Workspace(0,null,0);
 
-        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits);
+        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.addMeasurement(new Measurement("Test meas",1.5));
         obj.calculateSurface();
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
-        obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits);
+        obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits,false);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
-        obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits);
+        obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits,false);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
-        obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits);
+        obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits,false);
         obj.addCoord(12,5,2);
         obj.addCoord(12,5,3);
         obj.addCoord(12,6,2);
         obj.calculateSurface();
         obj.addMeasurement(new Measurement("Test meas",1.5));
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
         // Checking current state of the workspace
         assertEquals(2,workspace.getObjects().size());
@@ -235,21 +235,21 @@ public class WorkspaceTest {
         // Creating a new workspace and populating it with a set of objects
         Workspace workspace = new Workspace(0,null,0);
 
-        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits);
+        Obj obj = new Obj("New obj",0,dppXY,dppZ,calibratedUnits,false);
         obj.setT(0);
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
-        obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits);
+        obj = new Obj("New obj",1,dppXY,dppZ,calibratedUnits,false);
         obj.setT(1);
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
-        obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits);
+        obj = new Obj("Other obj",0,dppXY,dppZ,calibratedUnits,false);
         obj.setT(0);
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
-        obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits);
+        obj = new Obj("Other obj",1,dppXY,dppZ,calibratedUnits,false);
         obj.setT(2);
-        workspace.addObject(obj,false);
+        workspace.addObject(obj);
 
         // Getting single timepoint workspaces
         HashMap<Integer, Workspace> singleTimepoints = workspace.getSingleTimepointWorkspaces();

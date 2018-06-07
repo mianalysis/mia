@@ -4,7 +4,7 @@
   <groupId>wbif.sjx</groupId>
   <artifactId>ModularImageAnalysis</artifactId>
   <name>Modular_Image_Analysis</name>
-  <version>0.5.7</version>
+  <version>0.5.8</version>
   <url>https://github.com/SJCross/ModularImageAnalysis</url>
   <licenses>
     <license>
@@ -282,7 +282,7 @@
     <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>Trainable_Segmentation</artifactId>
-      <version>3.2.9</version>
+      <version>3.2.26</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -292,10 +292,6 @@
         <exclusion>
           <artifactId>weka-dev</artifactId>
           <groupId>nz.ac.waikato.cms.weka</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>imagescience</artifactId>
-          <groupId>sc.fiji</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imglib2-ij</artifactId>

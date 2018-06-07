@@ -17,7 +17,6 @@ import java.util.Random;
 public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     private String name;
     private int maxID = 0;
-    private final boolean is2D;
 
     public interface ColourModes {
         String SINGLE_COLOUR = "Single colour";
@@ -55,17 +54,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public ObjCollection(String name, boolean is2D) {
+    public ObjCollection(String name) {
         this.name = name;
-        this.is2D = is2D;
     }
 
     public String getName() {
         return name;
-    }
-
-    public boolean is2D() {
-        return is2D;
     }
 
     public void add(Obj object) {
