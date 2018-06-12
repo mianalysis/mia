@@ -124,10 +124,20 @@ public class MeasureTrackMotion extends Module {
                 // Adding measurements to track objects
                 inputTrackObject.addMeasurement(new Measurement(Measurements.DURATION, track.getDuration()));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.FIRST_FRAME, firstPoint.getF()));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_VELOCITY_PX, cumStatX.getMean()));
-                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_X_VELOCITY_CAL), cumStatX.getMean()*distPerPxXY));
-                inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_VELOCITY_PX, cumStatY.getMean()));
-                inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_Y_VELOCITY_CAL), cumStatY.getMean()*distPerPxXY));
+
+                // If the track has a single time-point there's no velocity to measure
+                if (x.length == 1) {
+                    inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_VELOCITY_PX, Double.NaN));
+                    inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_X_VELOCITY_CAL), Double.NaN));
+                    inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_VELOCITY_PX, Double.NaN));
+                    inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_Y_VELOCITY_CAL), Double.NaN));
+                } else {
+                    inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_X_VELOCITY_PX, cumStatX.getMean()));
+                    inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_X_VELOCITY_CAL), cumStatX.getMean() * distPerPxXY));
+                    inputTrackObject.addMeasurement(new Measurement(Measurements.MEAN_Y_VELOCITY_PX, cumStatY.getMean()));
+                    inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_Y_VELOCITY_CAL), cumStatY.getMean() * distPerPxXY));
+                }
+
                 inputTrackObject.addMeasurement(new Measurement(Measurements.EUCLIDEAN_DISTANCE_PX, euclideanDistance));
                 inputTrackObject.addMeasurement(new Measurement(Units.replace(Measurements.EUCLIDEAN_DISTANCE_CAL), euclideanDistance*distPerPxXY));
                 inputTrackObject.addMeasurement(new Measurement(Measurements.TOTAL_PATH_LENGTH_PX, totalPathLength));
@@ -144,14 +154,33 @@ public class MeasureTrackMotion extends Module {
             TreeMap<Integer, Double> euclidean = track.getRollingEuclideanDistance(true);
             TreeMap<Integer, Double> dirRatio = track.getRollingDirectionalityRatio(true);
 
+            // Finding first time-point
+            int minT = Integer.MAX_VALUE;
+            for (Obj spotObject : inputTrackObject.getChildren(inputSpotObjectsName).values()) {
+                minT = Math.min(minT, spotObject.getT());
+            }
+
             for (Obj spotObject : inputTrackObject.getChildren(inputSpotObjectsName).values()) {
                 int t = spotObject.getT();
-                spotObject.addMeasurement(new Measurement(Measurements.X_VELOCITY_PX, xVelocity.get(t)));
-                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.X_VELOCITY_CAL), xVelocity.get(t)*distPerPxXY));
-                spotObject.addMeasurement(new Measurement(Measurements.Y_VELOCITY_PX, yVelocity.get(t)));
-                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_VELOCITY_CAL), yVelocity.get(t)*distPerPxXY));
-                spotObject.addMeasurement(new Measurement(Measurements.INSTANTANEOUS_SPEED_PX, speed.get(t)));
-                spotObject.addMeasurement(new Measurement(Units.replace(Measurements.INSTANTANEOUS_SPEED_CAL), speed.get(t)*distPerPxXY));
+
+                // For the first time-point set certain velocity measurements to Double.NaN (rather than zero)
+                if (t == minT) {
+                    spotObject.addMeasurement(new Measurement(Measurements.X_VELOCITY_PX, Double.NaN));
+                    spotObject.addMeasurement(new Measurement(Units.replace(Measurements.X_VELOCITY_CAL), Double.NaN));
+                    spotObject.addMeasurement(new Measurement(Measurements.Y_VELOCITY_PX, Double.NaN));
+                    spotObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_VELOCITY_CAL), Double.NaN));
+                    spotObject.addMeasurement(new Measurement(Measurements.INSTANTANEOUS_SPEED_PX, Double.NaN));
+                    spotObject.addMeasurement(new Measurement(Units.replace(Measurements.INSTANTANEOUS_SPEED_CAL), Double.NaN));
+                } else {
+                    spotObject.addMeasurement(new Measurement(Measurements.X_VELOCITY_PX, xVelocity.get(t)));
+                    spotObject.addMeasurement(new Measurement(Units.replace(Measurements.X_VELOCITY_CAL), xVelocity.get(t) * distPerPxXY));
+                    spotObject.addMeasurement(new Measurement(Measurements.Y_VELOCITY_PX, yVelocity.get(t)));
+                    spotObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_VELOCITY_CAL), yVelocity.get(t) * distPerPxXY));
+                    spotObject.addMeasurement(new Measurement(Measurements.INSTANTANEOUS_SPEED_PX, speed.get(t)));
+                    spotObject.addMeasurement(new Measurement(Units.replace(Measurements.INSTANTANEOUS_SPEED_CAL), speed.get(t) * distPerPxXY));
+                }
+
+                // The remaining measurements are unaffected by whether it's the first time-point
                 spotObject.addMeasurement(new Measurement(Measurements.CUMULATIVE_PATH_LENGTH_PX, pathLength.get(t)));
                 spotObject.addMeasurement(new Measurement(Units.replace(Measurements.CUMULATIVE_PATH_LENGTH_CAL), pathLength.get(t)*distPerPxXY));
                 spotObject.addMeasurement(new Measurement(Measurements.ROLLING_EUCLIDEAN_DISTANCE_PX, euclidean.get(t)));
