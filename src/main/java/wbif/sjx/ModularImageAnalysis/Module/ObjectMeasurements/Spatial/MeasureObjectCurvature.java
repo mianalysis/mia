@@ -395,8 +395,11 @@ public class MeasureObjectCurvature extends Module {
             
         }
 
-        if (showImage && drawSpline) new Duplicator().run(referenceImageImagePlus).show();
-
+        if (showImage && drawSpline) {
+            ImagePlus showIpl = new Duplicator().run(referenceImageImagePlus);
+            showIpl.setTitle(referenceImageName);
+            showIpl.show();
+        }
     }
 
     @Override

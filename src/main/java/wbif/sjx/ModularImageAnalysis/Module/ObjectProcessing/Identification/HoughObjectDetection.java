@@ -104,7 +104,11 @@ public class HoughObjectDetection extends Module {
                         circleHoughTransform.normaliseScores();
 
                     // Getting the accumulator as an image
-                    if (showTransformImage) circleHoughTransform.getAccumulatorAsImage().show();
+                    if (showTransformImage) {
+                        ImagePlus showIpl = new Duplicator().run(circleHoughTransform.getAccumulatorAsImage());
+                        showIpl.setTitle("Accumulator");
+                        showIpl.show();
+                    }
 
                     // Getting circle objects and adding to workspace
                     writeMessage("Detecting objects (image " + (count++) + " of " + total+")");
@@ -166,7 +170,10 @@ public class HoughObjectDetection extends Module {
             }
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 
-            new AddObjectsOverlay().createOverlay(dispIpl,outputObjects,positionMode,null,colours,IDs,labelSize,1);
+            ((AddObjectsOverlay) new AddObjectsOverlay()
+                    .updateParameterValue(AddObjectsOverlay.POSITION_MODE,positionMode)
+                    .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,labelSize))
+                    .createOverlay(dispIpl,outputObjects,colours,IDs);
 
             dispIpl.show();
 

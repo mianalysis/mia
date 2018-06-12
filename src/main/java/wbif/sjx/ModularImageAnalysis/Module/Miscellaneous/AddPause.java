@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Miscellaneous;
 
+import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -35,7 +36,9 @@ public class AddPause extends Module {
 
         if (showImage) {
             Image inputImage = workspace.getImage(inputImageName);
-            new Duplicator().run(inputImage.getImagePlus()).show();
+            ImagePlus showIpl = new Duplicator().run(inputImage.getImagePlus());
+            showIpl.setTitle(inputImageName);
+            showIpl.show();
         }
 
         String[] options = {RESUME,TERMINATE};

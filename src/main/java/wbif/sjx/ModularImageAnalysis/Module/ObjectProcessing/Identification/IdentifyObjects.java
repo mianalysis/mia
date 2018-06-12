@@ -67,11 +67,9 @@ public class IdentifyObjects extends Module {
                 currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" +
                         inputImagePlus.getNChannels(), "1-" + inputImagePlus.getNSlices(), t + "-" + t);
             }
+            currStack.updateChannelAndDraw();
 
-            if (whiteBackground) {
-                InvertIntensity.process(currStack);
-                currStack.updateAndDraw();
-            }
+            if (whiteBackground) InvertIntensity.process(currStack);
 
             // Applying connected components labelling
             FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity);
@@ -131,7 +129,8 @@ public class IdentifyObjects extends Module {
         // Showing objects
         if (showObjects) {
             HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
-            outputObjects.convertObjectsToImage("Objects", inputImage.getImagePlus(), ConvertObjectsToImage.ColourModes.RANDOM_COLOUR, hues).getImagePlus().show();
+            outputObjects.convertObjectsToImage("Objects", inputImage.getImagePlus(),
+                    ConvertObjectsToImage.ColourModes.RANDOM_COLOUR, hues).getImagePlus().show();
         }
     }
 
@@ -141,7 +140,7 @@ public class IdentifyObjects extends Module {
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
         parameters.add(new Parameter(WHITE_BACKGROUND,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(SINGLE_OBJECT,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(CONNECTIVITY, Parameter.CHOICE_ARRAY, Connectivity.SIX, Connectivity.ALL));
+        parameters.add(new Parameter(CONNECTIVITY, Parameter.CHOICE_ARRAY, Connectivity.TWENTYSIX, Connectivity.ALL));
         parameters.add(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
 
     }

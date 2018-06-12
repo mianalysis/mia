@@ -88,7 +88,7 @@ public class TrackObjects extends Module {
             for (int prev = 0; prev < cost[curr].length; prev++) {
                 switch (linkingMethod) {
                     case LinkingMethods.CENTROID:
-                        cost[curr][prev] = getCentroidSeparation(prevObjects.get(prev), currObjects.get(curr));
+                        cost[curr][prev] = getCentroidSeparation(prevObjects.get(prev), currObjects.get(curr),true);
                         break;
 
                     case LinkingMethods.ABSOLUTE_OVERLAP:
@@ -112,7 +112,7 @@ public class TrackObjects extends Module {
         // Checking they are within the user-specified maximum distance.  If not, no link is made
         switch (linkingMethod) {
             case LinkingMethods.CENTROID:
-                float dist = getCentroidSeparation(prevObj,currObj);
+                float dist = getCentroidSeparation(prevObj,currObj,false);
                 return dist <= maxDist;
 
             case LinkingMethods.ABSOLUTE_OVERLAP:
@@ -124,12 +124,17 @@ public class TrackObjects extends Module {
 
     }
 
-    public float getCentroidSeparation(Obj prevObj, Obj currObj) {
+    public float getCentroidSeparation(Obj prevObj, Obj currObj, boolean includeExtraWeights) {
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
         boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
         String measurement = parameters.getValue(MEASUREMENT);
         double measurementWeighting = parameters.getValue(MEASUREMENT_WEIGHTING);
+
+        // Only use the extra measures when calculating the cost matrix.  These shouldn't be used when evaluating the
+        // link validity (this is tested on object displacement only)
+        if (!includeExtraWeights) useVolume = false;
+        if (!includeExtraWeights) useMeasurement = false;
 
         double prevXCent = prevObj.getXMean(true);
         double prevYCent = prevObj.getYMean(true);

@@ -242,7 +242,7 @@ public class RunTrackMate extends Module {
         boolean showID = parameters.getValue(SHOW_ID);
 
         HashMap<Integer, Color> colours;
-        HashMap<Integer, String> IDs;
+        HashMap<Integer, String> labels;
 
         // Colours will depend on the detection/tracking mode
         if (doTracking) {
@@ -250,7 +250,7 @@ public class RunTrackMate extends Module {
             String labelMode = ObjCollection.LabelModes.PARENT_ID;
 
             colours = spotObjects.getColours(colourMode, trackObjectsName, true);
-            IDs = showID ? spotObjects.getIDs(labelMode, trackObjectsName, 0, false) : null;
+            labels = showID ? spotObjects.getIDs(labelMode, trackObjectsName, 0, false) : null;
 
         } else {
             String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
@@ -258,7 +258,7 @@ public class RunTrackMate extends Module {
             String labelMode = ObjCollection.LabelModes.ID;
 
             colours = spotObjects.getColours(colourMode,colourName,true);
-            IDs = showID ? spotObjects.getIDs(labelMode,"",0,false) : null;
+            labels = showID ? spotObjects.getIDs(labelMode,"",0,false) : null;
 
         }
 
@@ -267,8 +267,10 @@ public class RunTrackMate extends Module {
         IntensityMinMax.run(ipl,true);
 
         // Adding the overlay
-        new AddObjectsOverlay().createOverlay(
-                ipl,spotObjects, AddObjectsOverlay.PositionModes.CENTROID, null, colours ,IDs, 8, 1);
+        ((AddObjectsOverlay) new AddObjectsOverlay()
+                .updateParameterValue(AddObjectsOverlay.POSITION_MODE,AddObjectsOverlay.PositionModes.CENTROID)
+                .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8))
+                .createOverlay(ipl,spotObjects,colours,labels);
 
         // Displaying the overlay
         ipl.show();

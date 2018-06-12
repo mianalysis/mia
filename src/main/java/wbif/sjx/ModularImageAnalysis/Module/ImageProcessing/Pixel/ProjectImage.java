@@ -111,7 +111,9 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
         // If selected, displaying the image
         if (parameters.getValue(SHOW_IMAGE)) {
-            new Duplicator().run(outputImage.getImagePlus()).show();
+            ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
+            showIpl.setTitle(outputImageName);
+            showIpl.show();
         }
     }
 

@@ -1,3 +1,5 @@
+// TODO: Tests for with/without extra measures for centroid linking (volume and measurement weighting)
+
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import org.junit.Ignore;
@@ -377,39 +379,39 @@ public class TrackObjectsTest {
                 .updateParameterValue(TrackObjects.USE_MEASUREMENT,false)
                 .updateParameterValue(TrackObjects.USE_VOLUME,false);
 
-        float actual = trackObjects.getCentroidSeparation(obj1,obj4);
+        float actual = trackObjects.getCentroidSeparation(obj1,obj4,true);
         float expected = 60.4154f;
         assertEquals(expected,actual,toleranceTwoDP);
 
-        actual = trackObjects.getCentroidSeparation(obj1,obj5);
+        actual = trackObjects.getCentroidSeparation(obj1,obj5,true);
         expected = 32.2371f;
         assertEquals(expected,actual,toleranceTwoDP);
 
-        actual = trackObjects.getCentroidSeparation(obj1,obj6);
+        actual = trackObjects.getCentroidSeparation(obj1,obj6,true);
         expected = 105.4247f;
         assertEquals(expected,actual,toleranceTwoDP);
 
-        actual = trackObjects.getCentroidSeparation(obj2,obj4);
+        actual = trackObjects.getCentroidSeparation(obj2,obj4,true);
         expected = 39.1152f;
         assertEquals(expected,actual,toleranceTwoDP);
 
-        actual = trackObjects.getCentroidSeparation(obj2,obj5);
+        actual = trackObjects.getCentroidSeparation(obj2,obj5,true);
         expected = 24.2465f;
         assertEquals(expected,actual,toleranceTwoDP);
 
-        actual = trackObjects.getCentroidSeparation(obj2,obj6);
+        actual = trackObjects.getCentroidSeparation(obj2,obj6,true);
         expected = 82.4318f;
         assertEquals(expected,actual,toleranceTwoDP);
 
-        actual = trackObjects.getCentroidSeparation(obj3,obj4);
+        actual = trackObjects.getCentroidSeparation(obj3,obj4,true);
         expected = 58.5577f;
         assertEquals(expected,actual,toleranceTwoDP);
 
-        actual = trackObjects.getCentroidSeparation(obj3,obj5);
+        actual = trackObjects.getCentroidSeparation(obj3,obj5,true);
         expected = 26.4995f;
         assertEquals(expected,actual,toleranceTwoDP);
 
-        actual = trackObjects.getCentroidSeparation(obj3,obj6);
+        actual = trackObjects.getCentroidSeparation(obj3,obj6,true);
         expected = 102.8786f;
         assertEquals(expected,actual,toleranceTwoDP);
 
