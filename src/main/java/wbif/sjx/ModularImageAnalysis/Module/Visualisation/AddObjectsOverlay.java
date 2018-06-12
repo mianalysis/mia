@@ -69,6 +69,184 @@ public class AddObjectsOverlay extends Module {
     }
 
 
+    public static void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth) {
+        addAllPointsOverlay(object,ipl,colour,lineWidth,"",0);
+    }
+
+    public static void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
+        Overlay ovl = ipl.getOverlay();
+
+        // Still need to get mean coords for label
+        double xMean = object.getXMean(true);
+        double yMean = object.getYMean(true);
+        double zMean = object.getZMean(true,false);
+
+        // Adding each point
+        double[] xx = object.getX(true);
+        double[] yy = object.getY(true);
+        double[] zz = object.getZ(true,false);
+
+        int z = (int) Math.round(zMean+1);
+        int t = object.getT()+1;
+
+        for (int i=0;i<xx.length;i++) {
+            PointRoi roi = new PointRoi(xx[i]+0.5,yy[i]+0.5);
+            roi.setPointType(PointRoi.NORMAL);
+
+            if (ipl.isHyperStack()) {
+                roi.setPosition(1, (int) zz[i]+1, t);
+            } else {
+                int pos = Math.max(Math.max(1,(int) zz[i]+1),t);
+                roi.setPosition(pos);
+            }
+            roi.setStrokeColor(colour);
+            roi.setStrokeWidth(lineWidth);
+            ovl.addElement(roi);
+
+        }
+
+        if (!label.equals("")) {
+            double[] labelCoords = new double[]{xMean, yMean, z, t};
+            addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
+        }
+    }
+
+    public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth) {
+        addCentroidOverlay(object,ipl,colour,lineWidth,"",0);
+    }
+
+    public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
+        Overlay ovl = ipl.getOverlay();
+
+        double xMean = object.getXMean(true);
+        double yMean = object.getYMean(true);
+        double zMean = object.getZMean(true,false);
+
+        // Getting coordinates to plot
+        int z = (int) Math.round(zMean+1);
+        int t = object.getT()+1;
+
+        // Adding circles where the object centroids are
+        PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
+        pointRoi.setPointType(PointRoi.NORMAL);
+        if (ipl.isHyperStack()) {
+            pointRoi.setPosition(1, z, t);
+        } else {
+            int pos = Math.max(Math.max(1,z),t);
+            pointRoi.setPosition(pos);
+        }
+        pointRoi.setStrokeColor(colour);
+        pointRoi.setStrokeWidth(lineWidth);
+        ovl.addElement(pointRoi);
+
+        if (!label.equals("")) {
+            double[] labelCoords = new double[]{xMean, yMean, z, t};
+            addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
+        }
+    }
+
+    public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth) {
+        addOutlineOverlay(object,ipl,colour,lineWidth,"",0);
+    }
+
+    public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
+        Overlay ovl = ipl.getOverlay();
+
+        // Still need to get mean coords for label
+        double xMean = object.getXMean(true);
+        double yMean = object.getYMean(true);
+        double zMean = object.getZMean(true, false);
+        int t = object.getT() + 1;
+
+        // Running through each slice of this object
+        int[][] range = object.getCoordinateRange();
+        for (int z=range[2][0];z<=range[2][1];z++) {
+            Roi polyRoi = object.getRoi(ipl,z);
+            if (ipl.isHyperStack()) {
+                ipl.setPosition(1,z+1,t);
+                polyRoi.setPosition(1, z+1, t);
+            } else {
+                int pos = Math.max(Math.max(1, z+1), t);
+                ipl.setPosition(pos);
+                polyRoi.setPosition(pos);
+            }
+
+            polyRoi.setStrokeColor(colour);
+            polyRoi.setStrokeWidth(lineWidth);
+            ovl.addElement(polyRoi);
+
+            if (!label.equals("")) {
+                double[] labelCoords = new double[]{xMean, yMean, z+1, t};
+                addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
+            }
+        }
+    }
+
+    public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements) {
+        addPositionMeasurementsOverlay(object,ipl,colour,lineWidth,posMeasurements,"",0);
+    }
+
+    public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, String label, int labelSize) {
+        Overlay ovl = ipl.getOverlay();
+
+        double xMean = object.getMeasurement(posMeasurements[0]).getValue();
+        double yMean = object.getMeasurement(posMeasurements[1]).getValue();
+        double zMean = object.getMeasurement(posMeasurements[2]).getValue();
+
+        // Getting coordinates to plot
+        int z = (int) Math.round(zMean+1);
+        int t = object.getT()+1;
+
+        if (posMeasurements[3].equals("")) {
+            PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
+            pointRoi.setPointType(PointRoi.NORMAL);
+            if (ipl.isHyperStack()) {
+                pointRoi.setPosition(1, z, t);
+            } else {
+                int pos = Math.max(Math.max(1,z),t);
+                pointRoi.setPosition(pos);
+            }
+            pointRoi.setStrokeColor(colour);
+            pointRoi.setStrokeWidth(lineWidth);
+            ovl.addElement(pointRoi);
+
+        } else {
+            double r = object.getMeasurement(posMeasurements[3]).getValue();
+            OvalRoi ovalRoi = new OvalRoi(xMean + 0.5 - r, yMean + 0.5 - r, 2 * r, 2 * r);
+            if (ipl.isHyperStack()) {
+                ovalRoi.setPosition(1, z, t);
+            } else {
+                int pos = Math.max(Math.max(1, z), t);
+                ovalRoi.setPosition(pos);
+            }
+            ovalRoi.setStrokeColor(colour);
+            ovalRoi.setStrokeWidth(lineWidth);
+            ovl.addElement(ovalRoi);
+        }
+
+        if (!label.equals("")) {
+            double[] labelCoords = new double[]{xMean, yMean, z, t};
+            addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
+        }
+    }
+
+    public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour,   int labelSize) {
+        Overlay ovl = ipl.getOverlay();
+
+        // Adding text label
+        TextRoi text = new TextRoi(labelCoords[0]-labelSize/2, labelCoords[1]-labelSize/2+5, label);
+        text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
+        if (ipl.isHyperStack()) {
+            text.setPosition(1, (int) labelCoords[2], (int) labelCoords[3]);
+        } else {
+            text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), labelCoords[3]));
+        }
+        text.setStrokeColor(colour);
+        ovl.addElement(text);
+
+    }
+
+
     public HashMap<Integer,Color> getColours(ObjCollection inputObjects) {
         String colourMode = parameters.getValue(COLOUR_MODE);
         String singleColour = parameters.getValue(SINGLE_COLOUR);
@@ -131,165 +309,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public static double[] addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth) {
-        Overlay ovl = ipl.getOverlay();
-
-        // Still need to get mean coords for label
-        double xMean = object.getXMean(true);
-        double yMean = object.getYMean(true);
-        double zMean = object.getZMean(true,false);
-
-        // Adding each point
-        double[] xx = object.getX(true);
-        double[] yy = object.getY(true);
-        double[] zz = object.getZ(true,false);
-
-        int z = (int) Math.round(zMean+1);
-        int t = object.getT()+1;
-
-        for (int i=0;i<xx.length;i++) {
-            PointRoi roi = new PointRoi(xx[i]+0.5,yy[i]+0.5);
-            roi.setPointType(PointRoi.NORMAL);
-
-            if (ipl.isHyperStack()) {
-                roi.setPosition(1, (int) zz[i]+1, t);
-            } else {
-                int pos = Math.max(Math.max(1,(int) zz[i]+1),t);
-                roi.setPosition(pos);
-            }
-            roi.setStrokeColor(colour);
-            roi.setStrokeWidth(lineWidth);
-            ovl.addElement(roi);
-
-        }
-
-        return new double[]{xMean,yMean,z,t};
-
-    }
-
-    public static double[] addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth) {
-        Overlay ovl = ipl.getOverlay();
-
-        double xMean = object.getXMean(true);
-        double yMean = object.getYMean(true);
-        double zMean = object.getZMean(true,false);
-
-        // Getting coordinates to plot
-        int z = (int) Math.round(zMean+1);
-        int t = object.getT()+1;
-
-        // Adding circles where the object centroids are
-        PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
-        pointRoi.setPointType(PointRoi.NORMAL);
-        if (ipl.isHyperStack()) {
-            pointRoi.setPosition(1, z, t);
-        } else {
-            int pos = Math.max(Math.max(1,z),t);
-            pointRoi.setPosition(pos);
-        }
-        pointRoi.setStrokeColor(colour);
-        pointRoi.setStrokeWidth(lineWidth);
-        ovl.addElement(pointRoi);
-
-        return new double[]{xMean,yMean,z,t};
-
-    }
-
-    public static double[] addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth) {
-        Overlay ovl = ipl.getOverlay();
-
-        // Still need to get mean coords for label
-        double xMean = object.getXMean(true);
-        double yMean = object.getYMean(true);
-        double zMean = object.getZMean(true, false);
-        int t = object.getT() + 1;
-
-        // Running through each slice of this object
-        int[][] range = object.getCoordinateRange();
-        for (int z=range[2][0];z<=range[2][1];z++) {
-            Roi polyRoi = object.getRoi(ipl,z);
-            if (ipl.isHyperStack()) {
-                ipl.setPosition(1,z+1,t);
-                polyRoi.setPosition(1, z+1, t);
-            } else {
-                int pos = Math.max(Math.max(1, z+1), t);
-                ipl.setPosition(pos);
-                polyRoi.setPosition(pos);
-            }
-
-            polyRoi.setStrokeColor(colour);
-            polyRoi.setStrokeWidth(lineWidth);
-            ovl.addElement(polyRoi);
-
-        }
-
-        int z = (int) Math.round(zMean+1);
-
-        return new double[]{xMean,yMean,z,t};
-
-    }
-
-    public static double[] addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth,
-                                                   String[] posMeasurements) {
-        Overlay ovl = ipl.getOverlay();
-
-        double xMean = object.getMeasurement(posMeasurements[0]).getValue();
-        double yMean = object.getMeasurement(posMeasurements[1]).getValue();
-        double zMean = object.getMeasurement(posMeasurements[2]).getValue();
-
-        // Getting coordinates to plot
-        int z = (int) Math.round(zMean+1);
-        int t = object.getT()+1;
-
-        if (posMeasurements[3].equals("")) {
-            PointRoi pointRoi = new PointRoi(xMean+0.5,yMean+0.5);
-            pointRoi.setPointType(PointRoi.NORMAL);
-            if (ipl.isHyperStack()) {
-                pointRoi.setPosition(1, z, t);
-            } else {
-                int pos = Math.max(Math.max(1,z),t);
-                pointRoi.setPosition(pos);
-            }
-            pointRoi.setStrokeColor(colour);
-            pointRoi.setStrokeWidth(lineWidth);
-            ovl.addElement(pointRoi);
-
-        } else {
-            double r = object.getMeasurement(posMeasurements[3]).getValue();
-            OvalRoi ovalRoi = new OvalRoi(xMean + 0.5 - r, yMean + 0.5 - r, 2 * r, 2 * r);
-            if (ipl.isHyperStack()) {
-                ovalRoi.setPosition(1, z, t);
-            } else {
-                int pos = Math.max(Math.max(1, z), t);
-                ovalRoi.setPosition(pos);
-            }
-            ovalRoi.setStrokeColor(colour);
-            ovalRoi.setStrokeWidth(lineWidth);
-            ovl.addElement(ovalRoi);
-        }
-
-        return new double[]{xMean,yMean,z,t};
-
-    }
-
-    public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize) {
-        Overlay ovl = ipl.getOverlay();
-
-        // Adding text label
-        TextRoi text = new TextRoi(labelCoords[0]-labelSize/2, labelCoords[1]-labelSize/2+5, label);
-        text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
-        if (ipl.isHyperStack()) {
-            text.setPosition(1, (int) labelCoords[2], (int) labelCoords[3]);
-        } else {
-            text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), labelCoords[3]));
-        }
-        text.setStrokeColor(colour);
-        ovl.addElement(text);
-
-    }
-
-    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Color> colours,
-                              HashMap<Integer,String> IDs) {
+    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Color> colours, HashMap<Integer,String> IDs) {
 
         String positionMode = parameters.getValue(POSITION_MODE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
@@ -306,30 +326,26 @@ public class AddObjectsOverlay extends Module {
         int count = 0;
         for (Obj object:inputObjects.values()) {
             Color colour = colours.get(object.getID());
+            String label = IDs.get(object.getID());
 
             double[] labelCoords = new double[0];
             switch (positionMode) {
                 case PositionModes.ALL_POINTS:
-                    labelCoords = addAllPointsOverlay(object,ipl,colour,lineWidth);
+                    addAllPointsOverlay(object,ipl,colour,lineWidth,label,labelSize);
                     break;
 
                 case PositionModes.CENTROID:
-                    labelCoords = addCentroidOverlay(object,ipl,colour,lineWidth);
+                    addCentroidOverlay(object,ipl,colour,lineWidth,label,labelSize);
                     break;
 
                 case PositionModes.OUTLINE:
-                    labelCoords = addOutlineOverlay(object,ipl,colour,lineWidth);
+                    addOutlineOverlay(object,ipl,colour,lineWidth,label,labelSize);
                     break;
 
                 case PositionModes.POSITION_MEASUREMENTS:
                     String[] posMeasurements = getPositionMeasurements();
-                    labelCoords = addPositionMeasurementsOverlay(object,ipl,colour,lineWidth,posMeasurements);
+                    addPositionMeasurementsOverlay(object,ipl,colour,lineWidth,posMeasurements,label,labelSize);
                     break;
-            }
-
-            if (IDs != null) {
-                String label = IDs.get(object.getID());
-                addLabelsOverlay(ipl,label,labelCoords,colour,labelSize);
             }
 
             writeMessage("Rendered "+(++count)+" objects of "+inputObjects.size());
@@ -394,6 +410,7 @@ public class AddObjectsOverlay extends Module {
 
         }
     }
+
 
     @Override
     public String getTitle() {
