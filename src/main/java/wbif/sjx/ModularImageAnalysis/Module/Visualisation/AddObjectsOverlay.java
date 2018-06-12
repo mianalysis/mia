@@ -4,6 +4,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.CompositeImage;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
@@ -14,6 +15,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.awt.*;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -375,7 +377,8 @@ public class AddObjectsOverlay extends Module {
                     if (limitHistory) maxFrame = p2.getT()+history;
 
                     for (int t = p2.getT();t<maxFrame;t++) {
-                        Line line = new Line(x1, y1, x2, y2);
+                        PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
+//                        Line line = new Line(x1, y1, x2, y2);
                         line.setPosition(t+1);
                         line.setStrokeWidth(lineWidth);
                         line.setStrokeColor(color);

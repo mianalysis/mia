@@ -315,7 +315,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    public void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
@@ -398,6 +398,8 @@ public class TrackObjects extends Module {
         if (identifyLeading) identifyLeading(inputObjects);
 
         // Adding track objects to the workspace
+        writeMessage("Assigned "+trackObjects.size()+" tracks");
+        writeMessage("Adding tracks ("+trackObjectsName+") to workspace");
         workspace.addObjects(trackObjects);
 
     }
