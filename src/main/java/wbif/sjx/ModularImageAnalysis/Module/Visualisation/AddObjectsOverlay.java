@@ -326,7 +326,7 @@ public class AddObjectsOverlay extends Module {
         int count = 0;
         for (Obj object:inputObjects.values()) {
             Color colour = colours.get(object.getID());
-            String label = IDs.get(object.getID());
+            String label = IDs == null ? "" : IDs.get(object.getID());
 
             double[] labelCoords = new double[0];
             switch (positionMode) {
