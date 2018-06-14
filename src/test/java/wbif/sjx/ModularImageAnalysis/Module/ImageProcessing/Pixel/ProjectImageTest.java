@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -76,6 +77,9 @@ public class ProjectImageTest {
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ProjectImage/NoisyGradient3D_ZMaxProj_8bit.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // For some reason, 2D images are loaded with pixel depth set to 1
+        expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage();
@@ -197,6 +201,9 @@ public class ProjectImageTest {
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ProjectImage/NoisyGradient3D_ZMaxProj_16bit.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
+        // For some reason, 2D images are loaded with pixel depth set to 1
+        expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
+
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage();
         projectImage.initialiseParameters();
@@ -236,6 +243,9 @@ public class ProjectImageTest {
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ProjectImage/NoisyGradient3D_ZMaxProj_32bit.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // For some reason, 2D images are loaded with pixel depth set to 1
+        expectedImage.getImagePlus().getCalibration().pixelDepth = 0.1;
 
         // Initialising BinaryOperations
         ProjectImage projectImage = new ProjectImage();

@@ -71,8 +71,8 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
         Calibration calibrationIn = inputImage.getImagePlus().getCalibration();
         Calibration calibrationOut = new Calibration();
 
-        calibrationOut.pixelHeight = calibrationIn.pixelHeight;
         calibrationOut.pixelWidth= calibrationIn.pixelWidth;
+        calibrationOut.pixelHeight = calibrationIn.pixelHeight;
         calibrationOut.pixelDepth = calibrationIn.pixelDepth;
         calibrationOut.setUnit(calibrationIn.getUnit());
 
