@@ -35,13 +35,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient2D_Add50_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -53,36 +53,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -101,13 +77,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Add50_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -119,36 +95,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -167,13 +119,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Add50_16bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -185,36 +137,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(16,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -233,13 +161,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Add50_32bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -251,36 +179,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -299,13 +203,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient5D_Add50_8bit_C1.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -317,36 +221,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -364,13 +244,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient5D_Add50_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -382,36 +262,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -429,13 +285,12 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient5D_Add50_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,true);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -449,33 +304,9 @@ public class ImageMathTest {
         assertNotNull(workspace.getImage("Test_image"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_image");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -496,13 +327,13 @@ public class ImageMathTest {
         image.addMeasurement(new Measurement("Test meas",12.4));
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient5D_AddMeas_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.MEASUREMENT);
@@ -514,36 +345,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -562,13 +369,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Add-5_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.ADD);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -580,36 +387,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -628,13 +411,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Subtract12_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.SUBTRACT);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -646,36 +429,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -694,13 +453,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Subtract-12_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.SUBTRACT);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -712,36 +471,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -760,13 +495,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Multiply2p3_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.MULTIPLY);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -778,36 +513,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -826,13 +537,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Multiply-2p3_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.MULTIPLY);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -844,36 +555,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -892,13 +579,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Multiply-2p3_32bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.MULTIPLY);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -910,36 +597,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -958,13 +621,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Divide0p4_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.DIVIDE);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -976,36 +639,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -1024,13 +663,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Divide-0p6_8bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.DIVIDE);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -1042,36 +681,12 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -1090,13 +705,13 @@ public class ImageMathTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageMath/NoisyGradient3D_Divide-0p6_32bit.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         ImageMath imageMath = new ImageMath();
         imageMath.initialiseParameters();
         imageMath.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
-        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Output_image");
+        imageMath.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         imageMath.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
         imageMath.updateParameterValue(ImageMath.CALCULATION_TYPE,ImageMath.CalculationTypes.DIVIDE);
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
@@ -1108,36 +723,11 @@ public class ImageMathTest {
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
         assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Output_image"));
+        assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Output_image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
-
 }

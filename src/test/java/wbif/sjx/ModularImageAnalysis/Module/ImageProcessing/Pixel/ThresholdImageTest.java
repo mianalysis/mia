@@ -37,7 +37,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient2D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -61,33 +61,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -106,7 +82,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -130,33 +106,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -175,7 +127,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient5D_8bit_C1_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -199,33 +151,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -244,7 +172,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient5D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -268,33 +196,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -313,7 +217,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_16bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -337,33 +241,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -382,7 +262,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_32bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -406,33 +286,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -451,7 +307,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultBlackBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -475,33 +331,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -520,7 +352,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangNoLims2xMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -544,33 +376,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -589,7 +397,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangNoLims0p5xMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -613,33 +421,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -661,7 +445,7 @@ public class ThresholdImageTest {
 //        new Duplicator().run(ipl).show();
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalIntermodesNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -685,37 +469,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-//        outputImage.show();
-//        expectedImage.show();
-//        IJ.runMacro("waitForUser");
-
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -734,7 +490,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalIsoDataNoLimsNoMultBlackBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -758,33 +514,8 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
-
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
     }
 
@@ -804,7 +535,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalMaxEntropyNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -828,33 +559,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -873,7 +580,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalOtsuNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -897,33 +604,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -942,7 +625,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalTriangleNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -966,33 +649,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -1011,7 +670,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -1036,33 +695,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -1081,7 +716,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangMinLimFailNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -1106,33 +741,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test @Ignore
@@ -1176,7 +787,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -1201,33 +812,9 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -1246,7 +833,7 @@ public class ThresholdImageTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultBlackBG.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ThresholdImage
         ThresholdImage thresholdImage = new ThresholdImage();
@@ -1271,32 +858,8 @@ public class ThresholdImageTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 }
