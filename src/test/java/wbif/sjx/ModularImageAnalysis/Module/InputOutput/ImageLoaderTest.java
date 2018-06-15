@@ -499,7 +499,7 @@ public class ImageLoaderTest {
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/CropImage/NoisyGradient5D_8bit_3-12-52-49.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -509,33 +509,9 @@ public class ImageLoaderTest {
         String calibratedUnits = "µm";
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_Output_Image").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_Output_Image");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(49,outputImage.getWidth());
-        assertEquals(37,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test

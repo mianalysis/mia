@@ -4,10 +4,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import fiji.stacks.Hyperstack_rearranger;
-import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.plugin.*;
 import ij.plugin.filter.RankFilters;
+import ij.process.ImageProcessor;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -37,6 +38,7 @@ public class FilterImage extends Module {
         String GAUSSIAN2D = "Gaussian 2D"; // Tested
         String GAUSSIAN3D = "Gaussian 3D"; // Tested
         String GRADIENT2D = "Gradient 2D";
+        String MEAN3D = "Mean 3D";
         String MEDIAN2D = "Median 2D";
         String MEDIAN3D = "Median 3D";
         String RIDGE_ENHANCEMENT = "Ridge enhancement 2D";
@@ -44,7 +46,7 @@ public class FilterImage extends Module {
         String VARIANCE2D = "Variance 2D";
 
         String[] ALL = new String[]{
-                DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MEDIAN2D,MEDIAN3D,RIDGE_ENHANCEMENT, ROLLING_FRAME,VARIANCE2D};
+                DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MEAN3D,MEDIAN2D,MEDIAN3D,RIDGE_ENHANCEMENT, ROLLING_FRAME,VARIANCE2D};
 
     }
 
@@ -66,20 +68,6 @@ public class FilterImage extends Module {
 
     }
 
-    public void applyRankFilterToStack(ImagePlus inputImagePlus, int rankFilter, double filterRadius) {
-        RankFilters filter = new RankFilters();
-
-        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
-                    inputImagePlus.setPosition(c, z, t);
-                    filter.rank(inputImagePlus.getProcessor(),filterRadius,rankFilter);
-
-                }
-            }
-        }
-        inputImagePlus.setPosition(1,1,1);
-    }
 
     public static void runGaussian2DFilter(ImagePlus imagePlus, double sigma) {
         for (int z = 1; z <= imagePlus.getNSlices(); z++) {
@@ -106,29 +94,74 @@ public class FilterImage extends Module {
         imagePlus.setPosition(1,1,1);
     }
 
+    public static void apply2DFilter(ImagePlus inputImagePlus, String filterMode, double filterRadius) {
+        // Determining which rank filter ID to use
+        int rankFilter = 0;
+        switch (filterMode) {
+            case FilterModes.MEDIAN2D:
+                rankFilter = RankFilters.MEDIAN;
+                break;
+
+            case FilterModes.VARIANCE2D:
+                rankFilter = RankFilters.VARIANCE;
+                break;
+        }
+
+        RankFilters filter = new RankFilters();
+        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
+                    inputImagePlus.setPosition(c, z, t);
+                    filter.rank(inputImagePlus.getProcessor(),filterRadius,rankFilter);
+
+                }
+            }
+        }
+        inputImagePlus.setPosition(1,1,1);
+    }
+
     /**
      * Fiji's Median3D filter doesn't currently support 5D hyperstacks; therefore, it is necessary to split the
      * channels, then recombine them.
      */
-    public static void runMedian3DFilter(ImagePlus inputImagePlus, float filterRadius) {
-//        ImagePlus[] ipls = ChannelSplitter.split(inputImagePlus);
-//
-//        // Running Median3D on each channel
-//        for (int i=0;i<inputImagePlus.getNChannels();i++) {
-//            new ImagePlus("fdf",ChannelSplitter.getChannel(inputImagePlus,i+1)).show();
-//            ImageStack ist = Filters3D.filter(ChannelSplitter.getChannel(inputImagePlus,i+1),Filters3D.MEDIAN,
-//                    filterRadius, filterRadius, filterRadius);
-//            ipls[i].setStack(ist);
-//        }
-//
-//        // Re-combining the channels
-//        inputImagePlus.setProcessor(RGBStackMerge.mergeChannels(inputImagePlus,false).getProcessor());
+    public static void apply3DFilter(ImagePlus inputImagePlus, String filterMode, float filterRadius) {
+        int width = inputImagePlus.getWidth();
+        int height = inputImagePlus.getHeight();
+        int nChannels = inputImagePlus.getNChannels();
+        int nSlices = inputImagePlus.getNSlices();
+        int nFrames = inputImagePlus.getNFrames();
 
-//        inputImagePlus.setPosition(1,1,1);
+        int filter = 0;
+        switch (filterMode) {
+            case FilterModes.MEAN3D:
+                filter = Filters3D.MEAN;
+                break;
+            case FilterModes.MEDIAN3D:
+                filter = Filters3D.MEDIAN;
+                break;
+        }
 
-        inputImagePlus.setStack(Filters3D.filter(inputImagePlus.getImageStack(), Filters3D.MEDIAN,
-                filterRadius,filterRadius, filterRadius));
+        for (int c=1;c<=nChannels;c++) {
+            for (int t = 1; t <=nFrames; t++) {
+                ImagePlus iplOrig = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, c+"-"+c, "1-"+nSlices, t+"-"+t);
+                ImageStack istFilt = Filters3D.filter(iplOrig.getImageStack(), filter, filterRadius, filterRadius, filterRadius);
 
+                for (int z = 1; z <= istFilt.getSize(); z++) {
+                    inputImagePlus.setPosition(c,z,t);
+                    ImageProcessor iprOrig = inputImagePlus.getProcessor();
+                    ImageProcessor iprFilt = istFilt.getProcessor(z);
+
+                    for (int x = 0; x < width; x++) {
+                        for (int y = 0; y < height; y++) {
+                            iprOrig.setf(x, y, iprFilt.getf(x, y));
+                        }
+                    }
+                }
+            }
+        }
+
+        inputImagePlus.setPosition(1,1,1);
+        inputImagePlus.updateChannelAndDraw();
 
     }
 
@@ -259,17 +292,22 @@ public class FilterImage extends Module {
 
             case FilterModes.GRADIENT2D:
                 writeMessage("Applying 2D Gradient filter (radius = " + filterRadius + " px)");
-                    runGradient2DFilter(inputImagePlus,filterRadius);
+                runGradient2DFilter(inputImagePlus,filterRadius);
                 break;
 
             case FilterModes.MEDIAN2D:
                 writeMessage("Applying 2D median filter (radius = " + filterRadius + " px)");
-                applyRankFilterToStack(inputImagePlus,RankFilters.MEDIAN,filterRadius);
+                apply2DFilter(inputImagePlus,filterMode,filterRadius);
+                break;
+
+            case FilterModes.MEAN3D:
+                writeMessage("Applying 3D mean filter (radius = " + filterRadius + " px)");
+                apply3DFilter(inputImagePlus,filterMode,(float) filterRadius);
                 break;
 
             case FilterModes.MEDIAN3D:
                 writeMessage("Applying 3D median filter (radius = " + filterRadius + " px)");
-                runMedian3DFilter(inputImagePlus,(float) filterRadius);
+                apply3DFilter(inputImagePlus,filterMode,(float) filterRadius);
                 break;
 
             case FilterModes.RIDGE_ENHANCEMENT:
@@ -284,7 +322,7 @@ public class FilterImage extends Module {
 
             case FilterModes.VARIANCE2D:
                 writeMessage("Applying 2D variance filter (radius = " + filterRadius + " px)");
-                applyRankFilterToStack(inputImagePlus,RankFilters.VARIANCE,filterRadius);
+                apply2DFilter(inputImagePlus,filterMode,filterRadius);
                 break;
 
         }

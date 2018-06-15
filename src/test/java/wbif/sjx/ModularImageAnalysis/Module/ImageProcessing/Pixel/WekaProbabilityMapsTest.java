@@ -35,7 +35,7 @@ public class WekaProbabilityMapsTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_2D_probability.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
@@ -53,33 +53,9 @@ public class WekaProbabilityMapsTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -98,7 +74,7 @@ public class WekaProbabilityMapsTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_2D_probability.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
@@ -116,33 +92,9 @@ public class WekaProbabilityMapsTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -161,7 +113,7 @@ public class WekaProbabilityMapsTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_2D_probability.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
@@ -179,33 +131,9 @@ public class WekaProbabilityMapsTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -224,7 +152,7 @@ public class WekaProbabilityMapsTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_3D_probability.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
@@ -242,33 +170,9 @@ public class WekaProbabilityMapsTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -287,7 +191,7 @@ public class WekaProbabilityMapsTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_probability.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
@@ -305,33 +209,9 @@ public class WekaProbabilityMapsTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -350,7 +230,7 @@ public class WekaProbabilityMapsTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_5D_probability.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
@@ -368,33 +248,9 @@ public class WekaProbabilityMapsTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(4,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -413,7 +269,7 @@ public class WekaProbabilityMapsTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_3D_channels_probability.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
@@ -431,33 +287,9 @@ public class WekaProbabilityMapsTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(4,outputImage.getNChannels());
-        assertEquals(1,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -476,7 +308,7 @@ public class WekaProbabilityMapsTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_channels-slice_probability.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
@@ -494,33 +326,10 @@ public class WekaProbabilityMapsTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(4,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(1,outputImage.getNFrames());
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 
     @Test
@@ -539,7 +348,7 @@ public class WekaProbabilityMapsTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/WekaProbabilityMaps/NoisyObjects_4D_channels-time_probability.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising BinaryOperations
         WekaProbabilityMaps wekaProbabilityMaps = new WekaProbabilityMaps();
@@ -557,32 +366,8 @@ public class WekaProbabilityMapsTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(4,outputImage.getNChannels());
-        assertEquals(1,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int c=0;c<outputImage.getNChannels();c++) {
-            for (int z = 0; z < outputImage.getNSlices(); z++) {
-                for (int t = 0; t < outputImage.getNFrames(); t++) {
-                    expectedImage.setPosition(c+1, z + 1, t + 1);
-                    outputImage.setPosition(c+1, z + 1, t + 1);
-
-                    float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                    float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                    assertArrayEquals(expectedValues, actualValues);
-
-                }
-            }
-        }
     }
 }

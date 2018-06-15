@@ -38,7 +38,7 @@ public class ChannelExtractorTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor();
@@ -57,32 +57,8 @@ public class ChannelExtractorTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(dppZ,outputImage.getCalibration().pixelDepth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
-
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNFrames();t++) {
-                expectedImage.setPosition(1,z+1,t+1);
-                outputImage.setPosition(1,z+1,t+1);
-
-                int[][] expectedValues = expectedImage.getProcessor().getIntArray();
-                int[][] actualValues = outputImage.getProcessor().getIntArray();
-
-                assertArrayEquals(expectedValues,actualValues);
-
-            }
-        }
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
     }
 
     @Test
@@ -102,7 +78,7 @@ public class ChannelExtractorTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit_C2.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor();
@@ -121,32 +97,9 @@ public class ChannelExtractorTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(dppZ,outputImage.getCalibration().pixelDepth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNFrames();t++) {
-                expectedImage.setPosition(1,z+1,t+1);
-                outputImage.setPosition(1,z+1,t+1);
-
-                int[][] expectedValues = expectedImage.getProcessor().getIntArray();
-                int[][] actualValues = outputImage.getProcessor().getIntArray();
-
-                assertArrayEquals(expectedValues,actualValues);
-
-            }
-        }
     }
 
     @Test
@@ -166,7 +119,7 @@ public class ChannelExtractorTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_16bit_C1.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor();
@@ -185,32 +138,9 @@ public class ChannelExtractorTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(dppZ,outputImage.getCalibration().pixelDepth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(16,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNFrames();t++) {
-                expectedImage.setPosition(1,z+1,t+1);
-                outputImage.setPosition(1,z+1,t+1);
-
-                int[][] expectedValues = expectedImage.getProcessor().getIntArray();
-                int[][] actualValues = outputImage.getProcessor().getIntArray();
-
-                assertArrayEquals(expectedValues,actualValues);
-
-            }
-        }
     }
 
     @Test
@@ -230,7 +160,7 @@ public class ChannelExtractorTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_16bit_C2.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor();
@@ -249,32 +179,9 @@ public class ChannelExtractorTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(dppZ,outputImage.getCalibration().pixelDepth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(16,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNFrames();t++) {
-                expectedImage.setPosition(1,z+1,t+1);
-                outputImage.setPosition(1,z+1,t+1);
-
-                int[][] expectedValues = expectedImage.getProcessor().getIntArray();
-                int[][] actualValues = outputImage.getProcessor().getIntArray();
-
-                assertArrayEquals(expectedValues,actualValues);
-
-            }
-        }
     }
 
     @Test
@@ -294,7 +201,7 @@ public class ChannelExtractorTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_32bit_C1.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor();
@@ -313,32 +220,9 @@ public class ChannelExtractorTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(dppZ,outputImage.getCalibration().pixelDepth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNFrames();t++) {
-                expectedImage.setPosition(1,z+1,t+1);
-                outputImage.setPosition(1,z+1,t+1);
-
-                float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                assertArrayEquals(expectedValues,actualValues);
-
-            }
-        }
     }
 
     @Test
@@ -358,7 +242,7 @@ public class ChannelExtractorTest {
         workspace.addImage(image);
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_32bit_C2.tif").getPath(),"UTF-8");
-        ImagePlus expectedImage = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
         // Initialising ChannelExtractor
         ChannelExtractor channelExtractor = new ChannelExtractor();
@@ -377,31 +261,8 @@ public class ChannelExtractorTest {
         assertNotNull(workspace.getImage("Test_output"));
 
         // Checking the output image has the expected calibration
-        ImagePlus outputImage = workspace.getImage("Test_output").getImagePlus();
-        assertEquals(dppXY,outputImage.getCalibration().pixelWidth,1E-2);
-        assertEquals(dppZ,outputImage.getCalibration().pixelDepth,1E-2);
-        assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(32,outputImage.getBitDepth());
+        Image outputImage = workspace.getImage("Test_output");
+        assertTrue(outputImage.equals(expectedImage));
 
-        // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(1,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
-
-        // Checking the individual image pixel values
-        for (int z=0;z<outputImage.getNSlices();z++) {
-            for (int t=0;t<outputImage.getNFrames();t++) {
-                expectedImage.setPosition(1,z+1,t+1);
-                outputImage.setPosition(1,z+1,t+1);
-
-                float[][] expectedValues = expectedImage.getProcessor().getFloatArray();
-                float[][] actualValues = outputImage.getProcessor().getFloatArray();
-
-                assertArrayEquals(expectedValues,actualValues);
-
-            }
-        }
     }
 }

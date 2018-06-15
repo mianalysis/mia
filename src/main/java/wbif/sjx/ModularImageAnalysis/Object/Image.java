@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import net.imglib2.Cursor;
@@ -12,9 +13,13 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
+import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.TreeSet;
 
 /**
  * Created by stephen on 30/04/2017.
@@ -141,4 +146,77 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         this.measurements = singleMeasurements;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 1;
+
+        Calibration calibration = imagePlus.getCalibration();
+
+        hash = 31*hash + ((Number) calibration.pixelWidth).hashCode();
+        hash = 31*hash + ((Number) calibration.pixelDepth).hashCode();
+        hash = 31*hash + calibration.getUnits().toUpperCase().hashCode();
+
+        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
+                    imagePlus.setPosition(c,z,t);
+                    ImageProcessor imageProcessor = imagePlus.getProcessor();
+                    for (int x=0;x<imagePlus.getWidth();x++) {
+                        for (int y=0;y<imagePlus.getHeight();y++) {
+                            hash = 31*hash + ((Number) imageProcessor.getf(x,y)).hashCode();
+                        }
+                    }
+                }
+            }
+        }
+
+        return hash;
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof Image)) return false;
+
+        Image image2 = (Image) obj;
+        ImagePlus imagePlus2 = image2.getImagePlus();
+
+        // Comparing calibrations
+        Calibration calibration1 = imagePlus.getCalibration();
+        Calibration calibration2 = imagePlus2.getCalibration();
+
+        if (calibration1.pixelWidth != calibration2.pixelWidth) return false;
+        if (calibration1.pixelDepth != calibration2.pixelDepth) return false;
+        if (!calibration1.getUnits().equals(calibration2.getUnits())) return false;
+
+        // Comparing dimensions
+        if (imagePlus.getWidth() != imagePlus2.getWidth()) return false;
+        if (imagePlus.getHeight() != imagePlus2.getHeight()) return false;
+        if (imagePlus.getNChannels() != imagePlus2.getNChannels()) return false;
+        if (imagePlus.getNSlices() != imagePlus2.getNSlices()) return false;
+        if (imagePlus.getNFrames() != imagePlus2.getNFrames()) return false;
+        if (imagePlus.getBitDepth() != imagePlus2.getBitDepth()) return false;
+
+        // Checking the individual image pixel values
+        for (int c=0;c<imagePlus.getNChannels();c++) {
+            for (int z = 0; z < imagePlus.getNSlices(); z++) {
+                for (int t = 0; t < imagePlus.getNFrames(); t++) {
+                    imagePlus.setPosition(c+1, z + 1, t + 1);
+                    imagePlus2.setPosition(c+1, z + 1, t + 1);
+
+                    ImageProcessor imageProcessor1 = imagePlus.getProcessor();
+                    ImageProcessor imageProcessor2 = imagePlus2.getProcessor();
+                    for (int x=0;x<imagePlus.getWidth();x++) {
+                        for (int y = 0; y < imagePlus.getHeight(); y++) {
+                            if (imageProcessor1.getf(x,y) != imageProcessor2.getf(x,y)) return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+
+    }
 }
