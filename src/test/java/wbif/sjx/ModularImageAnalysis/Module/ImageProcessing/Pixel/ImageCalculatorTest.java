@@ -71,14 +71,14 @@ public class ImageCalculatorTest {
         assertEquals(dppXY,outputImage.getCalibration().pixelWidth,tolerance);
         assertEquals(dppZ,outputImage.getCalibration().pixelDepth,tolerance);
         assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        assertEquals(expectedImage.getBitDepth(),outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -144,14 +144,14 @@ public class ImageCalculatorTest {
         assertEquals(dppXY,outputImage.getCalibration().pixelWidth,tolerance);
         assertEquals(dppZ,outputImage.getCalibration().pixelDepth,tolerance);
         assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        assertEquals(expectedImage.getBitDepth(),outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -217,14 +217,14 @@ public class ImageCalculatorTest {
         assertEquals(dppXY,outputImage.getCalibration().pixelWidth,tolerance);
         assertEquals(dppZ,outputImage.getCalibration().pixelDepth,tolerance);
         assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        assertEquals(expectedImage.getBitDepth(),outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -295,11 +295,11 @@ public class ImageCalculatorTest {
         assertEquals(32,outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -368,11 +368,11 @@ public class ImageCalculatorTest {
         assertEquals(32,outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -441,11 +441,11 @@ public class ImageCalculatorTest {
         assertEquals(32,outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -516,14 +516,14 @@ public class ImageCalculatorTest {
         assertEquals(dppXY,outputImage.getCalibration().pixelWidth,tolerance);
         assertEquals(dppZ,outputImage.getCalibration().pixelDepth,tolerance);
         assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        assertEquals(expectedImage.getBitDepth(),outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -594,11 +594,11 @@ public class ImageCalculatorTest {
         assertEquals(32,outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -669,14 +669,14 @@ public class ImageCalculatorTest {
         assertEquals(dppXY,outputImage.getCalibration().pixelWidth,tolerance);
         assertEquals(dppZ,outputImage.getCalibration().pixelDepth,tolerance);
         assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        assertEquals(expectedImage.getBitDepth(),outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -747,11 +747,11 @@ public class ImageCalculatorTest {
         assertEquals(32,outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -822,14 +822,14 @@ public class ImageCalculatorTest {
         assertEquals(dppXY,outputImage.getCalibration().pixelWidth,tolerance);
         assertEquals(dppZ,outputImage.getCalibration().pixelDepth,tolerance);
         assertEquals(calibratedUnits,outputImage.getCalibration().getXUnit());
-        assertEquals(8,outputImage.getBitDepth());
+        assertEquals(expectedImage.getBitDepth(),outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {
@@ -900,11 +900,11 @@ public class ImageCalculatorTest {
         assertEquals(32,outputImage.getBitDepth());
 
         // Checking the size of the output image
-        assertEquals(64,outputImage.getWidth());
-        assertEquals(76,outputImage.getHeight());
-        assertEquals(2,outputImage.getNChannels());
-        assertEquals(12,outputImage.getNSlices());
-        assertEquals(4,outputImage.getNFrames());
+        assertEquals(expectedImage.getWidth(),outputImage.getWidth());
+        assertEquals(expectedImage.getHeight(),outputImage.getHeight());
+        assertEquals(expectedImage.getNChannels(),outputImage.getNChannels());
+        assertEquals(expectedImage.getNSlices(),outputImage.getNSlices());
+        assertEquals(expectedImage.getNFrames(),outputImage.getNFrames());
 
         // Checking the individual image pixel values
         for (int c=0;c<outputImage.getNChannels();c++) {

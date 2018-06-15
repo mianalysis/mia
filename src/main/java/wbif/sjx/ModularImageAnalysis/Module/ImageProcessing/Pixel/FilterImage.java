@@ -38,6 +38,7 @@ public class FilterImage extends Module {
         String GAUSSIAN2D = "Gaussian 2D"; // Tested
         String GAUSSIAN3D = "Gaussian 3D"; // Tested
         String GRADIENT2D = "Gradient 2D";
+        String MEAN3D = "Mean 3D";
         String MEDIAN2D = "Median 2D";
         String MEDIAN3D = "Median 3D";
         String RIDGE_ENHANCEMENT = "Ridge enhancement 2D";
@@ -45,7 +46,7 @@ public class FilterImage extends Module {
         String VARIANCE2D = "Variance 2D";
 
         String[] ALL = new String[]{
-                DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MEDIAN2D,MEDIAN3D,RIDGE_ENHANCEMENT, ROLLING_FRAME,VARIANCE2D};
+                DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MEAN3D,MEDIAN2D,MEDIAN3D,RIDGE_ENHANCEMENT, ROLLING_FRAME,VARIANCE2D};
 
     }
 
@@ -132,6 +133,9 @@ public class FilterImage extends Module {
 
         int filter = 0;
         switch (filterMode) {
+            case FilterModes.MEAN3D:
+                filter = Filters3D.MEAN;
+                break;
             case FilterModes.MEDIAN3D:
                 filter = Filters3D.MEDIAN;
                 break;
@@ -294,6 +298,11 @@ public class FilterImage extends Module {
             case FilterModes.MEDIAN2D:
                 writeMessage("Applying 2D median filter (radius = " + filterRadius + " px)");
                 apply2DFilter(inputImagePlus,filterMode,filterRadius);
+                break;
+
+            case FilterModes.MEAN3D:
+                writeMessage("Applying 3D mean filter (radius = " + filterRadius + " px)");
+                apply3DFilter(inputImagePlus,filterMode,(float) filterRadius);
                 break;
 
             case FilterModes.MEDIAN3D:
