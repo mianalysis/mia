@@ -51,6 +51,7 @@ public class AddObjectsOverlay extends Module {
     public static final String LINE_WIDTH = "Line width";
     public static final String SHOW_IMAGE = "Show image";
 
+
     public interface ColourModes extends ObjCollection.ColourModes {}
 
     public interface SingleColours extends ObjCollection.SingleColours {}
@@ -309,7 +310,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Color> colours, HashMap<Integer,String> IDs) {
+    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Color> colours, HashMap<Integer,String> labels) {
 
         String positionMode = parameters.getValue(POSITION_MODE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
@@ -326,7 +327,7 @@ public class AddObjectsOverlay extends Module {
         int count = 0;
         for (Obj object:inputObjects.values()) {
             Color colour = colours.get(object.getID());
-            String label = IDs == null ? "" : IDs.get(object.getID());
+            String label = labels == null ? "" : labels.get(object.getID());
 
             double[] labelCoords = new double[0];
             switch (positionMode) {

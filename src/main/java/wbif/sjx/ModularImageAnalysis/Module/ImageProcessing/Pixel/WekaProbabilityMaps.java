@@ -1,16 +1,21 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.HyperStackMaker;
+import ij.plugin.SubHyperstackMaker;
+import ij.process.ImageProcessor;
 import trainableSegmentation.WekaSegmentation;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
 
 import java.io.PrintStream;
 
@@ -22,6 +27,65 @@ public class WekaProbabilityMaps extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CLASSIFIER_FILE = "Classifier file path";
     public static final String SHOW_IMAGE = "Show probability maps";
+
+
+    public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName, String classifierFilePath) {
+        // Initialising the training system, which shows a warning, so temporarily diverting output to error stream
+        WekaSegmentation wekaSegmentation = new WekaSegmentation();
+
+        writeMessage("Loading classifier");
+        PrintStream ps = System.out;
+        System.setOut(System.err);
+        wekaSegmentation.loadClassifier(classifierFilePath);
+        System.setOut(ps);
+
+        int nThreads = Prefs.getThreads();
+        int width = inputImagePlus.getWidth();
+        int height = inputImagePlus.getHeight();
+        int nChannels = inputImagePlus.getNChannels();
+        int nSlices = inputImagePlus.getNSlices();
+        int nFrames = inputImagePlus.getNFrames();
+        int nClasses = wekaSegmentation.getNumOfClasses();
+
+        // Creating the new image
+        ImagePlus probabilityMaps = IJ.createHyperStack(outputImageName,width,height,nChannels*nClasses,nSlices,nFrames,32);
+        probabilityMaps.setCalibration(inputImagePlus.getCalibration());
+
+        writeMessage("Calculating probabilities");
+        int count = 0;
+        int nStacks = nChannels*nFrames;
+        for (int c=1;c<=nChannels;c++) {
+            for (int t = 1; t <= nFrames; t++) {
+                ImagePlus iplSingle = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,c+"-"+c,"1-"+nSlices,t+"-"+t);
+
+                wekaSegmentation.setTrainingImage(iplSingle);
+                wekaSegmentation.applyClassifier(true);
+                iplSingle = wekaSegmentation.getClassifiedImage();
+
+                for (int cl=1;cl<=nClasses;cl++) {
+                    for (int z = 1; z <= nSlices; z++) {
+                        iplSingle.setPosition(nClasses*(z-1)+cl);
+                        probabilityMaps.setPosition((nClasses*(c-1)+cl), z, t);
+
+                        ImageProcessor iprSingle = iplSingle.getProcessor();
+                        ImageProcessor iprProbability = probabilityMaps.getProcessor();
+
+                        for (int x = 0; x < width; x++) {
+                            for (int y = 0; y < height; y++) {
+                                iprProbability.setf(x, y, iprSingle.getf(x, y));
+                            }
+                        }
+                    }
+                }
+
+                writeMessage("Processed "+(++count)+" of "+nStacks+" stacks");
+
+            }
+        }
+
+        return probabilityMaps;
+
+    }
 
     @Override
     public String getTitle() {
@@ -41,34 +105,13 @@ public class WekaProbabilityMaps extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
-        ImagePlus probabilityMaps = new Duplicator().run(inputImagePlus);
-
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
         boolean showImage = parameters.getValue(SHOW_IMAGE);
 
-        // Initialising the training system, which shows a warning, so temporarily diverting output to error stream
-        WekaSegmentation wekaSegmentation = new WekaSegmentation();
-
-        writeMessage("Loading classifier");
-        PrintStream ps = System.out;
-        System.setOut(System.err);
-        wekaSegmentation.loadClassifier(classifierFilePath);
-        System.setOut(ps);
-
-        // Running the classifier
-        writeMessage("Calculating probabilities");
-        int nThreads = Prefs.getThreads();
-        probabilityMaps = wekaSegmentation.applyClassifier(probabilityMaps,nThreads,true);
-
-        // If the input image was a 5D hyperstack it needs to be converted.  The channels cycle through each map.
-        if (inputImagePlus.getNChannels() > 1) {
-            int c = inputImagePlus.getNChannels();
-            int z = inputImagePlus.getNSlices();
-            int t = inputImagePlus.getNFrames();
-            probabilityMaps = HyperStackConverter.toHyperStack(probabilityMaps,c*2,z,t,"xyczt","color");
-        }
+        // Running the classifier on each individual stack
+        ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath);
 
         // Adding the probability maps to the Workspace
         workspace.addImage(new Image(outputImageName,probabilityMaps));
