@@ -151,8 +151,6 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_CONVEX_HULL,false);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_ELLIPSOID,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
@@ -223,8 +221,6 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_CONVEX_HULL,false);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_ELLIPSOID,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
@@ -282,8 +278,6 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_CONVEX_HULL,false);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_ELLIPSOID,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
@@ -307,8 +301,6 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         // Getting expected values
         LinkedHashSet<Parameter> expectedParams = new LinkedHashSet<>();
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_VOLUME,Parameter.BOOLEAN,true));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_CONVEX_HULL,Parameter.BOOLEAN,false));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_ELLIPSOID,Parameter.BOOLEAN,false));
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,Parameter.BOOLEAN,false));
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_DIA,Parameter.BOOLEAN,true));
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_AREA,Parameter.BOOLEAN,false));
@@ -350,8 +342,6 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_CONVEX_HULL,false);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_ELLIPSOID,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA,false);
@@ -375,8 +365,6 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         // Getting expected values
         LinkedHashSet<Parameter> expectedParams = new LinkedHashSet<>();
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_VOLUME,Parameter.BOOLEAN,true));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_CONVEX_HULL,Parameter.BOOLEAN,false));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_ELLIPSOID,Parameter.BOOLEAN,false));
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,Parameter.BOOLEAN,false));
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_DIA,Parameter.BOOLEAN,true));
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_AREA,Parameter.BOOLEAN,false));

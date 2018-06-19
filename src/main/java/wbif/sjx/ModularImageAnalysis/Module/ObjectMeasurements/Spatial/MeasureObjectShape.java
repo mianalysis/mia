@@ -6,7 +6,6 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.Proj
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.EllipseCalculator;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
-import wbif.sjx.common.Analysis.VolumeCalculator;
 
 import java.util.ArrayList;
 
@@ -16,33 +15,15 @@ import java.util.ArrayList;
 public class MeasureObjectShape extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String MEASURE_VOLUME = "Measure volume";
-    public static final String MEASURE_CONVEX_HULL = "Measure convex hull";
     public static final String FITTING_MODE = "Fit convex hull to";
-    public static final String MEASURE_ELLIPSOID = "Measure ellipsoid";
     public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
     public static final String MEASURE_PROJECTED_ELLIPSE = "Measure projected ellipse";
-
-    public interface FittingModes {
-        String CENTROIDS = "Pixel centroids";
-        String CORNERS = "Pixel corners";
-
-        String[] ALL = new String[]{CENTROIDS,CORNERS};
-
-    }
 
     public interface Measurements {
         String N_VOXELS = "SHAPE // N_VOXELS";
         String VOLUME_PX = "SHAPE // VOLUME_(PX^3)";
         String VOLUME_CAL = "SHAPE // VOLUME_(${CAL}^3)";
-        String HULL_VOLUME_PX = "SHAPE // HULL_VOLUME_(PX^3)";
-        String HULL_VOLUME_CAL = "SHAPE // HULL_VOLUME_(${CAL}^3)";
-        String HULL_SURFACE_AREA_PX = "SHAPE // HULL_SURFACE_AREA_(PX^2)";
-        String HULL_SURFACE_AREA_CAL = "SHAPE // HULL_SURFACE_AREA_(${CAL}^2)";
-        String SPHERICITY = "SHAPE // SPHERICITY";
-        String SOLIDITY = "SHAPE // SOLIDITY";
-        String ELLIPSOID_ORIENTATION_1 = "SHAPE // ELLIPSOID_ORIENTATION_1_(DEGS)";
-        String ELLIPSOID_ORIENTATION_2 = "SHAPE // ELLIPSOID_ORIENTATION_2_(DEGS)";
         String ELLIPSE_THETA = "SHAPE // ELLIPSE_ANGLE_(DEGS)";
         String PROJ_AREA_PX = "SHAPE // PROJ_AREA_(PX^2)";
         String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${CAL}^2)";
@@ -103,9 +84,6 @@ public class MeasureObjectShape extends Module {
 
         // Getting parameters
         boolean measureVolume = parameters.getValue(MEASURE_VOLUME);
-        boolean measureConvexHull = parameters.getValue(MEASURE_CONVEX_HULL);
-        String fittingMode = parameters.getValue(FITTING_MODE);
-        boolean measureEllipsoid = parameters.getValue(MEASURE_ELLIPSOID);
         boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA);
         boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA);
         boolean measureProjectedEllipse = parameters.getValue(MEASURE_PROJECTED_ELLIPSE);
@@ -123,47 +101,6 @@ public class MeasureObjectShape extends Module {
 
                 double containedVolumeCal = inputObject.getContainedVolume(false);
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.VOLUME_CAL), containedVolumeCal, this));
-            }
-
-            // Adding the convex hull fitting measurements
-            if (measureConvexHull) {
-                VolumeCalculator volumeCalculator = null;
-                switch (fittingMode) {
-                    case FittingModes.CENTROIDS:
-                        volumeCalculator = new VolumeCalculator(inputObject,VolumeCalculator.CENTROID);
-                        break;
-                    case FittingModes.CORNERS:
-                        volumeCalculator = new VolumeCalculator(inputObject,VolumeCalculator.CORNER);
-                        break;
-                }
-
-                // Hull volume was calculated using
-                double hullVolumePx = volumeCalculator.getHullVolume(true);
-                double hullVolumeCal = volumeCalculator.getHullVolume(false);
-                double hullSurfaceAreaPx = volumeCalculator.getHullSurfaceArea(true);
-                double hullSurfaceAreaCal = volumeCalculator.getHullSurfaceArea(false);
-                double sphericity = volumeCalculator.getSphericity();
-                double solidity = volumeCalculator.getSolidity();
-
-                inputObject.addMeasurement(new Measurement(Measurements.HULL_VOLUME_PX,hullVolumePx,this));
-                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.HULL_VOLUME_CAL),hullVolumeCal,this));
-                inputObject.addMeasurement(new Measurement(Measurements.HULL_SURFACE_AREA_PX,hullSurfaceAreaPx,this));
-                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.HULL_SURFACE_AREA_CAL),hullSurfaceAreaCal,this));
-                inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY,sphericity,this));
-                inputObject.addMeasurement(new Measurement(Measurements.SOLIDITY,solidity,this));
-            }
-
-            // Adding ellipsoid fitting measurements
-            if (measureEllipsoid) {
-                EllipsoidCalculator ellipsoidCalculator = new EllipsoidCalculator(inputObject);
-
-                double[] orientations = ellipsoidCalculator.getEllipsoidOrientationRads();
-                double orientation1Degs = Math.toDegrees(orientations[0]);
-                double orientation2Degs = Math.toDegrees(orientations[1]);
-
-                inputObject.addMeasurement(new Measurement(Measurements.ELLIPSOID_ORIENTATION_1,orientation1Degs,this));
-                inputObject.addMeasurement(new Measurement(Measurements.ELLIPSOID_ORIENTATION_2,orientation2Degs,this));
-
             }
 
             // If necessary analyses are included
@@ -205,9 +142,6 @@ public class MeasureObjectShape extends Module {
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(MEASURE_VOLUME, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_CONVEX_HULL, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.CENTROIDS,FittingModes.ALL));
-        parameters.add(new Parameter(MEASURE_ELLIPSOID, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(MEASURE_PROJECTED_ELLIPSE, Parameter.BOOLEAN, false));
@@ -220,13 +154,6 @@ public class MeasureObjectShape extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(MEASURE_VOLUME));
-
-        returnedParameters.add(parameters.getParameter(MEASURE_CONVEX_HULL));
-        if (parameters.getValue(MEASURE_CONVEX_HULL)) {
-            returnedParameters.add(parameters.getParameter(FITTING_MODE));
-        }
-
-        returnedParameters.add(parameters.getParameter(MEASURE_ELLIPSOID));
         returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_AREA));
         returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_DIA));
         returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_ELLIPSE));
@@ -258,44 +185,6 @@ public class MeasureObjectShape extends Module {
             reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.VOLUME_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
-        }
-
-        if (parameters.getValue(MEASURE_CONVEX_HULL)) {
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.HULL_VOLUME_PX);
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_VOLUME_CAL));
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-
-            reference = objectMeasurementReferences.getOrPut(Measurements.HULL_SURFACE_AREA_PX);
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_SURFACE_AREA_CAL));
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-
-            reference = objectMeasurementReferences.getOrPut(Measurements.SPHERICITY);
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-
-            reference = objectMeasurementReferences.getOrPut(Measurements.SOLIDITY);
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-
-        }
-
-        if (parameters.getValue(MEASURE_ELLIPSOID)) {
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPSOID_ORIENTATION_1);
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-
-            reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPSOID_ORIENTATION_2);
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_ELLIPSE)) {
