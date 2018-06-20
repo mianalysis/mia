@@ -249,6 +249,13 @@
 //
 //    @Override
 //    public void addRelationships(RelationshipCollection relationships) {
+//        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
+//            case OutputModes.CREATE_NEW_OBJECT:
+//                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+//                String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+//                relationships.addRelationship(inputObjectsName,outputObjectsName);
 //
+//                break;
+//        }
 //    }
 //}

@@ -32,8 +32,15 @@ public class FitEllipsoid extends Module {
         String Y_CENT_CAL = "ELLIPSOID // Y_CENTROID_(${CAL})";
         String Z_CENT_SLICE = "ELLIPSOID // Z_CENTROID_(SLICE)";
         String Z_CENT_CAL = "ELLIPSOID // Z_CENTROID_(${CAL})";
+        String RADIUS_1_PX = "ELLIPSOID // RADIUS_1_(PX)";
+        String RADIUS_1_CAL = "ELLIPSOID // RADIUS_1_(CAL)";
+        String RADIUS_2_PX = "ELLIPSOID // RADIUS_2_(PX)";
+        String RADIUS_2_CAL = "ELLIPSOID // RADIUS_2_(CAL)";
+        String RADIUS_3_PX = "ELLIPSOID // RADIUS_3_(PX)";
+        String RADIUS_3_CAL = "ELLIPSOID // RADIUS_3_(CAL)";
         String ORIENTATION_1 = "ELLIPSOID // ORIENTATION_1_(DEGS)";
         String ORIENTATION_2 = "ELLIPSOID // ORIENTATION_2_(DEGS)";
+
     }
 
 
@@ -89,16 +96,24 @@ public class FitEllipsoid extends Module {
         double orientation1Degs = Math.toDegrees(orientations[0]);
         double orientation2Degs = Math.toDegrees(orientations[1]);
 
-        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_1,orientation1Degs,this));
-        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_2,orientation2Degs,this));
+        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_1,orientation1Degs));
+        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_2,orientation2Degs));
 
         double[] centres = calculator.getEllipsoidCentre();
-        inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX,centres[0],this));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENT_CAL),centres[0]*dppXY,this));
-        inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX,centres[1],this));
-        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_CENT_CAL),centres[1]*dppXY,this));
-        inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_SLICE,centres[2],this));
-        inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_CAL,centres[2]*dppZ,this));
+        inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX,centres[0]));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENT_CAL),centres[0]*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX,centres[1]));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_CENT_CAL),centres[1]*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_SLICE,centres[2]*dppXY/dppZ));
+        inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_CAL,centres[2]*dppZ));
+
+        double[] radii = calculator.getEllipsoidRadii();
+        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_1_PX,radii[0]));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_1_CAL),radii[0]*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_2_PX,radii[1]));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_2_CAL),radii[1]*dppXY));
+        inputObject.addMeasurement(new Measurement(Measurements.RADIUS_3_PX,radii[2]));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_3_CAL),radii[2]*dppXY));
 
     }
 
@@ -205,6 +220,30 @@ public class FitEllipsoid extends Module {
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
 
+        reference = objectMeasurementReferences.getOrPut(Measurements.RADIUS_1_PX);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.RADIUS_1_CAL));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.RADIUS_2_PX);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.RADIUS_2_CAL));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.RADIUS_3_PX);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.RADIUS_3_CAL));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
         reference = objectMeasurementReferences.getOrPut(Measurements.ORIENTATION_1);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
@@ -219,6 +258,13 @@ public class FitEllipsoid extends Module {
 
     @Override
     public void addRelationships(RelationshipCollection relationships) {
+        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
+            case OutputModes.CREATE_NEW_OBJECT:
+                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+                relationships.addRelationship(inputObjectsName,outputObjectsName);
 
+                break;
+        }
     }
 }
