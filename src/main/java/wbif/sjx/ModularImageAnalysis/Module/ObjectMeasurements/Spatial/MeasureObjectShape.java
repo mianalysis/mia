@@ -6,6 +6,8 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.Proj
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.EllipseCalculator;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
+import wbif.sjx.common.Analysis.LongestChordCalculator;
+import wbif.sjx.common.MathFunc.CumStat;
 
 import java.util.ArrayList;
 
@@ -150,16 +152,7 @@ public class MeasureObjectShape extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParameters = new ParameterCollection();
-
-        returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(MEASURE_VOLUME));
-        returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_AREA));
-        returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_DIA));
-        returnedParameters.add(parameters.getParameter(MEASURE_PROJECTED_ELLIPSE));
-
-        return returnedParameters;
-
+        return parameters;
     }
 
     @Override

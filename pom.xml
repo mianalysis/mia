@@ -8,6 +8,10 @@
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>https://github.com/SJCross/ModularImageAnalysis</url>
+    <inceptionYear>2017</inceptionYear>
+    <organization>
+        <name>University of Bristol</name>
+    </organization>
 
     <licenses>
         <license>
@@ -16,6 +20,34 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <id>sjcross</id>
+            <name>Stephen Cross</name>
+            <roles>
+                <role>lead</role>
+                <role>developer</role>
+                <role>debugger</role>
+                <role>reviewer</role>
+                <role>support</role>
+                <role>maintainer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <contributors>
+        <contributor>
+            <name>Stephen Cross</name>
+            <roles><role>founder</role></roles>
+            <properties><id>sjcross</id></properties>
+        </contributor>
+    </contributors>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/SJCross/ModularImageAnalysis/issues</url>
+    </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

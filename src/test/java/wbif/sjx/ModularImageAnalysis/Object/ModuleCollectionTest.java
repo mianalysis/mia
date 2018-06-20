@@ -308,7 +308,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         expectedParams.add(new Parameter(MeasureObjectTexture.CALIBRATED_RADIUS,Parameter.BOOLEAN,false));
 
         // Checking the parameters are what are expected
-        assertEquals(8,actualParams.size());
+        assertEquals(6,actualParams.size());
 
         for (Parameter actualParam:actualParams) {
             boolean found = false;
@@ -370,7 +370,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_AREA,Parameter.BOOLEAN,false));
 
         // Checking the parameters are what are expected
-        assertEquals(6,actualParams.size());
+        assertEquals(4,actualParams.size());
 
         for (Parameter actualParam:actualParams) {
             boolean found = false;

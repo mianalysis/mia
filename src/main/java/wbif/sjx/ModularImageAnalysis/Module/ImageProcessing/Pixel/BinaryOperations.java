@@ -119,7 +119,7 @@ public class BinaryOperations extends Module {
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
-        markerIpl = new Duplicator().run(markerIpl);
+        if (markerIpl != null) markerIpl = new Duplicator().run(markerIpl);
         IJ.run(markerIpl,"Invert","stack");
 
         int nFrames = maskIpl.getNFrames();

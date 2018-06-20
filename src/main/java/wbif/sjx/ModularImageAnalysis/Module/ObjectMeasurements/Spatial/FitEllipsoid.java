@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
+import ij.ImagePlus;
+import ij.ImageStack;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -12,6 +14,8 @@ import wbif.sjx.common.Object.Volume;
 public class FitEllipsoid extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String TEMPLATE_IMAGE = "Template image";
+    public static final String FITTING_METHOD = "Fitting method";
+    public static final String USE_INTENSITY_WEIGHTING = "Use intensity weighting";
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
@@ -26,26 +30,39 @@ public class FitEllipsoid extends Module {
     }
 
     public interface Measurements {
-        String X_CENT_PX = "ELLIPSOID // X_CENTROID_(PX)";
-        String X_CENT_CAL = "ELLIPSOID // X_CENTROID_(${CAL})";
-        String Y_CENT_PX = "ELLIPSOID // Y_CENTROID_(PX)";
-        String Y_CENT_CAL = "ELLIPSOID // Y_CENTROID_(${CAL})";
-        String Z_CENT_SLICE = "ELLIPSOID // Z_CENTROID_(SLICE)";
-        String Z_CENT_CAL = "ELLIPSOID // Z_CENTROID_(${CAL})";
-        String RADIUS_1_PX = "ELLIPSOID // RADIUS_1_(PX)";
-        String RADIUS_1_CAL = "ELLIPSOID // RADIUS_1_(CAL)";
-        String RADIUS_2_PX = "ELLIPSOID // RADIUS_2_(PX)";
-        String RADIUS_2_CAL = "ELLIPSOID // RADIUS_2_(CAL)";
-        String RADIUS_3_PX = "ELLIPSOID // RADIUS_3_(PX)";
-        String RADIUS_3_CAL = "ELLIPSOID // RADIUS_3_(CAL)";
-        String ORIENTATION_1 = "ELLIPSOID // ORIENTATION_1_(DEGS)";
-        String ORIENTATION_2 = "ELLIPSOID // ORIENTATION_2_(DEGS)";
+        String X_CENT_PX = "ELLIPSOID // X_CENTROID (PX)";
+        String X_CENT_CAL = "ELLIPSOID // X_CENTROID (${CAL})";
+        String Y_CENT_PX = "ELLIPSOID // Y_CENTROID (PX)";
+        String Y_CENT_CAL = "ELLIPSOID // Y_CENTROID (${CAL})";
+        String Z_CENT_SLICE = "ELLIPSOID // Z_CENTROID (SLICE)";
+        String Z_CENT_CAL = "ELLIPSOID // Z_CENTROID (${CAL})";
+        String RADIUS_1_PX = "ELLIPSOID // RADIUS_1 (PX)";
+        String RADIUS_1_CAL = "ELLIPSOID // RADIUS_1 (CAL)";
+        String RADIUS_2_PX = "ELLIPSOID // RADIUS_2 (PX)";
+        String RADIUS_2_CAL = "ELLIPSOID // RADIUS_2 (CAL)";
+        String RADIUS_3_PX = "ELLIPSOID // RADIUS_3 (PX)";
+        String RADIUS_3_CAL = "ELLIPSOID // RADIUS_3 (CAL)";
+        String SURFACE_AREA_PX = "ELLIPSOID // SURFACE_AREA (PX^2)";
+        String SURFACE_AREA_CAL = "ELLIPSOID // SURFACE_AREA (${CAL}^2)";
+        String VOLUME_PX = "ELLIPSOID // VOLUME (PX^3)";
+        String VOLUME_CAL = "ELLIPSOID // VOLUME (${CAL}^3)";
+        String ORIENTATION_1 = "ELLIPSOID // ORIENTATION_1 (DEGS)";
+        String ORIENTATION_2 = "ELLIPSOID // ORIENTATION_2 (DEGS)";
 
     }
 
 
-    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage) {
-        EllipsoidCalculator calculator = new EllipsoidCalculator(inputObject);
+    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, boolean useIntensityWeighting) {
+        ImagePlus templateImagePlus = templateImage.getImagePlus();
+        templateImagePlus.setPosition(1,1,inputObject.getT());
+        ImageStack imageStack = templateImagePlus.getImageStack();
+
+        EllipsoidCalculator calculator;
+        if (useIntensityWeighting) {
+            calculator = new EllipsoidCalculator(inputObject, imageStack);
+        } else {
+            calculator = new EllipsoidCalculator(inputObject);
+        }
 
         addMeasurements(inputObject,calculator);
 
@@ -92,14 +109,7 @@ public class FitEllipsoid extends Module {
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
 
-        double[] orientations = calculator.getEllipsoidOrientationRads();
-        double orientation1Degs = Math.toDegrees(orientations[0]);
-        double orientation2Degs = Math.toDegrees(orientations[1]);
-
-        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_1,orientation1Degs));
-        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_2,orientation2Degs));
-
-        double[] centres = calculator.getEllipsoidCentre();
+        double[] centres = calculator.getCentroid();
         inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX,centres[0]));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENT_CAL),centres[0]*dppXY));
         inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX,centres[1]));
@@ -107,13 +117,25 @@ public class FitEllipsoid extends Module {
         inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_SLICE,centres[2]*dppXY/dppZ));
         inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_CAL,centres[2]*dppZ));
 
-        double[] radii = calculator.getEllipsoidRadii();
+        double[] radii = calculator.getRadii();
         inputObject.addMeasurement(new Measurement(Measurements.RADIUS_1_PX,radii[0]));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_1_CAL),radii[0]*dppXY));
         inputObject.addMeasurement(new Measurement(Measurements.RADIUS_2_PX,radii[1]));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_2_CAL),radii[1]*dppXY));
         inputObject.addMeasurement(new Measurement(Measurements.RADIUS_3_PX,radii[2]));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.RADIUS_3_CAL),radii[2]*dppXY));
+
+        double surfaceArea = calculator.getSurfaceArea();
+        inputObject.addMeasurement(new Measurement(Measurements.SURFACE_AREA_PX,surfaceArea));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SURFACE_AREA_CAL),surfaceArea*dppXY*dppXY));
+
+        double volume = calculator.getVolume();
+        inputObject.addMeasurement(new Measurement(Measurements.VOLUME_PX,volume));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.VOLUME_CAL),volume*dppXY*dppXY*dppXY));
+
+        double[] orientations = calculator.getOrientationRads();
+        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_1,Math.toDegrees(orientations[0])));
+        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_2,Math.toDegrees(orientations[1])));
 
     }
 
@@ -138,6 +160,7 @@ public class FitEllipsoid extends Module {
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
+        boolean useIntensityWeighting = parameters.getValue(USE_INTENSITY_WEIGHTING);
 
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
@@ -153,7 +176,7 @@ public class FitEllipsoid extends Module {
         int count = 0;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            processObject(inputObject,outputObjects,objectOutputMode,templateImage);
+            processObject(inputObject,outputObjects,objectOutputMode,templateImage,useIntensityWeighting);
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
     }
@@ -162,6 +185,7 @@ public class FitEllipsoid extends Module {
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(TEMPLATE_IMAGE,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(USE_INTENSITY_WEIGHTING,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
 
@@ -173,6 +197,7 @@ public class FitEllipsoid extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
+        returnedParameters.add(parameters.getParameter(USE_INTENSITY_WEIGHTING));
 
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
@@ -241,6 +266,22 @@ public class FitEllipsoid extends Module {
         reference.setImageObjName(inputObjectsName);
 
         reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.RADIUS_3_CAL));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.SURFACE_AREA_PX);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SURFACE_AREA_CAL));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.VOLUME_PX);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.VOLUME_CAL));
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
 
