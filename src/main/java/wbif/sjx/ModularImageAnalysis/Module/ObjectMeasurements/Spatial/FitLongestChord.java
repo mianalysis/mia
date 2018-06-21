@@ -43,6 +43,7 @@ public class FitLongestChord extends Module {
 
     }
 
+
     public void processObject(Obj object) {
         double dppXY = object.getDistPerPxXY();
 
@@ -78,8 +79,8 @@ public class FitLongestChord extends Module {
         int y2 = (int) object.getMeasurement(Measurements.Y2_PX).getValue();
         int z2 = (int) object.getMeasurement(Measurements.Z2_SLICE).getValue();
 
-        String[] pos1 = new String[]{Measurements.X1_PX,Measurements.Y1_PX,Measurements.Z1_SLICE};
-        String[] pos2 = new String[]{Measurements.X2_PX,Measurements.Y2_PX,Measurements.Z2_SLICE};
+        String[] pos1 = new String[]{Measurements.X1_PX,Measurements.Y1_PX,Measurements.Z1_SLICE,""};
+        String[] pos2 = new String[]{Measurements.X2_PX,Measurements.Y2_PX,Measurements.Z2_SLICE,""};
 
         AddObjectsOverlay.addPositionMeasurementsOverlay(object,imagePlus, Color.ORANGE,1,pos1);
         AddObjectsOverlay.addPositionMeasurementsOverlay(object,imagePlus, Color.CYAN,1,pos2);
@@ -103,7 +104,7 @@ public class FitLongestChord extends Module {
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
         // Getting parameters
-        boolean addOverlay = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
+        boolean addOverlay = parameters.getValue(ADD_ENDPOINTS_AS_OVERLAY);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -124,6 +125,8 @@ public class FitLongestChord extends Module {
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
             processObject(inputObject);
+            if (addOverlay) addEndpointsOverlay(inputObject,inputImagePlus);
+
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
@@ -209,7 +212,7 @@ public class FitLongestChord extends Module {
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
 
-        objectMeasurementReferences.getOrPut(Measurements.X2_PX);
+        reference = objectMeasurementReferences.getOrPut(Measurements.X2_PX);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
 

@@ -541,14 +541,16 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         // If necessary, setting the spatial calibration
         if (setCalibration) {
+            writeMessage("Setting spatial calibration (XY = "+xyCal+", Z = "+zCal+")");
             Calibration calibration = new Calibration();
 
             calibration.pixelHeight = xyCal;
-            calibration.pixelWidth= xyCal;
+            calibration.pixelWidth = xyCal;
             calibration.pixelDepth = zCal;
             calibration.setUnit(Units.getOMEUnits().getSymbol());
 
             ipl.setCalibration(calibration);
+            ipl.updateChannelAndDraw();
         }
 
         // Converting RGB to 3-channel

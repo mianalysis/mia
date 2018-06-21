@@ -67,6 +67,8 @@ public class FitEllipsoid extends Module {
         addMeasurements(inputObject,calculator);
 
         Volume ellipsoid = calculator.getContainedPoints();
+        if (ellipsoid.getNVoxels() == 0) return;
+
         switch (objectOutputMode) {
             case OutputModes.CREATE_NEW_OBJECT:
                 Obj ellipsoidObject = createNewObject(inputObject,ellipsoid,outputObjects);
@@ -115,7 +117,7 @@ public class FitEllipsoid extends Module {
         inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX,centres[1]));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_CENT_CAL),centres[1]*dppXY));
         inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_SLICE,centres[2]*dppXY/dppZ));
-        inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_CAL,centres[2]*dppZ));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Z_CENT_CAL),centres[2]*dppZ));
 
         double[] radii = calculator.getRadii();
         inputObject.addMeasurement(new Measurement(Measurements.RADIUS_1_PX,radii[0]));

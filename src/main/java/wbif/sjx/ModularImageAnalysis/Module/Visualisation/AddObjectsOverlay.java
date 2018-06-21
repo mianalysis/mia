@@ -75,6 +75,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         // Still need to get mean coords for label
@@ -117,6 +118,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         double xMean = object.getXMean(true);
@@ -151,6 +153,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         // Still need to get mean coords for label
@@ -188,6 +191,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, String label, int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         double xMean = object.getMeasurement(posMeasurements[0]).getValue();
@@ -232,6 +236,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour,   int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         // Adding text label
@@ -320,8 +325,6 @@ public class AddObjectsOverlay extends Module {
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
         }
-
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         // Running through each object, adding it to the overlay along with an ID label
         int count = 0;
