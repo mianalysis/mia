@@ -243,7 +243,7 @@ public class AnalysisHandler {
 
     }
 
-    private void populateModuleParameters(Node moduleNode, Module module) {
+    public void populateModuleParameters(Node moduleNode, Module module) {
         NodeList parameterNodes = moduleNode.getChildNodes();
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
@@ -301,7 +301,7 @@ public class AnalysisHandler {
         }
     }
 
-    private void populateModuleMeasurementReferences(Node moduleNode, Module module) {
+    public void populateModuleMeasurementReferences(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -338,11 +338,94 @@ public class AnalysisHandler {
     }
 
     public void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
-        // Getting input options
+        // Getting input/output controls
         InputControl inputControl = analysis.getInputControl();
+        OutputControl outputControl = analysis.getOutputControl();
+
+        // Getting input file
+        File inputFile = getInputFile(inputControl);
+        if (inputFile == null) return;
+
+        // Initialising Exporter
+        String exportName = getExportName(inputControl,inputFile);
+        Exporter exporter = initialiseExporter(outputControl,exportName);
+
+        // Initialising BatchProcessor
+        batchProcessor = new BatchProcessor(inputFile);
+        batchProcessor.setnThreads(inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS));
+        addFilenameFilters(inputControl);
+
+        // Running the analysis
+        batchProcessor.runAnalysisOnStructure(analysis,exporter);
+
+        // Cleaning up
+        Runtime.getRuntime().gc();
+        System.out.println("Complete!");
+
+    }
+
+    public void stopAnalysis() {
+        batchProcessor.stopAnalysis();
+
+    }
+
+    public File getInputFile(InputControl inputControl) {
         String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
         String singleFile = inputControl.getParameterValue(InputControl.SINGLE_FILE_PATH);
         String batchFolder = inputControl.getParameterValue(InputControl.BATCH_FOLDER_PATH);
+
+        switch (inputMode) {
+            case InputControl.InputModes.SINGLE_FILE:
+                if (!checkInputFileValidity(singleFile)) return null;
+                return new File(singleFile);
+
+            case InputControl.InputModes.BATCH:
+                if (!checkInputFileValidity(batchFolder)) return null;
+                return new File(batchFolder);
+        }
+
+        return null;
+
+    }
+
+    public boolean checkInputFileValidity(String path) {
+        // Checking if a file/folder had been selected
+        if (path == null) {
+            System.err.println("Select an input file/folder first");
+            return false;
+        }
+
+        // Checking if the specified input file is present
+        if (!new File(path).exists()) {
+            System.err.println("Selected input file/folder can't be found");
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public String getExportName(InputControl inputControl, File inputFile) {
+        String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
+        String seriesMode = inputControl.getParameterValue(InputControl.SERIES_MODE);
+        int seriesNumber = inputControl.getParameterValue(InputControl.SERIES_NUMBER);
+
+        switch (inputMode) {
+            case InputControl.InputModes.SINGLE_FILE:
+                switch (seriesMode) {
+                    case InputControl.SeriesModes.ALL_SERIES:
+                        return FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+                    case InputControl.SeriesModes.SINGLE_SERIES:
+                        return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesNumber;
+                }
+            case InputControl.InputModes.BATCH:
+                return inputFile.getAbsolutePath() + "\\" + inputFile.getName();
+            default:
+                return "";
+        }
+    }
+
+    public void addFilenameFilters(InputControl inputControl) {
         String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
         boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
         String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
@@ -354,11 +437,21 @@ public class AnalysisHandler {
         String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
         String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
 
-        // Getting output options
-        OutputControl outputControl = analysis.getOutputControl();
+        // Adding extension filter
+        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
+
+        // Adding filename filters
+        if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1);
+        if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2);
+        if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3);
+
+    }
+
+    public Exporter initialiseExporter(OutputControl outputControl, String exportName) {
         boolean exportXLSX = outputControl.isEnabled();
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
+        boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
         boolean showChildCounts = outputControl.getParameterValue(OutputControl.SHOW_NUMBER_OF_CHILDREN);
         boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
@@ -366,34 +459,6 @@ public class AnalysisHandler {
         boolean calculateMax = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MAX);
         boolean calculateStd = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_STD);
         boolean calculateSum = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_SUM);
-        boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-
-        File inputFile = null;
-        String exportName = null;
-
-        switch (inputMode) {
-            case InputControl.InputModes.SINGLE_FILE:
-                if (singleFile == null) {
-                    System.err.println("Select an image first");
-                    return;
-                }
-
-                inputFile = new File(singleFile);
-                exportName = FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S"
-                        + analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
-                break;
-
-            case InputControl.InputModes.BATCH:
-                if (batchFolder == null) {
-                    System.err.println("Select a folder first");
-                    return;
-                }
-
-                inputFile = new File(batchFolder);
-                exportName = inputFile.getAbsolutePath() + "\\" + inputFile.getName()+"_output";
-
-                break;
-        }
 
         // Initialising the exporter (if one was requested)
         Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
@@ -419,34 +484,7 @@ public class AnalysisHandler {
             }
         }
 
-        // Initialising BatchProcessor
-        batchProcessor = new BatchProcessor(inputFile);
-        batchProcessor.setnThreads(inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS));
+        return exporter;
 
-        // Adding extension filter
-        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
-
-        // Adding filename filters
-        if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1);
-        if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2);
-        if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3);
-
-        // Running the analysis
-        batchProcessor.runAnalysisOnStructure(analysis,exporter);
-
-        // Cleaning up
-        Runtime.getRuntime().gc();
-
-        System.out.println("Complete!");
-
-    }
-
-    public void stopAnalysis() {
-        batchProcessor.stopAnalysis();
-
-    }
-
-    public static BatchProcessor getBatchProcessor() {
-        return batchProcessor;
     }
 }

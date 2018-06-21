@@ -130,16 +130,18 @@ public class FitLongestChord extends Module {
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
-        if (showImage) {
-            Image inputImage = workspace.getImage(inputImageName);
-            ImagePlus showIpl = new Duplicator().run(inputImage.getImagePlus());
-            showIpl.setTitle(inputImageName);
-            showIpl.show();
-        }
+        if (addOverlay) {
+            if (showImage) {
+                Image inputImage = workspace.getImage(inputImageName);
+                ImagePlus showIpl = new Duplicator().run(inputImage.getImagePlus());
+                showIpl.setTitle(inputImageName);
+                showIpl.show();
+            }
 
-        // If the user requested, the output image can be added to the workspace
-        if (addOverlay &! applyToInput && addToWorkspace) {
-            Image outputImage = new Image(outputImageName,inputImagePlus);
+            // If the user requested, the output image can be added to the workspace
+            if (!applyToInput && addToWorkspace) {
+                Image outputImage = new Image(outputImageName, inputImagePlus);
+            }
         }
     }
 
