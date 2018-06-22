@@ -2,8 +2,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects2D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects2D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -38,7 +38,7 @@ public class ProjectObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection inputObjects = new ExpectedObjects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
+        ObjCollection inputObjects = new Objects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,false);
         workspace.addObjects(inputObjects);
 
         // Initialising ProjectObjects
@@ -59,7 +59,7 @@ public class ProjectObjectsTest {
         assertEquals(8,workspace.getObjectSet(outputObjectsName).size());
 
         // Getting expected and actual objects
-        ObjCollection expectedObjects = new ExpectedObjects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         ObjCollection actualObjects = workspace.getObjectSet(outputObjectsName);
 
         TreeSet<Point<Integer>> expPoints = expectedObjects.get(3).getPoints();

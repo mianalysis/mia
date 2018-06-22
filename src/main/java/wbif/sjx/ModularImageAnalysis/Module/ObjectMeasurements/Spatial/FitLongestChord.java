@@ -87,6 +87,7 @@ public class FitLongestChord extends Module {
 
     }
 
+
     @Override
     public String getTitle() {
         return "Fit longest chord";

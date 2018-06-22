@@ -3,7 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -33,12 +32,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -108,12 +107,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -181,12 +180,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -254,12 +253,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -329,12 +328,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -402,12 +401,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -478,12 +477,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -553,12 +552,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -631,12 +630,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -706,12 +705,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -784,12 +783,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);
@@ -859,12 +858,12 @@ public class ImageCalculatorTest {
         String calibratedUnits = "µm";
 
         // Loading the test images and adding to workspace
-        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage1 = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl1 = IJ.openImage(pathToImage1);
         Image image1 = new Image("Test_image_1",ipl1);
         workspace.addImage(image1);
 
-        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage2 = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl2 = IJ.openImage(pathToImage2);
         Image image2 = new Image("Test_image_2",ipl2);
         workspace.addImage(image2);

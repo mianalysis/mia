@@ -2,8 +2,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedSpots3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Spots3D;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -27,7 +27,7 @@ public class RemoveObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising the module
@@ -54,10 +54,10 @@ public class RemoveObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
-        ObjCollection spotObjects = new ExpectedSpots3D().getObjects("SpotObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection spotObjects = new Spots3D().getObjects("SpotObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(spotObjects);
 
         // Initialising the module

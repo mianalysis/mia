@@ -1,14 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects2D;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects4D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects2D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects4D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -35,7 +34,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -63,7 +62,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects2D().getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects2D().getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -82,7 +81,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -110,7 +109,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -129,7 +128,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects4D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects4D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -157,7 +156,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects4D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects4D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(33,actualObjects.size());
@@ -185,7 +184,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -213,7 +212,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -232,7 +231,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_whiteBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -260,7 +259,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -279,7 +278,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -308,7 +307,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.BINARY,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.BINARY,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(1,actualObjects.size());
@@ -327,7 +326,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -356,7 +355,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.BINARY,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.BINARY,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(1,actualObjects.size());
@@ -375,7 +374,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_16bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_16bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -403,7 +402,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.SIXTEEN_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -422,7 +421,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_32bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_32bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -452,7 +451,7 @@ public class IdentifyObjectsTest {
         String calibratedUnits = "µm";
 
         // Bit depth here doesn't matter - we only want to check the module can interpret 32-bit images
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -471,7 +470,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_8bit_blackBG_204.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -499,7 +498,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -518,7 +517,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_16bit_blackBG_15073.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -546,7 +545,7 @@ public class IdentifyObjectsTest {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());
@@ -565,7 +564,7 @@ public class IdentifyObjectsTest {
         Workspace workspace = new Workspace(0,null,1);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects3D_32bit_blackBG_-0p54.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -595,7 +594,7 @@ public class IdentifyObjectsTest {
         String calibratedUnits = "µm";
 
         // Bit depth here doesn't matter - we only want to check the module can interpret 32-bit images
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         // Checking the number of detected objects
         assertEquals(8,actualObjects.size());

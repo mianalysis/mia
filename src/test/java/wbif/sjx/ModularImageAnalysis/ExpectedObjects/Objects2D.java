@@ -4,17 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Stephen Cross on 10/09/2017.
+ * Created by sc13967 on 21/02/2018.
  */
-public class ExpectedSpots3D extends ExpectedObjects {
+public class Objects2D extends ExpectedObjects {
     @Override
     public List<Integer[]> getCoordinates5D() {
-        return getCoordinates5D("/coordinates/ExpectedSpots3D.csv");
+        return getCoordinates5D("/coordinates/Objects2D.csv");
     }
 
     @Override
     public boolean is2D() {
-        return false;
+        return true;
     }
 
     @Override

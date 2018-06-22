@@ -2,10 +2,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedMergedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.MergedObjects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedSpots3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Spots3D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -29,9 +29,9 @@ public class MergeObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj1 = new ExpectedObjects3D().getObjects("Input_obj_1",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj1 = new Objects3D().getObjects("Input_obj_1",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj1);
-        ObjCollection inputObj2 = new ExpectedSpots3D().getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj2 = new Spots3D().getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj2);
 
         // Initialising FilterObjects module
@@ -45,7 +45,7 @@ public class MergeObjectsTest {
         mergeObjects.run(workspace);
 
         // Getting expected output objects
-        ObjCollection expectedOutputObj= new ExpectedMergedObjects3D().getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedOutputObj= new MergedObjects3D().getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(expectedOutputObj);
 
         // Getting actual output objects
@@ -75,9 +75,9 @@ public class MergeObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj1 = new ExpectedObjects3D().getObjects("Input_obj_1", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj1 = new Objects3D().getObjects("Input_obj_1", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj1);
-        ObjCollection inputObj2 = new ExpectedSpots3D().getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj2 = new Spots3D().getObjects("Input_obj_2",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj2);
 
         // Initialising FilterObjects module
@@ -91,7 +91,7 @@ public class MergeObjectsTest {
         mergeObjects.run(workspace);
 
         // Getting expected output objects
-        ObjCollection expectedOutputObj= new ExpectedMergedObjects3D().getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedOutputObj= new MergedObjects3D().getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(expectedOutputObj);
 
         // Getting actual output objects
