@@ -4,7 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
@@ -35,14 +35,14 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_LARGER_THAN);
-        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT,ExpectedObjects3D.Measures.EXP_N_VOXELS.name());
+        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, Objects3D.Measures.EXP_N_VOXELS.name());
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
@@ -65,14 +65,14 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MEASUREMENTS_SMALLER_THAN);
-        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT,ExpectedObjects3D.Measures.EXP_N_VOXELS.name());
+        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, Objects3D.Measures.EXP_N_VOXELS.name());
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
@@ -95,14 +95,14 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising FilterObjects module
         FilterObjects filterObjects = new FilterObjects();
         filterObjects.updateParameterValue(FilterObjects.INPUT_OBJECTS,"TestObj");
         filterObjects.updateParameterValue(FilterObjects.FILTER_METHOD,FilterObjects.FilterMethods.MISSING_MEASUREMENTS);
-        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT,ExpectedObjects3D.Measures.EXP_I_STD_8BIT.name());
+        filterObjects.updateParameterValue(FilterObjects.MEASUREMENT, Objects3D.Measures.EXP_I_STD_8BIT.name());
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
@@ -125,11 +125,11 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -160,11 +160,11 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -196,11 +196,11 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects5D_8bit_blackBG.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -232,7 +232,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.  The number of children will be
@@ -281,7 +281,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.  The number of children will be
@@ -331,7 +331,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.
@@ -376,7 +376,7 @@ public class FilterObjectsTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects("TestObj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Creating a second set of objects and relate these to the test objects.

@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by sc13967 on 23/03/2018.
+ * Created by Stephen Cross on 10/09/2017.
  */
-public class ExpectedSphere3D extends ExpectedObjects {
+public class Spots3D extends ExpectedObjects {
     @Override
     public List<Integer[]> getCoordinates5D() {
-        return getCoordinates5D("/coordinates/ExpectedSphere3D.csv");
+        return getCoordinates5D("/coordinates/Spots3D.csv");
     }
 
     @Override

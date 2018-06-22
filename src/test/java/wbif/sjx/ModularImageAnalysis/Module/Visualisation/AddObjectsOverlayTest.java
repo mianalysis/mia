@@ -5,7 +5,7 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedDenseTracks2D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.DenseTracks2D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -14,11 +14,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
-import java.awt.*;
 import java.net.URLDecoder;
-import java.util.HashMap;
-
-import static org.junit.Assert.*;
 
 public class AddObjectsOverlayTest {
 
@@ -67,7 +63,7 @@ public class AddObjectsOverlayTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedDenseTracks2D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new DenseTracks2D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Tracking objects

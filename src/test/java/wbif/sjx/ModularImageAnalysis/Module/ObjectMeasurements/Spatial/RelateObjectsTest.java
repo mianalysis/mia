@@ -40,9 +40,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testSpots = new Spots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -78,15 +78,15 @@ public class RelateObjectsTest {
 
             // Testing spot is at expected location
             int nPoints = testObject.getPoints().size();
-            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_SPOT_ID_X.name()).getValue();
+            double expected = testObject.getMeasurement(Objects3D.Measures.EXP_SPOT_ID_X.name()).getValue();
             double actual = childSpot.getX(true)[0];
             assertEquals(expected,actual,tolerance);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_SPOT_ID_Y.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_SPOT_ID_Y.name()).getValue();
             actual = childSpot.getY(true)[0];
             assertEquals(expected,actual,tolerance);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_SPOT_ID_Z.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_SPOT_ID_Z.name()).getValue();
             actual = childSpot.getZ(true,false)[0];
             assertEquals(expected,actual,tolerance);
 
@@ -106,9 +106,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testSpots = new Spots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -124,16 +124,16 @@ public class RelateObjectsTest {
         relateObjects.run(workspace);
 
         // Getting expected values
-        HashMap<Integer, HashMap<String, Object>> expectedValues = new ExpectedObjects3D().getOtherValues();
+        HashMap<Integer, HashMap<String, Object>> expectedValues = new Objects3D().getOtherValues();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
             HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
-            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_X.name());
-            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_Y.name());
-            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_Z.name());
-            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_DIST.name());
+            int[] expectedX = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_X.name());
+            int[] expectedY = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_Y.name());
+            int[] expectedZ = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_Z.name());
+            double[] expectedDist = (double[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_DIST.name());
 
             // Getting child objects (those linked here)
             ObjCollection childSpots = testObject.getChildren(inputSpotsName);
@@ -192,9 +192,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
-        ObjCollection testSpots = new ExpectedSpots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testSpots = new Spots3D().getObjects(inputSpotsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testSpots);
 
         // Initialising RelateObjects
@@ -211,16 +211,16 @@ public class RelateObjectsTest {
         relateObjects.run(workspace);
 
         // Getting expected values
-        HashMap<Integer, HashMap<String, Object>> expectedValues = new ExpectedObjects3D().getOtherValues();
+        HashMap<Integer, HashMap<String, Object>> expectedValues = new Objects3D().getOtherValues();
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
             // Getting expected values for this object
             HashMap<String, Object> currExpectedValues = expectedValues.get(testObject.getPoints().size());
-            int[] expectedX = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_20PX_X.name());
-            int[] expectedY = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_20PX_Y.name());
-            int[] expectedZ = (int[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_20PX_Z.name());
-            double[] expectedDist = (double[]) currExpectedValues.get(ExpectedObjects3D.Measures.EXP_SPOT_PROX_CENT_20PX_DIST.name());
+            int[] expectedX = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_20PX_X.name());
+            int[] expectedY = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_20PX_Y.name());
+            int[] expectedZ = (int[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_20PX_Z.name());
+            double[] expectedDist = (double[]) currExpectedValues.get(Objects3D.Measures.EXP_SPOT_PROX_CENT_20PX_DIST.name());
 
             // Getting child objects (those linked here)
             ObjCollection childSpots = testObject.getChildren(inputSpotsName);
@@ -279,9 +279,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -303,7 +303,7 @@ public class RelateObjectsTest {
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
-            double expectedCentDistPx = proxObj2Obj.getMeasurement(ExpectedProxSquares2.Measures.CENT_PROX_DIST_PX.name()).getValue();
+            double expectedCentDistPx = proxObj2Obj.getMeasurement(ProxSquares2.Measures.CENT_PROX_DIST_PX.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENTROID_PX,proxObj1Name);
             double actualCentDistPx = proxObj2Obj.getMeasurement(name).getValue();
             assertEquals(expectedCentDistPx, actualCentDistPx, tolerance);
@@ -324,9 +324,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -350,17 +350,17 @@ public class RelateObjectsTest {
 
             // Checking the parent ID is the one expected
             Obj parentObj = proxObj1Obj.getParent(proxObj2Name);
-            double expectedParentID = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_ID.name()).getValue();
+            double expectedParentID = proxObj1Obj.getMeasurement(ProxCubes1.Measures.SURF_PROX_ID.name()).getValue();
             int actualParentID = parentObj.getID();
             assertEquals(expectedParentID, actualParentID, tolerance);
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX.name()).getValue();
+            double expectedSurfDistPx = proxObj1Obj.getMeasurement(ProxCubes1.Measures.SURF_PROX_DIST_PX.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_PX,proxObj2Name);
             double actualSurfDistPx = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
-            double expectedSurfDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL.name()).getValue();
+            double expectedSurfDistCal = proxObj1Obj.getMeasurement(ProxCubes1.Measures.SURF_PROX_DIST_CAL.name()).getValue();
             name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_CAL,proxObj2Name);
             double actualSurfDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
@@ -381,9 +381,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -408,7 +408,7 @@ public class RelateObjectsTest {
 
             // Checking the parent ID is the one expected
             Obj parentObj = proxObj1Obj.getParent(proxObj2Name);
-            double expectedParentID = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_ID_5PX.name()).getValue();
+            double expectedParentID = proxObj1Obj.getMeasurement(ProxCubes1.Measures.SURF_PROX_ID_5PX.name()).getValue();
             if (Double.isNaN(expectedParentID)) {
                 assertNull(parentObj);
             } else {
@@ -417,12 +417,12 @@ public class RelateObjectsTest {
             }
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_PX_5PX.name()).getValue();
+            double expectedSurfDistPx = proxObj1Obj.getMeasurement(ProxCubes1.Measures.SURF_PROX_DIST_PX_5PX.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_PX,proxObj2Name);
             double actualSurfDistPx = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
 
-            double expectedSurfDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.SURF_PROX_DIST_CAL_5PX.name()).getValue();
+            double expectedSurfDistCal = proxObj1Obj.getMeasurement(ProxCubes1.Measures.SURF_PROX_DIST_CAL_5PX.name()).getValue();
             name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_CAL,proxObj2Name);
             double actualSurfDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistCal, actualSurfDistCal, tolerance);
@@ -443,9 +443,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -468,7 +468,7 @@ public class RelateObjectsTest {
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ExpectedProxSquares2.Measures.SURF_PROX_DIST_PX_INOUT.name()).getValue();
+            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ProxSquares2.Measures.SURF_PROX_DIST_PX_INOUT.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_PX,proxObj1Name);
             double actualSurfDistPx = proxObj2Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
@@ -489,9 +489,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -514,7 +514,7 @@ public class RelateObjectsTest {
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ExpectedProxSquares2.Measures.SURF_PROX_DIST_PX_IN.name()).getValue();
+            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ProxSquares2.Measures.SURF_PROX_DIST_PX_IN.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_PX,proxObj1Name);
             double actualSurfDistPx = proxObj2Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
@@ -535,9 +535,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -560,7 +560,7 @@ public class RelateObjectsTest {
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ExpectedProxSquares2.Measures.SURF_PROX_DIST_PX_OUT.name()).getValue();
+            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ProxSquares2.Measures.SURF_PROX_DIST_PX_OUT.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_SURFACE_PX,proxObj1Name);
             double actualSurfDistPx = proxObj2Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
@@ -581,9 +581,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -607,17 +607,17 @@ public class RelateObjectsTest {
 
             // Checking the parent ID is the one expected
             Obj parentObj = proxObj1Obj.getParent(proxObj2Name);
-            double expectedParentID = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.CENT_SURF_PROX_ID.name()).getValue();
+            double expectedParentID = proxObj1Obj.getMeasurement(ProxCubes1.Measures.CENT_SURF_PROX_ID.name()).getValue();
             int actualParentID = parentObj.getID();
             assertEquals(expectedParentID, actualParentID, tolerance);
 
             // Checking the distance to the parent
-            double expectedDistPx = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.CENT_SURF_PROX_DIST_PX.name()).getValue();
+            double expectedDistPx = proxObj1Obj.getMeasurement(ProxCubes1.Measures.CENT_SURF_PROX_DIST_PX.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_PX,proxObj2Name);
             double actualfDistPx = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedDistPx, actualfDistPx, tolerance);
 
-            double expectedDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.CENT_SURF_PROX_DIST_CAL.name()).getValue();
+            double expectedDistCal = proxObj1Obj.getMeasurement(ProxCubes1.Measures.CENT_SURF_PROX_DIST_CAL.name()).getValue();
             name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_CAL,proxObj2Name);
             double actualDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedDistCal, actualDistCal, tolerance);
@@ -638,9 +638,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxCubes1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxCubes2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -665,7 +665,7 @@ public class RelateObjectsTest {
 
             // Checking the parent ID is the one expected
             Obj parentObj = proxObj1Obj.getParent(proxObj2Name);
-            double expectedParentID = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.CENT_SURF_PROX_ID_5PX.name()).getValue();
+            double expectedParentID = proxObj1Obj.getMeasurement(ProxCubes1.Measures.CENT_SURF_PROX_ID_5PX.name()).getValue();
             if (Double.isNaN(expectedParentID)) {
                 assertNull(parentObj);
             } else {
@@ -674,12 +674,12 @@ public class RelateObjectsTest {
             }
 
             // Checking the distance to the parent
-            double expectedDistPx = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.CENT_SURF_PROX_DIST_PX_5PX.name()).getValue();
+            double expectedDistPx = proxObj1Obj.getMeasurement(ProxCubes1.Measures.CENT_SURF_PROX_DIST_PX_5PX.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_PX,proxObj2Name);
             double actualfDistPx = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedDistPx, actualfDistPx, tolerance);
 
-            double expectedDistCal = proxObj1Obj.getMeasurement(ExpectedProxCubes1.Measures.CENT_SURF_PROX_DIST_CAL_5PX.name()).getValue();
+            double expectedDistCal = proxObj1Obj.getMeasurement(ProxCubes1.Measures.CENT_SURF_PROX_DIST_CAL_5PX.name()).getValue();
             name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_CAL,proxObj2Name);
             double actualDistCal = proxObj1Obj.getMeasurement(name).getValue();
             assertEquals(expectedDistCal, actualDistCal, tolerance);
@@ -700,9 +700,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -725,7 +725,7 @@ public class RelateObjectsTest {
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ExpectedProxSquares2.Measures.CENT_SURF_PROX_DIST_PX_INOUT.name()).getValue();
+            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ProxSquares2.Measures.CENT_SURF_PROX_DIST_PX_INOUT.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_PX,proxObj1Name);
             double actualSurfDistPx = proxObj2Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
@@ -746,9 +746,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -771,7 +771,7 @@ public class RelateObjectsTest {
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ExpectedProxSquares2.Measures.CENT_SURF_PROX_DIST_PX_IN.name()).getValue();
+            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ProxSquares2.Measures.CENT_SURF_PROX_DIST_PX_IN.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_PX,proxObj1Name);
             double actualSurfDistPx = proxObj2Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);
@@ -792,9 +792,9 @@ public class RelateObjectsTest {
         String calibratedUnits = "µm";
 
         // Creating objects and adding to workspace
-        ObjCollection proxObj1 = new ExpectedProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj1 = new ProxSquares1().getObjects(proxObj1Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj1);
-        ObjCollection proxObj2 = new ExpectedProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection proxObj2 = new ProxSquares2().getObjects(proxObj2Name,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(proxObj2);
 
         // Initialising RelateObjects
@@ -817,7 +817,7 @@ public class RelateObjectsTest {
             assertEquals(0, children.size());
 
             // Checking the distance to the parent
-            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ExpectedProxSquares2.Measures.CENT_SURF_PROX_DIST_PX_OUT.name()).getValue();
+            double expectedSurfDistPx = proxObj2Obj.getMeasurement(ProxSquares2.Measures.CENT_SURF_PROX_DIST_PX_OUT.name()).getValue();
             String name = RelateObjects.getFullName(RelateObjects.Measurements.DIST_CENT_SURF_PX,proxObj1Name);
             double actualSurfDistPx = proxObj2Obj.getMeasurement(name).getValue();
             assertEquals(expectedSurfDistPx, actualSurfDistPx, tolerance);

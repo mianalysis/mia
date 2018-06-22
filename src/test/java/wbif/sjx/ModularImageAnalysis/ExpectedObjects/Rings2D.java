@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.ExpectedObjects;
 import java.util.HashMap;
 import java.util.List;
 
-public class ExpectedRings2D extends ExpectedObjects {
+public class Rings2D extends ExpectedObjects {
     public enum Measures {
         EXP_MEAN_CURVATURE_ABS_PX, EXP_MIN_CURVATURE_ABS_PX, EXP_MAX_CURVATURE_ABS_PX, EXP_STD_CURVATURE_ABS_PX,
         EXP_MEAN_CURVATURE_ABS_CAL, EXP_MIN_CURVATURE_ABS_CAL, EXP_MAX_CURVATURE_ABS_CAL, EXP_STD_CURVATURE_ABS_CAL,
@@ -18,7 +18,7 @@ public class ExpectedRings2D extends ExpectedObjects {
 
     @Override
     public List<Integer[]> getCoordinates5D() {
-        return getCoordinates5D("/coordinates/ExpectedRings2D.csv");
+        return getCoordinates5D("/coordinates/Rings2D.csv");
     }
 
     @Override

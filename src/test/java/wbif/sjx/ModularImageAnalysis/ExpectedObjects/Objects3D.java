@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by Stephen Cross on 29/08/2017.
  */
-public class ExpectedObjects3D extends ExpectedObjects {
+public class Objects3D extends ExpectedObjects {
     public enum Measures {
         EXP_ID_8BIT, EXP_ID_16BIT, EXP_X_MIN, EXP_X_MEAN, EXP_X_MEDIAN, EXP_X_MAX, EXP_Y_MIN, EXP_Y_MEAN, EXP_Y_MEDIAN, 
         EXP_Y_MAX, EXP_Z_MIN, EXP_Z_MEAN, EXP_Z_MEDIAN, EXP_Z_MAX, EXP_C, EXP_F, EXP_N_VOXELS, EXP_N_VOXELS_PROJ,
@@ -475,7 +475,7 @@ public class ExpectedObjects3D extends ExpectedObjects {
 
     @Override
     public List<Integer[]> getCoordinates5D() {
-        return getCoordinates5D("/coordinates/ExpectedObjects3D.csv");
+        return getCoordinates5D("/coordinates/Objects3D.csv");
     }
 
     @Override

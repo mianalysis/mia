@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -30,7 +29,7 @@ public class InvertIntensityTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -70,7 +69,7 @@ public class InvertIntensityTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -109,7 +108,7 @@ public class InvertIntensityTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient3D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_16bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -149,7 +148,7 @@ public class InvertIntensityTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
