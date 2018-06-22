@@ -5,7 +5,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Object.Spot;
 
 import java.util.HashMap;
 import java.util.Iterator;
