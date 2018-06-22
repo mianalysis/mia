@@ -1,13 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
-import ij.Prefs;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
-import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisReader;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisRunner;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisWriter;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
@@ -53,7 +53,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
         try {
             switch (getText()) {
                 case LOAD_ANALYSIS:
-                    Analysis newAnalysis = new AnalysisHandler().loadAnalysis();
+                    Analysis newAnalysis = AnalysisReader.loadAnalysis();
                     if (newAnalysis == null) return;
                     gui.setAnalysis(newAnalysis);
 
@@ -71,13 +71,13 @@ public class AnalysisControlButton extends JButton implements ActionListener {
                     break;
 
                 case SAVE_ANALYSIS:
-                    new AnalysisHandler().saveAnalysis(gui.getAnalysis());
+                    AnalysisWriter.saveAnalysis(gui.getAnalysis());
                     break;
 
                 case START_ANALYSIS:
                     Thread t = new Thread(() -> {
                         try {
-                            new AnalysisHandler().startAnalysis(gui.getAnalysis());
+                            AnalysisRunner.startAnalysis(gui.getAnalysis());
                         } catch (IOException | InterruptedException e1) {
                             e1.printStackTrace();
                         } catch (GenericMIAException e1) {
@@ -91,7 +91,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
 
                 case STOP_ANALYSIS:
                     System.out.println("Shutting system down");
-                    new AnalysisHandler().stopAnalysis();
+                    AnalysisRunner.stopAnalysis();
                     break;
             }
 
