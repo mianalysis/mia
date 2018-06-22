@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
+import net.imglib2.ops.parse.token.Int;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
@@ -292,6 +293,17 @@ public class Obj extends Volume {
         // Getting the image
         HashMap<Integer, Float> hues = tempObj.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
         return tempObj.convertObjectsToImage(outputName,templateIpl,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
+
+    }
+
+    public void cropToImageSize(Image templateImage) {
+        int width = templateImage.getImagePlus().getWidth();
+        int height = templateImage.getImagePlus().getHeight();
+        int nSlices = templateImage.getImagePlus().getNSlices();
+
+        points.removeIf(point -> point.getX() < 0 || point.getX() >= width
+                || point.getY() < 0 || point.getY() >= height
+                || point.getZ() < 0 || point.getZ() >= nSlices);
 
     }
 

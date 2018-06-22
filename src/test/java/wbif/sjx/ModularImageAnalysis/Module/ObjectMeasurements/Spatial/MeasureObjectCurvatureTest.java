@@ -5,7 +5,7 @@ import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedRings2D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Rings2D;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.net.URLDecoder;
@@ -34,11 +34,11 @@ public class MeasureObjectCurvatureTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new Rings2D().getObjects("Input_obj", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Ref_image",ipl);
         workspace.addImage(image);
@@ -66,11 +66,11 @@ public class MeasureObjectCurvatureTest {
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:inputObj.values()) {
             // Testing measurements
-            double expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_ABS_PX.name()).getValue();
+            double expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_PX.name()).getValue();
             double actual = testObject.getMeasurement(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_PX).getValue();
             assertEquals(expected, actual, tolerance);
 
-            expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_ABS_CAL.name()).getValue();
+            expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_CAL.name()).getValue();
             actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 
@@ -88,11 +88,11 @@ public class MeasureObjectCurvatureTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new Rings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Ref_image",ipl);
         workspace.addImage(image);
@@ -106,8 +106,8 @@ public class MeasureObjectCurvatureTest {
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.ITERATIONS,100);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.ACCURACY,1d);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.RELATE_TO_REFERENCE_POINT,true);
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.X_REF_MEASUREMENT,ExpectedRings2D.Measures.EXP_REF_X_ACW.name());
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.Y_REF_MEASUREMENT,ExpectedRings2D.Measures.EXP_REF_Y_ACW.name());
+        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.X_REF_MEASUREMENT, Rings2D.Measures.EXP_REF_X_ACW.name());
+        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.Y_REF_MEASUREMENT, Rings2D.Measures.EXP_REF_Y_ACW.name());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.ABSOLUTE_CURVATURE,true);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SIGNED_CURVATURE,true);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.DRAW_SPLINE,false);
@@ -121,19 +121,19 @@ public class MeasureObjectCurvatureTest {
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:inputObj.values()) {
             // Testing measurements
-            double expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_ABS_PX.name()).getValue();
+            double expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_PX.name()).getValue();
             double actual = testObject.getMeasurement(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_PX).getValue();
             assertEquals(expected, actual, tolerance);
 
-            expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_ABS_CAL.name()).getValue();
+            expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_CAL.name()).getValue();
             actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 
-            expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_REFACW_PX.name()).getValue();
+            expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_REFACW_PX.name()).getValue();
             actual = testObject.getMeasurement(MeasureObjectCurvature.Measurements.MEAN_SIGNED_CURVATURE_PX).getValue();
             assertEquals(expected, actual, tolerance);
 
-            expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_REFACW_CAL.name()).getValue();
+            expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_REFACW_CAL.name()).getValue();
             actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_SIGNED_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 
@@ -151,11 +151,11 @@ public class MeasureObjectCurvatureTest {
         String calibratedUnits = "µm";
 
         // Getting test objects
-        ObjCollection inputObj = new ExpectedRings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection inputObj = new Rings2D().getObjects("Input_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(inputObj);
 
         // Loading the reference image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryRing9p5pxRadius2D.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Ref_image",ipl);
         workspace.addImage(image);
@@ -169,8 +169,8 @@ public class MeasureObjectCurvatureTest {
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.ITERATIONS,100);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.ACCURACY,1d);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.RELATE_TO_REFERENCE_POINT,true);
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.X_REF_MEASUREMENT,ExpectedRings2D.Measures.EXP_REF_X_CW.name());
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.Y_REF_MEASUREMENT,ExpectedRings2D.Measures.EXP_REF_Y_CW.name());
+        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.X_REF_MEASUREMENT, Rings2D.Measures.EXP_REF_X_CW.name());
+        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.Y_REF_MEASUREMENT, Rings2D.Measures.EXP_REF_Y_CW.name());
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.ABSOLUTE_CURVATURE,true);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SIGNED_CURVATURE,true);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.DRAW_SPLINE,false);
@@ -184,19 +184,19 @@ public class MeasureObjectCurvatureTest {
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:inputObj.values()) {
             // Testing measurements
-            double expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_ABS_PX.name()).getValue();
+            double expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_PX.name()).getValue();
             double actual = testObject.getMeasurement(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_PX).getValue();
             assertEquals(expected, actual, tolerance);
 
-            expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_ABS_CAL.name()).getValue();
+            expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_ABS_CAL.name()).getValue();
             actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_ABSOLUTE_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 
-            expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_REFCW_PX.name()).getValue();
+            expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_REFCW_PX.name()).getValue();
             actual = testObject.getMeasurement(MeasureObjectCurvature.Measurements.MEAN_SIGNED_CURVATURE_PX).getValue();
             assertEquals(expected, actual, tolerance);
 
-            expected = testObject.getMeasurement(ExpectedRings2D.Measures.EXP_MEAN_CURVATURE_REFCW_CAL.name()).getValue();
+            expected = testObject.getMeasurement(Rings2D.Measures.EXP_MEAN_CURVATURE_REFCW_CAL.name()).getValue();
             actual = testObject.getMeasurement(Units.replace(MeasureObjectCurvature.Measurements.MEAN_SIGNED_CURVATURE_CAL)).getValue();
             assertEquals(expected, actual, tolerance/dppXY);
 

@@ -1,8 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
-import ij.ImagePlus;
-import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -10,7 +8,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Units;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
@@ -475,7 +472,7 @@ public class ImageLoaderTest {
     @Test
     public void testRunWithCropping() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
@@ -517,7 +514,7 @@ public class ImageLoaderTest {
     @Test
     public void testRunWithSpecifiedCalibration() throws Exception {
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
@@ -564,7 +561,7 @@ public class ImageLoaderTest {
         Units.setUnits(Units.SpatialUnits.NANOMETRE);
 
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspace workspace = new Workspace(0,new File(pathToImage),1);
@@ -618,7 +615,7 @@ public class ImageLoaderTest {
         Units.setUnits(Units.SpatialUnits.MILLIMETRE);
 
         // Getting path to image file
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit.tif").getPath(),"UTF-8");
 
         // Initialising a blank workspace
         Workspace workspace = new Workspace(0,new File(pathToImage),1);

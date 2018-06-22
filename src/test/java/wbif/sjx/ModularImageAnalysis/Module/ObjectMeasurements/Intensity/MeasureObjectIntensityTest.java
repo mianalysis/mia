@@ -7,8 +7,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedSphere3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Sphere3D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -40,11 +40,11 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -74,23 +74,23 @@ public class MeasureObjectIntensityTest {
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MEAN_8BIT.name()).getValue();
+            double expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MEAN_8BIT.name()).getValue();
             double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MIN_8BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MIN_8BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MIN").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MAX_8BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MAX_8BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MAX").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_STD_8BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_STD_8BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_STDEV").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_SUM_8BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_SUM_8BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_SUM").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
@@ -109,11 +109,11 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient3D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_16bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -143,23 +143,23 @@ public class MeasureObjectIntensityTest {
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MEAN_16BIT.name()).getValue();
+            double expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MEAN_16BIT.name()).getValue();
             double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MIN_16BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MIN_16BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MIN").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MAX_16BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MAX_16BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MAX").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_STD_16BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_STD_16BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_STDEV").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_SUM_16BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_SUM_16BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_SUM").getValue();
             assertEquals("Measurement value", expected, actual, 1E-2);
 
@@ -178,11 +178,11 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_32bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -212,23 +212,23 @@ public class MeasureObjectIntensityTest {
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MEAN_32BIT.name()).getValue();
+            double expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MEAN_32BIT.name()).getValue();
             double actual = testObject.getMeasurement("INTENSITY // Test_image_MEAN").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MIN_32BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MIN_32BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MIN").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_MAX_32BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_MAX_32BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_MAX").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_STD_32BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_STD_32BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_STDEV").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
-            expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_I_SUM_32BIT.name()).getValue();
+            expected = testObject.getMeasurement(Objects3D.Measures.EXP_I_SUM_32BIT.name()).getValue();
             actual = testObject.getMeasurement("INTENSITY // Test_image_SUM").getValue();
             assertEquals("Measurement value", expected, actual,1E-2);
 
@@ -252,7 +252,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedSphere3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Sphere3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace
@@ -300,7 +300,7 @@ public class MeasureObjectIntensityTest {
         String calibratedUnits = "um";
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedSphere3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Sphere3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Loading the test image and adding to workspace

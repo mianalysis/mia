@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by sc13967 on 12/02/2018.
  */
-public class ExpectedProxCubes1 extends ExpectedObjects {
+public class ProxCubes1 extends ExpectedObjects {
     public enum Measures {N_VOXELS,ID_8BIT,SURF_PROX_ID,SURF_PROX_DIST_PX,SURF_PROX_DIST_CAL,
         SURF_PROX_ID_5PX, SURF_PROX_DIST_PX_5PX, SURF_PROX_DIST_CAL_5PX, CENT_SURF_PROX_ID, CENT_SURF_PROX_DIST_PX,
         CENT_SURF_PROX_DIST_CAL, CENT_SURF_PROX_ID_5PX, CENT_SURF_PROX_DIST_PX_5PX, CENT_SURF_PROX_DIST_CAL_5PX};
@@ -71,7 +71,7 @@ public class ExpectedProxCubes1 extends ExpectedObjects {
 
     @Override
     public List<Integer[]> getCoordinates5D() {
-        return getCoordinates5D("/coordinates/ExpectedProxCubes1.csv");
+        return getCoordinates5D("/coordinates/ProxCubes1.csv");
     }
 
     @Override

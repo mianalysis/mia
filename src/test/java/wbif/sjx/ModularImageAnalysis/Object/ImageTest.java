@@ -8,7 +8,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 
 import java.net.URLDecoder;
 
@@ -18,7 +18,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @Test
     public void testConstructorImagePlus() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -42,7 +42,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @Test
     public void testConstructorImg() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Img<T> img = ImageJFunctions.wrap(ipl);
         Image<T> image = new Image<>("Test_image",img);
@@ -71,7 +71,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @Test
     public void testConvertImageToObjects8bit3D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -91,7 +91,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected", ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
@@ -107,7 +107,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @Test
     public void testConvertImageToObjects16bit3D() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_16bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_16bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
@@ -127,7 +127,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         double dppXY = 0.02;
         double dppZ = 0.1;
         String calibratedUnits = "µm";
-        ObjCollection expectedObjects = new ExpectedObjects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection expectedObjects = new Objects3D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
 
         for (Obj object:expectedObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
@@ -139,7 +139,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
     @Test
     public void testAddMeasurement() throws Exception {
         // Loading the test image
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects3D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 

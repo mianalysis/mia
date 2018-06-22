@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
-import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects3D;
+import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -28,10 +28,10 @@ public class BinObjectsByMeasurementTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        String measurement = ExpectedObjects3D.Measures.EXP_N_VOXELS.name();
+        String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName, ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
@@ -48,7 +48,7 @@ public class BinObjectsByMeasurementTest {
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name()).getValue();
+            double expected = testObject.getMeasurement(Objects3D.Measures.EXP_BIN_N_VOXELS_4BINS_INRANGE.name()).getValue();
             double actual = testObject.getMeasurement(BinObjectsByMeasurement.getFullName(measurement)).getValue();
             assertEquals("Measurement value", expected, actual, tolerance);
 
@@ -66,10 +66,10 @@ public class BinObjectsByMeasurementTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        String measurement = ExpectedObjects3D.Measures.EXP_N_VOXELS.name();
+        String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
@@ -86,7 +86,7 @@ public class BinObjectsByMeasurementTest {
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name()).getValue();
+            double expected = testObject.getMeasurement(Objects3D.Measures.EXP_BIN_N_VOXELS_4BINS_SHORTRANGE.name()).getValue();
             double actual = testObject.getMeasurement(BinObjectsByMeasurement.getFullName(measurement)).getValue();
             assertEquals("Measurement value", expected, actual, tolerance);
 
@@ -104,10 +104,10 @@ public class BinObjectsByMeasurementTest {
         double dppZ = 0.1;
         String calibratedUnits = "µm";
 
-        String measurement = ExpectedObjects3D.Measures.EXP_N_VOXELS.name();
+        String measurement = Objects3D.Measures.EXP_N_VOXELS.name();
 
         // Creating objects and adding to workspace
-        ObjCollection testObjects = new ExpectedObjects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+        ObjCollection testObjects = new Objects3D().getObjects(inputObjectsName,ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
         workspace.addObjects(testObjects);
 
         // Initialising BinObjectsyMeasurement
@@ -124,7 +124,7 @@ public class BinObjectsByMeasurementTest {
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
-            double expected = testObject.getMeasurement(ExpectedObjects3D.Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name()).getValue();
+            double expected = testObject.getMeasurement(Objects3D.Measures.EXP_BIN_N_VOXELS_4BINS_HIGHRANGE.name()).getValue();
             double actual = testObject.getMeasurement(BinObjectsByMeasurement.getFullName(measurement)).getValue();
             assertEquals("Measurement value", expected, actual, tolerance);
 

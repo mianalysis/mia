@@ -3,13 +3,14 @@ package wbif.sjx.ModularImageAnalysis.ThirdParty;
 import ij.*;
 import ij.gui.*;
 import ij.plugin.filter.PlugInFilter;
+import ij.plugin.filter.RankFilters;
 import ij.process.*;
 import java.awt.*;
 
 
 /**
- * A very slightly modified copy of Stack_Focuser_.java plugin, created by Mikahil Umorin.
- * Downloaded from https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java on 06-June-2020.
+ * A modified copy of Stack_Focuser_.java plugin, created by Mikahil Umorin.
+ * Downloaded from https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java on 06-June-2018.
  *
  * @author Mikhail Umorin <mikeumo@sbcglobal.net>
  *
@@ -140,6 +141,7 @@ public class Stack_Focuser_ implements PlugInFilter
 
     private boolean create_map = false;
     private boolean onefocus = false;
+    private boolean smooth = false;
     private GenericDialog input_dialog;
     private boolean interact = true;
     private ImageProcessor focused_ip = null, height_ip = null;
@@ -210,6 +212,22 @@ public class Stack_Focuser_ implements PlugInFilter
                 }
             }
         }
+        if (arg.indexOf("smooth=") >= 0) {
+            interact = false;
+            int pos = arg.indexOf("smooth=") + 7;
+            if (pos != arg.length()) {
+                if (arg.charAt(pos) != ' ') {
+                    String hms;
+                    int posn = arg.indexOf(' ', pos + 1);
+                    if (posn > 0) {
+                        hms = arg.substring(pos, posn);
+                    } else {
+                        hms = arg.substring(pos);
+                    }
+                    smooth = hms.equalsIgnoreCase("true");
+                }
+            }
+        }
         //
         if (imp == null) {
             IJ.noImage();
@@ -258,11 +276,13 @@ public class Stack_Focuser_ implements PlugInFilter
             input_dialog.addNumericField("Enter the n (>2) for n x n kernel:", k_size, 0);
             input_dialog.addCheckbox("Generate height map", create_map);
             input_dialog.addCheckbox("R, G, and B come from same objects/structures", onefocus);
+            input_dialog.addCheckbox("Smooth height map",smooth);
             input_dialog.showDialog();
             if (input_dialog.wasCanceled()) return;
             k_size = (int)input_dialog.getNextNumber();
             create_map = input_dialog.getNextBoolean();
             onefocus = input_dialog.getNextBoolean();
+            smooth = input_dialog.getNextBoolean();
             if ( input_dialog.invalidNumber() || k_size<3 ) {
                 IJ.error("Invalid number or " +k_size+" is incorrect! ");
                 return;
@@ -302,7 +322,7 @@ public class Stack_Focuser_ implements PlugInFilter
      * @param rgb_stack
      */
     public void focusRGBStack (ImageStack rgb_stack) {
-        IJ.showStatus("Processing RGB stack");
+//        IJ.showStatus("Processing RGB stack");
         focused_stack = new ImageStack(n_width, n_height);
         height_stack = new ImageStack(n_width, n_height);
         // split RGB stack into R, G, and B components
@@ -311,25 +331,25 @@ public class Stack_Focuser_ implements PlugInFilter
 
         // Red
         ImageStack colored_stack = extractColor(rgb_stack, redMask, redShift);
-        IJ.showStatus("Extracted red color");
+//        IJ.showStatus("Extracted red color");
         focused_ip = focusGreyStack(colored_stack, BYTE);
-        IJ.showStatus("Focused red color stack");
+//        IJ.showStatus("Focused red color stack");
         focused_stack.addSlice("Red", focused_ip);
         height_stack.addSlice("Red", height_ip);
         colored_stack = null;
         // Green
         colored_stack = extractColor(rgb_stack, greenMask, greenShift);
-        IJ.showStatus("Extracted green color");
+//        IJ.showStatus("Extracted green color");
         focused_ip = focusGreyStack(colored_stack, BYTE);
-        IJ.showStatus("Focused green color stack");
+//        IJ.showStatus("Focused green color stack");
         focused_stack.addSlice("Green", focused_ip);
         height_stack.addSlice("Green", height_ip);
         colored_stack = null;
         // Blue
         colored_stack = extractColor(rgb_stack, blueMask, blueShift);
-        IJ.showStatus("Extracted blue color");
+//        IJ.showStatus("Extracted blue color");
         focused_ip = focusGreyStack(colored_stack, BYTE);
-        IJ.showStatus("Focused blue color stack");
+//        IJ.showStatus("Focused blue color stack");
         focused_stack.addSlice("Blue", focused_ip);
         height_stack.addSlice("Blue", height_ip);
         colored_stack = null;
@@ -374,7 +394,7 @@ public class Stack_Focuser_ implements PlugInFilter
      * @param rgb_stack
      */
     public void focusRGBStackOne (ImageStack rgb_stack) {
-        IJ.showStatus("Processing RGB stack");
+//        IJ.showStatus("Processing RGB stack");
         focused_stack = new ImageStack(n_width, n_height);
         height_stack = new ImageStack(n_width, n_height);
         // split RGB stack into R, G, and B components
@@ -383,27 +403,27 @@ public class Stack_Focuser_ implements PlugInFilter
 
         // Green
         ImageStack colored_stack = extractColor(rgb_stack, greenMask, greenShift);
-        IJ.showStatus("Extracted green color");
+//        IJ.showStatus("Extracted green color");
         // create max stack
         ImageStack max_stack = makeMaxStack(colored_stack, BYTE);
         //paste the image
         ImageProcessor g_ip = pasteGreyImage(colored_stack, max_stack, BYTE);
-        IJ.showStatus("Focused green color stack");
+//        IJ.showStatus("Focused green color stack");
         // height_stack.addSlice("Green", height_ip);
         colored_stack = null;
         // Red
         colored_stack = extractColor(rgb_stack, redMask, redShift);
-        IJ.showStatus("Extracted red color");
+//        IJ.showStatus("Extracted red color");
         //paste the image
         ImageProcessor r_ip = pasteGreyImage(colored_stack, max_stack, BYTE);
-        IJ.showStatus("Focused red color stack");
+//        IJ.showStatus("Focused red color stack");
         colored_stack = null;
         // Blue
         colored_stack = extractColor(rgb_stack, blueMask, blueShift);
-        IJ.showStatus("Extracted blue color");
+//        IJ.showStatus("Extracted blue color");
         //paste the image
         ImageProcessor b_ip = pasteGreyImage(colored_stack, max_stack, BYTE);
-        IJ.showStatus("Focused blue color stack");
+//        IJ.showStatus("Focused blue color stack");
 
         focused_stack.addSlice("Red", r_ip);
         focused_stack.addSlice("Green", g_ip);
@@ -454,88 +474,53 @@ public class Stack_Focuser_ implements PlugInFilter
         ImageProcessor m_ip;
         ImageStack m_stack = new ImageStack(n_width, n_height);
         float[] m_slice;
-        IJ.showProgress(0.0f);
-        IJ.showStatus("Converting...");
+//        IJ.showProgress(0.0f);
+//        IJ.showStatus("Converting...");
         for (int i=1; i<=n_slices; i++)
         {
             // Convert to float
-            IJ.showStatus("Converting to float...");
+//            IJ.showStatus("Converting to float...");
             i_ip = g_stack.getProcessor(i);
             float[] dfloat_array = new float[n_dim];
             dfloat_array = convertGreyToFloat(i_ip, stackType);
             dfloat_ip = new FloatProcessor(n_width, n_height, dfloat_array, i_ip.getColorModel());
 
             // run median filter on the new one to get rid of some noise
-            IJ.showStatus("Running median filter...");
+//            IJ.showStatus("Running median filter...");
             dfloat_ip.medianFilter();
 
             // Smooth image
-            IJ.showStatus("Smoothing image....");
+//            IJ.showStatus("Smoothing image....");
             dfloat_ip.smooth();
 
             // run Sobel edge detecting filter
-            IJ.showStatus("Finding edges....");
+//            IJ.showStatus("Finding edges....");
             dfloat_ip.findEdges();
 
             // run Max filter
             m_slice = new float[n_dim];
             m_ip = new FloatProcessor(n_width, n_height, m_slice, null);
             //  a dialog with user input at the beginning of run specifies k_size.
-            IJ.showStatus("Applying "+k_size+"x"+k_size+" filter...");
+//            IJ.showStatus("Applying "+k_size+"x"+k_size+" filter...");
             maxFilter(dfloat_ip, m_ip, k_size);
             dfloat_ip = null;
 
             // and add to the new stack
             m_stack.addSlice(null, m_ip);
-            IJ.showProgress(1.0*i/n_slices);
+//            IJ.showProgress(1.0*i/n_slices);
         }
         return m_stack;
     }
 
     /**
-     * By comparing max values for the same point in different slices we decide which
-     * original slice to use to paste into the new image at that location.
-     *
-     * @param g_stack
+     * Create an ImageProcessor containing the height map
      * @param m_stack
-     * @param stackType
+     * @return
      */
-    private ImageProcessor pasteGreyImage(ImageStack g_stack, ImageStack m_stack, int stackType) {
-        ImageProcessor f_ip = null;
-        byte[] orig_pixels8 = null;
-        short[] orig_pixels16 = null;
-        float[] orig_pixels32 = null;
-        byte[] dest_pixels8 = null;
-        short[] dest_pixels16 = null;
-        float[] dest_pixels32 = null;
-        //
-        int scale = 0;
-        // prepare height map
-        // if (create_map)
-        {
-            height_ip = new ByteProcessor(n_width, n_height);
-            scale = 255/n_slices;
-        }
-        //
-        switch (stackType)
-        {
-            case BYTE:
-                dest_pixels8 = new byte[n_dim];
-                break;
-            case SHORT:
-                dest_pixels16 = new short[n_dim];
-                break;
-            case FLOAT:
-                dest_pixels32 = new float[n_dim];
-                break;
-            default:
-                break;
-        }
+    private ImageProcessor createHeightMap(ImageStack m_stack) {
+        ImageProcessor height_ip = new ShortProcessor(n_width, n_height);
         int offset, i;
-        int copy_i, copy_x, copy_y;
-        int pix;
-        IJ.showStatus("Pasting the new image...");
-        IJ.showProgress(0.0f);
+
         int max_slice = 1;
         float[] curr_pixels;
         for (int y=0; y<n_height; y++)
@@ -555,12 +540,80 @@ public class Stack_Focuser_ implements PlugInFilter
                         max_slice = z;
                     }
                 }
+
+                height_ip.putPixel(x, y, max_slice);
+
+            }
+        }
+
+        return height_ip;
+
+    }
+
+    /**
+     * Apply median filter to the provided height map image
+     * @param height_ip
+     * @param r
+     */
+    private void smoothHeightMap(ImageProcessor height_ip, int r) {
+       new RankFilters().rank(height_ip,r,RankFilters.MEDIAN);
+    }
+
+    /**
+     * By comparing max values for the same point in different slices we decide which
+     * original slice to use to paste into the new image at that location.
+     *
+     * @param g_stack
+     * @param m_stack
+     * @param stackType
+     */
+    private ImageProcessor pasteGreyImage(ImageStack g_stack, ImageStack m_stack, int stackType) {
+        ImageProcessor f_ip = null;
+        byte[] orig_pixels8 = null;
+        short[] orig_pixels16 = null;
+        float[] orig_pixels32 = null;
+        byte[] dest_pixels8 = null;
+        short[] dest_pixels16 = null;
+        float[] dest_pixels32 = null;
+
+        // Creating the height map
+        height_ip = createHeightMap(m_stack);
+
+        // If enabled, applying the median filter to smooth the height profile
+        if (smooth) smoothHeightMap(height_ip,k_size);
+
+        switch (stackType)
+        {
+            case BYTE:
+                dest_pixels8 = new byte[n_dim];
+                break;
+            case SHORT:
+                dest_pixels16 = new short[n_dim];
+                break;
+            case FLOAT:
+                dest_pixels32 = new float[n_dim];
+                break;
+            default:
+                break;
+        }
+
+        int offset, i;
+        int copy_i, copy_x, copy_y;
+        int pix;
+
+        float[] curr_pixels;
+        for (int y=0; y<n_height; y++)
+        {
+            offset = n_width*y;
+            for (int x=0; x<n_width; x++)
+            {
+                i = offset + x;
+
                 copy_x = r.x+x;
                 copy_y = r.y+y;
                 copy_i = copy_x+copy_y*o_width;
-                // if (create_map)
-                {
-                    height_ip.putPixel(x, y, max_slice*scale);}
+
+                int max_slice = height_ip.getPixel(x, y);
                 switch (stackType)
                 {
                     case BYTE:
@@ -578,8 +631,6 @@ public class Stack_Focuser_ implements PlugInFilter
                     default:
                         break;
                 }
-                IJ.showStatus("Pasting the new image...");
-                IJ.showProgress(1.0*i/n_dim);
             }
         }
         switch (stackType)
@@ -759,5 +810,14 @@ public class Stack_Focuser_ implements PlugInFilter
                         " from a stack of images \n"+
                         "corresponding to different focal planes\n"+
                         "\n Mikhail Umorin <mikeumo@sbcglobal.net>");
+    }
+
+
+    // NEW METHODS
+
+
+    public ImageProcessor getHeightImage() {
+        return height_ip;
+
     }
 }
