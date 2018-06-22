@@ -34,8 +34,12 @@ import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by sc13967 on 15/05/2017.
@@ -142,7 +146,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 //    }
 
 
-    public ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, int[] crop, boolean localVerbose) throws ServiceException, DependencyException, IOException, FormatException {
+    public ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, int[] crop, boolean localVerbose)
+            throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
 
@@ -246,7 +251,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         if (meta != null) {
             if (meta.getPixelsPhysicalSizeX(seriesNumber-1) != null) {
                 Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber-1);
-                if (!unit.isConvertible(physicalSizeX.unit())) System.err.println("Can't convert units for file \""+new File(path).getName()+"\".  Spatially calibrated values may be wrong");
+                if (!unit.isConvertible(physicalSizeX.unit()))
+                    System.err.println("Can't convert units for file \""+new File(path).getName()+"\".  Spatially calibrated values may be wrong");
                 ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(unit);
                 ipl.getCalibration().setXUnit(unit.getSymbol());
             } else {
@@ -282,7 +288,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int finalIndex, int[] crop) throws ServiceException, DependencyException, FormatException, IOException {
+    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int finalIndex, int[] crop)
+            throws ServiceException, DependencyException, FormatException, IOException {
         // Number format
         StringBuilder stringBuilder = new StringBuilder();
         for (int i=0;i<numberOfZeroes;i++) stringBuilder.append("0");
@@ -338,8 +345,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getIncucyteShortFormattedNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges,
-                                                         int[] crop) throws ServiceException, DependencyException, FormatException, IOException {
+    private ImagePlus getIncucyteShortNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
+            throws ServiceException, DependencyException, FormatException, IOException {
         // First, running metadata extraction on the input file
         NameExtractor filenameExtractor = new IncuCyteShortFilenameExtractor();
         filenameExtractor.extract(metadata, metadata.getFile().getName());
@@ -353,26 +360,36 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getYokogawaFormattedNameImage(File templateFile, int seriesNumber, int[] crop)
+    private ImagePlus getYokogawaNameImage(File templateFile, int seriesNumber, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
         // Creating metadata object
         HCMetadata metadata = new HCMetadata();
 
         // First, running metadata extraction on the input file
         CV7000FilenameExtractor extractor = new CV7000FilenameExtractor();
+        extractor.setToUseActionWildcard(true);
         extractor.extract(metadata,templateFile.getName());
 
         // Constructing a new name using the same name format
         metadata.setChannel(parameters.getValue(CHANNEL));
-        metadata.setActionNumber(parameters.getValue(CHANNEL));
-        String filename = templateFile.getParent() + "\\" + extractor.construct(metadata);
+        final String filename = extractor.construct(metadata);
 
+        // Running through files in this folder to find the one matching the pattern
+        File parentFile = templateFile.getParentFile();
+        FilenameFilter filter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return Pattern.compile(filename).matcher(name).find();
+            }
+        };
+
+        File[] listOfFiles = parentFile.listFiles(filter);
         int[][] dimRanges = new int[][]{{1,1,1},{1,1,1},{1,1,1}};
-        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
+        return getBFImage(listOfFiles[0].getAbsolutePath(),seriesNumber,dimRanges,crop,true);
 
     }
 
-    private ImagePlus getPrefixFormattedNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
+    private ImagePlus getPrefixNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -384,7 +401,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getSuffixFormattedNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
+    private ImagePlus getSuffixNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -489,23 +506,23 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         case NameFormats.INCUCYTE_SHORT:
                             HCMetadata metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(comment);
-                            ipl = getIncucyteShortFormattedNameImage(metadata, seriesNumber, dimRanges,crop);
+                            ipl = getIncucyteShortNameImage(metadata, seriesNumber, dimRanges,crop);
                             break;
 
                         case NameFormats.YOKOGAWA:
-                            ipl = getYokogawaFormattedNameImage(workspace.getMetadata().getFile(), seriesNumber, crop);
+                            ipl = getYokogawaNameImage(workspace.getMetadata().getFile(), seriesNumber, crop);
                             break;
 
                         case NameFormats.INPUT_FILE_PREFIX:
                             metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(prefix);
-                            ipl = getPrefixFormattedNameImage(metadata, seriesNumber, dimRanges,crop);
+                            ipl = getPrefixNameImage(metadata, seriesNumber, dimRanges,crop);
                             break;
 
                         case NameFormats.INPUT_FILE_SUFFIX:
                             metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(suffix);
-                            ipl = getSuffixFormattedNameImage(metadata, seriesNumber, dimRanges,crop);
+                            ipl = getSuffixNameImage(metadata, seriesNumber, dimRanges,crop);
                             break;
                     }
                     break;
@@ -524,14 +541,16 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         // If necessary, setting the spatial calibration
         if (setCalibration) {
+            writeMessage("Setting spatial calibration (XY = "+xyCal+", Z = "+zCal+")");
             Calibration calibration = new Calibration();
 
             calibration.pixelHeight = xyCal;
-            calibration.pixelWidth= xyCal;
+            calibration.pixelWidth = xyCal;
             calibration.pixelDepth = zCal;
             calibration.setUnit(Units.getOMEUnits().getSymbol());
 
             ipl.setCalibration(calibration);
+            ipl.updateChannelAndDraw();
         }
 
         // Converting RGB to 3-channel

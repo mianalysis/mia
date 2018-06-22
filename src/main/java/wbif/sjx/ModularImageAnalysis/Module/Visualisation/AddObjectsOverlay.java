@@ -51,6 +51,7 @@ public class AddObjectsOverlay extends Module {
     public static final String LINE_WIDTH = "Line width";
     public static final String SHOW_IMAGE = "Show image";
 
+
     public interface ColourModes extends ObjCollection.ColourModes {}
 
     public interface SingleColours extends ObjCollection.SingleColours {}
@@ -74,6 +75,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         // Still need to get mean coords for label
@@ -116,6 +118,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         double xMean = object.getXMean(true);
@@ -150,6 +153,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         // Still need to get mean coords for label
@@ -187,6 +191,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, String label, int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         double xMean = object.getMeasurement(posMeasurements[0]).getValue();
@@ -231,6 +236,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour,   int labelSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
         // Adding text label
@@ -309,7 +315,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Color> colours, HashMap<Integer,String> IDs) {
+    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Color> colours, HashMap<Integer,String> labels) {
 
         String positionMode = parameters.getValue(POSITION_MODE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
@@ -320,13 +326,11 @@ public class AddObjectsOverlay extends Module {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
         }
 
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
-
         // Running through each object, adding it to the overlay along with an ID label
         int count = 0;
         for (Obj object:inputObjects.values()) {
             Color colour = colours.get(object.getID());
-            String label = IDs.get(object.getID());
+            String label = labels == null ? "" : labels.get(object.getID());
 
             double[] labelCoords = new double[0];
             switch (positionMode) {

@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ByteProcessor;
@@ -16,18 +15,30 @@ import wbif.sjx.ModularImageAnalysis.ThirdParty.Stack_Focuser_;
 
 public class FocusStack extends Module {
     public static final String INPUT_IMAGE = "Input image";
-    public static final String OUTPUT_IMAGE = "Output image";
+    public static final String OUTPUT_FOCUSED_IMAGE = "Output focused image";
     public static final String RANGE = "Range";
-    public static final String SHOW_IMAGE = "Show image";
+    public static final String SMOOTH_HEIGHT_MAP = "Smooth height map";
+    public static final String SHOW_FOCUSED_IMAGE = "Show focused image";
+    public static final String ADD_HEIGHT_MAP_TO_WORKSPACE = "Add height map image to workspace";
+    public static final String OUTPUT_HEIGHT_IMAGE = "Output height image";
+    public static final String SHOW_HEIGHT_IMAGE = "Show height image";
 
 
-    public Image focusStack(Image inputImage, String outputImageName, int range) {
+    public Image[] focusStack(Image inputImage, String outputImageName, int range, boolean smooth, boolean addHeightMap, String outputHeightImageName) {
         ImagePlus inputIpl = inputImage.getImagePlus();
         ImageProcessor ipr = inputIpl.getProcessor();
 
         // Creating the new image to hold the focused image
-        ImagePlus outputIpl = createEmptyImage(inputIpl,outputImageName);
-        Image outputImage = new Image(outputImageName,outputIpl);
+        Image[] images = new Image[2];
+        ImagePlus outputIpl = createEmptyImage(inputIpl,outputImageName,inputIpl.getBitDepth());
+        images[0] = new Image(outputImageName,outputIpl);
+
+        // If necessary, creating the height image
+        ImagePlus heightIpl = null;
+        if (addHeightMap) {
+            heightIpl = createEmptyImage(inputIpl,outputHeightImageName,16);
+            images[1] = new Image(outputHeightImageName,heightIpl);
+        }
 
         // Getting the image type
         int type = getImageType(ipr);
@@ -36,7 +47,8 @@ public class FocusStack extends Module {
         int nSlices = inputIpl.getNSlices();
         ImagePlus stack = SubHyperstackMaker.makeSubhyperstack(inputIpl,"1-1","1-"+nSlices,"1-1");
         Stack_Focuser_ focuser = new Stack_Focuser_();
-        focuser.setup("ksize="+range+" hmap="+0+" rgbone="+1,stack);
+
+        focuser.setup("ksize="+range+" hmap="+0+" rgbone="+1+" smooth="+smooth,stack);
 
         // Iterating over all timepoints and channels
         int nStacks = inputIpl.getNChannels()*inputIpl.getNFrames();
@@ -45,10 +57,17 @@ public class FocusStack extends Module {
             for (int t=1;t<=inputIpl.getNFrames();t++) {
                 stack = SubHyperstackMaker.makeSubhyperstack(inputIpl,c+"-"+c,1+"-"+nSlices,t+"-"+t);
 
+                // Adding the focused image to the output image stack
                 ImageProcessor focusedIpr = focuser.focusGreyStack(stack.getStack(),type);
-
                 outputIpl.setPosition(c,1,t);
                 outputIpl.setProcessor(focusedIpr);
+
+                // If necessary, adding the height image
+                if (addHeightMap) {
+                    ImageProcessor heightIpr = focuser.getHeightImage();
+                    heightIpl.setPosition(c, 1, t);
+                    heightIpl.setProcessor(heightIpr);
+                }
 
                 writeMessage("Processed "+(++count)+" of "+nStacks+" stacks");
 
@@ -56,8 +75,11 @@ public class FocusStack extends Module {
         }
 
         outputIpl.setPosition(1,1,1);
+        outputIpl.updateChannelAndDraw();
+        heightIpl.setPosition(1,1,1);
+        heightIpl.updateChannelAndDraw();
 
-        return outputImage;
+        return images;
 
     }
 
@@ -76,14 +98,13 @@ public class FocusStack extends Module {
 
     }
 
-    public ImagePlus createEmptyImage(ImagePlus inputImagePlus, String outputImageName) {
+    public ImagePlus createEmptyImage(ImagePlus inputImagePlus, String outputImageName, int bitDepth) {
         // Getting image dimensions
         int width = inputImagePlus.getWidth();
         int height = inputImagePlus.getHeight();
         int nChannels = inputImagePlus.getNChannels();
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
-        int bitDepth = inputImagePlus.getBitDepth();
 
         return IJ.createHyperStack(outputImageName,width,height,nChannels,1,nFrames,bitDepth);
 
@@ -108,36 +129,70 @@ public class FocusStack extends Module {
         Image inputImage = workspace.getImage(inputImageName);
 
         // Getting parameters
-        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputFocusedImageName = parameters.getValue(OUTPUT_FOCUSED_IMAGE);
         int range = parameters.getValue(RANGE);
+        boolean smooth = parameters.getValue(SMOOTH_HEIGHT_MAP);
+        boolean addHeightMap = parameters.getValue(ADD_HEIGHT_MAP_TO_WORKSPACE);
+        String outputHeightImageName = parameters.getValue(OUTPUT_HEIGHT_IMAGE);
 
         // Running stack focusing
-        Image outputImage = focusStack(inputImage,outputImageName,range);
+        Image[] outputImages = focusStack(inputImage,outputFocusedImageName,range,smooth,addHeightMap,outputHeightImageName);
 
         // If requested, showing image
-        if (parameters.getValue(SHOW_IMAGE)) {
-            ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
-            showIpl.setTitle(outputImageName);
+        if (parameters.getValue(SHOW_FOCUSED_IMAGE)) {
+            ImagePlus showIpl = new Duplicator().run(outputImages[0].getImagePlus());
+            showIpl.setTitle(outputFocusedImageName);
             showIpl.show();
         }
 
         // Adding output image to Workspace
-        workspace.addImage(outputImage);
+        workspace.addImage(outputImages[0]);
 
+        // If necessary, processing the height image
+        if (addHeightMap) {
+            if (parameters.getValue(SHOW_HEIGHT_IMAGE)) {
+                ImagePlus showIpl = new Duplicator().run(outputImages[1].getImagePlus());
+                showIpl.setTitle(outputHeightImageName);
+                showIpl.show();
+            }
+
+            // Adding output image to Workspace
+            workspace.addImage(outputImages[1]);
+
+        }
     }
 
     @Override
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(OUTPUT_FOCUSED_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(RANGE,Parameter.INTEGER,11));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SMOOTH_HEIGHT_MAP,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(SHOW_FOCUSED_IMAGE,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(ADD_HEIGHT_MAP_TO_WORKSPACE,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(OUTPUT_HEIGHT_IMAGE,Parameter.OUTPUT_IMAGE,""));
+        parameters.add(new Parameter(SHOW_HEIGHT_IMAGE,Parameter.BOOLEAN,false));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_FOCUSED_IMAGE));
+        returnedParameters.add(parameters.getParameter(RANGE));
+        returnedParameters.add(parameters.getParameter(SMOOTH_HEIGHT_MAP));
+        returnedParameters.add(parameters.getParameter(SHOW_FOCUSED_IMAGE));
+
+        returnedParameters.add(parameters.getParameter(ADD_HEIGHT_MAP_TO_WORKSPACE));
+        if (parameters.getValue(ADD_HEIGHT_MAP_TO_WORKSPACE)) {
+            returnedParameters.add(parameters.getParameter(OUTPUT_HEIGHT_IMAGE));
+            returnedParameters.add(parameters.getParameter(SHOW_HEIGHT_IMAGE));
+        }
+
+        return returnedParameters;
+
     }
 
     @Override
