@@ -9,7 +9,9 @@ import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.StatusTextField;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
-import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisReader;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisRunner;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisWriter;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -55,7 +57,7 @@ public class DeployedGUI extends GUI implements ActionListener {
 
     public DeployedGUI(String analysisResourcePath, String name, String version, int height) throws URISyntaxException, SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
         InputStream analysisResourceStream = DeployedGUI.class.getResourceAsStream(analysisResourcePath);
-        Analysis analysis = new AnalysisHandler().loadAnalysis(analysisResourceStream);
+        Analysis analysis = AnalysisReader.loadAnalysis(analysisResourceStream);
 
         new DeployedGUI(analysis,name,version,height);
 
@@ -279,7 +281,7 @@ public class DeployedGUI extends GUI implements ActionListener {
         if (e.getActionCommand().equals("Start")) {
             Thread t = new Thread(() -> {
                 try {
-                    new AnalysisHandler().startAnalysis(analysis);
+                    AnalysisRunner.startAnalysis(analysis);
                 } catch (IOException | InterruptedException e1) {
                     e1.printStackTrace();
                 } catch (GenericMIAException e1) {
@@ -291,7 +293,7 @@ public class DeployedGUI extends GUI implements ActionListener {
             // If selected, save the analysis when run
             if (saveOnRun) {
                 try {
-                    new AnalysisHandler().saveAnalysis(analysis,saveLocation);
+                    AnalysisWriter.saveAnalysis(analysis,saveLocation);
                 } catch (IOException | ParserConfigurationException | TransformerException e1) {
                     e1.printStackTrace();
                 }

@@ -4,8 +4,38 @@
   <groupId>wbif.sjx</groupId>
   <artifactId>ModularImageAnalysis</artifactId>
   <name>Modular_Image_Analysis</name>
-  <version>0.5.9</version>
+  <version>0.5.10</version>
   <url>https://github.com/SJCross/ModularImageAnalysis</url>
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/SJCross/ModularImageAnalysis/issues</url>
+  </issueManagement>
+  <inceptionYear>2017</inceptionYear>
+  <developers>
+    <developer>
+      <id>sjcross</id>
+      <name>Stephen Cross</name>
+      <roles>
+        <role>lead</role>
+        <role>developer</role>
+        <role>debugger</role>
+        <role>reviewer</role>
+        <role>support</role>
+        <role>maintainer</role>
+      </roles>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Stephen Cross</name>
+      <roles>
+        <role>founder</role>
+      </roles>
+      <properties>
+        <id>sjcross</id>
+      </properties>
+    </contributor>
+  </contributors>
   <licenses>
     <license>
       <name>GNU General Public License v3+</name>
@@ -13,6 +43,9 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <organization>
+    <name>University of Bristol</name>
+  </organization>
   <build>
     <plugins>
       <plugin>
