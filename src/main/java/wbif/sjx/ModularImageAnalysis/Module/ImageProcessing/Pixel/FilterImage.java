@@ -38,15 +38,18 @@ public class FilterImage extends Module {
         String GAUSSIAN2D = "Gaussian 2D"; // Tested
         String GAUSSIAN3D = "Gaussian 3D"; // Tested
         String GRADIENT2D = "Gradient 2D";
+        String MAXIMUM3D = "Maximum 3D";
         String MEAN3D = "Mean 3D";
         String MEDIAN2D = "Median 2D";
         String MEDIAN3D = "Median 3D";
+        String MINIMUM3D = "Minimum 3D";
         String RIDGE_ENHANCEMENT = "Ridge enhancement 2D";
         String ROLLING_FRAME = "Rolling frame";
         String VARIANCE2D = "Variance 2D";
+        String VARIANCE3D = "Variance 3D";
 
         String[] ALL = new String[]{
-                DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MEAN3D,MEDIAN2D,MEDIAN3D,RIDGE_ENHANCEMENT, ROLLING_FRAME,VARIANCE2D};
+                DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MAXIMUM3D,MEAN3D,MEDIAN2D,MEDIAN3D,MINIMUM3D,RIDGE_ENHANCEMENT, ROLLING_FRAME,VARIANCE2D,VARIANCE3D};
 
     }
 
@@ -133,11 +136,20 @@ public class FilterImage extends Module {
 
         int filter = 0;
         switch (filterMode) {
+            case FilterModes.MAXIMUM3D:
+                filter = Filters3D.MAX;
+                break;
             case FilterModes.MEAN3D:
                 filter = Filters3D.MEAN;
                 break;
             case FilterModes.MEDIAN3D:
                 filter = Filters3D.MEDIAN;
+                break;
+            case FilterModes.MINIMUM3D:
+                filter = Filters3D.MIN;
+                break;
+            case FilterModes.VARIANCE3D:
+                filter = Filters3D.VAR;
                 break;
         }
 
