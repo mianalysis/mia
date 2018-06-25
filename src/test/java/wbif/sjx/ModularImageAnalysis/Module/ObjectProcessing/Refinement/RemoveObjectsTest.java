@@ -1,15 +1,21 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Spots3D;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import static org.junit.Assert.*;
 
 public class RemoveObjectsTest {
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
 
     @Test
     public void testGetTitle() {

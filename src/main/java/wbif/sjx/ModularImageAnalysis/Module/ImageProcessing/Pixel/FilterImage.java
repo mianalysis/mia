@@ -36,7 +36,6 @@ public class FilterImage extends Module {
     public static final String SHOW_IMAGE = "Show image";
 
     public interface FilterModes {
-        String DESPECKLE2D = "Despeckle 2D";
         String DOG2D = "Difference of Gaussian 2D";
         String GAUSSIAN2D = "Gaussian 2D"; // Tested
         String GAUSSIAN3D = "Gaussian 3D"; // Tested
@@ -56,7 +55,7 @@ public class FilterImage extends Module {
         String VARIANCE3D = "Variance 3D";
 
         String[] ALL = new String[]{
-                DESPECKLE2D,DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MAXIMUM2D,MAXIMUM3D,MEAN2D,MEAN3D,MEDIAN2D,MEDIAN3D,
+                DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MAXIMUM2D,MAXIMUM3D,MEAN2D,MEAN3D,MEDIAN2D,MEDIAN3D,
                 MINIMUM2D,MINIMUM3D,OUTLIERS2D,RIDGE_ENHANCEMENT,ROLLING_FRAME,VARIANCE2D,VARIANCE3D};
 
     }
@@ -80,39 +79,10 @@ public class FilterImage extends Module {
     }
 
 
-    public static void runGaussian2DFilter(ImagePlus imagePlus, double sigma) {
-        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    imagePlus.setPosition(c, z, t);
-                    imagePlus.getProcessor().blurGaussian(sigma);
-                }
-            }
-        }
-        imagePlus.setPosition(1,1,1);
-    }
-
-    public static void runGradient2DFilter(ImagePlus imagePlus, double sigma) {
-        DiskStrel strel = DiskStrel.fromRadius((int) Math.round(sigma));
-        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
-            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
-                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
-                    imagePlus.setPosition(c, z, t);
-                    imagePlus.setProcessor(Morphology.gradient(imagePlus.getProcessor(),strel));
-                }
-            }
-        }
-        imagePlus.setPosition(1,1,1);
-    }
-
     public static void apply2DFilter(ImagePlus inputImagePlus, String filterMode, double filterRadius) {
         // Determining which rank filter ID to use
         int rankFilter = 0;
         switch (filterMode) {
-            case FilterModes.DESPECKLE2D:
-                rankFilter = RankFilters.DESPECKLE;
-                break;
-
             case FilterModes.MAXIMUM2D:
                 rankFilter = RankFilters.MAX;
                 break;
@@ -204,6 +174,31 @@ public class FilterImage extends Module {
         inputImagePlus.setPosition(1,1,1);
         inputImagePlus.updateChannelAndDraw();
 
+    }
+
+    public static void runGaussian2DFilter(ImagePlus imagePlus, double sigma) {
+        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
+                    imagePlus.setPosition(c, z, t);
+                    imagePlus.getProcessor().blurGaussian(sigma);
+                }
+            }
+        }
+        imagePlus.setPosition(1,1,1);
+    }
+
+    public static void runGradient2DFilter(ImagePlus imagePlus, double sigma) {
+        DiskStrel strel = DiskStrel.fromRadius((int) Math.round(sigma));
+        for (int z = 1; z <= imagePlus.getNSlices(); z++) {
+            for (int c = 1; c <= imagePlus.getNChannels(); c++) {
+                for (int t = 1; t <= imagePlus.getNFrames(); t++) {
+                    imagePlus.setPosition(c, z, t);
+                    imagePlus.setProcessor(Morphology.gradient(imagePlus.getProcessor(),strel));
+                }
+            }
+        }
+        imagePlus.setPosition(1,1,1);
     }
 
     public static void runRollingFrameFilter(ImagePlus inputImagePlus, int windowHalfWidth, String rollingMethod, String windowMode) {
@@ -316,7 +311,10 @@ public class FilterImage extends Module {
 
         // Applying smoothing filter
         switch (filterMode) {
+            case FilterModes.MAXIMUM2D:
+            case FilterModes.MEAN2D:
             case FilterModes.MEDIAN2D:
+            case FilterModes.OUTLIERS2D:
             case FilterModes.VARIANCE2D:
                 writeMessage("Applying "+filterMode+" filter (radius = " + filterRadius + " px)");
                 apply2DFilter(inputImagePlus,filterMode,filterRadius);

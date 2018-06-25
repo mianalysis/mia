@@ -2,10 +2,12 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.FilterImage;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -19,6 +21,11 @@ import static org.junit.Assert.*;
  * Created by sc13967 on 07/12/2017.
  */
 public class FilterObjectsTest {
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
+
     @Test
     public void testGetTitle() throws Exception {
         assertNotNull(new FilterImage().getTitle());

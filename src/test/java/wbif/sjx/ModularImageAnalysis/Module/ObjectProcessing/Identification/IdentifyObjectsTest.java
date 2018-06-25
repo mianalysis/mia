@@ -2,12 +2,14 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects2D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects4D;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -22,6 +24,11 @@ import static org.junit.Assert.*;
  */
 public class IdentifyObjectsTest {
     private double tolerance = 1E-2;
+
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
 
     @Test
     public void testGetTitle() throws Exception {

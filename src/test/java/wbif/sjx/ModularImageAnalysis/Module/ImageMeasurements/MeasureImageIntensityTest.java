@@ -2,7 +2,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -13,6 +15,11 @@ import static org.junit.Assert.*;
 
 public class MeasureImageIntensityTest {
     private double tolerance = 1E-2;
+
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
 
     @Test
     public void testGetTitle() {

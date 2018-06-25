@@ -1,8 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.CropImage;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Units;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -16,6 +18,11 @@ import static org.junit.Assert.*;
  * Created by steph on 29/08/2017.
  */
 public class ImageLoaderTest {
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
+
     @Test
     public void testGetTitle() throws Exception {
         assertNotNull(new ImageLoader().getTitle());

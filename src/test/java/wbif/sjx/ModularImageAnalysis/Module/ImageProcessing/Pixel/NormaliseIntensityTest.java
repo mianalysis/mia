@@ -3,8 +3,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -14,6 +16,11 @@ import static org.junit.Assert.*;
 
 public class NormaliseIntensityTest {
     private float tolerance = 1E-6f;
+
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
 
     @Test
     public void testGetTitle() {
