@@ -55,7 +55,7 @@ public class CropImageTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -98,7 +98,7 @@ public class CropImageTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -141,7 +141,7 @@ public class CropImageTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -184,7 +184,7 @@ public class CropImageTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
     }
 
     @Test
@@ -226,7 +226,7 @@ public class CropImageTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
     }
 
     @Test
@@ -268,7 +268,7 @@ public class CropImageTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 }

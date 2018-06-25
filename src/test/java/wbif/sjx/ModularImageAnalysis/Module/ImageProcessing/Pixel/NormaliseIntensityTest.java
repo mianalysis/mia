@@ -55,7 +55,7 @@ public class NormaliseIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -94,7 +94,7 @@ public class NormaliseIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -133,7 +133,7 @@ public class NormaliseIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -172,7 +172,7 @@ public class NormaliseIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -211,7 +211,7 @@ public class NormaliseIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -250,7 +250,7 @@ public class NormaliseIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -289,7 +289,7 @@ public class NormaliseIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -326,7 +326,7 @@ public class NormaliseIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_image");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 }

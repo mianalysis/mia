@@ -507,7 +507,7 @@ public class ImageLoaderTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_Output_Image");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
