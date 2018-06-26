@@ -154,14 +154,14 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
             for (Obj object : values()) {
                 // Getting range of XYZ
-                int[][] currCoordinateRange = object.getCoordinateRange();
+                double[][] currCoordinateRange = object.getExtents(true,false);
                 for (int dim = 0; dim < currCoordinateRange.length; dim++) {
                     if (currCoordinateRange[dim][0] < coordinateRange[dim][0]) {
-                        coordinateRange[dim][0] = currCoordinateRange[dim][0];
+                        coordinateRange[dim][0] = (int) currCoordinateRange[dim][0];
                     }
 
                     if (currCoordinateRange[dim][1] > coordinateRange[dim][1]) {
-                        coordinateRange[dim][1] = currCoordinateRange[dim][1];
+                        coordinateRange[dim][1] = (int) currCoordinateRange[dim][1];
                     }
                 }
 

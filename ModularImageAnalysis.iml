@@ -146,7 +146,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:1.4.2">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_161/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -262,7 +262,7 @@
     <orderEntry type="module-library">
       <library name="Maven: jdk.tools:jdk.tools:1.6">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_161/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -311,7 +311,7 @@
     <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-servlet:3.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-hdfs:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: commons-daemon:commons-daemon:1.0.13" level="project" />
-    <orderEntry type="library" name="Maven: com.github.SJCross:Common:v1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.4.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.bonej:boneJ-legacy-plugins:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.bonej:bonej-legacy-util:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:AnalyzeSkeleton_:3.1.0" level="project" />

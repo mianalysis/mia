@@ -2,10 +2,12 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Rings2D;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.net.URLDecoder;
@@ -17,6 +19,11 @@ import static org.junit.Assert.*;
  */
 public class MeasureObjectCurvatureTest {
     private double tolerance = 1E-1; // As these are fit values, the tolerance is larger than usual
+
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
 
     @Test
     public void testGetTitle() {
