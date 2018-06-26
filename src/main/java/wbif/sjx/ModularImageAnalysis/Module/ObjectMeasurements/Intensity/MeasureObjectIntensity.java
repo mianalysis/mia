@@ -4,6 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
@@ -12,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.text.DecimalFormat;
@@ -91,21 +93,10 @@ public class MeasureObjectIntensity extends Module {
         // Getting parameters
         String imageName = parameters.getValue(INPUT_IMAGE);
 
-        // Initialising the cumulative statistics object to store pixel intensities
-        CumStat cs = new CumStat();
-
-        // Getting pixel coordinates
-        ArrayList<Integer> x = object.getXCoords();
-        ArrayList<Integer> y = object.getYCoords();
-        ArrayList<Integer> z = object.getZCoords();
-        int tPos = object.getT();
-
         // Running through all pixels in this object and adding the intensity to the MultiCumStat object
-        for (int i=0;i<x.size();i++) {
-            ipl.setPosition(1,z.get(i)+1,tPos+1);
-            cs.addMeasure(ipl.getProcessor().getPixelValue(x.get(i),y.get(i)));
-
-        }
+        ipl.setPosition(1,1,object.getT()+1);
+        ImageStack imageStack = ipl.getImageStack();
+        CumStat cs = IntensityCalculator.calculate(imageStack,object);
 
         // Calculating mean, std, min and max intensity
         if (parameters.getValue(MEASURE_MEAN))
