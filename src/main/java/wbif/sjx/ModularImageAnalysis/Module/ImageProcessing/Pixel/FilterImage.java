@@ -48,7 +48,6 @@ public class FilterImage extends Module {
         String MEDIAN3D = "Median 3D";
         String MINIMUM2D = "Minimum 2D";
         String MINIMUM3D = "Minimum 3D";
-        String OUTLIERS2D = "Outliers 2D";
         String RIDGE_ENHANCEMENT = "Ridge enhancement 2D";
         String ROLLING_FRAME = "Rolling frame";
         String VARIANCE2D = "Variance 2D";
@@ -56,7 +55,7 @@ public class FilterImage extends Module {
 
         String[] ALL = new String[]{
                 DOG2D,GAUSSIAN2D,GAUSSIAN3D,GRADIENT2D,MAXIMUM2D,MAXIMUM3D,MEAN2D,MEAN3D,MEDIAN2D,MEDIAN3D,
-                MINIMUM2D,MINIMUM3D,OUTLIERS2D,RIDGE_ENHANCEMENT,ROLLING_FRAME,VARIANCE2D,VARIANCE3D};
+                MINIMUM2D,MINIMUM3D,RIDGE_ENHANCEMENT,ROLLING_FRAME,VARIANCE2D,VARIANCE3D};
 
     }
 
@@ -97,10 +96,6 @@ public class FilterImage extends Module {
 
             case FilterModes.MINIMUM2D:
                 rankFilter = RankFilters.MIN;
-                break;
-
-            case FilterModes.OUTLIERS2D:
-                rankFilter = RankFilters.OUTLIERS;
                 break;
 
             case FilterModes.VARIANCE2D:
@@ -314,7 +309,7 @@ public class FilterImage extends Module {
             case FilterModes.MAXIMUM2D:
             case FilterModes.MEAN2D:
             case FilterModes.MEDIAN2D:
-            case FilterModes.OUTLIERS2D:
+            case FilterModes.MINIMUM2D:
             case FilterModes.VARIANCE2D:
                 writeMessage("Applying "+filterMode+" filter (radius = " + filterRadius + " px)");
                 apply2DFilter(inputImagePlus,filterMode,filterRadius);

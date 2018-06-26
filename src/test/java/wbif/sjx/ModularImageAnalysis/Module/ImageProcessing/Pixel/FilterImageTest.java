@@ -43,6 +43,11 @@ public class FilterImageTest {
     public void testRunDoG2DFilter5DStack() throws Exception {
     }
 
+    @Test @Ignore
+    public void testRunDoG2DFilter2DStackCalibrated() throws Exception {
+
+    }
+
 
     // TESTING 2D GAUSSIAN FILTER
 
@@ -114,6 +119,47 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.GAUSSIAN2D);
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
+
+        // Running BinaryOperations
+        filterImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
+
+    }
+
+    @Test
+    public void testRunGaussian2DFilter2DStackCalibrated() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageFilter/LabelledObjects2D_8bit_2pxGauss2D.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising BinaryOperations
+        FilterImage filterImage = new FilterImage();
+        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
+        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
+        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
+        filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.GAUSSIAN2D);
+        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,true);
+        filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
         // Running BinaryOperations
         filterImage.run(workspace);
@@ -219,6 +265,47 @@ public class FilterImageTest {
 
     }
 
+    @Test
+    public void testRunGaussian3DFilter2DStackCalibrated() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageFilter/LabelledObjects2D_8bit_2pxGauss3D.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising BinaryOperations
+        FilterImage filterImage = new FilterImage();
+        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
+        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
+        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
+        filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.GAUSSIAN3D);
+        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,true);
+        filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
+
+        // Running BinaryOperations
+        filterImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
+
+    }
+
 
     // TESTING 2D RANK FILTERS
 
@@ -289,6 +376,48 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.MAXIMUM2D);
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
+
+        // Running BinaryOperations
+        filterImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
+
+    }
+
+    @Test
+    public void testRunMax2DFilter5DStackCalibrated() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageFilter/LabelledObjects5D_8bit_2pxMax2D.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising BinaryOperations
+        FilterImage filterImage = new FilterImage();
+        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
+        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
+        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
+        filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.MAXIMUM2D);
+        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,true);
+        filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
         // Running BinaryOperations
         filterImage.run(workspace);
@@ -468,7 +597,7 @@ public class FilterImageTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testRunMin2DFilter2DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -508,7 +637,7 @@ public class FilterImageTest {
         assertEquals(expectedImage,outputImage);
     }
 
-    @Test @Ignore
+    @Test
     public void testRunMin2DFilter5DStack() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -533,88 +662,6 @@ public class FilterImageTest {
         filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
         filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
         filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.MINIMUM2D);
-        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
-        filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
-
-        // Running BinaryOperations
-        filterImage.run(workspace);
-
-        // Checking the images in the workspace
-        assertEquals(2,workspace.getImages().size());
-        assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Test_output"));
-
-        // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_output");
-        assertEquals(expectedImage,outputImage);
-
-    }
-
-    @Test @Ignore
-    public void testRunOutliers2DFilter2DStack() throws Exception {
-        // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageFilter/LabelledObjects2D_8bit_2pxOutliers2D.tif").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
-
-        // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
-        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
-        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
-        filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.OUTLIERS2D);
-        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
-        filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
-
-        // Running BinaryOperations
-        filterImage.run(workspace);
-
-        // Checking the images in the workspace
-        assertEquals(2,workspace.getImages().size());
-        assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Test_output"));
-
-        // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_output");
-        assertEquals(expectedImage,outputImage);
-    }
-
-    @Test @Ignore
-    public void testRunOutliers2DFilter5DStack() throws Exception {
-        // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String calibratedUnits = "µm";
-
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageFilter/LabelledObjects5D_8bit_2pxOutliers2D.tif").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
-
-        // Initialising BinaryOperations
-        FilterImage filterImage = new FilterImage();
-        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
-        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
-        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
-        filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.OUTLIERS2D);
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
@@ -799,6 +846,48 @@ public class FilterImageTest {
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
         assertEquals(expectedImage,outputImage);
+
+    }
+
+    @Test
+    public void testRunMax3DFilter2DStackCalibrated() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageFilter/LabelledObjects2D_8bit_2pxMax3D.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising BinaryOperations
+        FilterImage filterImage = new FilterImage();
+        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_image");
+        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
+        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
+        filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.MAXIMUM3D);
+        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,true);
+        filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
+
+        // Running BinaryOperations
+        filterImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+
+        assertEquals(outputImage, expectedImage);
 
     }
 
@@ -1413,6 +1502,10 @@ public class FilterImageTest {
      */
     @Test @Ignore
     public void testRunRollingFrameFilterOneTimepoint() throws Exception {
+    }
+
+    @Test @Ignore
+    public void testRunRollingFrameFilter5DStackCalibrated() throws Exception {
     }
 
 }

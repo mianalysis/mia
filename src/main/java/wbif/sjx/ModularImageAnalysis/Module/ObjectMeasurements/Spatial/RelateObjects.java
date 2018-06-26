@@ -325,14 +325,14 @@ public class RelateObjects extends Module {
             ArrayList<Integer> parentZ = parentObject.getZCoords();
 
             // Creating a Hyperstack to hold the distance transform
-            int[][] range = parentObject.getCoordinateRange();
-            ImagePlus ipl = IJ.createHyperStack("Objects", range[0][1]-range[0][0] + 1,
-                    range[1][1]-range[1][0] + 1, 1, range[2][1]-range[2][0], 1, 8);
+            double[][] range = parentObject.getExtents(true,false);
+            ImagePlus ipl = IJ.createHyperStack("Objects", (int) (range[0][1]-range[0][0] + 1),
+                    (int) (range[1][1]-range[1][0] + 1), 1, (int) (range[2][1]-range[2][0]), 1, 8);
 
             // Setting pixels corresponding to the parent object to 1
             for (int i=0;i<parentX.size();i++) {
-                ipl.setPosition(1,parentZ.get(i)-range[2][0]+1,1);
-                ipl.getProcessor().set(parentX.get(i)-range[0][0],parentY.get(i)-range[1][0],255);
+                ipl.setPosition(1,(int) (parentZ.get(i)-range[2][0]+1),1);
+                ipl.getProcessor().set((int) (parentX.get(i)-range[0][0]), (int) (parentY.get(i)-range[1][0]),255);
 
             }
 
