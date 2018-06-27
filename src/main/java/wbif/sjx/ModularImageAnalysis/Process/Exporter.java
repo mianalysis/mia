@@ -24,13 +24,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.StringTokenizer;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -326,11 +326,25 @@ public class Exporter {
 
         // Writing the workbook to file
         String outPath = exportFilePath + ".xlsx";
-        FileOutputStream outputStream = new FileOutputStream(outPath);
-        workbook.write(outputStream);
+        try {
+            FileOutputStream outputStream = new FileOutputStream(outPath);
+            workbook.write(outputStream);
+
+        } catch(FileNotFoundException e) {
+            ZonedDateTime zonedDateTime = ZonedDateTime.now();
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+            String newOutPath = exportFilePath + "_("+ dateTime + ").xlsx";
+            FileOutputStream outputStream = new FileOutputStream(newOutPath);
+            workbook.write(outputStream);
+
+            System.err.println("Target file ("+new File(outPath).getName()+") inaccessible");
+            System.err.println("Saved to alternative file ("+new File(newOutPath).getName()+")");
+
+        }
+
         workbook.close();
 
-        if (verbose) System.out.println("Saved "+ outPath);
+        if (verbose) System.out.println("Saved results");
 
     }
 

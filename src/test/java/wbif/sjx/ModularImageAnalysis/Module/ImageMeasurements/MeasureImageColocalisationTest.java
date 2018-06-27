@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
@@ -17,7 +18,7 @@ public class MeasureImageColocalisationTest {
     private double tolerance = 1E-2;
 
     @Test
-    public void getFullName() {
+    public void testGetFullName() {
         String inputImage2Name = "Im2";
         String measurement = MeasureImageColocalisation.Measurements.MEAN_PCC;
 
@@ -28,7 +29,72 @@ public class MeasureImageColocalisationTest {
     }
 
     @Test
-    public void measurePCCWholeImage() throws Exception {
+    public void testGetMaskImageNone() throws Exception {
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+
+        // Loading images
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl1 = IJ.openImage(pathToImage);
+        Image image1 = new Image("Im1",ipl1);
+
+        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.NONE);
+
+        assertNull(actual);
+
+    }
+
+    @Test
+    public void testGetMaskImageInsideObjects() throws Exception {
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+
+        // Loading images
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl1 = IJ.openImage(pathToImage);
+        Image image1 = new Image("Im1",ipl1);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_whiteBG.tif").getPath(),"UTF-8");
+        ImagePlus expectedIpl = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected",expectedIpl);
+
+        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_INSIDE_OBJECTS);
+
+        assertEquals(expectedImage,actual);
+
+    }
+
+    @Test
+    public void testGetMaskImageOutsideObjects() throws Exception {
+        // Getting the expected objects
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+        ObjCollection expectedObjects = new Objects2D().getObjects("Expected",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);
+
+        // Loading images
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/MeasureColocalisation/ColocalisationChannel1_2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl1 = IJ.openImage(pathToImage);
+        Image image1 = new Image("Im1",ipl1);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BinaryObjects/BinaryObjects2D_8bit_blackBG.tif").getPath(),"UTF-8");
+        ImagePlus expectedIpl = IJ.openImage(pathToImage);
+        Image expectedImage = new Image("Expected",expectedIpl);
+
+        Image actual = MeasureImageColocalisation.getMaskImage(expectedObjects,image1,MeasureImageColocalisation.MaskingModes.MEASURE_OUTSIDE_OBJECTS);
+
+        assertEquals(expectedImage,actual);
+
+    }
+
+    @Test
+    public void testMeasurePCCWholeImage() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -43,14 +109,8 @@ public class MeasureImageColocalisationTest {
         Image image2 = new Image("Im2",ipl2);
         workspace.addImage(image2);
 
-        // Initialising the module
-        MeasureImageColocalisation measureImageColocalisation = new MeasureImageColocalisation();
-        measureImageColocalisation.updateParameterValue(MeasureImageColocalisation.INPUT_IMAGE_1,"Im1");
-        measureImageColocalisation.updateParameterValue(MeasureImageColocalisation.INPUT_IMAGE_2,"Im2");
-        measureImageColocalisation.updateParameterValue(MeasureImageColocalisation.MASKING_MODE,false);
-
         // Running the analysis
-        measureImageColocalisation.measurePCC(image1,image2,null);
+        MeasureImageColocalisation.measurePCC(image1,image2,null);
 
         // Calculating PCC (expected value from Coloc2)
         double expected = 0.44;
@@ -62,7 +122,7 @@ public class MeasureImageColocalisationTest {
     }
 
     @Test
-    public void measurePCCMaskImage() throws Exception {
+    public void testMeasurePCCMaskImage() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -95,7 +155,7 @@ public class MeasureImageColocalisationTest {
     }
 
     @Test
-    public void getTitle() {
+    public void testGetTitle() {
         assertNotNull(new MeasureImageColocalisation().getTitle());
     }
 }

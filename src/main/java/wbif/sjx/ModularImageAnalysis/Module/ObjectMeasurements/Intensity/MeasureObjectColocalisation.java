@@ -13,22 +13,22 @@ public class MeasureObjectColocalisation extends Module {
 
 
     public interface Measurements {
-        String PCC = "MEAN_PCC";
+        String PCC = "PCC";
     }
 
     public static String getFullName(String imageName1,String imageName2, String measurement) {
         return "COLOCALISATION // "+imageName1+"_"+imageName2+"_"+measurement;
     }
 
-    public void measurePCC(Obj inputObject, ImagePlus ipl1, ImagePlus ipl2) {
-        String imageName1 = parameters.getValue(INPUT_IMAGE_1);
-        String imageName2 = parameters.getValue(INPUT_IMAGE_2);
+    public static void measurePCC(Obj inputObject, Image image1, Image image2) {
+        ImagePlus ipl1 = image1.getImagePlus();
+        ImagePlus ipl2 = image2.getImagePlus();
 
         ipl1.setPosition(1,1,inputObject.getT()+1);
         ipl2.setPosition(1,1,inputObject.getT()+1);
         double pcc = ColocalisationCalculator.calculatePCC(ipl1.getImageStack(),ipl2.getImageStack(),inputObject);
 
-        inputObject.addMeasurement(new Measurement(getFullName(imageName1,imageName2,Measurements.PCC),pcc));
+        inputObject.addMeasurement(new Measurement(getFullName(image1.getName(),image2.getName(),Measurements.PCC),pcc));
 
     }
 
@@ -52,15 +52,13 @@ public class MeasureObjectColocalisation extends Module {
         // Getting input images
         String imageName1 = parameters.getValue(INPUT_IMAGE_1);
         Image image1 = workspace.getImages().get(imageName1);
-        ImagePlus ipl1 = image1.getImagePlus();
 
         String imageName2 = parameters.getValue(INPUT_IMAGE_2);
         Image image2 = workspace.getImages().get(imageName2);
-        ImagePlus ipl2 = image2.getImagePlus();
 
         // Iterating over each object, taking the measurements
         for (Obj inputObject:objects.values()) {
-            measurePCC(inputObject,ipl1,ipl2);
+            measurePCC(inputObject,image1,image2);
         }
     }
 

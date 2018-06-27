@@ -5,6 +5,7 @@ import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
@@ -37,12 +38,14 @@ public class MeasureImageColocalisation extends Module {
         switch (maskingMode) {
             case MaskingModes.MEASURE_INSIDE_OBJECTS:
                 // Creating the new Obj
-                HashMap<Integer, Float> hues = objects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, null, false);
-                return objects.convertObjectsToImage("Mask",templateImage.getImagePlus(),ObjCollection.ColourModes.SINGLE_COLOUR,hues);
+                HashMap<Integer, Float> hues = objects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
+                Image image = objects.convertObjectsToImage("Mask",templateImage.getImagePlus(),ObjCollection.ColourModes.SINGLE_COLOUR,hues);
+                InvertIntensity.process(image.getImagePlus());
+                return image;
 
             case MaskingModes.MEASURE_OUTSIDE_OBJECTS:
                 // Creating the new Obj
-                hues = objects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, null, false);
+                hues = objects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
                 return objects.convertObjectsToImage("Mask",templateImage.getImagePlus(),ObjCollection.ColourModes.SINGLE_COLOUR,hues);
 
             case MaskingModes.NONE:
