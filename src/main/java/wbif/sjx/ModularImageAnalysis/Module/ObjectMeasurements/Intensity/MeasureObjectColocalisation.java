@@ -13,7 +13,7 @@ public class MeasureObjectColocalisation extends Module {
 
 
     public interface Measurements {
-        String PCC = "PCC";
+        String PCC = "MEAN_PCC";
     }
 
     public static String getFullName(String imageName1,String imageName2, String measurement) {
