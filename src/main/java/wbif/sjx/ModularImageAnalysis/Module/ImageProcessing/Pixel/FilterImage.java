@@ -150,7 +150,7 @@ public class FilterImage extends Module {
         for (int c=1;c<=nChannels;c++) {
             for (int t = 1; t <=nFrames; t++) {
                 ImagePlus iplOrig = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, c+"-"+c, "1-"+nSlices, t+"-"+t);
-                ImageStack istFilt = Filters3D.filter(iplOrig.getImageStack(), filter, filterRadius, filterRadius, filterRadius);
+                ImageStack istFilt = Filters3D.filter(iplOrig.getStack(), filter, filterRadius, filterRadius, filterRadius);
 
                 for (int z = 1; z <= istFilt.getSize(); z++) {
                     inputImagePlus.setPosition(c,z,t);

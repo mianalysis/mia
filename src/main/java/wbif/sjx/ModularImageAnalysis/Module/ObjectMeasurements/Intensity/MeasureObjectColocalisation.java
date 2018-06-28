@@ -26,7 +26,7 @@ public class MeasureObjectColocalisation extends Module {
 
         ipl1.setPosition(1,1,inputObject.getT()+1);
         ipl2.setPosition(1,1,inputObject.getT()+1);
-        double pcc = ColocalisationCalculator.calculatePCC(ipl1.getImageStack(),ipl2.getImageStack(),inputObject);
+        double pcc = ColocalisationCalculator.calculatePCC(ipl1.getStack(),ipl2.getStack(),inputObject);
 
         inputObject.addMeasurement(new Measurement(getFullName(image1.getName(),image2.getName(),Measurements.PCC),pcc));
 

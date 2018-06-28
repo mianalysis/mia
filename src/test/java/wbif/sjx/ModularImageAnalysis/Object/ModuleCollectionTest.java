@@ -163,25 +163,26 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.POINT_MEASUREMENT,true);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.CALIBRATED_RADIUS,false);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.MEASUREMENT_RADIUS,1d);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET,1);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.Y_OFFSET,0);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.Z_OFFSET,0);
+        measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET,1d);
+        measureObjectTexture.updateParameterValue(MeasureObjectTexture.Y_OFFSET,0d);
+        measureObjectTexture.updateParameterValue(MeasureObjectTexture.Z_OFFSET,0d);
         modules.add(measureObjectTexture);
 
         // Checking the values for "Im1"
         MeasurementReferenceCollection references1 = modules.getObjectMeasurementReferences(obj1Name);
         assertEquals(10,references1.size());
 
+        double[] offs = new double[]{1,0,0};
         String[] expectedNames1 = new String[]{MeasureObjectCentroid.Measurements.MEAN_X_PX,
                 MeasureObjectCentroid.Measurements.MEAN_Y_PX,
                 MeasureObjectCentroid.Measurements.MEAN_Z_SLICE,
                 Units.replace(MeasureObjectCentroid.Measurements.MEAN_X_CAL),
                 Units.replace(MeasureObjectCentroid.Measurements.MEAN_Y_CAL),
                 Units.replace(MeasureObjectCentroid.Measurements.MEAN_Z_CAL),
-                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ASM),
-                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CONTRAST),
-                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CORRELATION),
-                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ENTROPY)};
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ASM,offs,false),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CONTRAST,offs,false),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.CORRELATION,offs,false),
+                MeasureObjectTexture.getFullName("",MeasureObjectTexture.Measurements.ENTROPY,offs,false)};
 
         for (String expectedName1:expectedNames1) {
             assertTrue(references1.containsKey(expectedName1));
@@ -293,6 +294,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET,1);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Y_OFFSET,0);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.Z_OFFSET,0);
+        measureObjectTexture.updateParameterValue(MeasureObjectTexture.CALIBRATED_OFFSET,false);
         modules.add(measureObjectTexture);
 
         // Checking for booleans
@@ -306,9 +308,10 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_AREA,Parameter.BOOLEAN,false));
         expectedParams.add(new Parameter(MeasureObjectTexture.POINT_MEASUREMENT,Parameter.BOOLEAN,true));
         expectedParams.add(new Parameter(MeasureObjectTexture.CALIBRATED_RADIUS,Parameter.BOOLEAN,false));
+        expectedParams.add(new Parameter(MeasureObjectTexture.CALIBRATED_OFFSET,Parameter.BOOLEAN,false));
 
         // Checking the parameters are what are expected
-        assertEquals(6,actualParams.size());
+        assertEquals(7,actualParams.size());
 
         for (Parameter actualParam:actualParams) {
             boolean found = false;

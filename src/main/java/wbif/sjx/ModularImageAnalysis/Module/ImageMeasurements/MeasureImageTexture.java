@@ -47,46 +47,37 @@ public class MeasureImageTexture extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running texture measurement
-        writeMessage("Calculating co-occurance matrix");
-        writeMessage("X-offset: "+xOffs);
-        writeMessage("Y-offset: "+yOffs);
-        writeMessage("Z-offset: "+zOffs);
-
-        TextureCalculator textureCalculator = new TextureCalculator();
-
-        for (int f=0;f<inputImagePlus.getNFrames();f++) {
-            textureCalculator.calculate(inputImagePlus, xOffs, yOffs, zOffs,1,f+1);
-
-        }
+        TextureCalculator textureCalculator = new TextureCalculator(xOffs,yOffs,zOffs);
+        textureCalculator.calculate(inputImagePlus.getStack());
 
         // Acquiring measurements
-        Measurement ASMMeasurement = new Measurement(Measurements.ASM,textureCalculator.getASM());
+        Measurement ASMMeasurement = new Measurement(Measurements.ASM, textureCalculator.getASM());
         ASMMeasurement.setSource(this);
         inputImage.addMeasurement(ASMMeasurement);
-        writeMessage("ASM = "+ASMMeasurement.getValue());
+        writeMessage("ASM = " + ASMMeasurement.getValue());
 
-        Measurement contrastMeasurement = new Measurement(Measurements.CONTRAST,textureCalculator.getContrast());
+        Measurement contrastMeasurement = new Measurement(Measurements.CONTRAST, textureCalculator.getContrast());
         contrastMeasurement.setSource(this);
         inputImage.addMeasurement(contrastMeasurement);
-        writeMessage("Contrast = "+contrastMeasurement.getValue());
+        writeMessage("Contrast = " + contrastMeasurement.getValue());
 
-        Measurement correlationMeasurement = new Measurement(Measurements.CORRELATION,textureCalculator.getCorrelation());
+        Measurement correlationMeasurement = new Measurement(Measurements.CORRELATION, textureCalculator.getCorrelation());
         correlationMeasurement.setSource(this);
         inputImage.addMeasurement(correlationMeasurement);
-        writeMessage("Correlation = "+correlationMeasurement.getValue());
+        writeMessage("Correlation = " + correlationMeasurement.getValue());
 
-        Measurement entropyMeasurement = new Measurement(Measurements.ENTROPY,textureCalculator.getEntropy());
+        Measurement entropyMeasurement = new Measurement(Measurements.ENTROPY, textureCalculator.getEntropy());
         entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement);
-        writeMessage("Entropy = "+entropyMeasurement.getValue());
+        writeMessage("Entropy = " + entropyMeasurement.getValue());
 
     }
 
     @Override
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(X_OFFSET, Parameter.INTEGER,1));
-        parameters.add(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
+        parameters.add(new Parameter(X_OFFSET, Parameter.DOUBLE,1));
+        parameters.add(new Parameter(Y_OFFSET, Parameter.DOUBLE,0));
         parameters.add(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
 
     }

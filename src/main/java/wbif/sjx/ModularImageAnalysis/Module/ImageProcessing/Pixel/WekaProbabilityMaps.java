@@ -34,10 +34,10 @@ public class WekaProbabilityMaps extends Module {
         WekaSegmentation wekaSegmentation = new WekaSegmentation();
 
         writeMessage("Loading classifier");
-        PrintStream ps = System.out;
-        System.setOut(System.err);
+//        PrintStream ps = System.out;
+//        System.setOut(System.err);
         wekaSegmentation.loadClassifier(classifierFilePath);
-        System.setOut(ps);
+//        System.setOut(ps);
 
         int nThreads = Prefs.getThreads();
         int width = inputImagePlus.getWidth();
