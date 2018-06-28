@@ -32,6 +32,7 @@ public class MetadataExtractor extends Module {
         String INCUCYTE_LONG_FILENAME_EXTRACTOR = "IncuCyte long filename";
         String INCUCYTE_SHORT_FILENAME_EXTRACTOR = "IncuCyte short filename";
         String OPERA_FILENAME_EXTRACTOR = "Opera filename";
+
         String YOKOGAWA_FILENAME_EXTRACTOR = "Yokogawa filename";
 
         String[] ALL = new String[]{NONE, CELLVOYAGER_FILENAME_EXTRACTOR, INCUCYTE_LONG_FILENAME_EXTRACTOR,
@@ -42,9 +43,11 @@ public class MetadataExtractor extends Module {
     public interface FoldernameExtractors {
         String NONE = "None";
         String CELLVOYAGER_FOLDERNAME_EXTRACTOR = "Cell Voyager foldername";
-        String OPERA_FOLDERNAME_EXTRACTOR = "Opera foldername";
+        String OPERA_FOLDERNAME_EXTRACTOR = "Opera measurement foldername";
+        String OPERA_BARCODE_EXTRACTOR = "Opera barcode";
 
-        String[] ALL = new String[]{NONE, CELLVOYAGER_FOLDERNAME_EXTRACTOR, OPERA_FOLDERNAME_EXTRACTOR};
+        String[] ALL = new String[]{NONE, CELLVOYAGER_FOLDERNAME_EXTRACTOR, OPERA_FOLDERNAME_EXTRACTOR,
+                OPERA_BARCODE_EXTRACTOR};
     }
 
     public interface MetadataFileExtractors {
@@ -104,6 +107,10 @@ public class MetadataExtractor extends Module {
             case FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR:
                 foldernameExtractor = new OperaFoldernameExtractor();
                 break;
+
+            case FoldernameExtractors.OPERA_BARCODE_EXTRACTOR:
+                metadata.put("Barcode",metadata.getFile().getParentFile().getParentFile().getName());
+                return;
         }
 
         if (foldernameExtractor != null) foldernameExtractor.extract(metadata,metadata.getFile().getParent());

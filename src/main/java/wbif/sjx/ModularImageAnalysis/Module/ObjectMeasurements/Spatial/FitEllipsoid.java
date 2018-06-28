@@ -55,7 +55,7 @@ public class FitEllipsoid extends Module {
     public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, boolean useIntensityWeighting) {
         ImagePlus templateImagePlus = templateImage.getImagePlus();
         templateImagePlus.setPosition(1,1,inputObject.getT());
-        ImageStack imageStack = templateImagePlus.getImageStack();
+        ImageStack imageStack = templateImagePlus.getStack();
 
         EllipsoidCalculator calculator;
         if (useIntensityWeighting) {

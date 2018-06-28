@@ -4,7 +4,7 @@
   <groupId>wbif.sjx</groupId>
   <artifactId>ModularImageAnalysis</artifactId>
   <name>Modular_Image_Analysis</name>
-  <version>0.5.11-SNAPSHOT</version>
+  <version>0.5.11</version>
   <url>https://github.com/SJCross/ModularImageAnalysis</url>
   <issueManagement>
     <system>GitHub Issues</system>
@@ -153,23 +153,27 @@
     <dependency>
       <groupId>ome</groupId>
       <artifactId>bio-formats_plugins</artifactId>
-      <version>5.5.3</version>
+      <version>5.8.2</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <artifactId>formats-api</artifactId>
-          <groupId>ome</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>formats-gpl</artifactId>
-          <groupId>ome</groupId>
+          <artifactId>ome-common</artifactId>
+          <groupId>org.openmicroscopy</groupId>
         </exclusion>
         <exclusion>
           <artifactId>ome-xml</artifactId>
           <groupId>org.openmicroscopy</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>formats-api</artifactId>
+          <groupId>ome</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>formats-bsd</artifactId>
+          <groupId>ome</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>formats-gpl</artifactId>
           <groupId>ome</groupId>
         </exclusion>
         <exclusion>

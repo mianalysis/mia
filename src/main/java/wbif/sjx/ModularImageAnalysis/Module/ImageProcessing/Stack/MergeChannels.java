@@ -4,6 +4,7 @@ import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import net.imagej.autoscale.DefaultAutoscaleMethod;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -17,6 +18,7 @@ import net.imglib2.view.Views;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 22/02/2018.

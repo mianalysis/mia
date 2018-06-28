@@ -131,7 +131,7 @@ public class BinaryOperations extends Module {
             ImagePlus timepointIntensityIpl = getTimepoint(intensityIpl,t);
 
             if (markerIpl == null) {
-                timepointMaskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensityIpl.getImageStack(), timepointMaskIpl.getImageStack(), dynamic, connectivity, false));
+                timepointMaskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensityIpl.getStack(), timepointMaskIpl.getStack(), dynamic, connectivity, false));
 
             } else {
                 ImagePlus timepointMarkerIpl = getTimepoint(markerIpl,t);

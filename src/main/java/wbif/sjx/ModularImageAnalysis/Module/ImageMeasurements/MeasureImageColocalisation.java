@@ -73,10 +73,10 @@ public class MeasureImageColocalisation extends Module {
                 ipl2.setPosition(c+1,1,t+1);
 
                 if (mask == null) {
-                    cs.addMeasure(ColocalisationCalculator.calculatePCC(ipl1.getImageStack(),ipl2.getImageStack()));
+                    cs.addMeasure(ColocalisationCalculator.calculatePCC(ipl1.getStack(),ipl2.getStack()));
                 } else {
                     maskIpl.setPosition(c+1,1,t+1);
-                    cs.addMeasure(ColocalisationCalculator.calculatePCC(ipl1.getImageStack(),ipl2.getImageStack(),maskIpl.getImageStack()));
+                    cs.addMeasure(ColocalisationCalculator.calculatePCC(ipl1.getStack(),ipl2.getStack(),maskIpl.getStack()));
                 }
             }
         }

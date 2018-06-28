@@ -5,6 +5,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
@@ -94,9 +95,10 @@ public class MeasureObjectIntensity extends Module {
         String imageName = parameters.getValue(INPUT_IMAGE);
 
         // Running through all pixels in this object and adding the intensity to the MultiCumStat object
-        ipl.setPosition(1,1,object.getT()+1);
-        ImageStack imageStack = ipl.getImageStack();
-        CumStat cs = IntensityCalculator.calculate(imageStack,object);
+        int t = object.getT()+1;
+        int nSlices = ipl.getNSlices();
+        ImageStack timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-"+nSlices, t+"-"+t).getStack();
+        CumStat cs = IntensityCalculator.calculate(timeStack,object);
 
         // Calculating mean, std, min and max intensity
         if (parameters.getValue(MEASURE_MEAN))
