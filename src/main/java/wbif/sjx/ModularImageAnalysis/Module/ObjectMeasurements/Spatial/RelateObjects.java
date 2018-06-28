@@ -98,8 +98,6 @@ public class RelateObjects extends Module {
         int numberOfChildren = childObjects.size();
 
         for (Obj childObject:childObjects.values()) {
-            writeMessage("Processing object "+(iter++)+" of "+numberOfChildren);
-
             double minDist = Double.MAX_VALUE;
             Obj minLink = null;
             double dpp = childObject.getDistPerPxXY();
@@ -207,6 +205,8 @@ public class RelateObjects extends Module {
 
             // Adding measurements to the input object
             applyMeasurements(childObject,parentObjects,minDist,minLink);
+
+            writeMessage("Processed "+(++iter)+" of "+numberOfChildren+" objects");
 
         }
     }
@@ -317,8 +317,6 @@ public class RelateObjects extends Module {
 
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
-            writeMessage("Comparing pair "+(childObjects.size()*count++)+" of "+nCombi);
-
             // Getting parent coordinates
             ArrayList<Integer> parentX = parentObject.getXCoords();
             ArrayList<Integer> parentY = parentObject.getYCoords();
@@ -356,6 +354,7 @@ public class RelateObjects extends Module {
                     }
                 }
             }
+            writeMessage("Compared "+(childObjects.size()*count++)+" of "+nCombi+" pairs");
         }
     }
 

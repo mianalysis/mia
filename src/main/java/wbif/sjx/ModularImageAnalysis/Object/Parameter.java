@@ -1,4 +1,4 @@
-// TODO: Implement generic type (Parameter<T>).  This would require INPUT_IMAGE, etc. to be created as classes
+// TODO: Implement generic type (Parameter<T>).  This would require INPUT_IMAGE_1, etc. to be created as classes
 // TODO: Throw an error (in the IDE) if a CHOICE_ARRAY or MEASUREMENT isn't constructed with a specified valueSource
 
 package wbif.sjx.ModularImageAnalysis.Object;

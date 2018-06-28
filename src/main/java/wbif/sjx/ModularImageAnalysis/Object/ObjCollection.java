@@ -1,9 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import com.sun.istack.NotNull;
 import ij.IJ;
 import ij.ImagePlus;
 import wbif.sjx.common.MathFunc.CumStat;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -292,7 +294,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public HashMap<Integer,Float> getHues(String colourMode, String source, boolean normalised) {
+    public HashMap<Integer,Float> getHues(String colourMode, @Nonnull String source, boolean normalised) {
         HashMap<Integer,Float> hues = new HashMap<>();
 
         // Getting minimum and maximum values from measurement (if required)

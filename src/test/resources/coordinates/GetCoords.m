@@ -1,12 +1,12 @@
 clear
 
-pnameIn = 'C:\Users\steph\Documents\Java Projects\Common\src\test\resources\coordinates\';
-fnameIn = 'VerticalBinaryCylinder3D_R5_whiteBG_8bit.tif';
+pnameIn = 'C:\Users\sc13967\Documents\Java Projects\Common\src\test\resources\images\';
+fnameIn = 'BinaryCircle2D_8bit_whiteBG.tif';
 
-pnameOut = 'C:\Users\steph\Documents\Java Projects\Common\src\test\resources\coordinates\';
-fnameOut = 'VerticalBinaryCylinder3D_R5_whiteBG_8bit.csv';
+pnameOut = 'C:\Users\sc13967\Documents\Java Projects\Common\src\test\resources\coordinates\';
+fnameOut = 'BinaryCircle2D_8bit_whiteBG.csv';
 
-nZ = 12;
+nZ = 1;
 nT = 1;
 
 for j=1:nT
