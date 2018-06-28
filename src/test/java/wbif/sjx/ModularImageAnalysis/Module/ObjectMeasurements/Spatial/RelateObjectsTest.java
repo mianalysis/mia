@@ -2,9 +2,11 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.*;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -20,6 +22,11 @@ import static org.junit.Assert.*;
  */
 public class RelateObjectsTest {
     private double tolerance = 1E-2;
+
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
 
     @Test
     public void testGetTitle() throws Exception {

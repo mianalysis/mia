@@ -1,6 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
+import ij.ImageStack;
+import ij.plugin.SubHyperstackMaker;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.common.Analysis.TextureCalculator;
@@ -21,6 +23,7 @@ public class MeasureObjectTexture extends Module {
     public static final String X_OFFSET = "X-offset";
     public static final String Y_OFFSET = "Y-offset";
     public static final String Z_OFFSET = "Z-offset";
+    public static final String CALIBRATED_OFFSET = "Calibrated offset";
 
     public interface Measurements {
         String ASM = "ASM";
@@ -31,8 +34,79 @@ public class MeasureObjectTexture extends Module {
     }
 
 
-    public static String getFullName(String imageName, String measurement) {
-        return "TEXTURE // "+imageName+"_"+measurement;
+    public static String getFullName(String imageName, String measurement, double[] offs, boolean calibrated) {
+        if (calibrated) {
+            return "TEXTURE // " + imageName + "_" + measurement + "_(" + offs[0] + "," + offs[1] + "," + offs[2] + " ${CAL})";
+        } else {
+            return "TEXTURE // " + imageName + "_" + measurement + "_(" + offs[0] + "," + offs[1] + "," + offs[2] + " PX)";
+        }
+    }
+
+
+    void convertCalibratedOffsets(double[] offs, Obj referenceObject) {
+        double dppXY = referenceObject.getDistPerPxXY();
+        double dppZ = referenceObject.getDistPerPxZ();
+
+        offs[0] = (int) Math.round(offs[0]/dppXY);
+        offs[1] = (int) Math.round(offs[1]/dppXY);
+        offs[2] = (int) Math.round(offs[2]/dppZ);
+
+    }
+
+    ObjCollection getLocalObjectRegion(ObjCollection objects, double radius, boolean calibrated, ImagePlus inputImagePlus) {
+        // Getting local object region
+        GetLocalObjectRegion getLocalObjectRegion = (GetLocalObjectRegion) new GetLocalObjectRegion()
+                .updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,objects.getName())
+                .updateParameterValue(GetLocalObjectRegion.LOCAL_RADIUS,radius)
+                .updateParameterValue(GetLocalObjectRegion.CALIBRATED_RADIUS,calibrated)
+                .updateParameterValue(GetLocalObjectRegion.USE_MEASUREMENT,false);
+
+        objects = getLocalObjectRegion.getLocalRegions(objects,inputImagePlus);
+
+        return objects;
+
+    }
+
+    public static void processObject(Obj object, Image image, TextureCalculator textureCalculator, boolean centroidMeasurement, double[] rawOffs, boolean calibratedOffset) {
+        ImagePlus ipl = image.getImagePlus();
+
+        int t = object.getT()+1;
+        int nSlices = ipl.getNSlices();
+        ImageStack timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-"+nSlices, t+"-"+t).getStack();
+        textureCalculator.calculate(timeStack,object);
+
+        // Acquiring measurements
+        String name = getFullName(image.getName(), Measurements.ASM,rawOffs,calibratedOffset);
+        Measurement measurement = new Measurement(name,textureCalculator.getASM());
+        if (centroidMeasurement) {
+            object.getParent(object.getName()).addMeasurement(measurement);
+        } else {
+            object.addMeasurement(measurement);
+        }
+
+        name = getFullName(image.getName(), Measurements.CONTRAST,rawOffs,calibratedOffset);
+        measurement = new Measurement(name,textureCalculator.getContrast());
+        if (centroidMeasurement) {
+            object.getParent(object.getName()).addMeasurement(measurement);
+        } else {
+            object.addMeasurement(measurement);
+        }
+
+        name = getFullName(image.getName(), Measurements.CORRELATION,rawOffs,calibratedOffset);
+        measurement = new Measurement(name,textureCalculator.getCorrelation());
+        if (centroidMeasurement) {
+            object.getParent(object.getName()).addMeasurement(measurement);
+        } else {
+            object.addMeasurement(measurement);
+        }
+
+        name = getFullName(image.getName(), Measurements.ENTROPY,rawOffs,calibratedOffset);
+        measurement = new Measurement(name,textureCalculator.getEntropy());
+        if (centroidMeasurement) {
+            object.getParent(object.getName()).addMeasurement(measurement);
+        } else {
+            object.addMeasurement(measurement);
+        }
     }
 
     @Override
@@ -57,88 +131,34 @@ public class MeasureObjectTexture extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
+        // If no objects were detected, skipping this module
+        if (inputObjects.size() == 0) return;
+
         // Getting parameters
-        int xOffs = parameters.getValue(X_OFFSET);
-        int yOffs = parameters.getValue(Y_OFFSET);
-        int zOffs = parameters.getValue(Z_OFFSET);
+        double xOffsIn = parameters.getValue(X_OFFSET);
+        double yOffsIn = parameters.getValue(Y_OFFSET);
+        double zOffsIn = parameters.getValue(Z_OFFSET);
+        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET);
         boolean centroidMeasurement = parameters.getValue(POINT_MEASUREMENT);
+        double radius = parameters.getValue(MEASUREMENT_RADIUS);
+        boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
+
+        double[] offs = new double[]{xOffsIn,yOffsIn,zOffsIn};
+
+        // If using calibrated offset values, determining the closest pixel offset
+        if (calibratedOffset) convertCalibratedOffsets(offs,inputObjects.getFirst());
 
         // If a centroid region is being used calculate the local region and reassign that to inputObjects reference
-        if (centroidMeasurement) {
-            double radius = parameters.getValue(MEASUREMENT_RADIUS);
-            boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
+        if (centroidMeasurement) inputObjects = getLocalObjectRegion(inputObjects,radius,calibrated,inputImagePlus);
 
-            // Getting local object region
-            GetLocalObjectRegion getLocalObjectRegion = (GetLocalObjectRegion) new GetLocalObjectRegion()
-                    .updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,inputObjectsName)
-                    .updateParameterValue(GetLocalObjectRegion.LOCAL_RADIUS,radius)
-                    .updateParameterValue(GetLocalObjectRegion.CALIBRATED_RADIUS,calibrated)
-                    .updateParameterValue(GetLocalObjectRegion.USE_MEASUREMENT,false);
-
-            inputObjects = getLocalObjectRegion.getLocalRegions(inputObjects,inputImagePlus);
-
-        }
-
-        // Running texture measurement
-        writeMessage("Calculating co-occurance matrix");
-        writeMessage("X-offset: "+xOffs);
-        writeMessage("Y-offset: "+yOffs);
-        writeMessage("Z-offset: "+zOffs);
-
-        TextureCalculator textureCalculator = new TextureCalculator();
+        // Initialising the texture calculator
+        TextureCalculator textureCalculator = new TextureCalculator((int) offs[0], (int) offs[1], (int) offs[2]);
 
         int nObjects = inputObjects.size();
         int iter = 1;
-        writeMessage("Initialising measurements");
         for (Obj object:inputObjects.values()) {
-            writeMessage("Processing object "+(iter++)+" of "+nObjects);
-            ArrayList<int[]> coords = new ArrayList<>();
-
-            ArrayList<Integer> x = object.getXCoords();
-            ArrayList<Integer> y = object.getYCoords();
-            ArrayList<Integer> z = object.getZCoords();
-            int c = 1;
-            int t = object.getT()+1;
-
-            for (int i=0;i<x.size();i++) {
-                coords.add(new int[]{x.get(i),y.get(i),z.get(i)});
-            }
-
-            textureCalculator.calculate(inputImagePlus,xOffs,yOffs,zOffs,c,t,coords);
-
-            // Acquiring measurements
-            Measurement ASMMeasurement = new Measurement(getFullName(inputImageName, Measurements.ASM),textureCalculator.getASM());
-            ASMMeasurement.setSource(this);
-            if (centroidMeasurement) {
-                object.getParent(inputObjectsName).addMeasurement(ASMMeasurement);
-            } else {
-                object.addMeasurement(ASMMeasurement);
-            }
-
-            Measurement contrastMeasurement = new Measurement(getFullName(inputImageName, Measurements.CONTRAST),textureCalculator.getContrast());
-            contrastMeasurement.setSource(this);
-            if (centroidMeasurement) {
-                object.getParent(inputObjectsName).addMeasurement(contrastMeasurement);
-            } else {
-                object.addMeasurement(contrastMeasurement);
-            }
-
-            Measurement correlationMeasurement = new Measurement(getFullName(inputImageName, Measurements.CORRELATION),textureCalculator.getCorrelation());
-            correlationMeasurement.setSource(this);
-            if (centroidMeasurement) {
-                object.getParent(inputObjectsName).addMeasurement(correlationMeasurement);
-            } else {
-                object.addMeasurement(correlationMeasurement);
-            }
-
-            Measurement entropyMeasurement = new Measurement(getFullName(inputImageName, Measurements.ENTROPY),textureCalculator.getEntropy());
-            entropyMeasurement.setSource(this);
-            if (centroidMeasurement) {
-                object.getParent(inputObjectsName).addMeasurement(entropyMeasurement);
-            } else {
-                object.addMeasurement(entropyMeasurement);
-            }
-
+            writeMessage("Processed "+(++iter)+" of "+nObjects);
+            processObject(object,inputImage,textureCalculator,centroidMeasurement,offs,calibratedOffset);
         }
     }
 
@@ -149,9 +169,10 @@ public class MeasureObjectTexture extends Module {
         parameters.add(new Parameter(POINT_MEASUREMENT, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MEASUREMENT_RADIUS, Parameter.DOUBLE,10.0));
-        parameters.add(new Parameter(X_OFFSET, Parameter.INTEGER,1));
-        parameters.add(new Parameter(Y_OFFSET, Parameter.INTEGER,0));
-        parameters.add(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
+        parameters.add(new Parameter(X_OFFSET, Parameter.DOUBLE,1d));
+        parameters.add(new Parameter(Y_OFFSET, Parameter.DOUBLE,0d));
+        parameters.add(new Parameter(Z_OFFSET, Parameter.DOUBLE,0d));
+        parameters.add(new Parameter(CALIBRATED_OFFSET, Parameter.BOOLEAN,false));
 
     }
 
@@ -170,6 +191,7 @@ public class MeasureObjectTexture extends Module {
         returnedParameters.add(parameters.getParameter(X_OFFSET));
         returnedParameters.add(parameters.getParameter(Y_OFFSET));
         returnedParameters.add(parameters.getParameter(Z_OFFSET));
+        returnedParameters.add(parameters.getParameter(CALIBRATED_OFFSET));
 
         return returnedParameters;
 
@@ -186,23 +208,28 @@ public class MeasureObjectTexture extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        double xOffsIn = parameters.getValue(X_OFFSET);
+        double yOffsIn = parameters.getValue(Y_OFFSET);
+        double zOffsIn = parameters.getValue(Z_OFFSET);
+        boolean calibratedOffset = parameters.getValue(CALIBRATED_OFFSET);
+        double[] offs = new double[]{xOffsIn,yOffsIn,zOffsIn};
 
-        String name = getFullName(inputImageName,Measurements.ASM);
+        String name = getFullName(inputImageName,Measurements.ASM,offs,calibratedOffset);
         MeasurementReference asm = objectMeasurementReferences.getOrPut(name);
         asm.setImageObjName(inputObjectsName);
         asm.setCalculated(true);
 
-        name = getFullName(inputImageName,Measurements.CONTRAST);
+        name = getFullName(inputImageName,Measurements.CONTRAST,offs,calibratedOffset);
         MeasurementReference contrast = objectMeasurementReferences.getOrPut(name);
         contrast.setImageObjName(inputObjectsName);
         contrast.setCalculated(true);
 
-        name = getFullName(inputImageName,Measurements.CORRELATION);
+        name = getFullName(inputImageName,Measurements.CORRELATION,offs,calibratedOffset);
         MeasurementReference correlation = objectMeasurementReferences.getOrPut(name);
         correlation.setImageObjName(inputObjectsName);
         correlation.setCalculated(true);
 
-        name = getFullName(inputImageName,Measurements.ENTROPY);
+        name = getFullName(inputImageName,Measurements.ENTROPY,offs,calibratedOffset);
         MeasurementReference entropy = objectMeasurementReferences.getOrPut(name);
         entropy.setImageObjName(inputObjectsName);
         entropy.setCalculated(true);

@@ -48,7 +48,7 @@ public class ExtendedMinima extends Module {
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
         // Getting region minima
-        inputImagePlus.setStack(MinimaAndMaxima3D.extendedMinima(inputImagePlus.getImageStack(),dynamic,connectivity));
+        inputImagePlus.setStack(MinimaAndMaxima3D.extendedMinima(inputImagePlus.getStack(),dynamic,connectivity));
         inputImagePlus.setPosition(1,1,1);
 
         // MorphoLibJ gives white objects on a black background.  Inverting this to match the logic of ImageJ

@@ -26,6 +26,24 @@ public class ImageTypeConverter extends Module {
 
     }
 
+    public static void convertType(ImagePlus inputImagePlus, String outputType, boolean scaleIntensities) {
+        // If necessary, stretching input image intensities to full range
+        if (scaleIntensities) IntensityMinMax.run(inputImagePlus,true);
+
+        // Converting to requested type
+        switch (outputType) {
+            case OutputTypes.INT8:
+                IJ.run(inputImagePlus, "8-bit", null);
+                break;
+            case OutputTypes.INT16:
+                IJ.run(inputImagePlus, "16-bit", null);
+                break;
+            case OutputTypes.FLOAT32:
+                IJ.run(inputImagePlus, "32-bit", null);
+                break;
+        }
+    }
+
     @Override
     public String getTitle() {
         return "Image type converter";
@@ -51,21 +69,8 @@ public class ImageTypeConverter extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
-        // If necessary, stretching input image intensities to full range
-        if (scaleIntensities) IntensityMinMax.run(inputImagePlus,true);
-
-        // Converting to requested type
-        switch (outputType) {
-            case OutputTypes.INT8:
-                IJ.run(inputImagePlus, "8-bit", null);
-                break;
-            case OutputTypes.INT16:
-                IJ.run(inputImagePlus, "16-bit", null);
-                break;
-            case OutputTypes.FLOAT32:
-                IJ.run(inputImagePlus, "32-bit", null);
-                break;
-        }
+        // Applying the type conversion
+        convertType(inputImagePlus,outputType,scaleIntensities);
 
         // Adding output image to workspace if necessary
         if (!applyToInput) {

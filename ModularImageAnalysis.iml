@@ -111,32 +111,34 @@
     <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.virtuald:curvesapi:1.04" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-math3:3.6.1" level="project" />
-    <orderEntry type="library" name="Maven: ome:bio-formats_plugins:5.5.3" level="project" />
-    <orderEntry type="library" name="Maven: ome:formats-api:5.5.3" level="project" />
+    <orderEntry type="library" name="Maven: ome:bio-formats_plugins:5.8.2" level="project" />
+    <orderEntry type="library" name="Maven: org.openmicroscopy:ome-common:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: com.esotericsoftware.kryo:kryo:2.24.0" level="project" />
+    <orderEntry type="library" name="Maven: com.esotericsoftware.minlog:minlog:1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.objenesis:objenesis:2.1" level="project" />
+    <orderEntry type="library" name="Maven: joda-time:joda-time:2.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: xalan:serializer:2.7.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: xalan:xalan:2.7.2" level="project" />
-    <orderEntry type="library" name="Maven: ome:formats-gpl:5.5.3" level="project" />
+    <orderEntry type="library" name="Maven: org.openmicroscopy:ome-xml:5.5.4" level="project" />
+    <orderEntry type="library" name="Maven: ome:formats-api:5.8.2" level="project" />
+    <orderEntry type="library" name="Maven: org.openmicroscopy:ome-codecs:0.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.openmicroscopy:ome-jai:0.1.0" level="project" />
+    <orderEntry type="library" name="Maven: ome:formats-bsd:5.8.2" level="project" />
+    <orderEntry type="library" name="Maven: org.openmicroscopy:specification:5.5.4" level="project" />
+    <orderEntry type="library" name="Maven: ome:turbojpeg:5.8.2" level="project" />
+    <orderEntry type="library" name="Maven: org.scijava:native-lib-loader:2.1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.perf4j:perf4j:0.9.13" level="project" />
+    <orderEntry type="library" name="Maven: com.drewnoakes:metadata-extractor:2.6.2" level="project" />
+    <orderEntry type="library" name="Maven: com.adobe.xmp:xmpcore:5.1.2" level="project" />
+    <orderEntry type="library" name="Maven: ome:formats-gpl:5.8.2" level="project" />
     <orderEntry type="library" name="Maven: org.openmicroscopy:ome-mdbtools:5.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.openmicroscopy:metakit:5.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.openmicroscopy:ome-poi:5.3.1" level="project" />
     <orderEntry type="library" name="Maven: ome:jxrlib-all:0.2.1" level="project" />
     <orderEntry type="library" name="Maven: edu.ucar:netcdf:4.3.22" level="project" />
     <orderEntry type="library" name="Maven: woolz:JWlz:1.4.0" level="project" />
-    <orderEntry type="library" name="Maven: joda-time:joda-time:2.2" level="project" />
-    <orderEntry type="library" name="Maven: com.esotericsoftware.kryo:kryo:2.24.0" level="project" />
-    <orderEntry type="library" name="Maven: com.esotericsoftware.minlog:minlog:1.2" level="project" />
-    <orderEntry type="library" name="Maven: org.objenesis:objenesis:2.1" level="project" />
     <orderEntry type="library" name="Maven: ch.systems.cisd:jhdf5:14.12.0" level="project" />
-    <orderEntry type="library" name="Maven: org.openmicroscopy:ome-xml:5.5.4" level="project" />
-    <orderEntry type="library" name="Maven: org.openmicroscopy:ome-common:5.3.1" level="project" />
-    <orderEntry type="library" name="Maven: ome:formats-bsd:5.5.3" level="project" />
-    <orderEntry type="library" name="Maven: ome:jai_imageio:5.5.3" level="project" />
-    <orderEntry type="library" name="Maven: org.openmicroscopy:specification:5.5.4" level="project" />
-    <orderEntry type="library" name="Maven: ome:turbojpeg:5.5.3" level="project" />
-    <orderEntry type="library" name="Maven: org.scijava:native-lib-loader:2.1.4" level="project" />
-    <orderEntry type="library" name="Maven: org.perf4j:perf4j:0.9.13" level="project" />
-    <orderEntry type="library" name="Maven: com.drewnoakes:metadata-extractor:2.6.2" level="project" />
-    <orderEntry type="library" name="Maven: com.adobe.xmp:xmpcore:5.1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
     <orderEntry type="library" name="Maven: com.jgoodies:jgoodies-forms:1.7.2" level="project" />
     <orderEntry type="library" name="Maven: com.jgoodies:jgoodies-common:1.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.6" level="project" />
@@ -311,7 +313,7 @@
     <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-servlet:3.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-hdfs:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: commons-daemon:commons-daemon:1.0.13" level="project" />
-    <orderEntry type="library" name="Maven: com.github.SJCross:Common:v1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.4.3" level="project" />
     <orderEntry type="library" name="Maven: org.bonej:boneJ-legacy-plugins:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.bonej:bonej-legacy-util:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:AnalyzeSkeleton_:3.1.0" level="project" />

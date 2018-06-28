@@ -4,28 +4,27 @@
 
 package wbif.sjx.ModularImageAnalysis;
 
-import ij.IJ;
 import ij.ImageJ;
-import ij.ImagePlus;
-import ij.Prefs;
-import ij.gui.PolygonRoi;
-import ij.gui.Roi;
 import ij.plugin.PlugIn;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Object.ErrorLog;
-import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
-import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandler;
-import wbif.sjx.common.Object.Point;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisReader;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisRunner;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisWriter;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by sc13967 on 14/07/2017.
@@ -50,11 +49,10 @@ public class ModularImageAnalysisPlugin implements PlugIn {
             } else {
                 String filepath = args[0];
 
-                AnalysisHandler analysisHandler = new AnalysisHandler();
                 InputStream inputStream = new FileInputStream(filepath);
 
-                Analysis analysis = analysisHandler.loadAnalysis(inputStream);
-                analysisHandler.startAnalysis(analysis);
+                Analysis analysis = AnalysisReader.loadAnalysis(inputStream);
+                AnalysisRunner.startAnalysis(analysis);
 
             }
 

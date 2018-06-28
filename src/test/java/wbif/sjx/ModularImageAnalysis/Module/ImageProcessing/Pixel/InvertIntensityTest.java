@@ -2,7 +2,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -14,6 +16,11 @@ import static org.junit.Assert.*;
  * Created by sc13967 on 26/03/2018.
  */
 public class InvertIntensityTest {
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
+
     @Test
     public void testGetTitle() {
         assertNotNull(new InvertIntensity().getTitle());
@@ -55,7 +62,7 @@ public class InvertIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -94,7 +101,7 @@ public class InvertIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_image");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -134,7 +141,7 @@ public class InvertIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -174,7 +181,7 @@ public class InvertIntensityTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 }

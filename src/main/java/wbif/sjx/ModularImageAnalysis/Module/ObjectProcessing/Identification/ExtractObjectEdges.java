@@ -105,17 +105,17 @@ public class ExtractObjectEdges extends Module {
 
             // Creating a Hyperstack to hold the distance transform.  The image is padded by 1px to ensure the distance
             // map knows where the object edges are.  If the image is a single plane there is no z-padding.
-            int[][] range = inputObject.getCoordinateRange();
+            double[][] range = inputObject.getExtents(true,false);
             int zPad = 0;
             if (range[2][1] - range[2][0] > 0) zPad = 1;
 
-            ImagePlus iplObj = IJ.createHyperStack("Objects", range[0][1] - range[0][0] + 3,
-                    range[1][1] - range[1][0] + 3, 1, range[2][1] - range[2][0] + 1 + 2*zPad, 1, 8);
+            ImagePlus iplObj = IJ.createHyperStack("Objects", (int) (range[0][1] - range[0][0] + 3),
+                    (int) (range[1][1] - range[1][0] + 3), 1, (int) (range[2][1] - range[2][0] + 1 + 2*zPad), 1, 8);
 
             // Setting pixels corresponding to the parent object to 1
             for (int i = 0; i < parentX.size(); i++) {
-                iplObj.setPosition(1, parentZ.get(i) - range[2][0] + 1 + zPad, 1);
-                iplObj.getProcessor().set(parentX.get(i) - range[0][0] + 1, parentY.get(i) - range[1][0] + 1, 255);
+                iplObj.setPosition(1, (int) (parentZ.get(i) - range[2][0] + 1 + zPad), 1);
+                iplObj.getProcessor().set((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1), 255);
 
             }
 
@@ -134,8 +134,8 @@ public class ExtractObjectEdges extends Module {
             // Adding pixel intensities to CumStat
             // Running through all pixels in this object and adding the intensity to the MultiCumStat object
             for (int i = 0; i < parentX.size(); i++) {
-                iplObj.setPosition(1, parentZ.get(i) - range[2][0] + 2, 1);
-                double pixelVal = iplObj.getProcessor().getPixelValue(parentX.get(i) - range[0][0] + 1, parentY.get(i) - range[1][0] + 1);
+                iplObj.setPosition(1, (int) (parentZ.get(i) - range[2][0] + 2), 1);
+                double pixelVal = iplObj.getProcessor().getPixelValue((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1));
 
                 if (pixelVal <= edgeDistance && createEdgeObjects) {
                     outputEdgeObject.addCoord(parentX.get(i),parentY.get(i),parentZ.get(i));

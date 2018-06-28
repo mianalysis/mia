@@ -2,9 +2,11 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -17,6 +19,11 @@ import static org.junit.Assert.*;
  * Created by sc13967 on 13/11/2017.
  */
 public class ImageSaverTest {
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
+
     @Test
     public void testGetTitle() throws Exception {
         assertNotNull(new ImageSaver().getTitle());

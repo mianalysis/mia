@@ -48,25 +48,26 @@ public class Obj extends Volume {
 
     // PUBLIC METHODS
 
-    public int[][] getCoordinateRange() {
-        int[][] dimSize = new int[3][2];
-
-        ArrayList<Integer> x = getXCoords();
-        ArrayList<Integer> y = getYCoords();
-        ArrayList<Integer> z = getZCoords();
-
-        dimSize[0][0] = Collections.min(x);
-        dimSize[0][1] = Collections.max(x);
-        dimSize[1][0] = Collections.min(y);
-        dimSize[1][1] = Collections.max(y);
-        dimSize[2][0] = Collections.min(z);
-        dimSize[2][1] = Collections.max(z);
-
-        return dimSize;
-
-    }
+//    public int[][] getCoordinateRange() {
+//        int[][] dimSize = new int[3][2];
+//
+//        ArrayList<Integer> x = getXCoords();
+//        ArrayList<Integer> y = getYCoords();
+//        ArrayList<Integer> z = getZCoords();
+//
+//        dimSize[0][0] = Collections.min(x);
+//        dimSize[0][1] = Collections.max(x);
+//        dimSize[1][0] = Collections.min(y);
+//        dimSize[1][1] = Collections.max(y);
+//        dimSize[2][0] = Collections.min(z);
+//        dimSize[2][1] = Collections.max(z);
+//
+//        return dimSize;
+//
+//    }
 
     public void addMeasurement(Measurement measurement) {
+        if (measurement == null) return;
         measurements.put(measurement.getName(), measurement);
 
     }
@@ -253,17 +254,17 @@ public class Obj extends Volume {
     }
 
     public Image getAsImage(String imageName) {
-        int[][] range = getCoordinateRange();
-        int width = range[0][1]-range[0][0]+1;
-        int height = range[1][1]-range[1][0]+1;
-        int depth = range[2][1]-range[2][0]+1;
+        double[][] range = getExtents(true,false);
+        int width = (int) (range[0][1]-range[0][0]+1);
+        int height = (int) (range[1][1]-range[1][0]+1);
+        int depth = (int) (range[2][1]-range[2][0]+1);
 
         ImagePlus ipl = IJ.createImage(imageName,width,height,depth,8);
 
         for (Point<Integer> point:getPoints()) {
-            int x = point.getX()-range[0][0];
-            int y = point.getY()-range[1][0];
-            int z = point.getZ()-range[2][0];
+            int x = point.getX()- (int) range[0][0];
+            int y = point.getY()- (int) range[1][0];
+            int z = point.getZ()- (int) range[2][0];
 
             ipl.setPosition(z+1);
             ipl.getProcessor().putPixel(x,y,255);

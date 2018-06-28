@@ -98,8 +98,6 @@ public class RelateObjects extends Module {
         int numberOfChildren = childObjects.size();
 
         for (Obj childObject:childObjects.values()) {
-            writeMessage("Processing object "+(iter++)+" of "+numberOfChildren);
-
             double minDist = Double.MAX_VALUE;
             Obj minLink = null;
             double dpp = childObject.getDistPerPxXY();
@@ -207,6 +205,8 @@ public class RelateObjects extends Module {
 
             // Adding measurements to the input object
             applyMeasurements(childObject,parentObjects,minDist,minLink);
+
+            writeMessage("Processed "+(++iter)+" of "+numberOfChildren+" objects");
 
         }
     }
@@ -317,22 +317,20 @@ public class RelateObjects extends Module {
 
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
-            writeMessage("Comparing pair "+(childObjects.size()*count++)+" of "+nCombi);
-
             // Getting parent coordinates
             ArrayList<Integer> parentX = parentObject.getXCoords();
             ArrayList<Integer> parentY = parentObject.getYCoords();
             ArrayList<Integer> parentZ = parentObject.getZCoords();
 
             // Creating a Hyperstack to hold the distance transform
-            int[][] range = parentObject.getCoordinateRange();
-            ImagePlus ipl = IJ.createHyperStack("Objects", range[0][1]-range[0][0] + 1,
-                    range[1][1]-range[1][0] + 1, 1, range[2][1]-range[2][0], 1, 8);
+            double[][] range = parentObject.getExtents(true,false);
+            ImagePlus ipl = IJ.createHyperStack("Objects", (int) (range[0][1]-range[0][0] + 1),
+                    (int) (range[1][1]-range[1][0] + 1), 1, (int) (range[2][1]-range[2][0]), 1, 8);
 
             // Setting pixels corresponding to the parent object to 1
             for (int i=0;i<parentX.size();i++) {
-                ipl.setPosition(1,parentZ.get(i)-range[2][0]+1,1);
-                ipl.getProcessor().set(parentX.get(i)-range[0][0],parentY.get(i)-range[1][0],255);
+                ipl.setPosition(1,(int) (parentZ.get(i)-range[2][0]+1),1);
+                ipl.getProcessor().set((int) (parentX.get(i)-range[0][0]), (int) (parentY.get(i)-range[1][0]),255);
 
             }
 
@@ -356,6 +354,7 @@ public class RelateObjects extends Module {
                     }
                 }
             }
+            writeMessage("Compared "+(childObjects.size()*count++)+" of "+nCombi+" pairs");
         }
     }
 

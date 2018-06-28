@@ -73,7 +73,7 @@ public class IdentifyObjects extends Module {
 
             // Applying connected components labelling
             FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity);
-            currStack.setStack(ffcl3D.computeLabels(currStack.getImageStack()));
+            currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
 
             // Converting image to objects
             Image tempImage = new Image("Temp image", currStack);

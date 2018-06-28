@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.DenseTracks2D;
@@ -17,6 +18,10 @@ import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 import java.net.URLDecoder;
 
 public class AddObjectsOverlayTest {
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
 
     @Test @Ignore
     public void getColours() {

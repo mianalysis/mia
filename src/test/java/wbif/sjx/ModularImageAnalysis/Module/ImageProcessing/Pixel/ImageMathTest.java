@@ -2,7 +2,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -12,6 +14,11 @@ import java.net.URLDecoder;
 import static org.junit.Assert.*;
 
 public class ImageMathTest {
+    @BeforeClass
+    public static void setVerbose() {
+        Module.setVerbose(true);
+    }
+
     @Test
     public void getTitle() {
         assertNotNull(new ImageMath().getTitle());
@@ -55,7 +62,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -97,7 +104,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -139,7 +146,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -181,7 +188,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -223,7 +230,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -264,7 +271,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -303,7 +310,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_image");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -347,7 +354,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -389,7 +396,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -431,7 +438,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -473,7 +480,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -515,7 +522,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -557,7 +564,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -599,7 +606,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -641,7 +648,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -683,7 +690,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -725,7 +732,7 @@ public class ImageMathTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-        assertTrue(outputImage.equals(expectedImage));
+        assertEquals(expectedImage,outputImage);
 
     }
 }
