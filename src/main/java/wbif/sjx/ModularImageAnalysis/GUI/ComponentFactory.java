@@ -158,14 +158,14 @@ public class ComponentFactory {
         c.insets = new Insets(2, 0, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
-        ModuleEnabledCheck enabledCheck = new ModuleEnabledCheck(gui,module);
-        enabledCheck.setEnabled(true);
+        ModuleEnabledButton enabledCheck = new ModuleEnabledButton(gui,module);
+        enabledCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(enabledCheck,c);
 
         // Adding the main module button
         c.gridx++;
         c.weightx = 1;
-        c.insets = new Insets(2, 5, 0, 0);
+        c.insets = new Insets(2, 2, 0, 0);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         ModuleButton button = new ModuleButton(gui,module);
         button.setPreferredSize(new Dimension(panelWidth-elementHeight-20,elementHeight));
@@ -179,9 +179,10 @@ public class ComponentFactory {
         // Adding the state/evaluate button
         c.gridx++;
         c.weightx = 0;
-        c.insets = new Insets(2, 0, 0, 0);
+        c.insets = new Insets(2, 2, 0, 0);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         EvalButton evalButton = new EvalButton(gui,module);
+        if (!module.isEnabled()) evalButton.setForeground(Color.GRAY);
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(evalButton,c);
 
