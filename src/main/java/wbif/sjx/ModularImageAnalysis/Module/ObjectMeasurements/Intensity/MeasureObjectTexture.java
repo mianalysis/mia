@@ -10,6 +10,8 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
 
+import static wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectTexture.convertCalibratedOffsets;
+
 /**
  * Takes a set of objects and measures intensity texture values on a provided image.  Measurements are stored with the
  * objects.
@@ -43,7 +45,7 @@ public class MeasureObjectTexture extends Module {
     }
 
 
-    void convertCalibratedOffsets(double[] offs, Obj referenceObject) {
+    void static convertCalibratedOffsets(double[] offs, Obj referenceObject) {
         double dppXY = referenceObject.getDistPerPxXY();
         double dppZ = referenceObject.getDistPerPxZ();
 
