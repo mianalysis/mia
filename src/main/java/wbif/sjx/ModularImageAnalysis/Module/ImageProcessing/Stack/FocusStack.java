@@ -18,7 +18,6 @@ public class FocusStack extends Module {
     public static final String OUTPUT_FOCUSED_IMAGE = "Output focused image";
     public static final String RANGE = "Range";
     public static final String SMOOTH_HEIGHT_MAP = "Smooth height map";
-    public static final String SHOW_FOCUSED_IMAGE = "Show focused image";
     public static final String ADD_HEIGHT_MAP_TO_WORKSPACE = "Add height map image to workspace";
     public static final String OUTPUT_HEIGHT_IMAGE = "Output height image";
     public static final String SHOW_HEIGHT_IMAGE = "Show height image";
@@ -139,7 +138,7 @@ public class FocusStack extends Module {
         Image[] outputImages = focusStack(inputImage,outputFocusedImageName,range,smooth,addHeightMap,outputHeightImageName);
 
         // If requested, showing image
-        if (parameters.getValue(SHOW_FOCUSED_IMAGE)) {
+        if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(outputImages[0].getImagePlus());
             showIpl.setTitle(outputFocusedImageName);
             showIpl.show();
@@ -168,7 +167,6 @@ public class FocusStack extends Module {
         parameters.add(new Parameter(OUTPUT_FOCUSED_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(RANGE,Parameter.INTEGER,11));
         parameters.add(new Parameter(SMOOTH_HEIGHT_MAP,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(SHOW_FOCUSED_IMAGE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(ADD_HEIGHT_MAP_TO_WORKSPACE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(OUTPUT_HEIGHT_IMAGE,Parameter.OUTPUT_IMAGE,""));
         parameters.add(new Parameter(SHOW_HEIGHT_IMAGE,Parameter.BOOLEAN,false));
@@ -183,7 +181,6 @@ public class FocusStack extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_FOCUSED_IMAGE));
         returnedParameters.add(parameters.getParameter(RANGE));
         returnedParameters.add(parameters.getParameter(SMOOTH_HEIGHT_MAP));
-        returnedParameters.add(parameters.getParameter(SHOW_FOCUSED_IMAGE));
 
         returnedParameters.add(parameters.getParameter(ADD_HEIGHT_MAP_TO_WORKSPACE));
         if (parameters.getValue(ADD_HEIGHT_MAP_TO_WORKSPACE)) {

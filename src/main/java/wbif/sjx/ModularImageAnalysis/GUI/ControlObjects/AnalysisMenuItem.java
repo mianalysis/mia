@@ -26,10 +26,10 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
     public static final String START_ANALYSIS = "Run analysis";
     public static final String STOP_ANALYSIS = "Stop analysis";
     public static final String CLEAR_PIPELINE = "Remove all modules";
-    public static final String ENABLE_ALL = "Enable all";
-    public static final String DISABLE_ALL = "Disable all";
-    public static final String OUTPUT_ALL = "Set all to output";
-    public static final String SILENCE_ALL = "Silence all";
+    public static final String ENABLE_ALL = "Enable all modules";
+    public static final String DISABLE_ALL = "Disable all modules";
+    public static final String OUTPUT_ALL = "Show output for all modules";
+    public static final String SILENCE_ALL = "Hide output for all modules";
 
     private MainGUI gui;
 

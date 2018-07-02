@@ -23,6 +23,7 @@ public class ViewControlButton extends JRadioButton implements ActionListener {
         setSelected(true);
         addActionListener(this);
 
+
     }
 
     @Override

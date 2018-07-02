@@ -38,7 +38,6 @@ public class ActiveContourObjectDetection extends Module {
     public static final String SEARCH_RADIUS = "Search radius (px)";
     public static final String NUMBER_OF_ITERATIONS = "Maximum nmber of iterations";
     public static final String SHOW_CONTOURS_REALTIME = "Show contours in realtime";
-    public static final String SHOW_CONTOURS_END = "Show contours at end";
 
 
     @Override
@@ -81,7 +80,6 @@ public class ActiveContourObjectDetection extends Module {
         int searchRadius = parameters.getValue(SEARCH_RADIUS);
         int maxInteractions = parameters.getValue(NUMBER_OF_ITERATIONS);
         boolean showContoursRealtime = parameters.getValue(SHOW_CONTOURS_REALTIME);
-        boolean showContoursEnd = parameters.getValue(SHOW_CONTOURS_END);
 
         // Storing the image calibration
         Calibration calibration = inputImagePlus.getCalibration();
@@ -173,7 +171,7 @@ public class ActiveContourObjectDetection extends Module {
         // Resetting the image position
         inputImagePlus.setPosition(1,1,1);
 
-        if (showContoursEnd) {
+        if (showOutput) {
             // Removing old overlay
             dispIpl.setOverlay(null);
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
@@ -212,7 +210,6 @@ public class ActiveContourObjectDetection extends Module {
         parameters.add(new Parameter(SEARCH_RADIUS,Parameter.INTEGER,1));
         parameters.add(new Parameter(NUMBER_OF_ITERATIONS,Parameter.INTEGER,1000));
         parameters.add(new Parameter(SHOW_CONTOURS_REALTIME,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SHOW_CONTOURS_END,Parameter.BOOLEAN,false));
 
     }
 
@@ -235,7 +232,6 @@ public class ActiveContourObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(SEARCH_RADIUS));
         returnedParameters.add(parameters.getParameter(NUMBER_OF_ITERATIONS));
         returnedParameters.add(parameters.getParameter(SHOW_CONTOURS_REALTIME));
-        returnedParameters.add(parameters.getParameter(SHOW_CONTOURS_END));
 
         return returnedParameters;
 

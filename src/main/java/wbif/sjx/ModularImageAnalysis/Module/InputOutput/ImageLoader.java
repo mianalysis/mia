@@ -2,12 +2,15 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
+import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
 import ij.process.ImageProcessor;
+import ij.process.StackConverter;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;

@@ -175,7 +175,7 @@ public class ComponentFactory {
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         ModuleButton button = new ModuleButton(gui,module);
-        button.setPreferredSize(new Dimension(panelWidth-3*elementHeight,elementHeight));
+        button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+10,elementHeight));
         group.add(button);
         if (!module.isEnabled()) button.setForeground(Color.GRAY);
         if (activeModule != null) {

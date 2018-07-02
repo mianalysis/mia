@@ -25,6 +25,8 @@ public class ModuleButton extends JToggleButton implements ActionListener {
         addActionListener(this);
         setText(module.getNickname());
 
+        setEnabled(module.isEnabled());
+
     }
 
 
