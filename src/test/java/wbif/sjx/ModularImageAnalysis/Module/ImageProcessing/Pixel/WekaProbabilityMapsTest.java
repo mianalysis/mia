@@ -48,7 +48,6 @@ public class WekaProbabilityMapsTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
-        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         wekaProbabilityMaps.run(workspace);
@@ -87,7 +86,6 @@ public class WekaProbabilityMapsTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
-        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         wekaProbabilityMaps.run(workspace);
@@ -126,7 +124,6 @@ public class WekaProbabilityMapsTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
-        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         wekaProbabilityMaps.run(workspace);
@@ -165,7 +162,6 @@ public class WekaProbabilityMapsTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
-        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         wekaProbabilityMaps.run(workspace);
@@ -204,7 +200,6 @@ public class WekaProbabilityMapsTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
-        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         wekaProbabilityMaps.run(workspace);
@@ -243,7 +238,6 @@ public class WekaProbabilityMapsTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
-        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         wekaProbabilityMaps.run(workspace);
@@ -282,7 +276,6 @@ public class WekaProbabilityMapsTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
-        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         wekaProbabilityMaps.run(workspace);
@@ -321,7 +314,6 @@ public class WekaProbabilityMapsTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
-        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         wekaProbabilityMaps.run(workspace);
@@ -361,7 +353,6 @@ public class WekaProbabilityMapsTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.INPUT_IMAGE,"Test_image");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.OUTPUT_IMAGE,"Test_output");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
-        wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         wekaProbabilityMaps.run(workspace);

@@ -42,18 +42,7 @@ public class RunTrackMate extends Module {
     public static final String GAP_CLOSING_MAX_DISTANCE = "Gap closing max distance";
     public static final String MAX_FRAME_GAP = "Max frame gap";
     public static final String ESTIMATE_SIZE = "Estimate spot size";
-    public static final String SHOW_OBJECTS = "Show objects";
-    public static final String SHOW_ID = "Show ID";
-    public static final String ID_MODE = "ID source";
 
-
-    public interface IDModes {
-        String USE_SPOT_ID = "Use spot ID";
-        String USE_TRACK_ID = "Use track ID";
-
-        String[] ALL = new String[]{USE_SPOT_ID, USE_TRACK_ID};
-
-    }
 
     public interface Measurements {
         String RADIUS_PX = "SPOT_DETECT_TRACK // RADIUS_(PX)";
@@ -239,7 +228,6 @@ public class RunTrackMate extends Module {
     public void showObjects(ImagePlus ipl, ObjCollection spotObjects) {
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
         boolean doTracking = parameters.getValue(DO_TRACKING);
-        boolean showID = parameters.getValue(SHOW_ID);
 
         HashMap<Integer, Color> colours;
         HashMap<Integer, String> labels;
@@ -250,7 +238,7 @@ public class RunTrackMate extends Module {
             String labelMode = ObjCollection.LabelModes.PARENT_ID;
 
             colours = spotObjects.getColours(colourMode, trackObjectsName, true);
-            labels = showID ? spotObjects.getIDs(labelMode, trackObjectsName, 0, false) : null;
+            labels = spotObjects.getIDs(labelMode, trackObjectsName, 0, false);
 
         } else {
             String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
@@ -258,7 +246,7 @@ public class RunTrackMate extends Module {
             String labelMode = ObjCollection.LabelModes.ID;
 
             colours = spotObjects.getColours(colourMode,colourName,true);
-            labels = showID ? spotObjects.getIDs(labelMode,"",0,false) : null;
+            labels = spotObjects.getIDs(labelMode,"",0,false);
 
         }
 
@@ -351,7 +339,7 @@ public class RunTrackMate extends Module {
         }
 
         // Displaying objects (if selected)
-        if (parameters.getValue(SHOW_OBJECTS)) showObjects(ipl,spotObjects);
+        if (showOutput) showObjects(ipl,spotObjects);
 
         // Reapplying calibration to input image
         inputImage.getImagePlus().setCalibration(calibration);
@@ -378,10 +366,6 @@ public class RunTrackMate extends Module {
 
         parameters.add(new Parameter(OUTPUT_TRACK_OBJECTS, Parameter.OUTPUT_OBJECTS,""));
 
-        parameters.add(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SHOW_ID, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(ID_MODE, Parameter.CHOICE_ARRAY,IDModes.USE_SPOT_ID,IDModes.ALL));
-
     }
 
     @Override
@@ -405,18 +389,6 @@ public class RunTrackMate extends Module {
             returnedParameters.add(parameters.getParameter(LINKING_MAX_DISTANCE));
             returnedParameters.add(parameters.getParameter(GAP_CLOSING_MAX_DISTANCE));
             returnedParameters.add(parameters.getParameter(MAX_FRAME_GAP));
-        }
-
-        returnedParameters.add(parameters.getParameter(SHOW_OBJECTS));
-        if (parameters.getValue(SHOW_OBJECTS)) {
-            returnedParameters.add(parameters.getParameter(SHOW_ID));
-
-            if (parameters.getValue(DO_TRACKING)) {
-                if (parameters.getValue(SHOW_ID)) {
-                    returnedParameters.add(parameters.getParameter(ID_MODE));
-
-                }
-            }
         }
 
         return returnedParameters;

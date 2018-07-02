@@ -27,7 +27,6 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     public static final String INPUT_IMAGE1 = "Input image 1";
     public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String SHOW_IMAGE = "Show image";
 
     private Img<T> combineImages(Image inputImage1, Image inputImage2) {
         Img<T> img1 = inputImage1.getImg();
@@ -156,7 +155,6 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         Image inputImage2 = workspace.getImage(inputImage2Name);
 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         Img<T> mergedImage = combineImages(inputImage1,inputImage2);
         ImagePlus ipl;
@@ -174,7 +172,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         Image outputImage = new Image(outputImageName,compositeImage);
 
         workspace.addImage(outputImage);
-        if (showImage) {
+        if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(compositeImage);
             showIpl.setTitle(outputImageName);
             showIpl.show();
@@ -186,7 +184,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         parameters.add(new Parameter(INPUT_IMAGE1,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(INPUT_IMAGE2,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
+
     }
 
     @Override

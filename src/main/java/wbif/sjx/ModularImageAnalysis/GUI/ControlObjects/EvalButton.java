@@ -72,9 +72,13 @@ public class EvalButton extends JButton implements ActionListener {
         // If the module is ready to be evaluated
         if (idx <= gui.getLastModuleEval()) new Thread(() -> {
             try {
+                // For some reason it's necessary to have a brief pause here to prevent the module executing twice
+                Thread.sleep(1);
                 gui.evaluateModule(module);
             } catch (GenericMIAException ex) {
                 IJ.showMessage(ex.getMessage());
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
         }).start();
 

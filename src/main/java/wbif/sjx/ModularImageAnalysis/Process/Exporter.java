@@ -221,6 +221,10 @@ public class Exporter {
             disableableAttr.appendChild(doc.createTextNode(String.valueOf(module.canBeDisabled())));
             moduleElement.setAttributeNode(disableableAttr);
 
+            Attr outputAttr = doc.createAttribute("SHOW_OUTPUT");
+            outputAttr.appendChild(doc.createTextNode(String.valueOf(module.canShowOutput())));
+            moduleElement.setAttributeNode(outputAttr);
+
             Attr notesAttr = doc.createAttribute("NOTES");
             notesAttr.appendChild(doc.createTextNode(module.getNotes()));
             moduleElement.setAttributeNode(notesAttr);

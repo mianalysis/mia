@@ -61,7 +61,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_IMAGE,"Output_image");
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -135,7 +134,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OVERWRITE_MODE,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1);
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -208,7 +206,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OVERWRITE_MODE,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2);
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -282,7 +279,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_IMAGE,"Output_image");
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -356,7 +352,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OVERWRITE_MODE,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1);
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -429,7 +424,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OVERWRITE_MODE,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2);
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -506,7 +500,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_IMAGE,"Output_image");
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.SUBTRACT);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -581,7 +574,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_IMAGE,"Output_image");
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.SUBTRACT);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -659,7 +651,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_IMAGE,"Output_image");
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.MULTIPLY);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -734,7 +725,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_IMAGE,"Output_image");
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.MULTIPLY);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -812,7 +802,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_IMAGE,"Output_image");
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.DIVIDE);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);
@@ -887,7 +876,6 @@ public class ImageCalculatorTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_IMAGE,"Output_image");
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.DIVIDE);
-        calculator.updateParameterValue(ImageCalculator.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         calculator.run(workspace);

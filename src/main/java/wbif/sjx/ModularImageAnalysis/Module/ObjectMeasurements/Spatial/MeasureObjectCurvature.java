@@ -37,7 +37,6 @@ public class MeasureObjectCurvature extends Module {
     public static final String DRAW_SPLINE = "Draw spline";
     public static final String MAX_CURVATURE = "Maximum curvature (for colour)";
     public static final String APPLY_TO_IMAGE = "Apply to image";
-    public static final String SHOW_IMAGE = "Show image";
     public static final String CALCULATE_END_END_ANGLE = "Calculate angle between ends";
     public static final String FITTING_RANGE_PX = "Fitting range (px)";
 
@@ -331,7 +330,6 @@ public class MeasureObjectCurvature extends Module {
         boolean drawSpline = parameters.getValue(DRAW_SPLINE);
         boolean applyToImage = parameters.getValue(APPLY_TO_IMAGE);
         double maxCurvature = parameters.getValue(MAX_CURVATURE);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
         boolean calculateEndEndAngle = parameters.getValue(CALCULATE_END_END_ANGLE);
         int fittingRange = parameters.getValue(FITTING_RANGE_PX);
 
@@ -395,7 +393,7 @@ public class MeasureObjectCurvature extends Module {
             
         }
 
-        if (showImage && drawSpline) {
+        if (showOutput && drawSpline) {
             ImagePlus showIpl = new Duplicator().run(referenceImageImagePlus);
             showIpl.setTitle(referenceImageName);
             showIpl.show();
@@ -419,7 +417,6 @@ public class MeasureObjectCurvature extends Module {
         parameters.add(new Parameter(DRAW_SPLINE, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(APPLY_TO_IMAGE, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MAX_CURVATURE,Parameter.DOUBLE,1d));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CALCULATE_END_END_ANGLE, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(FITTING_RANGE_PX, Parameter.INTEGER,5));
 
@@ -461,7 +458,6 @@ public class MeasureObjectCurvature extends Module {
             if (parameters.getValue(DRAW_SPLINE)) {
                 returnedParameters.add(parameters.getParameter(APPLY_TO_IMAGE));
                 returnedParameters.add(parameters.getParameter(MAX_CURVATURE));
-                returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
             }
         }
 

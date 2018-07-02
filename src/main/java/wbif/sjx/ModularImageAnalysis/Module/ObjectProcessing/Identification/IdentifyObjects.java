@@ -26,7 +26,6 @@ public class IdentifyObjects extends Module {
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String SINGLE_OBJECT = "Identify as single object";
     public static final String CONNECTIVITY = "Connectivity";
-    public static final String SHOW_OBJECTS = "Show objects";
 
     public interface Connectivity {
         String SIX = "6";
@@ -115,7 +114,6 @@ public class IdentifyObjects extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
-        boolean showObjects = parameters.getValue(SHOW_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
         ObjCollection outputObjects = importFromImage(inputImage);
@@ -127,7 +125,7 @@ public class IdentifyObjects extends Module {
         workspace.addObjects(outputObjects);
 
         // Showing objects
-        if (showObjects) {
+        if (showOutput) {
             HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
             outputObjects.convertObjectsToImage("Objects", inputImage.getImagePlus(),
                     ConvertObjectsToImage.ColourModes.RANDOM_COLOUR, hues).getImagePlus().show();
@@ -141,7 +139,6 @@ public class IdentifyObjects extends Module {
         parameters.add(new Parameter(WHITE_BACKGROUND,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(SINGLE_OBJECT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(CONNECTIVITY, Parameter.CHOICE_ARRAY, Connectivity.TWENTYSIX, Connectivity.ALL));
-        parameters.add(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
 
     }
 

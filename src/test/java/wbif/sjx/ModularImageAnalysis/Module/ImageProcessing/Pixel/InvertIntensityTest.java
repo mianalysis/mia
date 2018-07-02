@@ -50,7 +50,6 @@ public class InvertIntensityTest {
         invertIntensity.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        invertIntensity.updateParameterValue(ImageMath.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         invertIntensity.run(workspace);
@@ -90,7 +89,6 @@ public class InvertIntensityTest {
         invertIntensity.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,true);
-        invertIntensity.updateParameterValue(ImageMath.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         invertIntensity.run(workspace);
@@ -129,7 +127,6 @@ public class InvertIntensityTest {
         invertIntensity.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        invertIntensity.updateParameterValue(ImageMath.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         invertIntensity.run(workspace);
@@ -169,7 +166,6 @@ public class InvertIntensityTest {
         invertIntensity.updateParameterValue(ImageMath.INPUT_IMAGE,"Test_image");
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
-        invertIntensity.updateParameterValue(ImageMath.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         invertIntensity.run(workspace);

@@ -99,13 +99,21 @@ public class MainGUI extends GUI {
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.LOAD_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SAVE_ANALYSIS));
 
+        // Creating the edit menu
+        menu = new JMenu("Edit");
+        menuBar.add(menu);
+        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.CLEAR_PIPELINE));
+        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.ENABLE_ALL));
+        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.DISABLE_ALL));
+        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.OUTPUT_ALL));
+        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SILENCE_ALL));
+
         // Creating the analysis menu
         menu = new JMenu("Analysis");
         menuBar.add(menu);
 //        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.START_ANALYSIS));
         menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.STOP_ANALYSIS));
-        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.CLEAR_PIPELINE));
 
         // Creating the new menu
         menuBar.add(viewMenu);

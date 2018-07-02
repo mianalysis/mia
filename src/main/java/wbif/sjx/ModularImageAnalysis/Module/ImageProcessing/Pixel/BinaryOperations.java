@@ -32,7 +32,6 @@ public class BinaryOperations extends Module {
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
-    public static final String SHOW_IMAGE = "Show image";
 
     public interface OperationModes {
         String DILATE_2D = "Dilate 2D";
@@ -273,7 +272,7 @@ public class BinaryOperations extends Module {
         }
 
         // If selected, displaying the image
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
             IntensityMinMax.run(dispIpl,true);
             dispIpl.show();
@@ -303,7 +302,6 @@ public class BinaryOperations extends Module {
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
         parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY,Connectivity3D.SIX,Connectivity3D.ALL));
         parameters.add(new Parameter(MATCH_Z_TO_X, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -349,8 +347,6 @@ public class BinaryOperations extends Module {
                 returnedParameters.add(parameters.getParameter(CONNECTIVITY_3D));
                 break;
         }
-
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

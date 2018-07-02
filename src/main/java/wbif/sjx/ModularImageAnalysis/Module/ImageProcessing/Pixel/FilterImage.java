@@ -33,7 +33,6 @@ public class FilterImage extends Module {
     public static final String ROLLING_METHOD = "Rolling filter method";
     public static final String WINDOW_MODE = "Window mode";
     public static final String WINDOW_HALF_WIDTH = "Window half width (frames)";
-    public static final String SHOW_IMAGE = "Show image";
 
     public interface FilterModes {
         String DOG2D = "Difference of Gaussian 2D";
@@ -364,7 +363,7 @@ public class FilterImage extends Module {
             outputImage.getImagePlus().setPosition(1,1,1);
 
             // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
+            if (showOutput) {
                 ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
                 IntensityMinMax.run(dispIpl,true);
                 dispIpl.show();
@@ -372,7 +371,7 @@ public class FilterImage extends Module {
 
         } else {
             // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
+            if (showOutput) {
                 ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
                 IntensityMinMax.run(dispIpl,true);
                 dispIpl.show();
@@ -391,7 +390,6 @@ public class FilterImage extends Module {
         parameters.add(new Parameter(ROLLING_METHOD, Parameter.CHOICE_ARRAY,RollingMethods.AVERAGE,RollingMethods.ALL));
         parameters.add(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
         parameters.add(new Parameter(WINDOW_MODE,Parameter.CHOICE_ARRAY,WindowModes.BOTH_SIDES,WindowModes.ALL));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -416,8 +414,6 @@ public class FilterImage extends Module {
             returnedParameters.add(parameters.getParameter(WINDOW_MODE));
 
         }
-
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

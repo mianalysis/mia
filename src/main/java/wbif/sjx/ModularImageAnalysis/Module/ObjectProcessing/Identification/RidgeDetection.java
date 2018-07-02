@@ -31,7 +31,6 @@ public class RidgeDetection extends Module {
     public static final String MAX_LENGTH = "Maximum length (px)";
     public static final String CONTOUR_CONTRAST = "Contour contrast";
     public static final String LINK_CONTOURS = "Link contours";
-    public static final String SHOW_OBJECTS = "Show objects";
 
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT // LENGTH_(PX)";
@@ -183,7 +182,7 @@ public class RidgeDetection extends Module {
         inputImagePlus.setPosition(1,1,1);
         workspace.addObjects(outputObjects);
 
-        if (parameters.getValue(SHOW_OBJECTS)) {
+        if (showOutput) {
             // Adding image to workspace
             writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
 
@@ -219,7 +218,6 @@ public class RidgeDetection extends Module {
         parameters.add(new Parameter(MIN_LENGTH, Parameter.DOUBLE, 0d));
         parameters.add(new Parameter(MAX_LENGTH, Parameter.DOUBLE, 0d));
         parameters.add(new Parameter(LINK_CONTOURS, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(SHOW_OBJECTS, Parameter.BOOLEAN, false));
 
     }
 

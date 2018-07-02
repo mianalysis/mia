@@ -22,7 +22,6 @@ public class FitLongestChord extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input";
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String SHOW_IMAGE = "Show image";
 
 
     public interface Measurements {
@@ -110,7 +109,6 @@ public class FitLongestChord extends Module {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // If necessary, getting image for overlay
         ImagePlus inputImagePlus = null;
@@ -132,7 +130,7 @@ public class FitLongestChord extends Module {
         }
 
         if (addOverlay) {
-            if (showImage) {
+            if (showOutput) {
                 Image inputImage = workspace.getImage(inputImageName);
                 ImagePlus showIpl = new Duplicator().run(inputImage.getImagePlus());
                 showIpl.setTitle(inputImageName);
@@ -154,7 +152,6 @@ public class FitLongestChord extends Module {
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(ADD_OUTPUT_TO_WORKSPACE, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
 
@@ -175,9 +172,6 @@ public class FitLongestChord extends Module {
                     returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
                 }
             }
-
-            returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
-
         }
 
         return returnedParameters;

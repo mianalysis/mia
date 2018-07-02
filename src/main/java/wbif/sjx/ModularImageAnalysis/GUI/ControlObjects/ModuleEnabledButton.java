@@ -15,15 +15,14 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     private GUI gui;
     private Module module;
     private boolean state = true;
-    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/power_red_12px.png"), "");
-    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/power_green_12px.png"), "");
+    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_red_12px.png"), "");
+    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_green_12px.png"), "");
 
     public ModuleEnabledButton(GUI gui, Module module) {
         this.gui = gui;
         this.module = module;
 
         state = module.isEnabled();
-        setName("ModuleEnabledCheck");
 
         setFocusPainted(false);
         setSelected(false);

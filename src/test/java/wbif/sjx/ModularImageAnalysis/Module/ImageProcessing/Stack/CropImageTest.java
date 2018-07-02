@@ -50,7 +50,6 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.TOP,12);
         cropImage.updateParameterValue(CropImage.WIDTH,49);
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
-        cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
         cropImage.run(workspace);
@@ -93,7 +92,6 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.TOP,12);
         cropImage.updateParameterValue(CropImage.WIDTH,49);
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
-        cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
         cropImage.run(workspace);
@@ -136,7 +134,6 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.TOP,12);
         cropImage.updateParameterValue(CropImage.WIDTH,49);
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
-        cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
         cropImage.run(workspace);
@@ -179,7 +176,6 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.TOP,12);
         cropImage.updateParameterValue(CropImage.WIDTH,49);
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
-        cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
         cropImage.run(workspace);
@@ -221,7 +217,6 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.TOP,12);
         cropImage.updateParameterValue(CropImage.WIDTH,49);
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
-        cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
         cropImage.run(workspace);
@@ -263,7 +258,6 @@ public class CropImageTest {
         cropImage.updateParameterValue(CropImage.TOP,12);
         cropImage.updateParameterValue(CropImage.WIDTH,49);
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
-        cropImage.updateParameterValue(CropImage.SHOW_IMAGE,false);
 
         // Running CropImage
         cropImage.run(workspace);

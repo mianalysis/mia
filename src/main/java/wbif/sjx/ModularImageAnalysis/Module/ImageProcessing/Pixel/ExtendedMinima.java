@@ -18,7 +18,6 @@ public class ExtendedMinima extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
-    public static final String SHOW_IMAGE = "Show image";
 
 
     @Override
@@ -55,7 +54,7 @@ public class ExtendedMinima extends Module {
         IJ.run(inputImagePlus,"Invert","stack");
 
         // If selected, displaying the image
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
             IntensityMinMax.run(dispIpl,true);
             dispIpl.show();
@@ -77,7 +76,6 @@ public class ExtendedMinima extends Module {
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
         parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY, BinaryOperations.Connectivity3D.SIX, BinaryOperations.Connectivity3D.ALL));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -93,7 +91,6 @@ public class ExtendedMinima extends Module {
 
         returnedParameters.add(parameters.getParameter(DYNAMIC));
         returnedParameters.add(parameters.getParameter(CONNECTIVITY_3D));
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

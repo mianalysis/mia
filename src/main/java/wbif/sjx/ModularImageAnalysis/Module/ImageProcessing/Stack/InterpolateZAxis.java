@@ -14,7 +14,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 public class InterpolateZAxis extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String SHOW_IMAGE = "Show image";
 
     public static ImagePlus matchZToXY(ImagePlus inputImagePlus) {
         // Calculating scaling
@@ -50,14 +49,13 @@ public class InterpolateZAxis extends Module {
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         ImagePlus outputImagePlus = matchZToXY(inputImagePlus);
 
         Image outputImage = new Image(outputImageName,outputImagePlus);
         workspace.addImage(outputImage);
 
-        if (showImage) {
+        if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(outputImagePlus);
             showIpl.setTitle(outputImageName);
             showIpl.show();
@@ -68,7 +66,6 @@ public class InterpolateZAxis extends Module {
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
     }
 

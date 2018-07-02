@@ -65,7 +65,6 @@ public class MeasureObjectCurvatureTest {
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.DRAW_SPLINE,false);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.MAX_CURVATURE,0d);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.APPLY_TO_IMAGE,false);
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SHOW_IMAGE,false);
 
         // Running the module
         measureObjectCurvature.run(workspace);
@@ -120,7 +119,6 @@ public class MeasureObjectCurvatureTest {
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.DRAW_SPLINE,false);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.MAX_CURVATURE,0.2d);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.APPLY_TO_IMAGE,false);
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SHOW_IMAGE,false);
 
         // Running the module
         measureObjectCurvature.run(workspace);
@@ -183,7 +181,6 @@ public class MeasureObjectCurvatureTest {
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.DRAW_SPLINE,false);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.MAX_CURVATURE,0.2d);
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.APPLY_TO_IMAGE,false);
-        measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.SHOW_IMAGE,false);
 
         // Running the module
         measureObjectCurvature.run(workspace);

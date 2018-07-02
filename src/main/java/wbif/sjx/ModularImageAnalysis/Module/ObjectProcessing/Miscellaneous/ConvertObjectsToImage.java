@@ -30,7 +30,6 @@ public class ConvertObjectsToImage extends Module {
     public static final String COLOUR_MODE = "Colour mode";
     public static final String MEASUREMENT = "Measurement";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
-    public static final String SHOW_IMAGE = "Show image";
 
     public interface ConversionModes {
         String IMAGE_TO_OBJECTS = "Image to objects";
@@ -74,7 +73,6 @@ public class ConvertObjectsToImage extends Module {
             String colourMode = parameters.getValue(COLOUR_MODE);
             String measurementForColour = parameters.getValue(MEASUREMENT);
             String parentForColour = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
-            boolean showImage = parameters.getValue(SHOW_IMAGE);
 
             ObjCollection inputObjects = workspace.getObjects().get(objectName);
             Image templateImage = workspace.getImages().get(templateImageName);
@@ -100,7 +98,7 @@ public class ConvertObjectsToImage extends Module {
             // Adding image to workspace
             workspace.addImage(outputImage);
 
-            if (showImage) {
+            if (showOutput) {
                 ImagePlus ipl = outputImage.getImagePlus();
                 IntensityMinMax.run(ipl,ipl.getNSlices() > 1);
                 ImagePlus iplShow = new Duplicator().run(ipl);
@@ -138,7 +136,6 @@ public class ConvertObjectsToImage extends Module {
         parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
         parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
 
@@ -174,9 +171,6 @@ public class ConvertObjectsToImage extends Module {
                 parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
             }
-
-            returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
-
         }
 
         return returnedParameters;

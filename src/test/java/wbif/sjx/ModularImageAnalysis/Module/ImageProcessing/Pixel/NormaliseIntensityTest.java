@@ -50,7 +50,6 @@ public class NormaliseIntensityTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
-        normaliseIntensity.updateParameterValue(NormaliseIntensity.SHOW_IMAGE,false);
 
         // Running NormaliseIntensity
         normaliseIntensity.run(workspace);
@@ -89,7 +88,6 @@ public class NormaliseIntensityTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
-        normaliseIntensity.updateParameterValue(NormaliseIntensity.SHOW_IMAGE,false);
 
         // Running NormaliseIntensity
         normaliseIntensity.run(workspace);
@@ -128,7 +126,6 @@ public class NormaliseIntensityTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
-        normaliseIntensity.updateParameterValue(NormaliseIntensity.SHOW_IMAGE,false);
 
         // Running NormaliseIntensity
         normaliseIntensity.run(workspace);
@@ -167,7 +164,6 @@ public class NormaliseIntensityTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
-        normaliseIntensity.updateParameterValue(NormaliseIntensity.SHOW_IMAGE,false);
 
         // Running NormaliseIntensity
         normaliseIntensity.run(workspace);
@@ -206,7 +202,6 @@ public class NormaliseIntensityTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
-        normaliseIntensity.updateParameterValue(NormaliseIntensity.SHOW_IMAGE,false);
 
         // Running NormaliseIntensity
         normaliseIntensity.run(workspace);
@@ -245,7 +240,6 @@ public class NormaliseIntensityTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
-        normaliseIntensity.updateParameterValue(NormaliseIntensity.SHOW_IMAGE,false);
 
         // Running NormaliseIntensity
         normaliseIntensity.run(workspace);
@@ -284,7 +278,6 @@ public class NormaliseIntensityTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
-        normaliseIntensity.updateParameterValue(NormaliseIntensity.SHOW_IMAGE,false);
 
         // Running NormaliseIntensity
         normaliseIntensity.run(workspace);
@@ -322,7 +315,6 @@ public class NormaliseIntensityTest {
         NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,true);
-        normaliseIntensity.updateParameterValue(NormaliseIntensity.SHOW_IMAGE,false);
 
         // Running NormaliseIntensity
         normaliseIntensity.run(workspace);

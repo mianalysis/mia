@@ -97,8 +97,7 @@ public class AddObjectsOverlayTest {
                 .updateParameterValue(AddObjectsOverlay.INPUT_IMAGE,imageName)
                 .updateParameterValue(AddObjectsOverlay.POSITION_MODE,AddObjectsOverlay.PositionModes.TRACKS)
                 .updateParameterValue(AddObjectsOverlay.LINE_WIDTH,1d)
-                .updateParameterValue(AddObjectsOverlay.LIMIT_TRACK_HISTORY,false)
-                .updateParameterValue(AddObjectsOverlay.SHOW_IMAGE,true);
+                .updateParameterValue(AddObjectsOverlay.LIMIT_TRACK_HISTORY,false);
 
 //        HashMap<Integer, Color> colours = testObjects.getColours(ObjCollection.ColourModes.PARENT_ID,trackObjectsName, false);
 //        ObjCollection trackObjects = workspace.getObjectSet(trackObjectsName);
