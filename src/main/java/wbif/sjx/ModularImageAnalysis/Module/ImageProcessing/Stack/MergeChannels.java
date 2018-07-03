@@ -32,42 +32,38 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         Img<T> img1 = inputImage1.getImg();
         Img<T> img2 = inputImage2.getImg();
 
-        T type = img1.firstElement();
+        int nDimsFinal = img1.numDimensions();
+        if (!inputImage1.getImagePlus().isHyperStack()) nDimsFinal++;
 
-        long[] dims1 = new long[Math.max(3,img1.numDimensions())];
-        long[] dims2 = new long[Math.max(3,img2.numDimensions())];
-        long[] dims = new long[Math.max(3,img1.numDimensions())];
-
-        long[] offset1 = new long[Math.max(3,img1.numDimensions())];
-        long[] offset2 = new long[Math.max(3,img2.numDimensions())];
+        long[] dims = new long[nDimsFinal];
+        long[] offset = new long[nDimsFinal];
 
         for (int i=0;i<img1.numDimensions();i++) {
-            dims1[i] = img1.dimension(i);
-            offset1[i] = 0;
-        }
-
-        for (int i=0;i<img2.numDimensions();i++) {
-            dims2[i] = img2.dimension(i);
-            offset2[i] = 0;
-        }
-        offset2[2] = img1.dimension(2);
-
-        for (int i=0;i<img1.numDimensions();i++) {
+            offset[i] = 0;
             dims[i] = img1.dimension(i);
         }
-        dims[2] = img1.dimension(2)+img2.dimension(2);
+
+        if (inputImage1.getImagePlus().isHyperStack()) {
+            dims[2] = img1.dimension(2) + img2.dimension(2);
+        } else {
+            dims[2] = 2;
+            dims[3] = img1.dimension(2);
+        }
 
         // Creating the composite image
+        T type = img1.firstElement();
         final ImgFactory< T > factory = new ArrayImgFactory<>();
         Img<T> mergedImg = factory.create(dims, type);
 
         // Adding values from image 1
+        if (!inputImage1.getImagePlus().isHyperStack()) dims[2] = 1;
         Cursor<T> cursor1 = img1.cursor();
-        Cursor<T> cursorMerge = Views.offsetInterval(mergedImg, offset1, dims1).cursor();
+        Cursor<T> cursorMerge = Views.offsetInterval(mergedImg, offset, dims).cursor();
         while (cursor1.hasNext()) cursorMerge.next().set(cursor1.next());
 
+        if (!inputImage1.getImagePlus().isHyperStack())  offset[2] = 1;
         Cursor<T> cursor2 = img2.cursor();
-        cursorMerge = Views.offsetInterval(mergedImg, offset2, dims2).cursor();
+        cursorMerge = Views.offsetInterval(mergedImg, offset, dims).cursor();
         while (cursor2.hasNext()) cursorMerge.next().set(cursor2.next());
 
         return mergedImg;
