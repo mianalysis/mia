@@ -45,8 +45,10 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
             dims[i] = img1.dimension(i);
         }
 
-        if (inputImage1.getImagePlus().isHyperStack()) {
+        if (inputImage1.getImagePlus().isHyperStack() && inputImage2.getImagePlus().isHyperStack()) {
             dims[2] = img1.dimension(2) + img2.dimension(2);
+        } else if(inputImage1.getImagePlus().isHyperStack() &! inputImage2.getImagePlus().isHyperStack()) {
+            dims[2] = img1.dimension(2) + 1;
         } else {
             dims[2] = 2;
             dims[3] = img1.dimension(2);
@@ -58,12 +60,29 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         Img<T> mergedImg = factory.create(dims, type);
 
         // Adding values from image 1
-        if (!inputImage1.getImagePlus().isHyperStack()) dims[2] = 1;
+        if (inputImage1.getImagePlus().isHyperStack() && inputImage2.getImagePlus().isHyperStack()) {
+            dims[2] = img1.dimension(2);
+        } else if(inputImage1.getImagePlus().isHyperStack() &! inputImage2.getImagePlus().isHyperStack()) {
+            dims[2] = img1.dimension(2);
+        } else {
+            dims[2] = 1;
+        }
+
         Cursor<T> cursor1 = img1.cursor();
         Cursor<T> cursorMerge = Views.offsetInterval(mergedImg, offset, dims).cursor();
         while (cursor1.hasNext()) cursorMerge.next().set(cursor1.next());
 
-        if (!inputImage1.getImagePlus().isHyperStack())  offset[2] = 1;
+        if (inputImage1.getImagePlus().isHyperStack() && inputImage2.getImagePlus().isHyperStack()) {
+            offset[2] = img1.dimension(2);
+            dims[2] = img2.dimension(2);
+        } else if(inputImage1.getImagePlus().isHyperStack() &! inputImage2.getImagePlus().isHyperStack()) {
+            dims[2] = 1;
+            offset[2] = img1.dimension(2);
+        } else {
+            dims[2] = 1;
+            offset[2] = 1;
+        }
+
         Cursor<T> cursor2 = img2.cursor();
         cursorMerge = Views.offsetInterval(mergedImg, offset, dims).cursor();
         while (cursor2.hasNext()) cursorMerge.next().set(cursor2.next());

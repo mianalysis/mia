@@ -582,6 +582,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
         if (showOutput && ipl != null) {
             ipl = new Duplicator().run(ipl);
+            ipl.setTitle(outputImageName);
             ipl.show();
         }
     }
