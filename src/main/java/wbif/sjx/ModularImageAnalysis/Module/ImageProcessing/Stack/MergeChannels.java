@@ -1,9 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import fiji.stacks.Hyperstack_rearranger;
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
 import net.imagej.autoscale.DefaultAutoscaleMethod;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;

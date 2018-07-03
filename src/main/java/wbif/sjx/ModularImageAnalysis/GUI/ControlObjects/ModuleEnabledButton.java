@@ -15,8 +15,8 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     private GUI gui;
     private Module module;
     private boolean state = true;
-    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_red_12px.png"), "");
-    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_green_12px.png"), "");
+    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_black_12px.png"), "");
+    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_brightgreen_12px.png"), "");
 
     public ModuleEnabledButton(GUI gui, Module module) {
         this.gui = gui;
@@ -28,13 +28,14 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
         setSelected(false);
         setMargin(new Insets(0,0,0,0));
         setName("ModuleEnabled");
-        setIcon(state);
+        setToolTipText("Enable/disable module");
+        setIcon();
 
         addActionListener(this);
 
     }
 
-    public void setIcon(boolean state) {
+    public void setIcon() {
         if (state) setIcon(greenIcon);
         else setIcon(redIcon);
     }
@@ -48,7 +49,7 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
         // Invert state
         state = !state;
 
-        setIcon(state);
+        setIcon();
         module.setEnabled(state);
 
         int idx = gui.getModules().indexOf(module);

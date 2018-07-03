@@ -15,10 +15,8 @@ public class ShowOutputButton extends JButton implements ActionListener {
     private GUI gui;
     private Module module;
     private boolean state = true;
-    private static final ImageIcon redClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_red_12px.png"), "");
-    private static final ImageIcon greenOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_green_12px.png"), "");
-    private static final ImageIcon greyClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_grey_12px.png"), "");
-    private static final ImageIcon greyOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_grey_12px.png"), "");
+    private static final ImageIcon redClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_black_12px.png"), "");
+    private static final ImageIcon greenOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_black_12px.png"), "");
 
 
     public ShowOutputButton(GUI gui, Module module) {
@@ -27,21 +25,25 @@ public class ShowOutputButton extends JButton implements ActionListener {
 
         state = module.canShowOutput();
 
+        addActionListener(this);
         setFocusPainted(false);
         setSelected(false);
         setMargin(new Insets(0,0,0,0));
         setName("Show output");
+        setToolTipText("Show output from module");
         setIcon();
 
-        addActionListener(this);
+        setEnabled(module.isEnabled());
 
     }
 
     public void setIcon() {
-        if (state && module.isEnabled()) setIcon(greenOpenIcon) ;
-        else if (!state && module.isEnabled()) setIcon(redClosedIcon);
-        else if (state &! module.isEnabled()) setIcon(greyOpenIcon);
-        else if (!state &! module.isEnabled()) setIcon(greyClosedIcon);
+//        if (state && module.isEnabled()) setIcon(greenOpenIcon) ;
+//        else if (!state && module.isEnabled()) setIcon(redClosedIcon);
+//        else if (state &! module.isEnabled()) setIcon(greyOpenIcon);
+//        else if (!state &! module.isEnabled()) setIcon(greyClosedIcon);
+        if (state) setIcon(greenOpenIcon);
+        else setIcon(redClosedIcon);
     }
 
     public Module getModule() {

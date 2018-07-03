@@ -52,7 +52,6 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
         channelExtractor.updateParameterValue(ChannelExtractor.CHANNEL_TO_EXTRACT,1);
-        channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
         channelExtractor.run(workspace);
@@ -92,7 +91,6 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
         channelExtractor.updateParameterValue(ChannelExtractor.CHANNEL_TO_EXTRACT,2);
-        channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
         channelExtractor.run(workspace);
@@ -133,7 +131,6 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
         channelExtractor.updateParameterValue(ChannelExtractor.CHANNEL_TO_EXTRACT,1);
-        channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
         channelExtractor.run(workspace);
@@ -174,7 +171,6 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
         channelExtractor.updateParameterValue(ChannelExtractor.CHANNEL_TO_EXTRACT,2);
-        channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
         channelExtractor.run(workspace);
@@ -215,7 +211,6 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
         channelExtractor.updateParameterValue(ChannelExtractor.CHANNEL_TO_EXTRACT,1);
-        channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
         channelExtractor.run(workspace);
@@ -256,7 +251,6 @@ public class ChannelExtractorTest {
         channelExtractor.updateParameterValue(ChannelExtractor.INPUT_IMAGE,"Test_image_5D");
         channelExtractor.updateParameterValue(ChannelExtractor.OUTPUT_IMAGE,"Test_output");
         channelExtractor.updateParameterValue(ChannelExtractor.CHANNEL_TO_EXTRACT,2);
-        channelExtractor.updateParameterValue(ChannelExtractor.SHOW_IMAGE,false);
 
         // Running ChannelExtractor
         channelExtractor.run(workspace);

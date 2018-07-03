@@ -134,7 +134,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     }
 
     public Img<T> getImg() {
-        return ImagePlusAdapter.wrapImgPlus(new Duplicator().run(imagePlus));
+        return ImagePlusAdapter.wrap(new Duplicator().run(imagePlus));
 
     }
 

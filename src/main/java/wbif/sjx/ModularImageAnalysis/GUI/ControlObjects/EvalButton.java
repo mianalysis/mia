@@ -21,6 +21,8 @@ import java.io.File;
 public class EvalButton extends JButton implements ActionListener {
     private GUI gui;
     private Module module;
+    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
+    private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_green_12px.png"), "");
 
 
     // CONSTRUCTOR
@@ -33,29 +35,21 @@ public class EvalButton extends JButton implements ActionListener {
         setSelected(false);
         setMargin(new Insets(0,0,0,0));
         setName("EvalButton");
-        setText("⇩");
-        setFont(new Font(Font.SERIF,Font.BOLD,14));
-//        setEnabled(module.isEnabled());
+        setToolTipText("Evaluate module");
         addActionListener(this);
         updateColour();
+
+        setEnabled(module.isEnabled());
 
     }
 
     public void updateColour() {
-        Color color;
         int idx = gui.getModules().indexOf(module);
-        if (!module.isEnabled()) {
-            color = Color.LIGHT_GRAY;
+        if (idx <= gui.getLastModuleEval()) {
+            setIcon(greenIcon);
         } else {
-            if (idx <= gui.getLastModuleEval()) {
-                color = Color.getHSBColor(0.27f,1f,0.6f);
-            } else {
-                color = Color.getHSBColor(0f,1f,0.6f);
-            }
+            setIcon(redIcon);
         }
-
-        setForeground(color);
-
     }
 
 
@@ -67,6 +61,8 @@ public class EvalButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (!module.isEnabled()) return;
+
         int idx = gui.getModules().indexOf(module);
 
         // If the module is ready to be evaluated
