@@ -17,7 +17,6 @@ public class ImageMath extends Module {
     public static final String VALUE_SOURCE = "Value source";
     public static final String MEASUREMENT = "Measurement";
     public static final String MATH_VALUE = "Value";
-    public static final String SHOW_IMAGE = "Show image";
 
     public interface CalculationTypes {
         String ADD = "Add";
@@ -97,7 +96,6 @@ public class ImageMath extends Module {
         String valueSource = parameters.getValue(VALUE_SOURCE);
         String measurement = parameters.getValue(MEASUREMENT);
         double mathValue = parameters.getValue(MATH_VALUE);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
@@ -112,7 +110,7 @@ public class ImageMath extends Module {
         process(inputImagePlus,calculationType,mathValue);
 
         // If selected, displaying the image
-        if (showImage) {
+        if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(inputImagePlus);
             showIpl.setTitle(outputImageName);
             showIpl.show();
@@ -138,7 +136,6 @@ public class ImageMath extends Module {
                 new Parameter(VALUE_SOURCE,Parameter.CHOICE_ARRAY, ValueSources.FIXED, ValueSources.ALL));
         parameters.add(new Parameter(MEASUREMENT,Parameter.IMAGE_MEASUREMENT,null));
         parameters.add(new Parameter(MATH_VALUE,Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -166,7 +163,6 @@ public class ImageMath extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(MATH_VALUE));
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

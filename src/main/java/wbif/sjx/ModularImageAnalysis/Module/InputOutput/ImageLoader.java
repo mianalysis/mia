@@ -2,12 +2,15 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
+import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
 import ij.process.ImageProcessor;
+import ij.process.StackConverter;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -81,7 +84,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String Z_CAL = "Z calibration (dist/px)";
     public static final String USE_IMAGEJ_READER = "Use ImageJ reader";
     public static final String THREE_D_MODE = "Load 3D stacks as";
-    public static final String SHOW_IMAGE = "Show image";
+
 
     public interface OutputModes {
         String IMAGE = "Image";
@@ -465,7 +468,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         double zCal = parameters.getValue(Z_CAL);
         boolean useImageJReader = parameters.getValue(USE_IMAGEJ_READER);
         String threeDMode = parameters.getValue(THREE_D_MODE);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Series number comes from the Workspace
         int seriesNumber = workspace.getMetadata().getSeriesNumber();
@@ -578,8 +580,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
-        if (showImage && ipl != null) {
+        if (showOutput && ipl != null) {
             ipl = new Duplicator().run(ipl);
+            ipl.setTitle(outputImageName);
             ipl.show();
         }
     }
@@ -624,7 +627,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
         parameters.add(new Parameter(USE_IMAGEJ_READER, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(THREE_D_MODE,Parameter.CHOICE_ARRAY,ThreeDModes.ZSTACK,ThreeDModes.ALL));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -726,7 +728,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         returnedParameters.add(parameters.getParameter(THREE_D_MODE));
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

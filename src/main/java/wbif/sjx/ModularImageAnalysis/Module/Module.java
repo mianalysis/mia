@@ -1,8 +1,4 @@
-// TODO: Module to save images and to save objects (could roll this into ShowImage and ShowObjects)
 // TODO: Module to plot histograms of measurements (e.g. mean intensity for objects)
-// TODO: Module to calculate size metrics of objects (can used Blob class)
-// TODO: Module to calculate radial intensity distribution of objects
-// TODO: Modules creating new images should pass spatial calibrations across in case new images are used to get objects
 
 package wbif.sjx.ModularImageAnalysis.Module;
 
@@ -30,8 +26,9 @@ public abstract class Module implements Serializable {
     private String nickname;
     private String notes = "";
     private boolean enabled = true;
-    protected String moduleName;
+    private String moduleName;
     private boolean canBeDisabled = false;
+    protected boolean showOutput = false;
 
 
     // CONSTRUCTOR
@@ -173,5 +170,13 @@ public abstract class Module implements Serializable {
 
     public static void setVerbose(boolean verbose) {
         Module.verbose = verbose;
+    }
+
+    public boolean canShowOutput() {
+        return showOutput;
+    }
+
+    public void setShowOutput(boolean showOutput) {
+        this.showOutput = showOutput;
     }
 }

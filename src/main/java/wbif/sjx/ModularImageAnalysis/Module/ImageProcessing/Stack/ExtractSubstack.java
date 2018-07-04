@@ -31,7 +31,7 @@ public class ExtractSubstack extends Module {
     public static final String STARTING_T = "Starting timepoint";
     public static final String ENDING_T = "Ending timepoint";
     public static final String INTERVAL_T = "Timepoint interval";
-    public static final String SHOW_IMAGE = "Show image";
+
 
     @Override
     public String getTitle() {
@@ -64,7 +64,6 @@ public class ExtractSubstack extends Module {
         int startingT = parameters.getValue(STARTING_T);
         int endingT = parameters.getValue(ENDING_T);
         int intervalT = parameters.getValue(INTERVAL_T);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         if (useAllC) endingC = inputImagePlus.getNChannels();
         if (useAllZ) endingZ = inputImagePlus.getNSlices();
@@ -84,7 +83,7 @@ public class ExtractSubstack extends Module {
         workspace.addImage(outputImage);
 
         // If selected, displaying the image
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(outputImagePlus);
             IntensityMinMax.run(dispIpl,true);
             dispIpl.show();
@@ -107,7 +106,6 @@ public class ExtractSubstack extends Module {
         parameters.add(new Parameter(STARTING_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(ENDING_T, Parameter.INTEGER,1));
         parameters.add(new Parameter(INTERVAL_T, Parameter.INTEGER,1));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -137,8 +135,6 @@ public class ExtractSubstack extends Module {
         if (!(boolean) parameters.getValue(USE_ALL_T)) {
             returnedParameters.add(parameters.getParameter(ENDING_T));
         }
-
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

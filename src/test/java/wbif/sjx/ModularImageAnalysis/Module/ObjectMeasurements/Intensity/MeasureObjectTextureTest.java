@@ -43,6 +43,7 @@ public class MeasureObjectTextureTest {
 
     @Test @Ignore
     public void testConvertCalibratedOffsets() {
+
     }
 
     @Test @Ignore

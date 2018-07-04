@@ -40,7 +40,6 @@ public class ManuallyCreateBinaryImage extends Module implements ActionListener 
 
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String SHOW_IMAGE = "Show image";
 
 
     private void showOptionsPanel() {
@@ -96,7 +95,6 @@ public class ManuallyCreateBinaryImage extends Module implements ActionListener 
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -150,7 +148,7 @@ public class ManuallyCreateBinaryImage extends Module implements ActionListener 
             }
         }
 
-        if (showImage) {
+        if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(outputImagePlus);
             showIpl.setTitle(outputImageName);
             showIpl.show();
@@ -162,7 +160,7 @@ public class ManuallyCreateBinaryImage extends Module implements ActionListener 
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE, null));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
+
     }
 
     @Override

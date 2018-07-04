@@ -49,7 +49,6 @@ public class AddObjectsOverlay extends Module {
     public static final String LIMIT_TRACK_HISTORY = "Limit track history";
     public static final String TRACK_HISTORY = "Track history (frames)";
     public static final String LINE_WIDTH = "Line width";
-    public static final String SHOW_IMAGE = "Show image";
 
 
     public interface ColourModes extends ObjCollection.ColourModes {}
@@ -434,7 +433,6 @@ public class AddObjectsOverlay extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String positionMode = parameters.getValue(POSITION_MODE);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -476,7 +474,7 @@ public class AddObjectsOverlay extends Module {
 
         // Duplicating the image, then displaying it.  Duplicating prevents the image being removed from the workspace
         // if it's closed
-        if (showImage) {
+        if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(ipl);
             showIpl.setTitle(outputImageName);
             showIpl.show();
@@ -511,7 +509,6 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(LIMIT_TRACK_HISTORY, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(TRACK_HISTORY, Parameter.INTEGER,10));
         parameters.add(new Parameter(LINE_WIDTH,Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,true));
 
     }
 
@@ -607,7 +604,6 @@ public class AddObjectsOverlay extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

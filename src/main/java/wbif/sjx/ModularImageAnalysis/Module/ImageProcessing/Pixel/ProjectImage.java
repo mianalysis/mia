@@ -25,7 +25,6 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String PROJECTION_MODE = "Projection mode";
-    public static final String SHOW_IMAGE = "Show image";
 
     public interface ProjectionModes {
         String AVERAGE = "Average";
@@ -110,7 +109,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
         workspace.addImage(outputImage);
 
         // If selected, displaying the image
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
             showIpl.setTitle(outputImageName);
             showIpl.show();
@@ -122,7 +121,6 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(PROJECTION_MODE,Parameter.CHOICE_ARRAY,ProjectionModes.AVERAGE,ProjectionModes.ALL));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 

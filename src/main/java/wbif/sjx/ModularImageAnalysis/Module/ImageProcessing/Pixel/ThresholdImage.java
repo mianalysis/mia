@@ -32,7 +32,6 @@ public class ThresholdImage extends Module {
     public static final String SPATIAL_UNITS = "Spatial units";
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
-    public static final String SHOW_IMAGE = "Show image";
 
     public interface ThresholdTypes {
         String GLOBAL_TYPE = "Global";
@@ -246,7 +245,7 @@ public class ThresholdImage extends Module {
         if (applyToInput) {
             inputImage.setImagePlus(inputImagePlus);
             // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
+            if (showOutput) {
                 ImagePlus showIpl = new Duplicator().run(inputImagePlus);
                 showIpl.setTitle(inputImageName);
                 showIpl.show();
@@ -258,7 +257,7 @@ public class ThresholdImage extends Module {
             workspace.addImage(outputImage);
 
             // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
+            if (showOutput) {
                 ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
                 showIpl.setTitle(outputImageName);
                 showIpl.show();
@@ -285,7 +284,6 @@ public class ThresholdImage extends Module {
                 new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
         parameters.add(new Parameter(USE_GLOBAL_Z,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -325,7 +323,6 @@ public class ThresholdImage extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

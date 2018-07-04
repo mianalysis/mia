@@ -19,7 +19,6 @@ public class ImageCalculator extends Module {
     public static final String OUTPUT_32BIT = "Output 32-bit image";
     public static final String CALCULATION_METHOD = "Calculation method";
     public static final String SET_NAN_TO_ZERO = "Set NaN values to zero";
-    public static final String SHOW_IMAGE = "Show image";
 
     public interface OverwriteModes {
         String CREATE_NEW = "Create new image";
@@ -214,7 +213,6 @@ public class ImageCalculator extends Module {
         boolean output32Bit = parameters.getValue(OUTPUT_32BIT);
         String calculationMethod = parameters.getValue(CALCULATION_METHOD);
         boolean setNaNToZero = parameters.getValue(SET_NAN_TO_ZERO);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         ImagePlus newIpl = process(inputImagePlus1,inputImagePlus2,calculationMethod,overwriteMode,output32Bit,setNaNToZero);
 
@@ -223,7 +221,7 @@ public class ImageCalculator extends Module {
             case OverwriteModes.CREATE_NEW:
                 Image outputImage = new Image(outputImageName,newIpl);
                 workspace.addImage(outputImage);
-                if (showImage) {
+                if (showOutput) {
                     ImagePlus showIpl = new Duplicator().run(newIpl);
                     showIpl.setTitle(outputImageName);
                     showIpl.show();
@@ -231,7 +229,7 @@ public class ImageCalculator extends Module {
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE1:
-                if (showImage) {
+                if (showOutput) {
                     ImagePlus showIpl = new Duplicator().run(inputImagePlus1);
                     showIpl.setTitle(outputImageName);
                     showIpl.show();
@@ -239,7 +237,7 @@ public class ImageCalculator extends Module {
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE2:
-                if (showImage) {
+                if (showOutput) {
                     ImagePlus showIpl = new Duplicator().run(inputImagePlus2);
                     showIpl.setTitle(outputImageName);
                     showIpl.show();
@@ -257,7 +255,6 @@ public class ImageCalculator extends Module {
         parameters.add(new Parameter(OUTPUT_32BIT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(CALCULATION_METHOD,Parameter.CHOICE_ARRAY,CalculationMethods.ADD,CalculationMethods.ALL));
         parameters.add(new Parameter(SET_NAN_TO_ZERO,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
     }
 
@@ -276,7 +273,6 @@ public class ImageCalculator extends Module {
         returnedParameters.add(parameters.getParameter(OUTPUT_32BIT));
         returnedParameters.add(parameters.getParameter(CALCULATION_METHOD));
         returnedParameters.add(parameters.getParameter(SET_NAN_TO_ZERO));
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

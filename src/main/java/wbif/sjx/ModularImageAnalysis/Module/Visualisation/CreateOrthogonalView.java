@@ -27,7 +27,6 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String POSITION_MODE = "Position mode";
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String SHOW_IMAGE = "Show image";
 
 
     interface PositionModes{
@@ -165,7 +164,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
         workspace.addImage(outputImage);
 
         // Displaying the image
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if (showOutput) {
             ImageJFunctions.show(orthoImg);
         }
     }
@@ -176,7 +175,6 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(POSITION_MODE,Parameter.CHOICE_ARRAY,PositionModes.IMAGE_CENTRE,PositionModes.ALL));
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
     }
 
@@ -193,8 +191,6 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
                 break;
         }
-
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

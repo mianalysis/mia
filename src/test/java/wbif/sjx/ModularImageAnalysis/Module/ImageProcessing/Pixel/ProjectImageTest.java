@@ -47,7 +47,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -90,7 +89,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -130,7 +128,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -170,7 +167,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -213,7 +209,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -256,7 +251,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -296,7 +290,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MIN);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -336,7 +329,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.AVERAGE);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -376,7 +368,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MEDIAN);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -416,7 +407,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.STDEV);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);
@@ -456,7 +446,6 @@ public class ProjectImageTest {
         projectImage.updateParameterValue(ProjectImage.INPUT_IMAGE,"Test_image");
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.SUM);
-        projectImage.updateParameterValue(ProjectImage.SHOW_IMAGE,false);
 
         // Running BinaryOperations
         projectImage.run(workspace);

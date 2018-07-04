@@ -55,7 +55,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImageg
         thresholdImage.run(workspace);
@@ -100,7 +99,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -145,7 +143,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -190,7 +187,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -235,7 +231,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -280,7 +275,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -325,7 +319,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -370,7 +363,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,2.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -415,7 +407,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,0.5);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -463,7 +454,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -508,7 +498,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -553,7 +542,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -598,7 +586,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -643,7 +630,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -689,7 +675,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
         thresholdImage.updateParameterValue(ThresholdImage.LOWER_THRESHOLD_LIMIT,100.0);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -735,7 +720,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
         thresholdImage.updateParameterValue(ThresholdImage.LOWER_THRESHOLD_LIMIT,140.0);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -806,7 +790,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);
@@ -852,7 +835,6 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
-        thresholdImage.updateParameterValue(ThresholdImage.SHOW_IMAGE,false);
 
         // Running ThresholdImage
         thresholdImage.run(workspace);

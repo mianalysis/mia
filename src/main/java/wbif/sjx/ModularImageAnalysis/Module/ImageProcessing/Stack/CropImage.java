@@ -23,7 +23,6 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
     public static final String HEIGHT = "Height";
-    public static final String SHOW_IMAGE = "Show image";
 
     @Override
     public String getTitle() {
@@ -82,7 +81,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         outputImagePlus.setCalibration(inputImagePlus.getCalibration());
 
         // If selected, displaying the image
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(outputImagePlus);
             IntensityMinMax.run(dispIpl,true);
             dispIpl.show();
@@ -103,7 +102,6 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
         parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));
         parameters.add(new Parameter(HEIGHT, Parameter.INTEGER,512));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
     }
 
     @Override

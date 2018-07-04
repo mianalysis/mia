@@ -1,9 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import fiji.stacks.Hyperstack_rearranger;
 import ij.CompositeImage;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
 import net.imagej.autoscale.DefaultAutoscaleMethod;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
@@ -27,48 +29,62 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     public static final String INPUT_IMAGE1 = "Input image 1";
     public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String SHOW_IMAGE = "Show image";
 
     private Img<T> combineImages(Image inputImage1, Image inputImage2) {
         Img<T> img1 = inputImage1.getImg();
         Img<T> img2 = inputImage2.getImg();
 
-        T type = img1.firstElement();
+        int nDimsFinal = img1.numDimensions();
+        if (!inputImage1.getImagePlus().isHyperStack()) nDimsFinal++;
 
-        long[] dims1 = new long[Math.max(3,img1.numDimensions())];
-        long[] dims2 = new long[Math.max(3,img2.numDimensions())];
-        long[] dims = new long[Math.max(3,img1.numDimensions())];
-
-        long[] offset1 = new long[Math.max(3,img1.numDimensions())];
-        long[] offset2 = new long[Math.max(3,img2.numDimensions())];
+        long[] dims = new long[nDimsFinal];
+        long[] offset = new long[nDimsFinal];
 
         for (int i=0;i<img1.numDimensions();i++) {
-            dims1[i] = img1.dimension(i);
-            offset1[i] = 0;
-        }
-
-        for (int i=0;i<img2.numDimensions();i++) {
-            dims2[i] = img2.dimension(i);
-            offset2[i] = 0;
-        }
-        offset2[2] = img1.dimension(2);
-
-        for (int i=0;i<img1.numDimensions();i++) {
+            offset[i] = 0;
             dims[i] = img1.dimension(i);
         }
-        dims[2] = img1.dimension(2)+img2.dimension(2);
+
+        if (inputImage1.getImagePlus().isHyperStack() && inputImage2.getImagePlus().isHyperStack()) {
+            dims[2] = img1.dimension(2) + img2.dimension(2);
+        } else if(inputImage1.getImagePlus().isHyperStack() &! inputImage2.getImagePlus().isHyperStack()) {
+            dims[2] = img1.dimension(2) + 1;
+        } else {
+            dims[2] = 2;
+            dims[3] = img1.dimension(2);
+        }
 
         // Creating the composite image
+        T type = img1.firstElement();
         final ImgFactory< T > factory = new ArrayImgFactory<>();
         Img<T> mergedImg = factory.create(dims, type);
 
         // Adding values from image 1
+        if (inputImage1.getImagePlus().isHyperStack() && inputImage2.getImagePlus().isHyperStack()) {
+            dims[2] = img1.dimension(2);
+        } else if(inputImage1.getImagePlus().isHyperStack() &! inputImage2.getImagePlus().isHyperStack()) {
+            dims[2] = img1.dimension(2);
+        } else {
+            dims[2] = 1;
+        }
+
         Cursor<T> cursor1 = img1.cursor();
-        Cursor<T> cursorMerge = Views.offsetInterval(mergedImg, offset1, dims1).cursor();
+        Cursor<T> cursorMerge = Views.offsetInterval(mergedImg, offset, dims).cursor();
         while (cursor1.hasNext()) cursorMerge.next().set(cursor1.next());
 
+        if (inputImage1.getImagePlus().isHyperStack() && inputImage2.getImagePlus().isHyperStack()) {
+            offset[2] = img1.dimension(2);
+            dims[2] = img2.dimension(2);
+        } else if(inputImage1.getImagePlus().isHyperStack() &! inputImage2.getImagePlus().isHyperStack()) {
+            dims[2] = 1;
+            offset[2] = img1.dimension(2);
+        } else {
+            dims[2] = 1;
+            offset[2] = 1;
+        }
+
         Cursor<T> cursor2 = img2.cursor();
-        cursorMerge = Views.offsetInterval(mergedImg, offset2, dims2).cursor();
+        cursorMerge = Views.offsetInterval(mergedImg, offset, dims).cursor();
         while (cursor2.hasNext()) cursorMerge.next().set(cursor2.next());
 
         return mergedImg;
@@ -156,7 +172,6 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         Image inputImage2 = workspace.getImage(inputImage2Name);
 
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         Img<T> mergedImage = combineImages(inputImage1,inputImage2);
         ImagePlus ipl;
@@ -174,7 +189,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         Image outputImage = new Image(outputImageName,compositeImage);
 
         workspace.addImage(outputImage);
-        if (showImage) {
+        if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(compositeImage);
             showIpl.setTitle(outputImageName);
             showIpl.show();
@@ -186,7 +201,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         parameters.add(new Parameter(INPUT_IMAGE1,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(INPUT_IMAGE2,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
+
     }
 
     @Override

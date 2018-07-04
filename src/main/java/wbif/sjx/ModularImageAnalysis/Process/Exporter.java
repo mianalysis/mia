@@ -3,10 +3,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -27,9 +24,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -220,6 +215,10 @@ public class Exporter {
             Attr disableableAttr = doc.createAttribute("DISABLEABLE");
             disableableAttr.appendChild(doc.createTextNode(String.valueOf(module.canBeDisabled())));
             moduleElement.setAttributeNode(disableableAttr);
+
+            Attr outputAttr = doc.createAttribute("SHOW_OUTPUT");
+            outputAttr.appendChild(doc.createTextNode(String.valueOf(module.canShowOutput())));
+            moduleElement.setAttributeNode(outputAttr);
 
             Attr notesAttr = doc.createAttribute("NOTES");
             notesAttr.appendChild(doc.createTextNode(module.getNotes()));
@@ -489,6 +488,7 @@ public class Exporter {
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                     summaryDataName = getObjectString(exampleObjSetName, "", "NUMBER");
                     summaryHeaderCell.setCellValue(summaryDataName);
+                    addComment(summaryHeaderCell,"Number of \""+exampleObjSetName+"\" objects.");
                     colNumbers.put(summaryDataName, headerCol++);
                 }
 
@@ -499,6 +499,7 @@ public class Exporter {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                             summaryDataName = getObjectString(exampleObjSetName, "MEAN", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
+                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Mean");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
@@ -506,6 +507,7 @@ public class Exporter {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                             summaryDataName = getObjectString(exampleObjSetName, "MIN", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
+                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Minimum");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
@@ -513,6 +515,7 @@ public class Exporter {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                             summaryDataName = getObjectString(exampleObjSetName, "MAX", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
+                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Maximum");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
@@ -520,6 +523,7 @@ public class Exporter {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                             summaryDataName = getObjectString(exampleObjSetName, "STD", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
+                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Standard deviation");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
@@ -527,6 +531,7 @@ public class Exporter {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                             summaryDataName = getObjectString(exampleObjSetName, "SUM", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
+                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Sum");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
                     }
@@ -546,6 +551,7 @@ public class Exporter {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                         summaryDataName = getObjectString(exampleObjSetName, "MEAN", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
+                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Mean");
                         colNumbers.put(summaryDataName, headerCol++);
                     }
 
@@ -553,6 +559,7 @@ public class Exporter {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                         summaryDataName = getObjectString(exampleObjSetName, "MIN", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
+                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Minimum");
                         colNumbers.put(summaryDataName, headerCol++);
                     }
 
@@ -560,6 +567,7 @@ public class Exporter {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                         summaryDataName = getObjectString(exampleObjSetName, "MAX", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
+                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Maximum");
                         colNumbers.put(summaryDataName, headerCol++);
                     }
 
@@ -567,6 +575,7 @@ public class Exporter {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                         summaryDataName = getObjectString(exampleObjSetName, "STD", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
+                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Standard deviation");
                         colNumbers.put(summaryDataName, headerCol++);
                     }
 
@@ -574,6 +583,7 @@ public class Exporter {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                         summaryDataName = getObjectString(exampleObjSetName, "SUM", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
+                        addSummaryComment(summaryHeaderCell,objectMeasurement,"Sum");
                         colNumbers.put(summaryDataName, headerCol++);
                     }
                 }
@@ -603,6 +613,42 @@ public class Exporter {
 
             }
         }
+    }
+
+    private void addNumberOfChildrenComment(Cell cell, String parent, String child, String calculation) {
+        String text = "";
+        switch (summaryType) {
+            case PER_FILE:
+                text = calculation+" number of \""+child+"\" child objects for all \""+parent+"\" parent objects " +
+                        "in the input file.";
+                break;
+            case PER_TIMEPOINT_PER_FILE:
+                text = calculation+" number of \""+child+"\" child objects for all \""+parent+"\" parent objects " +
+                        "at the stated timepoint of the input file.";
+                break;
+        }
+
+        addComment(cell,text);
+
+    }
+
+    private void addSummaryComment(Cell cell, MeasurementReference measurement, String calculation) {
+        String text = "";
+        switch (summaryType) {
+            case PER_FILE:
+                text = calculation+" value of the measurement (described below) for all \""
+                        +measurement.getImageObjName()+"\" objects in the input file." +
+                        "\n\nMeasurement: "+measurement.getDescription();
+                break;
+            case PER_TIMEPOINT_PER_FILE:
+                text = calculation+" value of the measurement (described below) for all \""
+                        +measurement.getImageObjName()+"\" objects at the stated timepoint of the input file." +
+                        "\n\nMeasurement: "+measurement.getDescription();
+                break;
+        }
+
+        addComment(cell,text);
+
     }
 
     private void populateSummaryRow(Row summaryValueRow, Workspace workspace, ModuleCollection modules,
@@ -839,6 +885,9 @@ public class Exporter {
 
                 Cell objectIDHeaderCell = objectHeaderRow.createCell(col++);
                 objectIDHeaderCell.setCellValue("OBJECT_ID");
+                String text = "ID number for this object.  Unique in the present image, but can be duplicated in other " +
+                        "images";
+                addComment(objectIDHeaderCell,text);
 
                 // Adding metadata headers (if enabled)
                 if (addMetadataToObjects) {
@@ -894,6 +943,7 @@ public class Exporter {
                     measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
                     measurementNames.get(objectName).put(col, objectMeasurement.getName());
                     Cell measHeaderCell = objectHeaderRow.createCell(col++);
+                    addComment(measHeaderCell,objectMeasurement.getDescription());
                     measHeaderCell.setCellValue(objectMeasurement.getName());
 
                 }
@@ -1014,6 +1064,30 @@ public class Exporter {
         } else {
             return objectName+"_(OBJ_"+mode+") // "+measurementName;//.replaceAll(" ", "_");
         }
+    }
+
+    private void addComment(Cell cell, String text) {
+        Row row = cell.getRow();
+        Sheet sheet = cell.getSheet();
+        Workbook workbook = sheet.getWorkbook();
+
+        // When the comment box is visible, have it show in a 1x3 space
+        Drawing drawing = sheet.createDrawingPatriarch();
+        CreationHelper factory = workbook.getCreationHelper();
+        ClientAnchor anchor = factory.createClientAnchor();
+        anchor.setCol1(cell.getColumnIndex());
+        anchor.setCol2(cell.getColumnIndex()+6);
+        anchor.setRow1(row.getRowNum());
+        anchor.setRow2(row.getRowNum()+10);
+
+        // Create the comment and set the text+author
+        Comment comment = drawing.createCellComment(anchor);
+        comment.setString(factory.createRichTextString(text));
+        comment.setAuthor("MIA");
+
+        // Assign the comment to the cell
+        cell.setCellComment(comment);
+
     }
 
 

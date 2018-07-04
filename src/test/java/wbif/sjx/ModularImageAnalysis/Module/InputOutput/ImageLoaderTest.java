@@ -43,7 +43,6 @@ public class ImageLoaderTest {
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BlankHyperstack5D_8bit.tif").getPath(),"UTF-8");
         imageLoader.updateParameterValue(ImageLoader.FILE_PATH,pathToImage);
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageLoader.run(workspace);
@@ -89,7 +88,6 @@ public class ImageLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -135,7 +133,6 @@ public class ImageLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -187,7 +184,6 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,true);
         imageFileLoader.updateParameterValue(ImageLoader.XY_CAL,0.5);
         imageFileLoader.updateParameterValue(ImageLoader.Z_CAL,0.2);
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -239,7 +235,6 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -291,7 +286,6 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.ENDING_Z,6);
         imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -343,7 +337,6 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.STARTING_T,2);
         imageFileLoader.updateParameterValue(ImageLoader.ENDING_T,4);
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -399,7 +392,6 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.STARTING_T,3);
         imageFileLoader.updateParameterValue(ImageLoader.ENDING_T,4);
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -445,7 +437,6 @@ public class ImageLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -496,7 +487,6 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(CropImage.TOP,12);
         imageFileLoader.updateParameterValue(CropImage.WIDTH,49);
         imageFileLoader.updateParameterValue(CropImage.HEIGHT,37);
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -537,7 +527,6 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,true);
         imageFileLoader.updateParameterValue(ImageLoader.XY_CAL,0.5);
         imageFileLoader.updateParameterValue(ImageLoader.Z_CAL,1.2);
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -582,7 +571,6 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_IMAGE,false);
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);
@@ -636,7 +624,6 @@ public class ImageLoaderTest {
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
         imageFileLoader.updateParameterValue(ImageLoader.CROP_IMAGE,false);
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
-        imageFileLoader.updateParameterValue(ImageLoader.SHOW_IMAGE,false);
 
         // Running module
         imageFileLoader.run(workspace);

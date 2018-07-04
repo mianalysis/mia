@@ -16,7 +16,6 @@ public class NormaliseIntensity extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String SHOW_IMAGE = "Show image";
 
     public static void normaliseIntensity(ImagePlus ipl) {
         int bitDepth = ipl.getProcessor().getBitDepth();
@@ -97,7 +96,7 @@ public class NormaliseIntensity extends Module {
             workspace.addImage(outputImage);
 
             // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
+            if (showOutput) {
                 ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
                 showIpl.setTitle(outputImageName);
                 showIpl.show();
@@ -105,7 +104,7 @@ public class NormaliseIntensity extends Module {
 
         } else {
             // If selected, displaying the image
-            if (parameters.getValue(SHOW_IMAGE)) {
+            if (showOutput) {
                 ImagePlus showIpl = new Duplicator().run(inputImagePlus);
                 showIpl.setTitle(inputImageName);
                 showIpl.show();
@@ -118,7 +117,6 @@ public class NormaliseIntensity extends Module {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -131,8 +129,6 @@ public class NormaliseIntensity extends Module {
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
-
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 

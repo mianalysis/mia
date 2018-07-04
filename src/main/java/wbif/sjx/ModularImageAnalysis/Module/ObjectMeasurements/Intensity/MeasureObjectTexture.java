@@ -43,7 +43,7 @@ public class MeasureObjectTexture extends Module {
     }
 
 
-    void convertCalibratedOffsets(double[] offs, Obj referenceObject) {
+    static void convertCalibratedOffsets(double[] offs, Obj referenceObject) {
         double dppXY = referenceObject.getDistPerPxXY();
         double dppZ = referenceObject.getDistPerPxZ();
 

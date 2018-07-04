@@ -153,6 +153,13 @@ public class AnalysisReader {
             module.setCanBeDisabled(false);
         }
 
+        if (moduleAttributes.getNamedItem("SHOW_OUTPUT") != null) {
+            String canShowOutput = moduleAttributes.getNamedItem("SHOW_OUTPUT").getNodeValue();
+            module.setShowOutput(Boolean.parseBoolean(canShowOutput));
+        } else {
+            module.setShowOutput(false);
+        }
+
         if (moduleAttributes.getNamedItem("NOTES") != null) {
             String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
             module.setNotes(notes);

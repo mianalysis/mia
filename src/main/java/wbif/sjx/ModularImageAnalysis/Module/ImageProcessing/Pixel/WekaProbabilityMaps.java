@@ -26,7 +26,6 @@ public class WekaProbabilityMaps extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CLASSIFIER_FILE = "Classifier file path";
-    public static final String SHOW_IMAGE = "Show probability maps";
 
 
     public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName, String classifierFilePath) {
@@ -108,7 +107,6 @@ public class WekaProbabilityMaps extends Module {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
-        boolean showImage = parameters.getValue(SHOW_IMAGE);
 
         // Running the classifier on each individual stack
         ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath);
@@ -116,7 +114,7 @@ public class WekaProbabilityMaps extends Module {
         // Adding the probability maps to the Workspace
         workspace.addImage(new Image(outputImageName,probabilityMaps));
 
-        if (showImage) {
+        if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(probabilityMaps);
             IntensityMinMax.run(dispIpl,true);
             dispIpl.show();
@@ -128,7 +126,6 @@ public class WekaProbabilityMaps extends Module {
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(CLASSIFIER_FILE,Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,false));
 
     }
 

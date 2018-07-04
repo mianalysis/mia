@@ -13,7 +13,6 @@ public class ChannelExtractor extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CHANNEL_TO_EXTRACT = "Channel to extract (>= 1)";
-    public static final String SHOW_IMAGE = "Show output image";
 
     @Override
     public String getTitle() {
@@ -47,7 +46,7 @@ public class ChannelExtractor extends Module {
         workspace.addImage(new Image(outputImageName,outputChannelImagePlus));
 
         // (If selected) displaying the loaded image
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(outputChannelImagePlus);
             showIpl.setTitle(outputImageName);
             showIpl.show();
@@ -59,7 +58,6 @@ public class ChannelExtractor extends Module {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(CHANNEL_TO_EXTRACT, Parameter.INTEGER,1));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 

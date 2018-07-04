@@ -17,7 +17,6 @@ public class RunImageJMacro extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String MACRO_TITLE = "Macro title";
     public static final String ARGUMENTS = "Parameters";
-    public static final String SHOW_IMAGE = "Show image";
 
 
     @Override
@@ -50,7 +49,7 @@ public class RunImageJMacro extends Module {
         IJ.run(inputImagePlus,macroTitle,arguments);
 
         // If selected, displaying the image
-        if (parameters.getValue(SHOW_IMAGE)) {
+        if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
             IntensityMinMax.run(dispIpl,true);
             dispIpl.show();
@@ -72,7 +71,6 @@ public class RunImageJMacro extends Module {
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(MACRO_TITLE, Parameter.STRING,""));
         parameters.add(new Parameter(ARGUMENTS, Parameter.STRING,""));
-        parameters.add(new Parameter(SHOW_IMAGE, Parameter.BOOLEAN,false));
 
     }
 
@@ -88,7 +86,6 @@ public class RunImageJMacro extends Module {
 
         returnedParameters.add(parameters.getParameter(MACRO_TITLE));
         returnedParameters.add(parameters.getParameter(ARGUMENTS));
-        returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
 
         return returnedParameters;
 
