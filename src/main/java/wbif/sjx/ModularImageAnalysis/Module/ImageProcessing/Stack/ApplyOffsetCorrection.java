@@ -1,9 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -13,6 +15,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -79,28 +82,22 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
 
         // Copying the pixel information from one image to the other
         Cursor<T> inputCursor = Views.offsetInterval(inputImg, offsetIn, dims).cursor();
-        for (int i=0;i<inputImg.numDimensions();i++) {
-            System.out.println("input "+dims[i]+"_"+offsetIn[i]);
-        }
 
         // Setting the zero offsets for the shifted image
         Cursor<T> shiftedCursor = Views.offsetInterval(shiftedImg, offsetShifted, dims).cursor();
 
-        for (int i=0;i<inputImg.numDimensions();i++) {
-            System.out.println("output "+dims[i]+"_"+offsetShifted[i]);
-        }
-
         // Copying the data from inputImg to shiftedImg
         while (inputCursor.hasNext()) shiftedCursor.next().set(inputCursor.next());
 
-//        inputImage.setImagePlus(ImageJFunctions.wrap(shiftedImg,inputImage.getName()));
-
-//        ImageJFunctions.wrap(shiftedImg,"test").show();
-//        IJ.runMacro("waitForUser");
-//
-        // Putting the Img back into the input Image
-        inputImage.setImg(shiftedImg);
-
+        if (ModularImageAnalysisPlugin.isImagePlusMode()) {
+            ImagePlus inputIpl = inputImage.getImagePlus();
+            ImagePlus ipl = ImageJFunctions.wrap(shiftedImg, inputImage.getName());
+            ipl = HyperStackConverter.toHyperStack(ipl, inputIpl.getNChannels(), inputIpl.getNSlices(), inputIpl.getNFrames());
+            inputImage.setImagePlus(ipl);
+        } else {
+            // Putting the Img back into the input Image
+            inputImage.setImg(shiftedImg);
+        }
     }
 
     @Override

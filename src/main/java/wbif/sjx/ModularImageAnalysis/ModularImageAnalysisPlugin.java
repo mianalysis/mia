@@ -32,6 +32,11 @@ import java.util.Date;
 public class ModularImageAnalysisPlugin implements PlugIn {
     private static final ErrorLog errorLog = new ErrorLog();
 
+    /*
+    Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to add compatibility.
+     */
+    private static final boolean imagePlusMode = true;
+
     public static void main(String[] args) {
         // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
         ErrorLog errorLog = new ErrorLog();
@@ -106,5 +111,9 @@ public class ModularImageAnalysisPlugin implements PlugIn {
 
     public static ErrorLog getErrorLog() {
         return errorLog;
+    }
+
+    public static boolean isImagePlusMode() {
+        return imagePlusMode;
     }
 }
