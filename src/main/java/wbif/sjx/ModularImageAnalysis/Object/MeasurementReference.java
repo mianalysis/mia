@@ -7,6 +7,7 @@ public class MeasurementReference extends Reference {
     private boolean calculated = true;
     private boolean exportable = true;
     private String imageObjName = "";
+    private String description = "";
 
 
     public MeasurementReference(String name) {
@@ -44,6 +45,14 @@ public class MeasurementReference extends Reference {
         this.imageObjName = imageObjName;
         return this;
 
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
