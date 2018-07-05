@@ -279,7 +279,7 @@ public class DeployedGUI extends GUI implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Start")) {
-            Thread t = new Thread(() -> {
+            new Thread(() -> {
                 try {
                     AnalysisRunner.startAnalysis(analysis);
                 } catch (IOException | InterruptedException e1) {
@@ -287,8 +287,7 @@ public class DeployedGUI extends GUI implements ActionListener {
                 } catch (GenericMIAException e1) {
                     IJ.showMessage(e1.getMessage());
                 }
-            });
-            t.start();
+            }).start();
 
             // If selected, save the analysis when run
             if (saveOnRun) {

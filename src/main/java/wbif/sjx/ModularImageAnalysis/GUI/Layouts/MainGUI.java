@@ -596,10 +596,6 @@ public class MainGUI extends GUI {
                 JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule, 635);
                 paramsPanel.add(paramPanel, c);
 
-                c.gridx++;
-                c.insets = new Insets(5,0,0,5);
-                paramsPanel.add(new VisibleCheck(parameter), c);
-
             }
         }
 

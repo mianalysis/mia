@@ -136,13 +136,19 @@ public class ComponentFactory {
 
         // Adding the input component
         c.gridx++;
-        c.weightx=1;
-        c.anchor = GridBagConstraints.EAST;
         if (parameterControl != null) {
             paramPanel.add(parameterControl, c);
             parameterControl.setPreferredSize(new Dimension(panelWidth/3, elementHeight));
 
         }
+
+        c.gridx++;
+        c.weightx=1;
+        c.insets = new Insets(0, 5, 0, 5);
+        c.anchor = GridBagConstraints.EAST;
+        VisibleCheck visibleCheck = new VisibleCheck(parameter);
+        visibleCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        paramPanel.add(visibleCheck, c);
 
         return paramPanel;
 
