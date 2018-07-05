@@ -14,6 +14,8 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -314,7 +316,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, HashMap<Integer,Color> colours, HashMap<Integer,String> labels) {
+    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Color> colours, @Nullable HashMap<Integer,String> labels) {
 
         String positionMode = parameters.getValue(POSITION_MODE);
         double lineWidth = parameters.getValue(LINE_WIDTH);

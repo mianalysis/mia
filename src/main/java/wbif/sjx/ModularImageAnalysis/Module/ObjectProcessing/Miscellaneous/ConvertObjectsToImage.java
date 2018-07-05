@@ -99,9 +99,9 @@ public class ConvertObjectsToImage extends Module {
             workspace.addImage(outputImage);
 
             if (showOutput) {
-                ImagePlus ipl = outputImage.getImagePlus();
-                IntensityMinMax.run(ipl,ipl.getNSlices() > 1);
-                ImagePlus iplShow = new Duplicator().run(ipl);
+                ImagePlus iplShow = new Duplicator().run(outputImage.getImagePlus());
+                IntensityMinMax.run(iplShow,iplShow.getNSlices() > 1);
+                iplShow.setTitle(outputImage.getName());
 
                 switch (colourMode) {
                     case ColourModes.ID:

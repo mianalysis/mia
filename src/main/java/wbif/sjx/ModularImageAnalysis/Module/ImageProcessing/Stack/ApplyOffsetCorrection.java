@@ -6,6 +6,7 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
@@ -53,7 +54,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     }
 
     void shiftImage(Image inputImage, int[] shifts) {
-        Img<T> inputImg = inputImage.getImg();
+        Img<T> inputImg = inputImage.getImgPlus();
 
         // Getting the dimensions of the input image
         long[] dims = new long[inputImg.numDimensions()];
@@ -62,7 +63,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
         // Creating the composite image
         T type = inputImg.firstElement();
         final ImgFactory< T > factory = new ArrayImgFactory<>();
-        Img<T> shiftedImg = factory.create(dims, type);
+        ImgPlus<T> shiftedImg = new ImgPlus<>(factory.create(dims, type));
 
         // Getting dimensions for cropped region
         for (int i=0;i<3;i++) dims[i] = dims[i] - Math.abs(shifts[i]);
@@ -96,7 +97,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
             inputImage.setImagePlus(ipl);
         } else {
             // Putting the Img back into the input Image
-            inputImage.setImg(shiftedImg);
+            inputImage.setImgPlus(shiftedImg);
         }
     }
 
@@ -142,6 +143,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
         if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(inputImage.getImagePlus());
             IntensityMinMax.run(dispIpl,true);
+            dispIpl.setTitle(inputImage.getName());
             dispIpl.show();
         }
     }

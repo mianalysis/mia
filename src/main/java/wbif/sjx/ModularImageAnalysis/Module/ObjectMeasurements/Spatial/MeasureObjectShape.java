@@ -170,56 +170,61 @@ public class MeasureObjectShape extends Module {
             MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.N_VOXELS);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Number of voxels (3D pixels) in this object.  Note: This doesn't take spatial " +
-                    "scaling of XY and Z into account, so isn't a good measure of true object volume.");
+            reference.setDescription("Number of voxels (3D pixels) in the object, \""+inputObjectsName+"\".  Note: " +
+                    "This doesn't take spatial scaling of XY and Z into account, so isn't a good measure of true " +
+                    "object volume.");
 
             reference = objectMeasurementReferences.getOrPut(Measurements.VOLUME_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Volume of object.  Takes spatial scaling of XY vs Z into account (i.e. converts "+
-                    "object height from slice units to pixel units.  Measured in pixel units.");
+            reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
+                    "Z into account (i.e. converts object height from slice units to pixel units.  Measured in pixel " +
+                    "units.");
 
             reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.VOLUME_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Volume of object.  Takes spatial scaling of XY vs Z into account (i.e. converts " +
-                    "object height from slice units to pixel units prior to conversion to calibrated units.  Measured " +
-                    "in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+            reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
+                    "Z into account (i.e. converts object height from slice units to pixel units prior to conversion" +
+                    " to calibrated units.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_AREA)) {
             MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_AREA_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Area of the 2D Z-projection of the object.  Measured in pixel units");
+            reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
+                    "in pixel units.");
 
             reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_AREA_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Area of the 2D Z-projection of the object.  Measured in calibrated ("
-                    +Units.getOMEUnits().getSymbol()+") units.");
+            reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
+                    "in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_DIA)) {
             MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object." +
-                    "  Measured in pixel units.");
+            reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
+                            + inputObjectsName+"\".  Measured in pixel units.");
 
             reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_DIA_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object." +
-                    "  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+            reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
+                            + inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
+                    "units.");
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_ELLIPSE)) {
             MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPSE_THETA);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Orientation of ellipse fit to 2D Z-projection of object.  Measured in degrees, " +
-                    "relative to positive x-axis (positive above x-axis, negative below x-axis).");
+            reference.setDescription("Orientation of ellipse fit to 2D Z-projection of the object, \""+
+                    inputObjectsName+"\".  Measured in degrees, relative to positive x-axis (positive above x-axis, " +
+                    "negative below x-axis).");
         }
 
         return objectMeasurementReferences;

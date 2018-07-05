@@ -117,6 +117,7 @@ public class WekaProbabilityMaps extends Module {
         if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(probabilityMaps);
             IntensityMinMax.run(dispIpl,true);
+            dispIpl.setTitle(outputImageName);
             dispIpl.show();
         }
     }

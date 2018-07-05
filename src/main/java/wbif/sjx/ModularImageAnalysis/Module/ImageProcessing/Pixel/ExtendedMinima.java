@@ -57,6 +57,7 @@ public class ExtendedMinima extends Module {
         if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
             IntensityMinMax.run(dispIpl,true);
+            dispIpl.setTitle(inputImage.getName());
             dispIpl.show();
         }
 

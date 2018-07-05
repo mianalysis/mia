@@ -590,11 +590,17 @@ public class MainGUI extends GUI {
             while (iterator.hasNext()) {
                 Parameter parameter = iterator.next();
 
-                c.insets = new Insets(0, 0, 0, 5);
                 c.gridx = 0;
                 c.gridy++;
                 JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule, 635);
                 paramsPanel.add(paramPanel, c);
+
+                c.gridx++;
+                c.weightx=1;
+                c.anchor = GridBagConstraints.EAST;
+                VisibleCheck visibleCheck = new VisibleCheck(parameter);
+                visibleCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
+                paramsPanel.add(visibleCheck, c);
 
             }
         }

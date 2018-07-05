@@ -136,19 +136,13 @@ public class ComponentFactory {
 
         // Adding the input component
         c.gridx++;
+        c.weightx=1;
+        c.anchor = GridBagConstraints.EAST;
         if (parameterControl != null) {
             paramPanel.add(parameterControl, c);
             parameterControl.setPreferredSize(new Dimension(panelWidth/3, elementHeight));
 
         }
-
-        c.gridx++;
-        c.weightx=1;
-        c.insets = new Insets(0, 5, 0, 5);
-        c.anchor = GridBagConstraints.EAST;
-        VisibleCheck visibleCheck = new VisibleCheck(parameter);
-        visibleCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        paramPanel.add(visibleCheck, c);
 
         return paramPanel;
 
@@ -247,8 +241,10 @@ public class ComponentFactory {
         c.insets = new Insets(0, 5, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
-        ModuleEnabledCheck moduleEnabledCheck = new ModuleEnabledCheck(gui,module);
-        modulePanel.add(moduleEnabledCheck,c);
+        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(gui,module);
+        moduleEnabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        moduleEnabledButton.setEnabled(module.canBeDisabled());
+        modulePanel.add(moduleEnabledButton,c);
 
         JTextField title = new JTextField(module.getNickname());
         title.setEditable(false);

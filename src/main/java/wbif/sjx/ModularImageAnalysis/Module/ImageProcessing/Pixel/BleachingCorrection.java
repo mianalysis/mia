@@ -54,6 +54,7 @@ public class BleachingCorrection extends Module {
             if (showOutput) {
                 ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
                 IntensityMinMax.run(dispIpl,true);
+                dispIpl.setTitle(outputImage.getName());
                 dispIpl.show();
             }
 
@@ -62,6 +63,7 @@ public class BleachingCorrection extends Module {
             if (showOutput) {
                 ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
                 IntensityMinMax.run(dispIpl,true);
+                dispIpl.setTitle(inputImage.getName());
                 dispIpl.show();
             }
         }

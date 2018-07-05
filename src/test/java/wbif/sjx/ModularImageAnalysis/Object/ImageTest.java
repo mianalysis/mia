@@ -2,6 +2,8 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import ij.IJ;
 import ij.ImagePlus;
+import net.imagej.ImgPlus;
+import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
@@ -44,7 +46,7 @@ public class ImageTest < T extends RealType< T > & NativeType< T >> {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/LabelledObjects/LabelledObjects5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
-        Img<T> img = ImageJFunctions.wrap(ipl);
+        ImgPlus<T> img = ImagePlusAdapter.wrapImgPlus(ipl);
         Image<T> image = new Image<>("Test_image",img);
 
         // Checking the image has the right name

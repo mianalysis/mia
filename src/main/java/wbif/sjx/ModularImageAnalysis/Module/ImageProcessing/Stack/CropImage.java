@@ -48,7 +48,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         int width = parameters.getValue(WIDTH);
         int height = parameters.getValue(HEIGHT);
 
-        Img<T> img = inputImage.getImg();
+        Img<T> img = inputImage.getImgPlus();
         long[] min = new long[img.numDimensions()];
         long[] dimsIn = new long[img.numDimensions()];
         min[0] = left;

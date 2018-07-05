@@ -103,7 +103,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
         // Loading image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image<T> inputImage = workspace.getImage(inputImageName);
-        Img<T> inputImg = inputImage.getImg();
+        Img<T> inputImg = inputImage.getImgPlus();
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
