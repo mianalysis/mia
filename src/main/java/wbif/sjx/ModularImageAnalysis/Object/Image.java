@@ -5,9 +5,9 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
 import net.imglib2.img.ImagePlusAdapter;
-import net.imglib2.img.Img;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -38,7 +38,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
-    public Image(String name, Img<T> img) {
+    public Image(String name, ImgPlus<T> img) {
         this.name = name;
         this.imagePlus = ImageJFunctions.wrap(img,name);
 
@@ -133,11 +133,11 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         this.imagePlus = imagePlus;
     }
 
-    public Img<T> getImg() {
-        return ImagePlusAdapter.wrap(new Duplicator().run(imagePlus));
+    public ImgPlus<T> getImgPlus() {
+        return ImagePlusAdapter.wrapImgPlus(new Duplicator().run(imagePlus));
     }
 
-    public void setImg(Img<T> img) {
+    public void setImgPlus(ImgPlus<T> img) {
         imagePlus = ImageJFunctions.wrap(img,name);
     }
 

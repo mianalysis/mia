@@ -3,11 +3,23 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 import fiji.stacks.Hyperstack_rearranger;
 import ij.CompositeImage;
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import ij.process.LUT;
+import ij3d.ColorTable;
+import net.imagej.ImgPlus;
 import net.imagej.autoscale.DefaultAutoscaleMethod;
+import net.imagej.axis.Axes;
+import net.imagej.axis.CalibratedAxis;
+import net.imagej.axis.IdentityAxis;
+import net.imagej.display.ColorTables;
+import net.imagej.interval.DefaultCalibratedRealInterval;
 import net.imglib2.Cursor;
+import net.imglib2.RealInterval;
+import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.array.ArrayImgFactory;
@@ -22,6 +34,10 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by sc13967 on 22/02/2018.
  */
@@ -30,64 +46,93 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    private Img<T> combineImages(Image inputImage1, Image inputImage2) {
-        Img<T> img1 = inputImage1.getImg();
-        Img<T> img2 = inputImage2.getImg();
+    public Image combineImages(Image inputImage1, Image inputImage2, String outputImageName) {
+        ImgPlus<T> img1 = inputImage1.getImgPlus();
+        ImgPlus<T> img2 = inputImage2.getImgPlus();
 
-        int nDimsFinal = img1.numDimensions();
-        if (!inputImage1.getImagePlus().isHyperStack()) nDimsFinal++;
+        int xDim1 = img1.dimensionIndex(Axes.X);
+        int yDim1 = img1.dimensionIndex(Axes.Y);
+        int cDim1 = img1.dimensionIndex(Axes.CHANNEL);
+        int zDim1 = img1.dimensionIndex(Axes.Z);
+        int tDim1 = img1.dimensionIndex(Axes.TIME);
+        int xDim2 = img2.dimensionIndex(Axes.X);
+        int yDim2 = img2.dimensionIndex(Axes.Y);
+        int cDim2 = img2.dimensionIndex(Axes.CHANNEL);
+        int zDim2 = img2.dimensionIndex(Axes.Z);
+        int tDim2 = img2.dimensionIndex(Axes.TIME);
 
-        long[] dims = new long[nDimsFinal];
-        long[] offset = new long[nDimsFinal];
+        long[] dimsIn1 = new long[5];
+        long[] dimsIn2 = new long[5];
+        long[] dimsOut = new long[5];
+        long[] offsetOut1 = new long[5];
+        long[] offsetOut2 = new long[5];
 
-        for (int i=0;i<img1.numDimensions();i++) {
-            offset[i] = 0;
-            dims[i] = img1.dimension(i);
-        }
+        dimsIn1[0] = xDim1 == -1 ? 1 : img1.dimension(xDim1);
+        dimsIn1[1] = yDim1 == -1 ? 1 : img1.dimension(yDim1);
+        dimsIn1[2] = cDim1 == -1 ? 1 : img1.dimension(cDim1);
+        dimsIn1[3] = zDim1 == -1 ? 1 : img1.dimension(zDim1);
+        dimsIn1[4] = tDim1 == -1 ? 1 : img1.dimension(tDim1);
 
-        if (inputImage1.getImagePlus().isHyperStack() && inputImage2.getImagePlus().isHyperStack()) {
-            dims[2] = img1.dimension(2) + img2.dimension(2);
-        } else if(inputImage1.getImagePlus().isHyperStack() &! inputImage2.getImagePlus().isHyperStack()) {
-            dims[2] = img1.dimension(2) + 1;
-        } else {
-            dims[2] = 2;
-            dims[3] = img1.dimension(2);
-        }
+        dimsIn2[0] = xDim2 == -1 ? 1 : img2.dimension(xDim2);
+        dimsIn2[1] = yDim2 == -1 ? 1 : img2.dimension(yDim2);
+        dimsIn2[2] = cDim2 == -1 ? 1 : img2.dimension(cDim2);
+        dimsIn2[3] = zDim2 == -1 ? 1 : img2.dimension(zDim2);
+        dimsIn2[4] = tDim2 == -1 ? 1 : img2.dimension(tDim2);
+
+        dimsOut[0] = xDim1 == -1 ? 1 : img1.dimension(xDim1);
+        dimsOut[1] = yDim1 == -1 ? 1 : img1.dimension(yDim1);
+        dimsOut[2] = (cDim1 == -1 ? 1 : img1.dimension(cDim1)) + (cDim2 == -1 ? 1 : img2.dimension(cDim2));
+        dimsOut[3] = zDim1 == -1 ? 1 : img1.dimension(zDim1);
+        dimsOut[4] = tDim1 == -1 ? 1 : img1.dimension(tDim1);
+
+        Arrays.fill(offsetOut1,0);
+        Arrays.fill(offsetOut2,0);
+        offsetOut2[2] = dimsIn1[2];
 
         // Creating the composite image
         T type = img1.firstElement();
         final ImgFactory< T > factory = new ArrayImgFactory<>();
-        Img<T> mergedImg = factory.create(dims, type);
+        ImgPlus<T> mergedImg = new ImgPlus<>(factory.create(dimsOut, type));
 
-        // Adding values from image 1
-        if (inputImage1.getImagePlus().isHyperStack() && inputImage2.getImagePlus().isHyperStack()) {
-            dims[2] = img1.dimension(2);
-        } else if(inputImage1.getImagePlus().isHyperStack() &! inputImage2.getImagePlus().isHyperStack()) {
-            dims[2] = img1.dimension(2);
-        } else {
-            dims[2] = 1;
-        }
+        // Assigning the relevant dimensions
+        CalibratedAxis xAxis = xDim1 == -1 ? new IdentityAxis(Axes.X) : img1.axis(xDim1);
+        mergedImg.setAxis(xAxis,0);
+        CalibratedAxis yAxis = yDim1 == -1 ? new IdentityAxis(Axes.Y) : img1.axis(yDim1);
+        mergedImg.setAxis(yAxis,1);
+        CalibratedAxis cAxis = cDim1 == -1 ? new IdentityAxis(Axes.CHANNEL) : img1.axis(cDim1);
+        mergedImg.setAxis(cAxis,2);
+        CalibratedAxis zAxis = zDim1 == -1 ? new IdentityAxis(Axes.Z) : img1.axis(zDim1);
+        mergedImg.setAxis(zAxis,3);
+        CalibratedAxis tAxis = tDim1 == -1 ? new IdentityAxis(Axes.TIME) : img1.axis(tDim1);
+        mergedImg.setAxis(tAxis,4);
 
-        Cursor<T> cursor1 = img1.cursor();
-        Cursor<T> cursorMerge = Views.offsetInterval(mergedImg, offset, dims).cursor();
-        while (cursor1.hasNext()) cursorMerge.next().set(cursor1.next());
+        Cursor<T> cursorIn = img1.cursor();
+        Cursor<T> cursorOut = Views.offsetInterval(mergedImg, offsetOut1, dimsIn1).cursor();
+        while (cursorIn.hasNext()) cursorOut.next().set(cursorIn.next());
 
-        if (inputImage1.getImagePlus().isHyperStack() && inputImage2.getImagePlus().isHyperStack()) {
-            offset[2] = img1.dimension(2);
-            dims[2] = img2.dimension(2);
-        } else if(inputImage1.getImagePlus().isHyperStack() &! inputImage2.getImagePlus().isHyperStack()) {
-            dims[2] = 1;
-            offset[2] = img1.dimension(2);
-        } else {
-            dims[2] = 1;
-            offset[2] = 1;
-        }
+        cursorIn = img2.cursor();
+        cursorOut = Views.offsetInterval(mergedImg, offsetOut2, dimsIn2).cursor();
+        while (cursorIn.hasNext()) cursorOut.next().set(cursorIn.next());
 
-        Cursor<T> cursor2 = img2.cursor();
-        cursorMerge = Views.offsetInterval(mergedImg, offset, dims).cursor();
-        while (cursor2.hasNext()) cursorMerge.next().set(cursor2.next());
+//        ImagePlus ipl;
+//        if (mergedImg.firstElement().getClass().isInstance(new UnsignedByteType())) {
+//            ipl = ImageJFunctions.wrapUnsignedByte(mergedImg,outputImageName);
+//        } else if (mergedImg.firstElement().getClass().isInstance(new UnsignedShortType())) {
+//            ipl = ImageJFunctions.wrapUnsignedShort(mergedImg,outputImageName);
+//        } else {
+//            ipl = ImageJFunctions.wrapFloat(mergedImg,outputImageName);
+//        }
 
-        return mergedImg;
+        ImagePlus ipl = ImageJFunctions.wrap(mergedImg,outputImageName);
+        ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite"));
+
+        // Updating the display range to help show all the colours
+        IntensityMinMax.run(ipl,true,0.001);
+
+        // Spatial calibration has to be reapplied, as it's lost in the translation between ImagePlus and ImgPlus
+        ipl.setCalibration(inputImage1.getImagePlus().getCalibration());
+
+        return new Image(outputImageName,ipl);
 
     }
 
@@ -99,7 +144,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
         Img<T> redImg = null;
         if (inputImageRed != null) {
-            redImg = inputImageRed.getImg();
+            redImg = inputImageRed.getImgPlus();
             dimX = redImg.dimension(0);
             dimY = redImg.dimension(1);
             dimZ = redImg.dimension(2);
@@ -108,7 +153,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
         Img<T> greenImg = null;
         if (inputImageGreen != null) {
-            greenImg = inputImageGreen.getImg();
+            greenImg = inputImageGreen.getImgPlus();
             dimX = greenImg.dimension(0);
             dimY = greenImg.dimension(1);
             dimZ = greenImg.dimension(2);
@@ -117,7 +162,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
         Img<T> blueImg = null;
         if (inputImageBlue != null) {
-            blueImg = inputImageBlue.getImg();
+            blueImg = inputImageBlue.getImgPlus();
             dimX = blueImg.dimension(0);
             dimY = blueImg.dimension(1);
             dimZ = blueImg.dimension(2);
@@ -166,31 +211,17 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     protected void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
         String inputImage1Name = parameters.getValue(INPUT_IMAGE1);
-        Image inputImage1 = workspace.getImage(inputImage1Name);
-
         String inputImage2Name = parameters.getValue(INPUT_IMAGE2);
-        Image inputImage2 = workspace.getImage(inputImage2Name);
-
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        Img<T> mergedImage = combineImages(inputImage1,inputImage2);
-        ImagePlus ipl;
-        if (mergedImage.firstElement().getClass().isInstance(new UnsignedByteType())) {
-            ipl = ImageJFunctions.wrapUnsignedByte(mergedImage,outputImageName);
-        } else if (mergedImage.firstElement().getClass().isInstance(new UnsignedShortType())) {
-            ipl = ImageJFunctions.wrapUnsignedShort(mergedImage,outputImageName);
-        } else {
-            ipl = ImageJFunctions.wrapFloat(mergedImage,outputImageName);
-        }
+        Image inputImage1 = workspace.getImage(inputImage1Name);
+        Image inputImage2 = workspace.getImage(inputImage2Name);
 
-        CompositeImage compositeImage = new CompositeImage(ipl,CompositeImage.COMPOSITE);
-        compositeImage.setMode(IJ.COMPOSITE);
-        compositeImage.setCalibration(inputImage1.getImagePlus().getCalibration());
-        Image outputImage = new Image(outputImageName,compositeImage);
+        Image mergedImage = combineImages(inputImage1,inputImage2,outputImageName);
+        workspace.addImage(mergedImage);
 
-        workspace.addImage(outputImage);
         if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(compositeImage);
+            ImagePlus showIpl = new Duplicator().run(mergedImage.getImagePlus());
             showIpl.setTitle(outputImageName);
             showIpl.show();
         }

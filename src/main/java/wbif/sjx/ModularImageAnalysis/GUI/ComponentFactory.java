@@ -30,7 +30,7 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets(2,5,0,0);
+        c.insets = new Insets(0,5,0,0);
 
         JTextField parameterName = new JTextField(parameter.getName());
         parameterName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
@@ -241,8 +241,10 @@ public class ComponentFactory {
         c.insets = new Insets(0, 5, 0, 5);
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
-        ModuleEnabledCheck moduleEnabledCheck = new ModuleEnabledCheck(gui,module);
-        modulePanel.add(moduleEnabledCheck,c);
+        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(gui,module);
+        moduleEnabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        moduleEnabledButton.setEnabled(module.canBeDisabled());
+        modulePanel.add(moduleEnabledButton,c);
 
         JTextField title = new JTextField(module.getNickname());
         title.setEditable(false);

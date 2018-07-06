@@ -3,6 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -242,6 +243,7 @@ public class ThresholdImageTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
+
         assertEquals(expectedImage,outputImage);
 
     }

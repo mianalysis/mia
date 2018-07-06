@@ -230,24 +230,14 @@ public class RunTrackMate extends Module {
         boolean doTracking = parameters.getValue(DO_TRACKING);
 
         HashMap<Integer, Color> colours;
-        HashMap<Integer, String> labels;
-
         // Colours will depend on the detection/tracking mode
         if (doTracking) {
             String colourMode = ObjCollection.ColourModes.PARENT_ID;
-            String labelMode = ObjCollection.LabelModes.PARENT_ID;
-
             colours = spotObjects.getColours(colourMode, trackObjectsName, true);
-            labels = spotObjects.getIDs(labelMode, trackObjectsName, 0, false);
-
         } else {
             String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
             String colourName = ObjCollection.SingleColours.ORANGE;
-            String labelMode = ObjCollection.LabelModes.ID;
-
             colours = spotObjects.getColours(colourMode,colourName,true);
-            labels = spotObjects.getIDs(labelMode,"",0,false);
-
         }
 
         // Creating a duplicate of the input image
@@ -258,7 +248,7 @@ public class RunTrackMate extends Module {
         ((AddObjectsOverlay) new AddObjectsOverlay()
                 .updateParameterValue(AddObjectsOverlay.POSITION_MODE,AddObjectsOverlay.PositionModes.CENTROID)
                 .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8))
-                .createOverlay(ipl,spotObjects,colours,labels);
+                .createOverlay(ipl,spotObjects,colours,null);
 
         // Displaying the overlay
         ipl.show();
@@ -269,7 +259,6 @@ public class RunTrackMate extends Module {
     @Override
     public String getTitle() {
         return "Run TrackMate";
-
     }
 
     @Override

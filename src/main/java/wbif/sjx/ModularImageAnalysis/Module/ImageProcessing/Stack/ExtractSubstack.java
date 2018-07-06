@@ -86,6 +86,7 @@ public class ExtractSubstack extends Module {
         if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(outputImagePlus);
             IntensityMinMax.run(dispIpl,true);
+
             dispIpl.show();
         }
     }

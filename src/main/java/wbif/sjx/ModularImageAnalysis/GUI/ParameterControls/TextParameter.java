@@ -42,27 +42,28 @@ public class TextParameter extends JTextField implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
-        String text = getText();
+        new Thread(() -> {
+            String text = getText();
 
-        if (parameter.getType() == Parameter.OUTPUT_IMAGE | parameter.getType() == Parameter.OUTPUT_OBJECTS) {
-            parameter.setValue(text);
+            if (parameter.getType() == Parameter.OUTPUT_IMAGE | parameter.getType() == Parameter.OUTPUT_OBJECTS) {
+                parameter.setValue(text);
 
-        } else if (parameter.getType() == Parameter.INTEGER) {
-            parameter.setValue(Integer.valueOf(text));
+            } else if (parameter.getType() == Parameter.INTEGER) {
+                parameter.setValue(Integer.valueOf(text));
 
-        } else if (parameter.getType() == Parameter.DOUBLE) {
-            parameter.setValue(Double.valueOf(text));
+            } else if (parameter.getType() == Parameter.DOUBLE) {
+                parameter.setValue(Double.valueOf(text));
 
-        } else if (parameter.getType() == Parameter.STRING) {
-            parameter.setValue(text);
+            } else if (parameter.getType() == Parameter.STRING) {
+                parameter.setValue(text);
 
-        }
+            }
 
-        int idx = gui.getModules().indexOf(module);
-        if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);
+            int idx = gui.getModules().indexOf(module);
+            if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx - 1);
 
-        gui.updateTestFile();
-        gui.updateModules();
-
+            gui.updateTestFile();
+            gui.updateModules();
+        }).start();
     }
 }

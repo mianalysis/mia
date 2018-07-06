@@ -38,8 +38,7 @@ public class ImageSaver extends Module {
 
     @Override
     public String getHelp() {
-        return "+++INCOMPLETE+++" +
-                "\n'Mirrored location' is an equivalent directory structure to the input, but based at a different root";
+        return "";
     }
 
     @Override
@@ -64,7 +63,7 @@ public class ImageSaver extends Module {
 
             } else {
                 IntensityMinMax.run(inputImagePlus,false);
-                if (inputImagePlus.getOverlay() != null) inputImagePlus.flatten();
+                if (inputImagePlus.getOverlay() != null) inputImagePlus = inputImagePlus.flatten();
             }
         }
 

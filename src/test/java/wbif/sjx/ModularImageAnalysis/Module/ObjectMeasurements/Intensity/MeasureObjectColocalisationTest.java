@@ -8,7 +8,6 @@ import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects2D;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
-import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.net.URLDecoder;
 

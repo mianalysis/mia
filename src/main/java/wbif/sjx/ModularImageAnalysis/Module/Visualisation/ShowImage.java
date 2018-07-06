@@ -30,7 +30,7 @@ public class ShowImage extends Module {
         imageToShow = new Duplicator().run(imageToShow);
         imageToShow.setTitle(imageName);
 
-        IntensityMinMax.run(imageToShow,imageToShow.getNSlices() > 1 || imageToShow.getNFrames() > 1 || imageToShow.getNChannels() > 1);
+        IntensityMinMax.run(imageToShow,true,0.001);
         imageToShow.show();
 
     }
