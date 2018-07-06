@@ -212,6 +212,7 @@ public class Image < T extends RealType< T > & NativeType< T >> {
                     ImageProcessor imageProcessor2 = imagePlus2.getProcessor();
                     for (int x=0;x<imagePlus.getWidth();x++) {
                         for (int y = 0; y < imagePlus.getHeight(); y++) {
+                            System.out.println(x+"_"+y+"_"+c+"_"+z+"_"+t+"_"+imageProcessor1.get(x,y)+"_"+imageProcessor2.get(x,y));
                             if (imageProcessor1.getf(x,y) != imageProcessor2.getf(x,y)) return false;
                         }
                     }
