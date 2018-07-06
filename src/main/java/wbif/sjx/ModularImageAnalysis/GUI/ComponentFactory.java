@@ -30,7 +30,7 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.insets = new Insets(2,5,0,0);
+        c.insets = new Insets(0,5,0,0);
 
         JTextField parameterName = new JTextField(parameter.getName());
         parameterName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));

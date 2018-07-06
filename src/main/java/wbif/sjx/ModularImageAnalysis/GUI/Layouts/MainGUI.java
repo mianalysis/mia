@@ -581,23 +581,22 @@ public class MainGUI extends GUI {
         if (activeModule.getClass().isInstance(new OutputControl())) activeModule = analysis.getOutputControl();
 
         // If the active module hasn't got parameters enabled, skip it
-        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridwidth = 1;
-        c.insets = new Insets(0, 0, 0, 5);
+        c.insets = new Insets(2, 5, 0, 0);
         if (activeModule.updateAndGetParameters() != null) {
             Iterator<Parameter> iterator = activeModule.updateAndGetParameters().values().iterator();
             while (iterator.hasNext()) {
                 Parameter parameter = iterator.next();
-
+                c.insets = new Insets(2, 5, 0, 0);
                 c.gridx = 0;
                 c.gridy++;
-                JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule, 635);
+                JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule, 630);
                 paramsPanel.add(paramPanel, c);
 
+                c.insets = new Insets(2, 0, 0, 0);
                 c.gridx++;
                 c.weightx=1;
-                c.anchor = GridBagConstraints.EAST;
                 VisibleCheck visibleCheck = new VisibleCheck(parameter);
                 visibleCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
                 paramsPanel.add(visibleCheck, c);

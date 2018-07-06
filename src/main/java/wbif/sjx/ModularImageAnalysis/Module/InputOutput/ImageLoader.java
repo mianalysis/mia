@@ -36,6 +36,7 @@ import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
@@ -149,7 +150,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 //    }
 
 
-    public ImagePlus getBFImage(String path, int seriesNumber,int[][] dimRanges, int[] crop, boolean localVerbose)
+    public ImagePlus getBFImage(String path, int seriesNumber, @Nullable int[][] dimRanges, @Nullable int[] crop, boolean localVerbose)
             throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
@@ -194,15 +195,27 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             height = crop[3];
         }
 
-        int startingC = dimRanges[0][0];
-        int endingC = dimRanges[0][1];
-        int intervalC = dimRanges[0][2];
-        int startingZ = dimRanges[1][0];
-        int endingZ = dimRanges[1][1];
-        int intervalZ = dimRanges[1][2];
-        int startingT = dimRanges[2][0];
-        int endingT = dimRanges[2][1];
-        int intervalT = dimRanges[2][2];
+        int startingC = 1;
+        int endingC = -1;
+        int intervalC = 1;
+        int startingZ = 1;
+        int endingZ = -1;
+        int intervalZ = 1;
+        int startingT = 1;
+        int endingT = -1;
+        int intervalT = 1;
+
+        if (dimRanges != null) {
+            startingC = dimRanges[0][0];
+            endingC = dimRanges[0][1];
+            intervalC = dimRanges[0][2];
+            startingZ = dimRanges[1][0];
+            endingZ = dimRanges[1][1];
+            intervalZ = dimRanges[1][2];
+            startingT = dimRanges[2][0];
+            endingT = dimRanges[2][1];
+            intervalT = dimRanges[2][2];
+        }
 
         // Updating ranges for full import dimensions
         if (endingC == -1) endingC = sizeC;

@@ -3,7 +3,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 import fiji.stacks.Hyperstack_rearranger;
 import ij.CompositeImage;
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import ij.process.LUT;
@@ -44,7 +46,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OUTPUT_IMAGE = "Output image";
 
-    private ImgPlus<T> combineImages(Image inputImage1, Image inputImage2) {
+    public Image combineImages(Image inputImage1, Image inputImage2, String outputImageName) {
         ImgPlus<T> img1 = inputImage1.getImgPlus();
         ImgPlus<T> img2 = inputImage2.getImgPlus();
 
@@ -112,7 +114,25 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         cursorOut = Views.offsetInterval(mergedImg, offsetOut2, dimsIn2).cursor();
         while (cursorIn.hasNext()) cursorOut.next().set(cursorIn.next());
 
-        return mergedImg;
+//        ImagePlus ipl;
+//        if (mergedImg.firstElement().getClass().isInstance(new UnsignedByteType())) {
+//            ipl = ImageJFunctions.wrapUnsignedByte(mergedImg,outputImageName);
+//        } else if (mergedImg.firstElement().getClass().isInstance(new UnsignedShortType())) {
+//            ipl = ImageJFunctions.wrapUnsignedShort(mergedImg,outputImageName);
+//        } else {
+//            ipl = ImageJFunctions.wrapFloat(mergedImg,outputImageName);
+//        }
+
+        ImagePlus ipl = ImageJFunctions.wrap(mergedImg,outputImageName);
+        ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite"));
+
+        // Updating the display range to help show all the colours
+        IntensityMinMax.run(ipl,true,0.001);
+
+        // Spatial calibration has to be reapplied, as it's lost in the translation between ImagePlus and ImgPlus
+        ipl.setCalibration(inputImage1.getImagePlus().getCalibration());
+
+        return new Image(outputImageName,ipl);
 
     }
 
@@ -191,36 +211,17 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     protected void run(Workspace workspace) throws GenericMIAException {
         // Getting parameters
         String inputImage1Name = parameters.getValue(INPUT_IMAGE1);
-        Image inputImage1 = workspace.getImage(inputImage1Name);
-
         String inputImage2Name = parameters.getValue(INPUT_IMAGE2);
-        Image inputImage2 = workspace.getImage(inputImage2Name);
-
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        ImgPlus<T> mergedImage = combineImages(inputImage1,inputImage2);
-        ImagePlus ipl;
-        if (mergedImage.firstElement().getClass().isInstance(new UnsignedByteType())) {
-            ipl = ImageJFunctions.wrapUnsignedByte(mergedImage,outputImageName);
-        } else if (mergedImage.firstElement().getClass().isInstance(new UnsignedShortType())) {
-            ipl = ImageJFunctions.wrapUnsignedShort(mergedImage,outputImageName);
-        } else {
-            ipl = ImageJFunctions.wrapFloat(mergedImage,outputImageName);
-        }
+        Image inputImage1 = workspace.getImage(inputImage1Name);
+        Image inputImage2 = workspace.getImage(inputImage2Name);
 
-        System.out.println(ipl.getDisplayMode());
+        Image mergedImage = combineImages(inputImage1,inputImage2,outputImageName);
+        workspace.addImage(mergedImage);
 
-        ipl = HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames());
-        CompositeImage compositeImage = new CompositeImage(ipl,CompositeImage.COMPOSITE);
-        compositeImage.setMode(IJ.COMPOSITE);
-        compositeImage.setCalibration(inputImage1.getImagePlus().getCalibration());
-//        IntensityMinMax.run(compositeImage,true,0.001);
-        IntensityMinMax.run(compositeImage,true);
-        compositeImage.updateChannelAndDraw();
-
-        workspace.addImage(new Image(outputImageName,ipl));
         if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(ipl);
+            ImagePlus showIpl = new Duplicator().run(mergedImage.getImagePlus());
             showIpl.setTitle(outputImageName);
             showIpl.show();
         }
