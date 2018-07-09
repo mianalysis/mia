@@ -13,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
@@ -35,6 +36,10 @@ public class RidgeDetection extends Module {
     private interface Measurements {
         String LENGTH_PX = "RIDGE_DETECT // LENGTH_(PX)";
         String LENGTH_CAL = "RIDGE_DETECT // LENGTH_(${CAL})";
+        String MEAN_WIDTH_PX = "RIDGE_DETECT // MEAN_WIDTH_(PX)";
+        String STDEV_WIDTH_PX = "RIDGE_DETECT // STDEV_WIDTH_(PX)";
+        String MEAN_WIDTH_CAL = "RIDGE_DETECT // MEAN_WIDTH_(${CAL})";
+        String STDEV_WIDTH_CAL = "RIDGE_DETECT // STDEV_WIDTH_(${CAL})";
     }
 
     private interface ContourContrast {
@@ -105,7 +110,7 @@ public class RidgeDetection extends Module {
                     Lines lines;
                     try {
                         lines = lineDetector.detectLines(inputImagePlus.getProcessor(), sigma, upperThreshold,
-                                lowerThreshold, minLength, maxLength, darkLine, true, false, false);
+                                lowerThreshold, minLength, maxLength, darkLine, true, true, false);
                     } catch (NegativeArraySizeException | ArrayIndexOutOfBoundsException e) {
                         String errorMessage = "Ridge detection failed for file "+workspace.getMetadata().getFile().getName()
                                 +" at position (C="+c+", Z="+z+", T="+t+")";
@@ -124,6 +129,7 @@ public class RidgeDetection extends Module {
                         HashSet<Line> lineGroup = new HashSet<>();
                         lineGroup.add(line);
                         groups.put(line, lineGroup);
+
                     }
 
                     // Iterating over each object, adding it to the nascent ObjCollection
@@ -156,6 +162,7 @@ public class RidgeDetection extends Module {
                                 calibrationUnits,twoD);
 
                         double estLength = 0;
+                        CumStat width = new CumStat();
                         for (Line line : lineGroup) {
                             // Adding coordinates for the current line
                             float[] x = line.getXCoordinates();
@@ -167,12 +174,20 @@ public class RidgeDetection extends Module {
                             // Adding the estimated length to the current length
                             estLength += line.estimateLength();
 
+                            // Averaging width measurements
+                            for (float widthL:line.getLineWidthL()) width.addMeasure(widthL);
+                            for (float widthR:line.getLineWidthR()) width.addMeasure(widthR);
+
                         }
 
                         // Setting single values for the current contour
                         outputObject.setT(t);
                         outputObject.addMeasurement(new Measurement(Measurements.LENGTH_PX, estLength));
-                        outputObject.addMeasurement(new Measurement(Units.replace(Measurements.LENGTH_CAL), estLength*outputObject.getDistPerPxXY()));
+                        outputObject.addMeasurement(new Measurement(Units.replace(Measurements.LENGTH_CAL), estLength*dppXY));
+                        outputObject.addMeasurement(new Measurement(Measurements.MEAN_WIDTH_PX, width.getMean()));
+                        outputObject.addMeasurement(new Measurement(Measurements.STDEV_WIDTH_PX, width.getStd(CumStat.SAMPLE)));
+                        outputObject.addMeasurement(new Measurement(Units.replace(Measurements.MEAN_WIDTH_CAL), width.getMean()*dppXY));
+                        outputObject.addMeasurement(new Measurement(Units.replace(Measurements.STDEV_WIDTH_CAL), width.getStd(CumStat.SAMPLE)*dppXY));
                         outputObjects.add(outputObject);
                     }
                 }
@@ -235,13 +250,29 @@ public class RidgeDetection extends Module {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         objectMeasurementReferences.setAllCalculated(false);
 
-        MeasurementReference lengthPx = objectMeasurementReferences.getOrPut(Measurements.LENGTH_PX);
-        lengthPx.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-        lengthPx.setCalculated(true);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.LENGTH_PX);
+        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        reference.setCalculated(true);
 
-        MeasurementReference lengthCal = objectMeasurementReferences.getOrPut(Units.replace(Measurements.LENGTH_CAL));
-        lengthCal.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
-        lengthCal.setCalculated(true);
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.LENGTH_CAL));
+        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_WIDTH_PX);
+        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.STDEV_WIDTH_PX);
+        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_WIDTH_CAL));
+        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        reference.setCalculated(true);
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.STDEV_WIDTH_CAL));
+        reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
+        reference.setCalculated(true);
 
         return objectMeasurementReferences;
 
