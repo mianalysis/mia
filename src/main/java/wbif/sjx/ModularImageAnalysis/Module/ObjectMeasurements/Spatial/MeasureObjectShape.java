@@ -26,7 +26,6 @@ public class MeasureObjectShape extends Module {
         String N_VOXELS = "SHAPE // N_VOXELS";
         String VOLUME_PX = "SHAPE // VOLUME_(PX^3)";
         String VOLUME_CAL = "SHAPE // VOLUME_(${CAL}^3)";
-        String ELLIPSE_THETA = "SHAPE // ELLIPSE_ANGLE_(DEGS)";
         String PROJ_AREA_PX = "SHAPE // PROJ_AREA_(PX^2)";
         String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${CAL}^2)";
         String PROJ_DIA_PX = "SHAPE // PROJ_DIA_(PX)";
@@ -127,16 +126,23 @@ public class MeasureObjectShape extends Module {
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_DIA_CAL), maxDistanceCal, this));
             }
 
-            // Adding the projected-object ellipse fitting measurements
-            if (measureProjectedEllipse) {
-                try {
-                    EllipseCalculator ellipseCalculator = new EllipseCalculator(projectedObject);
-                    double val = Math.toDegrees(ellipseCalculator.getEllipseThetaRads());
-                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_THETA,val,this));
-                } catch (RuntimeException e) {
-                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_THETA,Double.NaN,this));
-                }
-            }
+//            // Adding the projected-object ellipse fitting measurements
+//            if (measureProjectedEllipse) {
+//                try {
+//                    EllipseCalculator ellipseCalculator = new EllipseCalculator(projectedObject);
+//                    double theta = Math.toDegrees(ellipseCalculator.getEllipseThetaRads());
+//                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_THETA,theta,this));
+//
+//                    double semiMajor = ellipseCalculator.getSemiMajorAxis();
+//                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_SEMI_MAJOR,semiMajor,this));
+//
+//                    double semiMinor = ellipseCalculator.getSemiMinorAxis();
+//                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_SEMI_MINOR,semiMinor,this));
+//
+//                } catch (RuntimeException e) {
+//                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_THETA,Double.NaN,this));
+//                }
+//            }
         }
     }
 
@@ -218,14 +224,28 @@ public class MeasureObjectShape extends Module {
                     "units.");
         }
 
-        if (parameters.getValue(MEASURE_PROJECTED_ELLIPSE)) {
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPSE_THETA);
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Orientation of ellipse fit to 2D Z-projection of the object, \""+
-                    inputObjectsName+"\".  Measured in degrees, relative to positive x-axis (positive above x-axis, " +
-                    "negative below x-axis).");
-        }
+//        if (parameters.getValue(MEASURE_PROJECTED_ELLIPSE)) {
+//            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPSE_SEMI_MAJOR);
+//            reference.setCalculated(true);
+//            reference.setImageObjName(inputObjectsName);
+//            reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
+//                    inputObjectsName+"\".  The semi-major axis passes from the centre of the ellipse to the furthest " +
+//                            "point on it's perimeter.  Measured in pixels.");
+//
+//            reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPSE_SEMI_MINOR);
+//            reference.setCalculated(true);
+//            reference.setImageObjName(inputObjectsName);
+//            reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
+//                    inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction" +
+//                    "perpendiculart to the semi-major axis.  Measured in pixels.");
+//
+//            reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPSE_THETA);
+//            reference.setCalculated(true);
+//            reference.setImageObjName(inputObjectsName);
+//            reference.setDescription("Orientation of ellipse fit to 2D Z-projection of the object, \""+
+//                    inputObjectsName+"\".  Measured in degrees, relative to positive x-axis (positive above x-axis, " +
+//                    "negative below x-axis).");
+//        }
 
         return objectMeasurementReferences;
 

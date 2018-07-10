@@ -193,6 +193,8 @@ public class ComponentFactory {
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(evalButton,c);
 
+
+
         return modulePanel;
 
     }

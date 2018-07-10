@@ -4,6 +4,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import fiji.stacks.Hyperstack_rearranger;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.*;
@@ -200,6 +201,8 @@ public class FilterImage extends Module {
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
 
+        ImagePlus tempImagePlus = new Duplicator().run(inputImagePlus);
+
         // Running through each frame, calculating the local average
         for (int f=1;f<=inputImagePlus.getNFrames();f++) {
             int firstFrame = 0;
@@ -223,7 +226,7 @@ public class FilterImage extends Module {
             }
 
             // Creating a local substack
-            ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,"1-"+nChannels,
+            ImagePlus currentSubstack = SubHyperstackMaker.makeSubhyperstack(tempImagePlus,"1-"+nChannels,
                     "1-"+nSlices,firstFrame+"-"+lastFrame);
 
             // Switching T and Z, so time (not Z) is averaged
