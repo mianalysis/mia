@@ -45,10 +45,15 @@ public class ResolveObjectOverlap extends Module {
         HashMap<Integer,Double[]> overlaps2 = initialiseOverlapStore(inputObjects2,-Double.MAX_VALUE);
 
         // Calculating the overlaps
+        int totalPairs = inputObjects1.size()*inputObjects2.size();
+        int count = 0;
         for (Obj object1:inputObjects1.values()) {
             Double[] overlap1 = overlaps1.get(object1.getID());
             for (Obj object2:inputObjects2.values()) {
-                Double[] overlap2 = overlaps2.get(object2.getID());
+                count++;
+
+                // Calculating the surface-surface separation first.  If this is >0 the objects are skipped
+//                if (object1.getSurfaceSeparation(object2,true) > 0) continue;
 
                 // Calculate the overlap between the two objects
                 double overlap = object1.getOverlap(object2);
@@ -60,11 +65,13 @@ public class ResolveObjectOverlap extends Module {
                 }
 
                 // Comparing the overlap to previously-maximum overlaps
+                Double[] overlap2 = overlaps2.get(object2.getID());
                 if (overlap>overlap2[0]) {
                     overlap2[0] = overlap;
                     overlap2[1] = (double) object1.getID();
                 }
             }
+            writeMessage("Compared "+(count)+" pairs of "+totalPairs);
         }
 
         // Converting overlaps to percentages of the object's size
@@ -90,7 +97,7 @@ public class ResolveObjectOverlap extends Module {
                 break;
 
             case OverlapRequirements.OPTIMAL_FOR_OBJECTS2:
-                reassignObjects(inputObjects2,inputObjects1,outputObjects,overlaps2,overlaps1,minOverlap,Double.MAX_VALUE,true);
+                reassignObjects(inputObjects2,inputObjects1,outputObjects,overlaps2,overlaps1,minOverlap,Double.MAX_VALUE,false);
                 break;
         }
 
@@ -107,6 +114,8 @@ public class ResolveObjectOverlap extends Module {
         HashMap<Integer,Double[]> overlaps2 = initialiseOverlapStore(inputObjects2,Double.MAX_VALUE);
 
         // Calculating the separations
+        int totalPairs = inputObjects1.size()*inputObjects2.size();
+        int count = 0;
         for (Obj object1:inputObjects1.values()) {
             Double[] overlap1 = overlaps1.get(object1.getID());
             for (Obj object2:inputObjects2.values()) {
@@ -126,7 +135,9 @@ public class ResolveObjectOverlap extends Module {
                     overlap2[0] = overlap;
                     overlap2[1] = (double) object1.getID();
                 }
+                count++;
             }
+            writeMessage("Compared "+(count)+" pairs of "+totalPairs);
         }
 
         switch (overlapRequirement) {

@@ -110,10 +110,7 @@ public class RelateObjects extends Module {
                     // Calculating the object spacing
                     switch (referencePoint) {
                         case ReferencePoints.CENTROID:
-                            double xDist = childObject.getXMean(true) - parentObject.getXMean(true);
-                            double yDist = childObject.getYMean(true) - parentObject.getYMean(true);
-                            double zDist = childObject.getZMean(true, true) - parentObject.getZMean(true, true);
-                            double dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+                            double dist = childObject.getCentroidSeparation(parentObject,true);
 
                             if (dist < minDist) {
                                 if (limitLinking && dist > linkingDistance) continue;
@@ -124,38 +121,12 @@ public class RelateObjects extends Module {
                             break;
 
                         case ReferencePoints.SURFACE:
-                            // Getting coordinates for the surface points (6-way connectivity)
-                            double[] parentX = parentObject.getSurfaceX(true);
-                            double[] parentY = parentObject.getSurfaceY(true);
-                            double[] parentZ = parentObject.getSurfaceZ(true, true);
+                            dist = childObject.getSurfaceSeparation(parentObject,true);
 
-                            double[] childX = childObject.getSurfaceX(true);
-                            double[] childY = childObject.getSurfaceY(true);
-                            double[] childZ = childObject.getSurfaceZ(true, true);
-                            double[] childZSlice = childObject.getSurfaceZ(true, false);
-
-                            // Measuring point-to-point distances on both object surfaces
-                            for (int j = 0; j < childX.length; j++) {
-                                Point<Integer> currentPoint = new Point<>((int) childX[j], (int) childY[j], (int) childZSlice[j]);
-
-                                boolean isInside = false;
-                                for (int i = 0; i < parentX.length; i++) {
-                                    xDist = childX[j] - parentX[i];
-                                    yDist = childY[j] - parentY[i];
-                                    zDist = childZ[j] - parentZ[i];
-                                    dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
-
-                                    if (dist < Math.abs(minDist)) {
-                                        if (limitLinking && dist > linkingDistance) continue;
-                                        minDist = dist;
-                                        minLink = parentObject;
-                                        isInside = parentObject.getPoints().contains(currentPoint);
-                                    }
-                                }
-
-                                // If this point is inside the parent the distance should be negative
-                                if (isInside) minDist = -minDist;
-
+                            if (Math.abs(dist) < Math.abs(minDist)) {
+                                if (limitLinking && Math.abs(dist) > linkingDistance) continue;
+                                minDist = dist;
+                                minLink = parentObject;
                             }
 
                             break;
@@ -168,16 +139,16 @@ public class RelateObjects extends Module {
 
                             Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) childZCentSlice);
 
-                            parentX = parentObject.getSurfaceX(true);
-                            parentY = parentObject.getSurfaceY(true);
-                            parentZ = parentObject.getSurfaceZ(true, true);
+                            double[] parentX = parentObject.getSurfaceX(true);
+                            double[] parentY = parentObject.getSurfaceY(true);
+                            double[] parentZ = parentObject.getSurfaceZ(true, true);
 
                             boolean isInside = false;
 
                             for (int i = 0; i < parentX.length; i++) {
-                                xDist = childXCent - parentX[i];
-                                yDist = childYCent - parentY[i];
-                                zDist = childZCent - parentZ[i];
+                                double xDist = childXCent - parentX[i];
+                                double yDist = childYCent - parentY[i];
+                                double zDist = childZCent - parentZ[i];
                                 dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
                                 if (dist < Math.abs(minDist)) {
                                     if (limitLinking && dist > linkingDistance) continue;

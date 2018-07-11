@@ -148,25 +148,26 @@
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:1.4.2">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Maven: net.imagej:imagej-updater:0.9.2" level="project" />
+    <orderEntry type="library" name="Maven: net.imagej:imagej-common:0.24.9" level="project" />
+    <orderEntry type="library" name="Maven: net.imglib2:imglib2-roi:0.4.6" level="project" />
+    <orderEntry type="library" name="Maven: edu.ucar:udunits:4.3.18" level="project" />
+    <orderEntry type="library" name="Maven: org.scijava:scijava-common:2.69.0" level="project" />
+    <orderEntry type="library" name="Maven: org.scijava:parsington:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.gentyref:gentyref:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.bushe:eventbus:1.4" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:Fiji_Plugins:3.1.1" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:fiji-lib:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: net.imagej:ij1-patcher:0.12.2" level="project" />
     <orderEntry type="library" name="Maven: io.scif:scifio:0.33.0" level="project" />
     <orderEntry type="library" name="Maven: io.scif:scifio-jai-imageio:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: net.imagej:imagej-common:0.24.4" level="project" />
-    <orderEntry type="library" name="Maven: net.imglib2:imglib2-roi:0.4.4" level="project" />
-    <orderEntry type="library" name="Maven: edu.ucar:udunits:4.3.18" level="project" />
     <orderEntry type="library" name="Maven: net.imglib2:imglib2:4.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.scijava:scijava-common:2.65.0" level="project" />
-    <orderEntry type="library" name="Maven: org.scijava:parsington:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: com.googlecode.gentyref:gentyref:1.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bushe:eventbus:1.4" level="project" />
     <orderEntry type="library" name="Maven: org.mapdb:mapdb:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:Auto_Threshold:1.16.4" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:TrackMate_:3.5.1" level="project" />
@@ -264,7 +265,7 @@
     <orderEntry type="module-library">
       <library name="Maven: jdk.tools:jdk.tools:1.6">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

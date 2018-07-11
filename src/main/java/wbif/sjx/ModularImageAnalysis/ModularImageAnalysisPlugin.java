@@ -6,6 +6,9 @@ package wbif.sjx.ModularImageAnalysis;
 
 import ij.ImageJ;
 import ij.plugin.PlugIn;
+import net.imagej.updater.*;
+import net.imagej.updater.util.AvailableSites;
+import net.imagej.updater.util.UpdateCanceledException;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
@@ -18,6 +21,7 @@ import wbif.sjx.ModularImageAnalysis.Process.AnalysisWriter;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -25,6 +29,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+
 
 /**
  * Created by sc13967 on 14/07/2017.
@@ -38,6 +44,20 @@ public class ModularImageAnalysisPlugin implements PlugIn {
     private static final boolean imagePlusMode = true;
 
     public static void main(String[] args) {
+//        try {
+//            Map<String,UpdateSite> sites = AvailableSites.getAvailableSites();
+//            FilesCollection files = new FilesCollection(new File("E:\\Program Files\\Fiji.app"));
+//            XMLFileDownloader downloader = new XMLFileDownloader(files);
+//            downloader.start(true);
+////            new Checksummer(files,null).updateFromLocal();
+//            UpdateSite updateSite = files.getUpdateSite("http://sites.imagej.net/Biomedgroup/",true);
+//            System.out.println(updateSite);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+
         // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
         ErrorLog errorLog = new ErrorLog();
         TeeOutputStream teeOutputStream = new TeeOutputStream(System.err,errorLog);

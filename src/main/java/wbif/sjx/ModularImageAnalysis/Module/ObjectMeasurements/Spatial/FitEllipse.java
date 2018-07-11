@@ -6,7 +6,6 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.EllipseCalculator;
-import wbif.sjx.common.Analysis.EllipsoidCalculator;
 import wbif.sjx.common.Object.Volume;
 
 /**
@@ -30,9 +29,15 @@ public class FitEllipse extends Module {
     }
 
     public interface Measurements {
-        String ELLIPSE_THETA = "ELLIPSE // ORIENTATION_(DEGS)";
-        String ELLIPSE_SEMI_MAJOR = "ELLIPSE // SEMI_MAJOR_(PX)";
-        String ELLIPSE_SEMI_MINOR = "ELLIPSE // SEMI_MINOR_(PX)";
+        String X_CENTRE_PX = "ELLIPSE // X_CENTRE_(PX)";
+        String X_CENTRE_CAL = "ELLIPSE // X_CENTRE_(${CAL})";
+        String Y_CENTRE_PX = "ELLIPSE // Y_CENTRE_(PX)";
+        String Y_CENTRE_CAL = "ELLIPSE // Y_CENTRE_(${CAL})";
+        String SEMI_MAJOR_PX = "ELLIPSE // SEMI_MAJOR_AXIS_LENGTH_(PX)";
+        String SEMI_MAJOR_CAL = "ELLIPSE // SEMI_MAJOR_AXIS_LENGTH_(${CAL})";
+        String SEMI_MINOR_PX = "ELLIPSE // SEMI_MINOR_AXIS_LENGTH_(PX)";
+        String SEMI_MINOR_CAL = "ELLIPSE // SEMI_MINOR_AXIS_LENGTH_(${CAL})";
+        String ORIENTATION_DEGS = "ELLIPSE // ORIENTATION_(DEGS)";
 
     }
 
@@ -44,45 +49,22 @@ public class FitEllipse extends Module {
 
         EllipseCalculator calculator = new EllipseCalculator(inputObject);
         addMeasurements(inputObject,calculator);
-        getContainedPoints(inputObject,calculator);
 
-//        Volume ellipsoid = calculator.getContainedPoints();
+        Volume ellipse = calculator.getContainedPoints();
 
-//        switch (objectOutputMode) {
-//            case OutputModes.CREATE_NEW_OBJECT:
-//                Obj ellipsoidObject = createNewObject(inputObject,ellipsoid,outputObjects);
-//                if (ellipsoidObject != null) {
-//                    outputObjects.add(ellipsoidObject);
-//                    ellipsoidObject.cropToImageSize(templateImage);
-//                }
-//                break;
-//            case OutputModes.UPDATE_INPUT:
-//                updateInputObject(inputObject,ellipsoid);
-//                inputObject.cropToImageSize(templateImage);
-//                break;
-//        }
-    }
-
-    public void getContainedPoints(Obj inputObject, EllipseCalculator calculator) {
-        double[][] extents = inputObject.getExtents2D(true);
-
-        double[] e2d = calculator.getEllipseFit();
-        double x0 = calculator.getXCentre();
-        double y0 = calculator.getYCentre();
-        double a = calculator.getSemiMajorAxis();
-        double b = calculator.getSemiMinorAxis();
-        System.out.println(x0+"_"+y0+"_"+a+"_"+b+"_"+e2d[0]+"_"+e2d[1]+"_"+e2d[2]);
-
-        Volume vol = new Volume(inputObject.getDistPerPxXY(),inputObject.getDistPerPxZ(),inputObject.getCalibratedUnits(),true);
-        for (int x=(int) extents[0][0];x<extents[0][1];x++) {
-            for (int y=(int) extents[1][0];y<extents[1][1];y++) {
-//                System.out.println(x+"_"+y+"_"+((x-x0)*(x-x0)/(a*a))+((y-y0)*(y-y0)/(b*b)));
-                if (((x-x0)*(x-x0)/(a*a))+((y-y0)*(y-y0)/(b*b)) < 1) vol.addCoord(x,y,0);
-            }
+        switch (objectOutputMode) {
+            case OutputModes.CREATE_NEW_OBJECT:
+                Obj ellipseObject = createNewObject(inputObject,ellipse,outputObjects);
+                if (ellipseObject != null) {
+                    outputObjects.add(ellipseObject);
+                    ellipseObject.cropToImageSize(templateImage);
+                }
+                break;
+            case OutputModes.UPDATE_INPUT:
+                updateInputObject(inputObject,ellipse);
+                inputObject.cropToImageSize(templateImage);
+                break;
         }
-
-        inputObject.setPoints(vol.getPoints());
-
     }
 
     public Obj createNewObject (Obj inputObject, Volume ellipsoid, ObjCollection outputObjects) {
@@ -109,16 +91,39 @@ public class FitEllipse extends Module {
     }
 
     public void addMeasurements(Obj inputObject, EllipseCalculator calculator) {
+        if (calculator.getEllipseFit() == null) {
+            inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENTRE_CAL),Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_PX,Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_CENTRE_CAL),Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_PX,Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MAJOR_CAL),Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MINOR_CAL),Double.NaN,this));
+        }
+
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
 
-//        double[] centres = calculator.getCentroid();
-//        inputObject.addMeasurement(new Measurement(Measurements.X_CENT_PX,centres[0]));
-//        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENT_CAL),centres[0]*dppXY));
-//        inputObject.addMeasurement(new Measurement(Measurements.Y_CENT_PX,centres[1]));
-//        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_CENT_CAL),centres[1]*dppXY));
-//        inputObject.addMeasurement(new Measurement(Measurements.Z_CENT_SLICE,centres[2]*dppXY/dppZ));
-//        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Z_CENT_CAL),centres[2]*dppZ));
+        double theta = Math.toDegrees(calculator.getEllipseThetaRads());
+        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,theta,this));
+
+        double xCent = calculator.getXCentre();
+        inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,xCent,this));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENTRE_CAL),xCent*dppXY,this));
+
+        double yCent = calculator.getYCentre();
+        inputObject.addMeasurement(new Measurement(Measurements.Y_CENTRE_PX,yCent,this));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.Y_CENTRE_CAL),yCent*dppXY,this));
+
+        double semiMajor = calculator.getSemiMajorAxis();
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MAJOR_PX,semiMajor,this));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MAJOR_CAL),semiMajor*dppXY,this));
+
+        double semiMinor = calculator.getSemiMinorAxis();
+        inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,semiMinor,this));
+        inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MINOR_CAL),semiMinor*dppXY,this));
 
     }
 
@@ -201,9 +206,67 @@ public class FitEllipse extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-//        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.X_CENT_PX);
-//        reference.setCalculated(true);
-//        reference.setImageObjName(inputObjectsName);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.X_CENTRE_PX);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("X-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
+                "object, \""+inputObjectsName+"\".  Measured in pixels.");
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.X_CENTRE_CAL));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("X-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
+                "object, \""+inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
+                "units.");
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.Y_CENTRE_PX);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("Y-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
+                "object, \""+inputObjectsName+"\".  Measured in pixels.");
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.Y_CENTRE_CAL));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("Y-coordinate for the centre of the ellipse fit to the 2D Z-projection of the " +
+                "object, \""+inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
+                "units.");
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.SEMI_MAJOR_PX);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
+                inputObjectsName+"\".  The semi-major axis passes from the centre of the ellipse to the furthest " +
+                "point on it's perimeter.  Measured in pixels.");
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SEMI_MAJOR_CAL));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
+                inputObjectsName+"\".  The semi-major axis passes from the centre of the ellipse to the furthest " +
+                "point on it's perimeter.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.SEMI_MINOR_PX);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
+                inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction" +
+                "perpendiculart to the semi-major axis.  Measured in pixels.");
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SEMI_MINOR_CAL));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
+                inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction" +
+                "perpendiculart to the semi-major axis.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") "+
+                "units.");
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.ORIENTATION_DEGS);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("Orientation of ellipse fit to 2D Z-projection of the object, \""+
+                inputObjectsName+"\".  Measured in degrees, relative to positive x-axis (positive above x-axis, " +
+                "negative below x-axis).");
 
 
         return objectMeasurementReferences;
