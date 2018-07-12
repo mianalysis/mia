@@ -172,6 +172,9 @@ public class ResolveObjectOverlap extends Module {
                                  HashMap<Integer,Double[]> overlaps1, HashMap<Integer,Double[]> overlaps2,
                                  double minOverlap, double maxOverlap, boolean requireMutual) {
 
+        // Creating a HashMap, which stores the correspondences between removed objects and the new objects
+        HashMap<Integer,Obj> newObjects = new HashMap<>();
+
         Iterator<Obj> iterator = objects1.values().iterator();
         while (iterator.hasNext()) {
             Obj object1 = iterator.next();
@@ -182,7 +185,8 @@ public class ResolveObjectOverlap extends Module {
             Obj object2 = objects2.get(overlap1[1].intValue());
 
             // There is a possibility the other object has been removed already
-            if (object2 == null) continue;
+            boolean alreadyRemoved = object2 == null;
+            if (alreadyRemoved) object2 = newObjects.get(overlap1[1].intValue());
             Double[] overlap2 = overlaps2.get(object2.getID());
 
             // Checking overlaps against the limits
@@ -193,15 +197,24 @@ public class ResolveObjectOverlap extends Module {
             if (requireMutual && overlap2[1] != object1.getID()) continue;
 
             // Merge objects and adding to output objects
-            Obj outputObject = new Obj(outputObjects.getName(),outputObjects.getNextID(),
-                    object1.getDistPerPxXY(),object1.getDistPerPxZ(),object1.getCalibratedUnits(),object1.is2D());
-            outputObject.getPoints().addAll(object1.getPoints());
-            outputObject.getPoints().addAll(object2.getPoints());
-            outputObjects.add(outputObject);
+            if (alreadyRemoved) {
+                object2.getPoints().addAll(object1.getPoints());
 
-            // Removing merged objects from input
+            } else {
+                Obj outputObject = new Obj(outputObjects.getName(), outputObjects.getNextID(),
+                        object1.getDistPerPxXY(), object1.getDistPerPxZ(), object1.getCalibratedUnits(), object1.is2D());
+                outputObject.getPoints().addAll(object1.getPoints());
+                outputObject.getPoints().addAll(object2.getPoints());
+                outputObjects.add(outputObject);
+
+                // Removing merged objects from input
+                objects2.remove(object2.getID());
+
+                // Adding the new object to the correspondences HashMap along with the object2 that created it
+                newObjects.put(overlap1[1].intValue(), outputObject);
+            }
+
             iterator.remove();
-            objects2.remove(object2.getID());
 
         }
     }

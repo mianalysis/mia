@@ -4,7 +4,7 @@
   <groupId>wbif.sjx</groupId>
   <artifactId>ModularImageAnalysis</artifactId>
   <name>Modular_Image_Analysis</name>
-  <version>0.5.13</version>
+  <version>0.5.14</version>
   <url>https://github.com/SJCross/ModularImageAnalysis</url>
   <issueManagement>
     <system>GitHub Issues</system>
@@ -203,6 +203,74 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>net.imagej</groupId>
+      <artifactId>imagej-updater</artifactId>
+      <version>0.9.2</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>imagej-common</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>scijava-common</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>net.imagej</groupId>
+      <artifactId>imagej-ui-swing</artifactId>
+      <version>0.21.4</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>imagej-deprecated</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imglib2-roi</artifactId>
+          <groupId>net.imglib2</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>scijava-ui-awt</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>scijava-ui-swing</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>miglayout</artifactId>
+          <groupId>com.miglayout</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jfreechart</artifactId>
+          <groupId>org.jfree</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jhotdraw</artifactId>
+          <groupId>org.jhotdraw</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imagej-ui-awt</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imagej-common</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>scijava-common</artifactId>
+          <groupId>org.scijava</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>sc.fiji</groupId>
       <artifactId>Fiji_Plugins</artifactId>
       <version>3.1.1</version>
@@ -219,20 +287,20 @@
           <groupId>io.scif</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>imagej-common</artifactId>
-          <groupId>net.imagej</groupId>
+          <artifactId>mapdb</artifactId>
+          <groupId>org.mapdb</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>scijava-common</artifactId>
-          <groupId>org.scijava</groupId>
+          <artifactId>imagej-common</artifactId>
+          <groupId>net.imagej</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>mapdb</artifactId>
-          <groupId>org.mapdb</groupId>
+          <artifactId>scijava-common</artifactId>
+          <groupId>org.scijava</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -248,10 +316,6 @@
       <version>3.5.1</version>
       <scope>provided</scope>
       <exclusions>
-        <exclusion>
-          <artifactId>imagej-deprecated</artifactId>
-          <groupId>net.imagej</groupId>
-        </exclusion>
         <exclusion>
           <artifactId>imglib2-algorithm</artifactId>
           <groupId>net.imglib2</groupId>
@@ -293,12 +357,16 @@
           <groupId>org.jfree</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>jfreechart</artifactId>
-          <groupId>org.jfree</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>jgraphx</artifactId>
           <groupId>org.tinyjee.jgraphx</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>imagej-deprecated</artifactId>
+          <groupId>net.imagej</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jfreechart</artifactId>
+          <groupId>org.jfree</groupId>
         </exclusion>
         <exclusion>
           <artifactId>imglib2</artifactId>

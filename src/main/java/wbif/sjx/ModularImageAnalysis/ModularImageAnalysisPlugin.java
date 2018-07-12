@@ -5,11 +5,15 @@
 package wbif.sjx.ModularImageAnalysis;
 
 import ij.ImageJ;
+import ij.plugin.ImageJ_Updater;
 import ij.plugin.PlugIn;
+import net.imagej.ui.swing.updater.ProgressDialog;
+import net.imagej.ui.swing.updater.ResolveDependencies;
 import net.imagej.updater.*;
-import net.imagej.updater.util.AvailableSites;
-import net.imagej.updater.util.UpdateCanceledException;
+import net.imagej.updater.util.*;
 import org.apache.commons.io.output.TeeOutputStream;
+import org.scijava.log.LogService;
+import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
@@ -22,11 +26,13 @@ import wbif.sjx.ModularImageAnalysis.Process.AnalysisWriter;
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
+import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -44,20 +50,6 @@ public class ModularImageAnalysisPlugin implements PlugIn {
     private static final boolean imagePlusMode = true;
 
     public static void main(String[] args) {
-//        try {
-//            Map<String,UpdateSite> sites = AvailableSites.getAvailableSites();
-//            FilesCollection files = new FilesCollection(new File("E:\\Program Files\\Fiji.app"));
-//            XMLFileDownloader downloader = new XMLFileDownloader(files);
-//            downloader.start(true);
-////            new Checksummer(files,null).updateFromLocal();
-//            UpdateSite updateSite = files.getUpdateSite("http://sites.imagej.net/Biomedgroup/",true);
-//            System.out.println(updateSite);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-
         // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
         ErrorLog errorLog = new ErrorLog();
         TeeOutputStream teeOutputStream = new TeeOutputStream(System.err,errorLog);
@@ -90,30 +82,30 @@ public class ModularImageAnalysisPlugin implements PlugIn {
     @Override
     public void run(String s) {
         // Checking the relevant plugins are available
-        boolean missing = false;
+        boolean[] toInstall = new boolean[2];
+        Arrays.fill(toInstall,false);
         try {
             Class.forName("inra.ijpb.binary.BinaryImages");
         } catch (ClassNotFoundException e) {
-            System.err.println("MorphoLibJ plugin missing:\n" +
-                    "   - Install via Fiji Updater (Help > Update...)\n" +
-                    "   - Click \"Manage update sites\"\n" +
-                    "   - Select \"IJPB-plugins\" and close window\n" +
-                    "   - Click \"Apply changes\" and restart Fiji");
-            missing = true;
+            toInstall[0] = true;
         }
 
         try {
             Class.forName("de.biomedical_imaging.ij.steger.Line");
         } catch (ClassNotFoundException e) {
-            System.err.println("Ridge detection plugin missing:\n" +
-                    "   - Install via Fiji Updater (Help > Update...)\n" +
-                    "   - Click \"Manage update sites\"\n" +
-                    "   - Select \"Biomedgroup\" and close window\n" +
-                    "   - Click \"Apply changes\" and restart Fiji");
-            missing = true;
+            toInstall[1] = true;
         }
 
-        if (missing) return;
+        if (toInstall[0] | toInstall[1]) {
+            String message = "Missing dependencies Biomedgroup and/or IJPB-plugins\nClick \"Yes\" to install";
+            String title = "Dependencies missing";
+            int dialogResult = JOptionPane.showConfirmDialog(null, message, "Dependencies missing", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                update(toInstall);
+                JOptionPane.showMessageDialog(null, "Please restart Fiji, then run the plugin again");
+                return;
+            }
+        }
 
         // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
         ErrorLog errorLog = new ErrorLog();
@@ -126,6 +118,43 @@ public class ModularImageAnalysisPlugin implements PlugIn {
             new MainGUI(false);
         } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace(System.err);
+        }
+    }
+
+    public static void update(boolean[] toInstall) {
+        try {
+            String imagejDirProperty = System.getProperty("imagej.dir");
+            final File imagejRoot = imagejDirProperty != null ? new File(imagejDirProperty) :
+                    AppUtils.getBaseDirectory("ij.dir", FilesCollection.class, "updater");
+
+            final FilesCollection files = new FilesCollection(imagejRoot);
+            AvailableSites.initializeAndAddSites(files);
+
+            final ResolveDependencies resolver = new ResolveDependencies(null, files, true);
+            resolver.resolve();
+
+            System.err.println("Gathering available sites");
+            Map<String,UpdateSite> sites = AvailableSites.getAvailableSites();
+            if (toInstall[0]) {
+                UpdateSite updateSite = sites.get("http://sites.imagej.net/Biomedgroup/");
+                files.addUpdateSite(updateSite);
+                files.activateUpdateSite(updateSite, null);
+            }
+            if (toInstall[1]) {
+                UpdateSite updateSite = sites.get("http://sites.imagej.net/IJPB-plugins/");
+                files.addUpdateSite(updateSite);
+                files.activateUpdateSite(updateSite, null);
+            }
+
+            System.err.println("Installing dependencies");
+            Installer installer = new Installer(files,null);
+            installer.start();
+            installer.moveUpdatedIntoPlace();
+
+            files.write();
+
+        } catch (SAXException | ParserConfigurationException | IOException | TransformerConfigurationException e) {
+            e.printStackTrace();
         }
     }
 
