@@ -49,7 +49,6 @@ public class MeasureObjectShapeTest {
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,inputObjectsName);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_ELLIPSE,false);
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
 
         // Running IdentifyObjects

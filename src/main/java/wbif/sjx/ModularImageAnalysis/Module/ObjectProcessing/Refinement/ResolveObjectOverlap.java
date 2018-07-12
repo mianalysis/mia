@@ -45,10 +45,15 @@ public class ResolveObjectOverlap extends Module {
         HashMap<Integer,Double[]> overlaps2 = initialiseOverlapStore(inputObjects2,-Double.MAX_VALUE);
 
         // Calculating the overlaps
+        int totalPairs = inputObjects1.size()*inputObjects2.size();
+        int count = 0;
         for (Obj object1:inputObjects1.values()) {
             Double[] overlap1 = overlaps1.get(object1.getID());
             for (Obj object2:inputObjects2.values()) {
-                Double[] overlap2 = overlaps2.get(object2.getID());
+                count++;
+
+                // Calculating the surface-surface separation first.  If this is >0 the objects are skipped
+//                if (object1.getSurfaceSeparation(object2,true) > 0) continue;
 
                 // Calculate the overlap between the two objects
                 double overlap = object1.getOverlap(object2);
@@ -60,11 +65,13 @@ public class ResolveObjectOverlap extends Module {
                 }
 
                 // Comparing the overlap to previously-maximum overlaps
+                Double[] overlap2 = overlaps2.get(object2.getID());
                 if (overlap>overlap2[0]) {
                     overlap2[0] = overlap;
                     overlap2[1] = (double) object1.getID();
                 }
             }
+            writeMessage("Compared "+(count)+" pairs of "+totalPairs);
         }
 
         // Converting overlaps to percentages of the object's size
@@ -90,7 +97,7 @@ public class ResolveObjectOverlap extends Module {
                 break;
 
             case OverlapRequirements.OPTIMAL_FOR_OBJECTS2:
-                reassignObjects(inputObjects2,inputObjects1,outputObjects,overlaps2,overlaps1,minOverlap,Double.MAX_VALUE,true);
+                reassignObjects(inputObjects2,inputObjects1,outputObjects,overlaps2,overlaps1,minOverlap,Double.MAX_VALUE,false);
                 break;
         }
 
@@ -107,6 +114,8 @@ public class ResolveObjectOverlap extends Module {
         HashMap<Integer,Double[]> overlaps2 = initialiseOverlapStore(inputObjects2,Double.MAX_VALUE);
 
         // Calculating the separations
+        int totalPairs = inputObjects1.size()*inputObjects2.size();
+        int count = 0;
         for (Obj object1:inputObjects1.values()) {
             Double[] overlap1 = overlaps1.get(object1.getID());
             for (Obj object2:inputObjects2.values()) {
@@ -126,7 +135,9 @@ public class ResolveObjectOverlap extends Module {
                     overlap2[0] = overlap;
                     overlap2[1] = (double) object1.getID();
                 }
+                count++;
             }
+            writeMessage("Compared "+(count)+" pairs of "+totalPairs);
         }
 
         switch (overlapRequirement) {
@@ -161,6 +172,9 @@ public class ResolveObjectOverlap extends Module {
                                  HashMap<Integer,Double[]> overlaps1, HashMap<Integer,Double[]> overlaps2,
                                  double minOverlap, double maxOverlap, boolean requireMutual) {
 
+        // Creating a HashMap, which stores the correspondences between removed objects and the new objects
+        HashMap<Integer,Obj> newObjects = new HashMap<>();
+
         Iterator<Obj> iterator = objects1.values().iterator();
         while (iterator.hasNext()) {
             Obj object1 = iterator.next();
@@ -171,7 +185,8 @@ public class ResolveObjectOverlap extends Module {
             Obj object2 = objects2.get(overlap1[1].intValue());
 
             // There is a possibility the other object has been removed already
-            if (object2 == null) continue;
+            boolean alreadyRemoved = object2 == null;
+            if (alreadyRemoved) object2 = newObjects.get(overlap1[1].intValue());
             Double[] overlap2 = overlaps2.get(object2.getID());
 
             // Checking overlaps against the limits
@@ -182,15 +197,24 @@ public class ResolveObjectOverlap extends Module {
             if (requireMutual && overlap2[1] != object1.getID()) continue;
 
             // Merge objects and adding to output objects
-            Obj outputObject = new Obj(outputObjects.getName(),outputObjects.getNextID(),
-                    object1.getDistPerPxXY(),object1.getDistPerPxZ(),object1.getCalibratedUnits(),object1.is2D());
-            outputObject.getPoints().addAll(object1.getPoints());
-            outputObject.getPoints().addAll(object2.getPoints());
-            outputObjects.add(outputObject);
+            if (alreadyRemoved) {
+                object2.getPoints().addAll(object1.getPoints());
 
-            // Removing merged objects from input
+            } else {
+                Obj outputObject = new Obj(outputObjects.getName(), outputObjects.getNextID(),
+                        object1.getDistPerPxXY(), object1.getDistPerPxZ(), object1.getCalibratedUnits(), object1.is2D());
+                outputObject.getPoints().addAll(object1.getPoints());
+                outputObject.getPoints().addAll(object2.getPoints());
+                outputObjects.add(outputObject);
+
+                // Removing merged objects from input
+                objects2.remove(object2.getID());
+
+                // Adding the new object to the correspondences HashMap along with the object2 that created it
+                newObjects.put(overlap1[1].intValue(), outputObject);
+            }
+
             iterator.remove();
-            objects2.remove(object2.getID());
 
         }
     }

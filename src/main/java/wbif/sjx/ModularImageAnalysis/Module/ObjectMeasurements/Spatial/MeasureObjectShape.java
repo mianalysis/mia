@@ -20,13 +20,11 @@ public class MeasureObjectShape extends Module {
     public static final String FITTING_MODE = "Fit convex hull to";
     public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
-    public static final String MEASURE_PROJECTED_ELLIPSE = "Measure projected ellipse";
 
     public interface Measurements {
         String N_VOXELS = "SHAPE // N_VOXELS";
         String VOLUME_PX = "SHAPE // VOLUME_(PX^3)";
         String VOLUME_CAL = "SHAPE // VOLUME_(${CAL}^3)";
-        String ELLIPSE_THETA = "SHAPE // ELLIPSE_ANGLE_(DEGS)";
         String PROJ_AREA_PX = "SHAPE // PROJ_AREA_(PX^2)";
         String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${CAL}^2)";
         String PROJ_DIA_PX = "SHAPE // PROJ_DIA_(PX)";
@@ -88,7 +86,6 @@ public class MeasureObjectShape extends Module {
         boolean measureVolume = parameters.getValue(MEASURE_VOLUME);
         boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA);
         boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA);
-        boolean measureProjectedEllipse = parameters.getValue(MEASURE_PROJECTED_ELLIPSE);
 
         // Running through each object, making the measurements
         for (Obj inputObject:inputObjects.values()) {
@@ -107,7 +104,7 @@ public class MeasureObjectShape extends Module {
 
             // If necessary analyses are included
             Obj projectedObject = null;
-            if (measureProjectedArea || measureProjectedDiameter || measureProjectedEllipse) {
+            if (measureProjectedArea || measureProjectedDiameter) {
                 projectedObject = ProjectObjects.createProjection(inputObject, "Projected",inputObject.is2D());
             }
 
@@ -126,17 +123,6 @@ public class MeasureObjectShape extends Module {
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx, this));
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_DIA_CAL), maxDistanceCal, this));
             }
-
-            // Adding the projected-object ellipse fitting measurements
-            if (measureProjectedEllipse) {
-                try {
-                    EllipseCalculator ellipseCalculator = new EllipseCalculator(projectedObject);
-                    double val = Math.toDegrees(ellipseCalculator.getEllipseThetaRads());
-                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_THETA,val,this));
-                } catch (RuntimeException e) {
-                    inputObject.addMeasurement(new Measurement(Measurements.ELLIPSE_THETA,Double.NaN,this));
-                }
-            }
         }
     }
 
@@ -146,7 +132,6 @@ public class MeasureObjectShape extends Module {
         parameters.add(new Parameter(MEASURE_VOLUME, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(MEASURE_PROJECTED_ELLIPSE, Parameter.BOOLEAN, false));
 
     }
 
@@ -216,15 +201,6 @@ public class MeasureObjectShape extends Module {
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
                             + inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                     "units.");
-        }
-
-        if (parameters.getValue(MEASURE_PROJECTED_ELLIPSE)) {
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPSE_THETA);
-            reference.setCalculated(true);
-            reference.setImageObjName(inputObjectsName);
-            reference.setDescription("Orientation of ellipse fit to 2D Z-projection of the object, \""+
-                    inputObjectsName+"\".  Measured in degrees, relative to positive x-axis (positive above x-axis, " +
-                    "negative below x-axis).");
         }
 
         return objectMeasurementReferences;

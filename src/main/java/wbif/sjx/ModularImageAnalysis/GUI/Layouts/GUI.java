@@ -13,6 +13,7 @@ public abstract class GUI {
     protected Analysis analysis = new Analysis();
     Module activeModule = null;
     protected int lastModuleEval = -1;
+    protected int moduleBeingEval = -1;
     private Workspace testWorkspace = new Workspace(1, null,1);
 
     public ModuleCollection getModules() {
@@ -35,6 +36,14 @@ public abstract class GUI {
         this.lastModuleEval = Math.max(lastModuleEval,-1);
     }
 
+    public int getModuleBeingEval() {
+        return moduleBeingEval;
+    }
+
+    public void setModuleBeingEval(int moduleBeingEval) {
+        this.moduleBeingEval = moduleBeingEval;
+    }
+
     public Module getActiveModule() {
         return activeModule;
     }
@@ -46,11 +55,13 @@ public abstract class GUI {
     public void evaluateModule(Module module) throws GenericMIAException {
         // Setting the index to the previous module.  This will make the currently-evaluated module go red
         lastModuleEval = getModules().indexOf(module) - 1;
+        moduleBeingEval = getModules().indexOf(module);
         updateModules();
 
         Module.setVerbose(true);
         module.execute(testWorkspace);
         lastModuleEval = getModules().indexOf(module);
+        moduleBeingEval = -1;
 
         updateModules();
     }

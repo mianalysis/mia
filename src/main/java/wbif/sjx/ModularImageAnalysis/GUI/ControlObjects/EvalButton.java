@@ -2,18 +2,13 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.Workspace;
-import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
-import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 /**
  * Created by Stephen on 08/06/2017.
@@ -21,7 +16,8 @@ import java.io.File;
 public class EvalButton extends JButton implements ActionListener {
     private GUI gui;
     private Module module;
-    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
+    private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
+    private static final ImageIcon amberIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/Dual Ring-1s-11px.gif"), "");
     private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_green_12px.png"), "");
 
 
@@ -45,10 +41,20 @@ public class EvalButton extends JButton implements ActionListener {
 
     public void updateColour() {
         int idx = gui.getModules().indexOf(module);
+
+        // If the module is being currently evaluated
+        if (idx == gui.getModuleBeingEval()) {
+            setIcon(amberIcon);
+            setRolloverIcon(amberIcon);
+            return;
+        }
+
         if (idx <= gui.getLastModuleEval()) {
             setIcon(greenIcon);
+            setRolloverIcon(greenIcon);
         } else {
-            setIcon(redIcon);
+            setIcon(blackIcon);
+            setRolloverIcon(blackIcon);
         }
     }
 
@@ -73,7 +79,9 @@ public class EvalButton extends JButton implements ActionListener {
                 gui.evaluateModule(module);
             } catch (GenericMIAException ex) {
                 IJ.showMessage(ex.getMessage());
-            } catch (InterruptedException e1) {
+            } catch (Exception e1) {
+                gui.setModuleBeingEval(-1);
+                gui.updateModules();
                 e1.printStackTrace();
             }
         }).start();
@@ -86,8 +94,12 @@ public class EvalButton extends JButton implements ActionListener {
                     gui.evaluateModule(module);
                 } catch (GenericMIAException ex) {
                     IJ.showMessage(ex.getMessage());
+                } catch (Exception e1) {
+                    gui.setModuleBeingEval(-1);
+                    gui.updateModules();
+                    e1.printStackTrace();
+                    Thread.currentThread().stop();
                 }
-
             }
         }).start();
     }
