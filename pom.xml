@@ -130,7 +130,7 @@
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ui-swing</artifactId>
-            <version>0.21.4</version>
+            <version>0.21.2</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>

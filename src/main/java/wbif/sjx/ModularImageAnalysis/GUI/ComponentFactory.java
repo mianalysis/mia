@@ -139,8 +139,9 @@ public class ComponentFactory {
         c.weightx=1;
         c.anchor = GridBagConstraints.EAST;
         if (parameterControl != null) {
-            paramPanel.add(parameterControl, c);
+            parameterControl.setBorder(null);
             parameterControl.setPreferredSize(new Dimension(panelWidth/3, elementHeight));
+            paramPanel.add(parameterControl, c);
 
         }
 
