@@ -17,6 +17,7 @@ import ome.xml.meta.IMetadata;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.FileCondition;
@@ -57,6 +58,7 @@ public class BatchProcessor extends FileCrawler {
     // PUBLIC METHODS
 
     public void runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, GenericMIAException, InterruptedException {
+        MainGUI.setProgress(0);
         shutdownEarly = false;
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
@@ -78,6 +80,8 @@ public class BatchProcessor extends FileCrawler {
         if (shutdownEarly || exporter == null) return;
         exporter.exportResults(workspaces,analysis);
 
+        MainGUI.setProgress(0);
+
     }
 
     private void runParallel(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws InterruptedException {
@@ -86,13 +90,15 @@ public class BatchProcessor extends FileCrawler {
         boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
         int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
 
-        System.out.println("Starting batch processor");
         Module.setVerbose(false);
 
         // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
         if ((int) analysis.getInputControl().getParameterValue(InputControl.NUMBER_OF_THREADS) != 1) {
             Prefs.setThreads(1);
             Prefs.savePreferences();
+            analysis.setUpdateProgressBar(true);
+        } else {
+            analysis.setUpdateProgressBar(false);
         }
 
         // Setting up the ExecutorService, which will manage the threads
@@ -131,6 +137,8 @@ public class BatchProcessor extends FileCrawler {
                         int nComplete = getCounter();
                         double nTotal = pool.getTaskCount();
                         double percentageComplete = (nComplete / nTotal) * 100;
+
+                        MainGUI.setProgress((int) Math.round(percentageComplete));
 
                         // Displaying the current progress
                         String string = "Completed " + dfInt.format(nComplete) + "/" + dfInt.format(nTotal)
@@ -181,6 +189,7 @@ public class BatchProcessor extends FileCrawler {
 
         // Only set verbose if a single series is being processed
         Module.setVerbose(seriesNumbers.size() == 1);
+        analysis.setUpdateProgressBar(true);
 
         // Iterating over all series to analyse, adding each one as a new workspace
         for (int seriesNumber:seriesNumbers.keySet()) {
@@ -201,6 +210,8 @@ public class BatchProcessor extends FileCrawler {
                 int nComplete = getCounter();
                 double nTotal = pool.getTaskCount();
                 double percentageComplete = (nComplete / nTotal) * 100;
+
+                MainGUI.setProgress((int) Math.round(percentageComplete));
 
                 // Displaying the current progress
                 String string = "Completed " + dfInt.format(nComplete) + "/" + dfInt.format(nTotal)

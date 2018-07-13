@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Process;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -20,6 +21,7 @@ public class Analysis implements Serializable {
     public OutputControl outputControl = new OutputControl();
     public ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
+    private boolean updateProgressBar = false;
 
     // CONSTRUCTOR
 
@@ -52,10 +54,13 @@ public class Analysis implements Serializable {
         }
 
         // Running through modules
+        int total = modules.size();
+        int count = 0;
         for (Module module:modules) {
             if (Thread.currentThread().isInterrupted()) break;
             if (module.isEnabled()) module.execute(workspace);
-
+            double percentageComplete = ((double) (count++))/((double) total)*100;
+            if (updateProgressBar) MainGUI.setProgress((int) Math.round(percentageComplete));
         }
 
         // We're only interested in the measurements now, so clearing images and object coordinates
@@ -95,5 +100,13 @@ public class Analysis implements Serializable {
     public void shutdown() {
         shutdown = true;
 
+    }
+
+    public boolean isUpdateProgressBar() {
+        return updateProgressBar;
+    }
+
+    public void setUpdateProgressBar(boolean updateProgressBar) {
+        this.updateProgressBar = updateProgressBar;
     }
 }
