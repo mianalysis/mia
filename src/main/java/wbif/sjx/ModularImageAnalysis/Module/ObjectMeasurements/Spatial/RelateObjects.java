@@ -121,7 +121,7 @@ public class RelateObjects extends Module {
                             break;
 
                         case ReferencePoints.SURFACE:
-                            dist = childObject.getSurfaceSeparation(parentObject,true);
+                                dist = childObject.getSurfaceSeparation(parentObject,true);
 
                             if (Math.abs(dist) < Math.abs(minDist)) {
                                 if (limitLinking && Math.abs(dist) > linkingDistance) continue;
@@ -177,7 +177,7 @@ public class RelateObjects extends Module {
             // Adding measurements to the input object
             applyMeasurements(childObject,parentObjects,minDist,minLink);
 
-            writeMessage("Processed "+(++iter)+" of "+numberOfChildren+" objects");
+            writeMessage("Processed "+(iter++)+" of "+numberOfChildren+" objects");
 
         }
     }

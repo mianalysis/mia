@@ -211,7 +211,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
                     int z = displayImagePlus.getZ();
-                    outputObject.addCoord(x,y,z-1);
+                    if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
+                        outputObject.addCoord(x, y, z - 1);
+                    }
                 }
 
                 // Adding overlay showing ROI and its ID number

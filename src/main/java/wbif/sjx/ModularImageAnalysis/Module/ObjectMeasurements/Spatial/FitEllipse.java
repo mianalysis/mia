@@ -37,6 +37,7 @@ public class FitEllipse extends Module {
         String SEMI_MAJOR_CAL = "ELLIPSE // SEMI_MAJOR_AXIS_LENGTH_(${CAL})";
         String SEMI_MINOR_PX = "ELLIPSE // SEMI_MINOR_AXIS_LENGTH_(PX)";
         String SEMI_MINOR_CAL = "ELLIPSE // SEMI_MINOR_AXIS_LENGTH_(${CAL})";
+        String ECCENTRICITY = "ELLIPSE // ECCENTRICITY";
         String ORIENTATION_DEGS = "ELLIPSE // ORIENTATION_(DEGS)";
 
     }
@@ -106,9 +107,6 @@ public class FitEllipse extends Module {
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
 
-        double theta = Math.toDegrees(calculator.getEllipseThetaRads());
-        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,theta,this));
-
         double xCent = calculator.getXCentre();
         inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,xCent,this));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENTRE_CAL),xCent*dppXY,this));
@@ -124,6 +122,12 @@ public class FitEllipse extends Module {
         double semiMinor = calculator.getSemiMinorAxis();
         inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,semiMinor,this));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MINOR_CAL),semiMinor*dppXY,this));
+
+        double eccentriciy = Math.sqrt(1-(semiMinor*semiMinor)/(semiMajor*semiMajor));
+        inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,eccentriciy,this));
+
+        double theta = Math.toDegrees(calculator.getEllipseThetaRads());
+        inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,theta,this));
 
     }
 
@@ -260,6 +264,14 @@ public class FitEllipse extends Module {
                 inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction" +
                 "perpendiculart to the semi-major axis.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") "+
                 "units.");
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.ECCENTRICITY));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("Measurement of how much the ellipse fit to the 2D Z-projection of the object, \"" +
+                inputObjectsName+"\", deviates from a perfect circle.  Eccentricity is calculated as sqrt(1-b^2/a^2)" +
+                ", where a and b are the lengths of the semi-major and semi-minor axes, respectively.  Eccentricity" +
+                "has no units.");
 
         reference = objectMeasurementReferences.getOrPut(Measurements.ORIENTATION_DEGS);
         reference.setCalculated(true);
