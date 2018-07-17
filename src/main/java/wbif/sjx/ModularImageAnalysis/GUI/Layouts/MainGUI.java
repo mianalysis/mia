@@ -443,7 +443,7 @@ public class MainGUI extends GUI {
         progressBar.setStringPainted(true);
         progressBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         progressBar.setString("");
-        progressBar.setForeground(new Color(161,232,230));
+        progressBar.setForeground(new Color(200,200,200));
         statusPanel.add(progressBar,new Integer(1));
 
         textField.setBackground(null);

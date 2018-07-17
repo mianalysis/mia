@@ -91,14 +91,12 @@ public class BatchProcessor extends FileCrawler {
         int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
 
         Module.setVerbose(false);
+        analysis.setUpdateProgressBar(false);
 
         // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
         if ((int) analysis.getInputControl().getParameterValue(InputControl.NUMBER_OF_THREADS) != 1) {
             Prefs.setThreads(1);
             Prefs.savePreferences();
-            analysis.setUpdateProgressBar(true);
-        } else {
-            analysis.setUpdateProgressBar(false);
         }
 
         // Setting up the ExecutorService, which will manage the threads
