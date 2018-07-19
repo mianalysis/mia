@@ -65,6 +65,7 @@ public class IdentifyObjects extends Module {
             } else {
                 currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" +
                         inputImagePlus.getNChannels(), "1-" + inputImagePlus.getNSlices(), t + "-" + t);
+                currStack = new Duplicator().run(currStack);
             }
             currStack.updateChannelAndDraw();
 

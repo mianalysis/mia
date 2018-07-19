@@ -95,6 +95,7 @@ public class MainGUI extends GUI {
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             renderEditingMode();
         } else {
+            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             renderBasicMode();
         }
 

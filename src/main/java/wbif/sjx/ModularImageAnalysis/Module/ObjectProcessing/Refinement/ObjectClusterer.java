@@ -75,7 +75,7 @@ public class ObjectClusterer extends Module {
 
     private ObjCollection runDBSCAN(ObjCollection outputObjects, List<LocationWrapper> locations, double dppXY, double dppZ, String calibratedUnits, boolean is2D) {
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-        int eps = parameters.getValue(EPS);
+        double eps = parameters.getValue(EPS);
         int minPoints = parameters.getValue(MIN_POINTS);
 
         DBSCANClusterer<LocationWrapper> clusterer = new DBSCANClusterer<>(eps, minPoints);
