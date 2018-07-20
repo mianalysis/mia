@@ -14,11 +14,14 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 08/06/2017.
  */
 public class EvalButton extends JButton implements ActionListener {
+    private static Thread t;
+
     private GUI gui;
     private Module module;
     private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
-    private static final ImageIcon amberIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/Dual Ring-1s-11px.gif"), "");
+    private static final ImageIcon amberIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/Dual Ring-1s-12px.gif"), "");
     private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_green_12px.png"), "");
+    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/x-mark-3-12.png"), "");
 
 
     // CONSTRUCTOR
@@ -27,9 +30,9 @@ public class EvalButton extends JButton implements ActionListener {
         this.gui = gui;
         this.module = module;
 
+        setMargin(new Insets(0,0,0,0));
         setFocusPainted(false);
         setSelected(false);
-        setMargin(new Insets(0,0,0,0));
         setName("EvalButton");
         setToolTipText("Evaluate module");
         addActionListener(this);
@@ -45,7 +48,7 @@ public class EvalButton extends JButton implements ActionListener {
         // If the module is being currently evaluated
         if (idx == gui.getModuleBeingEval()) {
             setIcon(amberIcon);
-            setRolloverIcon(amberIcon);
+            setRolloverIcon(redIcon);
             return;
         }
 
@@ -71,26 +74,23 @@ public class EvalButton extends JButton implements ActionListener {
 
         int idx = gui.getModules().indexOf(module);
 
-        // If the module is ready to be evaluated
-        if (idx <= gui.getLastModuleEval()) new Thread(() -> {
-            try {
-                // For some reason it's necessary to have a brief pause here to prevent the module executing twice
-                Thread.sleep(1);
-                gui.evaluateModule(module);
-            } catch (GenericMIAException ex) {
-                IJ.showMessage(ex.getMessage());
-            } catch (Exception e1) {
-                gui.setModuleBeingEval(-1);
-                gui.updateModules();
-                e1.printStackTrace();
-            }
-        }).start();
+        // If it's currently evaluating, this will kill the thread
+        if (idx == gui.getModuleBeingEval()) {
+            System.out.println("Stopping");
+            gui.setModuleBeingEval(-1);
+            t.interrupt();
+            return;
+        }
 
-        // If multiple modules will need to be evaluated first
-        new Thread(() -> {
-            for (int i = gui.getLastModuleEval()+1;i<=idx;i++) {
-                Module module = gui.getModules().get(i);
-                if (module.isEnabled()) try {
+        // Terminating any previously-executing threads
+        if (t != null) t.interrupt();
+
+        // If the module is ready to be evaluated
+        if (idx <= gui.getLastModuleEval()) {
+            t = new Thread(() -> {
+                try {
+                    // For some reason it's necessary to have a brief pause here to prevent the module executing twice
+                    Thread.sleep(1);
                     gui.evaluateModule(module);
                 } catch (GenericMIAException ex) {
                     IJ.showMessage(ex.getMessage());
@@ -98,9 +98,28 @@ public class EvalButton extends JButton implements ActionListener {
                     gui.setModuleBeingEval(-1);
                     gui.updateModules();
                     e1.printStackTrace();
-                    Thread.currentThread().stop();
                 }
-            }
-        }).start();
+            });
+            t.start();
+
+        } else {
+            // If multiple modules will need to be evaluated first
+            t = new Thread(() -> {
+                for (int i = gui.getLastModuleEval() + 1; i <= idx; i++) {
+                    Module module = gui.getModules().get(i);
+                    if (module.isEnabled()) try {
+                        gui.evaluateModule(module);
+                    } catch (GenericMIAException ex) {
+                        IJ.showMessage(ex.getMessage());
+                    } catch (Exception e1) {
+                        gui.setModuleBeingEval(-1);
+                        gui.updateModules();
+                        e1.printStackTrace();
+                        Thread.currentThread().stop();
+                    }
+                }
+            });
+            t.start();
+        }
     }
 }

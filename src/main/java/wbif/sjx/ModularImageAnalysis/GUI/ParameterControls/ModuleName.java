@@ -21,7 +21,7 @@ public class ModuleName extends JTextField implements FocusListener {
         this.module = module;
 
         setText(module.getNickname());
-        setPreferredSize(new Dimension(418, 25));
+        setPreferredSize(new Dimension(-1, 25));
         addFocusListener(this);
 
     }

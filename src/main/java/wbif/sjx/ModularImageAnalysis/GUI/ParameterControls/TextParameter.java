@@ -62,8 +62,15 @@ public class TextParameter extends JTextField implements FocusListener {
             int idx = gui.getModules().indexOf(module);
             if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx - 1);
 
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+
             gui.updateTestFile();
             gui.updateModules();
+
         }).start();
     }
 }
