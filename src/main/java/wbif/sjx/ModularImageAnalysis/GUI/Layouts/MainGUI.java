@@ -190,6 +190,8 @@ public class MainGUI extends GUI {
         // Initialising the progress bar
         initialiseBasicProgressBar();
         c.gridy++;
+        c.weighty = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,5,5);
         basicPanel.add(basicProgressBar,c);
 
@@ -224,6 +226,15 @@ public class MainGUI extends GUI {
             c.insets = new Insets(0,5,5,5);
             initialaiseEditingStatusPanel();
             editingPanel.add(editingStatusPanel, c);
+        } else {
+            c.gridheight = 1;
+            c.gridy++;
+            c.gridy++;
+            c.gridy++;
+            c.weighty = 0;
+            c.weightx = 1;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridwidth = 3;
         }
 
         // Initialising the progress bar
@@ -621,6 +632,7 @@ public class MainGUI extends GUI {
 
         // Adding module buttons
         ModuleCollection modules = getModules();
+        c.insets = new Insets(2,0,0,0);
         for (int i=0;i<modules.size();i++) {
             Module module = modules.get(i);
             int idx = modules.indexOf(module);
@@ -633,6 +645,7 @@ public class MainGUI extends GUI {
             if (i==modules.size()-1) modulePanel.setBorder(new EmptyBorder(0,0,5,0));
 
             modulesPanel.add(modulePanel, c);
+            c.insets = new Insets(0,0,0,0);
             c.gridy++;
 
         }
@@ -957,7 +970,7 @@ public class MainGUI extends GUI {
                 modules.remove(activeModule);
                 modules.add(idx - 1, activeModule);
                 populateModuleList();
-
+                updateModules();
             }
         }
     }
@@ -973,6 +986,7 @@ public class MainGUI extends GUI {
                 modules.remove(activeModule);
                 modules.add(idx + 1, activeModule);
                 populateModuleList();
+                updateModules();
             }
         }
     }
@@ -1008,13 +1022,12 @@ public class MainGUI extends GUI {
 
     @Override
     public void updateModules() {
-        updateEvalButtonStates();
-        if (!isBasicGUI()) {
-            populateModuleParameters();
-        } else {
-            populateBasicModules();
-        }
         populateModuleList();
+        updateEvalButtonStates();
+
+        if (isBasicGUI()) populateBasicModules();
+        else populateModuleParameters();
+
     }
 
     @Override
