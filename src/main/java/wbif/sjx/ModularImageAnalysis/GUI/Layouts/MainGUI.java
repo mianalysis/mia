@@ -30,9 +30,10 @@ import java.util.*;
  * Created by Stephen on 20/05/2017.
  */
 public class MainGUI extends GUI {
-    private int mainFrameWidth = 1100;
+    private int editingFrameWidth = 1100;
+    private int minimumEditingFrameWidth = 800;
     private int basicFrameWidth = 425;
-    private int minimumFrameHeight = 500;
+    private int minimumFrameHeight = 600;
     private int frameHeight = 750;
     private int elementHeight = 25;
     private int bigButtonSize = 40;
@@ -61,7 +62,6 @@ public class MainGUI extends GUI {
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
     private static final JPanel basicStatusPanel = new JPanel();
     private static final JPanel editingStatusPanel = new JPanel();
-    private static final JLayeredPane statusPanel = new JLayeredPane();
 
     public MainGUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
         // Only create a GUI if one hasn't already been created
@@ -79,8 +79,7 @@ public class MainGUI extends GUI {
 
         // Setting location of panel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation((screenSize.width - mainFrameWidth) / 2, (screenSize.height - frameHeight) / 2);
-        frame.setPreferredSize(new Dimension(basicFrameWidth,frameHeight));
+        frame.setLocation((screenSize.width - editingFrameWidth) / 2, (screenSize.height - frameHeight) / 2);
 //        frame.setLayout(new GridBagLayout());
         frame.setTitle("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
 
@@ -89,17 +88,16 @@ public class MainGUI extends GUI {
         // Creating the menu bar
         initialiseMenuBar();
         frame.setJMenuBar(menuBar);
-//        frame.setResizable(false);
 
         initialiseBasicMode();
-//        initialiseEditingMode();
-//
+        initialiseEditingMode();
+
 //        if (debugOn) {
 //            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//            renderEditingMode();
+            renderEditingMode();
 //        } else {
 //            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            renderBasicMode();
+//            renderBasicMode();
 //        }
 
         // Final bits for listeners
@@ -160,8 +158,8 @@ public class MainGUI extends GUI {
 
     public void initialiseBasicMode() {
         basicPanel.setLayout(new GridBagLayout());
-        basicPanel.setPreferredSize(new Dimension(basicFrameWidth-20,bigButtonSize+25));
-        basicPanel.setMinimumSize(new Dimension(basicFrameWidth-20,bigButtonSize*25));
+        basicPanel.setPreferredSize(new Dimension(basicFrameWidth-20,frameHeight));
+        basicPanel.setMinimumSize(new Dimension(basicFrameWidth-20,frameHeight));
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 0, 5);
@@ -186,7 +184,7 @@ public class MainGUI extends GUI {
             c.gridy++;
             c.fill = GridBagConstraints.HORIZONTAL;
             c.weighty = 0;
-            initialaiseBasicStatusPanel();
+            initialiseBasicStatusPanel();
             basicPanel.add(basicStatusPanel,c);
         }
 
@@ -199,14 +197,19 @@ public class MainGUI extends GUI {
     }
 
     public void initialiseEditingMode() {
-        editingPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5, 5, 5, 0);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.BOTH;
+        c.weightx = 0;
+        c.weighty = 1;
+
+        editingPanel.setLayout(new GridBagLayout());
+        editingPanel.setPreferredSize(new Dimension(editingFrameWidth-20,frameHeight));
 
         // Creating buttons to add and remove modules
         JPanel controlPanel = initialiseControlPanel();
-        c.insets = new Insets(5, 5, 0, 0);
-        c.gridx = 0;
-        c.gridy = 0;
         c.gridheight = 3;
         editingPanel.add(controlPanel, c);
 
@@ -216,53 +219,57 @@ public class MainGUI extends GUI {
             c.gridy++;
             c.gridy++;
             c.gridy++;
+            c.weighty = 0;
+            c.weightx = 1;
+            c.fill = GridBagConstraints.HORIZONTAL;
             c.gridwidth = 3;
-            c.insets = new Insets(0,0,0,0);
-            editingStatusPanel.setBorder(null);
+            c.insets = new Insets(0,5,5,5);
+            initialaiseEditingStatusPanel();
             editingPanel.add(editingStatusPanel, c);
         }
 
         // Initialising the progress bar
         initialiseEditingProgressBar();
         c.gridy++;
-        c.insets = new Insets(0,0,5,0);
+        c.insets = new Insets(0,5,5,5);
         editingPanel.add(editingProgressBar,c);
 
-        // Initialising the input enable panel
-        initialiseInputEnablePanel();
+//        // Initialising the input enable panel
+//        initialiseInputEnablePanel();
         c.gridy = 0;
         c.gridx++;
         c.gridheight = 1;
         c.gridwidth = 1;
-        c.insets = new Insets(5, 5, 0, 0);
-        editingPanel.add(initialiseInputEnablePanel(), c);
+//        c.insets = new Insets(5, 5, 0, 0);
+//        editingPanel.add(initialiseInputEnablePanel(), c);
 
         // Initialising the module list panel
         initialisingModulesPanel();
         c.gridy++;
         c.insets = new Insets(5, 5, 5, 0);
+        c.weighty = 1;
+        c.fill = GridBagConstraints.VERTICAL;
         editingPanel.add(modulesScrollPane, c);
 
-        // Initialising the output enable panel
-        initialiseOutputEnablePanel();
-        c.gridy++;
-        c.gridheight = 1;
-        c.insets = new Insets(0, 5, 0, 0);
-        editingPanel.add(initialiseOutputEnablePanel(), c);
-
-        // Initialising the parameters panel
-        initialiseParametersPanel();
-        c.gridx++;
-        c.gridy = 0;
-        c.gridheight = 3;
-        c.insets = new Insets(5, 5, 0, 5);
-        editingPanel.add(paramsScrollPane, c);
+//        // Initialising the output enable panel
+//        initialiseOutputEnablePanel();
+//        c.gridy++;
+//        c.gridheight = 1;
+//        c.insets = new Insets(0, 5, 0, 0);
+//        editingPanel.add(initialiseOutputEnablePanel(), c);
+//
+//        // Initialising the parameters panel
+//        initialiseParametersPanel();
+//        c.gridx++;
+//        c.gridy = 0;
+//        c.gridheight = 3;
+//        c.insets = new Insets(5, 5, 0, 5);
+//        editingPanel.add(paramsScrollPane, c);
 
     }
 
     public void renderBasicMode() {
         GridBagConstraints c = new GridBagConstraints();
-//        c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 0;
         c.weightx = 1;
@@ -280,6 +287,7 @@ public class MainGUI extends GUI {
         basicPanel.validate();
         basicPanel.repaint();
 
+        frame.setPreferredSize(new Dimension(basicFrameWidth,frameHeight));
         frame.setMinimumSize(new Dimension(basicFrameWidth,minimumFrameHeight));
 
         frame.pack();
@@ -292,15 +300,26 @@ public class MainGUI extends GUI {
     }
 
     public void renderEditingMode() throws InstantiationException, IllegalAccessException {
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.insets = new Insets(0,5,0,0);
+        c.anchor = GridBagConstraints.WEST;
+
         basicGUI = false;
 
         frame.remove(basicPanel);
         frame.add(editingPanel);
-        editingStatusPanel.add(statusPanel);
+        editingStatusPanel.add(textField,c);
 
         editingPanel.setVisible(true);
         editingPanel.validate();
         editingPanel.repaint();
+
+        frame.setPreferredSize(new Dimension(editingFrameWidth,frameHeight));
+        frame.setMinimumSize(new Dimension(minimumEditingFrameWidth,minimumFrameHeight));
 
         frame.pack();
         frame.revalidate();
@@ -313,17 +332,17 @@ public class MainGUI extends GUI {
     }
 
     private JPanel initialiseControlPanel() {
-        JPanel controlPanel = new JPanel();
-
-        controlPanel.setPreferredSize(new Dimension(bigButtonSize + 15, frameHeight - 50));
-        controlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        controlPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0;
         c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.PAGE_START;
+
+        JPanel controlPanel = new JPanel();
+        controlPanel.setMinimumSize(new Dimension(bigButtonSize + 20, frameHeight - statusHeight-350));
+        controlPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        controlPanel.setLayout(new GridBagLayout());
 
         // Add module button
         ModuleControlButton.setButtonSize(bigButtonSize);
@@ -434,7 +453,7 @@ public class MainGUI extends GUI {
 
     private void initialisingModulesPanel() {
         // Initialising the scroll panel
-        modulesScrollPane.setPreferredSize(new Dimension(moduleButtonWidth + 15, frameHeight - 2 * bigButtonSize - 90));
+        modulesScrollPane.setMinimumSize(new Dimension(basicFrameWidth-48-bigButtonSize, frameHeight - statusHeight-350));
         modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -442,6 +461,7 @@ public class MainGUI extends GUI {
 
         // Initialising the panel for module buttons
         modulesPanel.setLayout(new GridBagLayout());
+        modulesPanel.setMinimumSize(new Dimension(basicFrameWidth-48-bigButtonSize, frameHeight - statusHeight-350));
         modulesPanel.validate();
         modulesPanel.repaint();
 
@@ -480,6 +500,15 @@ public class MainGUI extends GUI {
 
     }
 
+    private void initialaiseEditingStatusPanel() {
+        editingStatusPanel.setLayout(new GridBagLayout());
+        editingStatusPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        editingStatusPanel.setMinimumSize(new Dimension(editingFrameWidth-30,statusHeight+15));
+        editingStatusPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE,statusHeight+15));
+        editingStatusPanel.setPreferredSize(new Dimension(editingFrameWidth-30,statusHeight+15));
+
+    }
+
     private void initialiseStatusTextField() {
         textField.setPreferredSize(new Dimension(basicFrameWidth-40,statusHeight));
         textField.setBorder(null);
@@ -488,9 +517,9 @@ public class MainGUI extends GUI {
         textField.setEditable(false);
         textField.setToolTipText(textField.getText());
 
-        OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
-        PrintStream printStream = new PrintStream(outputStreamTextField);
-        System.setOut(printStream);
+//        OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
+//        PrintStream printStream = new PrintStream(outputStreamTextField);
+//        System.setOut(printStream);
 
     }
 
@@ -502,7 +531,7 @@ public class MainGUI extends GUI {
     private void initialiseEditingProgressBar() {
         editingProgressBar.setValue(0);
         editingProgressBar.setBorderPainted(false);
-        editingProgressBar.setPreferredSize(new Dimension(mainFrameWidth-20, 15));
+        editingProgressBar.setPreferredSize(new Dimension(editingFrameWidth -20, 15));
     }
 
     private void initialiseBasicProgressBar() {
@@ -585,7 +614,7 @@ public class MainGUI extends GUI {
 
     }
 
-    private void initialaiseBasicStatusPanel() {
+    private void initialiseBasicStatusPanel() {
         basicStatusPanel.setLayout(new GridBagLayout());
         basicStatusPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicStatusPanel.setMinimumSize(new Dimension(basicFrameWidth-30,statusHeight+15));
