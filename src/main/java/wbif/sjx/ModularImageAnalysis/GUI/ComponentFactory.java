@@ -30,6 +30,8 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(2,5,0,0);
 
         JTextField parameterName = new JTextField(parameter.getName());
@@ -240,6 +242,7 @@ public class ComponentFactory {
         c.gridx = 0;
         c.weightx = 0;
         c.insets = new Insets(0, 5, 0, 5);
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(gui,module);
@@ -252,6 +255,7 @@ public class ComponentFactory {
         title.setBorder(null);
         title.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
         title.setPreferredSize(new Dimension(panelWidth-elementHeight,elementHeight));
+        c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);
 
@@ -265,7 +269,9 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
+        c.weightx = 1;
         c.weighty = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.EAST;
 
         JSeparator separatorLeft = new JSeparator();
@@ -273,10 +279,12 @@ public class ComponentFactory {
 
         JLabel label = new JLabel();
         label.setText(module.getParameterValue(GUISeparator.TITLE));
+        c.weightx = 0;
         c.gridx++;
         panel.add(label,c);
 
         JSeparator separatorRight = new JSeparator();
+        c.weightx = 1;
         c.gridx++;
         panel.add(separatorRight,c);
 
@@ -309,8 +317,9 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
+        c.weightx = 1;
         c.weighty = 0;
-
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         modulePanel.add(titlePanel, c);
 
