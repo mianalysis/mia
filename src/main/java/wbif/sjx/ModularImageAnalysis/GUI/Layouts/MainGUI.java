@@ -877,6 +877,8 @@ public class MainGUI extends GUI {
 
         c.gridy++;
         c.weighty = 100;
+        c.fill = GridBagConstraints.VERTICAL;
+        separator.setPreferredSize(new Dimension(-1,1));
         basicModulesPanel.add(separator, c);
 
         basicModulesPanel.validate();

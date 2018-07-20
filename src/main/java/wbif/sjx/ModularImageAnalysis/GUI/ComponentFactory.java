@@ -238,7 +238,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createBasicModuleHeading(Module module, int panelWidth) {
+    public JPanel createBasicModuleHeading(Module module) {
         JPanel modulePanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -258,7 +258,6 @@ public class ComponentFactory {
         title.setEditable(false);
         title.setBorder(null);
         title.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
-        title.setPreferredSize(new Dimension(panelWidth-elementHeight,elementHeight));
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);
@@ -316,7 +315,7 @@ public class ComponentFactory {
         if (!hasVisibleParameters &! module.canBeDisabled()) return null;
 
         JPanel modulePanel = new JPanel(new GridBagLayout());
-        JPanel titlePanel = createBasicModuleHeading(module, panelWidth);
+        JPanel titlePanel = createBasicModuleHeading(module);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
