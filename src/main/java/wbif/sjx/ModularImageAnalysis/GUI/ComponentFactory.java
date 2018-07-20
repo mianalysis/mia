@@ -25,8 +25,9 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module, int panelWidth) {
+    public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module) {
         JPanel paramPanel = new JPanel(new GridBagLayout());
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -35,7 +36,7 @@ public class ComponentFactory {
         c.insets = new Insets(2,5,0,0);
 
         JTextField parameterName = new JTextField(parameter.getName());
-        parameterName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
+        parameterName.setPreferredSize(new Dimension(0,elementHeight));
         parameterName.setEditable(false);
         parameterName.setBorder(null);
         paramPanel.add(parameterName, c);
@@ -141,7 +142,7 @@ public class ComponentFactory {
         c.weightx=1;
         c.anchor = GridBagConstraints.EAST;
         if (parameterControl != null) {
-            parameterControl.setPreferredSize(new Dimension(panelWidth/3, elementHeight));
+            parameterControl.setPreferredSize(new Dimension(0,elementHeight));
             paramPanel.add(parameterControl, c);
         }
 
@@ -205,6 +206,8 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
+        c.weightx = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,0,0);
 
         // Adding the nickname control to the top of the panel
@@ -222,11 +225,12 @@ public class ComponentFactory {
 
         ModuleName moduleName = new ModuleName(gui, activeModule);
         c.gridx++;
+        c.weightx = 1;
         paramPanel.add(moduleName, c);
 
         ResetModuleName resetModuleName = new ResetModuleName(gui, activeModule);
         c.gridx++;
-        c.weightx = 1;
+        c.weightx = 0;
         c.anchor = GridBagConstraints.EAST;
         paramPanel.add(resetModuleName, c);
 
@@ -329,7 +333,7 @@ public class ComponentFactory {
         c.insets = new Insets(0,35,0,0);
         for (Parameter parameter : module.updateAndGetParameters().values()) {
             if (parameter.isVisible()) {
-                JPanel paramPanel = createParameterControl(parameter, gui.getModules(), module, panelWidth-35);
+                JPanel paramPanel = createParameterControl(parameter, gui.getModules(), module);
 
                 c.gridy++;
                 modulePanel.add(paramPanel, c);
@@ -341,16 +345,18 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createMeasurementHeader(String name, int panelWidth) {
+    public JPanel createMeasurementHeader(String name) {
         JPanel headerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(5,0,0,0);
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
 
         JTextField headerName = new JTextField("      "+name);
-        headerName.setPreferredSize(new Dimension(panelWidth, elementHeight));
+        headerName.setPreferredSize(new Dimension(-1, elementHeight));
         headerName.setEditable(false);
         headerName.setBorder(null);
         headerPanel.add(headerName, c);
@@ -358,21 +364,23 @@ public class ComponentFactory {
         return headerPanel;
     }
 
-    public JPanel createMeasurementControl(MeasurementReference measurement, int panelWidth) {
+    public JPanel createMeasurementControl(MeasurementReference measurement) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,0,0);
 
         JTextField measurementName = new JTextField("            "+measurement.getName());
-        measurementName.setPreferredSize(new Dimension(2*panelWidth/3, elementHeight));
+        measurementName.setPreferredSize(new Dimension(-1, elementHeight));
         measurementName.setEditable(false);
         measurementName.setBorder(null);
         measurementPanel.add(measurementName, c);
 
         MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement);
-        exportCheck.setPreferredSize(new Dimension(panelWidth/3, elementHeight));
+        exportCheck.setPreferredSize(new Dimension(-1, elementHeight));
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.EAST;

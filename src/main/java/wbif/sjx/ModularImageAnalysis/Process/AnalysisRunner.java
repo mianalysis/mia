@@ -167,7 +167,9 @@ public class AnalysisRunner {
     }
 
     public static void stopAnalysis() {
-        batchProcessor.stopAnalysis();
-
+        System.err.println("STOPPING");
+        if (batchProcessor != null) {
+            batchProcessor.stopAnalysis();
+        }
     }
 }
