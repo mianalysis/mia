@@ -225,7 +225,7 @@ public class Obj extends Volume {
 
     }
 
-    public Roi getRoi(ImagePlus templateIpl, int slice) {
+    public Roi getRoi(int slice) {
         // Getting the image corresponding to this slice
         TreeSet<Point<Integer>> slicePoints = getSlicePoints(slice);
         Obj sliceObj = new Obj("Slice",ID,dppXY,dppZ,calibratedUnits,twoD);
@@ -234,7 +234,8 @@ public class Obj extends Volume {
         ObjCollection objectCollection = new ObjCollection("ProjectedObjects");
         objectCollection.add(sliceObj);
 
-        ImagePlus sliceIpl = IJ.createImage("SliceIm",templateIpl.getWidth(),templateIpl.getHeight(),1,8);
+        double[][] extents = getExtents2D(true);
+        ImagePlus sliceIpl = IJ.createImage("SliceIm",(int)extents[0][1]+1,(int)extents[1][1]+1,1,8);
 
         HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
         Image objectImage = objectCollection.convertObjectsToImage("Output",sliceIpl, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
@@ -243,6 +244,7 @@ public class Obj extends Volume {
         ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
         ipr.setThreshold(0,0, ImageProcessor.NO_LUT_UPDATE);
         ThresholdToSelection selection = new ThresholdToSelection();
+
         return selection.convert(objectImage.getImagePlus().getProcessor());
 
     }

@@ -121,7 +121,6 @@ public class ImageMath extends Module {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-
         }
     }
 

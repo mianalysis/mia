@@ -107,7 +107,7 @@ public class ActiveContourObjectDetection extends Module {
             int z = inputObject.getPoints().iterator().next().getZ();
 
             // Getting the Roi for the current object
-            Polygon roi = inputObject.getRoi(inputImagePlus,z).getPolygon();
+            Polygon roi = inputObject.getRoi(z).getPolygon();
             int[] xCoords = roi.xpoints;
             int[] yCoords = roi.ypoints;
 

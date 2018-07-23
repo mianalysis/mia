@@ -82,7 +82,7 @@ public class MainGUI extends GUI {
         frame.setLocation((screenSize.width - editingFrameWidth) / 2, (screenSize.height - frameHeight) / 2);
         frame.setTitle("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
 
-        initialiseStatusTextField();
+        if (!debugOn) initialiseStatusTextField();
 
         // Creating the menu bar
         initialiseMenuBar();
@@ -224,7 +224,7 @@ public class MainGUI extends GUI {
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridwidth = 3;
             c.insets = new Insets(0,5,5,5);
-            initialaiseEditingStatusPanel();
+            initialiseEditingStatusPanel();
             editingPanel.add(editingStatusPanel, c);
         } else {
             c.gridheight = 1;
@@ -501,7 +501,7 @@ public class MainGUI extends GUI {
 
     }
 
-    private void initialaiseEditingStatusPanel() {
+    private void initialiseEditingStatusPanel() {
         editingStatusPanel.setLayout(new GridBagLayout());
         editingStatusPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         editingStatusPanel.setMinimumSize(new Dimension(0,statusHeight+15));

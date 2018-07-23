@@ -161,6 +161,7 @@
             <groupId>sc.fiji</groupId>
             <artifactId>Colour_Deconvolution</artifactId>
             <version>3.0.2</version>
+            <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
@@ -179,6 +180,7 @@
             <groupId>org.janelia</groupId>
             <artifactId>H5J_Loader_Plugin</artifactId>
             <version>1.0.7</version>
+            <scope>${myscope}</scope>
         </dependency>
 
         <dependency>

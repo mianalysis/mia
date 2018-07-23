@@ -39,6 +39,7 @@ public class ComponentFactory {
         parameterName.setPreferredSize(new Dimension(0,elementHeight));
         parameterName.setEditable(false);
         parameterName.setBorder(null);
+        parameterName.setOpaque(false);
         paramPanel.add(parameterName, c);
 
         JComponent parameterControl = null;

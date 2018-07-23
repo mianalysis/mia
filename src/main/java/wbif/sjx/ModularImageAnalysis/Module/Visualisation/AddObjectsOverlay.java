@@ -166,7 +166,7 @@ public class AddObjectsOverlay extends Module {
         // Running through each slice of this object
         double[][] range = object.getExtents(true,false);
         for (int z= (int) range[2][0];z<= (int) range[2][1];z++) {
-            Roi polyRoi = object.getRoi(ipl,z);
+            Roi polyRoi = object.getRoi(z);
             if (ipl.isHyperStack()) {
                 ipl.setPosition(1,z+1,t);
                 polyRoi.setPosition(1, z+1, t);

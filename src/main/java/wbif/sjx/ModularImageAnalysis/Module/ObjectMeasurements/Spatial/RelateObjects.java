@@ -58,6 +58,7 @@ public class RelateObjects extends Module {
         String DIST_CENTROID_CAL = "DIST_TO_${PARENT}_CENT_(${CAL})";
         String DIST_CENT_SURF_PX = "DIST_FROM_CENT_TO_${PARENT}_SURF_(PX)";
         String DIST_CENT_SURF_CAL = "DIST_FROM_CENT_TO_${PARENT}_SURF_(${CAL})";
+        String DIST_CENT_SURF_FRAC = "DIST_FROM_CENT_TO_${PARENT}_SURF_(FRAC)";
 
     }
 
@@ -513,12 +514,19 @@ public class RelateObjects extends Module {
                 "relevant \""+parentObjectName+"\" object. Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                 "units.");
 
+        measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC,parentObjectName);
+        MeasurementReference distCentSurfFrac = objectMeasurementReferences.getOrPut(measurementName);
+        distCentSurfCal.setDescription("Shortest distance between the centroid of this object and the surface of the " +
+                "closest \""+ parentObjectName+"\" object.  Calculated as a fraction of the furthest possible distance " +
+                "to the \""+parentObjectName+"\" surface.");
+
         distSurfPx.setImageObjName(childObjectsName);
         distCentPx.setImageObjName(childObjectsName);
         distSurfCal.setImageObjName(childObjectsName);
         distCentCal.setImageObjName(childObjectsName);
         distCentSurfPx.setImageObjName(childObjectsName);
         distCentSurfCal.setImageObjName(childObjectsName);
+        distCentSurfFrac.setImageObjName(childObjectsName);
 
         distCentPx.setCalculated(false);
         distCentCal.setCalculated(false);
@@ -526,6 +534,7 @@ public class RelateObjects extends Module {
         distSurfCal.setCalculated(false);
         distCentSurfPx.setCalculated(false);
         distCentSurfCal.setCalculated(false);
+        distCentSurfFrac.setCalculated(false);
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
@@ -543,6 +552,10 @@ public class RelateObjects extends Module {
                     case ReferencePoints.CENTROID_TO_SURFACE:
                         distCentSurfPx.setCalculated(true);
                         distCentSurfCal.setCalculated(true);
+
+                        if (parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)) {
+                            distCentSurfFrac.setCalculated(true);
+                        }
                         break;
                 }
                 break;
