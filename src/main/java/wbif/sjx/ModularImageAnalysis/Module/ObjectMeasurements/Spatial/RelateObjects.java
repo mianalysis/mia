@@ -2,6 +2,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import ij.IJ;
 import ij.ImagePlus;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
@@ -103,70 +106,73 @@ public class RelateObjects extends Module {
             Obj minLink = null;
             double dpp = childObject.getDistPerPxXY();
 
-            // If no parent objects were detected
-            if (parentObjects.size() != 0) {
-                for (Obj parentObject : parentObjects.values()) {
-                    if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
+            for (Obj parentObject : parentObjects.values()) {
+                if (linkInSameFrame & parentObject.getT() != childObject.getT()) continue;
 
-                    // Calculating the object spacing
-                    switch (referencePoint) {
-                        case ReferencePoints.CENTROID:
-                            double dist = childObject.getCentroidSeparation(parentObject,true);
+                // Calculating the object spacing
+                switch (referencePoint) {
+                    case ReferencePoints.CENTROID:
+                        double dist = childObject.getCentroidSeparation(parentObject,true);
 
-                            if (dist < minDist) {
+                        if (dist < minDist) {
+                            if (limitLinking && dist > linkingDistance) continue;
+                            minDist = dist;
+                            minLink = parentObject;
+                        }
+
+                        break;
+
+                    case ReferencePoints.SURFACE:
+                        dist = childObject.getSurfaceSeparation(parentObject,true);
+
+                        if (Math.abs(dist) < Math.abs(minDist)) {
+                            if (limitLinking && Math.abs(dist) > linkingDistance) continue;
+                            minDist = dist;
+                            minLink = parentObject;
+                        }
+
+                        break;
+
+                    case ReferencePoints.CENTROID_TO_SURFACE:
+                        double childXCent = childObject.getXMean(true);
+                        double childYCent = childObject.getYMean(true);
+                        double childZCent = childObject.getZMean(true, true);
+                        double childZCentSlice = childObject.getZMean(true, false);
+
+                        Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) childZCentSlice);
+
+                        double[] parentX = parentObject.getSurfaceX(true);
+                        double[] parentY = parentObject.getSurfaceY(true);
+                        double[] parentZ = parentObject.getSurfaceZ(true, true);
+
+                        boolean isInside = false;
+
+                        for (int i = 0; i < parentX.length; i++) {
+                            double xDist = childXCent - parentX[i];
+                            double yDist = childYCent - parentY[i];
+                            double zDist = childZCent - parentZ[i];
+                            dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
+                            if (dist < Math.abs(minDist)) {
                                 if (limitLinking && dist > linkingDistance) continue;
+
                                 minDist = dist;
                                 minLink = parentObject;
+                                isInside = parentObject.getPoints().contains(currentPoint);
                             }
+                        }
 
-                            break;
+                        // If this point is inside the parent the distance should be negative
+                        if (isInside) minDist = -minDist;
 
-                        case ReferencePoints.SURFACE:
-                                dist = childObject.getSurfaceSeparation(parentObject,true);
+                        break;
 
-                            if (Math.abs(dist) < Math.abs(minDist)) {
-                                if (limitLinking && Math.abs(dist) > linkingDistance) continue;
-                                minDist = dist;
-                                minLink = parentObject;
-                            }
-
-                            break;
-
-                        case ReferencePoints.CENTROID_TO_SURFACE:
-                            double childXCent = childObject.getXMean(true);
-                            double childYCent = childObject.getYMean(true);
-                            double childZCent = childObject.getZMean(true, true);
-                            double childZCentSlice = childObject.getZMean(true, false);
-
-                            Point<Integer> currentPoint = new Point<>((int) Math.round(childXCent), (int) Math.round(childYCent), (int) childZCentSlice);
-
-                            double[] parentX = parentObject.getSurfaceX(true);
-                            double[] parentY = parentObject.getSurfaceY(true);
-                            double[] parentZ = parentObject.getSurfaceZ(true, true);
-
-                            boolean isInside = false;
-
-                            for (int i = 0; i < parentX.length; i++) {
-                                double xDist = childXCent - parentX[i];
-                                double yDist = childYCent - parentY[i];
-                                double zDist = childZCent - parentZ[i];
-                                dist = Math.sqrt(xDist * xDist + yDist * yDist + zDist * zDist);
-                                if (dist < Math.abs(minDist)) {
-                                    if (limitLinking && dist > linkingDistance) continue;
-
-                                    minDist = dist;
-                                    minLink = parentObject;
-                                    isInside = parentObject.getPoints().contains(currentPoint);
-                                }
-                            }
-
-                            // If this point is inside the parent the distance should be negative
-                            if (isInside) minDist = -minDist;
-
-                            break;
-
-                    }
                 }
+            }
+
+            // If using centroid to surface proximity and inside only, calculate the fractional distance
+            if (referencePoint.equals(ReferencePoints.CENTROID_TO_SURFACE)
+                    && parameters.getValue(INSIDE_OUTSIDE_MODE).equals(InsideOutsideModes.INSIDE_ONLY)) {
+                calculateFractionalDistance(childObject,minLink,minDist);
             }
 
             // Applying the inside outside mode (doesn't apply for centroid-centroid linking)
@@ -181,6 +187,30 @@ public class RelateObjects extends Module {
             writeMessage("Processed "+(iter++)+" of "+numberOfChildren+" objects");
 
         }
+    }
+
+    public void calculateFractionalDistance(Obj childObject, Obj parentObject, double minDist) {
+        // Calculating the furthest distance to the edge
+        if (parentObject.getMeasurement("MAX_DIST") == null) {
+            // Creating an image for the parent object
+            Image parentImage = parentObject.convertObjToImage("Parent");
+            InvertIntensity.process(parentImage.getImagePlus());
+
+            ImagePlus distIpl = BinaryOperations.applyDistanceMap3D(parentImage.getImagePlus(),true);
+
+            Image projectedImage = new ProjectImage().projectImageInZ(new Image("Dist", distIpl), "Projected", ProjectImage.ProjectionModes.MAX);
+            double maxDist = projectedImage.getImagePlus().getStatistics().max;
+
+            parentObject.addMeasurement(new Measurement("MAX_DIST",maxDist));
+
+        }
+
+        // Adding measurement
+        double maxDist = parentObject.getMeasurement("MAX_DIST").getValue();
+        double frac = Math.abs(minDist/maxDist);
+        String measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC, parentObject.getName());
+        childObject.addMeasurement(new Measurement(measurementName, frac));
+
     }
 
     public void applyMeasurements(Obj childObject, ObjCollection parentObjects, double minDist, Obj minLink) {
@@ -516,7 +546,7 @@ public class RelateObjects extends Module {
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC,parentObjectName);
         MeasurementReference distCentSurfFrac = objectMeasurementReferences.getOrPut(measurementName);
-        distCentSurfCal.setDescription("Shortest distance between the centroid of this object and the surface of the " +
+        distCentSurfFrac.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Calculated as a fraction of the furthest possible distance " +
                 "to the \""+parentObjectName+"\" surface.");
 

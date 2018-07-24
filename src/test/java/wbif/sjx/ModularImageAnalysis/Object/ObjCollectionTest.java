@@ -109,7 +109,7 @@ public class ObjCollectionTest {
         collection.add(obj);
 
         int[] expected = new int[]{3,12};
-        int[] actual = collection.getTimepointLimits();
+        int[] actual = collection.getTemporalLimits();
 
         assertArrayEquals(expected,actual);
 

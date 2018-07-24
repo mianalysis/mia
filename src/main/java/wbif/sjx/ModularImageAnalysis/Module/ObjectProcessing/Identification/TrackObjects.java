@@ -338,7 +338,7 @@ public class TrackObjects extends Module {
 
         // Finding the spatial and frame frame limits of all objects in the inputObjects set
         int[][] spatialLimits = inputObjects.getSpatialLimits();
-        int[] frameLimits = inputObjects.getTimepointLimits();
+        int[] frameLimits = inputObjects.getTemporalLimits();
 
         // Creating new track objects for all objects in the first frame
         for (Obj inputObj:inputObjects.values()) {

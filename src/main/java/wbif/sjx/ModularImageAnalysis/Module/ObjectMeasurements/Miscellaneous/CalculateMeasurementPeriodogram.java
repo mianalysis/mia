@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -58,7 +57,7 @@ public class CalculateMeasurementPeriodogram extends Module {
 
 
     public double[] getSignal(ObjCollection spotObjects, String measurementName, String missingMode) {
-        int[] tLimits = spotObjects.getTimepointLimits();
+        int[] tLimits = spotObjects.getTemporalLimits();
         double[] signal = new double[tLimits[1]-tLimits[0]+1];
 
         // Populating the array with Double.NaN

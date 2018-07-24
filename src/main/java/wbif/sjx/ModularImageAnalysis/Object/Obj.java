@@ -299,6 +299,17 @@ public class Obj extends Volume {
 
     }
 
+    public Image convertObjToImage(String outputName) {
+        // Creating an ObjCollection to hold this image
+        ObjCollection tempObj = new ObjCollection(outputName);
+        tempObj.add(this);
+
+        // Getting the image
+        HashMap<Integer, Float> hues = tempObj.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
+        return tempObj.convertObjectsToImage(outputName,null,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
+
+    }
+
     public void cropToImageSize(Image templateImage) {
         int width = templateImage.getImagePlus().getWidth();
         int height = templateImage.getImagePlus().getHeight();
