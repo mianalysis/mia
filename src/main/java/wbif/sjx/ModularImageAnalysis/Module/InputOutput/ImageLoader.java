@@ -26,6 +26,8 @@ import ome.units.quantity.Length;
 import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
+import org.janelia.it.h5j.fiji.adapter.FijiAdapter;
+import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -572,8 +574,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         boolean toConvert = ipl.getBitDepth() == 24;
         if (toConvert) ipl = CompositeConverter.makeComposite(ipl);
 
-        if (threeDMode.equals(ThreeDModes.TIMESERIES) && (!ipl.isHyperStack() || toConvert) && ipl.getNSlices() > 1) {
+        // If either number of slices or timepoints is 1 check it's the right dimension
+        if (threeDMode.equals(ThreeDModes.TIMESERIES) && ((ipl.getNFrames() == 1 && ipl.getNSlices() > 1) || (ipl.getNSlices() == 1 && ipl.getNFrames() > 1) )) {
             ConvertStackToTimeseries.process(ipl);
+            ipl.getCalibration().pixelDepth = 1;
         }
 
         // Adding image to workspace

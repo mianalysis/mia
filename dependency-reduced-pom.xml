@@ -4,7 +4,7 @@
   <groupId>wbif.sjx</groupId>
   <artifactId>ModularImageAnalysis</artifactId>
   <name>Modular_Image_Analysis</name>
-  <version>0.5.15</version>
+  <version>0.5.16</version>
   <url>https://github.com/SJCross/ModularImageAnalysis</url>
   <issueManagement>
     <system>GitHub Issues</system>
@@ -380,6 +380,12 @@
     </dependency>
     <dependency>
       <groupId>sc.fiji</groupId>
+      <artifactId>Colour_Deconvolution</artifactId>
+      <version>3.0.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>sc.fiji</groupId>
       <artifactId>CorrectBleach_</artifactId>
       <version>2.0.2</version>
       <scope>provided</scope>
@@ -409,6 +415,22 @@
         <exclusion>
           <artifactId>imglib2</artifactId>
           <groupId>net.imglib2</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.janelia</groupId>
+      <artifactId>H5J_Loader_Plugin</artifactId>
+      <version>1.0.7</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jhdf5</artifactId>
+          <groupId>cisd</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ffmpeg</artifactId>
+          <groupId>org.bytedeco.javacpp-presets</groupId>
         </exclusion>
       </exclusions>
     </dependency>

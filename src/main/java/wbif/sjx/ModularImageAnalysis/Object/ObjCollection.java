@@ -1,11 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import com.sun.istack.NotNull;
 import ij.IJ;
 import ij.ImagePlus;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public int[] getTimepointLimits() {
+    public int[] getTemporalLimits() {
         // Finding the first and last frame of all objects in the inputObjects set
         int[] limits = new int[2];
         limits[0] = Integer.MAX_VALUE;
@@ -133,7 +133,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public Image convertObjectsToImage(String outputName, ImagePlus templateIpl, String colourMode, HashMap<Integer,Float> hues) {
+    public Image convertObjectsToImage(String outputName, @Nullable ImagePlus templateIpl, String colourMode, HashMap<Integer,Float> hues) {
         ImagePlus ipl;
         int bitDepth = 8;
         switch (colourMode){
@@ -152,35 +152,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
         if (templateIpl == null) {
             // Getting range of object pixels
-            int[][] coordinateRange = new int[4][2];
-
-            for (Obj object : values()) {
-                // Getting range of XYZ
-                double[][] currCoordinateRange = object.getExtents(true,false);
-                for (int dim = 0; dim < currCoordinateRange.length; dim++) {
-                    if (currCoordinateRange[dim][0] < coordinateRange[dim][0]) {
-                        coordinateRange[dim][0] = (int) currCoordinateRange[dim][0];
-                    }
-
-                    if (currCoordinateRange[dim][1] > coordinateRange[dim][1]) {
-                        coordinateRange[dim][1] = (int) currCoordinateRange[dim][1];
-                    }
-                }
-
-                // Getting range of timepoints
-                int currTimepoint = object.getT();
-                if (currTimepoint < coordinateRange[3][0]) {
-                    coordinateRange[3][0] = currTimepoint;
-                }
-
-                if (currTimepoint > coordinateRange[3][1]) {
-                    coordinateRange[3][1] = currTimepoint;
-                }
-            }
+            int[][] spatialLimits = getSpatialLimits();
+            int[] temporalLimits = getTemporalLimits();
 
             // Creating a new image
-            ipl = IJ.createHyperStack(outputName, coordinateRange[0][1] + 1,coordinateRange[1][1] + 1,
-                    1, coordinateRange[2][1] + 1, coordinateRange[3][1] + 1,bitDepth);
+            ipl = IJ.createHyperStack(outputName, spatialLimits[0][1] + 1,spatialLimits[1][1] + 1,
+                    1, spatialLimits[2][1] + 1, temporalLimits[1] + 1,bitDepth);
 
         } else {
             ipl = IJ.createHyperStack(outputName,templateIpl.getWidth(),templateIpl.getHeight(),

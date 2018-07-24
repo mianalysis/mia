@@ -46,6 +46,13 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     public static final String INPUT_IMAGE2 = "Input image 2";
     public static final String OUTPUT_IMAGE = "Output image";
 
+
+//    public void forceSameType(Image inputImage1, Image inputImage2) {
+//        ImgPlus<T> img1 = inputImage1.getImgPlus();
+//        ImgPlus<T> img2 = inputImage2.getImgPlus();
+//
+//    }
+
     public Image combineImages(Image inputImage1, Image inputImage2, String outputImageName) {
         ImgPlus<T> img1 = inputImage1.getImgPlus();
         ImgPlus<T> img2 = inputImage2.getImgPlus();
@@ -216,6 +223,9 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
         Image inputImage1 = workspace.getImage(inputImage1Name);
         Image inputImage2 = workspace.getImage(inputImage2Name);
+
+        // Ensuring the two image types are the same.  If they're not, they're set to the highest common type
+//        forceSameType(inputImage1,inputImage2);
 
         Image mergedImage = combineImages(inputImage1,inputImage2,outputImageName);
         workspace.addImage(mergedImage);

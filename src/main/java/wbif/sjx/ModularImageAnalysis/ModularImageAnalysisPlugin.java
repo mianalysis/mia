@@ -61,7 +61,7 @@ public class ModularImageAnalysisPlugin implements PlugIn {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
                 new ImageJ();
-                new MainGUI(false);
+                new MainGUI(true);
 
             } else {
                 String filepath = args[0];
@@ -84,14 +84,15 @@ public class ModularImageAnalysisPlugin implements PlugIn {
         // Checking the relevant plugins are available
         boolean[] toInstall = new boolean[2];
         Arrays.fill(toInstall,false);
+
         try {
-            Class.forName("inra.ijpb.binary.BinaryImages");
+            Class.forName("de.biomedical_imaging.ij.steger.Line");
         } catch (ClassNotFoundException e) {
             toInstall[0] = true;
         }
 
         try {
-            Class.forName("de.biomedical_imaging.ij.steger.Line");
+            Class.forName("inra.ijpb.binary.BinaryImages");
         } catch (ClassNotFoundException e) {
             toInstall[1] = true;
         }

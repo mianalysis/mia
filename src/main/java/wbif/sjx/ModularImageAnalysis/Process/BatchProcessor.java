@@ -26,6 +26,7 @@ import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.TreeMap;
 import java.util.concurrent.*;
@@ -243,6 +244,7 @@ public class BatchProcessor extends FileCrawler {
         } else {
             pool.shutdownNow();
         }
+
         shutdownEarly = true;
         Prefs.setThreads(origThreads);
 

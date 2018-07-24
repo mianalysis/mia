@@ -10,6 +10,7 @@ import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.NormaliseIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -42,6 +43,7 @@ public class IdentifyObjects extends Module {
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
+        inputImagePlus = inputImagePlus.duplicate();
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         int connectivity = 6;

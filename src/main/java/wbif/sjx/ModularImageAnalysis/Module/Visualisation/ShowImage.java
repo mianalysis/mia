@@ -25,14 +25,15 @@ public class ShowImage extends Module {
 
     @Override
     public void run(Workspace workspace) {
-        String imageName = parameters.getValue(DISPLAY_IMAGE);
-        ImagePlus imageToShow = workspace.getImage(imageName).getImagePlus();
-        imageToShow = new Duplicator().run(imageToShow);
-        imageToShow.setTitle(imageName);
+        if (showOutput) {
+            String imageName = parameters.getValue(DISPLAY_IMAGE);
+            ImagePlus imageToShow = workspace.getImage(imageName).getImagePlus();
+            imageToShow = new Duplicator().run(imageToShow);
+            imageToShow.setTitle(imageName);
 
-        IntensityMinMax.run(imageToShow,true,0.001);
-        imageToShow.show();
-
+            IntensityMinMax.run(imageToShow, true, 0.001);
+            imageToShow.show();
+        }
     }
 
     @Override

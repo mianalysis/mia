@@ -45,6 +45,7 @@ The plugin makes use of a combination of plugins packaged with Fiji as well as o
 Required plugins pre-packaged with Fiji:
 - [Auto Threshold](https://github.com/fiji/Auto_Threshold)
 - [BioFormats](https://github.com/openmicroscopy/bioformats)
+- [Colour Deconvolution](https://github.com/fiji/Colour_Deconvolution)
 - [Correct Bleach](https://github.com/fiji/CorrectBleach)
 - [TrackMate](https://github.com/fiji/TrackMate)
 - [Weka Trainable Segmentation](https://github.com/fiji/Trainable_Segmentation)

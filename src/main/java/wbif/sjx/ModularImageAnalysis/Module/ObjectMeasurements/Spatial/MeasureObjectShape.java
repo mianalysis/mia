@@ -1,13 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
+import ij.plugin.filter.Analyzer;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ProjectObjects;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Analysis.EllipseCalculator;
-import wbif.sjx.common.Analysis.EllipsoidCalculator;
-import wbif.sjx.common.Analysis.LongestChordCalculator;
-import wbif.sjx.common.MathFunc.CumStat;
 
 import java.util.ArrayList;
 
@@ -20,6 +17,8 @@ public class MeasureObjectShape extends Module {
     public static final String FITTING_MODE = "Fit convex hull to";
     public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
+    public static final String MEASURE_PROJECTED_PERIM = "Measure projected perimeter";
+
 
     public interface Measurements {
         String N_VOXELS = "SHAPE // N_VOXELS";
@@ -29,8 +28,11 @@ public class MeasureObjectShape extends Module {
         String PROJ_AREA_CAL = "SHAPE // PROJ_AREA_(${CAL}^2)";
         String PROJ_DIA_PX = "SHAPE // PROJ_DIA_(PX)";
         String PROJ_DIA_CAL = "SHAPE // PROJ_DIA_(${CAL})";
+        String PROJ_PERIM_PX = "SHAPE // PROJ_PERIM_(PX)";
+        String PROJ_PERIM_CAL = "SHAPE // PROJ_PERIM_(${CAL})";
 
     }
+
 
     /**
      * Calculates the maximum distance between any two points of the
@@ -86,6 +88,7 @@ public class MeasureObjectShape extends Module {
         boolean measureVolume = parameters.getValue(MEASURE_VOLUME);
         boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA);
         boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA);
+        boolean measureProjectedPerimeter = parameters.getValue(MEASURE_PROJECTED_PERIM);
 
         // Running through each object, making the measurements
         for (Obj inputObject:inputObjects.values()) {
@@ -104,7 +107,7 @@ public class MeasureObjectShape extends Module {
 
             // If necessary analyses are included
             Obj projectedObject = null;
-            if (measureProjectedArea || measureProjectedDiameter) {
+            if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
                 projectedObject = ProjectObjects.createProjection(inputObject, "Projected",inputObject.is2D());
             }
 
@@ -123,6 +126,14 @@ public class MeasureObjectShape extends Module {
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx, this));
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_DIA_CAL), maxDistanceCal, this));
             }
+
+            // Adding the projected-object perimeter measurements
+            if (measureProjectedPerimeter) {
+                double perimeterPx = projectedObject.getRoi(0).getLength();
+                double perimeterCal = perimeterPx*inputObject.getDistPerPxXY();
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX,perimeterPx,this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_PERIM_CAL),perimeterCal,this));
+            }
         }
     }
 
@@ -132,6 +143,7 @@ public class MeasureObjectShape extends Module {
         parameters.add(new Parameter(MEASURE_VOLUME, Parameter.BOOLEAN, true));
         parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_PROJECTED_PERIM, Parameter.BOOLEAN, false));
 
     }
 
@@ -200,6 +212,21 @@ public class MeasureObjectShape extends Module {
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
                             + inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
+                    "units.");
+        }
+
+        if (parameters.getValue(MEASURE_PROJECTED_PERIM)) {
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_PERIM_PX);
+            reference.setCalculated(true);
+            reference.setImageObjName(inputObjectsName);
+            reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
+                    "Measured in pixel units.");
+
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_PERIM_CAL));
+            reference.setCalculated(true);
+            reference.setImageObjName(inputObjectsName);
+            reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
+                    "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                     "units.");
         }
 
