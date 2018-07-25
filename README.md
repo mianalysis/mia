@@ -54,5 +54,9 @@ Required plugins that need installing via the Fiji updater:
 - [Ridge Detection](https://github.com/thorstenwagner/ij-ridgedetection)
 - [MorphoLibJ](https://github.com/ijpb/MorphoLibJ)
 
+Plugins bundled with MIA:
+- [BoneJ](https://github.com/mdoube/BoneJ)
+- [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html)
+
 
 A list of bundled dependencies along with their respective licenses can be found [here](https://cdn.rawgit.com/SJCross/ModularImageAnalysis/master/target/site/dependencies.html).
