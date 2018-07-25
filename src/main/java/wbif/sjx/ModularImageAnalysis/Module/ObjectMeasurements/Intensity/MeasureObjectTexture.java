@@ -55,13 +55,7 @@ public class MeasureObjectTexture extends Module {
 
     ObjCollection getLocalObjectRegion(ObjCollection objects, double radius, boolean calibrated, ImagePlus inputImagePlus) {
         // Getting local object region
-        GetLocalObjectRegion getLocalObjectRegion = (GetLocalObjectRegion) new GetLocalObjectRegion()
-                .updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,objects.getName())
-                .updateParameterValue(GetLocalObjectRegion.LOCAL_RADIUS,radius)
-                .updateParameterValue(GetLocalObjectRegion.CALIBRATED_RADIUS,calibrated)
-                .updateParameterValue(GetLocalObjectRegion.USE_MEASUREMENT,false);
-
-        objects = getLocalObjectRegion.getLocalRegions(objects,inputImagePlus);
+        objects = new GetLocalObjectRegion().getLocalRegions(objects,objects.getName(),inputImagePlus,false,"",radius,calibrated);
 
         return objects;
 

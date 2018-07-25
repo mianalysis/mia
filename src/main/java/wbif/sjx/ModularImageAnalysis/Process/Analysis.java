@@ -4,7 +4,6 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
-import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -21,7 +20,7 @@ public class Analysis implements Serializable {
     public OutputControl outputControl = new OutputControl();
     public ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
-    private boolean updateProgressBar = false;
+//    private boolean updateProgressBar = false;
 
     // CONSTRUCTOR
 
@@ -59,8 +58,12 @@ public class Analysis implements Serializable {
         for (Module module:modules) {
             if (Thread.currentThread().isInterrupted()) break;
             if (module.isEnabled()) module.execute(workspace);
+
+            // Updating progress bar
             double percentageComplete = ((double) (count++))/((double) total)*100;
-            if (updateProgressBar) MainGUI.setProgress((int) Math.round(percentageComplete));
+            ProgressMonitor.setWorkspaceProgress(workspace,percentageComplete);
+            double overallPercentageComplete = ProgressMonitor.getOverallProgress();
+            MainGUI.setProgress((int) Math.round(overallPercentageComplete));
         }
 
         // We're only interested in the measurements now, so clearing images and object coordinates
@@ -102,11 +105,11 @@ public class Analysis implements Serializable {
 
     }
 
-    public boolean isUpdateProgressBar() {
-        return updateProgressBar;
-    }
-
-    public void setUpdateProgressBar(boolean updateProgressBar) {
-        this.updateProgressBar = updateProgressBar;
-    }
+//    public boolean isUpdateProgressBar() {
+//        return updateProgressBar;
+//    }
+//
+//    public void setUpdateProgressBar(boolean updateProgressBar) {
+//        this.updateProgressBar = updateProgressBar;
+//    }
 }

@@ -17,17 +17,8 @@ public class GetLocalObjectRegion extends Module {
     public static final String USE_MEASUREMENT = "Use measurement for radius";
     public static final String MEASUREMENT_NAME = "Measurement name";
 
-    public ObjCollection getLocalRegions(ObjCollection inputObjects, ImagePlus referenceImage) {
-        // Getting output objects name
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
-        double radius = parameters.getValue(LOCAL_RADIUS);
-        boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
-        String measurementName = parameters.getValue(MEASUREMENT_NAME);
 
-        // Creating store for output objects
-        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
-
+    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, ImagePlus referenceImage, double radius, boolean calibrated) {
         // Getting image range
         int width = referenceImage.getWidth();
         int height = referenceImage.getHeight();
@@ -35,91 +26,102 @@ public class GetLocalObjectRegion extends Module {
         int nSlices = referenceImage.getNSlices();
         int nFrames = referenceImage.getNFrames();
 
-        if (inputObjects.values().size() == 0) return outputObjects;
-
-        double dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
-        double dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
-        String calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
+        // Getting spatial calibration
+        double dppXY = inputObject.getDistPerPxXY();
+        double dppZ = inputObject.getDistPerPxZ();
+        String calibratedUnits = inputObject.getCalibratedUnits();
         double xy_z_ratio = dppXY/dppZ;
+
+        // Creating new object and assigning relationship to input objects
+        Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits,inputObject.is2D());
+
+        // Getting centroid coordinates
+        double xCent = inputObject.getXMean(true);
+        double yCent = inputObject.getYMean(true);
+        double zCent = inputObject.getZMean(true,false);
+
+        if (calibrated) {
+            int xMin = Math.max((int) Math.floor(xCent - radius/dppXY), 0);
+            int xMax = Math.min((int) Math.ceil(xCent + radius/dppXY), width-1);
+            int yMin = Math.max((int) Math.floor(yCent - radius/dppXY), 0);
+            int yMax = Math.min((int) Math.ceil(yCent + radius/dppXY), height-1);
+            int zMin = Math.max((int) Math.floor(zCent - radius/dppZ),0);
+            int zMax = Math.min((int) Math.ceil(zCent + radius/dppZ), nSlices-1);
+
+            for (int x = xMin; x <= xMax; x++) {
+                double xx = (xCent - x) * dppXY;
+
+                for (int y = yMin; y <= yMax; y++) {
+                    double yy = (yCent - y) * dppXY;
+
+                    if (inputObject.is2D()) {
+                        if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.addCoord(x, y, 0);
+
+                    } else {
+                        for (int z = zMin; z <= zMin; z++) {
+                            double zz = (zCent - z) * dppZ;
+                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.addCoord(x, y, z);
+                        }
+                    }
+                }
+            }
+
+        } else {
+            int xMin = Math.max((int) Math.floor(xCent - radius), 0);
+            int xMax = Math.min((int) Math.ceil(xCent + radius), width-1);
+            int yMin = Math.max((int) Math.floor(yCent - radius), 0);
+            int yMax = Math.min((int) Math.ceil(yCent + radius), height-1);
+            int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio),0);
+            int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), nSlices-1);
+
+            for (int x = xMin; x <= xMax; x++) {
+                double xx = xCent - x;
+
+                for (int y = yMin; y <= yMax; y++) {
+                    double yy = yCent - y;
+
+                    if (inputObject.is2D()) {
+                        if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.addCoord(x, y, 0);
+
+                    } else {
+                        for (int z = zMin; z <= zMax; z++) {
+                            double zz = (zCent - z) / xy_z_ratio;
+
+                            if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.addCoord(x, y, z);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Copying timepoint of input object
+        outputObject.setT(inputObject.getT());
+
+        // Adding relationships
+        outputObject.addParent(inputObject);
+        inputObject.addChild(outputObject);
+
+        return outputObject;
+
+    }
+
+    public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, boolean useMeasurement, String measurementName, double radius, boolean calibrated) {
+        // Creating store for output objects
+        ObjCollection outputObjects = new ObjCollection(outputObjectsName);
+
+        if (inputObjects.values().size() == 0) return outputObjects;
 
         int count = 0;
         int startingNumber = inputObjects.size();
         // Running through each object, calculating the local texture
         for (Obj inputObject:inputObjects.values()) {
             writeMessage("Calculating for object " + (++count) + " of " + startingNumber);
-            // Creating new object and assigning relationship to input objects
-            Obj outputObject = new Obj(outputObjectsName,inputObject.getID(),dppXY,dppZ,calibratedUnits,inputObject.is2D());
-
-            // Getting centroid coordinates
-            double xCent = inputObject.getXMean(true);
-            double yCent = inputObject.getYMean(true);
-            double zCent = inputObject.getZMean(true,false);
 
             if (useMeasurement) radius = inputObject.getMeasurement(measurementName).getValue();
-
-            if (calibrated) {
-                int xMin = Math.max((int) Math.floor(xCent - radius/dppXY), 0);
-                int xMax = Math.min((int) Math.ceil(xCent + radius/dppXY), width-1);
-                int yMin = Math.max((int) Math.floor(yCent - radius/dppXY), 0);
-                int yMax = Math.min((int) Math.ceil(yCent + radius/dppXY), height-1);
-                int zMin = Math.max((int) Math.floor(zCent - radius/dppZ),0);
-                int zMax = Math.min((int) Math.ceil(zCent + radius/dppZ), nSlices-1);
-
-                for (int x = xMin; x <= xMax; x++) {
-                    double xx = (xCent - x) * dppXY;
-
-                    for (int y = yMin; y <= yMax; y++) {
-                        double yy = (yCent - y) * dppXY;
-
-                        if (inputObject.is2D()) {
-                            if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.addCoord(x, y, 0);
-
-                        } else {
-                            for (int z = zMin; z <= zMin; z++) {
-                                double zz = (zCent - z) * dppZ;
-                                if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.addCoord(x, y, z);
-                            }
-                        }
-                    }
-                }
-
-            } else {
-                int xMin = Math.max((int) Math.floor(xCent - radius), 0);
-                int xMax = Math.min((int) Math.ceil(xCent + radius), width-1);
-                int yMin = Math.max((int) Math.floor(yCent - radius), 0);
-                int yMax = Math.min((int) Math.ceil(yCent + radius), height-1);
-                int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio),0);
-                int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), nSlices-1);
-
-                for (int x = xMin; x <= xMax; x++) {
-                    double xx = xCent - x;
-
-                    for (int y = yMin; y <= yMax; y++) {
-                        double yy = yCent - y;
-
-                        if (inputObject.is2D()) {
-                            if (Math.sqrt(xx*xx + yy*yy) < radius) outputObject.addCoord(x, y, 0);
-
-                        } else {
-                            for (int z = zMin; z <= zMax; z++) {
-                                double zz = (zCent - z) / xy_z_ratio;
-
-                                if (Math.sqrt(xx*xx + yy*yy +  zz*zz) < radius) outputObject.addCoord(x, y, z);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Copying timepoint of input object
-            outputObject.setT(inputObject.getT());
+            Obj outputObject = getLocalRegion(inputObject,outputObjectsName,referenceImage,radius,calibrated);
 
             // Adding object to HashMap
             outputObjects.put(outputObject.getID(),outputObject);
-
-            // Adding relationships
-            outputObject.addParent(inputObject);
-            inputObject.addChild(outputObject);
 
         }
 
@@ -144,11 +146,15 @@ public class GetLocalObjectRegion extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(REFERENCE_IMAGE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
+        String measurementName = parameters.getValue(MEASUREMENT_NAME);
+        boolean calibrated = parameters.getValue(CALIBRATED_RADIUS);
+        double radius = parameters.getValue(LOCAL_RADIUS);
 
         ImagePlus referenceImage = workspace.getImage(inputImageName).getImagePlus();
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection outputObjects = getLocalRegions(inputObjects,referenceImage);
+        ObjCollection outputObjects = getLocalRegions(inputObjects,outputObjectsName,referenceImage,useMeasurement,measurementName,radius,calibrated);
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);

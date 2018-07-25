@@ -100,14 +100,7 @@ public class MeasureSpotIntensity extends Module {
         boolean useMeasurement = radiusSource.equals(RadiusSources.MEASUREMENT);
 
         // Getting local object region
-        GetLocalObjectRegion getLocalObjectRegion = (GetLocalObjectRegion) new GetLocalObjectRegion()
-                .updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,inputObjectsName)
-                .updateParameterValue(GetLocalObjectRegion.LOCAL_RADIUS,radius)
-                .updateParameterValue(GetLocalObjectRegion.CALIBRATED_RADIUS,calibrated)
-                .updateParameterValue(GetLocalObjectRegion.USE_MEASUREMENT,useMeasurement)
-                .updateParameterValue(GetLocalObjectRegion.MEASUREMENT_NAME,radiusMeasurement);
-
-        ObjCollection spotObjects = getLocalObjectRegion.getLocalRegions(inputObjects,ipl);
+        ObjCollection spotObjects = new GetLocalObjectRegion().getLocalRegions(inputObjects,inputObjectsName,ipl,useMeasurement,radiusMeasurement,radius,calibrated);
 
         // Running through each object's timepoints, getting intensity measurements
         for (Obj spotObject:spotObjects.values()) {

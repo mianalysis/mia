@@ -282,13 +282,7 @@ public class FitGaussian2D extends Module {
         count = 0;
         startingNumber = inputObjects.size();
         if (applyVolume) {
-            GetLocalObjectRegion getLocalObjectRegion = (GetLocalObjectRegion) new GetLocalObjectRegion()
-                    .updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,"SpotVolume")
-                    .updateParameterValue(GetLocalObjectRegion.CALIBRATED_RADIUS,false)
-                    .updateParameterValue(GetLocalObjectRegion.USE_MEASUREMENT,true)
-                    .updateParameterValue(GetLocalObjectRegion.MEASUREMENT_NAME, Measurements.SIGMA_X_PX);
-
-            getLocalObjectRegion.getLocalRegions(inputObjects,inputImagePlus);
+            new GetLocalObjectRegion().getLocalRegions(inputObjects,"SpotVolume",inputImagePlus,true,Measurements.SIGMA_X_PX,0,false);
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject:inputObjects.values()) {

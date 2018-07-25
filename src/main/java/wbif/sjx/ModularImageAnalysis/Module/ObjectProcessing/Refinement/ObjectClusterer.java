@@ -6,14 +6,22 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
+import ij.IJ;
+import ij.ImagePlus;
+import ij.process.ImageProcessor;
 import org.apache.commons.math3.ml.clustering.*;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
+import wbif.sjx.common.Object.Point;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,6 +30,8 @@ import java.util.List;
 public class ObjectClusterer extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String CLUSTER_OBJECTS = "Cluster (parent) objects";
+    public static final String APPLY_VOLUME = "Apply volume";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String CLUSTERING_ALGORITHM = "Clustering algorithm";
     public static final String K_CLUSTERS = "Number of clusters";
     public static final String MAX_ITERATIONS = "Maximum number of iterations";
@@ -36,15 +46,7 @@ public class ObjectClusterer extends Module {
 
     }
 
-    public interface Measurements {
-        String N_POINTS_IN_CLUSTER = "CLUSTER // N_POINTS_IN_CLUSTER";
-        String CLUSTER_AREA_XY_PX = "CLUSTER // CLUSTER_AREA_2D_(PX^2)";
-        String CLUSTER_AREA_XY_CAL = "CLUSTER // CLUSTER_AREA_2D_(${CAL}^2)";
-
-    }
-
-
-    private ObjCollection runKMeansPlusPlus(ObjCollection outputObjects, List<LocationWrapper> locations, double dppXY, double dppZ, String calibratedUnits, boolean is2D) {
+    public ObjCollection runKMeansPlusPlus(ObjCollection outputObjects, List<LocationWrapper> locations, double dppXY, double dppZ, String calibratedUnits, boolean is2D) {
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         int kClusters = parameters.getValue(K_CLUSTERS);
         int maxIterations = parameters.getValue(MAX_ITERATIONS);
@@ -73,7 +75,7 @@ public class ObjectClusterer extends Module {
 
     }
 
-    private ObjCollection runDBSCAN(ObjCollection outputObjects, List<LocationWrapper> locations, double dppXY, double dppZ, String calibratedUnits, boolean is2D) {
+    public ObjCollection runDBSCAN(ObjCollection outputObjects, List<LocationWrapper> locations, double dppXY, double dppZ, String calibratedUnits, boolean is2D) {
         String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         double eps = parameters.getValue(EPS);
         int minPoints = parameters.getValue(MIN_POINTS);
@@ -110,6 +112,40 @@ public class ObjectClusterer extends Module {
 
     }
 
+    public void applyClusterVolume(Obj outputObject, String inputObjectsName, double eps, Image referenceImage) {
+        ObjCollection children = outputObject.getChildren(inputObjectsName);
+
+        for (Obj child:children.values()) {
+            // Getting local region around children (local region with radius equal to epsilon)
+            Obj region = GetLocalObjectRegion.getLocalRegion(child,"CLUSTER",referenceImage.getImagePlus(),eps,false);
+
+            // Adding coordinates from region to the cluster object
+            for (Point<Integer> point:region.getPoints()) outputObject.addCoord(point.getX(),point.getY(),point.getZ());
+            outputObject.setT(0);
+
+        }
+
+        // Reducing the size of the cluster area by eps
+        ImagePlus objectIpl = outputObject.convertObjToImage("Object").getImagePlus();
+        InvertIntensity.process(objectIpl);
+        BinaryOperations.applyDistanceMap3D(objectIpl,true);
+
+        // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps
+        Iterator<Point<Integer>> iterator = outputObject.getPoints().iterator();
+        while (iterator.hasNext()) {
+            Point<Integer> point = iterator.next();
+
+            // Checking value
+            objectIpl.setPosition(1,point.getZ()+1,outputObject.getT()+1);
+            ImageProcessor ipr = objectIpl.getProcessor();
+            double value = ipr.getPixelValue(point.getX(),point.getY());
+
+            if (value < eps) iterator.remove();
+
+        }
+    }
+
+
     @Override
     public String getTitle() {
         return "Object clustering";
@@ -134,6 +170,8 @@ public class ObjectClusterer extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Getting parameters
+        boolean applyVolume = parameters.getValue(APPLY_VOLUME);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         String clusteringAlgorithm = parameters.getValue(CLUSTERING_ALGORITHM);
         int kClusters = parameters.getValue(K_CLUSTERS);
         int maxIterations = parameters.getValue(MAX_ITERATIONS);
@@ -162,7 +200,6 @@ public class ObjectClusterer extends Module {
 
         // Running clustering system
         writeMessage("Running clustering algorithm");
-
         switch (clusteringAlgorithm) {
             case ClusteringAlgorithms.KMEANSPLUSPLUS:
                 runKMeansPlusPlus(outputObjects, locations, dppXY, dppZ, calibratedUnits, twoD);
@@ -171,56 +208,14 @@ public class ObjectClusterer extends Module {
             case ClusteringAlgorithms.DBSCAN:
                 runDBSCAN(outputObjects, locations, dppXY, dppZ, calibratedUnits,twoD);
                 break;
-
         }
 
         // Adding measurement to each cluster and adding coordinates to clusters
-        for (Obj outputObject:outputObjects.values()) {
-            ObjCollection children = outputObject.getChildren(inputObjectsName);
+        if (applyVolume) {
+            Image referenceImage = workspace.getImage(referenceImageName);
 
-            // The number of children per cluster
-            Measurement measurement = new Measurement(Measurements.N_POINTS_IN_CLUSTER,children.size(),this);
-            outputObject.addMeasurement(measurement);
-
-            // Coordinates are stored as integers, so converting eps into an integer too
-            int epsInt = (int) Math.floor(eps);
-
-            // Getting limits of the current cluster
-            int[][] limits = children.getSpatialLimits();
-            int xMax = limits[0][1]+epsInt;
-            int yMax = limits[1][1]+epsInt;
-
-            Indexer indexer = new Indexer(xMax,yMax);
-            HashSet<Integer> points = new HashSet<>();
-
-            for (Obj child:children.values()) {
-                int xCent = (int) Math.round(child.getXMean(true));
-                int yCent = (int) Math.round(child.getYMean(true));
-
-                for (int xx=xCent-epsInt;xx<xCent+epsInt;xx++) {
-                    for (int yy=yCent-epsInt;yy<yCent+epsInt;yy++) {
-                        if (Math.sqrt((xx-xCent)*(xx-xCent)+(yy-yCent)*(yy-yCent)) < eps) {
-                            int idx = indexer.getIndex(new int[]{xx,yy});
-
-                            // Coordinates outside the indexed region are returned as -1
-                            if (idx != -1) points.add(idx);
-
-                        }
-                    }
-                }
-            }
-
-            int area = points.size();
-            outputObject.addMeasurement(new Measurement(Measurements.CLUSTER_AREA_XY_PX, area, this));
-            outputObject.addMeasurement(new Measurement(Units.replace(Measurements.CLUSTER_AREA_XY_CAL), area*dppXY*dppXY, this));
-
-            // Adding coordinates
-            for (int idx : points) {
-                int[] coords = indexer.getCoord(idx);
-
-                outputObject.addCoord(coords[0],coords[1],0);
-                outputObject.setT(0);
-
+            for (Obj outputObject : outputObjects.values()) {
+                applyClusterVolume(outputObject, inputObjectsName, eps, referenceImage);
             }
         }
 
@@ -233,6 +228,8 @@ public class ObjectClusterer extends Module {
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(CLUSTER_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+        parameters.add(new Parameter(APPLY_VOLUME, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(CLUSTERING_ALGORITHM, Parameter.CHOICE_ARRAY,ClusteringAlgorithms.DBSCAN,ClusteringAlgorithms.ALL));
         parameters.add(new Parameter(K_CLUSTERS, Parameter.INTEGER,100));
         parameters.add(new Parameter(MAX_ITERATIONS, Parameter.INTEGER,10000));
@@ -246,8 +243,13 @@ public class ObjectClusterer extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(CLUSTER_OBJECTS));
-        returnedParameters.add(parameters.getParameter(CLUSTERING_ALGORITHM));
 
+        returnedParameters.add(parameters.getParameter(APPLY_VOLUME));
+        if (parameters.getValue(APPLY_VOLUME)) {
+            returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+        }
+
+        returnedParameters.add(parameters.getParameter(CLUSTERING_ALGORITHM));
         if (parameters.getValue(CLUSTERING_ALGORITHM).equals(ClusteringAlgorithms.KMEANSPLUSPLUS)) {
             // Running KMeans++ clustering
             returnedParameters.add(parameters.getParameter(K_CLUSTERS));
@@ -271,24 +273,7 @@ public class ObjectClusterer extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
-
-        String outputObjectsName = parameters.getValue(CLUSTER_OBJECTS);
-
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.CLUSTER_AREA_XY_PX);
-        reference.setImageObjName(outputObjectsName);
-        reference.setCalculated(true);
-
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.CLUSTER_AREA_XY_CAL));
-        reference.setImageObjName(outputObjectsName);
-        reference.setCalculated(true);
-
-        reference = objectMeasurementReferences.getOrPut(Measurements.N_POINTS_IN_CLUSTER);
-        reference.setImageObjName(outputObjectsName);
-        reference.setCalculated(true);
-
-        return objectMeasurementReferences;
-
+        return null;
     }
 
     @Override

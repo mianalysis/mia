@@ -2,15 +2,17 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.Prefs;
+import ij.ImageStack;
 import ij.plugin.*;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.binary.ChamferWeights3D;
+import inra.ijpb.morphology.Morphology;
+import inra.ijpb.morphology.Strel3D;
+import inra.ijpb.morphology.strel.BallStrel;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -35,15 +37,17 @@ public class BinaryOperations extends Module {
 
     public interface OperationModes {
         String DILATE_2D = "Dilate 2D";
+        String DILATE_3D = "Dilate 3D";
         String DISTANCE_MAP_3D = "Distance map 3D";
         String ERODE_2D = "Erode 2D";
+        String ERODE_3D = "Erode 3D";
         String FILL_HOLES_2D = "Fill holes 2D";
         String SKELETONISE_2D = "Skeletonise 2D";
         String WATERSHED_2D = "Watershed 2D";
         String WATERSHED_3D = "Watershed 3D";
 
-        String[] ALL = new String[]{DILATE_2D,DISTANCE_MAP_3D,ERODE_2D,FILL_HOLES_2D,SKELETONISE_2D,WATERSHED_2D,
-                WATERSHED_3D};
+        String[] ALL = new String[]{DILATE_2D,DILATE_3D,DISTANCE_MAP_3D,ERODE_2D,ERODE_3D,FILL_HOLES_2D,SKELETONISE_2D,
+                WATERSHED_2D,WATERSHED_3D};
 
     }
 
@@ -88,6 +92,53 @@ public class BinaryOperations extends Module {
                 break;
 
         }
+    }
+
+    public static ImagePlus applyDilateErode3D(ImagePlus ipl, String operationMode, int numIterations) {
+        int width = ipl.getWidth();
+        int height = ipl.getHeight();
+        int nChannels = ipl.getNChannels();
+        int nSlices = ipl.getNSlices();
+        int nFrames = ipl.getNFrames();
+
+        double dppXY = ipl.getCalibration().pixelWidth;
+        double dppZ = ipl.getCalibration().pixelDepth;
+        double ratio = dppXY/dppZ;
+
+        Strel3D ballStrel = Strel3D.Shape.BALL.fromRadiusList(numIterations,(int) (numIterations*ratio),2);
+
+        // MorphoLibJ takes objects as being white
+        InvertIntensity.process(ipl);
+
+        for (int c=1;c<=nChannels;c++) {
+            for (int t = 1; t <= nFrames; t++) {
+                ImagePlus iplOrig = SubHyperstackMaker.makeSubhyperstack(ipl, c + "-" + c, "1-" + nSlices, t + "-" + t);
+                ImageStack istFilt = null;
+
+                switch (operationMode) {
+                    case OperationModes.DILATE_3D:
+                        istFilt = Morphology.dilation(iplOrig.getImageStack(),ballStrel);
+                        break;
+                    case OperationModes.ERODE_3D:
+                        istFilt = Morphology.erosion(iplOrig.getImageStack(),ballStrel);
+                        break;
+                }
+
+                for (int z = 1; z <= istFilt.getSize(); z++) {
+                    ipl.setPosition(c, z, t);
+                    ImageProcessor iprOrig = ipl.getProcessor();
+                    ImageProcessor iprFilt = istFilt.getProcessor(z);
+
+                    for (int x = 0; x < width; x++) {
+                        for (int y = 0; y < height; y++) {
+                            iprOrig.setf(x, y, iprFilt.getf(x, y));
+                        }
+                    }
+                }
+            }
+        }
+
+        return ipl;
     }
 
     public static ImagePlus applyDistanceMap3D(ImagePlus ipl, boolean matchZToXY) {
@@ -243,6 +294,11 @@ public class BinaryOperations extends Module {
                 applyStockBinaryTransform(inputImagePlus,operationMode,numIterations);
                 break;
 
+            case (OperationModes.DILATE_3D):
+            case (OperationModes.ERODE_3D):
+                inputImagePlus = applyDilateErode3D(inputImagePlus,operationMode,numIterations);
+                break;
+
             case (OperationModes.DISTANCE_MAP_3D):
                 inputImagePlus = applyDistanceMap3D(inputImagePlus,matchZToXY);
                 break;
@@ -318,7 +374,9 @@ public class BinaryOperations extends Module {
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));
         switch ((String) parameters.getValue(OPERATION_MODE)) {
             case OperationModes.DILATE_2D:
+            case OperationModes.DILATE_3D:
             case OperationModes.ERODE_2D:
+            case OperationModes.ERODE_3D:
                 returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
                 break;
 

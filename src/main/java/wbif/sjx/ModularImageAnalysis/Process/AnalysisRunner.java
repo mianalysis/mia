@@ -4,6 +4,8 @@ import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.Object.ProgressMonitor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import java.io.File;
@@ -32,6 +34,10 @@ public class AnalysisRunner {
         batchProcessor = new BatchProcessor(inputFile);
         batchProcessor.setnThreads(inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS));
         addFilenameFilters(inputControl);
+
+        // Resetting progress monitor
+        ProgressMonitor.resetProgress();
+        MainGUI.setProgress(0);
 
         // Running the analysis
         batchProcessor.runAnalysisOnStructure(analysis,exporter);
