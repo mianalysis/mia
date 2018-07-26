@@ -1,8 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
+import net.imglib2.ops.parse.token.Int;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -18,13 +21,24 @@ public class GetLocalObjectRegion extends Module {
     public static final String MEASUREMENT_NAME = "Measurement name";
 
 
-    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, ImagePlus referenceImage, double radius, boolean calibrated) {
-        // Getting image range
-        int width = referenceImage.getWidth();
-        int height = referenceImage.getHeight();
-        int nChannels = referenceImage.getNChannels();
-        int nSlices = referenceImage.getNSlices();
-        int nFrames = referenceImage.getNFrames();
+    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, @Nullable ImagePlus referenceImage, double radius, boolean calibrated) {
+        // If no reference image is supplied, it's possible to have negative coordinates
+        int xMin, xMax, yMin, yMax, zMin, zMax;
+        if (referenceImage == null) {
+            xMin = -Integer.MAX_VALUE;
+            xMax = Integer.MAX_VALUE;
+            yMin = -Integer.MAX_VALUE;
+            yMax = Integer.MAX_VALUE;
+            zMin = -Integer.MAX_VALUE;
+            zMax = Integer.MAX_VALUE;
+        } else {
+            xMin = 0;
+            xMax = referenceImage.getWidth()-1;
+            yMin = 0;
+            yMax = referenceImage.getHeight()-1;
+            zMin = 0;
+            zMax = referenceImage.getNSlices()-1;
+        }
 
         // Getting spatial calibration
         double dppXY = inputObject.getDistPerPxXY();
@@ -41,12 +55,12 @@ public class GetLocalObjectRegion extends Module {
         double zCent = inputObject.getZMean(true,false);
 
         if (calibrated) {
-            int xMin = Math.max((int) Math.floor(xCent - radius/dppXY), 0);
-            int xMax = Math.min((int) Math.ceil(xCent + radius/dppXY), width-1);
-            int yMin = Math.max((int) Math.floor(yCent - radius/dppXY), 0);
-            int yMax = Math.min((int) Math.ceil(yCent + radius/dppXY), height-1);
-            int zMin = Math.max((int) Math.floor(zCent - radius/dppZ),0);
-            int zMax = Math.min((int) Math.ceil(zCent + radius/dppZ), nSlices-1);
+            xMin = Math.max((int) Math.floor(xCent - radius/dppXY), xMin);
+            xMax = Math.min((int) Math.ceil(xCent + radius/dppXY), xMax);
+            yMin = Math.max((int) Math.floor(yCent - radius/dppXY), yMin);
+            yMax = Math.min((int) Math.ceil(yCent + radius/dppXY), yMax);
+            zMin = Math.max((int) Math.floor(zCent - radius/dppZ),zMin);
+            zMax = Math.min((int) Math.ceil(zCent + radius/dppZ), zMax);
 
             for (int x = xMin; x <= xMax; x++) {
                 double xx = (xCent - x) * dppXY;
@@ -67,12 +81,12 @@ public class GetLocalObjectRegion extends Module {
             }
 
         } else {
-            int xMin = Math.max((int) Math.floor(xCent - radius), 0);
-            int xMax = Math.min((int) Math.ceil(xCent + radius), width-1);
-            int yMin = Math.max((int) Math.floor(yCent - radius), 0);
-            int yMax = Math.min((int) Math.ceil(yCent + radius), height-1);
-            int zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio),0);
-            int zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), nSlices-1);
+            xMin = Math.max((int) Math.floor(xCent - radius), xMin);
+            xMax = Math.min((int) Math.ceil(xCent + radius), xMax);
+            yMin = Math.max((int) Math.floor(yCent - radius), yMin);
+            yMax = Math.min((int) Math.ceil(yCent + radius), yMax);
+            zMin = Math.max((int) Math.floor(zCent - radius * xy_z_ratio),zMin);
+            zMax = Math.min((int) Math.ceil(zCent + radius * xy_z_ratio), zMax);
 
             for (int x = xMin; x <= xMax; x++) {
                 double xx = xCent - x;

@@ -1,12 +1,7 @@
 //package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 //
-//import org.apache.commons.math3.exception.InsufficientDataException;
-//import org.apache.commons.math3.geometry.Point;
-//import org.apache.commons.math3.geometry.hull.ConvexHull;
-//import org.apache.commons.math3.geometry.partitioning.Region;
 //import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 //import wbif.sjx.ModularImageAnalysis.Module.Module;
-//import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
 //import wbif.sjx.ModularImageAnalysis.Object.*;
 //import wbif.sjx.common.Analysis.ConvexHullCalculator;
 //import wbif.sjx.common.Object.Volume;
@@ -19,8 +14,6 @@
 //    public static final String OBJECT_OUTPUT_MODE = "Object output mode";
 //    public static final String OUTPUT_OBJECTS = "Output objects";
 //    public static final String FITTING_MODE = "Fitting mode";
-//    public static final String TOL1 = "Tol1";
-//    public static final String TOL2 = "Tol2";
 //
 //
 //    public interface OutputModes {
@@ -51,7 +44,7 @@
 //    }
 //
 //    public void processObject(Obj inputObject, int mode, ObjCollection outputObjects, String objectOutputMode) {
-//        ConvexHullCalculator calculator = new ConvexHullCalculator(inputObject, mode,parameters.getValue(TOL1),parameters.getValue(TOL2));
+//        ConvexHullCalculator calculator = new ConvexHullCalculator(inputObject, mode,1E-8);
 //
 //        // Adding measurements
 //        addMeasurements(inputObject,calculator);
@@ -178,12 +171,10 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new Parameter(INPUT_TRACK_OBJECTS,Parameter.INPUT_TRACK_OBJECTS,null));
+//        parameters.add(new Parameter(INPUT_TRACK_OBJECTS,Parameter.INPUT_OBJECTS,null));
 //        parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY,OutputModes.DO_NOT_STORE,OutputModes.ALL));
 //        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
 //        parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.CENTROIDS,FittingModes.ALL));
-//        parameters.add(new Parameter(TOL1,Parameter.DOUBLE,1E-2));
-//        parameters.add(new Parameter(TOL2,Parameter.DOUBLE,1E-2));
 //
 //    }
 //
@@ -201,8 +192,6 @@
 //        }
 //
 //        returnedParameters.add(parameters.getParameter(FITTING_MODE));
-//        returnedParameters.add(parameters.getParameter(TOL1));
-//        returnedParameters.add(parameters.getParameter(TOL2));
 //
 //        return returnedParameters;
 //
