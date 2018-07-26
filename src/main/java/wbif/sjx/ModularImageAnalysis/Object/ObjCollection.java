@@ -211,7 +211,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             ipl.getCalibration().pixelHeight = templateIpl.getCalibration().getY(1);
             ipl.getCalibration().pixelDepth = templateIpl.getCalibration().getZ(1);
             ipl.getCalibration().setUnit(templateIpl.getCalibration().getUnit());
-
+        } else if (getFirst() != null) {
+            Obj first = getFirst();
+            ipl.getCalibration().pixelWidth = first.getDistPerPxXY();
+            ipl.getCalibration().pixelHeight = first.getDistPerPxXY();
+            ipl.getCalibration().pixelDepth = first.getDistPerPxZ();
+            ipl.getCalibration().setUnit(first.getCalibratedUnits());
         }
 
         return new Image(outputName,ipl);

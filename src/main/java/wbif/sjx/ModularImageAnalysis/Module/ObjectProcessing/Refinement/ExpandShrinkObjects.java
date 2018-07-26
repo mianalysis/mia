@@ -98,7 +98,7 @@ public class ExpandShrinkObjects extends Module {
                     break;
 
                 case Methods.EXPAND_3D:
-                    BinaryOperations.applyDilateErode3D(objectImage.getImagePlus(),
+                    BinaryOperations.getDilateErode3D(objectImage.getImagePlus(),
                             BinaryOperations.OperationModes.DILATE_3D,radiusChangePx);
                     break;
 
@@ -108,7 +108,7 @@ public class ExpandShrinkObjects extends Module {
                     break;
 
                 case Methods.SHRINK_3D:
-                    BinaryOperations.applyDilateErode3D(objectImage.getImagePlus(),
+                    BinaryOperations.getDilateErode3D(objectImage.getImagePlus(),
                             BinaryOperations.OperationModes.ERODE_3D,radiusChangePx);
                     break;
             }

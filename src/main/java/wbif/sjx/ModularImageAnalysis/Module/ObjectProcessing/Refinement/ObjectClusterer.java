@@ -14,6 +14,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperatio
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
@@ -112,12 +113,17 @@ public class ObjectClusterer extends Module {
 
     }
 
-    public void applyClusterVolume(Obj outputObject, String inputObjectsName, double eps, Image referenceImage) {
-        ObjCollection children = outputObject.getChildren(inputObjectsName);
+    public void applyClusterVolume(Obj outputObject, ObjCollection childObjects, double eps, Image referenceImage) {
+        ObjCollection children = outputObject.getChildren(childObjects.getName());
+
+        double dppXY = outputObject.getDistPerPxXY();
+        double dppZ = outputObject.getDistPerPxZ();
+        String units = outputObject.getCalibratedUnits();
+        boolean is2D = outputObject.is2D();
 
         for (Obj child:children.values()) {
             // Getting local region around children (local region with radius equal to epsilon)
-            Obj region = GetLocalObjectRegion.getLocalRegion(child,"CLUSTER",referenceImage.getImagePlus(),eps,false);
+            Obj region = GetLocalObjectRegion.getLocalRegion(child,"Cluster",referenceImage.getImagePlus(),eps,false);
 
             // Adding coordinates from region to the cluster object
             for (Point<Integer> point:region.getPoints()) outputObject.addCoord(point.getX(),point.getY(),point.getZ());
@@ -125,24 +131,43 @@ public class ObjectClusterer extends Module {
 
         }
 
-        // Reducing the size of the cluster area by eps
-        ImagePlus objectIpl = outputObject.convertObjToImage("Object").getImagePlus();
-        InvertIntensity.process(objectIpl);
-        BinaryOperations.applyDistanceMap3D(objectIpl,true);
+//        // Retaining points in the cluster which are within eps distance of at least 2 points
+//        Iterator<Point<Integer>> iterator = outputObject.getPoints().iterator();
+//        while (iterator.hasNext()) {
+//            Point<Integer> point = iterator.next();
+//
+//            Obj testObject = new Obj("Test",1,dppXY,dppZ,units,is2D);
+//            testObject.addCoord(point.getX(),point.getY(),point.getZ());
+//
+//            int count = 0;
+//            for (Obj childObject:childObjects.values()) {
+//                double dist = childObject.getCentroidSeparation(testObject,true);
+//                if (dist <= eps) count++;
+//            }
+//
+//            if (count < 2) iterator.remove();
+//
+//        }
 
-        // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps
-        Iterator<Point<Integer>> iterator = outputObject.getPoints().iterator();
-        while (iterator.hasNext()) {
-            Point<Integer> point = iterator.next();
-
-            // Checking value
-            objectIpl.setPosition(1,point.getZ()+1,outputObject.getT()+1);
-            ImageProcessor ipr = objectIpl.getProcessor();
-            double value = ipr.getPixelValue(point.getX(),point.getY());
-
-            if (value < eps) iterator.remove();
-
-        }
+//        // Reducing the size of the cluster area by eps
+//        ImagePlus objectIpl = outputObject.convertObjToImage("Object").getImagePlus();
+//        InvertIntensity.process(objectIpl);
+//        objectIpl = BinaryOperations.getDistanceMap3D(objectIpl,true);
+//
+//        // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps
+//        Iterator<Point<Integer>> iterator = outputObject.getPoints().iterator();
+//        while (iterator.hasNext()) {
+//            Point<Integer> point = iterator.next();
+//
+//            // Checking value
+//            objectIpl.setPosition(1,point.getZ()+1,outputObject.getT()+1);
+//            ImageProcessor ipr = objectIpl.getProcessor();
+//            double value = ipr.getPixelValue(point.getX(),point.getY());
+//
+//            // Using 90* the eps value appears to give a better fit to the points
+//            if (value < (eps*0.9)) iterator.remove();
+//
+//        }
     }
 
 
@@ -215,7 +240,7 @@ public class ObjectClusterer extends Module {
             Image referenceImage = workspace.getImage(referenceImageName);
 
             for (Obj outputObject : outputObjects.values()) {
-                applyClusterVolume(outputObject, inputObjectsName, eps, referenceImage);
+                applyClusterVolume(outputObject, inputObjects, eps, referenceImage);
             }
         }
 

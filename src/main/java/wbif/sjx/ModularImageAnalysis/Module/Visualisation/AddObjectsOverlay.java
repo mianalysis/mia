@@ -167,6 +167,10 @@ public class AddObjectsOverlay extends Module {
         double[][] range = object.getExtents(true,false);
         for (int z= (int) range[2][0];z<= (int) range[2][1];z++) {
             Roi polyRoi = object.getRoi(z);
+
+            //  If the object doesn't have any pixels in this plane, skip it
+            if (polyRoi == null) continue;
+
             if (ipl.isHyperStack()) {
                 ipl.setPosition(1,z+1,t);
                 polyRoi.setPosition(1, z+1, t);

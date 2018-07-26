@@ -9,7 +9,6 @@ import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.Strel3D;
-import inra.ijpb.morphology.strel.BallStrel;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
@@ -94,7 +93,7 @@ public class BinaryOperations extends Module {
         }
     }
 
-    public static ImagePlus applyDilateErode3D(ImagePlus ipl, String operationMode, int numIterations) {
+    public static ImagePlus getDilateErode3D(ImagePlus ipl, String operationMode, int numIterations) {
         int width = ipl.getWidth();
         int height = ipl.getHeight();
         int nChannels = ipl.getNChannels();
@@ -141,7 +140,7 @@ public class BinaryOperations extends Module {
         return ipl;
     }
 
-    public static ImagePlus applyDistanceMap3D(ImagePlus ipl, boolean matchZToXY) {
+    public static ImagePlus getDistanceMap3D(ImagePlus ipl, boolean matchZToXY) {
         int nSlices = ipl.getNSlices();
 
         // If necessary, interpolating the image in Z to match the XY spacing
@@ -296,11 +295,11 @@ public class BinaryOperations extends Module {
 
             case (OperationModes.DILATE_3D):
             case (OperationModes.ERODE_3D):
-                inputImagePlus = applyDilateErode3D(inputImagePlus,operationMode,numIterations);
+                inputImagePlus = getDilateErode3D(inputImagePlus,operationMode,numIterations);
                 break;
 
             case (OperationModes.DISTANCE_MAP_3D):
-                inputImagePlus = applyDistanceMap3D(inputImagePlus,matchZToXY);
+                inputImagePlus = getDistanceMap3D(inputImagePlus,matchZToXY);
                 break;
 
             case (OperationModes.WATERSHED_3D):
@@ -311,7 +310,7 @@ public class BinaryOperations extends Module {
                 switch (intensityMode) {
                     case IntensityModes.DISTANCE:
                         intensityIpl = new Duplicator().run(inputImagePlus);
-                        intensityIpl = applyDistanceMap3D(intensityIpl,matchZToXY);
+                        intensityIpl = getDistanceMap3D(intensityIpl,matchZToXY);
                         IJ.run(intensityIpl,"Invert","stack");
                         break;
 

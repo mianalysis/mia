@@ -184,10 +184,10 @@ public class MeasureObjectIntensity extends Module {
         ImagePlus objIpl = object.convertObjToImage("Inside dist", intensityIpl).getImagePlus();
 
         // Calculating the distance maps.  The inside map is set to negative
-        ImagePlus outsideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,true);
+        ImagePlus outsideDistIpl = BinaryOperations.getDistanceMap3D(objIpl,true);
         InvertIntensity.process(objIpl);
         BinaryOperations.applyStockBinaryTransform(objIpl,BinaryOperations.OperationModes.ERODE_2D,1);
-        ImagePlus insideDistIpl = BinaryOperations.applyDistanceMap3D(objIpl,true);
+        ImagePlus insideDistIpl = BinaryOperations.getDistanceMap3D(objIpl,true);
         ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
         ImagePlus distIpl = new ImageCalculator().process(insideDistIpl,outsideDistIpl,
                 ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.CREATE_NEW,true,true);
