@@ -103,6 +103,7 @@ public class ComponentFactory {
 
         } else if (parameter.getType() == Parameter.BOOLEAN) {
             parameterControl = new BooleanParameter(gui,module,parameter);
+            parameterControl.setOpaque(false);
 
         } else if (parameter.getType() == Parameter.FILE_PATH) {
             parameterControl = new FileParameter(gui, module, parameter, FileParameter.FileTypes.FILE_TYPE);
@@ -215,6 +216,7 @@ public class ComponentFactory {
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
         if (activeModule.getClass() == InputControl.class || activeModule.getClass() == GUISeparator.class) {
             disableableCheck.setEnabled(false);
+            disableableCheck.setOpaque(false);
         }
         paramPanel.add(disableableCheck,c);
 
@@ -259,6 +261,7 @@ public class ComponentFactory {
         title.setEditable(false);
         title.setBorder(null);
         title.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
+        title.setOpaque(false);
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);

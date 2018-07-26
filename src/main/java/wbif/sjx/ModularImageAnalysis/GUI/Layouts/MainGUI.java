@@ -506,6 +506,8 @@ public class MainGUI extends GUI {
         editingStatusPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         editingStatusPanel.setMinimumSize(new Dimension(0,statusHeight+15));
         editingStatusPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE,statusHeight+15));
+        editingStatusPanel.setPreferredSize(new Dimension(basicFrameWidth-30,statusHeight+15));
+        editingStatusPanel.setOpaque(false);
     }
 
     private void initialiseStatusTextField() {
@@ -515,6 +517,7 @@ public class MainGUI extends GUI {
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         textField.setEditable(false);
         textField.setToolTipText(textField.getText());
+        textField.setOpaque(false);
 
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
         PrintStream printStream = new PrintStream(outputStreamTextField);
@@ -621,6 +624,7 @@ public class MainGUI extends GUI {
         basicStatusPanel.setMinimumSize(new Dimension(basicFrameWidth-30,statusHeight+15));
         basicStatusPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE,statusHeight+15));
         basicStatusPanel.setPreferredSize(new Dimension(basicFrameWidth-30,statusHeight+15));
+        basicStatusPanel.setOpaque(false);
 
     }
 
