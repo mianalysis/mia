@@ -511,7 +511,7 @@ public class MainGUI extends GUI {
     }
 
     private void initialiseStatusTextField() {
-        textField.setPreferredSize(new Dimension(basicFrameWidth-40,statusHeight));
+        textField.setPreferredSize(new Dimension(Integer.MAX_VALUE,statusHeight));
         textField.setBorder(null);
         textField.setText("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));

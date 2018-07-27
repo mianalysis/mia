@@ -17,6 +17,8 @@ import wbif.sjx.common.Process.IntensityMinMax;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 /**
@@ -32,11 +34,14 @@ public class WekaProbabilityMaps extends Module {
         // Initialising the training system, which shows a warning, so temporarily diverting output to error stream
         WekaSegmentation wekaSegmentation = new WekaSegmentation();
 
+        // Checking classifier can be loaded
+        if (!new File(classifierFilePath).exists()) {
+            System.err.println("Can't find classifier ("+classifierFilePath+")");
+            Thread.currentThread().interrupt();
+        }
+
         writeMessage("Loading classifier");
-//        PrintStream ps = System.out;
-//        System.setOut(System.err);
         wekaSegmentation.loadClassifier(classifierFilePath);
-//        System.setOut(ps);
 
         int nThreads = Prefs.getThreads();
         int width = inputImagePlus.getWidth();
