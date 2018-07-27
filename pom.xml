@@ -241,7 +241,7 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin</mainClass>
+                            <mainClass>wbif.sjx.ModularImageAnalysis.MIA</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -284,7 +284,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                 <manifestEntries>
-                                    <Main-Class>wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin</Main-Class>
+                                    <Main-Class>wbif.sjx.ModularImageAnalysis.MIA</Main-Class>
                                     <Specification-Title>${project.artifactId}</Specification-Title>
                                     <Specification-Version>${project.version}</Specification-Version>
                                 </manifestEntries>

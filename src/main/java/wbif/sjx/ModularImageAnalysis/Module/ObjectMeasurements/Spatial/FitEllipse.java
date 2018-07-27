@@ -38,6 +38,7 @@ public class FitEllipse extends Module {
         String SEMI_MINOR_PX = "ELLIPSE // SEMI_MINOR_AXIS_LENGTH_(PX)";
         String SEMI_MINOR_CAL = "ELLIPSE // SEMI_MINOR_AXIS_LENGTH_(${CAL})";
         String ECCENTRICITY = "ELLIPSE // ECCENTRICITY";
+        String MAJOR_MINOR_RATIO = "ELLIPSE // MAJOR_MINOR_RATIO";
         String ORIENTATION_DEGS = "ELLIPSE // ORIENTATION_(DEGS)";
 
     }
@@ -125,6 +126,9 @@ public class FitEllipse extends Module {
 
         double eccentriciy = Math.sqrt(1-(semiMinor*semiMinor)/(semiMajor*semiMajor));
         inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,eccentriciy,this));
+
+        double ratio = semiMajor/semiMinor;
+        inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,ratio,this));
 
         double theta = Math.toDegrees(calculator.getEllipseThetaRads());
         inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,theta,this));
@@ -272,6 +276,12 @@ public class FitEllipse extends Module {
                 inputObjectsName+"\", deviates from a perfect circle.  Eccentricity is calculated as sqrt(1-b^2/a^2)" +
                 ", where a and b are the lengths of the semi-major and semi-minor axes, respectively.  Eccentricity" +
                 "has no units.");
+
+        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MAJOR_MINOR_RATIO));
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+        reference.setDescription("Ratio of semi-major axis length to semi-minor axis length for the ellipse fit to " +
+                "the 2D Z-projection of the object, \""+inputObjectsName+"\".  This measure has no units.");
 
         reference = objectMeasurementReferences.getOrPut(Measurements.ORIENTATION_DEGS);
         reference.setCalculated(true);

@@ -8,7 +8,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
+import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -407,7 +407,7 @@ public class Exporter {
         Sheet errorSheet = workbook.createSheet("Log");
 
         // Getting error log text and split by line returns
-        String logText = ModularImageAnalysisPlugin.getErrorLog().getStreamContents();
+        String logText = MIA.getErrorLog().getStreamContents();
         StringTokenizer tokenizer = new StringTokenizer(logText,"\n");
 
         // Adding a header row for the parameter titles

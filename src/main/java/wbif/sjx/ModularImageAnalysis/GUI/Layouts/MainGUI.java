@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -908,7 +909,7 @@ public class MainGUI extends GUI {
         TreeMap<String,Class> modules = new TreeMap<>();
         for (Class clazz : availableModules) {
             if (clazz != InputControl.class && clazz != OutputControl.class) {
-                String[] names = clazz.getPackage().getName().split("\\.");
+                String[] names = clazz.getPackage().getName().split(MIA.slashes+".");
                 StringBuilder stringBuilder = new StringBuilder();
                 for (String name:names) stringBuilder.append(name);
                 modules.put(stringBuilder.toString()+clazz.getSimpleName(),clazz);
@@ -921,7 +922,7 @@ public class MainGUI extends GUI {
             LinkedHashSet<ModuleListMenu> activeList = topList;
             ModuleListMenu activeItem = null;
 
-            String[] names = clazz.getPackage().getName().split("\\.");
+            String[] names = clazz.getPackage().getName().split(MIA.slashes+".");
             for (int i=4;i<names.length;i++) {
                 boolean found = false;
                 for (ModuleListMenu listItemm:activeList) {

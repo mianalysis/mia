@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Object.ProgressMonitor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
@@ -100,9 +101,9 @@ public class AnalysisRunner {
             case InputControl.InputModes.BATCH:
                 switch (seriesMode) {
                     case InputControl.SeriesModes.ALL_SERIES:
-                        return inputFile.getAbsolutePath() + "\\" + inputFile.getName();
+                        return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName();
                     case InputControl.SeriesModes.SINGLE_SERIES:
-                        return inputFile.getAbsolutePath() + "\\" + inputFile.getName() + "_S" + seriesNumber;
+                        return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName() + "_S" + seriesNumber;
                 }
             default:
                 return "";

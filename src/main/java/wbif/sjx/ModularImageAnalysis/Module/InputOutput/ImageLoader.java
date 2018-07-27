@@ -29,6 +29,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.janelia.it.h5j.fiji.adapter.FijiAdapter;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -314,7 +315,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         DecimalFormat df = new DecimalFormat(stringBuilder.toString());
 
         // Getting fragments of the filepath
-        String rootPath = rootFile.getParent()+"\\";
+        String rootPath = rootFile.getParent()+MIA.slashes;
         String rootName = rootFile.getName();
         String startingNumber = df.format(startingIndex);
         int numStart = rootName.lastIndexOf(startingNumber);
@@ -371,7 +372,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         // Constructing a new name using the same name format
         String comment = metadata.getComment();
-        String filename = metadata.getFile().getParent()+"\\"+IncuCyteShortFilenameExtractor
+        String filename = metadata.getFile().getParent()+MIA.slashes+IncuCyteShortFilenameExtractor
                 .generate(comment,metadata.getWell(),metadata.getAsString(HCMetadata.FIELD),metadata.getExt());
 
         return getBFImage(filename,seriesNumber,dimRanges,crop,true);
