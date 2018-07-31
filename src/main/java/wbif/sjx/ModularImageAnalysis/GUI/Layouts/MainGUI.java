@@ -531,18 +531,18 @@ public class MainGUI extends GUI {
         editingProgressBar.setBorderPainted(false);
         editingProgressBar.setMinimumSize(new Dimension(0, 15));
         editingProgressBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 15));
-//        editingProgressBar.setStringPainted(true);
-//        editingProgressBar.setString("");
-//        editingProgressBar.setForeground(Color.CYAN);
+        editingProgressBar.setStringPainted(true);
+        editingProgressBar.setString("");
+        editingProgressBar.setForeground(new Color(86,190,253));
     }
 
     private void initialiseBasicProgressBar() {
         basicProgressBar.setValue(0);
         basicProgressBar.setBorderPainted(false);
         basicProgressBar.setPreferredSize(new Dimension(basicFrameWidth-30, 15));
-        //        editingProgressBar.setStringPainted(true);
-//        editingProgressBar.setString("");
-//        editingProgressBar.setForeground(Color.CYAN);
+        editingProgressBar.setStringPainted(true);
+        editingProgressBar.setString("");
+        editingProgressBar.setForeground(new Color(86,190,253));
     }
 
     private JPanel initialiseBasicControlPanel() {
