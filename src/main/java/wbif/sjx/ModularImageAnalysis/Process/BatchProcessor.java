@@ -235,7 +235,7 @@ public class BatchProcessor extends FileCrawler {
 
     public void stopAnalysis() {
         if (pool == null) {
-            Thread.currentThread().interrupt();
+            Thread.currentThread().getThreadGroup().stop();
         } else {
             pool.shutdownNow();
         }

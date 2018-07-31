@@ -600,17 +600,14 @@ public class MainGUI extends GUI {
         int elementWidth = basicFrameWidth;
 
         // Initialising the scroll panel
-        basicModulesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-30, frameHeight-(bigButtonSize+15)*2-130));
-
-        Border margin = new EmptyBorder(0,0,0,0);
-        Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
-        basicModulesScrollPane.setBorder(new CompoundBorder(margin,border));
+        basicModulesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-30, -1));
+        basicModulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicModulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         basicModulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         // Initialising the panel for module buttons
-        basicModulesPanel.setPreferredSize(new Dimension(basicFrameWidth-50, frameHeight-(bigButtonSize+15)*2-130));
         basicModulesPanel.setLayout(new GridBagLayout());
+
         basicModulesPanel.validate();
         basicModulesPanel.repaint();
 
@@ -833,8 +830,6 @@ public class MainGUI extends GUI {
 
     public void populateBasicModules() {
         basicModulesPanel.removeAll();
-
-        basicModulesPanel.setPreferredSize(new Dimension(basicFrameWidth-100,frameHeight-bigButtonSize-200));
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;

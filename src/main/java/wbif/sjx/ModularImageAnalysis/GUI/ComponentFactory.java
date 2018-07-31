@@ -40,6 +40,7 @@ public class ComponentFactory {
         parameterName.setEditable(false);
         parameterName.setBorder(null);
         parameterName.setOpaque(false);
+//        parameterName.setHorizontalAlignment(JTextField.RIGHT);
         paramPanel.add(parameterName, c);
 
         JComponent parameterControl = null;
