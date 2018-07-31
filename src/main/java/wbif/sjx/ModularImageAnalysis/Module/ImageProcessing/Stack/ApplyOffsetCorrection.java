@@ -1,7 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import fiji.stacks.Hyperstack_rearranger;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
@@ -16,7 +14,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.ModularImageAnalysisPlugin;
+import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -90,7 +88,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
         // Copying the data from inputImg to shiftedImg
         while (inputCursor.hasNext()) shiftedCursor.next().set(inputCursor.next());
 
-        if (ModularImageAnalysisPlugin.isImagePlusMode()) {
+        if (MIA.isImagePlusMode()) {
             ImagePlus inputIpl = inputImage.getImagePlus();
             ImagePlus ipl = ImageJFunctions.wrap(shiftedImg, inputImage.getName());
             ipl = HyperStackConverter.toHyperStack(ipl, inputIpl.getNChannels(), inputIpl.getNSlices(), inputIpl.getNFrames());

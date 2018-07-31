@@ -12,6 +12,7 @@ import net.imagej.ui.swing.updater.ResolveDependencies;
 import net.imagej.updater.*;
 import net.imagej.updater.util.*;
 import org.apache.commons.io.output.TeeOutputStream;
+import org.apache.commons.lang.SystemUtils;
 import org.scijava.log.LogService;
 import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
@@ -41,8 +42,9 @@ import java.util.Map;
 /**
  * Created by sc13967 on 14/07/2017.
  */
-public class ModularImageAnalysisPlugin implements PlugIn {
+public class MIA implements PlugIn {
     private static final ErrorLog errorLog = new ErrorLog();
+    public static String slashes = "\\";
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to add compatibility.
@@ -50,6 +52,11 @@ public class ModularImageAnalysisPlugin implements PlugIn {
     private static final boolean imagePlusMode = true;
 
     public static void main(String[] args) {
+        // Setting the file path slashes depending on the operating system
+        if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
+        else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";
+        else if (SystemUtils.IS_OS_LINUX) slashes = "/";
+
         // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
         ErrorLog errorLog = new ErrorLog();
         TeeOutputStream teeOutputStream = new TeeOutputStream(System.err,errorLog);

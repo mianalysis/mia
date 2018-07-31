@@ -79,7 +79,7 @@ public class MeasureIntensityDistribution extends Module {
         Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
         
         // Calculaing the distance map
-        ImagePlus distIpl = BinaryOperations.applyDistanceMap3D(objectsImage.getImagePlus(),true);
+        ImagePlus distIpl = BinaryOperations.getDistanceMap3D(objectsImage.getImagePlus(),true);
 
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
@@ -139,10 +139,10 @@ public class MeasureIntensityDistribution extends Module {
                 ImagePlus dist1 = new Duplicator().run(objectsImage.getImagePlus());
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
 
-                dist1 = BinaryOperations.applyDistanceMap3D(dist1,true);
+                dist1 = BinaryOperations.getDistanceMap3D(dist1,true);
                 InvertIntensity.process(distIpl);
                 BinaryOperations.applyStockBinaryTransform(distIpl,BinaryOperations.OperationModes.ERODE_2D,1);
-                distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true);
+                distIpl = BinaryOperations.getDistanceMap3D(distIpl,true);
 
                 new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
 
@@ -152,12 +152,12 @@ public class MeasureIntensityDistribution extends Module {
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
                 InvertIntensity.process(distIpl);
                 BinaryOperations.applyStockBinaryTransform(distIpl,BinaryOperations.OperationModes.ERODE_2D,1);
-                distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true);
+                distIpl = BinaryOperations.getDistanceMap3D(distIpl,true);
                 break;
 
             case EdgeDistanceModes.OUTSIDE_ONLY:
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
-                distIpl = BinaryOperations.applyDistanceMap3D(distIpl,true);
+                distIpl = BinaryOperations.getDistanceMap3D(distIpl,true);
                 break;
         }
 

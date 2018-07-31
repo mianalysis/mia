@@ -106,6 +106,12 @@ public class FitGaussian2D extends Module {
         boolean removeUnfit = parameters.getValue(REMOVE_UNFIT);
         boolean applyVolume = parameters.getValue(APPLY_VOLUME);
 
+        // Setting the desired values to limit sigma
+        if (!limitSigma) {
+            minSigma = 1E-50;
+            maxSigma = Double.MAX_VALUE;
+        }
+
         // Running through each object, doing the fitting
         int count = 0;
         int startingNumber = inputObjects.size();
@@ -149,8 +155,8 @@ public class FitGaussian2D extends Module {
             double[][] limits = new double[][]{
                     {0, 2 * r + 1},
                     {0, 2 * r + 1},
-                    {1E-50, Double.MAX_VALUE}, // Sigma can't go to zero
-                    {1E-50, Double.MAX_VALUE},
+                    {minSigma, maxSigma}, // Sigma can't go to zero
+                    {minSigma, maxSigma},
                     {-Double.MAX_VALUE, Double.MAX_VALUE},
                     {-Double.MAX_VALUE, Double.MAX_VALUE},
                     {0, 2 * Math.PI}
@@ -282,13 +288,7 @@ public class FitGaussian2D extends Module {
         count = 0;
         startingNumber = inputObjects.size();
         if (applyVolume) {
-            GetLocalObjectRegion getLocalObjectRegion = (GetLocalObjectRegion) new GetLocalObjectRegion()
-                    .updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,"SpotVolume")
-                    .updateParameterValue(GetLocalObjectRegion.CALIBRATED_RADIUS,false)
-                    .updateParameterValue(GetLocalObjectRegion.USE_MEASUREMENT,true)
-                    .updateParameterValue(GetLocalObjectRegion.MEASUREMENT_NAME, Measurements.SIGMA_X_PX);
-
-            getLocalObjectRegion.getLocalRegions(inputObjects,inputImagePlus);
+            new GetLocalObjectRegion().getLocalRegions(inputObjects,"SpotVolume",inputImagePlus,true,Measurements.SIGMA_X_PX,0,false);
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject:inputObjects.values()) {

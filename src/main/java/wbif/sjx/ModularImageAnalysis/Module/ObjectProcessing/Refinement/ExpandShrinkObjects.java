@@ -26,9 +26,11 @@ public class ExpandShrinkObjects extends Module {
 
     public interface Methods {
         String EXPAND_2D = "Expand 2D";
+        String EXPAND_3D = "Expand 3D";
         String SHRINK_2D = "Shrink 2D";
+        String SHRINK_3D = "Shrink 3D";
 
-        String[] ALL = new String[]{EXPAND_2D,SHRINK_2D};
+        String[] ALL = new String[]{EXPAND_2D,EXPAND_3D,SHRINK_2D,SHRINK_3D};
 
     }
 
@@ -39,7 +41,7 @@ public class ExpandShrinkObjects extends Module {
 
     @Override
     public String getHelp() {
-        return "INCOMPLETE!!!";
+        return null;
     }
 
     @Override
@@ -95,9 +97,19 @@ public class ExpandShrinkObjects extends Module {
                             BinaryOperations.OperationModes.DILATE_2D,radiusChangePx);
                     break;
 
+                case Methods.EXPAND_3D:
+                    BinaryOperations.getDilateErode3D(objectImage.getImagePlus(),
+                            BinaryOperations.OperationModes.DILATE_3D,radiusChangePx);
+                    break;
+
                 case Methods.SHRINK_2D:
                     BinaryOperations.applyStockBinaryTransform(objectImage.getImagePlus(),
                             BinaryOperations.OperationModes.ERODE_2D,radiusChangePx);
+                    break;
+
+                case Methods.SHRINK_3D:
+                    BinaryOperations.getDilateErode3D(objectImage.getImagePlus(),
+                            BinaryOperations.OperationModes.ERODE_3D,radiusChangePx);
                     break;
             }
 

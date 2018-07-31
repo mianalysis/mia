@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -506,15 +507,18 @@ public class MainGUI extends GUI {
         editingStatusPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         editingStatusPanel.setMinimumSize(new Dimension(0,statusHeight+15));
         editingStatusPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE,statusHeight+15));
+        editingStatusPanel.setPreferredSize(new Dimension(basicFrameWidth-30,statusHeight+15));
+        editingStatusPanel.setOpaque(false);
     }
 
     private void initialiseStatusTextField() {
-        textField.setPreferredSize(new Dimension(basicFrameWidth-40,statusHeight));
+        textField.setPreferredSize(new Dimension(Integer.MAX_VALUE,statusHeight));
         textField.setBorder(null);
         textField.setText("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         textField.setEditable(false);
         textField.setToolTipText(textField.getText());
+        textField.setOpaque(false);
 
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
         PrintStream printStream = new PrintStream(outputStreamTextField);
@@ -527,18 +531,18 @@ public class MainGUI extends GUI {
         editingProgressBar.setBorderPainted(false);
         editingProgressBar.setMinimumSize(new Dimension(0, 15));
         editingProgressBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 15));
-//        editingProgressBar.setStringPainted(true);
-//        editingProgressBar.setString("");
-//        editingProgressBar.setForeground(Color.CYAN);
+        editingProgressBar.setStringPainted(true);
+        editingProgressBar.setString("");
+        editingProgressBar.setForeground(new Color(86,190,253));
     }
 
     private void initialiseBasicProgressBar() {
         basicProgressBar.setValue(0);
         basicProgressBar.setBorderPainted(false);
         basicProgressBar.setPreferredSize(new Dimension(basicFrameWidth-30, 15));
-        //        editingProgressBar.setStringPainted(true);
-//        editingProgressBar.setString("");
-//        editingProgressBar.setForeground(Color.CYAN);
+        editingProgressBar.setStringPainted(true);
+        editingProgressBar.setString("");
+        editingProgressBar.setForeground(new Color(86,190,253));
     }
 
     private JPanel initialiseBasicControlPanel() {
@@ -596,17 +600,14 @@ public class MainGUI extends GUI {
         int elementWidth = basicFrameWidth;
 
         // Initialising the scroll panel
-        basicModulesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-30, frameHeight-(bigButtonSize+15)*2-130));
-
-        Border margin = new EmptyBorder(0,0,0,0);
-        Border border = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
-        basicModulesScrollPane.setBorder(new CompoundBorder(margin,border));
+        basicModulesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-30, -1));
+        basicModulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicModulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         basicModulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         // Initialising the panel for module buttons
-        basicModulesPanel.setPreferredSize(new Dimension(basicFrameWidth-50, frameHeight-(bigButtonSize+15)*2-130));
         basicModulesPanel.setLayout(new GridBagLayout());
+
         basicModulesPanel.validate();
         basicModulesPanel.repaint();
 
@@ -621,6 +622,7 @@ public class MainGUI extends GUI {
         basicStatusPanel.setMinimumSize(new Dimension(basicFrameWidth-30,statusHeight+15));
         basicStatusPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE,statusHeight+15));
         basicStatusPanel.setPreferredSize(new Dimension(basicFrameWidth-30,statusHeight+15));
+        basicStatusPanel.setOpaque(false);
 
     }
 
@@ -829,8 +831,6 @@ public class MainGUI extends GUI {
     public void populateBasicModules() {
         basicModulesPanel.removeAll();
 
-        basicModulesPanel.setPreferredSize(new Dimension(basicFrameWidth-100,frameHeight-bigButtonSize-200));
-
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -904,7 +904,7 @@ public class MainGUI extends GUI {
         TreeMap<String,Class> modules = new TreeMap<>();
         for (Class clazz : availableModules) {
             if (clazz != InputControl.class && clazz != OutputControl.class) {
-                String[] names = clazz.getPackage().getName().split("\\.");
+                String[] names = clazz.getPackage().getName().split(MIA.slashes+".");
                 StringBuilder stringBuilder = new StringBuilder();
                 for (String name:names) stringBuilder.append(name);
                 modules.put(stringBuilder.toString()+clazz.getSimpleName(),clazz);
@@ -917,7 +917,7 @@ public class MainGUI extends GUI {
             LinkedHashSet<ModuleListMenu> activeList = topList;
             ModuleListMenu activeItem = null;
 
-            String[] names = clazz.getPackage().getName().split("\\.");
+            String[] names = clazz.getPackage().getName().split(MIA.slashes+".");
             for (int i=4;i<names.length;i++) {
                 boolean found = false;
                 for (ModuleListMenu listItemm:activeList) {

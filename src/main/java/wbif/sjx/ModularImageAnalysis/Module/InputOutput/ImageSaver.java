@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import org.apache.commons.io.FilenameUtils;
+import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -80,14 +81,14 @@ public class ImageSaver extends Module {
                 StringBuilder sb = new StringBuilder();
                 File parentFile = rootFile.getParentFile();
                 for (int i=0;i<fileDepth;i++) {
-                    sb.insert(0,parentFile.getName()+"\\");
+                    sb.insert(0,parentFile.getName()+MIA.slashes);
                     parentFile = parentFile.getParentFile();
 
                 }
 
-                new File(mirroredDirectoryRoot+"\\"+sb).mkdirs();
+                new File(mirroredDirectoryRoot+ MIA.slashes +sb).mkdirs();
 
-                String path = mirroredDirectoryRoot+"\\"+sb+FilenameUtils.removeExtension(rootFile.getName());
+                String path = mirroredDirectoryRoot+ MIA.slashes +sb+FilenameUtils.removeExtension(rootFile.getName());
                 path = path + "_S" + workspace.getMetadata().getSeriesNumber();
                 path = path + suffix + ".tif";
                 IJ.save(inputImagePlus,path);
@@ -95,7 +96,7 @@ public class ImageSaver extends Module {
 
             case SaveLocations.SAVE_WITH_INPUT:
                 rootFile = workspace.getMetadata().getFile();
-                path = rootFile.getParent()+ "\\"+FilenameUtils.removeExtension(rootFile.getName());
+                path = rootFile.getParent()+ MIA.slashes +FilenameUtils.removeExtension(rootFile.getName());
                 path = path + "_S" + workspace.getMetadata().getSeriesNumber();
                 path = path + suffix + ".tif";
                 IJ.save(inputImagePlus,path);

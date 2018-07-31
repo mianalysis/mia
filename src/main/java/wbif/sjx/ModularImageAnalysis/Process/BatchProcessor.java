@@ -26,7 +26,6 @@ import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.TreeMap;
 import java.util.concurrent.*;
@@ -59,7 +58,6 @@ public class BatchProcessor extends FileCrawler {
     // PUBLIC METHODS
 
     public void runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, GenericMIAException, InterruptedException {
-        MainGUI.setProgress(0);
         shutdownEarly = false;
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
@@ -92,7 +90,6 @@ public class BatchProcessor extends FileCrawler {
         int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
 
         Module.setVerbose(false);
-        analysis.setUpdateProgressBar(false);
 
         // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
         if ((int) analysis.getInputControl().getParameterValue(InputControl.NUMBER_OF_THREADS) != 1) {
@@ -126,6 +123,9 @@ public class BatchProcessor extends FileCrawler {
 
                 workspace.getMetadata().put("FILE_DEPTH", fileDepth);
 
+                // Adding this Workspace to the Progress monitor
+                ProgressMonitor.setWorkspaceProgress(workspace,0d);
+
                 Runnable task = () -> {
                     try {
                         // Running the current analysis
@@ -136,8 +136,6 @@ public class BatchProcessor extends FileCrawler {
                         int nComplete = getCounter();
                         double nTotal = pool.getTaskCount();
                         double percentageComplete = (nComplete / nTotal) * 100;
-
-                        MainGUI.setProgress((int) Math.round(percentageComplete));
 
                         // Displaying the current progress
                         String string = "Completed " + dfInt.format(nComplete) + "/" + dfInt.format(nTotal)
@@ -188,7 +186,6 @@ public class BatchProcessor extends FileCrawler {
 
         // Only set verbose if a single series is being processed
         Module.setVerbose(seriesNumbers.size() == 1);
-        analysis.setUpdateProgressBar(true);
 
         // Iterating over all series to analyse, adding each one as a new workspace
         for (int seriesNumber:seriesNumbers.keySet()) {
@@ -209,8 +206,6 @@ public class BatchProcessor extends FileCrawler {
                 int nComplete = getCounter();
                 double nTotal = pool.getTaskCount();
                 double percentageComplete = (nComplete / nTotal) * 100;
-
-                MainGUI.setProgress((int) Math.round(percentageComplete));
 
                 // Displaying the current progress
                 String string = "Completed " + dfInt.format(nComplete) + "/" + dfInt.format(nTotal)
@@ -240,7 +235,7 @@ public class BatchProcessor extends FileCrawler {
 
     public void stopAnalysis() {
         if (pool == null) {
-            Thread.currentThread().interrupt();
+            Thread.currentThread().getThreadGroup().stop();
         } else {
             pool.shutdownNow();
         }

@@ -208,13 +208,7 @@ public class RunTrackMate extends Module {
     }
 
     public void estimateSpotSize(ObjCollection spotObjects, ImagePlus ipl) {
-        GetLocalObjectRegion getLocalObjectRegion = (GetLocalObjectRegion) new GetLocalObjectRegion()
-                .updateParameterValue(GetLocalObjectRegion.OUTPUT_OBJECTS,"SpotVolume")
-                .updateParameterValue(GetLocalObjectRegion.CALIBRATED_RADIUS,false)
-                .updateParameterValue(GetLocalObjectRegion.USE_MEASUREMENT,true)
-                .updateParameterValue(GetLocalObjectRegion.MEASUREMENT_NAME,Measurements.RADIUS_PX);
-
-        ObjCollection volumeObjects = getLocalObjectRegion.getLocalRegions(spotObjects, ipl);
+        ObjCollection volumeObjects = new GetLocalObjectRegion().getLocalRegions(spotObjects, "SpotVolume",ipl,true,Measurements.RADIUS_PX,0,false);
 
         // Replacing spot volumes with explicit volume
         for (Obj spotObject:spotObjects.values()) {

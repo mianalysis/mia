@@ -40,6 +40,7 @@ public class ComponentFactory {
         parameterName.setEditable(false);
         parameterName.setBorder(null);
         parameterName.setOpaque(false);
+//        parameterName.setHorizontalAlignment(JTextField.RIGHT);
         paramPanel.add(parameterName, c);
 
         JComponent parameterControl = null;
@@ -103,6 +104,7 @@ public class ComponentFactory {
 
         } else if (parameter.getType() == Parameter.BOOLEAN) {
             parameterControl = new BooleanParameter(gui,module,parameter);
+            parameterControl.setOpaque(false);
 
         } else if (parameter.getType() == Parameter.FILE_PATH) {
             parameterControl = new FileParameter(gui, module, parameter, FileParameter.FileTypes.FILE_TYPE);
@@ -215,6 +217,7 @@ public class ComponentFactory {
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
         if (activeModule.getClass() == InputControl.class || activeModule.getClass() == GUISeparator.class) {
             disableableCheck.setEnabled(false);
+            disableableCheck.setOpaque(false);
         }
         paramPanel.add(disableableCheck,c);
 
@@ -246,7 +249,7 @@ public class ComponentFactory {
         // Adding the state/evaluate button
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(0, 5, 0, 5);
+        c.insets = new Insets(5, 5, 0, 5);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
@@ -259,6 +262,7 @@ public class ComponentFactory {
         title.setEditable(false);
         title.setBorder(null);
         title.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
+        title.setOpaque(false);
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);
@@ -377,6 +381,7 @@ public class ComponentFactory {
         measurementName.setPreferredSize(new Dimension(-1, elementHeight));
         measurementName.setEditable(false);
         measurementName.setBorder(null);
+        measurementName.setToolTipText(measurement.getDescription());
         measurementPanel.add(measurementName, c);
 
         MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement);

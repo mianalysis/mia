@@ -211,7 +211,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             ipl.getCalibration().pixelHeight = templateIpl.getCalibration().getY(1);
             ipl.getCalibration().pixelDepth = templateIpl.getCalibration().getZ(1);
             ipl.getCalibration().setUnit(templateIpl.getCalibration().getUnit());
-
+        } else if (getFirst() != null) {
+            Obj first = getFirst();
+            ipl.getCalibration().pixelWidth = first.getDistPerPxXY();
+            ipl.getCalibration().pixelHeight = first.getDistPerPxXY();
+            ipl.getCalibration().pixelDepth = first.getDistPerPxZ();
+            ipl.getCalibration().setUnit(first.getCalibratedUnits());
         }
 
         return new Image(outputName,ipl);
@@ -345,12 +350,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
                 case ColourModes.PARENT_ID:
                     if (object.getParent(source) == null) {
-                        H = 0.2f;
+                        H = -1f;
                     } else {
                         H = (float) object.getParent(source).getID();
                     }
 
-                    if (normalised) H = (H* 1048576 % 255) / 255;
+                    if (normalised & object.getParent(source) != null) H = (H* 1048576 % 255) / 255;
 
                     break;
 
@@ -377,6 +382,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                 // Have to add 1E-8 to prevent 0 values having a rounding error that makes them negative
                 colours.put(key,Color.getHSBColor(hues.get(key)+1E-8f,1f,1f));
             }
+
+            // If the hue was assigned as -1 (for example, no parent found), setting the colour to white
+            if (hues.get(key) == -1) colours.put(key,Color.getHSBColor(0f,0f,1f));
         }
 
         return colours;
