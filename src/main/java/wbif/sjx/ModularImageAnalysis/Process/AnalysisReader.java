@@ -119,7 +119,7 @@ public class AnalysisReader {
         }
 
         // If no module was found matching that name an error message is displayed
-        System.err.println("Class \""+moduleName+"\" not found (skipping)");
+        System.err.println("Module \""+moduleName+"\" not found (skipping)");
 
         return null;
 
