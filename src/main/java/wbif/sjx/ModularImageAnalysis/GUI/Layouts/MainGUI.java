@@ -467,6 +467,7 @@ public class MainGUI extends GUI {
     private void initialisingModulesPanel() {
         // Initialising the scroll panel
         modulesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-50-bigButtonSize, -1));
+        modulesScrollPane.setMinimumSize(new Dimension(basicFrameWidth-50-bigButtonSize, -1));
         modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
