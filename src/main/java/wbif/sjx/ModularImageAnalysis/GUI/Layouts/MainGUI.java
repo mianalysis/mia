@@ -4,6 +4,7 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
+import org.apache.commons.lang.SystemUtils;
 import org.reflections.Reflections;
 import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
@@ -466,6 +467,7 @@ public class MainGUI extends GUI {
     private void initialisingModulesPanel() {
         // Initialising the scroll panel
         modulesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-50-bigButtonSize, -1));
+        modulesScrollPane.setMinimumSize(new Dimension(basicFrameWidth-50-bigButtonSize, -1));
         modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -540,9 +542,10 @@ public class MainGUI extends GUI {
         basicProgressBar.setValue(0);
         basicProgressBar.setBorderPainted(false);
         basicProgressBar.setPreferredSize(new Dimension(basicFrameWidth-30, 15));
-        editingProgressBar.setStringPainted(true);
-        editingProgressBar.setString("");
-        editingProgressBar.setForeground(new Color(86,190,253));
+        basicProgressBar.setStringPainted(true);
+        basicProgressBar.setString("");
+        basicProgressBar.setForeground(new Color(86,190,253));
+
     }
 
     private JPanel initialiseBasicControlPanel() {

@@ -6,6 +6,7 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -70,6 +71,8 @@ public class AnalysisReader {
             }
         }
 
+
+
         System.out.println("File loaded");
 
         return analysis;
@@ -119,7 +122,7 @@ public class AnalysisReader {
         }
 
         // If no module was found matching that name an error message is displayed
-        System.err.println("Class \""+moduleName+"\" not found (skipping)");
+        System.err.println("Module \""+moduleName+"\" not found (skipping)");
 
         return null;
 

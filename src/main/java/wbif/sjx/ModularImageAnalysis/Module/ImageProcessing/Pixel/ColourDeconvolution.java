@@ -204,6 +204,8 @@ public class ColourDeconvolution extends Module {
         returnedParameters.add(parameters.getParameter(ENABLE_IM3_OUTPUT));
         if (parameters.getValue(ENABLE_IM3_OUTPUT)) returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE_3));
 
+        returnedParameters.add(parameters.getParameter(STAIN_MODEL));
+
         return returnedParameters;
 
     }
