@@ -8,15 +8,80 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  */
 public class CalculateNearestNeighbour extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String RELATIONSHIP_MODE = "Relationship mode";
+    public static final String NEIGHBOUR_OBJECTS = "Neighbour objects";
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
     public static final String PARENT_OBJECTS = "Parent objects";
 
-    public interface Measurements {
-        String NN_DISTANCE_PX = "NEAREST_NEIGHBOUR // NN_DISTANCE_(PX)";
-        String NN_DISTANCE_CAL = "NEAREST_NEIGHBOUR // NN_DISTANCE_(${CAL})";
-        String NN_ID = "NEAREST_NEIGHBOUR // NN_ID";
+    public interface RelationshipModes {
+        String WITHIN_SAME_SET = "Within same object set";
+        String DIFFERENT_SET = "Different object set";
+
+        String[] ALL = new String[]{WITHIN_SAME_SET, DIFFERENT_SET};
 
     }
+
+    public interface Measurements {
+        String NN_DISTANCE_PX = "NN_DISTANCE_TO_${NEIGHBOUR}_(PX)";
+        String NN_DISTANCE_CAL = "NN_DISTANCE_TO_${NEIGHBOUR}_(${CAL})";
+        String NN_ID = "NN_${NEIGHBOUR}_ID";
+    }
+
+    public static String getFullName(String measurement,String neighbourObjectsName) {
+        return Units.replace("NEAREST_NEIGHBOUR // "+measurement.replace("${NEIGHBOUR}",neighbourObjectsName));
+    }
+
+
+    public Obj getNearestNeighbour(Obj inputObject, ObjCollection testObjects) {
+        // There's no guarantee there will be any test objects
+//        if (testObjects == null) return null;
+
+        double minDist = Double.MAX_VALUE;
+        Obj nearestNeighbour = null;
+
+        for (Obj testObject : testObjects.values()) {
+            if (testObject != inputObject) {
+                double dist = inputObject.getCentroidSeparation(testObject,true);
+
+                if (dist < minDist) {
+                    minDist = dist;
+                    nearestNeighbour = testObject;
+                }
+            }
+        }
+
+        return nearestNeighbour;
+
+    }
+
+    public void addMeasurements(Obj inputObject, Obj nearestNeighbour, String nearestNeighbourName) {
+        // Adding details of the nearest neighbour to the input object's measurements
+        if (nearestNeighbour != null) {
+            double dppXY = inputObject.getDistPerPxXY();
+            double minDist = inputObject.getCentroidSeparation(nearestNeighbour,true);
+
+            String name = getFullName(Measurements.NN_ID,nearestNeighbourName);
+            inputObject.addMeasurement(new Measurement(name, nearestNeighbour.getID()));
+
+            name = getFullName(Measurements.NN_DISTANCE_PX,nearestNeighbourName);
+            inputObject.addMeasurement(new Measurement(name, minDist));
+
+            name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),nearestNeighbourName);
+            inputObject.addMeasurement(new Measurement(name, minDist*dppXY));
+
+        } else {
+            String name = getFullName(Measurements.NN_ID,nearestNeighbourName);
+            inputObject.addMeasurement(new Measurement(name, Double.NaN));
+
+            name = getFullName(Measurements.NN_DISTANCE_PX,nearestNeighbourName);
+            inputObject.addMeasurement(new Measurement(name, Double.NaN));
+
+            name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),nearestNeighbourName);
+            inputObject.addMeasurement(new Measurement(name, Double.NaN));
+
+        }
+    }
+
 
     @Override
     public String getTitle() {
@@ -35,77 +100,41 @@ public class CalculateNearestNeighbour extends Module {
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // Getting parameters
+        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
+        String neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS);
         boolean calculateWithinParent = parameters.getValue(CALCULATE_WITHIN_PARENT);
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
 
+        ObjCollection neighbourObjects = null;
+        String nearestNeighbourName = null;
+        switch (relationshipMode) {
+            case RelationshipModes.DIFFERENT_SET:
+                neighbourObjects = workspace.getObjectSet(neighbourObjectsName);
+                nearestNeighbourName = neighbourObjectsName;
+                break;
+
+            case RelationshipModes.WITHIN_SAME_SET:
+                neighbourObjects = inputObjects;
+                nearestNeighbourName = inputObjectsName;
+                break;
+        }
+
         // Running through each object, calculating the nearest neighbour distance
         for (Obj inputObject:inputObjects.values()) {
-            double minDist = Double.MAX_VALUE;
-            Obj nearestNeighbour = null;
-            double dppXY = inputObject.getDistPerPxXY();
-
-            // Getting the object centroid
-            double xCent = inputObject.getXMean(true);
-            double yCent = inputObject.getYMean(true);
-            double zCent = inputObject.getZMean(true,true);
-
             if (calculateWithinParent) {
                 Obj parentObject = inputObject.getParent(parentObjectsName);
-
-                // Some objects may not have a parent
-                if (parentObject != null) {
-                    ObjCollection neighbourObjects = parentObject.getChildren(inputObjectsName);
-
-                    for (Obj testObject : neighbourObjects.values()) {
-                        if (testObject != inputObject) {
-                            double xCentTest = testObject.getXMean(true);
-                            double yCentTest = testObject.getYMean(true);
-                            double zCentTest = testObject.getZMean(true,true);
-
-                            double dist = Math.sqrt((xCentTest - xCent) * (xCentTest - xCent)
-                                    + (yCentTest - yCent) * (yCentTest - yCent)
-                                    + (zCentTest - zCent) * (zCentTest - zCent));
-
-                            if (dist < minDist) {
-                                minDist = dist;
-                                nearestNeighbour = testObject;
-
-                            }
-                        }
-                    }
+                if (parentObject == null) {
+                    addMeasurements(inputObject,null,nearestNeighbourName);
+                    continue;
                 }
 
-            } else {
-                for (Obj testObject:inputObjects.values()) {
-                    if (testObject != inputObject) {
-                        double xCentTest = testObject.getXMean(true);
-                        double yCentTest = testObject.getYMean(true);
-                        double zCentTest = testObject.getZMean(true,true);
-
-                        double dist = Math.sqrt((xCentTest - xCent) * (xCentTest - xCent)
-                                + (yCentTest - yCent) * (yCentTest - yCent)
-                                + (zCentTest - zCent) * (zCentTest - zCent));
-
-                        if (dist < minDist) {
-                            minDist = dist;
-                            nearestNeighbour = testObject;
-
-                        }
-                    }
-                }
-            }
-
-            // Adding details of the nearest neighbour to the input object's measurements
-            if (nearestNeighbour != null) {
-                inputObject.addMeasurement(new Measurement(Measurements.NN_ID, nearestNeighbour.getID()));
-                inputObject.addMeasurement(new Measurement(Measurements.NN_DISTANCE_PX, minDist));
-                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.NN_DISTANCE_CAL), minDist*dppXY));
+                ObjCollection childObjects = parentObject.getChildren(nearestNeighbourName);
+                Obj nearestNeighbour = getNearestNeighbour(inputObject,childObjects);
+                addMeasurements(inputObject,nearestNeighbour,nearestNeighbourName);
 
             } else {
-                inputObject.addMeasurement(new Measurement(Measurements.NN_ID, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Measurements.NN_DISTANCE_PX, Double.NaN));
-                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.NN_DISTANCE_CAL), Double.NaN));
-
+                Obj nearestNeighbour = getNearestNeighbour(inputObject,neighbourObjects);
+                addMeasurements(inputObject,nearestNeighbour,nearestNeighbourName);
             }
         }
     }
@@ -113,6 +142,8 @@ public class CalculateNearestNeighbour extends Module {
     @Override
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(RELATIONSHIP_MODE, Parameter.CHOICE_ARRAY, RelationshipModes.WITHIN_SAME_SET,RelationshipModes.ALL));
+        parameters.add(new Parameter(NEIGHBOUR_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(CALCULATE_WITHIN_PARENT, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(PARENT_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
 
@@ -123,8 +154,15 @@ public class CalculateNearestNeighbour extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
-        returnedParameters.add(parameters.getParameter(CALCULATE_WITHIN_PARENT));
+        returnedParameters.add(parameters.getParameter(RELATIONSHIP_MODE));
 
+        switch ((String) parameters.getValue(RELATIONSHIP_MODE)) {
+            case RelationshipModes.DIFFERENT_SET:
+                returnedParameters.add(parameters.getParameter(NEIGHBOUR_OBJECTS));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(CALCULATE_WITHIN_PARENT));
         if (parameters.getValue(CALCULATE_WITHIN_PARENT)) {
             returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
 
@@ -147,16 +185,31 @@ public class CalculateNearestNeighbour extends Module {
         objectMeasurementReferences.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
 
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.NN_DISTANCE_CAL));
+        String neighbourObjectsName = null;
+        switch (relationshipMode) {
+            case RelationshipModes.DIFFERENT_SET:
+                neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS);
+                break;
+            case RelationshipModes.WITHIN_SAME_SET:
+                neighbourObjectsName = inputObjectsName;
+                break;
+        }
+
+
+        String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.NN_DISTANCE_PX);
+        name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
+        reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.NN_ID);
+        name = getFullName(Measurements.NN_ID,neighbourObjectsName);
+        reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 

@@ -164,7 +164,7 @@ public class Obj extends Volume {
     }
 
     public ObjCollection getChildren(String name) {
-        return children.get(name);
+        return children.containsKey(name) ? children.get(name) : new ObjCollection(name);
     }
 
     public void setChildren(LinkedHashMap<String, ObjCollection> children) {

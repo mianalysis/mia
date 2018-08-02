@@ -381,7 +381,7 @@ public class ComponentFactory {
         measurementName.setPreferredSize(new Dimension(-1, elementHeight));
         measurementName.setEditable(false);
         measurementName.setBorder(null);
-        measurementName.setToolTipText(measurement.getDescription());
+        measurementName.setToolTipText("<html><p width=\"500\">" +measurement.getDescription()+"</p></html>");
         measurementPanel.add(measurementName, c);
 
         MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement);
