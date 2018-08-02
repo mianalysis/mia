@@ -45,13 +45,10 @@ public class FitEllipse extends Module {
 
 
     public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage) {
-        ImagePlus templateImagePlus = templateImage.getImagePlus();
-        templateImagePlus.setPosition(1,1,inputObject.getT());
-        ImageStack imageStack = templateImagePlus.getStack();
-
         EllipseCalculator calculator = new EllipseCalculator(inputObject);
         addMeasurements(inputObject,calculator);
 
+        System.out.println("New obj");
         Volume ellipse = calculator.getContainedPoints();
 
         switch (objectOutputMode) {
@@ -124,8 +121,8 @@ public class FitEllipse extends Module {
         inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,semiMinor,this));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MINOR_CAL),semiMinor*dppXY,this));
 
-        double eccentriciy = Math.sqrt(1-(semiMinor*semiMinor)/(semiMajor*semiMajor));
-        inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,eccentriciy,this));
+        double eccentricity = Math.sqrt(1-(semiMinor*semiMinor)/(semiMajor*semiMajor));
+        inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,eccentricity,this));
 
         double ratio = semiMajor/semiMinor;
         inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,ratio,this));
