@@ -19,7 +19,7 @@ public class WekaProbabilityMapsTest {
     public static void setVerbose() {
         Module.setVerbose(true);
     }
-    
+
     @Test
     public void testGetTitle() throws Exception {
         assertNotNull(new WekaProbabilityMaps().getTitle());

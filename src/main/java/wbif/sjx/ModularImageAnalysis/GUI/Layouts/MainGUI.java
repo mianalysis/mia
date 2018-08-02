@@ -4,8 +4,11 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
+import ij.IJ;
 import org.apache.commons.lang.SystemUtils;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
@@ -26,6 +29,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -898,10 +902,21 @@ public class MainGUI extends GUI {
     }
 
     private void listAvailableModules() throws IllegalAccessException, InstantiationException {
+//        try {
         // Using Reflections tool to get list of classes extending Module
         Reflections.log = null;
-        Reflections reflections = new Reflections("wbif.sjx.ModularImageAnalysis");
+//        Reflections reflections = new Reflections("wbif.sjx.ModularImageAnalysis");
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+//            configurationBuilder.addClassLoader(IJ.getClassLoader());
+configurationBuilder.addUrls(ClasspathHelper.forClassLoader());
+
+for(URL url:ClasspathHelper.forClassLoader()) System.err.println(url);
+            Reflections reflections = new Reflections(configurationBuilder);
+
         Set<Class<? extends Module>> availableModules = reflections.getSubTypesOf(Module.class);
+
+        for (Class clazz:availableModules) System.err.println(clazz.getSimpleName());
+System.err.println("Complete!");
 
         // Creating an alphabetically-ordered list of all modules
         TreeMap<String,Class> modules = new TreeMap<>();
@@ -916,6 +931,7 @@ public class MainGUI extends GUI {
 
         LinkedHashSet<ModuleListMenu> topList = new LinkedHashSet<>();
         for (Class clazz : modules.values()) {
+            System.err.println("Simple "+clazz.getSimpleName());
             // ActiveList starts at the top list
             LinkedHashSet<ModuleListMenu> activeList = topList;
             ModuleListMenu activeItem = null;
@@ -941,10 +957,16 @@ public class MainGUI extends GUI {
                 activeList = activeItem.getChildren();
 
             }
-            activeItem.addMenuItem((Module) clazz.newInstance());
+
+            Module module = (Module) clazz.newInstance();
+            if (module != null && activeItem != null) activeItem.addMenuItem(module);
+
         }
 
         for (ModuleListMenu listMenu:topList) moduleListMenu.add(listMenu);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void addModule() {
