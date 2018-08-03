@@ -27,7 +27,7 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new Parameter(TITLE,Parameter.STRING,""));
         parameters.add(new Parameter(EXPANDED,Parameter.BOOLEAN,true));
     }

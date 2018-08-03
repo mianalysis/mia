@@ -22,6 +22,10 @@ public class ComponentFactory {
     private GUI gui;
     private int elementHeight;
 
+    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_black_12px.png"), "");
+    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_black_12px.png"), "");
+    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_black_12px.png"), "");
+
     public ComponentFactory(GUI gui, int elementHeight) {
         this.gui = gui;
         this.elementHeight = elementHeight;
@@ -252,9 +256,9 @@ public class ComponentFactory {
         // Adding the state/evaluate button
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.insets = new Insets(0, 5, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.anchor = GridBagConstraints.WEST;
 
         ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(gui,module);
         moduleEnabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
@@ -280,29 +284,52 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 1;
+        c.weightx = 0;
         c.weighty = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.EAST;
 
+        JLabel leftArrowLabel = new JLabel();
+        if (module.getParameterValue(GUISeparator.EXPANDED)) {
+            leftArrowLabel.setIcon(downArrow);
+        } else {
+            leftArrowLabel.setIcon(rightArrow);
+        }
+        c.insets = new Insets(0,0,0,5);
+        panel.add(leftArrowLabel,c);
+
         JSeparator separatorLeft = new JSeparator();
+        c.weightx = 1;
+        c.gridx++;
         panel.add(separatorLeft,c);
 
         JLabel label = new JLabel();
         label.setText(module.getParameterValue(GUISeparator.TITLE));
         c.weightx = 0;
         c.gridx++;
+        c.insets = new Insets(0,0,0,0);
         panel.add(label,c);
 
         JSeparator separatorRight = new JSeparator();
         c.weightx = 1;
         c.gridx++;
+        c.insets = new Insets(0,5,0,0);
         panel.add(separatorRight,c);
 
-        panel.setPreferredSize(new Dimension(panelWidth,30));
+        JLabel rightArrowLabel = new JLabel();
+        if (module.getParameterValue(GUISeparator.EXPANDED)) {
+            rightArrowLabel.setIcon(downArrow);
+        } else {
+            rightArrowLabel.setIcon(leftArrow);
+        }
+        c.weightx = 0;
+        c.gridx++;
+        panel.add(rightArrowLabel,c);
+
+        panel.setPreferredSize(new Dimension(panelWidth,25));
 
         int labelWidth = label.getPreferredSize().width;
-        label.setPreferredSize(new Dimension(labelWidth+20,30));
+        label.setPreferredSize(new Dimension(labelWidth+20,25));
         label.setHorizontalAlignment(JLabel.CENTER);
         separatorLeft.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
         separatorRight.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
@@ -358,7 +385,7 @@ public class ComponentFactory {
         c.weightx = 1;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.anchor = GridBagConstraints.NORTHWEST;
         modulePanel.add(titlePanel, c);
 
         // If there are visible parameters, but the module isn't enabled only return the heading

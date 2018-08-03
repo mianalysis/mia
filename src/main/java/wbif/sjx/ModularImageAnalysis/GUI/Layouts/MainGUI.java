@@ -64,6 +64,7 @@ public class MainGUI extends GUI {
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
     private static final JPanel basicStatusPanel = new JPanel();
     private static final JPanel editingStatusPanel = new JPanel();
+    private static final GUISeparator loadSeparator = new GUISeparator();
 
     public MainGUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
         // Only create a GUI if one hasn't already been created
@@ -76,7 +77,8 @@ public class MainGUI extends GUI {
         this.debugOn = debugOn;
 
         analysis.getInputControl().initialiseParameters();
-
+        loadSeparator.initialiseParameters();
+        loadSeparator.updateParameterValue(GUISeparator.TITLE,"File loading");
         componentFactory = new ComponentFactory(this, elementHeight);
 
         // Setting location of panel
@@ -835,7 +837,7 @@ public class MainGUI extends GUI {
         basicModulesPanel.removeAll();
 
         // Only modules below an expanded GUISeparator should be displayed
-        boolean expanded = true;
+        boolean expanded = loadSeparator.getParameterValue(GUISeparator.EXPANDED);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -849,21 +851,14 @@ public class MainGUI extends GUI {
         if (analysis.modules.size()==0) return;
 
         // Adding a separator between the input and main modules
-        GUISeparator separatorModule = new GUISeparator();
-        separatorModule.updateParameterValue(GUISeparator.TITLE,"File loading");
-        c.gridy++;
-        basicModulesPanel.add(componentFactory.getSeparator(separatorModule,basicFrameWidth-80),c);
-
-        JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0,20));
-        basicModulesPanel.add(separator,c);
+        basicModulesPanel.add(componentFactory.getSeparator(loadSeparator,basicFrameWidth-80),c);
 
         // Adding input control options
-        c.gridy++;
-        JPanel inputPanel =
-                componentFactory.createBasicModuleControl(analysis.getInputControl(),basicFrameWidth-80);
-
-        if (inputPanel != null) basicModulesPanel.add(inputPanel,c);
+        if (expanded) {
+            c.gridy++;
+            JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(), basicFrameWidth - 80);
+            if (inputPanel != null) basicModulesPanel.add(inputPanel, c);
+        }
 
         // Adding module buttons
         ModuleCollection modules = getModules();
@@ -871,6 +866,13 @@ public class MainGUI extends GUI {
             // If the module is the special-case GUISeparator, create this module, then return
             JPanel modulePanel;
             if (module.getClass().isInstance(new GUISeparator())) {
+                // Adding a blank space before the next separator
+                if (expanded) {
+                    JPanel blankPanel = new JPanel();
+                    blankPanel.setPreferredSize(new Dimension(10, 10));
+                    c.gridy++;
+                    basicModulesPanel.add(blankPanel, c);
+                }
                 expanded = module.getParameterValue(GUISeparator.EXPANDED);
                 modulePanel = componentFactory.getSeparator(module, basicFrameWidth-80);
             } else {
@@ -883,10 +885,7 @@ public class MainGUI extends GUI {
             }
         }
 
-        c.gridy++;
-        JPanel outputPanel =
-                componentFactory.createBasicModuleControl(analysis.getOutputControl(),basicFrameWidth-80);
-
+        JPanel outputPanel =componentFactory.createBasicModuleControl(analysis.getOutputControl(),basicFrameWidth-80);
         if (outputPanel != null) {
             c.gridy++;
             basicModulesPanel.add(outputPanel,c);
@@ -895,6 +894,7 @@ public class MainGUI extends GUI {
         c.gridy++;
         c.weighty = 100;
         c.fill = GridBagConstraints.VERTICAL;
+        JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(-1,1));
         basicModulesPanel.add(separator, c);
 
