@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -10,6 +11,8 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.*;
 
 /**
@@ -304,14 +307,41 @@ public class ComponentFactory {
         separatorLeft.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
         separatorRight.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
 
+        // Adding an MouseListener to check if it was clicked
+        panel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                boolean expanded = module.getParameterValue(GUISeparator.EXPANDED);
+                module.updateParameterValue(GUISeparator.EXPANDED,!expanded);
+                gui.updateModules();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
         return panel;
 
     }
 
     public JPanel createBasicModuleControl(Module module, int panelWidth) {
-        // If the module is the special-case GUISeparator, create this module, then return
-        if (module.getClass().isInstance(new GUISeparator())) return getSeparator(module, panelWidth);
-
         // Only displaying the module title if it has at least one visible parameter
         boolean hasVisibleParameters = false;
         for (Parameter parameter : module.updateAndGetParameters().values()) {
@@ -394,4 +424,5 @@ public class ComponentFactory {
 
         return measurementPanel;
     }
+
 }

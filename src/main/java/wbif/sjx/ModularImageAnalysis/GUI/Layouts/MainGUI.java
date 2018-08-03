@@ -834,6 +834,9 @@ public class MainGUI extends GUI {
     public void populateBasicModules() {
         basicModulesPanel.removeAll();
 
+        // Only modules below an expanded GUISeparator should be displayed
+        boolean expanded = true;
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -865,13 +868,19 @@ public class MainGUI extends GUI {
         // Adding module buttons
         ModuleCollection modules = getModules();
         for (Module module : modules) {
-            int idx = modules.indexOf(module);
-            if (idx == modules.size() - 1) c.weighty = 1;
-            c.gridy++;
+            // If the module is the special-case GUISeparator, create this module, then return
+            JPanel modulePanel;
+            if (module.getClass().isInstance(new GUISeparator())) {
+                expanded = module.getParameterValue(GUISeparator.EXPANDED);
+                modulePanel = componentFactory.getSeparator(module, basicFrameWidth-80);
+            } else {
+                modulePanel = componentFactory.createBasicModuleControl(module,basicFrameWidth-80);
+            }
 
-            JPanel modulePanel = componentFactory.createBasicModuleControl(module,basicFrameWidth-80);
-            if (modulePanel!=null) basicModulesPanel.add(modulePanel,c);
-
+            if (modulePanel!=null && (expanded || module.getClass().isInstance(new GUISeparator()))) {
+                c.gridy++;
+                basicModulesPanel.add(modulePanel,c);
+            }
         }
 
         c.gridy++;
@@ -881,7 +890,6 @@ public class MainGUI extends GUI {
         if (outputPanel != null) {
             c.gridy++;
             basicModulesPanel.add(outputPanel,c);
-
         }
 
         c.gridy++;
