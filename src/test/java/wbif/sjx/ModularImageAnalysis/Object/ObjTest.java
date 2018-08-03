@@ -272,7 +272,7 @@ public class ObjTest {
         // Checking the children of the object
         assertEquals(1,obj1.getChildren().size());
         assertNotNull(obj1.getChildren(childObjectsName));
-        assertNull(obj1.getChildren("not children"));
+        assertEquals(0,obj1.getChildren("not children").size());
         assertEquals(3,obj1.getChildren(childObjectsName).size());
 
     }

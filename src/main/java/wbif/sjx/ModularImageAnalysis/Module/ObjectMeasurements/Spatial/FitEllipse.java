@@ -48,7 +48,6 @@ public class FitEllipse extends Module {
         EllipseCalculator calculator = new EllipseCalculator(inputObject);
         addMeasurements(inputObject,calculator);
 
-        System.out.println("New obj");
         Volume ellipse = calculator.getContainedPoints();
 
         switch (objectOutputMode) {
@@ -255,7 +254,7 @@ public class FitEllipse extends Module {
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
-                inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction" +
+                inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction " +
                 "perpendiculart to the semi-major axis.  Measured in pixels.");
 
         reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SEMI_MINOR_CAL));
@@ -271,7 +270,7 @@ public class FitEllipse extends Module {
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Measurement of how much the ellipse fit to the 2D Z-projection of the object, \"" +
                 inputObjectsName+"\", deviates from a perfect circle.  Eccentricity is calculated as sqrt(1-b^2/a^2)" +
-                ", where a and b are the lengths of the semi-major and semi-minor axes, respectively.  Eccentricity" +
+                ", where a and b are the lengths of the semi-major and semi-minor axes, respectively.  Eccentricity " +
                 "has no units.");
 
         reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MAJOR_MINOR_RATIO));

@@ -27,6 +27,9 @@ import wbif.sjx.common.System.FileCrawler;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.*;
 
@@ -276,22 +279,22 @@ public class BatchProcessor extends FileCrawler {
     }
 
     private TreeMap<Integer,String> getSeriesNumbers(Analysis analysis, File inputFile) {
-        ParameterCollection parameters = analysis.getInputControl().getAllParameters();
-        String seriesMode = parameters.getValue(InputControl.SERIES_MODE);
-        boolean useFilter1 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_1);
-        String filter1 = parameters.getValue(InputControl.SERIESNAME_FILTER_1);
-        String filterType1 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_1);
-        boolean useFilter2 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_2);
-        String filter2 = parameters.getValue(InputControl.SERIESNAME_FILTER_2);
-        String filterType2 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_2);
-        boolean useFilter3 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_3);
-        String filter3 = parameters.getValue(InputControl.SERIESNAME_FILTER_3);
-        String filterType3 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_3);
+        try {
+            ParameterCollection parameters = analysis.getInputControl().getAllParameters();
+            String seriesMode = parameters.getValue(InputControl.SERIES_MODE);
+            boolean useFilter1 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_1);
+            String filter1 = parameters.getValue(InputControl.SERIESNAME_FILTER_1);
+            String filterType1 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_1);
+            boolean useFilter2 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_2);
+            String filter2 = parameters.getValue(InputControl.SERIESNAME_FILTER_2);
+            String filterType2 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_2);
+            boolean useFilter3 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_3);
+            String filter3 = parameters.getValue(InputControl.SERIESNAME_FILTER_3);
+            String filterType3 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_3);
 
-        TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
-        switch (seriesMode) {
-            case InputControl.SeriesModes.ALL_SERIES:
-                try {
+            TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
+            switch (seriesMode) {
+                case InputControl.SeriesModes.ALL_SERIES:
                     // Using BioFormats to get the number of series
                     DebugTools.enableLogging("off");
                     DebugTools.setRootLevel("off");
@@ -311,17 +314,45 @@ public class BatchProcessor extends FileCrawler {
                         if (useFilter3 &!getFilenameFilter(filterType3,filter3).test(name)) continue;
                         namesAndNumbers.put(seriesNumber+1,name);
                     }
-                } catch (DependencyException | FormatException | ServiceException | IOException e) {
-                    e.printStackTrace();
-                }
-                break;
+                    break;
 
-            case InputControl.SeriesModes.SINGLE_SERIES:
-                namesAndNumbers.put(analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER),"");
-                break;
+                case InputControl.SeriesModes.SERIES_LIST:
+                    // Converting series list to a list of numbers
+                    String seriesList = analysis.getInputControl().getParameterValue(InputControl.SERIES_LIST);
+                    seriesList = seriesList.replace(" ","");
+                    List<String> list = new ArrayList<String>(Arrays.asList(seriesList.split(",")));
+
+                    // Using BioFormats to get the number of series
+                    DebugTools.enableLogging("off");
+                    DebugTools.setRootLevel("off");
+
+                    factory = new ServiceFactory();
+                    service = factory.getInstance(OMEXMLService.class);
+                    meta = service.createOMEXMLMetadata();
+                    reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+                    reader.setMetadataStore((MetadataStore) meta);
+                    reader.setGroupFiles(false);
+                    reader.setId(inputFile.getAbsolutePath());
+
+                    for (int i=0;i<list.size();i++) {
+                        int seriesNumber = Integer.parseInt(list.get(i))-1;
+                        namesAndNumbers.put(seriesNumber+1,meta.getImageName(seriesNumber));
+                    }
+
+                    break;
+
+                case InputControl.SeriesModes.SINGLE_SERIES:
+                    namesAndNumbers.put(analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER),"");
+                    break;
+            }
+
+            return namesAndNumbers;
+
+        } catch (DependencyException | FormatException | ServiceException | IOException e) {
+            e.printStackTrace();
         }
 
-        return namesAndNumbers;
+        return null;
 
     }
 

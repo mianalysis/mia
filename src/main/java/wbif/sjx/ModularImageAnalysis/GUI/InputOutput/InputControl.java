@@ -14,6 +14,7 @@ public class InputControl extends Module {
     public static final String NUMBER_OF_THREADS = "Number of CPU threads";
     public static final String FILE_EXTENSION = "File extension";
     public static final String SERIES_MODE = "Series mode";
+    public static final String SERIES_LIST = "Series list";
     public static final String SERIES_NUMBER = "Series number";
     public static final String USE_SERIESNAME_FILTER_1 = "Use seriesname filter 1";
     public static final String SERIESNAME_FILTER_1 = "Seriesname filter 1";
@@ -45,9 +46,10 @@ public class InputControl extends Module {
 
     public interface SeriesModes {
         String ALL_SERIES = "All series";
+        String SERIES_LIST = "Series list (comma separated)";
         String SINGLE_SERIES = "Single series";
 
-        String[] ALL = new String[]{ALL_SERIES,SINGLE_SERIES};
+        String[] ALL = new String[]{ALL_SERIES,SERIES_LIST,SINGLE_SERIES};
 
     }
 
@@ -87,6 +89,7 @@ public class InputControl extends Module {
         parameters.add(new Parameter(NUMBER_OF_THREADS,Parameter.INTEGER,nThreads));
         parameters.add(new Parameter(FILE_EXTENSION, Parameter.STRING,"tif"));
         parameters.add(new Parameter(SERIES_MODE,Parameter.CHOICE_ARRAY,SeriesModes.ALL_SERIES,SeriesModes.ALL));
+        parameters.add(new Parameter(SERIES_LIST,Parameter.STRING,"1"));
         parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
         parameters.add(new Parameter(USE_SERIESNAME_FILTER_1,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SERIESNAME_FILTER_1,Parameter.STRING,""));
@@ -125,11 +128,13 @@ public class InputControl extends Module {
                 returnedParameters.add(parameters.getParameter(BATCH_FOLDER_PATH));
                 returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
                 break;
-
         }
 
         returnedParameters.add(parameters.getParameter(SERIES_MODE));
         switch ((String) parameters.getValue(SERIES_MODE)) {
+            case SeriesModes.SERIES_LIST:
+                returnedParameters.add(parameters.getParameter(SERIES_LIST));
+                break;
             case SeriesModes.SINGLE_SERIES:
                 returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
                 break;
