@@ -252,7 +252,8 @@ public class ResolveObjectOverlap extends Module {
             return;
         }
 
-        if (calibratedUnits) maximumSeparation = maximumSeparation*inputObjects1.values().iterator().next().getDistPerPxXY();
+        Obj firstObj = inputObjects1.getFirst();
+        if (calibratedUnits) maximumSeparation = maximumSeparation/firstObj.getDistPerPxXY();
 
         ObjCollection outputObjects = null;
         switch (overlapMode) {

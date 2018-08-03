@@ -12,6 +12,9 @@ public class CalculateNearestNeighbour extends Module {
     public static final String NEIGHBOUR_OBJECTS = "Neighbour objects";
     public static final String CALCULATE_WITHIN_PARENT = "Only calculate for objects in same parent";
     public static final String PARENT_OBJECTS = "Parent objects";
+    public static final String LIMIT_LINKING_DISTANCE = "Limit linking distance";
+    public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance";
+    public static final String CALIBRATED_DISTANCE = "Calibrated distance";
 
     public interface RelationshipModes {
         String WITHIN_SAME_SET = "Within same object set";
@@ -32,23 +35,21 @@ public class CalculateNearestNeighbour extends Module {
     }
 
 
-    public Obj getNearestNeighbour(Obj inputObject, ObjCollection testObjects) {
-        // There's no guarantee there will be any test objects
-//        if (testObjects == null) return null;
-
+    public Obj getNearestNeighbour(Obj inputObject, ObjCollection testObjects, double maximumLinkingDistance) {
         double minDist = Double.MAX_VALUE;
         Obj nearestNeighbour = null;
 
         for (Obj testObject : testObjects.values()) {
-            if (testObject != inputObject) {
-                double dist = inputObject.getCentroidSeparation(testObject,true);
+            if (testObject == inputObject) continue;
 
-                if (dist < minDist) {
-                    minDist = dist;
-                    nearestNeighbour = testObject;
-                }
+            double dist = inputObject.getCentroidSeparation(testObject,true);
+            if (dist < minDist) {
+                minDist = dist;
+                nearestNeighbour = testObject;
             }
         }
+
+        if (minDist > maximumLinkingDistance) return null;
 
         return nearestNeighbour;
 
@@ -104,6 +105,19 @@ public class CalculateNearestNeighbour extends Module {
         String neighbourObjectsName = parameters.getValue(NEIGHBOUR_OBJECTS);
         boolean calculateWithinParent = parameters.getValue(CALCULATE_WITHIN_PARENT);
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
+        boolean limitLinkingDistance = parameters.getValue(LIMIT_LINKING_DISTANCE);
+        double maxLinkingDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
+        boolean calibratedDistance = parameters.getValue(CALIBRATED_DISTANCE);
+
+        // If there are no input objects skip the module
+        Obj firstObj = inputObjects.getFirst();
+        if (firstObj == null) return;
+
+        // If the maximum linking distance was specified in calibrated units convert it to pixels
+        if (limitLinkingDistance && calibratedDistance) maxLinkingDist = maxLinkingDist/firstObj.getDistPerPxXY();
+
+        // If the linking distance limit isn't to be used, use Double.MAX_VALUE instead
+        if (!limitLinkingDistance) maxLinkingDist = Double.MAX_VALUE;
 
         ObjCollection neighbourObjects = null;
         String nearestNeighbourName = null;
@@ -129,11 +143,11 @@ public class CalculateNearestNeighbour extends Module {
                 }
 
                 ObjCollection childObjects = parentObject.getChildren(nearestNeighbourName);
-                Obj nearestNeighbour = getNearestNeighbour(inputObject,childObjects);
+                Obj nearestNeighbour = getNearestNeighbour(inputObject,childObjects,maxLinkingDist);
                 addMeasurements(inputObject,nearestNeighbour,nearestNeighbourName);
 
             } else {
-                Obj nearestNeighbour = getNearestNeighbour(inputObject,neighbourObjects);
+                Obj nearestNeighbour = getNearestNeighbour(inputObject,neighbourObjects,maxLinkingDist);
                 addMeasurements(inputObject,nearestNeighbour,nearestNeighbourName);
             }
         }
@@ -146,6 +160,9 @@ public class CalculateNearestNeighbour extends Module {
         parameters.add(new Parameter(NEIGHBOUR_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(CALCULATE_WITHIN_PARENT, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(PARENT_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(LIMIT_LINKING_DISTANCE, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE, Parameter.DOUBLE,100d));
+        parameters.add(new Parameter(CALIBRATED_DISTANCE, Parameter.BOOLEAN,false));
 
     }
 
@@ -169,6 +186,12 @@ public class CalculateNearestNeighbour extends Module {
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(PARENT_OBJECTS,inputObjectsName);
 
+        }
+
+        returnedParameters.add(parameters.getParameter(LIMIT_LINKING_DISTANCE));
+        if (parameters.getValue(LIMIT_LINKING_DISTANCE)) {
+            returnedParameters.add(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
+            returnedParameters.add(parameters.getParameter(CALIBRATED_DISTANCE));
         }
 
         return returnedParameters;
