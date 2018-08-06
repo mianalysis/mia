@@ -5,6 +5,8 @@ import ij.gui.*;
 import ij.plugin.filter.PlugInFilter;
 import ij.plugin.filter.RankFilters;
 import ij.process.*;
+
+import javax.annotation.Nullable;
 import java.awt.*;
 
 
@@ -144,7 +146,7 @@ public class Stack_Focuser_ implements PlugInFilter
     private boolean smooth = false;
     private GenericDialog input_dialog;
     private boolean interact = true;
-    private ImageProcessor focused_ip = null, height_ip = null;
+    private ImageProcessor focused_ip = null, height_ip = null, existing_map = null;
     private ImageStack focused_stack, height_stack;
     private static final int redMask = 0xff0000, greenMask = 0x00ff00, blueMask = 0x0000ff;
     private static final int redShift = 16, greenShift = 8, blueShift = 0;
@@ -452,15 +454,20 @@ public class Stack_Focuser_ implements PlugInFilter
      */
     public ImageProcessor focusGreyStack(ImageStack g_stack, int stackType)
     {
-        ImageStack max_stack;
+        // If an existing map has been provided, skip the max stack step
+        if (existing_map == null) {
+            ImageStack max_stack;
 
-        // create max stack
-        max_stack = makeMaxStack(g_stack, stackType);
+            // create max stack
+            max_stack = makeMaxStack(g_stack, stackType);
 
-        //paste the image
-        return pasteGreyImage(g_stack, max_stack, stackType);
-        // max_stack = null;
+            //paste the image
+            return pasteGreyImage(g_stack, max_stack, stackType);
+            // max_stack = null;
 
+        } else {
+            return pasteGreyImage(g_stack, null, stackType);
+        }
     }
 
     /**
@@ -576,11 +583,15 @@ public class Stack_Focuser_ implements PlugInFilter
         short[] dest_pixels16 = null;
         float[] dest_pixels32 = null;
 
-        // Creating the height map
-        height_ip = createHeightMap(m_stack);
+        // If an existing map hasn't been provided, run the following
+        if (existing_map == null) {
+            height_ip = createHeightMap(m_stack);
 
-        // If enabled, applying the median filter to smooth the height profile
-        if (smooth) smoothHeightMap(height_ip,k_size);
+            // If enabled, applying the median filter to smooth the height profile
+            if (smooth) smoothHeightMap(height_ip,k_size);
+        } else {
+            height_ip = existing_map;
+        }
 
         switch (stackType)
         {
@@ -819,5 +830,9 @@ public class Stack_Focuser_ implements PlugInFilter
     public ImageProcessor getHeightImage() {
         return height_ip;
 
+    }
+
+    public void setExistingHeightMap(@Nullable ImageProcessor existing_map) {
+        this.existing_map = existing_map;
     }
 }

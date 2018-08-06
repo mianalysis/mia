@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -10,6 +11,8 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.*;
 
 /**
@@ -18,6 +21,10 @@ import java.util.*;
 public class ComponentFactory {
     private GUI gui;
     private int elementHeight;
+
+    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_black_12px.png"), "");
+    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_black_12px.png"), "");
+    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_black_12px.png"), "");
 
     public ComponentFactory(GUI gui, int elementHeight) {
         this.gui = gui;
@@ -249,9 +256,9 @@ public class ComponentFactory {
         // Adding the state/evaluate button
         c.gridx = 0;
         c.weightx = 0;
-        c.insets = new Insets(5, 5, 0, 5);
+        c.insets = new Insets(0, 5, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.anchor = GridBagConstraints.WEST;
 
         ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(gui,module);
         moduleEnabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
@@ -277,41 +284,91 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 1;
+        c.weightx = 0;
         c.weighty = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.EAST;
 
+        JLabel leftArrowLabel = new JLabel();
+        if (module.getParameterValue(GUISeparator.EXPANDED)) {
+            leftArrowLabel.setIcon(downArrow);
+        } else {
+            leftArrowLabel.setIcon(rightArrow);
+        }
+        c.insets = new Insets(0,0,0,5);
+        panel.add(leftArrowLabel,c);
+
         JSeparator separatorLeft = new JSeparator();
+        c.weightx = 1;
+        c.gridx++;
         panel.add(separatorLeft,c);
 
         JLabel label = new JLabel();
         label.setText(module.getParameterValue(GUISeparator.TITLE));
         c.weightx = 0;
         c.gridx++;
+        c.insets = new Insets(0,0,0,0);
         panel.add(label,c);
 
         JSeparator separatorRight = new JSeparator();
         c.weightx = 1;
         c.gridx++;
+        c.insets = new Insets(0,5,0,0);
         panel.add(separatorRight,c);
 
-        panel.setPreferredSize(new Dimension(panelWidth,30));
+        JLabel rightArrowLabel = new JLabel();
+        if (module.getParameterValue(GUISeparator.EXPANDED)) {
+            rightArrowLabel.setIcon(downArrow);
+        } else {
+            rightArrowLabel.setIcon(leftArrow);
+        }
+        c.weightx = 0;
+        c.gridx++;
+        panel.add(rightArrowLabel,c);
+
+        panel.setPreferredSize(new Dimension(panelWidth,25));
 
         int labelWidth = label.getPreferredSize().width;
-        label.setPreferredSize(new Dimension(labelWidth+20,30));
+        label.setPreferredSize(new Dimension(labelWidth+20,25));
         label.setHorizontalAlignment(JLabel.CENTER);
         separatorLeft.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
         separatorRight.setPreferredSize(new Dimension((panelWidth-labelWidth)/2-10, 1));
+
+        // Adding an MouseListener to check if it was clicked
+        panel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                boolean expanded = module.getParameterValue(GUISeparator.EXPANDED);
+                module.updateParameterValue(GUISeparator.EXPANDED,!expanded);
+                gui.updateModules();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 
         return panel;
 
     }
 
     public JPanel createBasicModuleControl(Module module, int panelWidth) {
-        // If the module is the special-case GUISeparator, create this module, then return
-        if (module.getClass().isInstance(new GUISeparator())) return getSeparator(module, panelWidth);
-
         // Only displaying the module title if it has at least one visible parameter
         boolean hasVisibleParameters = false;
         for (Parameter parameter : module.updateAndGetParameters().values()) {
@@ -328,7 +385,7 @@ public class ComponentFactory {
         c.weightx = 1;
         c.weighty = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        c.anchor = GridBagConstraints.NORTHWEST;
         modulePanel.add(titlePanel, c);
 
         // If there are visible parameters, but the module isn't enabled only return the heading
@@ -394,4 +451,5 @@ public class ComponentFactory {
 
         return measurementPanel;
     }
+
 }

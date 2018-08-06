@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  */
 public class GUISeparator extends Module{
     public static final String TITLE = "Title";
+    public static final String EXPANDED = "Expanded";
 
     @Override
     public String getTitle() {
@@ -26,8 +27,9 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    protected void initialiseParameters() {
+    public void initialiseParameters() {
         parameters.add(new Parameter(TITLE,Parameter.STRING,""));
+        parameters.add(new Parameter(EXPANDED,Parameter.BOOLEAN,true));
     }
 
     @Override
