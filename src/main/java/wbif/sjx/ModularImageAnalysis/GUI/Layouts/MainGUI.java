@@ -886,7 +886,7 @@ public class MainGUI extends GUI {
         }
 
         JPanel outputPanel =componentFactory.createBasicModuleControl(analysis.getOutputControl(),basicFrameWidth-80);
-        if (outputPanel != null) {
+        if (outputPanel != null && expanded) {
             c.gridy++;
             basicModulesPanel.add(outputPanel,c);
         }
