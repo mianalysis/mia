@@ -68,7 +68,7 @@ public class MIA implements PlugIn {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
                 new ImageJ();
-                new MainGUI(false);
+                new MainGUI(true);
 
             } else {
                 String filepath = args[0];
