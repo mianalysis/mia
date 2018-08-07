@@ -88,6 +88,7 @@ public class AnalysisRunner {
     public static String getExportName(InputControl inputControl, File inputFile) {
         String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
         String seriesMode = inputControl.getParameterValue(InputControl.SERIES_MODE);
+        String seriesList = inputControl.getParameterValue(InputControl.SERIES_LIST);
         int seriesNumber = inputControl.getParameterValue(InputControl.SERIES_NUMBER);
 
         switch (inputMode) {
@@ -95,6 +96,8 @@ public class AnalysisRunner {
                 switch (seriesMode) {
                     case InputControl.SeriesModes.ALL_SERIES:
                         return FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+                    case InputControl.SeriesModes.SERIES_LIST:
+                        return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesList.replace(" ","");
                     case InputControl.SeriesModes.SINGLE_SERIES:
                         return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesNumber;
                 }
@@ -102,6 +105,8 @@ public class AnalysisRunner {
                 switch (seriesMode) {
                     case InputControl.SeriesModes.ALL_SERIES:
                         return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName();
+                    case InputControl.SeriesModes.SERIES_LIST:
+                        return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName() + "_S" + seriesList.replace(" ","");
                     case InputControl.SeriesModes.SINGLE_SERIES:
                         return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName() + "_S" + seriesNumber;
                 }

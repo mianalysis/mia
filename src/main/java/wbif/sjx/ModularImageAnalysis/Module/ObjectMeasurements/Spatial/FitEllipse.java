@@ -45,10 +45,6 @@ public class FitEllipse extends Module {
 
 
     public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage) {
-        ImagePlus templateImagePlus = templateImage.getImagePlus();
-        templateImagePlus.setPosition(1,1,inputObject.getT());
-        ImageStack imageStack = templateImagePlus.getStack();
-
         EllipseCalculator calculator = new EllipseCalculator(inputObject);
         addMeasurements(inputObject,calculator);
 
@@ -124,8 +120,8 @@ public class FitEllipse extends Module {
         inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,semiMinor,this));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MINOR_CAL),semiMinor*dppXY,this));
 
-        double eccentriciy = Math.sqrt(1-(semiMinor*semiMinor)/(semiMajor*semiMajor));
-        inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,eccentriciy,this));
+        double eccentricity = Math.sqrt(1-(semiMinor*semiMinor)/(semiMajor*semiMajor));
+        inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,eccentricity,this));
 
         double ratio = semiMajor/semiMinor;
         inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,ratio,this));
@@ -258,7 +254,7 @@ public class FitEllipse extends Module {
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Semi-major axis length of ellipse fit to 2D Z-projection of the object, \""+
-                inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction" +
+                inputObjectsName+"\".  The semi-minor axis passes from the centre of the ellipse in the direction " +
                 "perpendiculart to the semi-major axis.  Measured in pixels.");
 
         reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SEMI_MINOR_CAL));
@@ -274,7 +270,7 @@ public class FitEllipse extends Module {
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Measurement of how much the ellipse fit to the 2D Z-projection of the object, \"" +
                 inputObjectsName+"\", deviates from a perfect circle.  Eccentricity is calculated as sqrt(1-b^2/a^2)" +
-                ", where a and b are the lengths of the semi-major and semi-minor axes, respectively.  Eccentricity" +
+                ", where a and b are the lengths of the semi-major and semi-minor axes, respectively.  Eccentricity " +
                 "has no units.");
 
         reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MAJOR_MINOR_RATIO));
