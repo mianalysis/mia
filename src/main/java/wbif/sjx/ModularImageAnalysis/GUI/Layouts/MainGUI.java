@@ -4,7 +4,6 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
-import org.apache.commons.lang.SystemUtils;
 import org.reflections.Reflections;
 import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
@@ -19,8 +18,6 @@ import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
@@ -65,6 +62,7 @@ public class MainGUI extends GUI {
     private static final JPanel basicStatusPanel = new JPanel();
     private static final JPanel editingStatusPanel = new JPanel();
     private static final GUISeparator loadSeparator = new GUISeparator();
+    private static final ButtonGroup group = new ButtonGroup();
 
     public MainGUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
         // Only create a GUI if one hasn't already been created
@@ -78,7 +76,7 @@ public class MainGUI extends GUI {
 
         analysis.getInputControl().initialiseParameters();
         loadSeparator.initialiseParameters();
-        loadSeparator.updateParameterValue(GUISeparator.TITLE,"File loading");
+        loadSeparator.setNickname("File loading");
         componentFactory = new ComponentFactory(this, elementHeight);
 
         // Setting location of panel
@@ -432,6 +430,7 @@ public class MainGUI extends GUI {
         c.anchor = GridBagConstraints.PAGE_START;
 
         ModuleButton inputButton = new ModuleButton(this,analysis.getInputControl());
+        group.add(inputButton);
         inputButton.setPreferredSize(new Dimension(basicFrameWidth-65-bigButtonSize,bigButtonSize));
         inputEnablePanel.add(inputButton, c);
 
@@ -456,6 +455,7 @@ public class MainGUI extends GUI {
         c.anchor = GridBagConstraints.PAGE_START;
 
         ModuleButton outputButton = new ModuleButton(this,analysis.getOutputControl());
+        group.add(outputButton);
         outputButton.setPreferredSize(new Dimension(basicFrameWidth-65-bigButtonSize,bigButtonSize));
         outputEnablePanel.add(outputButton, c);
 
@@ -641,8 +641,7 @@ public class MainGUI extends GUI {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
-        ButtonGroup group = new ButtonGroup();
-
+        boolean expanded = true;
         // Adding module buttons
         ModuleCollection modules = getModules();
         c.insets = new Insets(2,0,0,0);
@@ -651,8 +650,14 @@ public class MainGUI extends GUI {
             int idx = modules.indexOf(module);
             if (idx == modules.size() - 1) c.weighty = 1;
 
-            JPanel modulePanel = componentFactory
-                    .createAdvancedModuleControl(module, group, activeModule, moduleButtonWidth - 25);
+            JPanel modulePanel = null;
+            if (module.getClass().isInstance(new GUISeparator())) {
+                expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING);
+                modulePanel = componentFactory.createEditingSeparator(module, group, activeModule, moduleButtonWidth - 25);
+            } else {
+                if (!expanded) continue;
+                modulePanel = componentFactory.createAdvancedModuleControl(module, group, activeModule, moduleButtonWidth - 25);
+            }
 
             // If this is the final module, add a gap at the bottom
             if (i==modules.size()-1) modulePanel.setBorder(new EmptyBorder(0,0,5,0));
@@ -662,6 +667,13 @@ public class MainGUI extends GUI {
             c.gridy++;
 
         }
+
+        c.gridy++;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.VERTICAL;
+        JSeparator separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(-1,1));
+        modulesPanel.add(separator, c);
 
         modulesPanel.validate();
         modulesPanel.repaint();
@@ -837,7 +849,7 @@ public class MainGUI extends GUI {
         basicModulesPanel.removeAll();
 
         // Only modules below an expanded GUISeparator should be displayed
-        boolean expanded = loadSeparator.getParameterValue(GUISeparator.EXPANDED);
+        boolean expanded = loadSeparator.getParameterValue(GUISeparator.EXPANDED_BASIC);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -851,7 +863,7 @@ public class MainGUI extends GUI {
         if (analysis.modules.size()==0) return;
 
         // Adding a separator between the input and main modules
-        basicModulesPanel.add(componentFactory.getSeparator(loadSeparator,basicFrameWidth-80),c);
+        basicModulesPanel.add(componentFactory.createBasicSeparator(loadSeparator,basicFrameWidth-80),c);
 
         // Adding input control options
         if (expanded) {
@@ -866,6 +878,9 @@ public class MainGUI extends GUI {
             // If the module is the special-case GUISeparator, create this module, then return
             JPanel modulePanel;
             if (module.getClass().isInstance(new GUISeparator())) {
+                // Not all GUI separators are show on the basic panel
+                if (!(boolean) module.getParameterValue(GUISeparator.SHOW_BASIC)) continue;
+
                 // Adding a blank space before the next separator
                 if (expanded) {
                     JPanel blankPanel = new JPanel();
@@ -873,8 +888,8 @@ public class MainGUI extends GUI {
                     c.gridy++;
                     basicModulesPanel.add(blankPanel, c);
                 }
-                expanded = module.getParameterValue(GUISeparator.EXPANDED);
-                modulePanel = componentFactory.getSeparator(module, basicFrameWidth-80);
+                expanded = module.getParameterValue(GUISeparator.EXPANDED_BASIC);
+                modulePanel = componentFactory.createBasicSeparator(module, basicFrameWidth-80);
             } else {
                 modulePanel = componentFactory.createBasicModuleControl(module,basicFrameWidth-80);
             }
@@ -892,7 +907,7 @@ public class MainGUI extends GUI {
         }
 
         c.gridy++;
-        c.weighty = 100;
+        c.weighty = 1;
         c.fill = GridBagConstraints.VERTICAL;
         JSeparator separator = new JSeparator();
         separator.setPreferredSize(new Dimension(-1,1));

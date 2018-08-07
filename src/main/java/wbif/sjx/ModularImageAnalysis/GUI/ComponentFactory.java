@@ -3,7 +3,6 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -179,7 +178,6 @@ public class ComponentFactory {
         c.anchor = GridBagConstraints.BASELINE_LEADING;
         ShowOutputButton showOutput = new ShowOutputButton(gui,module);
         showOutput.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        if (!module.isEnabled()) showOutput.setForeground(Color.GRAY);
         modulePanel.add(showOutput,c);
 
         // Adding the main module button
@@ -189,7 +187,6 @@ public class ComponentFactory {
         ModuleButton button = new ModuleButton(gui,module);
         button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
         group.add(button);
-        if (!module.isEnabled()) button.setForeground(Color.GRAY);
         if (activeModule != null) {
             if (module == activeModule) button.setSelected(true);
         }
@@ -201,14 +198,56 @@ public class ComponentFactory {
         c.insets = new Insets(2, 2, 0, 0);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         EvalButton evalButton = new EvalButton(gui,module);
-        if (!module.isEnabled()) evalButton.setForeground(Color.GRAY);
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(evalButton,c);
 
-
-
         return modulePanel;
 
+    }
+
+    public JPanel createEditingSeparator(Module module, ButtonGroup group, Module activeModule, int panelWidth) {
+        JPanel modulePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        // Adding the module enabled checkbox
+        c.gridx = 0;
+        c.weightx = 0;
+        c.insets = new Insets(2, 2, 0, 0);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.BASELINE_LEADING;
+        ModuleEnabledButton enabledCheck = new ModuleEnabledButton(gui,module);
+        enabledCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        modulePanel.add(enabledCheck,c);
+
+        c.gridx++;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.BASELINE_LEADING;
+        SeparatorButton leftArrowButton = new SeparatorButton(gui,module,true);
+        leftArrowButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        modulePanel.add(leftArrowButton,c);
+
+        // Adding the main module button
+        c.gridx++;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        ModuleButton button = new ModuleButton(gui,module);
+        button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
+        group.add(button);
+        if (activeModule != null) {
+            if (module == activeModule) button.setSelected(true);
+        }
+        modulePanel.add(button,c);
+
+        // Adding the right arrow
+        c.gridx++;
+        c.weightx = 0;
+        c.insets = new Insets(2, 2, 0, 0);
+        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        SeparatorButton rightArrowButton = new SeparatorButton(gui,module,false);
+        rightArrowButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        modulePanel.add(rightArrowButton,c);
+
+        return modulePanel;
     }
 
     public JPanel createParametersTopRow(Module activeModule) {
@@ -278,7 +317,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel getSeparator(Module module, int panelWidth) {
+    public JPanel createBasicSeparator(Module module, int panelWidth) {
         JPanel panel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -290,7 +329,7 @@ public class ComponentFactory {
         c.anchor = GridBagConstraints.EAST;
 
         JLabel leftArrowLabel = new JLabel();
-        if (module.getParameterValue(GUISeparator.EXPANDED)) {
+        if (module.getParameterValue(GUISeparator.EXPANDED_BASIC)) {
             leftArrowLabel.setIcon(downArrow);
         } else {
             leftArrowLabel.setIcon(rightArrow);
@@ -304,7 +343,7 @@ public class ComponentFactory {
         panel.add(separatorLeft,c);
 
         JLabel label = new JLabel();
-        label.setText(module.getParameterValue(GUISeparator.TITLE));
+        label.setText(module.getNickname());
         c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(0,0,0,0);
@@ -317,7 +356,7 @@ public class ComponentFactory {
         panel.add(separatorRight,c);
 
         JLabel rightArrowLabel = new JLabel();
-        if (module.getParameterValue(GUISeparator.EXPANDED)) {
+        if (module.getParameterValue(GUISeparator.EXPANDED_BASIC)) {
             rightArrowLabel.setIcon(downArrow);
         } else {
             rightArrowLabel.setIcon(leftArrow);
@@ -338,8 +377,8 @@ public class ComponentFactory {
         panel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                boolean expanded = module.getParameterValue(GUISeparator.EXPANDED);
-                module.updateParameterValue(GUISeparator.EXPANDED,!expanded);
+                boolean expanded = module.getParameterValue(GUISeparator.EXPANDED_BASIC);
+                module.updateParameterValue(GUISeparator.EXPANDED_BASIC,!expanded);
                 gui.updateModules();
             }
 
