@@ -5,10 +5,13 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.io.FileInfo;
+import ij.io.FileOpener;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import ij.plugin.filter.Calibrator;
 import ij.process.ImageProcessor;
 import ij.process.StackConverter;
 import loci.common.DebugTools;
@@ -40,10 +43,7 @@ import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -318,8 +318,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String rootPath = rootFile.getParent()+MIA.slashes;
         String rootName = rootFile.getName();
         String startingNumber = df.format(startingIndex);
-        int numStart = rootName.lastIndexOf(startingNumber);
-        if (numStart == -1) return null; // Nothing was found at that number
+        int numStart = FilenameUtils.removeExtension(rootName).length()-numberOfZeroes;
         rootName = rootFile.getName().substring(0,numStart);
         String extension = FilenameUtils.getExtension(rootFile.getName());
 
@@ -357,7 +356,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         outputIpl.setPosition(1);
 
-        // Inheriting calibration from root image
         outputIpl.setCalibration(rootIpl.getCalibration());
 
         return outputIpl;

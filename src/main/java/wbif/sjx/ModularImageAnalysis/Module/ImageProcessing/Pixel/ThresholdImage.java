@@ -77,9 +77,12 @@ public class ThresholdImage extends Module {
                                             boolean useLowerLim, double lowerLim) {
         // Compiling stack histogram
         int[] histogram = null;
+        int count = 0;
+        int total = inputImagePlus.getNChannels()*inputImagePlus.getNSlices()*inputImagePlus.getNFrames();
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
+                    writeMessage("Processing image " + (++count) + " of " + total);
                     inputImagePlus.setPosition(c, z, t);
                     if (histogram == null) {
                         histogram = inputImagePlus.getProcessor().getHistogram();

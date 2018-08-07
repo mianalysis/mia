@@ -21,9 +21,9 @@ public class ComponentFactory {
     private GUI gui;
     private int elementHeight;
 
-    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_black_12px.png"), "");
-    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_black_12px.png"), "");
-    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_black_12px.png"), "");
+    private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_blue_12px.png"), "");
+    private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_blue_12px.png"), "");
+    private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_blue_12px.png"), "");
 
     public ComponentFactory(GUI gui, int elementHeight) {
         this.gui = gui;
@@ -232,6 +232,7 @@ public class ComponentFactory {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         ModuleButton button = new ModuleButton(gui,module);
         button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
+        button.setForeground(Color.BLUE);
         group.add(button);
         if (activeModule != null) {
             if (module == activeModule) button.setSelected(true);
@@ -338,18 +339,21 @@ public class ComponentFactory {
         panel.add(leftArrowLabel,c);
 
         JSeparator separatorLeft = new JSeparator();
+        separatorLeft.setForeground(Color.BLUE);
         c.weightx = 1;
         c.gridx++;
         panel.add(separatorLeft,c);
 
         JLabel label = new JLabel();
         label.setText(module.getNickname());
+        label.setForeground(Color.BLUE);
         c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(0,0,0,0);
         panel.add(label,c);
 
         JSeparator separatorRight = new JSeparator();
+        separatorRight.setForeground(Color.BLUE);
         c.weightx = 1;
         c.gridx++;
         c.insets = new Insets(0,5,0,0);

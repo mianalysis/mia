@@ -16,9 +16,9 @@ public class SeparatorButton extends JButton implements ActionListener {
     private GUI gui;
     private Module module;
     private boolean left;
-    private static final ImageIcon expandedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_black_12px.png"), "");
-    private static final ImageIcon collapsedLeftIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_black_12px.png"), "");
-    private static final ImageIcon collapsedRightIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_black_12px.png"), "");
+    private static final ImageIcon expandedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_blue_12px.png"), "");
+    private static final ImageIcon collapsedLeftIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_blue_12px.png"), "");
+    private static final ImageIcon collapsedRightIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_blue_12px.png"), "");
 
 
     public SeparatorButton(GUI gui, Module module, boolean left) {

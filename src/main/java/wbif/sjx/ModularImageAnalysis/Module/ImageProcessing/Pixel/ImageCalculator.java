@@ -113,6 +113,8 @@ public class ImageCalculator extends Module {
         for (int z = 1; z <= nSlices; z++) {
             for (int c = 1; c <= nChannels; c++) {
                 for (int t = 1; t <= nFrames; t++) {
+                    writeMessage("Processing "+(++count)+" of "+nImages+" images");
+
                     inputImagePlus1.setPosition(c,z,t);
                     ImageProcessor imageProcessor1 = inputImagePlus1.getProcessor();
 
@@ -167,9 +169,6 @@ public class ImageCalculator extends Module {
                             }
                         }
                     }
-
-                    writeMessage("Processed "+(++count)+" of "+nImages+" images");
-
                 }
             }
         }
