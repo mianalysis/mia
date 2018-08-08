@@ -4,8 +4,6 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
-import ij.IJ;
-import org.apache.commons.lang.SystemUtils;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
@@ -34,7 +32,7 @@ import java.util.*;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class MainGUI {
+public class GUI {
     private static Analysis analysis = new Analysis();
     private static Module activeModule = null;
     private static int lastModuleEval = -1;
@@ -75,9 +73,9 @@ public class MainGUI {
     private static final JPanel editingStatusPanel = new JPanel();
     private static final GUISeparator loadSeparator = new GUISeparator();
     private static final ButtonGroup group = new ButtonGroup();
-    private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE);
+    private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
 
-    public MainGUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
+    public GUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
         // Only create a GUI if one hasn't already been created
         if (initialised) {
             frame.setVisible(true);
@@ -85,7 +83,7 @@ public class MainGUI {
         }
         initialised = true;
 
-        MainGUI.debugOn = debugOn;
+        GUI.debugOn = debugOn;
 
         // Starting this process, as it takes longest
         new Thread(() -> listAvailableModules()).start();
@@ -377,50 +375,47 @@ public class MainGUI {
         controlPanel.setLayout(new GridBagLayout());
 
         // Add module button
-        ModuleControlButton.setButtonSize(bigButtonSize);
-
         addModuleButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         controlPanel.add(addModuleButton, c);
 
         // Remove module button
-        ModuleControlButton removeModuleButton = new ModuleControlButton(ModuleControlButton.REMOVE_MODULE);
+        ModuleControlButton removeModuleButton = new ModuleControlButton(ModuleControlButton.REMOVE_MODULE,bigButtonSize);
         removeModuleButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         c.gridy++;
         controlPanel.add(removeModuleButton, c);
 
         // Move module up button
-        ModuleControlButton moveModuleUpButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_UP);
+        ModuleControlButton moveModuleUpButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_UP,bigButtonSize);
         moveModuleUpButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         c.gridy++;
         controlPanel.add(moveModuleUpButton, c);
 
         // Move module down button
-        ModuleControlButton moveModuleDownButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_DOWN);
+        ModuleControlButton moveModuleDownButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_DOWN,bigButtonSize);
         moveModuleDownButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         c.gridy++;
         controlPanel.add(moveModuleDownButton, c);
 
         // Load analysis protocol button
-        AnalysisControlButton.setButtonSize(bigButtonSize);
-        AnalysisControlButton loadAnalysisButton = new AnalysisControlButton(AnalysisControlButton.LOAD_ANALYSIS);
+        AnalysisControlButton loadAnalysisButton = new AnalysisControlButton(AnalysisControlButton.LOAD_ANALYSIS,bigButtonSize);
         c.gridy++;
         c.weighty = 1;
         c.anchor = GridBagConstraints.PAGE_END;
         controlPanel.add(loadAnalysisButton, c);
 
         // Save analysis protocol button
-        AnalysisControlButton saveAnalysisButton = new AnalysisControlButton(AnalysisControlButton.SAVE_ANALYSIS);
+        AnalysisControlButton saveAnalysisButton = new AnalysisControlButton(AnalysisControlButton.SAVE_ANALYSIS,bigButtonSize);
         c.gridy++;
         c.weighty = 0;
         controlPanel.add(saveAnalysisButton, c);
 
         // Start analysis button
-        AnalysisControlButton startAnalysisButton = new AnalysisControlButton(AnalysisControlButton.START_ANALYSIS);
+        AnalysisControlButton startAnalysisButton = new AnalysisControlButton(AnalysisControlButton.START_ANALYSIS,bigButtonSize);
         c.gridy++;
         controlPanel.add(startAnalysisButton, c);
 
         // Stop analysis button
-        AnalysisControlButton stopAnalysisButton = new AnalysisControlButton(AnalysisControlButton.STOP_ANALYSIS);
+        AnalysisControlButton stopAnalysisButton = new AnalysisControlButton(AnalysisControlButton.STOP_ANALYSIS,bigButtonSize);
         c.gridy++;
         controlPanel.add(stopAnalysisButton, c);
 
@@ -558,7 +553,8 @@ public class MainGUI {
     private static void initialiseBasicProgressBar() {
         basicProgressBar.setValue(0);
         basicProgressBar.setBorderPainted(false);
-        basicProgressBar.setPreferredSize(new Dimension(basicFrameWidth-30, 15));
+        basicProgressBar.setMinimumSize(new Dimension(0, 15));
+        basicProgressBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 15));
         basicProgressBar.setStringPainted(true);
         basicProgressBar.setString("");
         basicProgressBar.setForeground(new Color(86,190,253));
@@ -581,22 +577,21 @@ public class MainGUI {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
 
         // Load analysis protocol button
-        AnalysisControlButton.setButtonSize(bigButtonSize);
         AnalysisControlButton loadAnalysisButton
-                = new AnalysisControlButton(AnalysisControlButton.LOAD_ANALYSIS);
+                = new AnalysisControlButton(AnalysisControlButton.LOAD_ANALYSIS,bigButtonSize);
         c.gridx++;
         c.anchor = GridBagConstraints.PAGE_END;
         basicControlPanel.add(loadAnalysisButton, c);
 
         // Save analysis protocol button
         AnalysisControlButton saveAnalysisButton
-                = new AnalysisControlButton(AnalysisControlButton.SAVE_ANALYSIS);
+                = new AnalysisControlButton(AnalysisControlButton.SAVE_ANALYSIS,bigButtonSize);
         c.gridx++;
         basicControlPanel.add(saveAnalysisButton, c);
 
         // Start analysis button
         AnalysisControlButton startAnalysisButton
-                = new AnalysisControlButton(AnalysisControlButton.START_ANALYSIS);
+                = new AnalysisControlButton(AnalysisControlButton.START_ANALYSIS,bigButtonSize);
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_END;
@@ -604,7 +599,7 @@ public class MainGUI {
 
         // Stop analysis button
         AnalysisControlButton stopAnalysisButton
-                = new AnalysisControlButton(AnalysisControlButton.STOP_ANALYSIS);
+                = new AnalysisControlButton(AnalysisControlButton.STOP_ANALYSIS,bigButtonSize);
         c.gridx++;
         c.weightx = 0;
         basicControlPanel.add(stopAnalysisButton, c);
@@ -937,8 +932,10 @@ public class MainGUI {
 
     private static void listAvailableModules() {
         try {
-            Reflections.log = null;
+            addModuleButton.setEnabled(false);
+            addModuleButton.setToolTipText("Loading modules");
 
+            Reflections.log = null;
             Reflections reflections = null;
             if (debugOn) {
                 reflections = new Reflections("wbif.sjx.ModularImageAnalysis");
@@ -956,8 +953,10 @@ public class MainGUI {
             TreeMap<String, Class> modules = new TreeMap<>();
             for (Class clazz : availableModules) {
                 if (clazz != InputControl.class && clazz != OutputControl.class) {
-                    String packageName = ((Module) clazz.newInstance()).getPackageName();
-                    modules.put(packageName, clazz);
+                    Module module = (Module) clazz.newInstance();
+                    String packageName = module.getPackageName();
+                    String moduleName = module.getTitle();
+                    modules.put(packageName+moduleName, clazz);
                 }
             }
 
@@ -968,7 +967,7 @@ public class MainGUI {
                 ModuleListMenu activeItem = null;
 
                 String[] names = name.split("\\\\");
-                for (int i = 0; i < names.length; i++) {
+                for (int i = 0; i < names.length-1; i++) {
                     boolean found = false;
                     for (ModuleListMenu listItemm : activeList) {
                         if (listItemm.getName().equals(names[i])) {
@@ -999,6 +998,10 @@ public class MainGUI {
         } catch (IllegalAccessException | InstantiationException e){
             e.printStackTrace(System.err);
         }
+
+        addModuleButton.setToolTipText("Add module");
+        addModuleButton.setEnabled(true);
+
     }
 
     public static void addModule() {
@@ -1045,7 +1048,7 @@ public class MainGUI {
             ModuleCollection modules = getModules();
             int idx = modules.indexOf(activeModule);
 
-            if (idx != modules.size()) {
+            if (idx < modules.size()-1) {
                 if (idx <= lastModuleEval) lastModuleEval = idx - 1;
 
                 modules.remove(activeModule);
@@ -1073,7 +1076,7 @@ public class MainGUI {
     }
 
     public static void setAnalysis(Analysis analysis) {
-        MainGUI.analysis = analysis;
+        GUI.analysis = analysis;
     }
 
     public static ModuleCollection getModules() {
@@ -1177,7 +1180,7 @@ public class MainGUI {
     }
 
     public static void setLastModuleEval(int lastModuleEval) {
-        MainGUI.lastModuleEval = Math.max(lastModuleEval,-1);
+        GUI.lastModuleEval = Math.max(lastModuleEval,-1);
     }
 
     public static int getModuleBeingEval() {
@@ -1185,7 +1188,7 @@ public class MainGUI {
     }
 
     public static void setModuleBeingEval(int moduleBeingEval) {
-        MainGUI.moduleBeingEval = moduleBeingEval;
+        GUI.moduleBeingEval = moduleBeingEval;
     }
 
     public static Module getActiveModule() {
@@ -1193,7 +1196,7 @@ public class MainGUI {
     }
 
     public static void setActiveModule(Module activeModule) {
-        MainGUI.activeModule = activeModule;
+        GUI.activeModule = activeModule;
     }
 
     public static void evaluateModule(Module module) throws GenericMIAException {
@@ -1211,7 +1214,7 @@ public class MainGUI {
     }
 
     public static void setTestWorkspace(Workspace testWorkspace) {
-        MainGUI.testWorkspace = testWorkspace;
+        GUI.testWorkspace = testWorkspace;
     }
 
     public static Analysis getAnalysis() {
