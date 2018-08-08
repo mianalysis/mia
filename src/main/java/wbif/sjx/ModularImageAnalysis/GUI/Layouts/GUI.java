@@ -271,7 +271,6 @@ public class GUI {
         // Initialising the module list panel
         initialisingModulesPanel();
         c.gridy++;
-        c.insets = new Insets(5, 5, 0, 0);
         c.weighty = 1;
         c.fill = GridBagConstraints.VERTICAL;
         editingPanel.add(modulesScrollPane, c);
@@ -365,7 +364,7 @@ public class GUI {
         c.gridx = 0;
         c.gridy = 0;
         c.weighty = 0;
-        c.insets = new Insets(5, 5, 5, 5);
+        c.insets = new Insets(5, 5, 0, 5);
         c.anchor = GridBagConstraints.PAGE_START;
 
         JPanel controlPanel = new JPanel();
@@ -417,6 +416,7 @@ public class GUI {
         // Stop analysis button
         AnalysisControlButton stopAnalysisButton = new AnalysisControlButton(AnalysisControlButton.STOP_ANALYSIS,bigButtonSize);
         c.gridy++;
+        c.insets = new Insets(5, 5, 5, 5);
         controlPanel.add(stopAnalysisButton, c);
 
         controlPanel.validate();
@@ -431,17 +431,20 @@ public class GUI {
 
         // Initialising the panel
         inputEnablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        inputEnablePanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
         inputEnablePanel.setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
         c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.PAGE_START;
+        c.fill = GridBagConstraints.BOTH;
 
         ModuleButton inputButton = new ModuleButton(analysis.getInputControl());
         group.add(inputButton);
-        inputButton.setPreferredSize(new Dimension(basicFrameWidth-65-bigButtonSize,bigButtonSize));
         inputEnablePanel.add(inputButton, c);
 
         inputEnablePanel.validate();
@@ -456,17 +459,20 @@ public class GUI {
 
         // Initialising the panel
         outputEnablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        outputEnablePanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
         outputEnablePanel.setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
         c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.PAGE_START;
+        c.fill = GridBagConstraints.BOTH;
 
         ModuleButton outputButton = new ModuleButton(analysis.getOutputControl());
         group.add(outputButton);
-        outputButton.setPreferredSize(new Dimension(basicFrameWidth-65-bigButtonSize,bigButtonSize));
         outputEnablePanel.add(outputButton, c);
 
         outputEnablePanel.validate();
@@ -478,8 +484,8 @@ public class GUI {
 
     private static void initialisingModulesPanel() {
         // Initialising the scroll panel
-        modulesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-50-bigButtonSize, -1));
-        modulesScrollPane.setMinimumSize(new Dimension(basicFrameWidth-50-bigButtonSize, -1));
+        modulesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, -1));
+        modulesScrollPane.setMinimumSize(new Dimension(basicFrameWidth-45-bigButtonSize, -1));
         modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
