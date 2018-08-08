@@ -1,6 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
@@ -11,11 +13,9 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 20/05/2017.
  */
 public class PopupMenuItem extends JMenuItem implements ActionListener {
-    private MainGUI gui;
     private Module module;
 
-    public PopupMenuItem(MainGUI gui, Module module) {
-        this.gui = gui;
+    public PopupMenuItem(Module module) {
         this.module = module;
         if (module != null) setText(module.getTitle());
         addActionListener(this);
@@ -28,7 +28,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        gui.getModuleListMenu().setVisible(false);
+        GUI.getModuleListMenu().setVisible(false);
 
         if (module == null) return;
 
@@ -36,33 +36,31 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         Module newModule = null;
         try {
             newModule = module.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e1) {
+        } catch (IllegalAccessException | InstantiationException e1) {
             e1.printStackTrace();
         }
 
-        if (gui.getActiveModule() != null) {
-            int idx = gui.getModules().indexOf(gui.getActiveModule());
-            gui.setActiveModule(newModule);
-            gui.getModules().add(++idx,newModule);
-
+        Module activeModule = GUI.getActiveModule();
+        if (activeModule == null || activeModule.getClass().isInstance(new InputControl()) || activeModule.getClass().isInstance(new OutputControl())) {
+            GUI.getModules().add(newModule);
         } else {
-            gui.setActiveModule(newModule);
-            gui.getModules().add(newModule);
-
+            int idx = GUI.getModules().indexOf(GUI.getActiveModule());
+            GUI.getModules().add(++idx,newModule);
         }
+        GUI.setActiveModule(newModule);
 
         // Adding to the list of modules
-        gui.populateModuleList();
+        GUI.populateModuleList();
 
-        gui.setActiveModule(newModule);
+        GUI.setActiveModule(newModule);
 
-        if (gui.isBasicGUI()) {
-            gui.populateBasicModules();
+        if (GUI.isBasicGUI()) {
+            GUI.populateBasicModules();
         } else {
-            gui.populateModuleParameters();
+            GUI.populateModuleParameters();
         }
 
-        gui.getModuleListMenu().setVisible(false);
+        GUI.getModuleListMenu().setVisible(false);
 
     }
 }

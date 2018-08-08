@@ -4,6 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.gui.Plot;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -50,6 +51,11 @@ public class PlotMeasurementsScatter extends Module {
     @Override
     public String getTitle() {
         return "Plot measurements as scatter";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.VISUALISATION;
     }
 
     @Override

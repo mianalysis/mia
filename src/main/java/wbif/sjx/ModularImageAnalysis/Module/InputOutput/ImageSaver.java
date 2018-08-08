@@ -6,6 +6,7 @@ import ij.plugin.Duplicator;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -35,6 +36,11 @@ public class ImageSaver extends Module {
     @Override
     public String getTitle() {
         return "Save image";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.INPUT_OUTPUT;
     }
 
     @Override

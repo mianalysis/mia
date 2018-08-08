@@ -13,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculato
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -249,6 +250,11 @@ public class MeasureObjectIntensity extends Module {
     public String getTitle() {
         return "Measure object intensity";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_INTENSITY;
     }
 
     @Override

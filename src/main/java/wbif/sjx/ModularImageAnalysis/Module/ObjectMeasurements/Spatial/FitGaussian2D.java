@@ -10,6 +10,7 @@ import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.RunTrackMate;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
 import wbif.sjx.common.MathFunc.GaussianFitter;
@@ -70,6 +71,11 @@ public class FitGaussian2D extends Module {
     @Override
     public String getTitle() {
         return "Fit Gaussian 2D";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override

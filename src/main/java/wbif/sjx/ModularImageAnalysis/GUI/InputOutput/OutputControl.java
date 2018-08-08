@@ -37,6 +37,11 @@ public class OutputControl extends Module {
     }
 
     @Override
+    public String getPackageName() {
+        return "";
+    }
+
+    @Override
     public String getHelp() {
         return null;
     }

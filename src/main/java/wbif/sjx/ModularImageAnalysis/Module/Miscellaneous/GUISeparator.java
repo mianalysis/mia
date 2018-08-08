@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Miscellaneous;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -16,6 +17,11 @@ public class GUISeparator extends Module{
     @Override
     public String getTitle() {
         return "GUI separator";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.MISCELLENAOUS;
     }
 
     @Override

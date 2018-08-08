@@ -6,6 +6,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperatio
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
 
@@ -384,6 +385,11 @@ public class RelateObjects extends Module {
     public String getTitle() {
         return "Relate objects";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override

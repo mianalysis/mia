@@ -9,6 +9,7 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -44,7 +45,11 @@ public class ConvertObjectsToImage extends Module {
     @Override
     public String getTitle() {
         return "Convert objects to image";
+    }
 
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_MISCELLANEOUS;
     }
 
     @Override

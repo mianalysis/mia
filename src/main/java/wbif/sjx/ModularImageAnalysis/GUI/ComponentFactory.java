@@ -18,17 +18,14 @@ import java.util.*;
  * Created by sc13967 on 23/06/2017.
  */
 public class ComponentFactory {
-    private GUI gui;
     private int elementHeight;
 
     private static final ImageIcon downArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_black_12px.png"), "");
     private static final ImageIcon rightArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/rightarrow_black_12px.png"), "");
     private static final ImageIcon leftArrow = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_black_12px.png"), "");
 
-    public ComponentFactory(GUI gui, int elementHeight) {
-        this.gui = gui;
+    public ComponentFactory(int elementHeight) {
         this.elementHeight = elementHeight;
-
     }
 
     public JPanel createParameterControl(Parameter parameter, ModuleCollection modules, Module module) {
@@ -75,7 +72,7 @@ public class ComponentFactory {
                 names[i++] = name;
             }
 
-            parameterControl = new ChoiceArrayParameter(gui,module,parameter,names);
+            parameterControl = new ChoiceArrayParameter(module,parameter,names);
 
         } else if (parameter.getType() == Parameter.INPUT_OBJECTS || parameter.getType() == Parameter.REMOVED_OBJECTS) {
             // Getting a list of available images
@@ -100,49 +97,49 @@ public class ComponentFactory {
                 names[i++] = name;
             }
 
-            parameterControl = new ChoiceArrayParameter(gui,module,parameter,names);
+            parameterControl = new ChoiceArrayParameter(module,parameter,names);
 
         } else if (parameter.getType() == Parameter.INTEGER | parameter.getType() == Parameter.DOUBLE
                 | parameter.getType() == Parameter.STRING | parameter.getType() == Parameter.OUTPUT_IMAGE
                 | parameter.getType() == Parameter.OUTPUT_OBJECTS) {
 
-            parameterControl = new TextParameter(gui, module, parameter);
+            parameterControl = new TextParameter(module, parameter);
 
         } else if (parameter.getType() == Parameter.BOOLEAN) {
-            parameterControl = new BooleanParameter(gui,module,parameter);
+            parameterControl = new BooleanParameter(module,parameter);
             parameterControl.setOpaque(false);
 
         } else if (parameter.getType() == Parameter.FILE_PATH) {
-            parameterControl = new FileParameter(gui, module, parameter, FileParameter.FileTypes.FILE_TYPE);
+            parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.FILE_TYPE);
 
         } else if (parameter.getType() == Parameter.FOLDER_PATH) {
-            parameterControl = new FileParameter(gui, module, parameter, FileParameter.FileTypes.FOLDER_TYPE);
+            parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.FOLDER_TYPE);
 
         } else if (parameter.getType() == Parameter.CHOICE_ARRAY) {
             String[] valueSource = parameter.getValueSource();
-            parameterControl = new ChoiceArrayParameter(gui, module, parameter, valueSource);
+            parameterControl = new ChoiceArrayParameter(module, parameter, valueSource);
 
         } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
             String[] measurementChoices = modules.getImageMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
 
-            parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
+            parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
 
         } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
             String[] measurementChoices = modules.getObjectMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
 
-            parameterControl = new ChoiceArrayParameter(gui, module, parameter, measurementChoices);
+            parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
 
         } else if (parameter.getType() == Parameter.CHILD_OBJECTS) {
             RelationshipCollection relationships = modules.getRelationships(module);
             String[] relationshipChoices = relationships.getChildNames(parameter.getValueSource());
 
-            parameterControl = new ChoiceArrayParameter(gui,module,parameter,relationshipChoices);
+            parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
 
         } else if (parameter.getType() == Parameter.PARENT_OBJECTS) {
-            RelationshipCollection relationships = gui.getModules().getRelationships(module);
+            RelationshipCollection relationships = GUI.getModules().getRelationships(module);
             String[] relationshipChoices = relationships.getParentNames(parameter.getValueSource());
 
-            parameterControl = new ChoiceArrayParameter(gui,module,parameter,relationshipChoices);
+            parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
 
         }
 
@@ -169,14 +166,14 @@ public class ComponentFactory {
         c.insets = new Insets(2, 2, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
-        ModuleEnabledButton enabledCheck = new ModuleEnabledButton(gui,module);
+        ModuleEnabledButton enabledCheck = new ModuleEnabledButton(module);
         enabledCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(enabledCheck,c);
 
         c.gridx++;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
-        ShowOutputButton showOutput = new ShowOutputButton(gui,module);
+        ShowOutputButton showOutput = new ShowOutputButton(module);
         showOutput.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(showOutput,c);
 
@@ -184,7 +181,7 @@ public class ComponentFactory {
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
-        ModuleButton button = new ModuleButton(gui,module);
+        ModuleButton button = new ModuleButton(module);
         button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
         group.add(button);
         if (activeModule != null) {
@@ -197,7 +194,7 @@ public class ComponentFactory {
         c.weightx = 0;
         c.insets = new Insets(2, 2, 0, 0);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
-        EvalButton evalButton = new EvalButton(gui,module);
+        EvalButton evalButton = new EvalButton(module);
         evalButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(evalButton,c);
 
@@ -215,14 +212,14 @@ public class ComponentFactory {
         c.insets = new Insets(2, 2, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
-        ModuleEnabledButton enabledCheck = new ModuleEnabledButton(gui,module);
+        ModuleEnabledButton enabledCheck = new ModuleEnabledButton(module);
         enabledCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(enabledCheck,c);
 
         c.gridx++;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.BASELINE_LEADING;
-        SeparatorButton leftArrowButton = new SeparatorButton(gui,module,true);
+        SeparatorButton leftArrowButton = new SeparatorButton(module,true);
         leftArrowButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(leftArrowButton,c);
 
@@ -230,7 +227,7 @@ public class ComponentFactory {
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.FIRST_LINE_START;
-        ModuleButton button = new ModuleButton(gui,module);
+        ModuleButton button = new ModuleButton(module);
         button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
         group.add(button);
         if (activeModule != null) {
@@ -243,7 +240,7 @@ public class ComponentFactory {
         c.weightx = 0;
         c.insets = new Insets(2, 2, 0, 0);
         c.anchor = GridBagConstraints.FIRST_LINE_END;
-        SeparatorButton rightArrowButton = new SeparatorButton(gui,module,false);
+        SeparatorButton rightArrowButton = new SeparatorButton(module,false);
         rightArrowButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         modulePanel.add(rightArrowButton,c);
 
@@ -273,12 +270,12 @@ public class ComponentFactory {
         c.gridx++;
         paramPanel.add(separator);
 
-        ModuleName moduleName = new ModuleName(gui, activeModule);
+        ModuleName moduleName = new ModuleName(activeModule);
         c.gridx++;
         c.weightx = 1;
         paramPanel.add(moduleName, c);
 
-        ResetModuleName resetModuleName = new ResetModuleName(gui, activeModule);
+        ResetModuleName resetModuleName = new ResetModuleName(activeModule);
         c.gridx++;
         c.weightx = 0;
         c.anchor = GridBagConstraints.EAST;
@@ -299,7 +296,7 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
 
-        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(gui,module);
+        ModuleEnabledButton moduleEnabledButton = new ModuleEnabledButton(module);
         moduleEnabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         moduleEnabledButton.setEnabled(module.canBeDisabled());
         modulePanel.add(moduleEnabledButton,c);
@@ -379,7 +376,7 @@ public class ComponentFactory {
             public void mouseClicked(MouseEvent e) {
                 boolean expanded = module.getParameterValue(GUISeparator.EXPANDED_BASIC);
                 module.updateParameterValue(GUISeparator.EXPANDED_BASIC,!expanded);
-                gui.updateModules();
+                GUI.updateModules();
             }
 
             @Override
@@ -433,7 +430,7 @@ public class ComponentFactory {
         c.insets = new Insets(0,35,0,0);
         for (Parameter parameter : module.updateAndGetParameters().values()) {
             if (parameter.isVisible()) {
-                JPanel paramPanel = createParameterControl(parameter, gui.getModules(), module);
+                JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module);
 
                 c.gridy++;
                 modulePanel.add(paramPanel, c);

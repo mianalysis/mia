@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,11 +13,7 @@ public class ViewControlButton extends JRadioButton implements ActionListener {
     public static final String BASIC_MODE = "Basic mode";
     public static final String EDITING_MODE = "Editing mode";
 
-    private MainGUI gui;
-
-    public ViewControlButton(MainGUI gui, String command) {
-        this.gui = gui;
-
+    public ViewControlButton(String command) {
         setFocusPainted(false);
         setText(command);
         setSelected(true);
@@ -30,19 +26,19 @@ public class ViewControlButton extends JRadioButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (getText()) {
             case BASIC_MODE:
-                gui.renderBasicMode();
+                GUI.renderBasicMode();
                 break;
 
             case EDITING_MODE:
                 try {
-                    gui.renderEditingMode();
+                    GUI.renderEditingMode();
                 } catch (InstantiationException | IllegalAccessException e1) {
                     e1.printStackTrace();
                 }
                 break;
         }
 
-        gui.getViewMenu().setSelected(false);
-        gui.getViewMenu().setPopupMenuVisible(false);
+        GUI.getViewMenu().setSelected(false);
+        GUI.getViewMenu().setPopupMenuVisible(false);
     }
 }

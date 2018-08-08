@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.annotation.Nullable;
@@ -186,6 +187,11 @@ public class FilterObjects extends Module {
     @Override
     public String getTitle() {
         return "Filter objects";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
     }
 
     @Override

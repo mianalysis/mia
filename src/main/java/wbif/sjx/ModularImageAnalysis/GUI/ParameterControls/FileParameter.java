@@ -14,7 +14,6 @@ import java.io.File;
  * Created by Stephen on 20/05/2017.
  */
 public class FileParameter extends JButton implements ActionListener {
-    private GUI gui;
     private Module module;
     private Parameter parameter;
     private String fileType;
@@ -26,8 +25,7 @@ public class FileParameter extends JButton implements ActionListener {
 
     }
 
-    public FileParameter(GUI gui, Module module, Parameter parameter, String fileType) {
-        this.gui = gui;
+    public FileParameter(Module module, Parameter parameter, String fileType) {
         this.module = module;
         this.parameter = parameter;
         this.fileType = fileType;
@@ -78,11 +76,11 @@ public class FileParameter extends JButton implements ActionListener {
         setText(FilenameUtils.getName(parameter.getValue()));
         setToolTipText(parameter.getValue());
 
-        int idx = gui.getModules().indexOf(module);
-        if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);
+        int idx = GUI.getModules().indexOf(module);
+        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        gui.updateTestFile();
-        gui.updateModules();
+        GUI.updateTestFile();
+        GUI.updateModules();
 
     }
 }

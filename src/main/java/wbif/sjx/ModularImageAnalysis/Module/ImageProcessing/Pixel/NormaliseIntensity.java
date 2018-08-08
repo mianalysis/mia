@@ -6,6 +6,7 @@ import ij.plugin.Duplicator;
 import ij.process.ImageStatistics;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -66,6 +67,11 @@ public class NormaliseIntensity extends Module {
     @Override
     public String getTitle() {
         return "Normalise intensity";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override

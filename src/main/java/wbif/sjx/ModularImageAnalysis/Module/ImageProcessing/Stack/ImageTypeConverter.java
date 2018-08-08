@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -47,6 +48,11 @@ public class ImageTypeConverter extends Module {
     @Override
     public String getTitle() {
         return "Image type converter";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override

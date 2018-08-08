@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import sun.reflect.generics.tree.Tree;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Timepoint;
@@ -48,6 +49,11 @@ public class MeasureTrackMotion extends Module {
     @Override
     public String getTitle() {
         return "Measure track motion";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override

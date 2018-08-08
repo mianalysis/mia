@@ -12,14 +12,12 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class ModuleEnabledButton extends JButton implements ActionListener {
-    private GUI gui;
     private Module module;
     private boolean state = true;
     private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_black_12px.png"), "");
     private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_brightgreen_12px.png"), "");
 
-    public ModuleEnabledButton(GUI gui, Module module) {
-        this.gui = gui;
+    public ModuleEnabledButton(Module module) {
         this.module = module;
 
         state = module.isEnabled();
@@ -52,12 +50,10 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
         setIcon();
         module.setEnabled(state);
 
-        int idx = gui.getModules().indexOf(module);
-        if (idx <= gui.getLastModuleEval()) {
-            gui.setLastModuleEval(idx-1);
-        }
+        int idx = GUI.getModules().indexOf(module);
+        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        gui.updateModules();
+        GUI.updateModules();
 
     }
 }

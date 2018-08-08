@@ -15,6 +15,7 @@ import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
 import wbif.sjx.common.Filters.RidgeEnhancement;
@@ -275,6 +276,11 @@ public class FilterImage extends Module {
     @Override
     public String getTitle() {
         return "Filter image";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override

@@ -11,14 +11,12 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 20/05/2017.
  */
 public class ModuleButton extends JToggleButton implements ActionListener {
-    private GUI gui;
     private Module module;
 
 
     // CONSTRUCTOR
 
-    public ModuleButton(GUI gui, Module module) {
-        this.gui = gui;
+    public ModuleButton(Module module) {
         this.module = module;
         setFocusPainted(false);
         setSelected(false);
@@ -38,8 +36,7 @@ public class ModuleButton extends JToggleButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        gui.setActiveModule(module);
-
-        gui.updateModules();
+        GUI.setActiveModule(module);
+        GUI.updateModules();
     }
 }
