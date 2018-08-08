@@ -41,7 +41,7 @@ public class Measurement {
     // GETTERS AND SETTERS
 
     public String getName() {
-        return name;
+        return Units.replace(name);
     }
 
     public double getValue() {

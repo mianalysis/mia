@@ -9,8 +9,7 @@ public class MeasurementReferenceCollection extends TreeMap<String,MeasurementRe
     }
 
     public String[] getMeasurementNames() {
-        return keySet().toArray(new String[0]);
-
+        return (String[]) keySet().stream().map(Units::replace).toArray();
     }
 
     public void setAllCalculated(boolean calculated) {

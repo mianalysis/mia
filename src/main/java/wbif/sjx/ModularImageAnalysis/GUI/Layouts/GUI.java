@@ -47,7 +47,7 @@ public class GUI {
     private static int elementHeight = 26;
     private static int bigButtonSize = 40;
     private static int moduleButtonWidth = 295;
-    private static int statusHeight = 40;
+    private static int statusHeight = 20;
 
     private static boolean initialised = false;
     private static boolean basicGUI = true;

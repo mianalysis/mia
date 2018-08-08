@@ -5,11 +5,9 @@ public class Reference {
 
     public Reference(String name) {
         this.name = name;
-
     }
 
     public String getName() {
         return name;
     }
-
 }
