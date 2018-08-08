@@ -27,6 +27,7 @@ public abstract class Module implements Serializable {
     private String notes = "";
     private boolean enabled = true;
     private String moduleName;
+    private String packageName;
     private boolean canBeDisabled = false;
     protected boolean showOutput = false;
 
@@ -45,6 +46,8 @@ public abstract class Module implements Serializable {
     // PUBLIC METHODS
 
     public abstract String getTitle();
+
+    public abstract String getPackageName();
 
     public abstract String getHelp();
 

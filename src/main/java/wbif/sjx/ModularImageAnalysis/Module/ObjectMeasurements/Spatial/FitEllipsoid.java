@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
 import wbif.sjx.common.Object.Volume;
@@ -145,6 +146,11 @@ public class FitEllipsoid extends Module {
     @Override
     public String getTitle() {
         return "Fit ellipsoid";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override

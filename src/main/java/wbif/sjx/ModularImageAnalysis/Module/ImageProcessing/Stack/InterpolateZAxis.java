@@ -6,6 +6,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.Resizer;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -33,6 +34,11 @@ public class InterpolateZAxis extends Module {
     @Override
     public String getTitle() {
         return "Interpolate Z axis";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override

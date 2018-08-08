@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -18,6 +19,11 @@ public class ChannelExtractor extends Module {
     public String getTitle() {
         return "Channel extractor";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override

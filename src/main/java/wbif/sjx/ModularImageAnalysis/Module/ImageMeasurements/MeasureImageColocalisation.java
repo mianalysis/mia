@@ -7,6 +7,7 @@ import ij.ImageStack;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -90,6 +91,11 @@ public class MeasureImageColocalisation extends Module {
     @Override
     public String getTitle() {
         return "Measure image colocalisation";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_MEASUREMENTS;
     }
 
     @Override

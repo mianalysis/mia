@@ -4,7 +4,7 @@ import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Object.ProgressMonitor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
@@ -38,7 +38,7 @@ public class AnalysisRunner {
 
         // Resetting progress monitor
         ProgressMonitor.resetProgress();
-        MainGUI.setProgress(0);
+        GUI.setProgress(0);
 
         // Running the analysis
         batchProcessor.runAnalysisOnStructure(analysis,exporter);

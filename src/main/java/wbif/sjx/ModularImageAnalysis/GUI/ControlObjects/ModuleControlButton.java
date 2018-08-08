@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created by steph on 28/07/2017.
+ * Created by Stephen on 28/07/2017.
  */
 public class ModuleControlButton extends JButton implements ActionListener {
     public static final String ADD_MODULE = "+";
@@ -16,12 +16,7 @@ public class ModuleControlButton extends JButton implements ActionListener {
     public static final String MOVE_MODULE_UP = "▲";
     public static final String MOVE_MODULE_DOWN = "▼";
 
-    private MainGUI gui;
-    private static int buttonSize = 50;
-
-    public ModuleControlButton(MainGUI gui, String command) {
-        this.gui = gui;
-
+    public ModuleControlButton(String command, int buttonSize) {
         setText(command);
         addActionListener(this);
         setMargin(new Insets(0,0,0,0));
@@ -31,31 +26,23 @@ public class ModuleControlButton extends JButton implements ActionListener {
 
     }
 
-    public static int getButtonSize() {
-        return buttonSize;
-    }
-
-    public static void setButtonSize(int buttonSize) {
-        ModuleControlButton.buttonSize = buttonSize;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (getText()) {
             case ADD_MODULE:
-                gui.addModule();
+                GUI.addModule();
                 break;
 
             case REMOVE_MODULE:
-                gui.removeModule();
+                GUI.removeModule();
                 break;
 
             case MOVE_MODULE_UP:
-                gui.moveModuleUp();
+                GUI.moveModuleUp();
                 break;
 
             case MOVE_MODULE_DOWN:
-                gui.moveModuleDown();
+                GUI.moveModuleDown();
                 break;
 
         }

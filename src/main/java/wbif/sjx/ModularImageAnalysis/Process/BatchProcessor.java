@@ -17,7 +17,7 @@ import ome.xml.meta.IMetadata;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.FileCondition;
@@ -82,7 +82,7 @@ public class BatchProcessor extends FileCrawler {
         if (shutdownEarly || exporter == null) return;
         exporter.exportResults(workspaces,analysis);
 
-        MainGUI.setProgress(0);
+        GUI.setProgress(0);
 
     }
 

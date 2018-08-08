@@ -5,6 +5,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.hadoop.hbase.util.MunkresAssignment;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
@@ -306,6 +307,11 @@ public class TrackObjects extends Module {
     @Override
     public String getTitle() {
         return "Track objects";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override

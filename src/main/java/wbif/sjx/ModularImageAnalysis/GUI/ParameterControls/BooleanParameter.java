@@ -12,12 +12,10 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 20/05/2017.
  */
 public class BooleanParameter extends JCheckBox implements ActionListener {
-    private GUI gui;
     private Module module;
     private Parameter parameter;
 
-    public BooleanParameter(GUI gui, Module module, Parameter parameter) {
-        this.gui = gui;
+    public BooleanParameter(Module module, Parameter parameter) {
         this.module = module;
         this.parameter = parameter;
 
@@ -38,9 +36,9 @@ public class BooleanParameter extends JCheckBox implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         parameter.setValue(isSelected());
 
-        int idx = gui.getModules().indexOf(module);
-        if (idx <= gui.getLastModuleEval()) gui.setLastModuleEval(idx-1);
+        int idx = GUI.getModules().indexOf(module);
+        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        gui.updateModules();
+        GUI.updateModules();
     }
 }

@@ -8,6 +8,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculato
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -204,6 +205,11 @@ public class MeasureIntensityDistribution extends Module {
     @Override
     public String getTitle() {
         return "Measure intensity distribution";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_MEASUREMENTS;
     }
 
     @Override

@@ -35,6 +35,7 @@ import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
@@ -436,6 +437,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public String getTitle() {
         return "Load image";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.INPUT_OUTPUT;
     }
 
     @Override

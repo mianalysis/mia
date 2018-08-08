@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Process;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -63,7 +63,7 @@ public class Analysis implements Serializable {
             double percentageComplete = ((double) (count++))/((double) total)*100;
             ProgressMonitor.setWorkspaceProgress(workspace,percentageComplete);
             double overallPercentageComplete = ProgressMonitor.getOverallProgress();
-            MainGUI.setProgress((int) Math.round(overallPercentageComplete));
+            GUI.setProgress((int) Math.round(overallPercentageComplete));
         }
 
         // We're only interested in the measurements now, so clearing images and object coordinates

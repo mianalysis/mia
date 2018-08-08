@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
@@ -13,11 +12,9 @@ import java.awt.event.FocusListener;
  * Created by sc13967 on 06/09/2017.
  */
 public class ModuleName extends JTextField implements FocusListener {
-    private GUI gui;
     private Module module;
 
-    public ModuleName(GUI gui, Module module) {
-        this.gui = gui;
+    public ModuleName(Module module) {
         this.module = module;
 
         setText(module.getNickname());
@@ -34,8 +31,8 @@ public class ModuleName extends JTextField implements FocusListener {
     @Override
     public void focusLost(FocusEvent e) {
         module.setNickname(getText());
-        gui.updateModules();
-        gui.populateModuleList();
+        GUI.updateModules();
+        GUI.populateModuleList();
 
     }
 }

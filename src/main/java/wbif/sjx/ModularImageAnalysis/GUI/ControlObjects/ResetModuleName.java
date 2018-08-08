@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
@@ -13,11 +12,9 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 06/09/2017.
  */
 public class ResetModuleName extends JButton implements ActionListener {
-    private GUI gui;
     private Module module;
 
-    public ResetModuleName(GUI gui, Module module) {
-        this.gui = gui;
+    public ResetModuleName(Module module) {
         this.module = module;
 
         setText("Reset name");
@@ -30,7 +27,7 @@ public class ResetModuleName extends JButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         module.setNickname(module.getTitle());
-        gui.populateModuleList();
-        gui.populateModuleParameters();
+        GUI.populateModuleList();
+        GUI.populateModuleParameters();
     }
 }

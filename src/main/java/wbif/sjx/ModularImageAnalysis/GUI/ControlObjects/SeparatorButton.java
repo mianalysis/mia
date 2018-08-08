@@ -13,7 +13,6 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class SeparatorButton extends JButton implements ActionListener {
-    private GUI gui;
     private Module module;
     private boolean left;
     private static final ImageIcon expandedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/downarrow_blue_12px.png"), "");
@@ -21,8 +20,7 @@ public class SeparatorButton extends JButton implements ActionListener {
     private static final ImageIcon collapsedRightIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/leftarrow_blue_12px.png"), "");
 
 
-    public SeparatorButton(GUI gui, Module module, boolean left) {
-        this.gui = gui;
+    public SeparatorButton(Module module, boolean left) {
         this.module = module;
         this.left = left;
 
@@ -55,7 +53,7 @@ public class SeparatorButton extends JButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         boolean expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING);
         module.updateParameterValue(GUISeparator.EXPANDED_EDITING,!expanded);
-        gui.populateModuleList();
-        gui.populateModuleParameters();
+        GUI.populateModuleList();
+        GUI.populateModuleParameters();
     }
 }

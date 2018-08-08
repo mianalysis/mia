@@ -11,6 +11,7 @@ import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
 import ij.process.ByteProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -45,11 +46,20 @@ public class ThresholdImage extends Module {
         String HUANG = "Huang";
         String INTERMODES = "Intermodes";
         String ISO_DATA = "IsoData";
+        String LI = "Li";
         String MAX_ENTROPY = "MaxEntropy";
+        String MEAN = "Mean";
+        String MIN_ERROR = "MinError";
+        String MINIMUM = "Minimum";
+        String MOMENTS = "Moments";
         String OTSU = "Otsu";
+        String PERCENTILE = "Percentile";
+        String RENYI_ENTROPY = "RenyiEntropy";
+        String SHANBHAG = "Shanbhag";
         String TRIANGLE = "Triangle";
+        String YEN = "Yen";
 
-        String[] ALL = new String[]{HUANG, INTERMODES, ISO_DATA, MAX_ENTROPY, OTSU, TRIANGLE};
+        String[] ALL = new String[]{HUANG, INTERMODES, ISO_DATA, LI, MAX_ENTROPY, MEAN, MIN_ERROR, MINIMUM, MOMENTS, OTSU, PERCENTILE, RENYI_ENTROPY, SHANBHAG, TRIANGLE, YEN};
 
     }
 
@@ -150,6 +160,11 @@ public class ThresholdImage extends Module {
     @Override
     public String getTitle() {
         return "Threshold image";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override

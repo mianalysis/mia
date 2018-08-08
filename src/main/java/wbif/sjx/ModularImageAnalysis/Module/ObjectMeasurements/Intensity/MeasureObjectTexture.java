@@ -5,6 +5,7 @@ import ij.ImageStack;
 import ij.plugin.SubHyperstackMaker;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -107,6 +108,11 @@ public class MeasureObjectTexture extends Module {
     public String getTitle() {
         return "Measure object texture";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_INTENSITY;
     }
 
     @Override

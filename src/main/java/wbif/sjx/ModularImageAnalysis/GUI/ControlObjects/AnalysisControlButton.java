@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 import ij.IJ;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisReader;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisRunner;
@@ -26,26 +26,14 @@ public class AnalysisControlButton extends JButton implements ActionListener {
     public static final String START_ANALYSIS = "Run";
     public static final String STOP_ANALYSIS = "Stop";
 
-    private MainGUI gui;
-    private static int buttonSize = 50;
 
-    public AnalysisControlButton(MainGUI gui, String command) {
-        this.gui = gui;
-
+    public AnalysisControlButton(String command, int buttonSize) {
         addActionListener(this);
         setFocusPainted(false);
         setMargin(new Insets(0,0,0,0));
         setText(command);
         setPreferredSize(new Dimension(buttonSize, buttonSize));
 
-    }
-
-    public static int getButtonSize() {
-        return buttonSize;
-    }
-
-    public static void setButtonSize(int buttonSize) {
-        AnalysisControlButton.buttonSize = buttonSize;
     }
 
     @Override
@@ -55,29 +43,29 @@ public class AnalysisControlButton extends JButton implements ActionListener {
                 case LOAD_ANALYSIS:
                     Analysis newAnalysis = AnalysisReader.loadAnalysis();
                     if (newAnalysis == null) return;
-                    gui.setAnalysis(newAnalysis);
+                    GUI.setAnalysis(newAnalysis);
 
-                    if (gui.isBasicGUI()) {
-                        gui.populateBasicModules();
+                    if (GUI.isBasicGUI()) {
+                        GUI.populateBasicModules();
                     } else {
-                        gui.populateModuleList();
-                        gui.populateModuleParameters();
+                        GUI.populateModuleList();
+                        GUI.populateModuleParameters();
                     }
 
-                    gui.setLastModuleEval(-1);
-                    gui.updateTestFile();
-                    gui.populateModuleList();
+                    GUI.setLastModuleEval(-1);
+                    GUI.updateTestFile();
+                    GUI.populateModuleList();
 
                     break;
 
                 case SAVE_ANALYSIS:
-                    AnalysisWriter.saveAnalysis(gui.getAnalysis());
+                    AnalysisWriter.saveAnalysis(GUI.getAnalysis());
                     break;
 
                 case START_ANALYSIS:
                     Thread t = new Thread(() -> {
                         try {
-                            AnalysisRunner.startAnalysis(gui.getAnalysis());
+                            AnalysisRunner.startAnalysis(GUI.getAnalysis());
                         } catch (IOException | InterruptedException e1) {
                             e1.printStackTrace();
                         } catch (GenericMIAException e1) {

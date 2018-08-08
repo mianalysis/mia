@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -68,6 +69,11 @@ public class InputControl extends Module {
     @Override
     public String getTitle() {
         return "Input control";
+    }
+
+    @Override
+    public String getPackageName() {
+        return "";
     }
 
     @Override
