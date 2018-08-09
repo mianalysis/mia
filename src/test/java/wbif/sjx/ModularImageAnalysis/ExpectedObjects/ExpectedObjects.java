@@ -85,9 +85,9 @@ public abstract class ExpectedObjects {
 
     }
 
-    protected List<Integer[]> getCoordinates5D(String path) {
+    protected static List<Integer[]> getCoordinates5D(String path) {
         try {
-            String pathToCoordinates = URLDecoder.decode(this.getClass().getResource(path).getPath(),"UTF-8");
+            String pathToCoordinates = URLDecoder.decode(ExpectedObjects.class.getResource(path).getPath(),"UTF-8");
 
             BufferedReader reader = new BufferedReader(new FileReader(pathToCoordinates));
             CSVReader csvReader = new CSVReader(reader);
@@ -98,9 +98,7 @@ public abstract class ExpectedObjects {
             while (coord != null) {
                 Integer[] thisCoord = new Integer[coord.length];
 
-                for (int j=0;j<coord.length;j++) {
-                    thisCoord[j] = Integer.parseInt(coord[j]);
-                }
+                for (int j=0;j<coord.length;j++) thisCoord[j] = Integer.parseInt(coord[j]);
 
                 coords.add(thisCoord);
                 coord = csvReader.readNext();
@@ -113,5 +111,4 @@ public abstract class ExpectedObjects {
             return null;
         }
     }
-
 }

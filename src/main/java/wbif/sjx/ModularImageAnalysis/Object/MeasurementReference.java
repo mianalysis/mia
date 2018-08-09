@@ -21,7 +21,7 @@ public class MeasurementReference extends Reference {
 
     @Override
     public String getName() {
-        return Units.replace(name);
+        return name;
     }
 
     public boolean isCalculated() {
