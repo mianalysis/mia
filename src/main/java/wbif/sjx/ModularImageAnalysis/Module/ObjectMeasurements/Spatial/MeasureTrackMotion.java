@@ -4,10 +4,10 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Timepoint;
 import wbif.sjx.common.Object.Track;
 
-import javax.annotation.Nullable;
 import java.util.TreeMap;
 
 /**
@@ -26,10 +26,14 @@ public class MeasureTrackMotion extends Module {
         String X_VELOCITY_CAL = "X_VELOCITY_(${CAL}/FRAME)";
         String Y_VELOCITY_PX = "Y_VELOCITY_(PX/FRAME)";
         String Y_VELOCITY_CAL = "Y_VELOCITY_(${CAL}/FRAME)";
+        String Z_VELOCITY_SLICES = "Z_VELOCITY_(SLICES/FRAME)";
+        String Z_VELOCITY_CAL = "Z_VELOCITY_(${CAL}/FRAME)";
         String MEAN_X_VELOCITY_PX = "MEAN_X_VELOCITY_(PX/FRAME)";
         String MEAN_X_VELOCITY_CAL = "MEAN_X_VELOCITY_(${CAL}/FRAME)";
         String MEAN_Y_VELOCITY_PX = "MEAN_Y_VELOCITY_(PX/FRAME)";
         String MEAN_Y_VELOCITY_CAL = "MEAN_Y_VELOCITY_(${CAL}/FRAME)";
+        String MEAN_Z_VELOCITY_SLICES = "MEAN_Z_VELOCITY_(SLICES/FRAME)";
+        String MEAN_Z_VELOCITY_CAL = "MEAN_Z_VELOCITY_(${CAL}/FRAME)";
         String TOTAL_PATH_LENGTH_PX = "TOTAL_PATH_LENGTH_(PX)";
         String TOTAL_PATH_LENGTH_CAL = "TOTAL_PATH_LENGTH_(${CAL})";
         String EUCLIDEAN_DISTANCE_PX = "EUCLIDEAN_DISTANCE_(PX)";
@@ -100,7 +104,19 @@ public class MeasureTrackMotion extends Module {
     public void subtractAverageMotion(Track track, Track averageTrack) {
         // Iterating over each frame, subtracting the average motion
         for (int f:track.getF()) {
-            double x = track.getX(f,true);
+            Point<Double> point = track.getPointAtFrame(f);
+            double x = point.getX();
+            double y = point.getY();
+            double z = point.getZ();
+
+            double xAv = averageTrack.getX(f);
+            double yAv = averageTrack.getY(f);
+            double zAv = averageTrack.getZ(f);
+
+            point.setX(x-xAv);
+            point.setY(y-yAv);
+            point.setZ(z-zAv);
+
         }
     }
 
@@ -132,18 +148,26 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_Y_VELOCITY_CAL,subtractAverage);
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
+            name = getFullName(Measurements.MEAN_Z_VELOCITY_SLICES,subtractAverage);
+            trackObject.addMeasurement(new Measurement(name, Double.NaN));
+            name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,subtractAverage);
+            trackObject.addMeasurement(new Measurement(name, Double.NaN));
 
         } else {
             // Calculating track motion
             double distPerPxXY = trackObject.getDistPerPxXY();
+            double distPerPxZ = trackObject.getDistPerPxZ();
+
             CumStat cumStatX = new CumStat();
             CumStat cumStatY = new CumStat();
+            CumStat cumStatZ = new CumStat();
 
             Timepoint<Double> prev = null;
             for (Timepoint<Double> timepoint:track.values()) {
                 if (prev != null) {
                     cumStatX.addMeasure((timepoint.getX()-prev.getX())/(timepoint.getF()-prev.getF()));
                     cumStatY.addMeasure((timepoint.getY()-prev.getY())/(timepoint.getF()-prev.getF()));
+                    cumStatZ.addMeasure((timepoint.getZ()-prev.getZ())/(timepoint.getF()-prev.getF()));
                 }
                 prev = timepoint;
             }
@@ -156,6 +180,10 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, cumStatY.getMean()));
             name = getFullName(Measurements.MEAN_Y_VELOCITY_CAL,subtractAverage);
             trackObject.addMeasurement(new Measurement(name, cumStatY.getMean() * distPerPxXY));
+            name = getFullName(Measurements.MEAN_Z_VELOCITY_SLICES,subtractAverage);
+            trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY/distPerPxZ));
+            name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,subtractAverage);
+            trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY));
 
         }
     }
@@ -177,8 +205,8 @@ public class MeasureTrackMotion extends Module {
         } else {
             // If the track has a single time-point there's no velocity to measure
             double distPerPxXY = trackObject.getDistPerPxXY();
-            double euclideanDistance = track.getEuclideanDistance(true);
-            double totalPathLength = track.getTotalPathLength(true);
+            double euclideanDistance = track.getEuclideanDistance();
+            double totalPathLength = track.getTotalPathLength();
 
             String name = getFullName(Measurements.EUCLIDEAN_DISTANCE_PX,subtractAverage);
             trackObject.addMeasurement(new Measurement(name, euclideanDistance));
@@ -189,17 +217,19 @@ public class MeasureTrackMotion extends Module {
             name = getFullName(Measurements.TOTAL_PATH_LENGTH_CAL,subtractAverage);
             trackObject.addMeasurement(new Measurement(name, totalPathLength*distPerPxXY));
             name = getFullName(Measurements.DIRECTIONALITY_RATIO,subtractAverage);
-            trackObject.addMeasurement(new Measurement(name, track.getDirectionalityRatio(true)));
+            trackObject.addMeasurement(new Measurement(name, track.getDirectionalityRatio()));
 
         }
     }
 
     public void calculateInstantaneousVelocity(Obj trackObject, Track track, String inputSpotObjectsName, boolean subtractAverage) {
         double distPerPxXY = trackObject.getDistPerPxXY();
+        double distPerPxZ = trackObject.getDistPerPxZ();
 
-        TreeMap<Integer, Double> xVelocity = track.getInstantaneousXVelocity(true);
-        TreeMap<Integer, Double> yVelocity = track.getInstantaneousYVelocity(true);
-        TreeMap<Integer, Double> speed = track.getInstantaneousSpeed(true);
+        TreeMap<Integer, Double> xVelocity = track.getInstantaneousXVelocity();
+        TreeMap<Integer, Double> yVelocity = track.getInstantaneousYVelocity();
+        TreeMap<Integer, Double> zVelocity = track.getInstantaneousZVelocity();
+        TreeMap<Integer, Double> speed = track.getInstantaneousSpeed();
 
         // Getting the first timepoint
         int minT = Integer.MAX_VALUE;
@@ -220,6 +250,10 @@ public class MeasureTrackMotion extends Module {
                 spotObject.addMeasurement(new Measurement(name, Double.NaN));
                 name = getFullName(Measurements.Y_VELOCITY_CAL,subtractAverage);
                 spotObject.addMeasurement(new Measurement(name, Double.NaN));
+                name = getFullName(Measurements.Z_VELOCITY_SLICES,subtractAverage);
+                spotObject.addMeasurement(new Measurement(name, Double.NaN));
+                name = getFullName(Measurements.Z_VELOCITY_CAL,subtractAverage);
+                spotObject.addMeasurement(new Measurement(name, Double.NaN));
                 name = getFullName(Measurements.INSTANTANEOUS_SPEED_PX,subtractAverage);
                 spotObject.addMeasurement(new Measurement(name, Double.NaN));
                 name = getFullName(Measurements.INSTANTANEOUS_SPEED_CAL,subtractAverage);
@@ -234,6 +268,10 @@ public class MeasureTrackMotion extends Module {
                 spotObject.addMeasurement(new Measurement(name, yVelocity.get(t)));
                 name = getFullName(Measurements.Y_VELOCITY_CAL,subtractAverage);
                 spotObject.addMeasurement(new Measurement(name, yVelocity.get(t) * distPerPxXY));
+                name = getFullName(Measurements.Z_VELOCITY_SLICES,subtractAverage);
+                spotObject.addMeasurement(new Measurement(name, zVelocity.get(t) * distPerPxXY/distPerPxZ));
+                name = getFullName(Measurements.Z_VELOCITY_CAL,subtractAverage);
+                spotObject.addMeasurement(new Measurement(name, zVelocity.get(t) * distPerPxXY));
                 name = getFullName(Measurements.INSTANTANEOUS_SPEED_PX,subtractAverage);
                 spotObject.addMeasurement(new Measurement(name, speed.get(t)));
                 name = getFullName(Measurements.INSTANTANEOUS_SPEED_CAL,subtractAverage);
@@ -247,9 +285,9 @@ public class MeasureTrackMotion extends Module {
         double distPerPxXY = trackObject.getDistPerPxXY();
 
         // Calculating rolling values
-        TreeMap<Integer, Double> pathLength = track.getRollingTotalPathLength(true);
-        TreeMap<Integer, Double> euclidean = track.getRollingEuclideanDistance(true);
-        TreeMap<Integer, Double> dirRatio = track.getRollingDirectionalityRatio(true);
+        TreeMap<Integer, Double> pathLength = track.getRollingTotalPathLength();
+        TreeMap<Integer, Double> euclidean = track.getRollingEuclideanDistance();
+        TreeMap<Integer, Double> dirRatio = track.getRollingDirectionalityRatio();
 
         // Applying the relevant measurement to each spot
         for (Obj spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
@@ -296,10 +334,18 @@ public class MeasureTrackMotion extends Module {
         String inputSpotObjectsName = parameters.getValue(INPUT_SPOT_OBJECTS);
         boolean subtractAverage = parameters.getValue(SUBTRACT_AVERAGE_MOTION);
 
+        // If necessary, creating the average track
+        Track averageTrack = null;
+        if (subtractAverage) averageTrack = createAverageTrack(trackObjects,inputSpotObjectsName);
+
         // Converting objects to Track class object
         for (Obj trackObject:trackObjects.values()) {
             Track track = createTrack(trackObject,inputSpotObjectsName);
 
+            // If necessary, applying the motion correction to the object
+            if (subtractAverage) subtractAverageMotion(track,averageTrack);
+
+            // Calculating the measurements
             calculateTemporalMeasurements(trackObject,track,subtractAverage);
             calculateVelocity(trackObject,track,subtractAverage);
             calculateSpatialMeasurements(trackObject,track,subtractAverage);
@@ -399,6 +445,16 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
+        name = getFullName(Measurements.MEAN_Z_VELOCITY_SLICES,subtractAverage);
+        reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,subtractAverage);
+        reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
         name = getFullName(Measurements.X_VELOCITY_PX,subtractAverage);
         reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(inputSpotObjects);
@@ -415,6 +471,16 @@ public class MeasureTrackMotion extends Module {
         reference.setCalculated(true);
 
         name = getFullName(Measurements.Y_VELOCITY_CAL,subtractAverage);
+        reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(inputSpotObjects);
+        reference.setCalculated(true);
+
+        name = getFullName(Measurements.Z_VELOCITY_SLICES,subtractAverage);
+        reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(inputSpotObjects);
+        reference.setCalculated(true);
+
+        name = getFullName(Measurements.Z_VELOCITY_CAL,subtractAverage);
         reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
