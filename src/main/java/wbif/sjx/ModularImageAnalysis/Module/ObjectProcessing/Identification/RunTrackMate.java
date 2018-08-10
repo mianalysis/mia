@@ -14,6 +14,7 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.NormaliseIntensity;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -175,9 +176,9 @@ public class RunTrackMate extends Module {
                 spotObject.addMeasurement(new Measurement(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL),spot.getFeature(SpotRadiusEstimatorFactory.ESTIMATED_DIAMETER)*dppXY,this));
 
                 // Getting coordinates
-                int x = (int) spot.getDoublePosition(0);
-                int y = (int) spot.getDoublePosition(1);
-                int z = (int) (spot.getDoublePosition(2) * dppZ / dppXY);
+                int x = (int) Math.round(spot.getDoublePosition(0));
+                int y = (int) Math.round(spot.getDoublePosition(1));
+                int z = (int) Math.round(spot.getDoublePosition(2) * dppZ / dppXY);
                 int t = (int) Math.round(spot.getFeature(Spot.FRAME));
 
                 // Adding coordinates to the instance objects
@@ -253,6 +254,11 @@ public class RunTrackMate extends Module {
     @Override
     public String getTitle() {
         return "Run TrackMate";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override

@@ -15,6 +15,7 @@ import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 
@@ -90,6 +91,11 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     public String getTitle() {
         return "Project image";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override

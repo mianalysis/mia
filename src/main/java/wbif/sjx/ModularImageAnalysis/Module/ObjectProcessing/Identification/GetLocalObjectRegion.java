@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 import ij.ImagePlus;
 import net.imglib2.ops.parse.token.Int;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.annotation.Nullable;
@@ -147,6 +148,11 @@ public class GetLocalObjectRegion extends Module {
     public String getTitle() {
         return "Get local object region";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override

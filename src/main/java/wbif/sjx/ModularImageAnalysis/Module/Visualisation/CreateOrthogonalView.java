@@ -16,6 +16,7 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.*;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -91,6 +92,11 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     @Override
     public String getTitle() {
         return "Create orthogonal view";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.VISUALISATION;
     }
 
     @Override

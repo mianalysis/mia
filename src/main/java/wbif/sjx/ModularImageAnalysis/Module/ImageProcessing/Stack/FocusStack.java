@@ -10,6 +10,7 @@ import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.ThirdParty.Stack_Focuser_;
 
@@ -126,6 +127,11 @@ public class FocusStack extends Module {
     @Override
     public String getTitle() {
         return "Focus stack";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override

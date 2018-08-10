@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -75,6 +76,11 @@ public class ImageMath extends Module {
     @Override
     public String getTitle() {
         return "Image math";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override

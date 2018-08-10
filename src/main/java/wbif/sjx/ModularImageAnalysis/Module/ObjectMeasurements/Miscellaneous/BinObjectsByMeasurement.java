@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 public class BinObjectsByMeasurement extends Module {
@@ -22,6 +23,11 @@ public class BinObjectsByMeasurement extends Module {
     @Override
     public String getTitle() {
         return "Bin objects by measurement";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_MISCELLENAOUS;
     }
 
     @Override

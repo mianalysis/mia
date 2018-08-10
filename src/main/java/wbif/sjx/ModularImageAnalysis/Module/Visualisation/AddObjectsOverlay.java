@@ -11,6 +11,7 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import net.imagej.overlay.CompositeOverlay;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -424,6 +425,11 @@ public class AddObjectsOverlay extends Module {
     @Override
     public String getTitle() {
         return "Add overlay";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.VISUALISATION;
     }
 
     @Override

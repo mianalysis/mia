@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
@@ -12,15 +11,13 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class ShowOutputButton extends JButton implements ActionListener {
-    private GUI gui;
     private Module module;
     private boolean state = true;
     private static final ImageIcon closedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_black_12px.png"), "");
     private static final ImageIcon openIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_black_12px.png"), "");
 
 
-    public ShowOutputButton(GUI gui, Module module) {
-        this.gui = gui;
+    public ShowOutputButton(Module module) {
         this.module = module;
 
         state = module.canShowOutput();

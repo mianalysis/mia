@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -22,6 +23,11 @@ public class RunImageJMacro extends Module {
     @Override
     public String getTitle() {
         return "Run ImageJ macro";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_MISCELLANEOUS;
     }
 
     @Override

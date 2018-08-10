@@ -6,6 +6,7 @@ import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
@@ -34,6 +35,11 @@ public class ExtractObjectEdges extends Module {
     @Override
     public String getTitle() {
         return "Extract object edges";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override

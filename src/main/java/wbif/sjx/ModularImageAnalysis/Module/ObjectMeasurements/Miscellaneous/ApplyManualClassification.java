@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.io.BufferedReader;
@@ -25,6 +26,11 @@ public class ApplyManualClassification extends Module {
     public String getTitle() {
         return "Apply manual classification";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_MISCELLENAOUS;
     }
 
     @Override

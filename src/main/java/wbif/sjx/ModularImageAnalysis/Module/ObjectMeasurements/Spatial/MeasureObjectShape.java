@@ -4,6 +4,7 @@ import ij.plugin.filter.Analyzer;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ProjectObjects;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.ArrayList;
@@ -70,6 +71,11 @@ public class MeasureObjectShape extends Module {
     @Override
     public String getTitle() {
         return "Measure object shape";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_SPATIAL;
     }
 
     @Override

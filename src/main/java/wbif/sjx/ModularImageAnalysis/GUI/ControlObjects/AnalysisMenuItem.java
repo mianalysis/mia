@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 import ij.IJ;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisReader;
@@ -31,11 +31,7 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
     public static final String OUTPUT_ALL = "Show output for all modules";
     public static final String SILENCE_ALL = "Hide output for all modules";
 
-    private MainGUI gui;
-
-    public AnalysisMenuItem(MainGUI gui, String command) {
-        this.gui = gui;
-
+    public AnalysisMenuItem(String command) {
         setText(command);
         addActionListener(this);
 
@@ -50,29 +46,29 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
 
                     if (analysis == null) return;
 
-                    gui.setAnalysis(analysis);
+                    GUI.setAnalysis(analysis);
 
-                    if (gui.isBasicGUI()) {
-                        gui.populateBasicModules();
+                    if (GUI.isBasicGUI()) {
+                        GUI.populateBasicModules();
 
                     } else {
-                        gui.populateModuleList();
-                        gui.populateModuleParameters();
+                        GUI.populateModuleList();
+                        GUI.populateModuleParameters();
 
                     }
 
-                    gui.setLastModuleEval(-1);
+                    GUI.setLastModuleEval(-1);
 
                     break;
 
                 case SAVE_ANALYSIS:
-                    AnalysisWriter.saveAnalysis(gui.getAnalysis());
+                    AnalysisWriter.saveAnalysis(GUI.getAnalysis());
                     break;
 
                 case START_ANALYSIS:
                     Thread t = new Thread(() -> {
                         try {
-                            AnalysisRunner.startAnalysis(gui.getAnalysis());
+                            AnalysisRunner.startAnalysis(GUI.getAnalysis());
                         } catch (IOException | InterruptedException e1) {
                             e1.printStackTrace();
                         } catch (GenericMIAException e1) {
@@ -88,39 +84,39 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     break;
 
                 case CLEAR_PIPELINE:
-                    gui.getAnalysis().removeAllModules();
+                    GUI.getAnalysis().removeAllModules();
 
-                    if (gui.isBasicGUI()) {
-                        gui.populateBasicModules();
+                    if (GUI.isBasicGUI()) {
+                        GUI.populateBasicModules();
 
                     } else {
-                        gui.populateModuleList();
-                        gui.populateModuleParameters();
+                        GUI.populateModuleList();
+                        GUI.populateModuleParameters();
 
                     }
 
-                    gui.setLastModuleEval(-1);
+                    GUI.setLastModuleEval(-1);
 
                     break;
 
                 case ENABLE_ALL:
-                    for (Module module:gui.getModules()) module.setEnabled(true);
-                    gui.populateModuleList();
+                    for (Module module:GUI.getModules()) module.setEnabled(true);
+                    GUI.populateModuleList();
                     break;
 
                 case DISABLE_ALL:
-                    for (Module module:gui.getModules()) module.setEnabled(false);
-                    gui.populateModuleList();
+                    for (Module module:GUI.getModules()) module.setEnabled(false);
+                    GUI.populateModuleList();
                     break;
 
                 case OUTPUT_ALL:
-                    for (Module module:gui.getModules()) module.setShowOutput(true);
-                    gui.populateModuleList();
+                    for (Module module:GUI.getModules()) module.setShowOutput(true);
+                    GUI.populateModuleList();
                     break;
 
                 case SILENCE_ALL:
-                    for (Module module:gui.getModules()) module.setShowOutput(false);
-                    gui.populateModuleList();
+                    for (Module module:GUI.getModules()) module.setShowOutput(false);
+                    GUI.populateModuleList();
                     break;
 
             }

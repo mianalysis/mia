@@ -8,6 +8,7 @@ import ij.process.ImageProcessor;
 import org.apache.commons.math.geometry.Rotation;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 public class PlotKymograph extends Module {
@@ -82,6 +83,11 @@ public class PlotKymograph extends Module {
     @Override
     public String getTitle() {
         return "Plot kymograph";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override

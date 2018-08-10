@@ -5,37 +5,26 @@
 package wbif.sjx.ModularImageAnalysis;
 
 import ij.ImageJ;
-import ij.plugin.ImageJ_Updater;
 import ij.plugin.PlugIn;
-import net.imagej.ui.swing.updater.ProgressDialog;
 import net.imagej.ui.swing.updater.ResolveDependencies;
 import net.imagej.updater.*;
 import net.imagej.updater.util.*;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang.SystemUtils;
-import org.scijava.log.LogService;
 import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.MainGUI;
+import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Object.ErrorLog;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisReader;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisRunner;
-import wbif.sjx.ModularImageAnalysis.Process.AnalysisWriter;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
-import java.awt.*;
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 
 
@@ -68,7 +57,7 @@ public class MIA implements PlugIn {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
                 new ImageJ();
-                new MainGUI(true);
+                new GUI(true);
 
             } else {
                 String filepath = args[0];
@@ -123,7 +112,7 @@ public class MIA implements PlugIn {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            new MainGUI(false);
+            new GUI(false);
         } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace(System.err);
         }

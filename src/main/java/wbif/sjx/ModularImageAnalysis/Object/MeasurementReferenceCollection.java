@@ -10,7 +10,6 @@ public class MeasurementReferenceCollection extends TreeMap<String,MeasurementRe
 
     public String[] getMeasurementNames() {
         return keySet().toArray(new String[0]);
-
     }
 
     public void setAllCalculated(boolean calculated) {

@@ -19,6 +19,11 @@ public class MeasurementReference extends Reference {
         this.imageObjName = imageObjName;
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
     public boolean isCalculated() {
         return calculated;
     }

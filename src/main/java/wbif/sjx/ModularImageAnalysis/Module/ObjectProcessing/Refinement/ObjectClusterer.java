@@ -13,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperatio
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
@@ -130,6 +131,11 @@ public class ObjectClusterer extends Module {
     public String getTitle() {
         return "Object clustering";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
     }
 
     @Override

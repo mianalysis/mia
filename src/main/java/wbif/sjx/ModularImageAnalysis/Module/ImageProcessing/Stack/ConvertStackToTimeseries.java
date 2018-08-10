@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -18,6 +19,11 @@ public class ConvertStackToTimeseries extends Module {
     @Override
     public String getTitle() {
         return "Convert stack to timeseries";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override

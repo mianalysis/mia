@@ -4,6 +4,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.PeriodogramCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -146,6 +147,11 @@ public class CalculateMeasurementPeriodogram extends Module {
     @Override
     public String getTitle() {
         return "Calculate measurement periodogram";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_MISCELLENAOUS;
     }
 
     @Override

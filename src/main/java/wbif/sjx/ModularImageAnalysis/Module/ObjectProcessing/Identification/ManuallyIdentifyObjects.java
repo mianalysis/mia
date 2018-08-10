@@ -12,6 +12,7 @@ import ij.plugin.Duplicator;
 import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
@@ -115,6 +116,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     @Override
     public String getTitle() {
         return "Manually identify objects";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override

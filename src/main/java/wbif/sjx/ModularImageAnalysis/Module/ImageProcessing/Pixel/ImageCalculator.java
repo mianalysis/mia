@@ -6,6 +6,7 @@ import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -113,6 +114,8 @@ public class ImageCalculator extends Module {
         for (int z = 1; z <= nSlices; z++) {
             for (int c = 1; c <= nChannels; c++) {
                 for (int t = 1; t <= nFrames; t++) {
+                    writeMessage("Processing "+(++count)+" of "+nImages+" images");
+
                     inputImagePlus1.setPosition(c,z,t);
                     ImageProcessor imageProcessor1 = inputImagePlus1.getProcessor();
 
@@ -167,9 +170,6 @@ public class ImageCalculator extends Module {
                             }
                         }
                     }
-
-                    writeMessage("Processed "+(++count)+" of "+nImages+" images");
-
                 }
             }
         }
@@ -194,6 +194,11 @@ public class ImageCalculator extends Module {
     @Override
     public String getTitle() {
         return "Image calculator";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override

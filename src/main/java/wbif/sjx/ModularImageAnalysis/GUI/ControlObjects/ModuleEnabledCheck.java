@@ -11,11 +11,9 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class ModuleEnabledCheck extends JCheckBox implements ActionListener {
-    private GUI gui;
     private Module module;
 
-    public ModuleEnabledCheck(GUI gui, Module module) {
-        this.gui = gui;
+    public ModuleEnabledCheck(Module module) {
         this.module = module;
 
         setSelected(module.isEnabled());
@@ -34,11 +32,9 @@ public class ModuleEnabledCheck extends JCheckBox implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         module.setEnabled(isSelected());
 
-        int idx = gui.getModules().indexOf(module);
-        if (idx <= gui.getLastModuleEval()) {
-            gui.setLastModuleEval(idx-1);
-        }
+        int idx = GUI.getModules().indexOf(module);
+        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        gui.updateModules();
+        GUI.updateModules();
     }
 }

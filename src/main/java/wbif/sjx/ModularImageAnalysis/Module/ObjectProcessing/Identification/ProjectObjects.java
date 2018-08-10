@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 
@@ -57,6 +58,11 @@ public class ProjectObjects extends Module {
     public String getTitle() {
         return "Project objects";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_PROCESSING_IDENTIFICATION;
     }
 
     @Override

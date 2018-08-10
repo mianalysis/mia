@@ -12,6 +12,7 @@ import ij.process.ImageProcessor;
 import trainableSegmentation.WekaSegmentation;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 import weka.classifiers.Classifier;
@@ -28,9 +29,10 @@ public class WekaProbabilityMaps extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String CLASSIFIER_FILE = "Classifier file path";
+    public static final String BLOCK_SIZE = "Block size (simultaneous slices)";
 
 
-    public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName, String classifierFilePath) {
+    public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName, String classifierFilePath, int blockSize) {
         // Initialising the training system, which shows a warning, so temporarily diverting output to error stream
         WekaSegmentation wekaSegmentation = new WekaSegmentation();
 
@@ -50,6 +52,7 @@ public class WekaProbabilityMaps extends Module {
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
         int nClasses = wekaSegmentation.getNumOfClasses();
+        int nBlocks = (int) Math.ceil((double) nSlices/(double) blockSize);
 
         // Creating the new image
         ImagePlus probabilityMaps = IJ.createHyperStack(outputImageName,width,height,nChannels*nClasses,nSlices,nFrames,32);
@@ -57,33 +60,39 @@ public class WekaProbabilityMaps extends Module {
 
         writeMessage("Calculating probabilities");
         int count = 0;
-        int nStacks = nChannels*nFrames;
+        int nImages = nChannels*nFrames*nSlices;
         for (int c=1;c<=nChannels;c++) {
             for (int t = 1; t <= nFrames; t++) {
-                ImagePlus iplSingle = SubHyperstackMaker.makeSubhyperstack(inputImagePlus,c+"-"+c,"1-"+nSlices,t+"-"+t);
+                for (int b=1;b<=nBlocks;b++) {
+                    int startingBlock = (b-1)*blockSize+1;
+                    int endingBlock = Math.min((b-1)*blockSize+blockSize,nSlices);
 
-                wekaSegmentation.setTrainingImage(iplSingle);
-                wekaSegmentation.applyClassifier(true);
-                iplSingle = wekaSegmentation.getClassifiedImage();
+                    ImagePlus iplSingle = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, c + "-" + c, startingBlock + "-" + endingBlock, t + "-" + t);
 
-                for (int cl=1;cl<=nClasses;cl++) {
-                    for (int z = 1; z <= nSlices; z++) {
-                        iplSingle.setPosition(nClasses*(z-1)+cl);
-                        probabilityMaps.setPosition((nClasses*(c-1)+cl), z, t);
+                    wekaSegmentation.setTrainingImage(iplSingle);
+                    wekaSegmentation.applyClassifier(true);
+                    iplSingle = wekaSegmentation.getClassifiedImage();
 
-                        ImageProcessor iprSingle = iplSingle.getProcessor();
-                        ImageProcessor iprProbability = probabilityMaps.getProcessor();
+                    for (int cl = 1; cl <= nClasses; cl++) {
+                        for (int z = 1; z <= (endingBlock-startingBlock+1); z++) {
+                            iplSingle.setPosition(nClasses * (z - 1) + cl);
+                            probabilityMaps.setPosition((nClasses * (c - 1) + cl), startingBlock+z-1, t);
 
-                        for (int x = 0; x < width; x++) {
-                            for (int y = 0; y < height; y++) {
-                                iprProbability.setf(x, y, iprSingle.getf(x, y));
+                            ImageProcessor iprSingle = iplSingle.getProcessor();
+                            ImageProcessor iprProbability = probabilityMaps.getProcessor();
+
+                            for (int x = 0; x < width; x++) {
+                                for (int y = 0; y < height; y++) {
+                                    iprProbability.setf(x, y, iprSingle.getf(x, y));
+                                }
                             }
                         }
                     }
+
+                    count = count + endingBlock - startingBlock + 1;
+                    writeMessage("Processed "+count+" of "+nImages+" images");
+
                 }
-
-                writeMessage("Processed "+(++count)+" of "+nStacks+" stacks");
-
             }
         }
 
@@ -94,6 +103,11 @@ public class WekaProbabilityMaps extends Module {
     @Override
     public String getTitle() {
         return "Weka probability maps";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_PIXEL;
     }
 
     @Override
@@ -112,9 +126,10 @@ public class WekaProbabilityMaps extends Module {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
+        int blockSize = parameters.getValue(BLOCK_SIZE);
 
         // Running the classifier on each individual stack
-        ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath);
+        ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath,blockSize);
 
         // Adding the probability maps to the Workspace
         workspace.addImage(new Image(outputImageName,probabilityMaps));
@@ -132,6 +147,7 @@ public class WekaProbabilityMaps extends Module {
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(CLASSIFIER_FILE,Parameter.FILE_PATH,null));
+        parameters.add(new Parameter(BLOCK_SIZE,Parameter.INTEGER,1));
 
     }
 

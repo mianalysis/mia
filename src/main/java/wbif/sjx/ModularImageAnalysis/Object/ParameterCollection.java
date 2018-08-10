@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
  */
 public class ParameterCollection extends LinkedHashMap<String,Parameter> implements Serializable {
 
-
     // PUBLIC METHODS
 
     public void add(Parameter parameter) {

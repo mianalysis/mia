@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -13,6 +14,11 @@ public class RemoveImage extends Module {
     @Override
     public String getTitle() {
         return "Remove image";
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_STACK;
     }
 
     @Override

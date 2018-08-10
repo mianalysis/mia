@@ -14,6 +14,7 @@ import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -41,12 +42,13 @@ public class BinaryOperations extends Module {
         String ERODE_2D = "Erode 2D";
         String ERODE_3D = "Erode 3D";
         String FILL_HOLES_2D = "Fill holes 2D";
+        String OUTLINE_2D = "Outline 2D";
         String SKELETONISE_2D = "Skeletonise 2D";
         String WATERSHED_2D = "Watershed 2D";
         String WATERSHED_3D = "Watershed 3D";
 
-        String[] ALL = new String[]{DILATE_2D,DILATE_3D,DISTANCE_MAP_3D,ERODE_2D,ERODE_3D,FILL_HOLES_2D,SKELETONISE_2D,
-                WATERSHED_2D,WATERSHED_3D};
+        String[] ALL = new String[]{DILATE_2D,DILATE_3D,DISTANCE_MAP_3D,ERODE_2D,ERODE_3D,FILL_HOLES_2D,OUTLINE_2D,
+                SKELETONISE_2D,WATERSHED_2D,WATERSHED_3D};
 
     }
 
@@ -80,6 +82,10 @@ public class BinaryOperations extends Module {
 
             case OperationModes.FILL_HOLES_2D:
                 IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=[Fill Holes] stack");
+                break;
+
+            case OperationModes.OUTLINE_2D:
+                IJ.run(ipl,"Outline", "stack");
                 break;
 
             case OperationModes.SKELETONISE_2D:
@@ -254,6 +260,11 @@ public class BinaryOperations extends Module {
     }
 
     @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_PROCESSING_PIXEL;
+    }
+
+    @Override
     public String getHelp() {
         return "Expects black objects on a white background" +
                 "\nPerforms 2D fill holes, dilate and erode using ImageJ functions" +
@@ -288,6 +299,7 @@ public class BinaryOperations extends Module {
             case (OperationModes.DILATE_2D):
             case (OperationModes.ERODE_2D):
             case (OperationModes.FILL_HOLES_2D):
+            case (OperationModes.OUTLINE_2D):
             case (OperationModes.SKELETONISE_2D):
             case (OperationModes.WATERSHED_2D):
                 applyStockBinaryTransform(inputImagePlus,operationMode,numIterations);

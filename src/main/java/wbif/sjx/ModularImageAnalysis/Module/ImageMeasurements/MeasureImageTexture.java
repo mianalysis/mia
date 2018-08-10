@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -26,7 +27,11 @@ public class MeasureImageTexture extends Module {
     @Override
     public String getTitle() {
         return "Measure image texture";
+    }
 
+    @Override
+    public String getPackageName() {
+        return PackageNames.IMAGE_MEASUREMENTS;
     }
 
     @Override

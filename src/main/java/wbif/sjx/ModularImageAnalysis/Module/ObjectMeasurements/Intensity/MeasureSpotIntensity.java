@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -52,6 +53,11 @@ public class MeasureSpotIntensity extends Module {
     public String getTitle() {
         return "Measure spot intensity";
 
+    }
+
+    @Override
+    public String getPackageName() {
+        return PackageNames.OBJECT_MEASUREMENTS_INTENSITY;
     }
 
     @Override
