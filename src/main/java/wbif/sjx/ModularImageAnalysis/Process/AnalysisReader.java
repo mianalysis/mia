@@ -28,7 +28,11 @@ public class AnalysisReader {
 
         if (fileDialog.getFiles().length==0) return null;
 
-        return loadAnalysis(new FileInputStream(fileDialog.getFiles()[0]));
+        Analysis analysis = loadAnalysis(new FileInputStream(fileDialog.getFiles()[0]));
+
+        System.out.println("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
+
+        return analysis;
 
     }
 
@@ -69,10 +73,6 @@ public class AnalysisReader {
                 modules.add(module);
             }
         }
-
-
-
-        System.out.println("File loaded");
 
         return analysis;
 
