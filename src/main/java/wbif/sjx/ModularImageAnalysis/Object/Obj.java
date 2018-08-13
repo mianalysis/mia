@@ -5,12 +5,10 @@ import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
-import net.imglib2.ops.parse.token.Int;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 
-import java.awt.*;
 import java.util.*;
 
 /**
@@ -238,7 +236,7 @@ public class Obj extends Volume {
         ImagePlus sliceIpl = IJ.createImage("SliceIm",(int)extents[0][1]+1,(int)extents[1][1]+1,1,8);
 
         HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectImage = objectCollection.convertObjectsToImage("Output",sliceIpl, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
+        Image objectImage = objectCollection.convertObjectsToImageOld("Output",sliceIpl, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
         IJ.run(objectImage.getImagePlus(), "Invert", "stack");
 
         ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
@@ -295,7 +293,7 @@ public class Obj extends Volume {
 
         // Getting the image
         HashMap<Integer, Float> hues = tempObj.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
-        return tempObj.convertObjectsToImage(outputName,templateIpl,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
+        return tempObj.convertObjectsToImageOld(outputName,templateIpl,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
 
     }
 
@@ -306,7 +304,7 @@ public class Obj extends Volume {
 
         // Getting the image
         HashMap<Integer, Float> hues = tempObj.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
-        return tempObj.convertObjectsToImage(outputName,null,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
+        return tempObj.convertObjectsToImageOld(outputName,null,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
 
     }
 

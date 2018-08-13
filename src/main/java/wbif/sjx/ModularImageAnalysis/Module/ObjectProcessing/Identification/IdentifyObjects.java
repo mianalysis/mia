@@ -2,15 +2,11 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.NormaliseIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -135,7 +131,7 @@ public class IdentifyObjects extends Module {
         // Showing objects
         if (showOutput) {
             HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
-            outputObjects.convertObjectsToImage("Objects", inputImage.getImagePlus(),
+            outputObjects.convertObjectsToImage("Objects", inputImage,
                     ConvertObjectsToImage.ColourModes.RANDOM_COLOUR, hues).getImagePlus().show();
         }
     }

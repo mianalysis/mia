@@ -57,7 +57,7 @@ public class ShowObjectsTest {
 
         // Converting objects to image
         HashMap<Integer,Float> hues = testObjects.getHues(colourMode,"",false);
-        Image testImage = testObjects.convertObjectsToImage("Test image",ipl,colourMode,hues);
+        Image testImage = testObjects.convertObjectsToImageOld("Test image",ipl,colourMode,hues);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -109,7 +109,7 @@ public class ShowObjectsTest {
 
         // Converting objects to image
         HashMap<Integer,Float> hues = testObjects.getHues(colourMode,"",false);
-        Image testImage = testObjects.convertObjectsToImage("Test image",ipl,colourMode,hues);
+        Image testImage = testObjects.convertObjectsToImageOld("Test image",ipl,colourMode,hues);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();

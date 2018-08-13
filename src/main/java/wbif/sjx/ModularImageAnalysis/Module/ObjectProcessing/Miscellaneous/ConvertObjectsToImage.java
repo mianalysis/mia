@@ -94,7 +94,7 @@ public class ConvertObjectsToImage extends Module {
             }
             HashMap<Integer, Float> hues = inputObjects.getHues(colourMode, sourceColour,false);
 
-            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage.getImagePlus(), colourMode,hues);
+            Image outputImage = inputObjects.convertObjectsToImageOld(outputImageName, templateImage.getImagePlus(), colourMode,hues);
 
             // Applying spatial calibration from template image
             Calibration calibration = templateImage.getImagePlus().getCalibration();

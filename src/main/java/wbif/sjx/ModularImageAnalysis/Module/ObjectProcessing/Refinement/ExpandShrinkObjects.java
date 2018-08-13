@@ -90,7 +90,7 @@ public class ExpandShrinkObjects extends Module {
             ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
             objectCollection.add(inputObject);
             HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-            Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
+            Image objectImage = objectCollection.convertObjectsToImageOld("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
             InvertIntensity.process(objectImage.getImagePlus());
 
             Prefs.blackBackground = false;
