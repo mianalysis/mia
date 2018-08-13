@@ -133,8 +133,17 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    public Image convertObjectsToImage(String outputName, @Nullable ImagePlus templateIpl, String colourMode, HashMap<Integer,Float> hues) {
+    @Deprecated
+    public Image convertObjectsToImageOld(String outputName, @Nullable ImagePlus templateIpl, String colourMode, HashMap<Integer,Float> hues) {
+        Image templateImage = new Image("Template",templateIpl);
+        return convertObjectsToImage(outputName,templateImage,colourMode,hues);
+
+    }
+
+    public Image convertObjectsToImage(String outputName, @Nullable Image templateImage, String colourMode, HashMap<Integer,Float> hues) {
+        ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
         ImagePlus ipl;
+
         int bitDepth = 8;
         switch (colourMode){
             case ColourModes.RANDOM_COLOUR:

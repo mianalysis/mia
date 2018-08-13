@@ -31,7 +31,6 @@ public class HoughObjectDetection extends Module {
     public static final String DETECTION_THRESHOLD = "Detection threshold";
     public static final String EXCLUSION_RADIUS = "Exclusion radius (px)";
     public static final String SHOW_TRANSFORM_IMAGE = "Show transform image";
-    public static final String SHOW_OBJECTS = "Show detected objects";
     public static final String SHOW_HOUGH_SCORE = "Show detection score";
     public static final String LABEL_SIZE = "Label size";
 
@@ -75,7 +74,6 @@ public class HoughObjectDetection extends Module {
         double detectionThreshold = parameters.getValue(DETECTION_THRESHOLD);
         int exclusionRadius = parameters.getValue(EXCLUSION_RADIUS);
         boolean showTransformImage = parameters.getValue(SHOW_TRANSFORM_IMAGE);
-        boolean showObjects = parameters.getValue(SHOW_OBJECTS);
         boolean showHoughScore = parameters.getValue(SHOW_HOUGH_SCORE);
         int labelSize = parameters.getValue(LABEL_SIZE);
 
@@ -107,7 +105,7 @@ public class HoughObjectDetection extends Module {
 
                     // Normalising scores based on the number of points in that circle
                     writeMessage("Normalising scores (image " + (count) + " of " + total+")");
-                        circleHoughTransform.normaliseScores();
+                    circleHoughTransform.normaliseScores();
 
                     // Getting the accumulator as an image
                     if (showTransformImage) {
@@ -162,7 +160,7 @@ public class HoughObjectDetection extends Module {
         ipl.setPosition(1,1,1);
         workspace.addObjects(outputObjects);
 
-        if (showObjects) {
+        if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(ipl);
             IntensityMinMax.run(dispIpl,true);
 
@@ -197,7 +195,6 @@ public class HoughObjectDetection extends Module {
         parameters.add(new Parameter(DETECTION_THRESHOLD,Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(EXCLUSION_RADIUS,Parameter.INTEGER,10));
         parameters.add(new Parameter(SHOW_TRANSFORM_IMAGE,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SHOW_OBJECTS,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SHOW_HOUGH_SCORE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LABEL_SIZE,Parameter.INTEGER,12));
 
@@ -220,15 +217,12 @@ public class HoughObjectDetection extends Module {
         returnedParameters.add(parameters.getParameter(DETECTION_THRESHOLD));
         returnedParameters.add(parameters.getParameter(EXCLUSION_RADIUS));
         returnedParameters.add(parameters.getParameter(SHOW_TRANSFORM_IMAGE));
-        returnedParameters.add(parameters.getParameter(SHOW_OBJECTS));
 
-        if (parameters.getValue(SHOW_OBJECTS)) {
-            returnedParameters.add(parameters.getParameter(SHOW_HOUGH_SCORE));
-
-            if (parameters.getValue(SHOW_HOUGH_SCORE)) {
-                returnedParameters.add(parameters.getParameter(LABEL_SIZE));
-            }
+        returnedParameters.add(parameters.getParameter(SHOW_HOUGH_SCORE));
+        if (parameters.getValue(SHOW_HOUGH_SCORE)) {
+            returnedParameters.add(parameters.getParameter(LABEL_SIZE));
         }
+
 
         return returnedParameters;
 
