@@ -274,10 +274,9 @@ public class FilterObjects extends Module {
 
         // Showing objects
         if (showOutput) {
-            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+            HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            outputObjects.convertObjectsToImage("Objects", inputImage, mode, hues).getImagePlus().show();
-
+            inputObjects.convertObjectsToImage("Objects", inputImage, mode, hues).getImagePlus().show();
         }
     }
 
