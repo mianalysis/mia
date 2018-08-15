@@ -553,7 +553,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     if (useImageJReader) {
                         ipl = IJ.openImage(filePath);
                     } else {
-                        ipl = getBFImage(filePath, seriesNumber, dimRanges, crop, true);
+                        ipl = getBFImage(filePath, 1, dimRanges, crop, true);
                     }
                     break;
             }

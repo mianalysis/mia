@@ -1,11 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -270,6 +272,12 @@ public class FilterObjects extends Module {
 
         if (moveFiltered) workspace.addObjects(outputObjects);
 
+        // Showing objects
+        if (showOutput) {
+            HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+            inputObjects.convertObjectsToImage("Objects", inputImage, mode, hues).getImagePlus().show();
+        }
     }
 
     @Override

@@ -13,7 +13,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
 
-import java.awt.*;
 import java.util.HashMap;
 
 /**
@@ -77,7 +76,7 @@ public class MeasureIntensityDistribution extends Module {
 
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
+        Image objectsImage = inputObjects.convertObjectsToImageOld("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
         
         // Calculaing the distance map
         ImagePlus distIpl = BinaryOperations.getDistanceMap3D(objectsImage.getImagePlus(),true);
@@ -132,7 +131,7 @@ public class MeasureIntensityDistribution extends Module {
 
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
+        Image objectsImage = inputObjects.convertObjectsToImageOld("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
 
         ImagePlus distIpl = null;
         switch (edgeMode) {

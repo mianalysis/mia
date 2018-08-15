@@ -83,7 +83,7 @@ public class MeasureObjectCurvature extends Module {
         tempObjects.add(inputObject);
 
         HashMap<Integer,Float> hues = tempObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        ImagePlus objectIpl = tempObjects.convertObjectsToImage("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues).getImagePlus();
+        ImagePlus objectIpl = tempObjects.convertObjectsToImageOld("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues).getImagePlus();
         InvertIntensity.process(objectIpl);
 
         // Skeletonise fish to get single backbone

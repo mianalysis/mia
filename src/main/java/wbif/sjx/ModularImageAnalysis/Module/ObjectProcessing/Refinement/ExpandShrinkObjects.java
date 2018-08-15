@@ -90,7 +90,7 @@ public class ExpandShrinkObjects extends Module {
             ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
             objectCollection.add(inputObject);
             HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-            Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
+            Image objectImage = objectCollection.convertObjectsToImageOld("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
             InvertIntensity.process(objectImage.getImagePlus());
 
             Prefs.blackBackground = false;
@@ -144,6 +144,18 @@ public class ExpandShrinkObjects extends Module {
         // If selected, adding new ObjCollection to the Workspace
         if (!updateInputObjects) workspace.addObjects(outputObjects);
 
+        // Displaying updated objects
+        if (showOutput) {
+            if (updateInputObjects) {
+                HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+                String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+                inputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
+            } else {
+                HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+                String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+                outputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
+            }
+        }
     }
 
     @Override
