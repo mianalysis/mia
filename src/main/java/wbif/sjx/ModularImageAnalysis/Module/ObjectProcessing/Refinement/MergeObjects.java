@@ -2,8 +2,11 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+
+import java.util.HashMap;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -78,6 +81,12 @@ public class MergeObjects extends Module {
         if (deleteInputs) {
             workspace.removeObject(inputObjects1Name);
             workspace.removeObject(inputObjects2Name);
+        }
+
+        if (showOutput) {
+            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+            outputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
         }
     }
 

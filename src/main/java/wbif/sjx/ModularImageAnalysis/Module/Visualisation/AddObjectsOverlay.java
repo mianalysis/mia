@@ -322,7 +322,6 @@ public class AddObjectsOverlay extends Module {
     }
 
     public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Color> colours, @Nullable HashMap<Integer,String> labels) {
-
         String positionMode = parameters.getValue(POSITION_MODE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         int labelSize = parameters.getValue(LABEL_SIZE);

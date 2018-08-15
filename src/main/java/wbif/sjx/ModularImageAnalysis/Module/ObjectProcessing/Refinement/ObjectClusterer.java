@@ -6,6 +6,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import org.apache.commons.math3.ml.clustering.*;
@@ -13,12 +14,16 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperatio
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by sc13967 on 21/06/2017.
@@ -205,6 +210,27 @@ public class ObjectClusterer extends Module {
         writeMessage("Adding objects ("+outputObjectsName+") to workspace");
         workspace.addObjects(outputObjects);
 
+        // Showing outlines of clustered objects
+        if (showOutput) {
+            // Creating the fake image
+            int[][] spatialLimits = inputObjects.getSpatialLimits();
+            int[] temporalLimits = inputObjects.getTemporalLimits();
+            ImagePlus dispIpl = IJ.createHyperStack(outputObjectsName,spatialLimits[0][1],spatialLimits[1][1],1,spatialLimits[2][1],temporalLimits[1],8);
+
+            // Initialising the overlay module
+            AddObjectsOverlay addObjectsOverlay = new AddObjectsOverlay();
+            addObjectsOverlay.updateParameterValue(AddObjectsOverlay.POSITION_MODE,AddObjectsOverlay.PositionModes.OUTLINE)
+                    .updateParameterValue(AddObjectsOverlay.LINE_WIDTH,0.5)
+                    .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8);
+
+            // Generating colours
+            HashMap<Integer,Color> colours = inputObjects.getColours(ObjCollection.ColourModes.PARENT_ID,outputObjectsName,true);
+
+            // Adding overlay and displaying image
+            addObjectsOverlay.createOverlay(dispIpl,inputObjects,colours,null);
+            dispIpl.show();
+
+        }
     }
 
     @Override
