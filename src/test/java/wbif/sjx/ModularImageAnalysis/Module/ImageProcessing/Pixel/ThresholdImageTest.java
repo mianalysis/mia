@@ -425,6 +425,214 @@ public class ThresholdImageTest {
     }
 
     @Test
+    public void testRunGlobalHuangMinLimPassNoMultWhiteBG3D8bit() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
+        thresholdImage.updateParameterValue(ThresholdImage.LOWER_THRESHOLD_LIMIT,100.0);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
+
+        // Running ThresholdImage
+        thresholdImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
+
+    }
+
+    @Test
+    public void testRunGlobalHuangMinLimFailNoMultWhiteBG3D8bit() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangMinLimFailNoMultWhiteBG.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
+        thresholdImage.updateParameterValue(ThresholdImage.LOWER_THRESHOLD_LIMIT,140.0);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
+
+        // Running ThresholdImage
+        thresholdImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
+
+    }
+
+    @Test @Ignore
+    public void testRunLocal3DBernsenNoLimsNoMultWhiteBG3D8bit() throws Exception {
+
+    }
+
+    @Test @Ignore
+    public void testRunLocal3DContrastNoLimsNoMultWhiteBG3D8bit() throws Exception {
+
+    }
+
+    @Test @Ignore
+    public void testRunLocal3DMeanNoLimsNoMultWhiteBG3D8bit() throws Exception {
+
+    }
+
+    @Test @Ignore
+    public void testRunLocal3DMedianNoLimsNoMultWhiteBG3D8bit() throws Exception {
+
+    }
+
+    @Test @Ignore
+    public void testRunLocal3DPhansalkarNoLimsNoMultWhiteBG3D8bit() throws Exception {
+
+    }
+
+    @Test
+    public void testRunLocalSlicePhansalkarNoLimsNoMultWhiteBG3D8bit() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.LOCAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.LOCAL_ALGORITHM,ThresholdImage.LocalAlgorithms.PHANSALKAR_SLICE);
+        thresholdImage.updateParameterValue(ThresholdImage.LOCAL_RADIUS,15.0);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
+
+        // Running ThresholdImage
+        thresholdImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
+
+    }
+
+    @Test
+    public void testRunLocalSlicePhansalkarNoLimsNoMultBlackBG3D8bit() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultBlackBG.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.LOCAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.LOCAL_ALGORITHM,ThresholdImage.LocalAlgorithms.PHANSALKAR_SLICE);
+        thresholdImage.updateParameterValue(ThresholdImage.LOCAL_RADIUS,15.0);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
+
+        // Running ThresholdImage
+        thresholdImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
+
+    }
+
+
+    // INDIVIDUAL TESTS FOR EACH GLOBAL THRESHOLD
+
+    @Test
     public void testRunGlobalIntermodesNoLimsNoMultWhiteBG3D8bit() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
@@ -647,208 +855,4 @@ public class ThresholdImageTest {
 
     }
 
-    @Test
-    public void testRunGlobalHuangMinLimPassNoMultWhiteBG3D8bit() throws Exception {
-        // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
-
-        // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage();
-        thresholdImage.initialiseParameters();
-        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
-        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
-        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
-        thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
-        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
-        thresholdImage.updateParameterValue(ThresholdImage.LOWER_THRESHOLD_LIMIT,100.0);
-        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-
-        // Running ThresholdImage
-        thresholdImage.run(workspace);
-
-        // Checking the images in the workspace
-        assertEquals(2,workspace.getImages().size());
-        assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Test_output"));
-
-        // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_output");
-        assertEquals(expectedImage,outputImage);
-
-    }
-
-    @Test
-    public void testRunGlobalHuangMinLimFailNoMultWhiteBG3D8bit() throws Exception {
-        // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalHuangMinLimFailNoMultWhiteBG.tif").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
-
-        // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage();
-        thresholdImage.initialiseParameters();
-        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
-        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
-        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
-        thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
-        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
-        thresholdImage.updateParameterValue(ThresholdImage.LOWER_THRESHOLD_LIMIT,140.0);
-        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-
-        // Running ThresholdImage
-        thresholdImage.run(workspace);
-
-        // Checking the images in the workspace
-        assertEquals(2,workspace.getImages().size());
-        assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Test_output"));
-
-        // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_output");
-        assertEquals(expectedImage,outputImage);
-
-    }
-
-    @Test @Ignore
-    public void testRunLocal3DBernsenNoLimsNoMultWhiteBG3D8bit() throws Exception {
-
-    }
-
-    @Test @Ignore
-    public void testRunLocal3DContrastNoLimsNoMultWhiteBG3D8bit() throws Exception {
-
-    }
-
-    @Test @Ignore
-    public void testRunLocal3DMeanNoLimsNoMultWhiteBG3D8bit() throws Exception {
-
-    }
-
-    @Test @Ignore
-    public void testRunLocal3DMedianNoLimsNoMultWhiteBG3D8bit() throws Exception {
-
-    }
-
-    @Test @Ignore
-    public void testRunLocal3DPhansalkarNoLimsNoMultWhiteBG3D8bit() throws Exception {
-
-    }
-
-    @Test
-    public void testRunLocalSlicePhansalkarNoLimsNoMultWhiteBG3D8bit() throws Exception {
-        // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
-
-        // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage();
-        thresholdImage.initialiseParameters();
-        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
-        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
-        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.LOCAL_TYPE);
-        thresholdImage.updateParameterValue(ThresholdImage.LOCAL_ALGORITHM,ThresholdImage.LocalAlgorithms.PHANSALKAR_SLICE);
-        thresholdImage.updateParameterValue(ThresholdImage.LOCAL_RADIUS,15.0);
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
-        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
-        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
-
-        // Running ThresholdImage
-        thresholdImage.run(workspace);
-
-        // Checking the images in the workspace
-        assertEquals(2,workspace.getImages().size());
-        assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Test_output"));
-
-        // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_output");
-        assertEquals(expectedImage,outputImage);
-
-    }
-
-    @Test
-    public void testRunLocalSlicePhansalkarNoLimsNoMultBlackBG3D8bit() throws Exception {
-        // Creating a new workspace
-        Workspace workspace = new Workspace(0,null,1);
-
-        // Setting calibration parameters
-        double dppXY = 0.02;
-        String calibratedUnits = "µm";
-
-        // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient3D_8bit.tif").getPath(),"UTF-8");
-        ImagePlus ipl = IJ.openImage(pathToImage);
-        Image image = new Image("Test_image",ipl);
-        workspace.addImage(image);
-
-        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_LocalSlicePhansalkarNoLimsNoMultBlackBG.tif").getPath(),"UTF-8");
-        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
-
-        // Initialising ThresholdImage
-        ThresholdImage thresholdImage = new ThresholdImage();
-        thresholdImage.initialiseParameters();
-        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
-        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
-        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.LOCAL_TYPE);
-        thresholdImage.updateParameterValue(ThresholdImage.LOCAL_ALGORITHM,ThresholdImage.LocalAlgorithms.PHANSALKAR_SLICE);
-        thresholdImage.updateParameterValue(ThresholdImage.LOCAL_RADIUS,15.0);
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
-        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
-        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
-
-        // Running ThresholdImage
-        thresholdImage.run(workspace);
-
-        // Checking the images in the workspace
-        assertEquals(2,workspace.getImages().size());
-        assertNotNull(workspace.getImage("Test_image"));
-        assertNotNull(workspace.getImage("Test_output"));
-
-        // Checking the output image has the expected calibration
-        Image outputImage = workspace.getImage("Test_output");
-        assertEquals(expectedImage,outputImage);
-
-    }
 }
