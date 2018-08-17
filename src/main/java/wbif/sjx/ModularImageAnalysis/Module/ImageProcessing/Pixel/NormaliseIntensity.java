@@ -23,22 +23,14 @@ public class NormaliseIntensity extends Module {
         if (bitDepth == 8 | bitDepth == 16) IJ.run(ipl, "32-bit", null);
 
         // Get min max values for whole stack
-        double min = Double.MAX_VALUE;
-        double max = -Double.MAX_VALUE;
         for (int c = 1; c <= ipl.getNChannels(); c++) {
-            for (int z = 1; z <= ipl.getNSlices(); z++) {
-                for (int t = 1; t <= ipl.getNFrames(); t++) {
-                    ipl.setPosition(c, z, t);
-                    ImageStatistics imageStatistics = ipl.getStatistics();
-                    min = Math.min(min, imageStatistics.min);
-                    max = Math.max(max, imageStatistics.max);
-                }
-            }
-        }
+            double[] range = IntensityMinMax.getAbsoluteChannelRange(ipl,c-1);
+            double min = range[0];
+            double max = range[1];
 
-        // Applying normalisation
-        double mult = bitDepth == 32 ? 1 : Math.pow(2,bitDepth)-1;
-        for (int c = 1; c <= ipl.getNChannels(); c++) {
+            // Applying normalisation
+            double mult = bitDepth == 32 ? 1 : Math.pow(2,bitDepth)-1;
+
             for (int z = 1; z <= ipl.getNSlices(); z++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
                     ipl.setPosition(c, z, t);
@@ -51,7 +43,6 @@ public class NormaliseIntensity extends Module {
         // Resetting location of the image
         ipl.setPosition(1,1,1);
 
-        ipl.setDisplayRange(0,mult);
         switch (bitDepth) {
             case 8:
                 IJ.run(ipl, "8-bit", null);
@@ -62,7 +53,57 @@ public class NormaliseIntensity extends Module {
                 break;
 
         }
+
+        // Set brightness/contrast
+        IntensityMinMax.run(ipl,true);
+
     }
+
+//    public static void normaliseIntensity(ImagePlus ipl) {
+//        int bitDepth = ipl.getProcessor().getBitDepth();
+//        if (bitDepth == 8 | bitDepth == 16) IJ.run(ipl, "32-bit", null);
+//
+//        // Get min max values for whole stack
+//        double min = Double.MAX_VALUE;
+//        double max = -Double.MAX_VALUE;
+//        for (int c = 1; c <= ipl.getNChannels(); c++) {
+//            for (int z = 1; z <= ipl.getNSlices(); z++) {
+//                for (int t = 1; t <= ipl.getNFrames(); t++) {
+//                    ipl.setPosition(c, z, t);
+//                    ImageStatistics imageStatistics = ipl.getStatistics();
+//                    min = Math.min(min, imageStatistics.min);
+//                    max = Math.max(max, imageStatistics.max);
+//                }
+//            }
+//        }
+//
+//        // Applying normalisation
+//        double mult = bitDepth == 32 ? 1 : Math.pow(2,bitDepth)-1;
+//        for (int c = 1; c <= ipl.getNChannels(); c++) {
+//            for (int z = 1; z <= ipl.getNSlices(); z++) {
+//                for (int t = 1; t <= ipl.getNFrames(); t++) {
+//                    ipl.setPosition(c, z, t);
+//                    ipl.getProcessor().subtract(min);
+//                    ipl.getProcessor().multiply(mult / (max - min));
+//                }
+//            }
+//        }
+//
+//        // Resetting location of the image
+//        ipl.setPosition(1,1,1);
+//
+//        ipl.setDisplayRange(0,mult);
+//        switch (bitDepth) {
+//            case 8:
+//                IJ.run(ipl, "8-bit", null);
+//                break;
+//
+//            case 16:
+//                IJ.run(ipl, "16-bit", null);
+//                break;
+//
+//        }
+//    }
 
     @Override
     public String getTitle() {
