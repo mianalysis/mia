@@ -328,4 +328,43 @@ public class NormaliseIntensityTest {
         assertEquals(expectedImage,outputImage);
 
     }
+
+    @Test
+    public void testNormaliseIntensity8bit2DClip() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradientClip2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NormaliseIntensity/DarkNoisyGradientNormalisedClip2D_8bit.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising BinaryOperations
+        NormaliseIntensity normaliseIntensity = new NormaliseIntensity();
+        normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
+        normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
+        normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
+        normaliseIntensity.updateParameterValue(NormaliseIntensity.CLIP_FRACTION,0.01);
+
+        // Running NormaliseIntensity
+        normaliseIntensity.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
+
+    }
 }

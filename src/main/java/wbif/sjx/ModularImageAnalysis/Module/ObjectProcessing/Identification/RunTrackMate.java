@@ -286,7 +286,7 @@ public class RunTrackMate extends Module {
         // If image should be normalised
         if (normaliseIntensity) {
             ipl = new Duplicator().run(ipl);
-            NormaliseIntensity.normaliseIntensity(ipl);
+            NormaliseIntensity.normaliseIntensity(ipl,0);
         }
 
         // Initialising TrackMate model to store data

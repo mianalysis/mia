@@ -18,6 +18,7 @@ public class FitEllipse extends Module {
     public static final String FITTING_METHOD = "Fitting method";
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
 
     public interface OutputModes {
@@ -45,8 +46,8 @@ public class FitEllipse extends Module {
     }
 
 
-    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage) {
-        EllipseCalculator calculator = new EllipseCalculator(inputObject);
+    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, double maxAxisLength) {
+        EllipseCalculator calculator = new EllipseCalculator(inputObject,maxAxisLength);
         addMeasurements(inputObject,calculator);
 
         Volume ellipse = calculator.getContainedPoints();
@@ -100,12 +101,13 @@ public class FitEllipse extends Module {
             inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MAJOR_CAL),Double.NaN,this));
             inputObject.addMeasurement(new Measurement(Measurements.SEMI_MINOR_PX,Double.NaN,this));
             inputObject.addMeasurement(new Measurement(Units.replace(Measurements.SEMI_MINOR_CAL),Double.NaN,this));
+            return;
         }
 
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
 
-        double xCent = calculator.getXCentre();
+         double xCent = calculator.getXCentre();
         inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,xCent,this));
         inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENTRE_CAL),xCent*dppXY,this));
 
@@ -158,6 +160,7 @@ public class FitEllipse extends Module {
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
+        double maxAxisLength = parameters.getValue(MAXIMUM_AXIS_LENGTH);
 
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
@@ -173,7 +176,7 @@ public class FitEllipse extends Module {
         int count = 0;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            processObject(inputObject,outputObjects,objectOutputMode,templateImage);
+            processObject(inputObject,outputObjects,objectOutputMode,templateImage,maxAxisLength);
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
     }
@@ -184,6 +187,7 @@ public class FitEllipse extends Module {
         parameters.add(new Parameter(TEMPLATE_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
+        parameters.add(new Parameter(MAXIMUM_AXIS_LENGTH,Parameter.DOUBLE,1d));
 
     }
 
@@ -200,6 +204,8 @@ public class FitEllipse extends Module {
                 returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
 
         return returnedParameters;
 

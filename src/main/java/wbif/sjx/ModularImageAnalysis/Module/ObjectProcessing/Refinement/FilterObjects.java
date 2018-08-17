@@ -160,7 +160,8 @@ public class FilterObjects extends Module {
             Obj inputObject = iterator.next();
 
             // Removing the object if it has no children
-            if (inputObject.getMeasurement(measurement).getValue() < referenceValue) {
+            double value = inputObject.getMeasurement(measurement).getValue();
+            if (value < referenceValue || Double.isNaN(value)) {
                 processRemoval(inputObject,outputObjects,iterator);
             }
         }
@@ -170,8 +171,10 @@ public class FilterObjects extends Module {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
+
             // Removing the object if it has no children
-            if (inputObject.getMeasurement(measurement).getValue() > referenceValue) {
+            double value = inputObject.getMeasurement(measurement).getValue();
+            if (value > referenceValue || Double.isNaN(value)) {
                 processRemoval(inputObject,outputObjects,iterator);
             }
         }

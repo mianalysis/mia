@@ -17,33 +17,26 @@ public class NormaliseIntensity extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String CLIP_FRACTION = "Clipping fraction";
 
-    public static void normaliseIntensity(ImagePlus ipl) {
+    public static void normaliseIntensity(ImagePlus ipl, double clipFraction) {
         int bitDepth = ipl.getProcessor().getBitDepth();
-        if (bitDepth == 8 | bitDepth == 16) IJ.run(ipl, "32-bit", null);
 
         // Get min max values for whole stack
-        double min = Double.MAX_VALUE;
-        double max = -Double.MAX_VALUE;
         for (int c = 1; c <= ipl.getNChannels(); c++) {
-            for (int z = 1; z <= ipl.getNSlices(); z++) {
-                for (int t = 1; t <= ipl.getNFrames(); t++) {
-                    ipl.setPosition(c, z, t);
-                    ImageStatistics imageStatistics = ipl.getStatistics();
-                    min = Math.min(min, imageStatistics.min);
-                    max = Math.max(max, imageStatistics.max);
-                }
-            }
-        }
+            double[] range = IntensityMinMax.getWeightedChannelRange(ipl,c-1,clipFraction);
+            double min = range[0];
+            double max = range[1];
 
-        // Applying normalisation
-        double mult = bitDepth == 32 ? 1 : Math.pow(2,bitDepth)-1;
-        for (int c = 1; c <= ipl.getNChannels(); c++) {
+            // Applying normalisation
+            double factor = bitDepth == 32 ? 1 : Math.pow(2,bitDepth)-1;
+            double mult = factor / (max - min);
+
             for (int z = 1; z <= ipl.getNSlices(); z++) {
                 for (int t = 1; t <= ipl.getNFrames(); t++) {
                     ipl.setPosition(c, z, t);
                     ipl.getProcessor().subtract(min);
-                    ipl.getProcessor().multiply(mult / (max - min));
+                    ipl.getProcessor().multiply(mult);
                 }
             }
         }
@@ -51,17 +44,9 @@ public class NormaliseIntensity extends Module {
         // Resetting location of the image
         ipl.setPosition(1,1,1);
 
-        ipl.setDisplayRange(0,mult);
-        switch (bitDepth) {
-            case 8:
-                IJ.run(ipl, "8-bit", null);
-                break;
+        // Set brightness/contrast
+        IntensityMinMax.run(ipl,true,0);
 
-            case 16:
-                IJ.run(ipl, "16-bit", null);
-                break;
-
-        }
     }
 
     @Override
@@ -76,7 +61,8 @@ public class NormaliseIntensity extends Module {
 
     @Override
     public String getHelp() {
-        return "Sets the intensity to maximise the dynamic range of the image";
+        return "Sets the intensity to maximise the dynamic range of the image.\n" +
+                "\"Clipping fraction\" is the fraction of pixels at either end of the range that gets clipped.";
     }
 
     @Override
@@ -88,12 +74,13 @@ public class NormaliseIntensity extends Module {
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        double clipFraction = parameters.getValue(CLIP_FRACTION);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
 
         // Running intensity normalisation
-        normaliseIntensity(inputImagePlus);
+        normaliseIntensity(inputImagePlus,clipFraction);
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
@@ -123,6 +110,7 @@ public class NormaliseIntensity extends Module {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(CLIP_FRACTION,Parameter.DOUBLE,0d));
 
     }
 
@@ -135,6 +123,8 @@ public class NormaliseIntensity extends Module {
         if (!(boolean) parameters.getValue(APPLY_TO_INPUT)) {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
+
+        returnedParameters.add(parameters.getParameter(CLIP_FRACTION));
 
         return returnedParameters;
 
