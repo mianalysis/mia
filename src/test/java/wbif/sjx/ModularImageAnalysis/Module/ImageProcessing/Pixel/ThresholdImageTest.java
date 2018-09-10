@@ -3,6 +3,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -628,18 +629,45 @@ public class ThresholdImageTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testRunManual8bit() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
 
-    }
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
 
-    @Test @Ignore
-    public void testRunManual16bit() throws Exception {
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
 
-    }
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient2D_8bit_Manual62.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
 
-    @Test @Ignore
-    public void testRunManual32bit() throws Exception {
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.MANUAL);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_VALUE,62);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
+
+        // Running ThresholdImage
+        thresholdImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
 
     }
 
@@ -879,26 +907,6 @@ public class ThresholdImageTest {
 
     @Test @Ignore
     public void testRunDoNotStoreThresholdGlobal() throws Exception {
-
-    }
-
-    @Test @Ignore
-    public void testRunStoreThresholdLocal() throws Exception {
-
-    }
-
-    @Test @Ignore
-    public void testRunDoNotStoreThresholdLocal() throws Exception {
-
-    }
-
-    @Test @Ignore
-    public void testRunStoreThresholdManual() throws Exception {
-
-    }
-
-    @Test @Ignore
-    public void testRunDoNotStoreThresholdManual() throws Exception {
 
     }
 

@@ -85,8 +85,8 @@ public class ThresholdImage extends Module {
 
     }
 
-    public void runGlobalThresholdOnStack(ImagePlus inputImagePlus, String algorithm, double thrMult,
-                                          boolean useLowerLim, double lowerLim) {
+    public int runGlobalThresholdOnStack(ImagePlus inputImagePlus, String algorithm, double thrMult,
+                                         boolean useLowerLim, double lowerLim) {
         // Compiling stack histogram
         int[] histogram = null;
         int count = 0;
@@ -113,6 +113,9 @@ public class ThresholdImage extends Module {
 
         // Applying threshold scaling
         threshold = (int) Math.round(threshold*thrMult);
+        applyGlobalThresholdToStack(inputImagePlus,threshold);
+
+        return threshold;
 
     }
 
@@ -162,6 +165,15 @@ public class ThresholdImage extends Module {
 
     }
 
+    public void addGlobalThresholdMeasurement(Image image, double threshold) {
+        String method = parameters.getValue(GLOBAL_ALGORITHM);
+        String measurementName = "THRESHOLD // GLOBAL "+method;
+
+        image.addMeasurement(new Measurement(measurementName,threshold));
+
+    }
+
+
     @Override
     public String getTitle() {
         return "Threshold image";
@@ -194,8 +206,11 @@ public class ThresholdImage extends Module {
         boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
         double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT);
         double localRadius = parameters.getValue(LOCAL_RADIUS);
+        int thresholdValue = parameters.getValue(THRESHOLD_VALUE);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS);
         boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z);
+        boolean storeMeasurement = parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT);
+        int threshold = 0;
 
         if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
@@ -217,7 +232,8 @@ public class ThresholdImage extends Module {
         switch (thresholdType) {
             case ThresholdTypes.GLOBAL:
                 writeMessage("Applying global "+globalThresholdAlgorithm+" threshold (multplier = "+thrMult+" x)");
-                runGlobalThresholdOnStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
+                threshold = runGlobalThresholdOnStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
+
                 break;
 
             case ThresholdTypes.LOCAL:
@@ -261,8 +277,7 @@ public class ThresholdImage extends Module {
                 break;
 
             case ThresholdTypes.MANUAL:
-                int threshold = parameters.getValue(THRESHOLD_VALUE);
-                applyGlobalThresholdToStack(inputImagePlus,threshold);
+                applyGlobalThresholdToStack(inputImagePlus,thresholdValue);
                 break;
 
         }
@@ -279,6 +294,8 @@ public class ThresholdImage extends Module {
                 showIpl.show();
             }
 
+            if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(inputImage,threshold);
+
         } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
@@ -290,6 +307,8 @@ public class ThresholdImage extends Module {
                 showIpl.setTitle(outputImageName);
                 showIpl.show();
             }
+
+            if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(outputImage,threshold);
         }
     }
 
@@ -313,6 +332,7 @@ public class ThresholdImage extends Module {
         parameters.add(new Parameter(THRESHOLD_VALUE, Parameter.INTEGER, 1));
         parameters.add(new Parameter(USE_GLOBAL_Z,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(STORE_THRESHOLD_AS_MEASUREMENT, Parameter.BOOLEAN,false));
 
     }
 
@@ -332,6 +352,7 @@ public class ThresholdImage extends Module {
             case ThresholdTypes.GLOBAL:
                 returnedParameters.add(parameters.getParameter(THRESHOLD_MULTIPLIER));
                 returnedParameters.add(parameters.getParameter(GLOBAL_ALGORITHM));
+                returnedParameters.add(parameters.getParameter(STORE_THRESHOLD_AS_MEASUREMENT));
                 break;
 
             case ThresholdTypes.LOCAL:
@@ -364,37 +385,21 @@ public class ThresholdImage extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        String imageName;
-        if (parameters.getValue(APPLY_TO_INPUT)) {
-            imageName = parameters.getValue(INPUT_IMAGE);
-        } else {
-            imageName = parameters.getValue(OUTPUT_IMAGE);
-        }
-
         imageMeasurementReferences.setAllCalculated(false);
 
-        String measurementName = "";
-        switch ((String) parameters.getValue(THRESHOLD_TYPE)) {
-            case ThresholdTypes.GLOBAL:
-                String method = parameters.getValue(GLOBAL_ALGORITHM);
-                measurementName = "THRESHOLD // GLOBAL "+method;
-                break;
+        if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)) {
+            String imageName = parameters.getValue(APPLY_TO_INPUT) ? parameters.getValue(INPUT_IMAGE) : parameters.getValue(OUTPUT_IMAGE);
+            String method = parameters.getValue(GLOBAL_ALGORITHM);
+            String measurementName = "THRESHOLD // GLOBAL "+method;
 
-            case ThresholdTypes.LOCAL:
-                method = parameters.getValue(LOCAL_ALGORITHM);
-                measurementName = "THRESHOLD // LOCAL "+method;
-                break;
+            MeasurementReference reference = imageMeasurementReferences.getOrPut(measurementName);
+            reference.setImageObjName(imageName);
+            reference.setCalculated(true);
 
-            case ThresholdTypes.MANUAL:
-                measurementName = "THRESHOLD // MANUAL";
-                break;
         }
 
-        MeasurementReference reference = imageMeasurementReferences.getOrPut(measurementName);
-        reference.setImageObjName(imageName);
-        reference.setCalculated(true);
-
         return imageMeasurementReferences;
+
     }
 
     @Override
