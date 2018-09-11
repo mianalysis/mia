@@ -331,8 +331,9 @@ public class TrackObjects extends Module {
         // Getting objects
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
         ObjCollection trackObjects = new ObjCollection(trackObjectsName);
+        workspace.addObjects(trackObjects);
 
-        // If there are no input objects skip this module
+        // If there are no input objects, create a blank track set and skip this module
         if (inputObjects.size() == 0) return;
 
         // Clearing previous relationships and measurements (in case module has been run before)
@@ -405,8 +406,6 @@ public class TrackObjects extends Module {
 
         // Adding track objects to the workspace
         writeMessage("Assigned "+trackObjects.size()+" tracks");
-        writeMessage("Adding tracks ("+trackObjectsName+") to workspace");
-        workspace.addObjects(trackObjects);
 
     }
 
