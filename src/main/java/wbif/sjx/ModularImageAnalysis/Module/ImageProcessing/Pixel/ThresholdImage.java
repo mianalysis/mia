@@ -85,6 +85,14 @@ public class ThresholdImage extends Module {
 
     }
 
+    public interface Measurements{
+        String GLOBAL_VALUE = "GLOBAL";
+    }
+
+    public static String getFullName(String measurement, String method) {
+        return  "THRESHOLD // "+measurement+" "+method;
+    }
+
     public int runGlobalThresholdOnStack(ImagePlus inputImagePlus, String algorithm, double thrMult,
                                          boolean useLowerLim, double lowerLim) {
         // Compiling stack histogram
@@ -167,7 +175,7 @@ public class ThresholdImage extends Module {
 
     public void addGlobalThresholdMeasurement(Image image, double threshold) {
         String method = parameters.getValue(GLOBAL_ALGORITHM);
-        String measurementName = "THRESHOLD // GLOBAL "+method;
+        String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
 
         image.addMeasurement(new Measurement(measurementName,threshold));
 
@@ -390,7 +398,7 @@ public class ThresholdImage extends Module {
         if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)) {
             String imageName = parameters.getValue(APPLY_TO_INPUT) ? parameters.getValue(INPUT_IMAGE) : parameters.getValue(OUTPUT_IMAGE);
             String method = parameters.getValue(GLOBAL_ALGORITHM);
-            String measurementName = "THRESHOLD // GLOBAL "+method;
+            String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
 
             MeasurementReference reference = imageMeasurementReferences.getOrPut(measurementName);
             reference.setImageObjName(imageName);
