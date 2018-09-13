@@ -3,13 +3,12 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import fiji.threshold.Auto_Local_Threshold;
-import fiji.threshold.Auto_Threshold;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
-import ij.process.ByteProcessor;
+import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureImageColocalisation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -31,14 +30,17 @@ public class ThresholdImage extends Module {
     public static final String LOWER_THRESHOLD_LIMIT = "Lower threshold limit";
     public static final String LOCAL_RADIUS = "Local radius";
     public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String THRESHOLD_VALUE = "Threshold value";
     public static final String USE_GLOBAL_Z = "Use full Z-range (\"Global Z\")";
     public static final String WHITE_BACKGROUND = "Black objects/white background";
+    public static final String STORE_THRESHOLD_AS_MEASUREMENT = "Store threshold as measurement";
 
     public interface ThresholdTypes {
-        String GLOBAL_TYPE = "Global";
-        String LOCAL_TYPE = "Local";
+        String GLOBAL = "Global";
+        String LOCAL = "Local";
+        String MANUAL = "Manual";
 
-        String[] ALL = new String[]{GLOBAL_TYPE,LOCAL_TYPE};
+        String[] ALL = new String[]{GLOBAL, LOCAL, MANUAL};
 
     }
 
@@ -83,8 +85,16 @@ public class ThresholdImage extends Module {
 
     }
 
-    public void applyGlobalThresholdToStack(ImagePlus inputImagePlus, String algorithm, double thrMult,
-                                            boolean useLowerLim, double lowerLim) {
+    public interface Measurements{
+        String GLOBAL_VALUE = "GLOBAL";
+    }
+
+    public static String getFullName(String measurement, String method) {
+        return  "THRESHOLD // "+measurement+" "+method;
+    }
+
+    public int runGlobalThresholdOnStack(ImagePlus inputImagePlus, String algorithm, double thrMult,
+                                         boolean useLowerLim, double lowerLim) {
         // Compiling stack histogram
         int[] histogram = null;
         int count = 0;
@@ -107,22 +117,28 @@ public class ThresholdImage extends Module {
         int threshold = new AutoThresholder().getThreshold(algorithm,histogram);
 
         // Applying limits, where applicable
-        if (useLowerLim && threshold < lowerLim) {
-            threshold = (int) Math.round(lowerLim);
-        }
+        if (useLowerLim && threshold < lowerLim) threshold = (int) Math.round(lowerLim);
 
+        // Applying threshold scaling
+        threshold = (int) Math.round(threshold*thrMult);
+        applyGlobalThresholdToStack(inputImagePlus,threshold);
+
+        return threshold;
+
+    }
+
+    public void applyGlobalThresholdToStack(ImagePlus inputImagePlus, int threshold) {
         // Applying threshold
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
             for (int c = 1; c <= inputImagePlus.getNChannels(); c++) {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
                     inputImagePlus.setPosition(c, z, t);
-                    inputImagePlus.getProcessor().threshold((int) Math.round(threshold*thrMult));
+                    inputImagePlus.getProcessor().threshold(threshold);
                 }
             }
         }
 
         inputImagePlus.setPosition(1,1,1);
-
     }
 
     public void applyLocalThresholdToStack(ImagePlus inputImagePlus, String algorithm, double localRadius) {
@@ -157,6 +173,15 @@ public class ThresholdImage extends Module {
 
     }
 
+    public void addGlobalThresholdMeasurement(Image image, double threshold) {
+        String method = parameters.getValue(GLOBAL_ALGORITHM);
+        String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
+
+        image.addMeasurement(new Measurement(measurementName,threshold));
+
+    }
+
+
     @Override
     public String getTitle() {
         return "Threshold image";
@@ -189,8 +214,11 @@ public class ThresholdImage extends Module {
         boolean useLowerLim = parameters.getValue(USE_LOWER_THRESHOLD_LIMIT);
         double lowerLim = parameters.getValue(LOWER_THRESHOLD_LIMIT);
         double localRadius = parameters.getValue(LOCAL_RADIUS);
+        int thresholdValue = parameters.getValue(THRESHOLD_VALUE);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS);
         boolean useGlobalZ = parameters.getValue(USE_GLOBAL_Z);
+        boolean storeMeasurement = parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT);
+        int threshold = 0;
 
         if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
             localRadius = inputImagePlus.getCalibration().getRawX(localRadius);
@@ -210,12 +238,13 @@ public class ThresholdImage extends Module {
 
         // Calculating the threshold based on the selected algorithm
         switch (thresholdType) {
-            case ThresholdTypes.GLOBAL_TYPE:
+            case ThresholdTypes.GLOBAL:
                 writeMessage("Applying global "+globalThresholdAlgorithm+" threshold (multplier = "+thrMult+" x)");
-                applyGlobalThresholdToStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
+                threshold = runGlobalThresholdOnStack(inputImagePlus,globalThresholdAlgorithm,thrMult,useLowerLim,lowerLim);
+
                 break;
 
-            case ThresholdTypes.LOCAL_TYPE:
+            case ThresholdTypes.LOCAL:
                 switch (localThresholdAlgorithm) {
                     case LocalAlgorithms.BERNSEN_3D:
                         writeMessage("Applying local Bernsen threshold (radius = "+localRadius+" px)");
@@ -255,6 +284,10 @@ public class ThresholdImage extends Module {
                 }
                 break;
 
+            case ThresholdTypes.MANUAL:
+                applyGlobalThresholdToStack(inputImagePlus,thresholdValue);
+                break;
+
         }
 
         if (whiteBackground) InvertIntensity.process(inputImagePlus);
@@ -269,6 +302,8 @@ public class ThresholdImage extends Module {
                 showIpl.show();
             }
 
+            if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(inputImage,threshold);
+
         } else {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
@@ -280,6 +315,8 @@ public class ThresholdImage extends Module {
                 showIpl.setTitle(outputImageName);
                 showIpl.show();
             }
+
+            if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(outputImage,threshold);
         }
     }
 
@@ -289,7 +326,7 @@ public class ThresholdImage extends Module {
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(
-                new Parameter(THRESHOLD_TYPE,Parameter.CHOICE_ARRAY,ThresholdTypes.GLOBAL_TYPE,ThresholdTypes.ALL));
+                new Parameter(THRESHOLD_TYPE,Parameter.CHOICE_ARRAY,ThresholdTypes.GLOBAL,ThresholdTypes.ALL));
         parameters.add(
                 new Parameter(GLOBAL_ALGORITHM,Parameter.CHOICE_ARRAY,GlobalAlgorithms.HUANG,GlobalAlgorithms.ALL));
         parameters.add(
@@ -300,8 +337,10 @@ public class ThresholdImage extends Module {
         parameters.add(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE, 1.0));
         parameters.add(
                 new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new Parameter(THRESHOLD_VALUE, Parameter.INTEGER, 1));
         parameters.add(new Parameter(USE_GLOBAL_Z,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(STORE_THRESHOLD_AS_MEASUREMENT, Parameter.BOOLEAN,false));
 
     }
 
@@ -316,28 +355,34 @@ public class ThresholdImage extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(THRESHOLD_TYPE));
-        returnedParameters.add(parameters.getParameter(THRESHOLD_MULTIPLIER));
 
         switch ((String) parameters.getValue(THRESHOLD_TYPE)) {
-            case ThresholdTypes.GLOBAL_TYPE:
+            case ThresholdTypes.GLOBAL:
+                returnedParameters.add(parameters.getParameter(THRESHOLD_MULTIPLIER));
                 returnedParameters.add(parameters.getParameter(GLOBAL_ALGORITHM));
-
+                returnedParameters.add(parameters.getParameter(STORE_THRESHOLD_AS_MEASUREMENT));
                 break;
 
-            case ThresholdTypes.LOCAL_TYPE:
+            case ThresholdTypes.LOCAL:
+                returnedParameters.add(parameters.getParameter(THRESHOLD_MULTIPLIER));
                 returnedParameters.add(parameters.getParameter(LOCAL_ALGORITHM));
                 returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
                 returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
                 returnedParameters.add(parameters.getParameter(USE_GLOBAL_Z));
+                break;
 
+            case ThresholdTypes.MANUAL:
+                returnedParameters.add(parameters.getParameter(THRESHOLD_VALUE));
                 break;
 
         }
 
-        returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
-
-        if (parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
-            returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
+        // If using an automatic threshold algorithm, we can set a lower threshold limit
+        if (!parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.MANUAL)) {
+            returnedParameters.add(parameters.getParameter(USE_LOWER_THRESHOLD_LIMIT));
+            if (parameters.getValue(USE_LOWER_THRESHOLD_LIMIT)) {
+                returnedParameters.add(parameters.getParameter(LOWER_THRESHOLD_LIMIT));
+            }
         }
 
         returnedParameters.add(parameters.getParameter(WHITE_BACKGROUND));
@@ -348,7 +393,21 @@ public class ThresholdImage extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
+        imageMeasurementReferences.setAllCalculated(false);
+
+        if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)) {
+            String imageName = parameters.getValue(APPLY_TO_INPUT) ? parameters.getValue(INPUT_IMAGE) : parameters.getValue(OUTPUT_IMAGE);
+            String method = parameters.getValue(GLOBAL_ALGORITHM);
+            String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
+
+            MeasurementReference reference = imageMeasurementReferences.getOrPut(measurementName);
+            reference.setImageObjName(imageName);
+            reference.setCalculated(true);
+
+        }
+
+        return imageMeasurementReferences;
+
     }
 
     @Override

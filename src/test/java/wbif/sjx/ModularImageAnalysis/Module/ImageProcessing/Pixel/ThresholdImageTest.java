@@ -8,6 +8,7 @@ import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureImageIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -17,6 +18,8 @@ import java.net.URLDecoder;
 import static org.junit.Assert.*;
 
 public class ThresholdImageTest {
+    private double tolerance = 1E-2;
+
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
@@ -51,7 +54,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -95,7 +98,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -139,7 +142,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -183,7 +186,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -227,7 +230,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -272,7 +275,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -316,7 +319,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -360,7 +363,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,2.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -404,7 +407,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,0.5);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -448,7 +451,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
@@ -493,7 +496,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
@@ -563,7 +566,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.LOCAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.LOCAL);
         thresholdImage.updateParameterValue(ThresholdImage.LOCAL_ALGORITHM,ThresholdImage.LocalAlgorithms.PHANSALKAR_SLICE);
         thresholdImage.updateParameterValue(ThresholdImage.LOCAL_RADIUS,15.0);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
@@ -608,11 +611,53 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.LOCAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.LOCAL);
         thresholdImage.updateParameterValue(ThresholdImage.LOCAL_ALGORITHM,ThresholdImage.LocalAlgorithms.PHANSALKAR_SLICE);
         thresholdImage.updateParameterValue(ThresholdImage.LOCAL_RADIUS,15.0);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
+
+        // Running ThresholdImage
+        thresholdImage.run(workspace);
+
+        // Checking the images in the workspace
+        assertEquals(2,workspace.getImages().size());
+        assertNotNull(workspace.getImage("Test_image"));
+        assertNotNull(workspace.getImage("Test_output"));
+
+        // Checking the output image has the expected calibration
+        Image outputImage = workspace.getImage("Test_output");
+        assertEquals(expectedImage,outputImage);
+
+    }
+
+    @Test
+    public void testRunManual8bit() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Setting calibration parameters
+        double dppXY = 0.02;
+        String calibratedUnits = "µm";
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient2D_8bit_Manual62.tif").getPath(),"UTF-8");
+        Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.MANUAL);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_VALUE,62);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
 
         // Running ThresholdImage
@@ -659,7 +704,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.INTERMODES);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -703,7 +748,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.ISO_DATA);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -747,7 +792,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.MAX_ENTROPY);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -791,7 +836,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.OTSU);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -835,7 +880,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
         thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
         thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
-        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL_TYPE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
         thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.TRIANGLE);
         thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
@@ -855,4 +900,209 @@ public class ThresholdImageTest {
 
     }
 
+
+    // VERIFYING THRESHOLD IS STORED
+
+    @Test
+    public void testRunStoreThresholdGlobalHuangNoLimsNoMultWhiteBG3D8bit() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
+        thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
+        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
+
+        // Running MeasureImageIntensity
+        thresholdImage.run(workspace);
+
+        // Getting output image
+        Image outputImage = workspace.getImage("Test_output");
+
+        // Verifying results
+        assertEquals(1,outputImage.getMeasurements().size());
+
+        String measurementName = ThresholdImage.getFullName(ThresholdImage.Measurements.GLOBAL_VALUE,ThresholdImage.GlobalAlgorithms.HUANG);
+        assertEquals(130.0, outputImage.getMeasurement(measurementName).getValue(),tolerance);
+
+    }
+
+    @Test
+    public void testRunStoreThresholdGlobalHuangApplyNoLimsNoMultWhiteBG3D8bit() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
+        thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
+        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
+
+        // Running MeasureImageIntensity
+        thresholdImage.run(workspace);
+
+        // Verifying results
+        assertEquals(1,image.getMeasurements().size());
+
+        String measurementName = ThresholdImage.getFullName(ThresholdImage.Measurements.GLOBAL_VALUE,ThresholdImage.GlobalAlgorithms.HUANG);
+        assertEquals(130.0, image.getMeasurement(measurementName).getValue(),tolerance);
+
+    }
+
+    @Test
+    public void testRunStoreThresholdGlobalHuangApplyMinLimNoMultWhiteBG3D8bit() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
+        thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,true);
+        thresholdImage.updateParameterValue(ThresholdImage.LOWER_THRESHOLD_LIMIT,145.0);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
+        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
+
+        // Running MeasureImageIntensity
+        thresholdImage.run(workspace);
+
+        // Verifying results
+        assertEquals(1,image.getMeasurements().size());
+
+        String measurementName = ThresholdImage.getFullName(ThresholdImage.Measurements.GLOBAL_VALUE,ThresholdImage.GlobalAlgorithms.HUANG);
+        assertEquals(145.0, image.getMeasurement(measurementName).getValue(),tolerance);
+
+    }
+    @Test
+    public void testRunStoreThresholdLocal() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.LOCAL);
+        thresholdImage.updateParameterValue(ThresholdImage.LOCAL_ALGORITHM,ThresholdImage.LocalAlgorithms.PHANSALKAR_SLICE);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
+        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
+
+        // Running MeasureImageIntensity
+        thresholdImage.run(workspace);
+
+        // Verifying results
+        assertEquals(0,image.getMeasurements().size());
+
+    }
+
+    @Test
+    public void testRunStoreThresholdManual() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,true);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.MANUAL);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_VALUE,12);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
+        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
+
+        // Running MeasureImageIntensity
+        thresholdImage.run(workspace);
+
+        // Verifying results
+        assertEquals(0,image.getMeasurements().size());
+
+    }
+
+    @Test
+    public void testRunDoNotStoreThresholdGlobal() throws Exception {
+        // Creating a new workspace
+        Workspace workspace = new Workspace(0,null,1);
+
+        // Loading the test image and adding to workspace
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient2D_8bit.tif").getPath(),"UTF-8");
+        ImagePlus ipl = IJ.openImage(pathToImage);
+        Image image = new Image("Test_image",ipl);
+        workspace.addImage(image);
+
+        // Initialising ThresholdImage
+        ThresholdImage thresholdImage = new ThresholdImage();
+        thresholdImage.initialiseParameters();
+        thresholdImage.updateParameterValue(ThresholdImage.INPUT_IMAGE,"Test_image");
+        thresholdImage.updateParameterValue(ThresholdImage.APPLY_TO_INPUT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.OUTPUT_IMAGE,"Test_output");
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_TYPE,ThresholdImage.ThresholdTypes.GLOBAL);
+        thresholdImage.updateParameterValue(ThresholdImage.GLOBAL_ALGORITHM,ThresholdImage.GlobalAlgorithms.HUANG);
+        thresholdImage.updateParameterValue(ThresholdImage.THRESHOLD_MULTIPLIER,1.0);
+        thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
+        thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
+        thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,false);
+
+        // Running MeasureImageIntensity
+        thresholdImage.run(workspace);
+
+        // Getting output image
+        Image outputImage = workspace.getImage("Test_output");
+
+        // Verifying results
+        assertEquals(0,outputImage.getMeasurements().size());
+
+    }
 }
