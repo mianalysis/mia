@@ -27,7 +27,7 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.OBJECT_MEASUREMENTS_MISCELLENAOUS;
+        return PackageNames.OBJECT_MEASUREMENTS_MISCELLANEOUS;
     }
 
     @Override
