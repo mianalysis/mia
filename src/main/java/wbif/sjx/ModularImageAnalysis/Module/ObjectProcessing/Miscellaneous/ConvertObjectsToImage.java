@@ -8,6 +8,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
@@ -105,7 +106,6 @@ public class ConvertObjectsToImage extends Module {
 
             if (showOutput) {
                 ImagePlus iplShow = new Duplicator().run(outputImage.getImagePlus());
-                IntensityMinMax.run(iplShow,iplShow.getNSlices() > 1);
                 iplShow.setTitle(outputImage.getName());
 
                 switch (colourMode) {
@@ -124,6 +124,7 @@ public class ConvertObjectsToImage extends Module {
                         break;
                 }
 
+                IntensityMinMax.run(iplShow,iplShow.getNSlices() > 1);
                 iplShow.show();
 
             }

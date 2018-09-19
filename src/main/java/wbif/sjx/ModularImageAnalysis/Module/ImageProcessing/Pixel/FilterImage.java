@@ -388,7 +388,7 @@ public class FilterImage extends Module {
             // If selected, displaying the image
             if (showOutput) {
                 ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
-                IntensityMinMax.run(dispIpl,true);
+                IntensityMinMax.run(dispIpl,true,0.001);
                 dispIpl.setTitle(outputImage.getName());
                 dispIpl.show();
             }
@@ -397,7 +397,7 @@ public class FilterImage extends Module {
             // If selected, displaying the image
             if (showOutput) {
                 ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
-                IntensityMinMax.run(dispIpl,true);
+                IntensityMinMax.run(dispIpl,true,0.001);
                 dispIpl.setTitle(inputImage.getName());
                 dispIpl.show();
             }
