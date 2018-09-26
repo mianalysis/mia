@@ -13,8 +13,10 @@ import java.awt.event.ActionListener;
 public class ShowOutputButton extends JButton implements ActionListener {
     private Module module;
     private boolean state = true;
-    private static final ImageIcon closedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_black_12px.png"), "");
-    private static final ImageIcon openIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_black_12px.png"), "");
+    private static final ImageIcon blackClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_black_12px.png"), "");
+    private static final ImageIcon blackOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_black_12px.png"), "");
+    private static final ImageIcon greyClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeclosed_grey_12px.png"), "");
+    private static final ImageIcon greyOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/eyeopen_grey_12px.png"), "");
 
 
     public ShowOutputButton(Module module) {
@@ -30,13 +32,13 @@ public class ShowOutputButton extends JButton implements ActionListener {
         setToolTipText("Show output from module");
         setIcon();
 
-        setEnabled(module.isEnabled());
-
     }
 
     public void setIcon() {
-        if (state) setIcon(openIcon);
-        else setIcon(closedIcon);
+        if (state && module.isEnabled()) setIcon(blackOpenIcon);
+        else if (state &! module.isEnabled()) setIcon(greyOpenIcon);
+        else if (!state && module.isEnabled()) setIcon(blackClosedIcon);
+        else if (!state &! module.isEnabled()) setIcon(greyClosedIcon);
     }
 
     public Module getModule() {

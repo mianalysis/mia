@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
+import bunwarpj.bUnwarpJ_;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;

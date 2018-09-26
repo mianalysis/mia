@@ -159,6 +159,12 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
+            <artifactId>bUnwarpJ_</artifactId>
+            <version>2.6.9</version>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
             <artifactId>Colour_Deconvolution</artifactId>
             <version>3.0.2</version>
             <scope>${myscope}</scope>

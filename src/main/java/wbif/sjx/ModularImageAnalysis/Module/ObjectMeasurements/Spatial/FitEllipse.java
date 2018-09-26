@@ -18,6 +18,7 @@ public class FitEllipse extends Module {
     public static final String FITTING_METHOD = "Fitting method";
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
     public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
 
@@ -160,7 +161,8 @@ public class FitEllipse extends Module {
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
-        double maxAxisLength = parameters.getValue(MAXIMUM_AXIS_LENGTH);
+        boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH);
+        double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH) : Double.MAX_VALUE;
 
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
@@ -187,7 +189,8 @@ public class FitEllipse extends Module {
         parameters.add(new Parameter(TEMPLATE_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
-        parameters.add(new Parameter(MAXIMUM_AXIS_LENGTH,Parameter.DOUBLE,1d));
+        parameters.add(new Parameter(LIMIT_AXIS_LENGTH,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MAXIMUM_AXIS_LENGTH,Parameter.DOUBLE,1000d));
 
     }
 
@@ -205,7 +208,8 @@ public class FitEllipse extends Module {
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
+        returnedParameters.add(parameters.getParameter(LIMIT_AXIS_LENGTH));
+        if (parameters.getValue(LIMIT_AXIS_LENGTH)) returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
 
         return returnedParameters;
 

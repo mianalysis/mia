@@ -19,6 +19,8 @@ public class FitEllipsoid extends Module {
     public static final String USE_INTENSITY_WEIGHTING = "Use intensity weighting";
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
+    public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
 
     public interface OutputModes {
@@ -53,17 +55,15 @@ public class FitEllipsoid extends Module {
     }
 
 
-    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, boolean useIntensityWeighting) {
+    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode,
+                              Image templateImage, boolean useIntensityWeighting, double maxAxisLength) {
         ImagePlus templateImagePlus = templateImage.getImagePlus();
         templateImagePlus.setPosition(1,1,inputObject.getT());
         ImageStack imageStack = templateImagePlus.getStack();
 
-        EllipsoidCalculator calculator;
-        if (useIntensityWeighting) {
-            calculator = new EllipsoidCalculator(inputObject, imageStack);
-        } else {
-            calculator = new EllipsoidCalculator(inputObject);
-        }
+        EllipsoidCalculator calculator = useIntensityWeighting
+                ? new EllipsoidCalculator(inputObject, maxAxisLength, imageStack)
+                : new EllipsoidCalculator(inputObject, maxAxisLength);
 
         addMeasurements(inputObject,calculator);
 
@@ -169,6 +169,8 @@ public class FitEllipsoid extends Module {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
         boolean useIntensityWeighting = parameters.getValue(USE_INTENSITY_WEIGHTING);
+        boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH);
+        double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH) : Double.MAX_VALUE;
 
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
@@ -184,7 +186,7 @@ public class FitEllipsoid extends Module {
         int count = 0;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            processObject(inputObject,outputObjects,objectOutputMode,templateImage,useIntensityWeighting);
+            processObject(inputObject,outputObjects,objectOutputMode,templateImage,useIntensityWeighting,maxAxisLength);
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
     }
@@ -196,6 +198,8 @@ public class FitEllipsoid extends Module {
         parameters.add(new Parameter(USE_INTENSITY_WEIGHTING,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
+        parameters.add(new Parameter(LIMIT_AXIS_LENGTH,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MAXIMUM_AXIS_LENGTH,Parameter.DOUBLE,1000d));
 
     }
 
@@ -213,6 +217,9 @@ public class FitEllipsoid extends Module {
                 returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(LIMIT_AXIS_LENGTH));
+        if (parameters.getValue(LIMIT_AXIS_LENGTH)) returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
 
         return returnedParameters;
 
