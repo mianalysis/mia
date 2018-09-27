@@ -32,6 +32,127 @@ public class ExtractObjectEdges extends Module {
 
     }
 
+    public static Obj getObjectEdge(Obj inputObject, ObjCollection edgeObjects, String edgeMode, double edgeDistance, double edgePercentage) {
+        double dppXY = inputObject.getDistPerPxXY();
+        double dppZ = inputObject.getDistPerPxZ();
+        String calibratedUnits = inputObject.getCalibratedUnits();
+        boolean is2D = inputObject.is2D();
+
+        // Creating new edge object
+        Obj edgeObject = new Obj(edgeObjects.getName(), edgeObjects.getNextID() ,dppXY,dppZ,calibratedUnits,is2D);
+
+        // Getting parent coordinates
+        ArrayList<Integer> parentX = inputObject.getXCoords();
+        ArrayList<Integer> parentY = inputObject.getYCoords();
+        ArrayList<Integer> parentZ = inputObject.getZCoords();
+
+        // Creating a Hyperstack to hold the distance transform.  The image is padded by 1px to ensure the distance
+        // map knows where the object edges are.  If the image is a single plane there is no z-padding.
+        double[][] range = inputObject.getExtents(true,false);
+        int zPad = 0;
+        if (range[2][1] - range[2][0] > 0) zPad = 1;
+
+        ImagePlus iplObj = IJ.createHyperStack("Objects", (int) (range[0][1] - range[0][0] + 3),
+                (int) (range[1][1] - range[1][0] + 3), 1, (int) (range[2][1] - range[2][0] + 1 + 2*zPad), 1, 8);
+
+        // Setting pixels corresponding to the parent object to 1
+        for (int i = 0; i < parentX.size(); i++) {
+            iplObj.setPosition(1, (int) (parentZ.get(i) - range[2][0] + 1 + zPad), 1);
+            iplObj.getProcessor().set((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1), 255);
+        }
+
+        // Creating distance map using MorphoLibJ
+        short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
+        DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights, true);
+        iplObj.setStack(distTransform.distanceMap(iplObj.getStack()));
+
+        // If percentage is being used, calculate the current value for edgeDistance
+        if (edgeMode.equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
+            double maxDist = iplObj.getStatistics().max;
+            edgeDistance = (edgePercentage/100)*maxDist;
+        }
+
+        // Adding pixel intensities to CumStat
+        // Running through all pixels in this object and adding the intensity to the MultiCumStat object
+        for (int i = 0; i < parentX.size(); i++) {
+            iplObj.setPosition(1, (int) (parentZ.get(i) - range[2][0] + 2), 1);
+            double pixelVal = iplObj.getProcessor().getPixelValue((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1));
+
+            if (pixelVal <= edgeDistance) {
+                edgeObject.addCoord(parentX.get(i),parentY.get(i),parentZ.get(i));
+                edgeObject.setT(inputObject.getT());
+            }
+        }
+
+        // If the current object has a size, adding it to the current object collection and assigning relationships
+        if (edgeObject.getXCoords() == null) return null;
+
+        return edgeObject;
+
+    }
+
+    public static Obj getInterior(Obj inputObject, ObjCollection interiorObjects, String edgeMode, double edgeDistance, double edgePercentage) {
+        double dppXY = inputObject.getDistPerPxXY();
+        double dppZ = inputObject.getDistPerPxZ();
+        String calibratedUnits = inputObject.getCalibratedUnits();
+        boolean is2D = inputObject.is2D();
+
+        // Creating new edge object
+        Obj interiorObject = new Obj(interiorObjects.getName(), interiorObjects.getNextID() ,dppXY,dppZ,calibratedUnits,is2D);
+
+        // Getting parent coordinates
+        ArrayList<Integer> parentX = inputObject.getXCoords();
+        ArrayList<Integer> parentY = inputObject.getYCoords();
+        ArrayList<Integer> parentZ = inputObject.getZCoords();
+
+        // Creating a Hyperstack to hold the distance transform.  The image is padded by 1px to ensure the distance
+        // map knows where the object edges are.  If the image is a single plane there is no z-padding.
+        double[][] range = inputObject.getExtents(true,false);
+        int zPad = 0;
+        if (range[2][1] - range[2][0] > 0) zPad = 1;
+
+        ImagePlus iplObj = IJ.createHyperStack("Objects", (int) (range[0][1] - range[0][0] + 3),
+                (int) (range[1][1] - range[1][0] + 3), 1, (int) (range[2][1] - range[2][0] + 1 + 2*zPad), 1, 8);
+
+        // Setting pixels corresponding to the parent object to 1
+        for (int i = 0; i < parentX.size(); i++) {
+            iplObj.setPosition(1, (int) (parentZ.get(i) - range[2][0] + 1 + zPad), 1);
+            iplObj.getProcessor().set((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1), 255);
+
+        }
+
+        // Creating distance map using MorphoLibJ
+        short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
+        DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights, true);
+        iplObj.setStack(distTransform.distanceMap(iplObj.getStack()));
+
+        // If percentage is being used, calculate the current value for edgeDistance
+        if (edgeMode.equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
+            double maxDist = iplObj.getStatistics().max;
+            edgeDistance = (edgePercentage/100)*maxDist;
+
+        }
+
+        // Adding pixel intensities to CumStat
+        // Running through all pixels in this object and adding the intensity to the MultiCumStat object
+        for (int i = 0; i < parentX.size(); i++) {
+            iplObj.setPosition(1, (int) (parentZ.get(i) - range[2][0] + 2), 1);
+            double pixelVal = iplObj.getProcessor().getPixelValue((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1));
+
+            if (pixelVal > edgeDistance ) {
+                interiorObject.addCoord(parentX.get(i),parentY.get(i),parentZ.get(i));
+                interiorObject.setT(inputObject.getT());
+
+            }
+        }
+
+        // If the current object has a size, adding it to the current object collection and assigning relationships
+        if (interiorObject.getXCoords() == null) return null;
+
+        return interiorObject;
+
+    }
+
     @Override
     public String getTitle() {
         return "Extract object edges";
@@ -60,21 +181,6 @@ public class ExtractObjectEdges extends Module {
         double edgeDistance = parameters.getValue(EDGE_DISTANCE);
         double edgePercentage = parameters.getValue(EDGE_PERCENTAGE);
 
-        double dppXY;
-        double dppZ;
-        String calibratedUnits;
-        if (inputObjects.values().iterator().hasNext()) {
-            dppXY = inputObjects.values().iterator().next().getDistPerPxXY();
-            dppZ = inputObjects.values().iterator().next().getDistPerPxZ();
-            calibratedUnits = inputObjects.values().iterator().next().getCalibratedUnits();
-
-        } else {
-            dppXY = 1;
-            dppZ = 1;
-            calibratedUnits = "pixels";
-
-        }
-
         // Initialising output edge objects
         String outputEdgeObjectName = null;
         ObjCollection outputEdgeObjects = null;
@@ -92,83 +198,22 @@ public class ExtractObjectEdges extends Module {
         }
 
         for (Obj inputObject:inputObjects.values()) {
-            // Creating new edge object
-            Obj outputEdgeObject = null;
             if (createEdgeObjects) {
-                outputEdgeObject = new Obj(outputEdgeObjectName, outputEdgeObjects.getNextID(),dppXY,dppZ,calibratedUnits,inputObject.is2D());
-            }
-
-            // Creating new interior object
-            Obj outputInteriorObject = null;
-            if (createInteriorObjects) {
-                outputInteriorObject = new Obj(outputInteriorObjectName, outputInteriorObjects.getNextID(),dppXY,dppZ,calibratedUnits,inputObject.is2D());
-            }
-
-            // Getting parent coordinates
-            ArrayList<Integer> parentX = inputObject.getXCoords();
-            ArrayList<Integer> parentY = inputObject.getYCoords();
-            ArrayList<Integer> parentZ = inputObject.getZCoords();
-
-            // Creating a Hyperstack to hold the distance transform.  The image is padded by 1px to ensure the distance
-            // map knows where the object edges are.  If the image is a single plane there is no z-padding.
-            double[][] range = inputObject.getExtents(true,false);
-            int zPad = 0;
-            if (range[2][1] - range[2][0] > 0) zPad = 1;
-
-            ImagePlus iplObj = IJ.createHyperStack("Objects", (int) (range[0][1] - range[0][0] + 3),
-                    (int) (range[1][1] - range[1][0] + 3), 1, (int) (range[2][1] - range[2][0] + 1 + 2*zPad), 1, 8);
-
-            // Setting pixels corresponding to the parent object to 1
-            for (int i = 0; i < parentX.size(); i++) {
-                iplObj.setPosition(1, (int) (parentZ.get(i) - range[2][0] + 1 + zPad), 1);
-                iplObj.getProcessor().set((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1), 255);
-
-            }
-
-            // Creating distance map using MorphoLibJ
-            short[] weights = ChamferWeights3D.BORGEFORS.getShortWeights();
-            DistanceTransform3DShort distTransform = new DistanceTransform3DShort(weights, true);
-            iplObj.setStack(distTransform.distanceMap(iplObj.getStack()));
-
-            // If percentage is being used, calculate the current value for edgeDistance
-            if (edgeMode.equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
-                double maxDist = iplObj.getStatistics().max;
-                edgeDistance = (edgePercentage/100)*maxDist;
-
-            }
-
-            // Adding pixel intensities to CumStat
-            // Running through all pixels in this object and adding the intensity to the MultiCumStat object
-            for (int i = 0; i < parentX.size(); i++) {
-                iplObj.setPosition(1, (int) (parentZ.get(i) - range[2][0] + 2), 1);
-                double pixelVal = iplObj.getProcessor().getPixelValue((int) (parentX.get(i) - range[0][0] + 1), (int) (parentY.get(i) - range[1][0] + 1));
-
-                if (pixelVal <= edgeDistance && createEdgeObjects) {
-                    outputEdgeObject.addCoord(parentX.get(i),parentY.get(i),parentZ.get(i));
-                    outputEdgeObject.setT(inputObject.getT());
-
-                } else if (pixelVal > edgeDistance && createInteriorObjects) {
-                    outputInteriorObject.addCoord(parentX.get(i),parentY.get(i),parentZ.get(i));
-                    outputInteriorObject.setT(inputObject.getT());
-
+                Obj outputEdgeObject = getObjectEdge(inputObject,outputEdgeObjects,edgeMode,edgeDistance,edgePercentage);
+                if (outputEdgeObject != null) {
+                    outputEdgeObjects.add(outputEdgeObject);
+                    outputEdgeObject.addParent(inputObject);
+                    inputObject.addChild(outputEdgeObject);
                 }
             }
 
-            // If the current object has a size, adding it to the current object collection and assigning relationships
-            if (createEdgeObjects) {
-                if (outputEdgeObject.getXCoords() == null) break;
-
-                outputEdgeObjects.add(outputEdgeObject);
-                outputEdgeObject.addParent(inputObject);
-                inputObject.addChild(outputEdgeObject);
-            }
-
             if (createInteriorObjects) {
-                if (outputInteriorObject.getXCoords() == null) break;
-
-                outputInteriorObjects.add(outputInteriorObject);
-                outputInteriorObject.addParent(inputObject);
-                inputObject.addChild(outputInteriorObject);
+                Obj outputInteriorObject = getInterior(inputObject,outputInteriorObjects,edgeMode,edgeDistance,edgePercentage);
+                if (outputInteriorObject != null) {
+                    outputInteriorObjects.add(outputInteriorObject);
+                    outputInteriorObject.addParent(inputObject);
+                    inputObject.addChild(outputInteriorObject);
+                }
             }
         }
 
