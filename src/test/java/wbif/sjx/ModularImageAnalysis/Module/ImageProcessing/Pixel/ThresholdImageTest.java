@@ -246,7 +246,6 @@ public class ThresholdImageTest {
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-
         assertEquals(expectedImage,outputImage);
 
     }
