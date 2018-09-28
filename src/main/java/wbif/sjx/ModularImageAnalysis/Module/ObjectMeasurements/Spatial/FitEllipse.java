@@ -4,9 +4,12 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ExtractObjectEdges;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
+import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.EllipseCalculator;
+import wbif.sjx.common.Analysis.EllipsoidCalculator;
 import wbif.sjx.common.Object.Volume;
 
 /**
@@ -15,12 +18,19 @@ import wbif.sjx.common.Object.Volume;
 public class FitEllipse extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String TEMPLATE_IMAGE = "Template image";
-    public static final String FITTING_METHOD = "Fitting method";
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String FITTING_MODE = "Fitting mode";
     public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
     public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
+    public interface FittingModes {
+        String FIT_TO_WHOLE = "Fit to whole";
+        String FIT_TO_SURFACE = "Fit to surface";
+
+        String[] ALL = new String[]{FIT_TO_SURFACE,FIT_TO_WHOLE};
+
+    }
 
     public interface OutputModes {
         String DO_NOT_STORE = "Do not store";
@@ -47,8 +57,24 @@ public class FitEllipse extends Module {
     }
 
 
-    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, double maxAxisLength) {
-        EllipseCalculator calculator = new EllipseCalculator(inputObject,maxAxisLength);
+    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, double maxAxisLength, String fittingMode) {
+
+        EllipseCalculator calculator = null;
+        switch (fittingMode) {
+            case FitEllipsoid.FittingModes.FIT_TO_WHOLE:
+                calculator = new EllipseCalculator(inputObject,maxAxisLength);
+                break;
+
+            case FitEllipsoid.FittingModes.FIT_TO_SURFACE:
+                ObjCollection edgeObjects = new ObjCollection("Edge");
+                String edgeMode = ExtractObjectEdges.EdgeModes.DISTANCE_FROM_EDGE;
+                Obj edgeObject = ExtractObjectEdges.getObjectEdge(inputObject,edgeObjects,edgeMode,1.0,1.0);
+                calculator = new EllipseCalculator(edgeObject,maxAxisLength);
+                break;
+        }
+
+        if (calculator == null) return;
+
         addMeasurements(inputObject,calculator);
 
         Volume ellipse = calculator.getContainedPoints();
@@ -161,6 +187,7 @@ public class FitEllipse extends Module {
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
+        String fittingMode = parameters.getValue(FITTING_MODE);
         boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH);
         double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH) : Double.MAX_VALUE;
 
@@ -178,7 +205,7 @@ public class FitEllipse extends Module {
         int count = 0;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            processObject(inputObject,outputObjects,objectOutputMode,templateImage,maxAxisLength);
+            processObject(inputObject,outputObjects,objectOutputMode,templateImage,maxAxisLength,fittingMode);
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
     }
@@ -189,6 +216,7 @@ public class FitEllipse extends Module {
         parameters.add(new Parameter(TEMPLATE_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
+        parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.FIT_TO_SURFACE,FittingModes.ALL));
         parameters.add(new Parameter(LIMIT_AXIS_LENGTH,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MAXIMUM_AXIS_LENGTH,Parameter.DOUBLE,1000d));
 
@@ -208,6 +236,7 @@ public class FitEllipse extends Module {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(FITTING_MODE));
         returnedParameters.add(parameters.getParameter(LIMIT_AXIS_LENGTH));
         if (parameters.getValue(LIMIT_AXIS_LENGTH)) returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
 

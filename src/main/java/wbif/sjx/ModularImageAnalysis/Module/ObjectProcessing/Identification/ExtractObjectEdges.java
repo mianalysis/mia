@@ -98,7 +98,7 @@ public class ExtractObjectEdges extends Module {
         boolean is2D = inputObject.is2D();
 
         // Creating new edge object
-        Obj interiorObject = new Obj(interiorObjects.getName(), interiorObjects.getNextID() ,dppXY,dppZ,calibratedUnits,is2D);
+        Obj interiorObject = new Obj(interiorObjects.getName(),interiorObjects.getNextID(),dppXY,dppZ,calibratedUnits,is2D);
 
         // Getting parent coordinates
         ArrayList<Integer> parentX = inputObject.getXCoords();

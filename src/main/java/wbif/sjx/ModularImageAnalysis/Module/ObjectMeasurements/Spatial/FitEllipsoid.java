@@ -225,7 +225,7 @@ public class FitEllipsoid extends Module {
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(TEMPLATE_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.FIT_TO_WHOLE,FittingModes.ALL));
+        parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.FIT_TO_SURFACE,FittingModes.ALL));
         parameters.add(new Parameter(USE_INTENSITY_WEIGHTING,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
