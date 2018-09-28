@@ -35,6 +35,7 @@ public class ThresholdImage extends Module {
     public static final String WHITE_BACKGROUND = "Black objects/white background";
     public static final String STORE_THRESHOLD_AS_MEASUREMENT = "Store threshold as measurement";
 
+
     public interface ThresholdTypes {
         String GLOBAL = "Global";
         String LOCAL = "Local";
@@ -88,6 +89,7 @@ public class ThresholdImage extends Module {
     public interface Measurements{
         String GLOBAL_VALUE = "GLOBAL";
     }
+
 
     public static String getFullName(String measurement, String method) {
         return  "THRESHOLD // "+measurement+" "+method;
