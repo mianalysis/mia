@@ -21,7 +21,7 @@ public class GUISeparator extends Module{
 
     @Override
     public String getPackageName() {
-        return PackageNames.MISCELLENAOUS;
+        return PackageNames.MISCELLANEOUS;
     }
 
     @Override

@@ -12,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.Conve
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.common.Object.LUTs;
 
 import java.util.HashMap;
 
@@ -131,8 +132,10 @@ public class IdentifyObjects extends Module {
         // Showing objects
         if (showOutput) {
             HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
-            outputObjects.convertObjectsToImage("Objects", inputImage,
-                    ConvertObjectsToImage.ColourModes.RANDOM_COLOUR, hues).getImagePlus().show();
+            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,mode,hues).getImagePlus();
+            dispIpl.setLut(LUTs.Random(true));
+            dispIpl.show();
         }
     }
 

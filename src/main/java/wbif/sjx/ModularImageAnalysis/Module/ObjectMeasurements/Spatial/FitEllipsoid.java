@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ExtractObjectEdges;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
@@ -15,11 +16,21 @@ import wbif.sjx.common.Object.Volume;
 public class FitEllipsoid extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String TEMPLATE_IMAGE = "Template image";
-    public static final String FITTING_METHOD = "Fitting method";
+    public static final String FITTING_MODE = "Fitting mode";
     public static final String USE_INTENSITY_WEIGHTING = "Use intensity weighting";
     public static final String OBJECT_OUTPUT_MODE = "Object output mode";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String LIMIT_AXIS_LENGTH = "Limit axis length";
+    public static final String MAXIMUM_AXIS_LENGTH = "Maximum axis length";
 
+
+    public interface FittingModes {
+        String FIT_TO_WHOLE = "Fit to whole";
+        String FIT_TO_SURFACE = "Fit to surface";
+
+        String[] ALL = new String[]{FIT_TO_SURFACE,FIT_TO_WHOLE};
+
+    }
 
     public interface OutputModes {
         String DO_NOT_STORE = "Do not store";
@@ -49,21 +60,36 @@ public class FitEllipsoid extends Module {
         String VOLUME_CAL = "ELLIPSOID // VOLUME (${CAL}^3)";
         String ORIENTATION_1 = "ELLIPSOID // ORIENTATION_1 (DEGS)";
         String ORIENTATION_2 = "ELLIPSOID // ORIENTATION_2 (DEGS)";
+        String SPHERICITY = "ELLIPSOID // SPHERICITY";
 
     }
 
 
-    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, boolean useIntensityWeighting) {
+    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage,
+                              String fittingMode, boolean useIntensityWeighting, double maxAxisLength) {
         ImagePlus templateImagePlus = templateImage.getImagePlus();
         templateImagePlus.setPosition(1,1,inputObject.getT());
         ImageStack imageStack = templateImagePlus.getStack();
 
-        EllipsoidCalculator calculator;
-        if (useIntensityWeighting) {
-            calculator = new EllipsoidCalculator(inputObject, imageStack);
-        } else {
-            calculator = new EllipsoidCalculator(inputObject);
+        EllipsoidCalculator calculator = null;
+        switch (fittingMode) {
+            case FittingModes.FIT_TO_WHOLE:
+                calculator = useIntensityWeighting
+                        ? new EllipsoidCalculator(inputObject, maxAxisLength, imageStack)
+                        : new EllipsoidCalculator(inputObject, maxAxisLength);
+                break;
+
+            case FittingModes.FIT_TO_SURFACE:
+                ObjCollection edgeObjects = new ObjCollection("Edge");
+                String edgeMode = ExtractObjectEdges.EdgeModes.DISTANCE_FROM_EDGE;
+                Obj edgeObject = ExtractObjectEdges.getObjectEdge(inputObject,edgeObjects,edgeMode,1.0,1.0);
+                calculator = useIntensityWeighting
+                        ? new EllipsoidCalculator(edgeObject, maxAxisLength, imageStack)
+                        : new EllipsoidCalculator(edgeObject, maxAxisLength);
+                break;
         }
+
+        if (calculator == null) return;
 
         addMeasurements(inputObject,calculator);
 
@@ -140,6 +166,9 @@ public class FitEllipsoid extends Module {
         inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_1,Math.toDegrees(orientations[0])));
         inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_2,Math.toDegrees(orientations[1])));
 
+        double sphericity = calculator.getSphericity();
+        inputObject.addMeasurement(new Measurement(Measurements.SPHERICITY,sphericity));
+
     }
 
 
@@ -168,7 +197,10 @@ public class FitEllipsoid extends Module {
         String objectOutputMode = parameters.getValue(OBJECT_OUTPUT_MODE);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
+        String fittingMode = parameters.getValue(FITTING_MODE);
         boolean useIntensityWeighting = parameters.getValue(USE_INTENSITY_WEIGHTING);
+        boolean limitAxisLength = parameters.getValue(LIMIT_AXIS_LENGTH);
+        double maxAxisLength = limitAxisLength ? parameters.getValue(MAXIMUM_AXIS_LENGTH) : Double.MAX_VALUE;
 
         // If necessary, creating a new ObjCollection and adding it to the Workspace
         ObjCollection outputObjects = null;
@@ -184,7 +216,7 @@ public class FitEllipsoid extends Module {
         int count = 0;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            processObject(inputObject,outputObjects,objectOutputMode,templateImage,useIntensityWeighting);
+            processObject(inputObject,outputObjects,objectOutputMode,templateImage,fittingMode,useIntensityWeighting,maxAxisLength);
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
     }
@@ -193,9 +225,12 @@ public class FitEllipsoid extends Module {
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(TEMPLATE_IMAGE,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.FIT_TO_SURFACE,FittingModes.ALL));
         parameters.add(new Parameter(USE_INTENSITY_WEIGHTING,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.DO_NOT_STORE, OutputModes.ALL));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
+        parameters.add(new Parameter(LIMIT_AXIS_LENGTH,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(MAXIMUM_AXIS_LENGTH,Parameter.DOUBLE,1000d));
 
     }
 
@@ -205,6 +240,7 @@ public class FitEllipsoid extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(TEMPLATE_IMAGE));
+        returnedParameters.add(parameters.getParameter(FITTING_MODE));
         returnedParameters.add(parameters.getParameter(USE_INTENSITY_WEIGHTING));
 
         returnedParameters.add(parameters.getParameter(OBJECT_OUTPUT_MODE));
@@ -213,6 +249,9 @@ public class FitEllipsoid extends Module {
                 returnedParameters.add(parameters.getParameter(OUTPUT_OBJECTS));
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(LIMIT_AXIS_LENGTH));
+        if (parameters.getValue(LIMIT_AXIS_LENGTH)) returnedParameters.add(parameters.getParameter(MAXIMUM_AXIS_LENGTH));
 
         return returnedParameters;
 
@@ -298,6 +337,10 @@ public class FitEllipsoid extends Module {
         reference.setImageObjName(inputObjectsName);
 
         reference = objectMeasurementReferences.getOrPut(Measurements.ORIENTATION_2);
+        reference.setCalculated(true);
+        reference.setImageObjName(inputObjectsName);
+
+        reference = objectMeasurementReferences.getOrPut(Measurements.SPHERICITY);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
 

@@ -4,6 +4,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -23,8 +24,11 @@ public class ModuleButton extends JToggleButton implements ActionListener {
         addActionListener(this);
         setText(module.getNickname());
 
-        setEnabled(module.isEnabled());
-
+        if (module.isEnabled()) {
+            setForeground(Color.BLACK);
+        } else {
+            setForeground(Color.GRAY);
+        }
     }
 
 
