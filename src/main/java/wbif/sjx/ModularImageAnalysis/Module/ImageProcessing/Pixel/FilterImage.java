@@ -148,7 +148,7 @@ public class FilterImage extends Module {
 
         // Variance 3D will output a 32-bit image
         if (filterMode.equals(FilterModes.VARIANCE3D)) {
-            ImageTypeConverter.convertType(inputImagePlus,ImageTypeConverter.OutputTypes.FLOAT32,false);
+            ImageTypeConverter.convertType(inputImagePlus,32,ImageTypeConverter.ScalingModes.CLIP);
         }
 
         int count = 0;

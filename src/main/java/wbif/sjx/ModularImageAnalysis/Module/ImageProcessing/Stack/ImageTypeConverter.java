@@ -16,7 +16,17 @@ public class ImageTypeConverter extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String OUTPUT_TYPE = "Output image type";
-    public static final String SCALE_INTENSITIES = "Scale intensities to full range";
+    public static final String SCALING_MODE = "Scaling mode";
+
+
+    public interface ScalingModes {
+        String CLIP = "Clip (direct conversion)";
+        String FILL = "Fill target range (normalise)";
+        String SCALE = "Scale proportionally";
+
+        String[] ALL = new String[]{CLIP,FILL,SCALE};
+
+    }
 
     public interface OutputTypes {
         String INT8 = "8-bit integer";
@@ -27,22 +37,103 @@ public class ImageTypeConverter extends Module {
 
     }
 
-    public static void convertType(ImagePlus inputImagePlus, String outputType, boolean scaleIntensities) {
-        // If necessary, stretching input image intensities to full range
-        if (scaleIntensities) IntensityMinMax.run(inputImagePlus,true);
 
-        // Converting to requested type
+    static int getOutputBitDepth(String outputType) {
         switch (outputType) {
             case OutputTypes.INT8:
+                return 8;
+            case OutputTypes.INT16:
+                return 16;
+            case OutputTypes.FLOAT32:
+                return 32;
+        }
+
+        return 0;
+
+    }
+
+    public static void convertType(ImagePlus inputImagePlus, int outputBitDepth, String scalingMode) {
+        int bitDepth = inputImagePlus.getBitDepth();
+
+        switch (scalingMode) {
+            case ScalingModes.CLIP:
+                applyClippedRange(inputImagePlus,outputBitDepth);
+                break;
+
+            case ScalingModes.FILL:
+                applyFilledRange(inputImagePlus);
+                break;
+
+            case ScalingModes.SCALE:
+                applyScaledRange(inputImagePlus);
+                break;
+        }
+
+        // Converting to requested type
+        switch (outputBitDepth) {
+            case 8:
                 IJ.run(inputImagePlus, "8-bit", null);
                 break;
-            case OutputTypes.INT16:
+            case 16:
                 IJ.run(inputImagePlus, "16-bit", null);
                 break;
-            case OutputTypes.FLOAT32:
+            case 32:
                 IJ.run(inputImagePlus, "32-bit", null);
                 break;
         }
+
+    }
+
+    /**
+     * Expand the display range of the image to the max range for the output image type (or the max range for 32-bit)
+     * @param imagePlus
+     * @param bitDepth
+     */
+    static void applyClippedRange(ImagePlus imagePlus, int bitDepth) {
+        switch (bitDepth) {
+            case 8:
+                imagePlus.setDisplayRange(0,255);
+                break;
+
+            case 16:
+                imagePlus.setDisplayRange(0,65535);
+                break;
+
+            case 32:
+                imagePlus.setDisplayRange(imagePlus.getStatistics().min,imagePlus.getStatistics().max);
+                break;
+        }
+    }
+
+    /**
+     * Expand the display range of the image to the max range for the input image type (or 0-1 for 32-bit).
+     * This way the intensities will fill the same proportion of the dynamic range in the new bit depth.
+     * @param imagePlus
+     */
+    static void applyScaledRange(ImagePlus imagePlus) {
+        int bitDepth = imagePlus.getBitDepth();
+
+        switch (bitDepth) {
+            case 8:
+                imagePlus.setDisplayRange(0,255);
+                break;
+
+            case 16:
+                imagePlus.setDisplayRange(0,65535);
+                break;
+
+            case 32:
+                imagePlus.setDisplayRange(0,1);
+                break;
+        }
+    }
+
+    /**
+     * Expand the display range of the image to the max range for the input image type (or the max range for 32-bit)
+     * @param imagePlus
+     */
+    static void applyFilledRange(ImagePlus imagePlus) {
+       imagePlus.setDisplayRange(imagePlus.getStatistics().min,imagePlus.getStatistics().max);
     }
 
     @Override
@@ -70,13 +161,14 @@ public class ImageTypeConverter extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputType = parameters.getValue(OUTPUT_TYPE);
-        boolean scaleIntensities = parameters.getValue(SCALE_INTENSITIES);
+        String scalingMode = parameters.getValue(SCALING_MODE);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
 
         // Applying the type conversion
-        convertType(inputImagePlus,outputType,scaleIntensities);
+        int outputBitDepth = getOutputBitDepth(outputType);
+        convertType(inputImagePlus,outputBitDepth,scalingMode);
 
         // Adding output image to workspace if necessary
         if (!applyToInput) {
@@ -102,7 +194,7 @@ public class ImageTypeConverter extends Module {
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_TYPE, Parameter.CHOICE_ARRAY,OutputTypes.INT8,OutputTypes.ALL));
-        parameters.add(new Parameter(SCALE_INTENSITIES, Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SCALING_MODE, Parameter.CHOICE_ARRAY,ScalingModes.CLIP,ScalingModes.ALL));
 
     }
 
@@ -117,7 +209,7 @@ public class ImageTypeConverter extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(OUTPUT_TYPE));
-        returnedParameters.add(parameters.getParameter(SCALE_INTENSITIES));
+        returnedParameters.add(parameters.getParameter(SCALING_MODE));
 
         return returnedParameters;
 
