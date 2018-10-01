@@ -2,28 +2,21 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Object.Point;
 
 public class MeasureRadialIntensityProfile extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String INPUT_IMAGE = "Input image";
-    public static final String REFERENCE_POINT = "Reference point";
+    public static final String REFERENCE_MODE = "Reference mode";
     public static final String NUMBER_OF_RADIAL_SAMPLES = "Number of radial samples";
     public static final String RANGE_MODE = "Range mode";
     public static final String RANGE_VALUE = "Range value";
     //public static final String CALIBRATED_UNITS = "Calibrated units"; // To be added
 
 
-    public interface ReferencePoints {
-        String OBJECT_CENTROID = "Object centroid";
-        // String FROM_POSITION = "From position"; // Based on position measurements
-
-        String[] ALL = new String[]{OBJECT_CENTROID};
-
-    }
+    public interface ReferenceModes extends CreateDistanceMap.ReferenceModes {}
 
     public interface RangeModes {
         String ABSOLUTE_VALUE = "Absolute value";
@@ -34,24 +27,32 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
 
-    static void processObject(Obj inputObject, String referencePoint) {
-        // Getting the reference point
-        Point<Integer> ref = getReferencePoint(inputObject,referencePoint);
+    static void processObject(Obj inputObject, Image inputImage, String referencePoint) {
+        // Getting the distance map
+        Image distanceMap = getDistanceMap(inputObject,inputImage,referencePoint);
 
 
 
     }
 
-    static Point<Integer> getReferencePoint(Obj inputObject, String referencePoint) {
+    static Image getDistanceMap(Obj inputObject, Image inputImage, String referencePoint) {
         switch (referencePoint) {
-            case ReferencePoints.OBJECT_CENTROID:
-                int x = (int) Math.round(inputObject.getXMean(true));
-                int y = (int) Math.round(inputObject.getYMean(true));
-                int z = (int) Math.round(inputObject.getZMean(true,false));
-                return new Point<Integer>(x,y,z);
+            case ReferenceModes.ABSOLUTE_CENTROID_DISTANCE:
+                return getCentroidDistanceMap(inputObject,inputImage);
+
         }
 
         return null;
+    }
+
+    static Image getCentroidDistanceMap(Obj inputObject, Image inputImage) {
+        int x = (int) Math.round(inputObject.getXMean(true));
+        int y = (int) Math.round(inputObject.getYMean(true));
+        int z = (int) Math.round(inputObject.getZMean(true,false));
+
+        // Creating a blank image for the distance map
+        return null;
+
     }
 
 
@@ -81,7 +82,7 @@ public class MeasureRadialIntensityProfile extends Module {
         Image inputImage = workspace.getImage(inputImageName);
 
         // Getting other parameters
-        String referencePoint = parameters.getValue(REFERENCE_POINT);
+        String referenceMode = parameters.getValue(REFERENCE_MODE);
         int nRadialSample = parameters.getValue(NUMBER_OF_RADIAL_SAMPLES);
         String rangeMode = parameters.getValue(RANGE_MODE);
         double rangeValue = parameters.getValue(RANGE_VALUE);
@@ -94,7 +95,7 @@ public class MeasureRadialIntensityProfile extends Module {
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(REFERENCE_POINT,Parameter.CHOICE_ARRAY,ReferencePoints.OBJECT_CENTROID,ReferencePoints.ALL));
+        parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.ABSOLUTE_CENTROID_DISTANCE,ReferenceModes.ALL));
         parameters.add(new Parameter(NUMBER_OF_RADIAL_SAMPLES,Parameter.INTEGER,10));
         parameters.add(new Parameter(RANGE_MODE,Parameter.CHOICE_ARRAY,RangeModes.ABSOLUTE_VALUE,RangeModes.ALL));
         parameters.add(new Parameter(RANGE_VALUE,Parameter.DOUBLE,1d));
@@ -107,7 +108,7 @@ public class MeasureRadialIntensityProfile extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.add(parameters.getParameter(REFERENCE_POINT));
+        returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
         returnedParameters.add(parameters.getParameter(NUMBER_OF_RADIAL_SAMPLES));
 
         returnedParameters.add(parameters.getParameter(RANGE_MODE));

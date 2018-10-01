@@ -341,6 +341,7 @@ public class BinaryOperations extends Module {
         // If selected, displaying the image
         if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+            dispIpl.setTitle(inputImageName);
             IntensityMinMax.run(dispIpl,true);
             dispIpl.show();
         }
