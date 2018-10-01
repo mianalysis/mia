@@ -89,7 +89,7 @@ public class FitEllipsoid extends Module {
                 break;
         }
 
-        if (calculator == null) return;
+        if (calculator == null || calculator.getRadii() == null) return;
 
         addMeasurements(inputObject,calculator);
 
