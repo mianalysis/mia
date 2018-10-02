@@ -3,17 +3,25 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
+import ij.ImagePlus;
+import ij.measure.ResultsTable;
+import ij.process.ImageProcessor;
 import ij.process.StackStatistics;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Point;
+
+import java.util.LinkedHashMap;
 
 public class MeasureRadialIntensityProfile extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String INPUT_IMAGE = "Input image";
     public static final String REFERENCE_MODE = "Reference mode";
+    public static final String DISTANCE_MAP_IMAGE = "Distance map image";
     public static final String NUMBER_OF_RADIAL_SAMPLES = "Number of radial samples";
     public static final String RANGE_MODE = "Range mode";
     public static final String MIN_DISTANCE = "Minimum distance";
@@ -22,7 +30,13 @@ public class MeasureRadialIntensityProfile extends Module {
     //public static final String CALIBRATED_UNITS = "Calibrated units"; // To be added
 
 
-    public interface ReferenceModes extends CreateDistanceMap.ReferenceModes {}
+    public interface ReferenceModes extends CreateDistanceMap.ReferenceModes {
+        String CUSTOM_DISTANCE_MAP = "Custom distance map";
+
+        String[] ALL = new String[]{CreateDistanceMap.ReferenceModes.DISTANCE_FROM_CENTROID,
+                CreateDistanceMap.ReferenceModes.DISTANCE_FROM_EDGE,CUSTOM_DISTANCE_MAP};
+
+    }
 
     public interface RangeModes {
         String AUTOMATIC_RANGE = "Automatic range";
@@ -47,7 +61,7 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     /**
-     * Calculates the bin centroids for the distance measurements
+     * Calculates the bin centroids for the distance measurements from the maximum range in the distance map.
      * @param distanceMap
      * @param nRadialSamples
      * @return
@@ -69,6 +83,13 @@ public class MeasureRadialIntensityProfile extends Module {
 
     }
 
+    /**
+     * Calculates the bin centroids for the distance measurements from provided range values.
+     * @param nRadialSamples
+     * @param minDistance
+     * @param maxDistance
+     * @return
+     */
     static double[] getDistanceBins(int nRadialSamples, double minDistance, double maxDistance) {
         double[] distanceBins = new double[nRadialSamples];
         double binWidth = (maxDistance-minDistance)/(nRadialSamples-1);
@@ -81,8 +102,44 @@ public class MeasureRadialIntensityProfile extends Module {
 
     }
 
-    static void processObject(Obj inputObject, Image inputImage, Image distanceMap, double[] distanceBins) {
+    static CumStat[] processObject(Obj inputObject, Image inputImage, Image distanceMap, double[] distanceBins) {
+        // Setting up CumStats to hold results
+        CumStat[] cumStats = new CumStat[distanceBins.length];
+        for (int i=0;i<cumStats.length;i++) cumStats[i] = new CumStat();
 
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        ImagePlus distanceMapIpl = distanceMap.getImagePlus();
+
+        int t = inputObject.getT();
+
+        double minDist = distanceBins[0];
+        double maxDist = distanceBins[distanceBins.length-1];
+        double binWidth = distanceBins[1]-distanceBins[0];
+
+        for (Point<Integer> point:inputObject.getPoints()) {
+            int x = point.getX();
+            int y = point.getY();
+            int z = point.getZ();
+
+            inputIpl.setPosition(1, z + 1, t + 1);
+            distanceMapIpl.setPosition(1, z + 1, t + 1);
+
+            double distance = distanceMapIpl.getProcessor().getPixelValue(x, y);
+            double intensity = inputIpl.getProcessor().getPixelValue(x, y);
+
+            double bin = Math.round((distance - minDist) / binWidth) * binWidth + minDist;
+
+            // Ensuring the bin is within the specified range
+            bin = Math.min(bin, maxDist);
+            bin = Math.max(bin, minDist);
+
+            // Adding the measurement to the relevant bin
+            for (int i=0;i<distanceBins.length;i++) {
+                if (bin == distanceBins[i]) cumStats[i].addMeasure(intensity);
+            }
+        }
+
+        return cumStats;
 
     }
 
@@ -113,13 +170,24 @@ public class MeasureRadialIntensityProfile extends Module {
 
         // Getting other parameters
         String referenceMode = parameters.getValue(REFERENCE_MODE);
+        String distanceMapImageName = parameters.getValue(DISTANCE_MAP_IMAGE);
         int nRadialSample = parameters.getValue(NUMBER_OF_RADIAL_SAMPLES);
         String rangeMode = parameters.getValue(RANGE_MODE);
         double minDistance = parameters.getValue(MIN_DISTANCE);
         double maxDistance = parameters.getValue(MAX_DISTANCE);
 
         // Getting the distance map for all objects
-        Image distanceMap = getDistanceMap(inputObjects,inputImage,referenceMode);
+        Image distanceMap = null;
+        switch (referenceMode) {
+            case ReferenceModes.CUSTOM_DISTANCE_MAP:
+                distanceMap = workspace.getImage(distanceMapImageName);
+                break;
+
+            case ReferenceModes.DISTANCE_FROM_EDGE:
+            case ReferenceModes.DISTANCE_FROM_CENTROID:
+                distanceMap = getDistanceMap(inputObjects,inputImage,referenceMode);
+                break;
+        }
 
         // Getting the distance bin centroids
         double[] distanceBins = null;
@@ -133,13 +201,29 @@ public class MeasureRadialIntensityProfile extends Module {
                 break;
         }
 
+        // Creating a new ResultsTable
+        ResultsTable resultsTable = new ResultsTable();
+
+        // Adding distance bin values to ResultsTable6g
+        for (int i=0;i<distanceBins.length;i++) {
+            resultsTable.setValue("Distance",i,distanceBins[i]);
+        }
+
         // Processing each object
         int count = 0;
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
             writeMessage("Processing object "+(++count)+" of "+total);
-            processObject(inputObject,inputImage,distanceMap,distanceBins);
+            CumStat[] cumStats = processObject(inputObject,inputImage,distanceMap,distanceBins);
+
+            for (int i=0;i<distanceBins.length;i++) {
+                double meanVal = cumStats[i].getMean();
+                resultsTable.setValue(("Object "+count),i,meanVal);
+            }
         }
+
+        resultsTable.show("Radial intensity profile");
+
     }
 
     @Override
@@ -147,6 +231,7 @@ public class MeasureRadialIntensityProfile extends Module {
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.DISTANCE_FROM_CENTROID,ReferenceModes.ALL));
+        parameters.add(new Parameter(DISTANCE_MAP_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(NUMBER_OF_RADIAL_SAMPLES,Parameter.INTEGER,10));
         parameters.add(new Parameter(RANGE_MODE,Parameter.CHOICE_ARRAY,RangeModes.AUTOMATIC_RANGE,RangeModes.ALL));
         parameters.add(new Parameter(MIN_DISTANCE,Parameter.DOUBLE,0d));
@@ -160,20 +245,24 @@ public class MeasureRadialIntensityProfile extends Module {
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
+        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+            case ReferenceModes.CUSTOM_DISTANCE_MAP:
+                returnedParameters.add(parameters.getParameter(DISTANCE_MAP_IMAGE));
+                break;
+        }
+
         returnedParameters.add(parameters.getParameter(NUMBER_OF_RADIAL_SAMPLES));
 
         returnedParameters.add(parameters.getParameter(RANGE_MODE));
         switch ((String) parameters.getValue(RANGE_MODE)) {
-            case RangeModes.AUTOMATIC_RANGE:
-
-                break;
-
             case RangeModes.MANUAL_RANGE:
                 returnedParameters.add(parameters.getParameter(MIN_DISTANCE));
                 returnedParameters.add(parameters.getParameter(MAX_DISTANCE));
                 break;
         }
+
         return returnedParameters;
 
     }
