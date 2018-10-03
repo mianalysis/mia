@@ -228,10 +228,10 @@
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.4.15</version>
+            <version>1.4.16-SNAPSHOT</version>
             <!--<groupId>com.github.SJCross</groupId>-->
             <!--<artifactId>Common</artifactId>-->
-            <!--<version>v1.4.12</version>-->
+            <!--<version>v1.4.15</version>-->
         </dependency>
     </dependencies>
 
