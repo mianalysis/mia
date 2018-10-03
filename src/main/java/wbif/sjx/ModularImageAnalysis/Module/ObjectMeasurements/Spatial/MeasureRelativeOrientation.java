@@ -7,10 +7,11 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MeasureOrientationRelativeToPoint extends Module {
+public class MeasureRelativeOrientation extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String ORIENTATION_MODE = "Orientation mode";
     public static final String ORIENTATION_IN_X_Y_MEASUREMENT = "Orientation in X/Y measurement";
@@ -30,7 +31,8 @@ public class MeasureOrientationRelativeToPoint extends Module {
         String BOTH_X_Y_AND_XY_Z_PLANES = "Orientation in both X-Y and XY-Z planes";
         String FULL_3D = "Orientation in 3D";
 
-        String[] ALL = new String[]{X_Y_PLANE,XY_Z_PLANE,BOTH_X_Y_AND_XY_Z_PLANES,FULL_3D};
+//        String[] ALL = new String[]{X_Y_PLANE,XY_Z_PLANE,BOTH_X_Y_AND_XY_Z_PLANES,FULL_3D};
+        String[] ALL = new String[]{X_Y_PLANE};
 
     }
 
@@ -57,7 +59,7 @@ public class MeasureOrientationRelativeToPoint extends Module {
     }
 
 
-    HashMap<Integer,Point<Double>> getImageCentre(Image image, String orientationMode) {
+    static HashMap<Integer,Point<Double>> getImageCentre(Image image, String orientationMode) {
         boolean useZ = !orientationMode.equals(OrientationModes.X_Y_PLANE);
         double width = image.getImagePlus().getWidth();
         double height = image.getImagePlus().getHeight();
@@ -75,7 +77,7 @@ public class MeasureOrientationRelativeToPoint extends Module {
 
     }
 
-    ArrayList<Point<Double>> getObjectCentroid(ObjCollection objects, String choiceMode, String xMeas, String yMeas, String zMeas, String orientationMode) {
+    static ArrayList<Point<Double>> getObjectCentroid(ObjCollection objects, String choiceMode, String xMeas, String yMeas, String zMeas, String orientationMode) {
 
         // NEEDS TO GET CENTROID ACROSS ALL FRAMES.  IF THERE ISN'T A REFERENCE OBJECT IN A PARTIULAR FRAME, TAKE THE
         // CLOSEST POINT IN TIME.  IF THERE ARE NO REFERENCE OBJECTS, RETURN DOUBLE.NAN VALUES FOR MEASUREMENTS.
@@ -98,7 +100,7 @@ public class MeasureOrientationRelativeToPoint extends Module {
 
     }
 
-    public void processObject(Obj object, String xyOriMeasName, String xzOriMeasName, Point<Double> referencePoint, String orientationMode) {
+    public static void processObject(Obj object, String xyOriMeasName, String xzOriMeasName, Point<Double> referencePoint, String orientationMode) {
         switch (orientationMode) {
             case OrientationModes.X_Y_PLANE:
                 double xyOrientation = object.getMeasurement(xyOriMeasName).getValue();
@@ -108,20 +110,44 @@ public class MeasureOrientationRelativeToPoint extends Module {
         }
     }
 
-    public double getXYAngle(Obj object, double xyOrientation, Point<Double> referencePoint) {
-        // Get angle between object and reference point
-        double angleToReference = object.calculateAngle2D(referencePoint);
+    public static double getXYAngle(Obj object, double xyOrientation, Point<Double> referencePoint) {
+//        System.err.println("Input orientation "+xyOrientation);
+////        if (xyOrientation < 0) xyOrientation = xyOrientation + 180;
+////
+////        // Converting xyOrientation to 0-180 range
+////        if (xyOrientation < 0) xyOrientation =
+//
+////         We have no idea of the absolute object direction, so want it between -90 and 90
+//        xyOrientation = xyOrientation%180;
+//
+////         Get angle between object and reference point
+//        double angleToReference = Math.toDegrees(object.calculateAngle2D(referencePoint));
+//        if (angleToReference > 90) angleToReference = angleToReference%180-180;
+//
+//        double relativeOrientation = (xyOrientation-angleToReference);
+//        if (Math.abs(relativeOrientation) != 90) relativeOrientation = (xyOrientation-angleToReference)%90;
+//
+//        relativeOrientation = Math.abs(relativeOrientation);
+//
+//        System.err.println("    Orientation = "+xyOrientation+", angle to reference = "+angleToReference);
+//
+//        // Calculating angle between orientation and vector from object to reference
+//        return relativeOrientation;
 
-        // Calculating angle between orientation and vector from object to reference
-        
+        xyOrientation = Math.toRadians(xyOrientation + 180);
+        double angleToReference = object.calculateAngle2D(referencePoint)+Math.PI;
+        double rel = Math.toDegrees(Math.atan2(Math.sin(xyOrientation-angleToReference),Math.cos(xyOrientation-angleToReference)));
 
-        return -1;
+        if (Math.abs(Math.abs(rel)-90) > 1E-10) rel = rel%90;
+        rel = Math.abs(rel);
+        return rel;
+
     }
 
 
     @Override
     public String getTitle() {
-        return "Measure orientation relative to a point";
+        return "Measure relative orientation";
     }
 
     @Override
@@ -165,9 +191,12 @@ public class MeasureOrientationRelativeToPoint extends Module {
                 break;
         }
 
+        if (referencePoints == null) return;
+
         // Processing each object
         for (Obj inputObject:inputObjects.values()) {
-
+            int t = inputObject.getT();
+            Point<Double> referencePoint = referencePoints.get(t);
         }
     }
 
