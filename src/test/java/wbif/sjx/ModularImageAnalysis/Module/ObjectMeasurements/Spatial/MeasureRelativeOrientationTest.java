@@ -27,11 +27,9 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopRightOrientation180() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
 
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = 180;
 
@@ -46,11 +44,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopRightOrientation135() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = 135;
 
@@ -65,11 +59,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopRightOrientation90() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = 90;
 
@@ -84,11 +74,9 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopRightOrientation45() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
 
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = 45;
 
@@ -103,11 +91,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopRightOrientation0() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = 0;
 
@@ -122,11 +106,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopRightOrientationMinus45() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = -45;
 
@@ -141,11 +121,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopRightOrientationMinus90() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = -90;
 
@@ -160,11 +136,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopRightOrientationMinus135() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = -135;
 
@@ -179,11 +151,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopRightOrientationMinus180() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = -180;
 
@@ -201,11 +169,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomRightOrientation180() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,5,0);
         double xyOrientation = 180;
 
@@ -220,11 +184,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomRightOrientation135() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,5,0);
         double xyOrientation = 135;
 
@@ -239,11 +199,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomRightOrientation90() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,5,0);
         double xyOrientation = 90;
 
@@ -258,11 +214,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomRightOrientation45() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,5,0);
         double xyOrientation = 45;
 
@@ -277,11 +229,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomRightOrientation0() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,5,0);
         double xyOrientation = 0;
 
@@ -296,11 +244,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomRightOrientationMinus45() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,5,0);
         double xyOrientation = -45;
 
@@ -315,11 +259,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomRightOrientationMinus90() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,5,0);
         double xyOrientation = -90;
 
@@ -334,11 +274,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomRightOrientationMinus135() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,5,0);
         double xyOrientation = -135;
 
@@ -353,11 +289,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomRightOrientationMinus180() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,5,0);
         double xyOrientation = -180;
 
@@ -370,13 +302,12 @@ public class MeasureRelativeOrientationTest {
 
     }
 
+
+    // BOTTOM LEFT QUADRANT IN 2D
+
     @Test
     public void testGetXYAngleBottomLeftOrientation180() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,5,0);
         double xyOrientation = 180;
 
@@ -391,11 +322,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomLeftOrientation135() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,5,0);
         double xyOrientation = 135;
 
@@ -410,11 +337,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomLeftOrientation90() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,5,0);
         double xyOrientation = 90;
 
@@ -429,11 +352,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomLeftOrientation45() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,5,0);
         double xyOrientation = 45;
 
@@ -448,11 +367,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomLeftOrientation0() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,5,0);
         double xyOrientation = 0;
 
@@ -467,11 +382,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus45() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,5,0);
         double xyOrientation = -45;
 
@@ -486,11 +397,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus90() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,5,0);
         double xyOrientation = -90;
 
@@ -505,11 +412,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus135() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,5,0);
         double xyOrientation = -135;
 
@@ -524,11 +427,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleBottomLeftOrientationMinus180() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,5,0);
         double xyOrientation = -180;
 
@@ -541,13 +440,12 @@ public class MeasureRelativeOrientationTest {
 
     }
 
+
+    // TOP LEFT QUADRANT IN 2D
+
     @Test
     public void testGetXYAngleTopLeftOrientation180() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,15,0);
         double xyOrientation = 180;
 
@@ -562,11 +460,7 @@ public class MeasureRelativeOrientationTest {
 
     @Test
     public void testGetXYAngleTopLeftOrientation135() {
-        double dppXY = 0.02;
-        double dppZ = 0.1;
-        String units = "um";
-
-        Obj object = new Obj("Object",1,dppXY,dppZ,units, true);
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(5,15,0);
         double xyOrientation = 135;
 
@@ -579,5 +473,108 @@ public class MeasureRelativeOrientationTest {
 
     }
 
-    
+    @Test
+    public void testGetXYAngleTopLeftOrientation90() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(5,15,0);
+        double xyOrientation = 90;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 45;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAngleTopLeftOrientation45() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(5,15,0);
+        double xyOrientation = 45;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 90;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAngleTopLeftOrientation0() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(5,15,0);
+        double xyOrientation = 0;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 45;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAngleTopLeftOrientationMinus45() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(5,15,0);
+        double xyOrientation = -45;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 0;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAngleTopLeftOrientationMinus90() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(5,15,0);
+        double xyOrientation = -90;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 45;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAngleTopLeftOrientationMinus135() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(5,15,0);
+        double xyOrientation = -135;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 90;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAngleTopLeftOrientationMinus180() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(5,15,0);
+        double xyOrientation = -180;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 45;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
 }

@@ -13,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensit
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class CreateDistanceMap extends Module {
     public static final String REFERENCE_MODE = "Reference mode";
     public static final String INVERT_MAP_WITHIN_OBJECTS = "Invert map within objects";
     public static final String MASKING_MODE = "Masking mode";
+    public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";
 
 
     public interface ReferenceModes {
@@ -119,6 +121,55 @@ public class CreateDistanceMap extends Module {
 
     }
 
+    public static void applyNormalisation(Image inputImage, ObjCollection inputObjects) {
+        // Iterating over each object, calculating the largest distance, then dividing all pixels within that object by
+        // this value
+        for (Obj inputObject:inputObjects.values()) {
+            double maxDistance = getMaximumDistance(inputImage, inputObject);
+            applyNormalisation(inputImage,inputObject,maxDistance);
+        }
+    }
+
+    static double getMaximumDistance(Image inputImage, Obj inputObject) {
+        // Iterating over each point in the object, getting the largest distance
+        double maxDistance = Double.MIN_VALUE;
+
+        int t = inputObject.getT();
+        ImagePlus inputIpl = inputImage.getImagePlus();
+
+        for (Point<Integer> point:inputObject.getPoints()) {
+            int x = point.getX();
+            int y = point.getY();
+            int z = point.getZ();
+
+            inputIpl.setPosition(1,z+1,t+1);
+            double currentValue = inputIpl.getProcessor().getPixelValue(x,y);
+
+            maxDistance = Math.max(currentValue,maxDistance);
+
+        }
+
+        return maxDistance;
+
+    }
+
+    static void applyNormalisation(Image inputImage, Obj inputObject, double maxDistance) {
+        int t = inputObject.getT();
+        ImagePlus inputIpl = inputImage.getImagePlus();
+
+        for (Point<Integer> point:inputObject.getPoints()) {
+            int x = point.getX();
+            int y = point.getY();
+            int z = point.getZ();
+
+            inputIpl.setPosition(1,z+1,t+1);
+            double currentValue = inputIpl.getProcessor().getPixelValue(x,y);
+            inputIpl.getProcessor().setf(x,y,(float) (currentValue/maxDistance));
+            System.err.println((float) (currentValue/maxDistance));
+        }
+    }
+
+
     @Override
     public String getTitle() {
         return "Create distance map";
@@ -149,6 +200,7 @@ public class CreateDistanceMap extends Module {
         String referenceMode = parameters.getValue(REFERENCE_MODE);
         boolean invertInside = parameters.getValue(INVERT_MAP_WITHIN_OBJECTS);
         String maskingMode = parameters.getValue(MASKING_MODE);
+        boolean normaliseMap = parameters.getValue(NORMALISE_MAP_PER_OBJECT);
 
         // Initialising the distance map
         Image distanceMap = null;
@@ -165,12 +217,10 @@ public class CreateDistanceMap extends Module {
         if (distanceMap == null) return;
 
         // Applying masking
-        switch (maskingMode) {
-            case MaskingModes.INSIDE_ONLY:
-            case MaskingModes.OUTSIDE_ONLY:
-                applyMasking(distanceMap,inputObjects,maskingMode);
-                break;
-        }
+        applyMasking(distanceMap,inputObjects,maskingMode);
+
+        // Performing normalisation (only when using inside-only masking)
+        if (maskingMode.equals(MaskingModes.INSIDE_ONLY) && normaliseMap) applyNormalisation(distanceMap,inputObjects);
 
         // Adding distance map to output
         workspace.addImage(distanceMap);
@@ -192,6 +242,7 @@ public class CreateDistanceMap extends Module {
         parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.DISTANCE_FROM_CENTROID,ReferenceModes.ALL));
         parameters.add(new Parameter(INVERT_MAP_WITHIN_OBJECTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(MASKING_MODE,Parameter.CHOICE_ARRAY,MaskingModes.INSIDE_AND_OUTSIDE,MaskingModes.ALL));
+        parameters.add(new Parameter(NORMALISE_MAP_PER_OBJECT,Parameter.BOOLEAN,false));
 
     }
 
@@ -211,6 +262,11 @@ public class CreateDistanceMap extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(MASKING_MODE));
+        switch ((String) parameters.getValue(MASKING_MODE)) {
+            case MaskingModes.INSIDE_ONLY:
+                returnedParameters.add(parameters.getParameter(NORMALISE_MAP_PER_OBJECT));
+                break;
+        }
 
         return returnedParameters;
 

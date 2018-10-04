@@ -22,6 +22,7 @@ public class MeasureRadialIntensityProfile extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String REFERENCE_MODE = "Reference mode";
     public static final String DISTANCE_MAP_IMAGE = "Distance map image";
+    public static final String MASKING_MODE = "Masking mode";
     public static final String NUMBER_OF_RADIAL_SAMPLES = "Number of radial samples";
     public static final String RANGE_MODE = "Range mode";
     public static final String MIN_DISTANCE = "Minimum distance";
@@ -37,6 +38,8 @@ public class MeasureRadialIntensityProfile extends Module {
                 CreateDistanceMap.ReferenceModes.DISTANCE_FROM_EDGE,CUSTOM_DISTANCE_MAP};
 
     }
+
+    public interface MaskingModes extends CreateDistanceMap.MaskingModes {}
 
     public interface RangeModes {
         String AUTOMATIC_RANGE = "Automatic range";
@@ -126,7 +129,7 @@ public class MeasureRadialIntensityProfile extends Module {
 
             double distance = distanceMapIpl.getProcessor().getPixelValue(x, y);
             double intensity = inputIpl.getProcessor().getPixelValue(x, y);
-
+            System.err.println(intensity);
             double bin = Math.round((distance - minDist) / binWidth) * binWidth + minDist;
 
             // Ensuring the bin is within the specified range
@@ -171,6 +174,7 @@ public class MeasureRadialIntensityProfile extends Module {
         // Getting other parameters
         String referenceMode = parameters.getValue(REFERENCE_MODE);
         String distanceMapImageName = parameters.getValue(DISTANCE_MAP_IMAGE);
+        String maskingMode = parameters.getValue(MASKING_MODE);
         int nRadialSample = parameters.getValue(NUMBER_OF_RADIAL_SAMPLES);
         String rangeMode = parameters.getValue(RANGE_MODE);
         double minDistance = parameters.getValue(MIN_DISTANCE);
@@ -189,6 +193,9 @@ public class MeasureRadialIntensityProfile extends Module {
                 break;
         }
 
+        // Applying the relevant masking
+        CreateDistanceMap.applyMasking(distanceMap,inputObjects,maskingMode);
+
         // Getting the distance bin centroids
         double[] distanceBins = null;
         switch (rangeMode) {
@@ -204,7 +211,7 @@ public class MeasureRadialIntensityProfile extends Module {
         // Creating a new ResultsTable
         ResultsTable resultsTable = new ResultsTable();
 
-        // Adding distance bin values to ResultsTable6g
+        // Adding distance bin values to ResultsTable
         for (int i=0;i<distanceBins.length;i++) {
             resultsTable.setValue("Distance",i,distanceBins[i]);
         }
@@ -232,6 +239,7 @@ public class MeasureRadialIntensityProfile extends Module {
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.DISTANCE_FROM_CENTROID,ReferenceModes.ALL));
         parameters.add(new Parameter(DISTANCE_MAP_IMAGE,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(MASKING_MODE,Parameter.CHOICE_ARRAY,MaskingModes.INSIDE_ONLY,MaskingModes.ALL));
         parameters.add(new Parameter(NUMBER_OF_RADIAL_SAMPLES,Parameter.INTEGER,10));
         parameters.add(new Parameter(RANGE_MODE,Parameter.CHOICE_ARRAY,RangeModes.AUTOMATIC_RANGE,RangeModes.ALL));
         parameters.add(new Parameter(MIN_DISTANCE,Parameter.DOUBLE,0d));
@@ -253,6 +261,7 @@ public class MeasureRadialIntensityProfile extends Module {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(MASKING_MODE));
         returnedParameters.add(parameters.getParameter(NUMBER_OF_RADIAL_SAMPLES));
 
         returnedParameters.add(parameters.getParameter(RANGE_MODE));
