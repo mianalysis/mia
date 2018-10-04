@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -48,7 +49,27 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     public interface Measurements {
-        String X_Y_REL_ORIENTATION = "X-Y_PLANE RELATIVE TO ${REFERENCE} (DEGREES)";
+        String X_Y_REL_ORIENTATION = "X-Y PLANE RELATIVE TO \"${REFERENCE}\" (DEGS)";
+
+    }
+
+
+    String getMeasurementReference() {
+        String reference = null;
+        switch ((String) parameters.getValue(REFERENCE_MODE)) {
+            case ReferenceModes.IMAGE_CENTRE:
+                String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
+                reference = referenceImageName+" IM_CENTRE";
+                break;
+            case ReferenceModes.OBJECT_CENTROID:
+                String measurementObjectsName = parameters.getValue(MEASUREMENT_OBJECTS);
+                String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
+                String choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
+                reference = measurementObjectsName+"_"+choice+"_OBJ_CENTROID";
+                break;
+        }
+
+        return reference;
 
     }
 
@@ -56,7 +77,6 @@ public class MeasureRelativeOrientation extends Module {
         return "REL_ORIENTATION // "+measurement.replace("${REFERENCE}",reference);
 
     }
-
 
     static HashMap<Integer,Point<Double>> getImageCentre(Image image, String orientationMode) {
         boolean useZ = !orientationMode.equals(OrientationModes.X_Y_PLANE);
@@ -99,26 +119,34 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    public static void processObject(Obj object, String xyOriMeasName, String xzOriMeasName, Point<Double> referencePoint, String orientationMode) {
+    public static void processObject(Obj object, String xyOriMeasName, String xzOriMeasName, Point<Double> referencePoint, String orientationMode, String measurementReference) {
         switch (orientationMode) {
             case OrientationModes.X_Y_PLANE:
                 double xyOrientation = object.getMeasurement(xyOriMeasName).getValue();
                 double xyAngle = getXYAngle(object,xyOrientation,referencePoint);
-                // Now add it as a measurement
+
+                // Adding the measurement
+                String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,measurementReference);
+                object.addMeasurement(new Measurement(measurementName,xyAngle));
+
                 break;
         }
     }
 
     public static double getXYAngle(Obj object, double xyOrientation, Point<Double> referencePoint) {
-        // Getting values in the range 0-180 degrees, then converting to radians
-        xyOrientation = Math.toRadians(xyOrientation + 180);
-        double angleToReference = object.calculateAngle2D(referencePoint)+Math.PI;
+        xyOrientation = Math.toRadians(xyOrientation);
+        double angleToReference = object.calculateAngle2D(referencePoint);
 
-        double rel = Math.toDegrees(Math.atan2(Math.sin(xyOrientation-angleToReference),Math.cos(xyOrientation-angleToReference)));
+        Vector2D v1 = new Vector2D(1, -Math.tan(xyOrientation));
+        Vector2D v2 = new Vector2D(1, -Math.tan(angleToReference));
 
-        // Shifting values to the range 0-90 degrees
-        if (Math.abs(Math.abs(rel)-90) > 1E-10) rel = rel%90;
-        return Math.abs(rel);
+        double angle = Vector2D.angle(v1, v2);
+
+        // Putting it into the range -90 to +90 degrees (or radian equivalent)
+        if (angle >= Math.PI / 2) angle = angle - Math.PI;
+
+        // We are only interested in the deviation (i.e. absolute value)
+        return Math.abs(Math.toDegrees(angle));
 
     }
 
@@ -153,6 +181,9 @@ public class MeasureRelativeOrientation extends Module {
         String measurementObjectsName = parameters.getValue(MEASUREMENT_OBJECTS);
         String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
 
+        // Getting measurement reference name
+        String measurementReference = getMeasurementReference();
+
         // Get reference point as Point for each frame the input images are present for (frame number as HashMap key)
         HashMap<Integer,Point<Double>> referencePoints = null;
         switch (referenceMode) {
@@ -172,6 +203,7 @@ public class MeasureRelativeOrientation extends Module {
         for (Obj inputObject:inputObjects.values()) {
             int t = inputObject.getT();
             Point<Double> referencePoint = referencePoints.get(t);
+            processObject(inputObject,xyOriMeasName,xzOriMeasName,referencePoint,orientationMode,measurementReference);
         }
     }
 
@@ -242,19 +274,17 @@ public class MeasureRelativeOrientation extends Module {
 
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);
 
-        String reference = null;
+        String reference = getMeasurementReference();
         String referenceDescription = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
             case ReferenceModes.IMAGE_CENTRE:
                 String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-                reference = referenceImageName+" IM_CENTRE";
                 referenceDescription = "the centre of the image \""+referenceImageName+"\"";
                 break;
             case ReferenceModes.OBJECT_CENTROID:
                 String measurementObjectsName = parameters.getValue(MEASUREMENT_OBJECTS);
                 String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
                 String choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
-                reference = measurementObjectsName+"_"+choice+"_OBJ_CENTROID";
                 referenceDescription = "the centroid of the "+choice+" object in the set "+measurementObjectsName;
                 break;
         }

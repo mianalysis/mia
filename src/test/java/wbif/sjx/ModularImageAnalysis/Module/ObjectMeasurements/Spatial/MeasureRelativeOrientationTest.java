@@ -23,12 +23,134 @@ public class MeasureRelativeOrientationTest {
     }
 
 
+    // POSITIVE X-AXIS
+    @Test
+    public void testGetXYAnglePosXOrientation180() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(15,10,0);
+        double xyOrientation = 180;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 0;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAnglePosXOrientation135() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(15,10,0);
+        double xyOrientation = 135;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 45;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAnglePosXOrientation90() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(15,10,0);
+        double xyOrientation = 90;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 90;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAnglePosXOrientation45() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(15,10,0);
+        double xyOrientation = 45;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 45;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAnglePosXOrientation30() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(15,10,0);
+        double xyOrientation = 30;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 30;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAnglePosXOrientation0() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(15,10,0);
+        double xyOrientation = 0;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 0;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAnglePosXOrientationMinus30() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(15,10,0);
+        double xyOrientation = -30;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 30;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetXYAnglePosXOrientationMinus45() {
+        Obj object = new Obj("Object",1,0.02,0.1,"um", true);
+        object.addCoord(15,10,0);
+        double xyOrientation = -45;
+
+        Point<Double> referencePoint = new Point<>(10d,10d,0d);
+
+        double actual = MeasureRelativeOrientation.getXYAngle(object,xyOrientation,referencePoint);
+        double expected = 45;
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+
+
+
     // TOP RIGHT QUADRANT IN 2D
 
     @Test
     public void testGetXYAngleTopRightOrientation180() {
-
-
         Obj object = new Obj("Object",1,0.02,0.1,"um", true);
         object.addCoord(15,15,0);
         double xyOrientation = 180;
