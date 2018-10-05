@@ -1,3 +1,5 @@
+// TODO: What happens when 3D distance map is run on 4D or 5D image hyperstack?
+
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
@@ -99,7 +101,7 @@ public class BinaryOperations extends Module {
         }
     }
 
-    public static ImagePlus getDilateErode3D(ImagePlus ipl, String operationMode, int numIterations) {
+    public static void applyDilateErode3D(ImagePlus ipl, String operationMode, int numIterations) {
         int width = ipl.getWidth();
         int height = ipl.getHeight();
         int nChannels = ipl.getNChannels();
@@ -142,8 +144,6 @@ public class BinaryOperations extends Module {
                 }
             }
         }
-
-        return ipl;
     }
 
     public static ImagePlus getDistanceMap3D(ImagePlus ipl, boolean matchZToXY) {
@@ -155,7 +155,10 @@ public class BinaryOperations extends Module {
         // Calculating the distance map using MorphoLibJ
         float[] weights = ChamferWeights3D.WEIGHTS_3_4_5_7.getFloatWeights();
 
+        // Creating duplicates of the input image
+        ipl = new Duplicator().run(ipl);
         ImagePlus maskIpl = new Duplicator().run(ipl);
+
         IJ.run(maskIpl,"Invert","stack");
         ipl.setStack(new GeodesicDistanceMap3D().process(ipl,maskIpl,"Dist",weights,true).getStack());
 
@@ -307,7 +310,7 @@ public class BinaryOperations extends Module {
 
             case (OperationModes.DILATE_3D):
             case (OperationModes.ERODE_3D):
-                inputImagePlus = getDilateErode3D(inputImagePlus,operationMode,numIterations);
+                applyDilateErode3D(inputImagePlus,operationMode,numIterations);
                 break;
 
             case (OperationModes.DISTANCE_MAP_3D):
@@ -341,6 +344,7 @@ public class BinaryOperations extends Module {
         // If selected, displaying the image
         if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+            dispIpl.setTitle(inputImageName);
             IntensityMinMax.run(dispIpl,true);
             dispIpl.show();
         }

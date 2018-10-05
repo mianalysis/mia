@@ -32,15 +32,17 @@ public class FocusStack extends Module {
         ImagePlus inputIpl = inputImage.getImagePlus();
         ImageProcessor ipr = inputIpl.getProcessor();
 
-        // Creating the new image to hold the focused image
+        // Creating array to hold [0] the focused image and [1] the height map
         Image[] images = new Image[2];
         ImagePlus outputIpl = createEmptyImage(inputIpl,outputImageName,inputIpl.getBitDepth());
+        outputIpl.setCalibration(inputIpl.getCalibration());
         images[0] = new Image(outputImageName,outputIpl);
 
         // If necessary, creating the height image
         ImagePlus heightIpl = null;
         if (outputHeightImageName != null) {
             heightIpl = createEmptyImage(inputIpl,outputHeightImageName,16);
+            heightIpl.setCalibration(inputIpl.getCalibration());
             images[1] = new Image(outputHeightImageName,heightIpl);
         }
 

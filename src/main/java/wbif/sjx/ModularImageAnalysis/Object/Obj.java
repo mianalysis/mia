@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.Conve
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -286,6 +287,18 @@ public class Obj extends Volume {
 
     }
 
+    public Image convertObjToImage(String outputName, @Nullable Image templateImage) {
+        // Creating an ObjCollection to hold this image
+        ObjCollection tempObj = new ObjCollection(outputName);
+        tempObj.add(this);
+
+        // Getting the image
+        HashMap<Integer, Float> hues = tempObj.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
+        return tempObj.convertObjectsToImage(outputName,templateImage,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
+
+    }
+
+    @Deprecated
     public Image convertObjToImage(String outputName, ImagePlus templateIpl) {
         // Creating an ObjCollection to hold this image
         ObjCollection tempObj = new ObjCollection(outputName);

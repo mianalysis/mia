@@ -73,7 +73,7 @@ public class FitEllipse extends Module {
                 break;
         }
 
-        if (calculator == null) return;
+        if (calculator == null || Double.isNaN(calculator.getXCentre())) return;
 
         addMeasurements(inputObject,calculator);
 
