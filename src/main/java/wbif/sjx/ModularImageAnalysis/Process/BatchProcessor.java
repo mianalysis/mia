@@ -27,10 +27,7 @@ import wbif.sjx.common.System.FileCrawler;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.*;
 
 
@@ -103,6 +100,10 @@ public class BatchProcessor extends FileCrawler {
         // Setting up the ExecutorService, which will manage the threads
         pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
+        // Runnables are first stored in a HashSet, then loaded all at once to the ThreadPoolExecutor.  This means the
+        // system isn't scanning files and reading for the analysis simultaneously.
+        int loadTotal = 0;
+        HashSet<Runnable> tasks = new HashSet<>();
         while (next != null) {
             File finalNext = next;
 
@@ -160,18 +161,23 @@ public class BatchProcessor extends FileCrawler {
                     }
                 };
 
-                pool.submit(task);
+                loadTotal++;
+                tasks.add(task);
 
             }
 
             // Displaying the current progress
-            double nTotal = pool.getTaskCount();
-            String string = "Started processing "+dfInt.format(nTotal)+" jobs";
+            String string = "Initialising "+dfInt.format(loadTotal)+" jobs";
             System.out.println(string);
 
             next = getNextValidFileInStructure();
 
         }
+
+        // Starting the jobs
+        for (Runnable task:tasks) pool.submit(task);
+
+        System.out.println("Processing started");
 
         // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
         pool.shutdown();

@@ -334,7 +334,6 @@ public class RelateObjects extends Module {
             for (int i=0;i<parentX.size();i++) {
                 ipl.setPosition(1,(int) (parentZ.get(i)-range[2][0]+1),1);
                 ipl.getProcessor().set((int) (parentX.get(i)-range[0][0]), (int) (parentY.get(i)-range[1][0]),255);
-
             }
 
             for (Obj childObject:childObjects.values()) {
