@@ -32,8 +32,6 @@ public class SeparatorButton extends JButton implements ActionListener {
         setToolTipText("Show output from module");
         setIcon();
 
-        setEnabled(module.isEnabled());
-
     }
 
     public void setIcon() {
