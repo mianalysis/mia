@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
+import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.apache.hadoop.hbase.util.MunkresAssignment;
@@ -221,10 +222,12 @@ public class TrackObjects extends Module {
         Vector2D v1 = new Vector2D(prevXCent-prevPrevXCent,prevYCent-prevPrevYCent);
         Vector2D v2 = new Vector2D(currXCent-prevXCent,currYCent-prevYCent);
 
-        System.err.println("Ori1 = "+Math.toDegrees(ori1)+", Ori2 = "+Math.toDegrees(ori2)+", y1 = "+Math.tan(ori1)+", y2 = "+Math.tan(ori2)+", angle = "+Math.toDegrees(Vector2D.angle(v1, v2)));
-
-        return Vector2D.angle(v1, v2);
-
+        // MathArithmeticException thrown if two points are coincident.  In these cases, give a cost of 0.
+        try {
+            return Vector2D.angle(v1, v2);
+        } catch (MathArithmeticException e) {
+            return 0;
+        }
     }
 
     public static float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {

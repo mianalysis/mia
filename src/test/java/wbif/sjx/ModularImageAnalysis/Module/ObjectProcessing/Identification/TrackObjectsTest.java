@@ -724,6 +724,38 @@ public class TrackObjectsTest {
 
     }
 
+    @Test
+    public void testGetDirectionCostXYOverlapping() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevPrevObj = new Obj(inputObjectsName,1,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevPrevObj.addCoord(28,5,0);
+        prevPrevObj.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,2));
+        inputObjects.add(prevPrevObj);
+
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(28,5,0);
+        prevObj.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,1));
+        inputObjects.add(prevObj);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(10,82,0);
+        inputObjects.add(currObj);
+
+        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double expected = Math.toRadians(0);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
 
     // Testing getAbsoluteOverlap
 
