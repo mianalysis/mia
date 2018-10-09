@@ -13,6 +13,7 @@ import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,7 +86,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public float[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, ObjCollection inputObjects, int[][] spatialLimits) {
+    public float[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
         boolean useDirection = parameters.getValue(USE_DIRECTION);
@@ -108,15 +109,18 @@ public class TrackObjects extends Module {
                     case LinkingMethods.CENTROID:
                         double spatialCost = getCentroidSeparationCost(prevObj, currObj);
                         double volumeCost = useVolume ? getVolumeCost(prevObj, currObj) : 0;
-                        double directionCost = useDirection ? getDirectionChangeCost(prevObj, currObj,inputObjects) : 0;
-                        double measurementCost = useMeasurement ? getMeasurementCost(prevObj, currObj,measurement) : 0;
-                        cost[curr][prev] = (float) Math.sqrt(spatialCost+volumeCost*volumeWeighting
-                                +directionCost*directionWeighting+measurementCost*measurementWeighting);
+                        double directionCost = useDirection ? getDirectionCost(prevObj,currObj,inputObjects) : 0;
+                        double measurementCost = useMeasurement ? getMeasurementCost(prevObj,currObj,measurement) : 0;
+
+                        cost[curr][prev] = (float) (spatialCost + volumeCost*volumeWeighting
+                                + directionCost*directionWeighting + measurementCost*measurementWeighting);
+
                         break;
 
                     case LinkingMethods.ABSOLUTE_OVERLAP:
                         float overlap = getAbsoluteOverlap(prevObjects.get(prev), currObjects.get(curr), spatialLimits);
                         cost[curr][prev] = overlap == 0 ? Float.MAX_VALUE : 1/overlap;
+
                         break;
                 }
             }
@@ -135,8 +139,7 @@ public class TrackObjects extends Module {
         // Checking they are within the user-specified maximum distance.  If not, no link is made
         switch (linkingMethod) {
             case LinkingMethods.CENTROID:
-                double cost = getCentroidSeparationCost(prevObj,currObj);
-                double dist = Math.sqrt(cost);
+                double dist = getCentroidSeparationCost(prevObj,currObj);
                 return dist <= maxDist;
 
             case LinkingMethods.ABSOLUTE_OVERLAP:
@@ -157,7 +160,7 @@ public class TrackObjects extends Module {
         double currYCent = currObj.getYMean(true);
         double currZCent = currObj.getZMean(true,true);
 
-        return ((prevXCent - currXCent) * (prevXCent - currXCent) +
+        return Math.sqrt((prevXCent - currXCent) * (prevXCent - currXCent) +
                 (prevYCent - currYCent) * (prevYCent - currYCent) +
                 (prevZCent - currZCent) * (prevZCent - currZCent));
 
@@ -176,7 +179,7 @@ public class TrackObjects extends Module {
             currVol = Math.cbrt(currVol);
         }
 
-        return (prevVol-currVol)*(prevVol-currVol);
+        return (prevVol-currVol);
 
     }
 
@@ -185,19 +188,11 @@ public class TrackObjects extends Module {
         double prevMeas = prevObj.getMeasurement(measurement).getValue();
         double currMeas = currObj.getMeasurement(measurement).getValue();
 
-        return (prevMeas-currMeas)*(prevMeas-currMeas);
+        return (prevMeas-currMeas);
 
     }
 
-    public static double getDirectionChangeCost(Obj prevObj, Obj currObj, ObjCollection inputObjects) {
-        double prevXCent = prevObj.getXMean(true);
-        double prevYCent = prevObj.getYMean(true);
-        double prevZCent = prevObj.getZMean(true,true);
-
-        double currXCent = currObj.getXMean(true);
-        double currYCent = currObj.getYMean(true);
-        double currZCent = currObj.getZMean(true,true);
-
+    public static double getDirectionCost(Obj prevObj, Obj currObj, ObjCollection inputObjects) {
         // Get direction of previous object
         Measurement prevPrevObjMeas = prevObj.getMeasurement(Measurements.TRACK_PREV_ID);
 
@@ -208,13 +203,27 @@ public class TrackObjects extends Module {
         int prevPrevObjID = (int) prevPrevObjMeas.getValue();
         Obj prevPrevObj = inputObjects.get(prevPrevObjID);
 
+        // Getting centroid coordinates for three points
+        double prevXCent = prevObj.getXMean(true);
+        double prevYCent = prevObj.getYMean(true);
+        double prevZCent = prevObj.getZMean(true,true);
+        double currXCent = currObj.getXMean(true);
+        double currYCent = currObj.getYMean(true);
+        double currZCent = currObj.getZMean(true,true);
+        double prevPrevXCent = prevPrevObj.getXMean(true);
+        double prevPrevYCent = prevPrevObj.getYMean(true);
+        double prevPrevZCent = prevPrevObj.getZMean(true,true);
+
         // Getting two orientation measurements
-        double orientation1 = prevPrevObj.calculateAngle2D(prevObj);
-        double orientation2 = prevPrevObj.calculateAngle2D(currObj);
+        double ori1 = prevPrevObj.calculateAngle2D(prevObj);
+        double ori2 = prevObj.calculateAngle2D(currObj);
 
-        System.err.println(orientation1+"_"+orientation2);
+        Vector2D v1 = new Vector2D(prevXCent-prevPrevXCent,prevYCent-prevPrevYCent);
+        Vector2D v2 = new Vector2D(currXCent-prevXCent,currYCent-prevYCent);
 
-        return 0;
+        System.err.println("Ori1 = "+Math.toDegrees(ori1)+", Ori2 = "+Math.toDegrees(ori2)+", y1 = "+Math.tan(ori1)+", y2 = "+Math.tan(ori2)+", angle = "+Math.toDegrees(Vector2D.angle(v1, v2)));
+
+        return Vector2D.angle(v1, v2);
 
     }
 
