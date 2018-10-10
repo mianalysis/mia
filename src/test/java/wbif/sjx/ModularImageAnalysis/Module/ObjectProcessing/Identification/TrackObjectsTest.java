@@ -758,10 +758,226 @@ public class TrackObjectsTest {
     }
 
 
-    // Testing getAbsoluteOrientationDirectionCost (based on 8 random sets of coordinates)
+    // Testing getAbsoluteOrientationCost
 
     @Test
-    public void testGetAbsoluteOrientationDirectionCostXY1() {
+    public void testGetAbsoluteOrientationDirectionCostTopRightOri142() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(3,10,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(32,25,0);
+
+        double orientation = 142;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(114.65);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostTopRightOri30() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(3,10,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(32,25,0);
+
+        double orientation = 30;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(2.65);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostTopRightOriMinus66() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(3,10,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(32,25,0);
+
+        double orientation = -66;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(93.35);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostTopRightOriMinus127() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(3,10,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(32,25,0);
+
+        double orientation = -127;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(154.35);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomRightOri142() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(13,91,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(63,10,0);
+
+        double orientation = 142;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(159.69);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomRightOri30() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(13,91,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(63,10,0);
+
+        double orientation = 30;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(88.31);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomRightOriMinus66() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(13,91,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(63,10,0);
+
+        double orientation = -66;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(7.69);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomRightOriMinus127() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(13,91,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(63,10,0);
+
+        double orientation = -127;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(68.69);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomLeftOri142() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -774,15 +990,311 @@ public class TrackObjectsTest {
         // Creating the previous frame objects
         Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
         prevObj.addCoord(43,30,0);
-        prevObj.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,1));
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(12,25,0);
+
+        double orientation = 142;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(47.17);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomLeftOri30() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(43,30,0);
 
         Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
         currObj.addCoord(12,25,0);
 
         double orientation = 30;
 
-        double actual = TrackObjects.getAbsoluteOrientationDirectionCost(prevObj,currObj,orientation);
-        double expected = Math.toRadians(172.3);
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(159.16);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomLeftOriMinus66() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(43,30,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(12,25,0);
+
+        double orientation = -66;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(104.83);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomLeftOriMinus90() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(43,30,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(12,25,0);
+
+        double orientation = -90;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(80.83);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomLeftOriMinus127() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(43,30,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(12,25,0);
+
+        double orientation = -127;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(43.83);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostBottomLeftOriMinus178() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(43,30,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(12,25,0);
+
+        double orientation = -178;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(7.17);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostTopLeftOri142() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(80,14,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(42,92,0);
+
+        double orientation = 142;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(26.03);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostTopLeftOri30() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(80,14,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(42,92,0);
+
+        double orientation = 30;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(85.97);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostTopLeftOriMinus66() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(80,14,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(42,92,0);
+
+        double orientation = -66;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(178.03);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostTopLeftOriMinus127() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(80,14,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(42,92,0);
+
+        double orientation = -127;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(117.03);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostCoincident() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(80,14,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(90,14,0);
+
+        double orientation = 0;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(0);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostOpposite() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(80,14,0);
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(70,14,0);
+
+        double orientation = 180;
+
+        double actual = TrackObjects.getAbsoluteOrientationCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(0);
 
         assertEquals(expected,actual,tolerance);
 
@@ -1024,7 +1536,7 @@ public class TrackObjectsTest {
                 .updateParameterValue(TrackObjects.USE_MEASUREMENT,false)
                 .updateParameterValue(TrackObjects.USE_VOLUME,false);
 
-        assertTrue(trackObjects.testLinkValidity(obj1,obj2,null));
+        assertTrue(trackObjects.testLinkValidity(obj1,obj2,null,null));
 
     }
 
@@ -1050,7 +1562,7 @@ public class TrackObjectsTest {
                 .updateParameterValue(TrackObjects.USE_MEASUREMENT,false)
                 .updateParameterValue(TrackObjects.USE_VOLUME,false);
 
-        assertTrue(trackObjects.testLinkValidity(obj1,obj2,null));
+        assertTrue(trackObjects.testLinkValidity(obj1,obj2,null,null));
 
     }
 
@@ -1077,7 +1589,7 @@ public class TrackObjectsTest {
                 .updateParameterValue(TrackObjects.DIRECTION_WEIGHTING_MODE,TrackObjects.DirectionWeightingModes.NONE)
                 .updateParameterValue(TrackObjects.USE_VOLUME,false);
 
-        assertFalse(trackObjects.testLinkValidity(obj1,obj2,null));
+        assertFalse(trackObjects.testLinkValidity(obj1,obj2,null,null));
 
     }
 

@@ -133,7 +133,6 @@ public class TrackObjects extends Module {
                     case LinkingMethods.ABSOLUTE_OVERLAP:
                         float overlap = getAbsoluteOverlap(prevObjects.get(prev), currObjects.get(curr), spatialLimits);
                         spatialCost = overlap == 0 ? Float.MAX_VALUE : 1/overlap;
-
                         break;
                 }
 
@@ -143,13 +142,13 @@ public class TrackObjects extends Module {
                 double directionCost = 0;
                 switch (directionWeightingMode) {
                     case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
-                        directionCost = getAbsoluteOrientationDirectionCost(prevObj,currObj,preferredDirection);
-                        directionCost = applyDirectionTolerance(directionCost,directionTolerance);
+                        directionCost = getAbsoluteOrientationCost(prevObj,currObj,preferredDirection);
+                        if (!testDirectionTolerance(directionCost,directionTolerance)) directionCost = Float.MAX_VALUE;
                         break;
 
                     case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
                         directionCost = getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
-                        directionCost = applyDirectionTolerance(directionCost,directionTolerance);
+                        if (!testDirectionTolerance(directionCost,directionTolerance)) directionCost = Float.MAX_VALUE;
                         break;
                 }
 
@@ -163,24 +162,46 @@ public class TrackObjects extends Module {
 
     }
 
-    public boolean testLinkValidity(Obj prevObj, Obj currObj, int[][] spatialLimits) {
+    public boolean testLinkValidity(Obj prevObj, Obj currObj, @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String linkingMethod = parameters.getValue(LINKING_METHOD);
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
         double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
+        String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE);
+        double preferredDirection = parameters.getValue(PREFERRED_DIRECTION);
+        double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE);
 
         // Checking they are within the user-specified maximum distance.  If not, no link is made.
+        boolean allow = true;
         switch (linkingMethod) {
             case LinkingMethods.CENTROID:
                 double dist = getCentroidSeparationCost(prevObj,currObj);
-                return dist <= maxDist;
-
+                allow = dist <= maxDist;
+                break;
             case LinkingMethods.ABSOLUTE_OVERLAP:
                 float overlap = getAbsoluteOverlap(prevObj,currObj,spatialLimits);
-                return overlap != 0 && overlap >= minOverlap;
+                allow = overlap != 0 && overlap >= minOverlap;
+                break;
         }
 
-        return false;
+        // If it's failed here, return false
+        if (!allow) return false;
+
+        // Checking additional costs
+        switch (directionWeightingMode) {
+            case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
+                double directionCost = getAbsoluteOrientationCost(prevObj,currObj,preferredDirection);
+                allow = testDirectionTolerance(directionCost,directionTolerance);
+                System.err.println(directionCost+"_"+allow);
+                break;
+            case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
+                directionCost = getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
+                allow = testDirectionTolerance(directionCost,directionTolerance);
+                System.err.println(directionCost+"_"+allow);
+                break;
+        }
+
+        return allow;
 
     }
 
@@ -252,7 +273,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getAbsoluteOrientationDirectionCost(Obj prevObj, Obj currObj, double preferredDirection) {
+    public static double getAbsoluteOrientationCost(Obj prevObj, Obj currObj, double preferredDirection) {
         // Getting centroid coordinates for three points
         double prevXCent = prevObj.getXMean(true);
         double prevYCent = prevObj.getYMean(true);
@@ -261,7 +282,7 @@ public class TrackObjects extends Module {
         double preferredX = Math.cos(Math.toRadians(preferredDirection));
         double preferredY = Math.sin(Math.toRadians(preferredDirection));
 
-        Vector2D v1 = new Vector2D(prevXCent-preferredX,prevYCent-preferredY);
+        Vector2D v1 = new Vector2D(preferredX,preferredY);
         Vector2D v2 = new Vector2D(currXCent-prevXCent,currYCent-prevYCent);
 
         // MathArithmeticException thrown if two points are coincident.  In these cases, give a cost of 0.
@@ -302,8 +323,8 @@ public class TrackObjects extends Module {
         }
     }
 
-    public static double applyDirectionTolerance(double directionCost, double directionTolerance) {
-        return Math.abs(directionCost) <= directionTolerance ? directionCost : 0;
+    public static boolean testDirectionTolerance(double directionCost, double directionTolerance) {
+        return Math.abs(Math.toDegrees(directionCost)) <= directionTolerance;
     }
 
     public void linkObjects(Obj prevObj, Obj currObj) {
@@ -514,7 +535,7 @@ public class TrackObjects extends Module {
                     if (assignment[curr] != -1) {
                         // Checking if the link is within the user-defined limits (max linking distance, etc.)
                         Obj prevObj = nPObjects[0].get(assignment[curr]);
-                        successfulLink = testLinkValidity(prevObj,currObj,spatialLimits);
+                        successfulLink = testLinkValidity(prevObj,currObj,inputObjects,spatialLimits);
                     }
 
                     // Creating new links and tracks where appropriate
