@@ -458,10 +458,10 @@ public class TrackObjectsTest {
     }
 
 
-    // Testing getDirectionCost (based on 8 random sets of coordinates)
+    // Testing getPreviousStepDirectionCost (based on 8 random sets of coordinates)
 
     @Test
-    public void testGetDirectionCostXY1() {
+    public void testGetPreviousStepDirectionCostXY1() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -486,7 +486,7 @@ public class TrackObjectsTest {
         currObj.addCoord(12,25,0);
         inputObjects.add(currObj);
 
-        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double actual = TrackObjects.getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
         double expected = Math.toRadians(172.3);
 
         assertEquals(expected,actual,tolerance);
@@ -494,7 +494,7 @@ public class TrackObjectsTest {
     }
 
     @Test
-    public void testGetDirectionCostXY2() {
+    public void testGetPreviousStepDirectionCostXY2() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -519,7 +519,7 @@ public class TrackObjectsTest {
         currObj.addCoord(32,25,0);
         inputObjects.add(currObj);
 
-        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double actual = TrackObjects.getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
         double expected = Math.toRadians(176.88);
 
         assertEquals(expected,actual,tolerance);
@@ -527,7 +527,7 @@ public class TrackObjectsTest {
     }
 
     @Test
-    public void testGetDirectionCostXY3() {
+    public void testGetPreviousStepDirectionCostXY3() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -552,7 +552,7 @@ public class TrackObjectsTest {
         currObj.addCoord(63,10,0);
         inputObjects.add(currObj);
 
-        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double actual = TrackObjects.getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
         double expected = Math.toRadians(121.69);
 
         assertEquals(expected,actual,tolerance);
@@ -560,7 +560,7 @@ public class TrackObjectsTest {
     }
 
     @Test
-    public void testGetDirectionCostXY4() {
+    public void testGetPreviousStepDirectionCostXY4() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -585,7 +585,7 @@ public class TrackObjectsTest {
         currObj.addCoord(16,97,0);
         inputObjects.add(currObj);
 
-        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double actual = TrackObjects.getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
         double expected = Math.toRadians(148.19);
 
         assertEquals(expected,actual,tolerance);
@@ -593,7 +593,7 @@ public class TrackObjectsTest {
     }
 
     @Test
-    public void testGetDirectionCostXY5() {
+    public void testGetPreviousStepDirectionCostXY5() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -618,7 +618,7 @@ public class TrackObjectsTest {
         currObj.addCoord(42,92,0);
         inputObjects.add(currObj);
 
-        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double actual = TrackObjects.getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
         double expected = Math.toRadians(129.46);
 
         assertEquals(expected,actual,tolerance);
@@ -626,7 +626,7 @@ public class TrackObjectsTest {
     }
 
     @Test
-    public void testGetDirectionCostXY6() {
+    public void testGetPreviousStepDirectionCostXY6() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -651,7 +651,7 @@ public class TrackObjectsTest {
         currObj.addCoord(85,93,0);
         inputObjects.add(currObj);
 
-        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double actual = TrackObjects.getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
         double expected = Math.toRadians(175.98);
 
         assertEquals(expected,actual,tolerance);
@@ -659,7 +659,7 @@ public class TrackObjectsTest {
     }
 
     @Test
-    public void testGetDirectionCostXY7() {
+    public void testGetPreviousStepDirectionCostXY7() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -684,7 +684,7 @@ public class TrackObjectsTest {
         currObj.addCoord(66,17,0);
         inputObjects.add(currObj);
 
-        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double actual = TrackObjects.getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
         double expected = Math.toRadians(29.19);
 
         assertEquals(expected,actual,tolerance);
@@ -692,7 +692,7 @@ public class TrackObjectsTest {
     }
 
     @Test
-    public void testGetDirectionCostXY8() {
+    public void testGetPreviousStepDirectionCostXY8() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -717,7 +717,7 @@ public class TrackObjectsTest {
         currObj.addCoord(10,82,0);
         inputObjects.add(currObj);
 
-        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double actual = TrackObjects.getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
         double expected = Math.toRadians(74.18);
 
         assertEquals(expected,actual,tolerance);
@@ -725,7 +725,7 @@ public class TrackObjectsTest {
     }
 
     @Test
-    public void testGetDirectionCostXYOverlapping() {
+    public void testGetPreviousStepDirectionCostXYOverlapping() {
         // Setting object parameters
         String inputObjectsName = "Spot";
         String trackObjectsName = "Track";
@@ -750,12 +750,44 @@ public class TrackObjectsTest {
         currObj.addCoord(10,82,0);
         inputObjects.add(currObj);
 
-        double actual = TrackObjects.getDirectionCost(prevObj,currObj,inputObjects);
+        double actual = TrackObjects.getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
         double expected = Math.toRadians(0);
 
         assertEquals(expected,actual,tolerance);
 
     }
+
+
+    // Testing getAbsoluteOrientationDirectionCost (based on 8 random sets of coordinates)
+
+    @Test
+    public void testGetAbsoluteOrientationDirectionCostXY1() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        String trackObjectsName = "Track";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        ObjCollection inputObjects = new ObjCollection("Objects");
+
+        // Creating the previous frame objects
+        Obj prevObj = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        prevObj.addCoord(43,30,0);
+        prevObj.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,1));
+
+        Obj currObj = new Obj(inputObjectsName,3,dppXY,dppZ,calibratedUnits,false).setT(20);
+        currObj.addCoord(12,25,0);
+
+        double orientation = 30;
+
+        double actual = TrackObjects.getAbsoluteOrientationDirectionCost(prevObj,currObj,orientation);
+        double expected = Math.toRadians(172.3);
+
+        assertEquals(expected,actual,tolerance);
+
+    }
+
 
     // Testing getAbsoluteOverlap
 
@@ -1042,7 +1074,7 @@ public class TrackObjectsTest {
                 .updateParameterValue(TrackObjects.LINKING_METHOD,TrackObjects.LinkingMethods.CENTROID)
                 .updateParameterValue(TrackObjects.MAXIMUM_LINKING_DISTANCE,11d)
                 .updateParameterValue(TrackObjects.USE_MEASUREMENT,false)
-                .updateParameterValue(TrackObjects.USE_DIRECTION,false)
+                .updateParameterValue(TrackObjects.DIRECTION_WEIGHTING_MODE,TrackObjects.DirectionWeightingModes.NONE)
                 .updateParameterValue(TrackObjects.USE_VOLUME,false);
 
         assertFalse(trackObjects.testLinkValidity(obj1,obj2,null));

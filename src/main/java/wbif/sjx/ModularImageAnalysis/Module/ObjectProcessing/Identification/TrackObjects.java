@@ -1,3 +1,6 @@
+// TODO: Could do with spinning the core element of this into a series of Track classes in the Common library
+// TODO: Get direction costs working in 3D
+
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
@@ -30,7 +33,9 @@ public class TrackObjects extends Module {
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String USE_VOLUME = "Use volume (minimise volume change)";
     public static final String VOLUME_WEIGHTING = "Volume weighting";
-    public static final String USE_DIRECTION = "Use direction (minimise direction change)";
+    public static final String DIRECTION_WEIGHTING_MODE = "Direction weighting mode";
+    public static final String PREFERRED_DIRECTION = "Preferred direction (-180 to 180 degs)";
+    public static final String DIRECTION_TOLERANCE = "Direction tolerance";
     public static final String DIRECTION_WEIGHTING = "Direction weighting";
     public static final String USE_MEASUREMENT = "Use measurement (minimise change)";
     public static final String MEASUREMENT = "Measurement";
@@ -46,6 +51,15 @@ public class TrackObjects extends Module {
         String CENTROID = "Centroid";
 
         String[] ALL = new String[]{ABSOLUTE_OVERLAP,CENTROID};
+    }
+
+    public interface DirectionWeightingModes {
+        String NONE = "None";
+        String ABSOLUTE_ORIENTATION = "Absolute orientation 2D";
+        String RELATIVE_TO_PREVIOUS_STEP = "Relative to previous step";
+
+        String[] ALL = new String[]{NONE,ABSOLUTE_ORIENTATION,RELATIVE_TO_PREVIOUS_STEP};
+
     }
 
     public interface OrientationModes {
@@ -65,6 +79,7 @@ public class TrackObjects extends Module {
         String LEADING_Z_PX = "TRACKING // LEADING_POINT_Z_(PX)";
 
     }
+
 
     public ArrayList<Obj>[] getCandidateObjects(ObjCollection inputObjects, int t1, int t2) {
         // Creating a pair of ArrayLists to store the current and previous objects
@@ -90,7 +105,9 @@ public class TrackObjects extends Module {
     public float[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
-        boolean useDirection = parameters.getValue(USE_DIRECTION);
+        String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE);
+        double preferredDirection = parameters.getValue(PREFERRED_DIRECTION);
+        double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE);
         double directionWeighting = parameters.getValue(DIRECTION_WEIGHTING);
         boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
         String measurement = parameters.getValue(MEASUREMENT);
@@ -106,24 +123,39 @@ public class TrackObjects extends Module {
                 Obj prevObj = prevObjects.get(prev);
                 Obj currObj = currObjects.get(curr);
 
+                // Calculating main spatial cost
+                double spatialCost = 0;
                 switch (linkingMethod) {
                     case LinkingMethods.CENTROID:
-                        double spatialCost = getCentroidSeparationCost(prevObj, currObj);
-                        double volumeCost = useVolume ? getVolumeCost(prevObj, currObj) : 0;
-                        double directionCost = useDirection ? getDirectionCost(prevObj,currObj,inputObjects) : 0;
-                        double measurementCost = useMeasurement ? getMeasurementCost(prevObj,currObj,measurement) : 0;
-
-                        cost[curr][prev] = (float) (spatialCost + volumeCost*volumeWeighting
-                                + directionCost*directionWeighting + measurementCost*measurementWeighting);
-
+                        spatialCost = getCentroidSeparationCost(prevObj, currObj);
                         break;
 
                     case LinkingMethods.ABSOLUTE_OVERLAP:
                         float overlap = getAbsoluteOverlap(prevObjects.get(prev), currObjects.get(curr), spatialLimits);
-                        cost[curr][prev] = overlap == 0 ? Float.MAX_VALUE : 1/overlap;
+                        spatialCost = overlap == 0 ? Float.MAX_VALUE : 1/overlap;
 
                         break;
                 }
+
+                // Calculating additional costs
+                double volumeCost = useVolume ? getVolumeCost(prevObj, currObj) : 0;
+                double measurementCost = useMeasurement ? getMeasurementCost(prevObj,currObj,measurement) : 0;
+                double directionCost = 0;
+                switch (directionWeightingMode) {
+                    case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
+                        directionCost = getAbsoluteOrientationDirectionCost(prevObj,currObj,preferredDirection);
+                        directionCost = applyDirectionTolerance(directionCost,directionTolerance);
+                        break;
+
+                    case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
+                        directionCost = getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
+                        directionCost = applyDirectionTolerance(directionCost,directionTolerance);
+                        break;
+                }
+
+                cost[curr][prev] = (float) (spatialCost + volumeCost*volumeWeighting + directionCost*directionWeighting
+                        + measurementCost*measurementWeighting);
+
             }
         }
 
@@ -137,7 +169,7 @@ public class TrackObjects extends Module {
         double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
         double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
 
-        // Checking they are within the user-specified maximum distance.  If not, no link is made
+        // Checking they are within the user-specified maximum distance.  If not, no link is made.
         switch (linkingMethod) {
             case LinkingMethods.CENTROID:
                 double dist = getCentroidSeparationCost(prevObj,currObj);
@@ -152,7 +184,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public double getCentroidSeparationCost(Obj prevObj, Obj currObj) {
+    public static double getCentroidSeparationCost(Obj prevObj, Obj currObj) {
         double prevXCent = prevObj.getXMean(true);
         double prevYCent = prevObj.getYMean(true);
         double prevZCent = prevObj.getZMean(true,true);
@@ -164,6 +196,33 @@ public class TrackObjects extends Module {
         return Math.sqrt((prevXCent - currXCent) * (prevXCent - currXCent) +
                 (prevYCent - currYCent) * (prevYCent - currYCent) +
                 (prevZCent - currZCent) * (prevZCent - currZCent));
+
+    }
+
+    public static float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
+        // Getting coordinates for each object
+        TreeSet<Point<Integer>> prevPoints = prevObj.getPoints();
+        TreeSet<Point<Integer>> currPoints = currObj.getPoints();
+
+        // Indexer gives a single value for coordinates.  Will use a HashSet to prevent index duplicates.
+        Indexer indexer = new Indexer(spatialLimits[0][1]+1,spatialLimits[1][1]+1,spatialLimits[2][1]+1);
+
+        int prevSize = prevPoints.size();
+        int currSize = currPoints.size();
+
+        // Combining the coordinates into a single ArrayList.  This will prevent duplicates
+        HashSet<Integer> indices = new HashSet<>();
+        for (Point<Integer> prevPoint:prevPoints) {
+            int[] point = new int[]{prevPoint.getX(),prevPoint.getY(),prevPoint.getZ()};
+            indices.add(indexer.getIndex(point));
+        }
+
+        for (Point<Integer> currPoint:currPoints) {
+            int[] point = new int[]{currPoint.getX(),currPoint.getY(),currPoint.getZ()};
+            indices.add(indexer.getIndex(point));
+        }
+
+        return prevSize+currSize-indices.size();
 
     }
 
@@ -193,7 +252,27 @@ public class TrackObjects extends Module {
 
     }
 
-    public static double getDirectionCost(Obj prevObj, Obj currObj, ObjCollection inputObjects) {
+    public static double getAbsoluteOrientationDirectionCost(Obj prevObj, Obj currObj, double preferredDirection) {
+        // Getting centroid coordinates for three points
+        double prevXCent = prevObj.getXMean(true);
+        double prevYCent = prevObj.getYMean(true);
+        double currXCent = currObj.getXMean(true);
+        double currYCent = currObj.getYMean(true);
+        double preferredX = Math.cos(Math.toRadians(preferredDirection));
+        double preferredY = Math.sin(Math.toRadians(preferredDirection));
+
+        Vector2D v1 = new Vector2D(prevXCent-preferredX,prevYCent-preferredY);
+        Vector2D v2 = new Vector2D(currXCent-prevXCent,currYCent-prevYCent);
+
+        // MathArithmeticException thrown if two points are coincident.  In these cases, give a cost of 0.
+        try {
+            return Math.abs(Vector2D.angle(v1, v2));
+        } catch (MathArithmeticException e) {
+            return 0;
+        }
+    }
+
+    public static double getPreviousStepDirectionCost(Obj prevObj, Obj currObj, ObjCollection inputObjects) {
         // Get direction of previous object
         Measurement prevPrevObjMeas = prevObj.getMeasurement(Measurements.TRACK_PREV_ID);
 
@@ -207,54 +286,24 @@ public class TrackObjects extends Module {
         // Getting centroid coordinates for three points
         double prevXCent = prevObj.getXMean(true);
         double prevYCent = prevObj.getYMean(true);
-        double prevZCent = prevObj.getZMean(true,true);
         double currXCent = currObj.getXMean(true);
         double currYCent = currObj.getYMean(true);
-        double currZCent = currObj.getZMean(true,true);
         double prevPrevXCent = prevPrevObj.getXMean(true);
         double prevPrevYCent = prevPrevObj.getYMean(true);
-        double prevPrevZCent = prevPrevObj.getZMean(true,true);
-
-        // Getting two orientation measurements
-        double ori1 = prevPrevObj.calculateAngle2D(prevObj);
-        double ori2 = prevObj.calculateAngle2D(currObj);
 
         Vector2D v1 = new Vector2D(prevXCent-prevPrevXCent,prevYCent-prevPrevYCent);
         Vector2D v2 = new Vector2D(currXCent-prevXCent,currYCent-prevYCent);
 
         // MathArithmeticException thrown if two points are coincident.  In these cases, give a cost of 0.
         try {
-            return Vector2D.angle(v1, v2);
+            return Math.abs(Vector2D.angle(v1, v2));
         } catch (MathArithmeticException e) {
             return 0;
         }
     }
 
-    public static float getAbsoluteOverlap(Obj prevObj, Obj currObj, int[][] spatialLimits) {
-        // Getting coordinates for each object
-        TreeSet<Point<Integer>> prevPoints = prevObj.getPoints();
-        TreeSet<Point<Integer>> currPoints = currObj.getPoints();
-
-        // Indexer gives a single value for coordinates.  Will use a HashSet to prevent index duplicates.
-        Indexer indexer = new Indexer(spatialLimits[0][1]+1,spatialLimits[1][1]+1,spatialLimits[2][1]+1);
-
-        int prevSize = prevPoints.size();
-        int currSize = currPoints.size();
-
-        // Combining the coordinates into a single ArrayList.  This will prevent duplicates
-        HashSet<Integer> indices = new HashSet<>();
-        for (Point<Integer> prevPoint:prevPoints) {
-            int[] point = new int[]{prevPoint.getX(),prevPoint.getY(),prevPoint.getZ()};
-            indices.add(indexer.getIndex(point));
-        }
-
-        for (Point<Integer> currPoint:currPoints) {
-            int[] point = new int[]{currPoint.getX(),currPoint.getY(),currPoint.getZ()};
-            indices.add(indexer.getIndex(point));
-        }
-
-        return prevSize+currSize-indices.size();
-
+    public static double applyDirectionTolerance(double directionCost, double directionTolerance) {
+        return Math.abs(directionCost) <= directionTolerance ? directionCost : 0;
     }
 
     public void linkObjects(Obj prevObj, Obj currObj) {
@@ -499,7 +548,9 @@ public class TrackObjects extends Module {
         parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
         parameters.add(new Parameter(USE_VOLUME,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(VOLUME_WEIGHTING, Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(USE_DIRECTION,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(DIRECTION_WEIGHTING_MODE,Parameter.CHOICE_ARRAY,DirectionWeightingModes.NONE,DirectionWeightingModes.ALL));
+        parameters.add(new Parameter(PREFERRED_DIRECTION, Parameter.DOUBLE,0.0));
+        parameters.add(new Parameter(DIRECTION_TOLERANCE, Parameter.DOUBLE,180.0));
         parameters.add(new Parameter(DIRECTION_WEIGHTING, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(USE_MEASUREMENT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
@@ -525,25 +576,35 @@ public class TrackObjects extends Module {
 
             case LinkingMethods.CENTROID:
                 returnedParamters.add(parameters.getParameter(MAXIMUM_LINKING_DISTANCE));
-                returnedParamters.add(parameters.getParameter(USE_VOLUME));
-                if (returnedParamters.getValue(USE_VOLUME)) {
-                    returnedParamters.add(parameters.getParameter(VOLUME_WEIGHTING));
-                }
-
-                returnedParamters.add(parameters.getParameter(USE_DIRECTION));
-                if (returnedParamters.getValue(USE_DIRECTION)) {
-                    returnedParamters.add(parameters.getParameter(DIRECTION_WEIGHTING));
-                }
-
-                returnedParamters.add(parameters.getParameter(USE_MEASUREMENT));
-                if (returnedParamters.getValue(USE_MEASUREMENT)) {
-                    returnedParamters.add(parameters.getParameter(MEASUREMENT));
-                    returnedParamters.add(parameters.getParameter(MEASUREMENT_WEIGHTING));
-
-                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(MEASUREMENT,inputObjectsName);
-                }
                 break;
+        }
+
+        returnedParamters.add(parameters.getParameter(USE_VOLUME));
+        if (returnedParamters.getValue(USE_VOLUME)) {
+            returnedParamters.add(parameters.getParameter(VOLUME_WEIGHTING));
+        }
+
+        returnedParamters.add(parameters.getParameter(DIRECTION_WEIGHTING_MODE));
+        switch ((String) parameters.getValue(DIRECTION_WEIGHTING_MODE)) {
+            case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
+                returnedParamters.add(parameters.getParameter(PREFERRED_DIRECTION));
+                returnedParamters.add(parameters.getParameter(DIRECTION_TOLERANCE));
+                returnedParamters.add(parameters.getParameter(DIRECTION_WEIGHTING));
+                break;
+
+            case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
+                returnedParamters.add(parameters.getParameter(DIRECTION_TOLERANCE));
+                returnedParamters.add(parameters.getParameter(DIRECTION_WEIGHTING));
+                break;
+        }
+
+        returnedParamters.add(parameters.getParameter(USE_MEASUREMENT));
+        if (returnedParamters.getValue(USE_MEASUREMENT)) {
+            returnedParamters.add(parameters.getParameter(MEASUREMENT));
+            returnedParamters.add(parameters.getParameter(MEASUREMENT_WEIGHTING));
+
+            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+            parameters.updateValueSource(MEASUREMENT,inputObjectsName);
         }
 
         returnedParamters.add(parameters.getParameter(MAXIMUM_MISSING_FRAMES));
