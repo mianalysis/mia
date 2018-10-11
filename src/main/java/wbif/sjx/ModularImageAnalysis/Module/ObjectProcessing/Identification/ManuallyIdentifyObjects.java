@@ -12,14 +12,17 @@ import ij.plugin.Duplicator;
 import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -47,6 +50,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String INTERPOLATE_ACROSS_TIME = "Interpolate across time";
 
 
     public static void main(String[] args) {
@@ -69,11 +73,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
 
-        JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following<br>(or click \"Finish adding objects\" at any time)</html>");
+        JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following" +
+                "<br>(or click \"Finish adding objects\" at any time)." +
+                "<br>Different timepoints must be added as new objects.</html>");
         headerPanel.add(headerLabel);
 
         frame.add(headerPanel);
-
 
         // Buttons panel
         JPanel buttonsPanel = new JPanel();
@@ -113,6 +118,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
+    public static void applyTemporalInterpolation(ObjCollection outputObjects) {
+        
+    }
+
     @Override
     public String getTitle() {
         return "Manually identify objects";
@@ -136,6 +145,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        boolean interpolateTime = parameters.getValue(INTERPOLATE_ACROSS_TIME);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -166,6 +176,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         displayImagePlus.show();
         showOptionsPanel();
 
+        // All the while the control is open, do nothing
         while (frame != null) {
             try {
                 Thread.sleep(100);
@@ -173,12 +184,25 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 e.printStackTrace();
             }
         }
+
+        // If necessary, apply the temporal interpolation
+        applyTemporalInterpolation(outputObjects);
+
+        // Showing the selected objects
+        if (showOutput) {
+            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,mode,hues).getImagePlus();
+            dispIpl.setLut(LUTs.Random(true));
+            dispIpl.show();
+        }
     }
 
     @Override
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
+        parameters.add(new Parameter(INTERPOLATE_ACROSS_TIME,Parameter.BOOLEAN,false));
 
     }
 
@@ -213,6 +237,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
                 // Adding the new object
                 Obj outputObject = new Obj(outputObjectsName,ID,dppXY,dppZ,calibrationUnits,twoD);
+                outputObject.setT(displayImagePlus.getT()-1);
                 for (Point point:points) {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
@@ -250,6 +275,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
                 // Adding the new object
                 outputObject = outputObjects.get(ID);
+                outputObject.setT(displayImagePlus.getT()-1);
                 for (Point point:points) {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
