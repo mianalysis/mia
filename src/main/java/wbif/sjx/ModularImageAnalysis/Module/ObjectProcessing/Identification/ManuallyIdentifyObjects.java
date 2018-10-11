@@ -235,6 +235,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 overlay.add(textRoi);
                 displayImagePlus.updateAndDraw();
 
+                // Setting the number field to this number
+                objectNumberField.setText(String.valueOf(ID));
+
                 outputObjects.add(outputObject);
 
                 break;

@@ -192,12 +192,10 @@ public class TrackObjects extends Module {
             case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
                 double directionCost = getAbsoluteOrientationCost(prevObj,currObj,preferredDirection);
                 allow = testDirectionTolerance(directionCost,directionTolerance);
-                System.err.println(directionCost+"_"+allow);
                 break;
             case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
                 directionCost = getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
                 allow = testDirectionTolerance(directionCost,directionTolerance);
-                System.err.println(directionCost+"_"+allow);
                 break;
         }
 

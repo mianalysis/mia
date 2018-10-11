@@ -9,6 +9,8 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
  * Created by sc13967 on 14/03/2018.
  */
 public class GUISeparator extends Module{
+    private static boolean verbose = false;
+    
     public static final String SHOW_BASIC = "Show basic";
     public static final String EXPANDED_BASIC = "Expanded basic GUI";
     public static final String EXPANDED_EDITING = "Expanded editing GUI";
