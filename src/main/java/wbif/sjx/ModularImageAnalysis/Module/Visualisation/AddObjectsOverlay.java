@@ -396,7 +396,7 @@ public class AddObjectsOverlay extends Module {
                     int maxFrame = nFrames;
                     if (limitHistory) maxFrame = p2.getT()+history;
 
-                    for (int t = p2.getT();t<maxFrame;t++) {
+                    for (int t = p2.getT();t<maxFrame-1;t++) {
                         PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
 
                         if (ipl.isHyperStack()) {
