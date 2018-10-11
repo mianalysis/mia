@@ -368,11 +368,6 @@ public class AddObjectsOverlay extends Module {
         boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
         int history = parameters.getValue(TRACK_HISTORY);
 
-        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-        if (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1) {
-            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-        }
-
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
 
@@ -403,8 +398,16 @@ public class AddObjectsOverlay extends Module {
 
                     for (int t = p2.getT();t<maxFrame;t++) {
                         PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
-//                        Line line = new Line(x1, y1, x2, y2);
-                        line.setPosition(t+1);
+
+                        if (ipl.isHyperStack()) {
+                            ipl.setPosition(1,1,t+1);
+                            line.setPosition(1,1, t+1);
+                        } else {
+                            int pos = Math.max(Math.max(1, 1), t+1);
+                            ipl.setPosition(pos);
+                            line.setPosition(pos);
+                        }
+
                         line.setStrokeWidth(lineWidth);
                         line.setStrokeColor(color);
                         ovl.addElement(line);

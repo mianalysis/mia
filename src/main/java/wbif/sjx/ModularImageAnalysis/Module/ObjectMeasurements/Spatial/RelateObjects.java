@@ -314,47 +314,70 @@ public class RelateObjects extends Module {
         }
     }
 
-    public void spatialLinking(ObjCollection parentObjects, ObjCollection childObjects) {
+//    public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame) {
+//        int nCombi = parentObjects.size()*childObjects.size();
+//        int count = 0;
+//
+//        // Runs through each child object against each parent object
+//        for (Obj parentObject:parentObjects.values()) {
+//            // Getting parent coordinates
+//            ArrayList<Integer> parentX = parentObject.getXCoords();
+//            ArrayList<Integer> parentY = parentObject.getYCoords();
+//            ArrayList<Integer> parentZ = parentObject.getZCoords();
+//
+//            // Creating a Hyperstack to hold the distance transform
+//            double[][] range = parentObject.getExtents(true,false);
+//            ImagePlus ipl = IJ.createHyperStack("Objects", (int) (range[0][1]-range[0][0] + 1),
+//                    (int) (range[1][1]-range[1][0] + 1), 1, (int) (range[2][1]-range[2][0]), 1, 8);
+//
+//            // Setting pixels corresponding to the parent object to 1
+//            for (int i=0;i<parentX.size();i++) {
+//                ipl.setPosition(1,(int) (parentZ.get(i)-range[2][0]+1),1);
+//                ipl.getProcessor().set((int) (parentX.get(i)-range[0][0]), (int) (parentY.get(i)-range[1][0]),255);
+//            }
+//
+//            for (Obj childObject:childObjects.values()) {
+//                // Only testing if the child is present in the same timepoint as the parent
+//                if (linkInSameFrame && parentObject.getT() != childObject.getT()) continue;
+//
+//                // Getting the child centroid location
+//                int xCent = (int) Math.round(childObject.getXMean(true));
+//                int yCent = (int) Math.round(childObject.getYMean(true));
+//                int zCent = (int) Math.round(childObject.getZMean(true,false)); // Relates to image location
+//
+//                // Testing if the child centroid exists in the object
+//                for (int i=0;i<parentX.size();i++) {
+//                    if (parentX.get(i)==xCent & parentY.get(i)==yCent & parentZ.get(i)==zCent) {
+//                        parentObject.addChild(childObject);
+//                        childObject.addParent(parentObject);
+//
+//                        break;
+//
+//                    }
+//                }
+//            }
+//            writeMessage("Compared "+(childObjects.size()*count++)+" of "+nCombi+" pairs");
+//        }
+//    }
+
+    public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame) {
         int nCombi = parentObjects.size()*childObjects.size();
         int count = 0;
 
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
-            // Getting parent coordinates
-            ArrayList<Integer> parentX = parentObject.getXCoords();
-            ArrayList<Integer> parentY = parentObject.getYCoords();
-            ArrayList<Integer> parentZ = parentObject.getZCoords();
-
-            // Creating a Hyperstack to hold the distance transform
-            double[][] range = parentObject.getExtents(true,false);
-            ImagePlus ipl = IJ.createHyperStack("Objects", (int) (range[0][1]-range[0][0] + 1),
-                    (int) (range[1][1]-range[1][0] + 1), 1, (int) (range[2][1]-range[2][0]), 1, 8);
-
-            // Setting pixels corresponding to the parent object to 1
-            for (int i=0;i<parentX.size();i++) {
-                ipl.setPosition(1,(int) (parentZ.get(i)-range[2][0]+1),1);
-                ipl.getProcessor().set((int) (parentX.get(i)-range[0][0]), (int) (parentY.get(i)-range[1][0]),255);
-
-            }
-
             for (Obj childObject:childObjects.values()) {
                 // Only testing if the child is present in the same timepoint as the parent
-                if (parentObject.getT() != childObject.getT()) continue;
+                if (linkInSameFrame && parentObject.getT() != childObject.getT()) continue;
 
-                // Getting the child centroid location
                 int xCent = (int) Math.round(childObject.getXMean(true));
                 int yCent = (int) Math.round(childObject.getYMean(true));
                 int zCent = (int) Math.round(childObject.getZMean(true,false)); // Relates to image location
+                Point<Integer> centroid = new Point<>(xCent,yCent,zCent);
 
-                // Testing if the child centroid exists in the object
-                for (int i=0;i<parentX.size();i++) {
-                    if (parentX.get(i)==xCent & parentY.get(i)==yCent & parentZ.get(i)==zCent) {
-                        parentObject.addChild(childObject);
-                        childObject.addParent(parentObject);
-
-                        break;
-
-                    }
+                if (parentObject.containsPoint(centroid)) {
+                    parentObject.addChild(childObject);
+                    childObject.addParent(parentObject);
                 }
             }
             writeMessage("Compared "+(childObjects.size()*count++)+" of "+nCombi+" pairs");
@@ -433,7 +456,7 @@ public class RelateObjects extends Module {
 
             case RelateModes.SPATIAL_OVERLAP:
                 writeMessage("Relating objects by spatial overlap");
-                spatialLinking(parentObjects,childObjects);
+                spatialOverlap(parentObjects,childObjects,linkInSameFrame);
                 break;
 
         }
