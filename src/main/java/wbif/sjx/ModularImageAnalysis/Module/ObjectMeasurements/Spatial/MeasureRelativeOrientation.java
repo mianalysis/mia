@@ -162,6 +162,16 @@ public class MeasureRelativeOrientation extends Module {
         }
     }
 
+    static void assignMissingMeasurements(Obj object, String xyOriMeasName, String xzOriMeasName, String orientationMode, String measurementReference) {
+        switch (orientationMode) {
+            case OrientationModes.X_Y_PLANE:
+                String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,measurementReference);
+                object.addMeasurement(new Measurement(measurementName,Double.NaN));
+
+                break;
+        }
+    }
+
     public static double getXYAngle(Obj object, double xyOrientation, Point<Double> referencePoint) {
         xyOrientation = Math.toRadians(xyOrientation);
         double angleToReference = object.calculateAngle2D(referencePoint);
@@ -233,8 +243,13 @@ public class MeasureRelativeOrientation extends Module {
         // Processing each object
         for (Obj inputObject:inputObjects.values()) {
             int t = inputObject.getT();
-            Point<Double> referencePoint = referencePoints.get(t);
-            processObject(inputObject,xyOriMeasName,xzOriMeasName,referencePoint,orientationMode,measurementReference);
+
+            if (!referencePoints.containsKey(t)) {
+                assignMissingMeasurements(inputObject, xyOriMeasName, xzOriMeasName, orientationMode, measurementReference);
+            } else {
+                Point<Double> referencePoint = referencePoints.get(t);
+                processObject(inputObject, xyOriMeasName, xzOriMeasName, referencePoint, orientationMode, measurementReference);
+            }
         }
     }
 
