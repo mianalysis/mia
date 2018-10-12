@@ -7,7 +7,6 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MeasureRelativeOrientation extends Module {
@@ -17,7 +16,7 @@ public class MeasureRelativeOrientation extends Module {
     public static final String ORIENTATION_IN_XY_Z_MEASUREMENT = "Orientation in XY/Z measurement";
     public static final String REFERENCE_MODE = "Reference mode";
     public static final String REFERENCE_IMAGE = "Reference image";
-    public static final String MEASUREMENT_OBJECTS = "Measurement objects";
+    public static final String REFERENCE_OBJECTS = "Reference objects";
     public static final String OBJECT_CHOICE_MODE = "Object choice mode";
 
 
@@ -27,7 +26,7 @@ public class MeasureRelativeOrientation extends Module {
         String BOTH_X_Y_AND_XY_Z_PLANES = "Orientation in both X-Y and XY-Z planes";
         String FULL_3D = "Orientation in 3D";
 
-//        String[] ALL = new String[]{X_Y_PLANE,XY_Z_PLANE,BOTH_X_Y_AND_XY_Z_PLANES,FULL_3D};
+        //        String[] ALL = new String[]{X_Y_PLANE,XY_Z_PLANE,BOTH_X_Y_AND_XY_Z_PLANES,FULL_3D};
         String[] ALL = new String[]{X_Y_PLANE};
 
     }
@@ -62,10 +61,10 @@ public class MeasureRelativeOrientation extends Module {
                 reference = referenceImageName+" IM_CENTRE";
                 break;
             case ReferenceModes.OBJECT_CENTROID:
-                String measurementObjectsName = parameters.getValue(MEASUREMENT_OBJECTS);
+                String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
                 String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
                 String choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
-                reference = measurementObjectsName+"_"+choice+"_OBJ_CENTROID";
+                reference = referenceObjectsName+"_"+choice+"_OBJ_CENTROID";
                 break;
         }
 
@@ -96,26 +95,56 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static ArrayList<Point<Double>> getObjectCentroid(ObjCollection objects, String choiceMode, String orientationMode){
+    static HashMap<Integer,Point<Double>> getObjectCentroids(ObjCollection objects, String choiceMode, String orientationMode, int nFrames){
+        HashMap<Integer,Point<Double>> centres = new HashMap<>();
 
-        // NEEDS TO GET CENTROID ACROSS ALL FRAMES.  IF THERE ISN'T A REFERENCE OBJECT IN A PARTIULAR FRAME, TAKE THE
-        // CLOSEST POINT IN TIME.  IF THERE ARE NO REFERENCE OBJECTS, RETURN DOUBLE.NAN VALUES FOR MEASUREMENTS.
-//        switch (choiceMode) {
-//            case ObjectChoiceModes.LARGEST_OBJECT:
-//                int objSize = Integer.MIN_VALUE;
-//                Obj largestObject = null;
-//                for (Obj object:objects.values()) {
-//                    if (object.getNVoxels() > objSize) {
-//                        objSize = object.getNVoxels();
-//                        largestObject = object;
-//                    }
-//                }
-//                return new Point<Double>();
-//            case ObjectChoiceModes.SMALLEST_OBJECT:
-//
-//        }
+        for (int t=0;t<nFrames;t++) {
+            // Initialising the references for this timepoint
+            Obj referenceObject = null;
+            int objSize = 0;
+            switch (choiceMode) {
+                case ObjectChoiceModes.LARGEST_OBJECT:
+                    objSize = Integer.MIN_VALUE;
+                    break;
+                case ObjectChoiceModes.SMALLEST_OBJECT:
+                    objSize = Integer.MAX_VALUE;
+                    break;
+            }
 
-        return null;
+            // Iterating over each object, checking it's size against the current reference values
+            for (Obj object : objects.values()) {
+                // Only check objects in the current frame
+                if (object.getT() != t) continue;
+
+                switch (choiceMode) {
+                    case ObjectChoiceModes.LARGEST_OBJECT:
+                        if (object.getNVoxels() > objSize) {
+                            objSize = object.getNVoxels();
+                            referenceObject = object;
+                        }
+                        break;
+                    case ObjectChoiceModes.SMALLEST_OBJECT:
+                        if (object.getNVoxels() < objSize) {
+                            objSize = object.getNVoxels();
+                            referenceObject = object;
+                        }
+                        break;
+                }
+            }
+
+            // Getting reference object centroid
+            if (referenceObject != null) {
+                double x = referenceObject.getXMean(true);
+                double y = referenceObject.getYMean(true);
+                double z = referenceObject.getZMean(true, false);
+
+                // Creating a new reference point and adding it to this timepoint
+                Point<Double> referencePoint = new Point<>(x, y, z);
+                centres.put(t, referencePoint);
+            }
+        }
+
+        return centres;
 
     }
 
@@ -178,7 +207,7 @@ public class MeasureRelativeOrientation extends Module {
         String xzOriMeasName = parameters.getValue(ORIENTATION_IN_XY_Z_MEASUREMENT);
         String referenceMode = parameters.getValue(REFERENCE_MODE);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
-        String measurementObjectsName = parameters.getValue(MEASUREMENT_OBJECTS);
+        String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
         String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
 
         // Getting measurement reference name
@@ -193,7 +222,9 @@ public class MeasureRelativeOrientation extends Module {
                 break;
 
             case ReferenceModes.OBJECT_CENTROID:
-
+                int nFrames = inputObjects.getTemporalLimits()[1]+1;
+                ObjCollection referenceObjects = workspace.getObjectSet(referenceObjectsName);
+                referencePoints = getObjectCentroids(referenceObjects,objectChoiceMode,orientationMode,nFrames);
                 break;
         }
 
@@ -215,7 +246,7 @@ public class MeasureRelativeOrientation extends Module {
         parameters.add(new Parameter(ORIENTATION_IN_XY_Z_MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null));
         parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.IMAGE_CENTRE,ReferenceModes.ALL));
         parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(MEASUREMENT_OBJECTS,Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(REFERENCE_OBJECTS,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(OBJECT_CHOICE_MODE,Parameter.CHOICE_ARRAY,ObjectChoiceModes.LARGEST_OBJECT,ObjectChoiceModes.ALL));
 
     }
@@ -254,7 +285,7 @@ public class MeasureRelativeOrientation extends Module {
                 break;
 
             case ReferenceModes.OBJECT_CENTROID:
-                returnedParameters.add(parameters.getParameter(MEASUREMENT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(REFERENCE_OBJECTS));
                 returnedParameters.add(parameters.getParameter(OBJECT_CHOICE_MODE));
                 break;
         }
@@ -282,13 +313,13 @@ public class MeasureRelativeOrientation extends Module {
                 referenceDescription = "the centre of the image \""+referenceImageName+"\"";
                 break;
             case ReferenceModes.OBJECT_CENTROID:
-                String measurementObjectsName = parameters.getValue(MEASUREMENT_OBJECTS);
+                String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
                 String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
                 String choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
-                referenceDescription = "the centroid of the "+choice+" object in the set "+measurementObjectsName;
+                referenceDescription = "the centroid of the "+choice+" object in the set "+referenceObjectsName;
                 break;
         }
-        
+
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
             case OrientationModes.X_Y_PLANE:
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,reference);
@@ -298,7 +329,7 @@ public class MeasureRelativeOrientation extends Module {
 
                 String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
                 measurementReference.setDescription("Orientation of the object (specified by the measurements \""+
-                xyOriMeasName+"\") relative to "+referenceDescription+". Measured in degrees between 0 and 90.");
+                        xyOriMeasName+"\") relative to "+referenceDescription+". Measured in degrees between 0 and 90.");
                 break;
         }
 

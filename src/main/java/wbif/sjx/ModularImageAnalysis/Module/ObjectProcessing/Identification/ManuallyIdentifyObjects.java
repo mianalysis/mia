@@ -3,13 +3,18 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
 import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import ij.plugin.SubHyperstackMaker;
+import ij.process.BinaryInterpolator;
+import ij.process.ImageProcessor;
 import ij.process.LUT;
+import ij.process.StackStatistics;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
@@ -23,6 +28,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -50,7 +56,18 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
-    public static final String INTERPOLATE_ACROSS_TIME = "Interpolate across time";
+    public static final String INTERPOLATION_MODE = "Interpolation mode";
+
+
+    public interface InterpolationModes {
+        String NONE = "None";
+        String SPATIAL = "Spatial";
+        String TEMPORAL = "Temporal";
+        String SPATIAL_AND_TEMPORAL = "Spatial and temporal";
+
+        String[] ALL = new String[]{NONE, SPATIAL, TEMPORAL, SPATIAL_AND_TEMPORAL};
+
+    }
 
 
     public static void main(String[] args) {
@@ -118,9 +135,79 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public static void applyTemporalInterpolation(ObjCollection outputObjects) {
-        
+    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode) {
+        // Create a binary image of the objects
+        String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
+        String source = ObjCollection.SingleColours.WHITE;
+        HashMap<Integer, Float> hues = outputObjects.getHues(colourMode, source, false);
+        Image binaryImage = outputObjects.convertObjectsToImage("Binary",templateImage,colourMode,hues);
+        ImagePlus binaryIpl = binaryImage.getImagePlus();
+
+        switch (interpolationMode) {
+            case InterpolationModes.SPATIAL:
+                applySpatialInterpolation(binaryIpl);
+                break;
+
+            case InterpolationModes.TEMPORAL:
+                applyTemporalInterpolation(binaryIpl);
+                break;
+
+            case InterpolationModes.SPATIAL_AND_TEMPORAL:
+                applySpatialInterpolation(binaryIpl);
+                applyTemporalInterpolation(binaryIpl);
+                break;
+        }
+
+        // Converting binary image back to objects
+        return binaryImage.convertImageToObjects(outputObjects.getName(),false);
+
     }
+
+    void applyTemporalInterpolation(ImagePlus binaryIpl) {
+        int nSlices = binaryIpl.getNSlices();
+        int nFrames = binaryIpl.getNFrames();
+
+        BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
+
+        // We only want to interpolate in time, so need to process each Z-slice of the stack separately
+        for (int z=1;z<=nSlices;z++) {
+            // Extracting the slice and interpolating
+            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
+            if (!checkStackForInterpolation(sliceIpl.getStack())) continue;
+            binaryInterpolator.run(sliceIpl.getStack());
+        }
+    }
+
+    void applySpatialInterpolation(ImagePlus binaryIpl) {
+        int nSlices = binaryIpl.getNSlices();
+        int nFrames = binaryIpl.getNFrames();
+
+        BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
+
+        // We only want to interpolate in z, so need to process each timepoint separately
+        for (int t=1;t<=nFrames;t++) {
+            // Extracting the slice and interpolating
+            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", "1-" + nSlices, t + "-" + t);
+            if (!checkStackForInterpolation(sliceIpl.getStack())) continue;
+            binaryInterpolator.run(sliceIpl.getStack());
+        }
+    }
+
+    /**
+     * Verifies that at least two images in the stack contain non-zero pixels
+     * @param stack
+     * @return
+     */
+    boolean checkStackForInterpolation(ImageStack stack) {
+        int count = 0;
+        for (int i=1;i<=stack.getSize();i++) {
+            if (stack.getProcessor(i).getStatistics().max > 0) count++;
+        }
+
+        return count >= 2;
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -145,7 +232,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        boolean interpolateTime = parameters.getValue(INTERPOLATE_ACROSS_TIME);
+        String interpolationMode = parameters.getValue(INTERPOLATION_MODE);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -169,7 +256,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Initialising output objects
         outputObjects = new ObjCollection(outputObjectsName);
-        workspace.addObjects(outputObjects);
 
         // Displaying the image and showing the control
         displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
@@ -185,8 +271,16 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             }
         }
 
-        // If necessary, apply the temporal interpolation
-        applyTemporalInterpolation(outputObjects);
+        // If necessary, apply interpolation
+        switch (interpolationMode) {
+            case InterpolationModes.SPATIAL:
+            case InterpolationModes.TEMPORAL:
+            case InterpolationModes.SPATIAL_AND_TEMPORAL:
+                outputObjects = applyInterpolation(outputObjects, inputImage, interpolationMode);
+                break;
+        }
+
+        workspace.addObjects(outputObjects);
 
         // Showing the selected objects
         if (showOutput) {
@@ -202,7 +296,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
-        parameters.add(new Parameter(INTERPOLATE_ACROSS_TIME,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(INTERPOLATION_MODE,Parameter.CHOICE_ARRAY,InterpolationModes.SPATIAL,InterpolationModes.ALL));
 
     }
 

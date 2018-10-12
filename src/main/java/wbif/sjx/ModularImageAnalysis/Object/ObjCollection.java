@@ -413,4 +413,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         return null;
 
     }
+
+    public void resetCollection() {
+        clear();
+        maxID = 0;
+    }
 }

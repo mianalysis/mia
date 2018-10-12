@@ -84,7 +84,7 @@ public class ExtractSubstack extends Module {
         for (int t=startingT;t<=endingT;t=t+intervalT) tList.add(t);
 
         // Generating the substack and adding to the workspace
-        ImagePlus outputImagePlus =  SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList);
+        ImagePlus outputImagePlus =  SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();
         Image outputImage = new Image(outputImageName,outputImagePlus);
         workspace.addImage(outputImage);
 
