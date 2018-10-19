@@ -100,6 +100,9 @@ public class CreateDistanceMap extends Module {
     }
 
     public static void applyMasking(Image inputImage, ObjCollection inputObjects, String maskingMode) {
+        // If the masking mode is set to INSIDE_AND_OUTSIDE skip this method
+        if (maskingMode.equals(MaskingModes.INSIDE_AND_OUTSIDE)) return;
+
         ImagePlus inputIpl = inputImage.getImagePlus();
 
         // Convert to image (and possibly invert), set to binary image (0 and 1) and multiply as appropriate
@@ -165,7 +168,7 @@ public class CreateDistanceMap extends Module {
             inputIpl.setPosition(1,z+1,t+1);
             double currentValue = inputIpl.getProcessor().getPixelValue(x,y);
             inputIpl.getProcessor().setf(x,y,(float) (currentValue/maxDistance));
-            System.err.println((float) (currentValue/maxDistance));
+            
         }
     }
 

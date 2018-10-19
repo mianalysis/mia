@@ -3,11 +3,13 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import ij.process.ImageProcessor;
 import ij.process.StackStatistics;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -16,6 +18,8 @@ import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 
 import java.util.LinkedHashMap;
+
+import static wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution.getDistanceBins;
 
 public class MeasureRadialIntensityProfile extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -63,48 +67,6 @@ public class MeasureRadialIntensityProfile extends Module {
 
     }
 
-    /**
-     * Calculates the bin centroids for the distance measurements from the maximum range in the distance map.
-     * @param distanceMap
-     * @param nRadialSamples
-     * @return
-     */
-    static double[] getDistanceBins(Image distanceMap, int nRadialSamples) {
-        // Getting the maximum distance measurement
-        StackStatistics stackStatistics = new StackStatistics(distanceMap.getImagePlus());
-        double minDistance = stackStatistics.min;
-        double maxDistance = stackStatistics.max;
-
-        double[] distanceBins = new double[nRadialSamples];
-        double binWidth = (maxDistance-minDistance)/(nRadialSamples-1);
-        for (int i=0;i<nRadialSamples;i++) {
-            distanceBins[i] = (i*binWidth)+minDistance;
-            System.err.println("Bin "+i+"_"+(i*binWidth));
-        }
-
-        return distanceBins;
-
-    }
-
-    /**
-     * Calculates the bin centroids for the distance measurements from provided range values.
-     * @param nRadialSamples
-     * @param minDistance
-     * @param maxDistance
-     * @return
-     */
-    static double[] getDistanceBins(int nRadialSamples, double minDistance, double maxDistance) {
-        double[] distanceBins = new double[nRadialSamples];
-        double binWidth = (maxDistance-minDistance)/(nRadialSamples-1);
-        for (int i=0;i<nRadialSamples;i++) {
-            distanceBins[i] = (i*binWidth)+minDistance;
-            System.err.println("Bin "+i+"_"+(i*binWidth));
-        }
-
-        return distanceBins;
-
-    }
-
     static CumStat[] processObject(Obj inputObject, Image inputImage, Image distanceMap, double[] distanceBins) {
         // Setting up CumStats to hold results
         CumStat[] cumStats = new CumStat[distanceBins.length];
@@ -129,7 +91,6 @@ public class MeasureRadialIntensityProfile extends Module {
 
             double distance = distanceMapIpl.getProcessor().getPixelValue(x, y);
             double intensity = inputIpl.getProcessor().getPixelValue(x, y);
-            System.err.println(intensity);
             double bin = Math.round((distance - minDist) / binWidth) * binWidth + minDist;
 
             // Ensuring the bin is within the specified range
@@ -224,8 +185,8 @@ public class MeasureRadialIntensityProfile extends Module {
             CumStat[] cumStats = processObject(inputObject,inputImage,distanceMap,distanceBins);
 
             for (int i=0;i<distanceBins.length;i++) {
-                double meanVal = cumStats[i].getMean();
-                resultsTable.setValue(("Object "+count),i,meanVal);
+                resultsTable.setValue(("Object "+count+" mean"),i,cumStats[i].getMean());
+                resultsTable.setValue(("Object "+count+" N"),i,cumStats[i].getN());
             }
         }
 
