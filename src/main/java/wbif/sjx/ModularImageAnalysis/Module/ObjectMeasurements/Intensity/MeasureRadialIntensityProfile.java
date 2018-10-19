@@ -99,7 +99,7 @@ public class MeasureRadialIntensityProfile extends Module {
 
             // Adding the measurement to the relevant bin
             for (int i=0;i<distanceBins.length;i++) {
-                if (bin == distanceBins[i]) cumStats[i].addMeasure(intensity);
+                if (Math.abs(bin-distanceBins[i]) < binWidth/2) cumStats[i].addMeasure(intensity);
             }
         }
 

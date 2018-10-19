@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
 import ij.gui.Plot;
+import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
 import ij.process.StackStatistics;
@@ -30,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -285,7 +287,7 @@ public class MeasureIntensityDistribution extends Module {
                             bin = Math.min(bin, maxDist);
                             bin = Math.max(bin, minDist);
                             for (int i=0;i<distanceBins.length;i++) {
-                                if (bin == distanceBins[i]) cumStats[i].addMeasure(intensity);
+                                if (Math.abs(bin-distanceBins[i]) < binWidth/2) cumStats[i].addMeasure(intensity);
                             }
                         }
                     }
@@ -337,7 +339,7 @@ public class MeasureIntensityDistribution extends Module {
 
         // Adding headers to the row
         Cell cell = row.createCell(0);
-        cell.setCellValue("Distance (px)");
+        cell.setCellValue("Distance");
 
         cell = row.createCell(1);
         cell.setCellValue("Mean");
@@ -431,7 +433,8 @@ public class MeasureIntensityDistribution extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
 
         if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
-            proximalDistance = inputImage.getImagePlus().getCalibration().getRawX(proximalDistance);
+            Calibration calibration = inputImage.getImagePlus().getCalibration();
+            proximalDistance = calibration.getRawX(proximalDistance);
         }
 
         switch (measurementType) {
@@ -441,11 +444,10 @@ public class MeasureIntensityDistribution extends Module {
                 // Getting the distance bin centroids
                 double[] distanceBins = null;
                 switch (rangeMode) {
-                    case MeasureRadialIntensityProfile.RangeModes.AUTOMATIC_RANGE:
+                    case RangeModes.AUTOMATIC_RANGE:
                         distanceBins = getDistanceBins(distanceMap, nRadialSample);
                         break;
-
-                    case MeasureRadialIntensityProfile.RangeModes.MANUAL_RANGE:
+                    case RangeModes.MANUAL_RANGE:
                         distanceBins = getDistanceBins(nRadialSample, minDistance, maxDistance);
                         break;
                 }
@@ -460,8 +462,7 @@ public class MeasureIntensityDistribution extends Module {
                     case SaveProfileModes.INDIVIDUAL_FILES:
                         File rootFile = workspace.getMetadata().getFile();
                         String path = rootFile.getParent()+ MIA.slashes +FilenameUtils.removeExtension(rootFile.getName());
-                        path = path + "_S" + workspace.getMetadata().getSeriesNumber();
-                        path = path + profileFileSuffix+ ".xlsx";
+                        path = path + "_S" + workspace.getMetadata().getSeriesNumber()  + profileFileSuffix+ ".xlsx";
                         writeResultsFile(path,distanceBins,cumStats);
                         break;
                 }

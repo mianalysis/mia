@@ -5,11 +5,13 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -26,6 +28,7 @@ public class CreateDistanceMap extends Module {
     public static final String INVERT_MAP_WITHIN_OBJECTS = "Invert map within objects";
     public static final String MASKING_MODE = "Masking mode";
     public static final String NORMALISE_MAP_PER_OBJECT = "Normalise map per object";
+    public static final String SPATIAL_UNITS = "Spatial units";
 
 
     public interface ReferenceModes {
@@ -42,6 +45,14 @@ public class CreateDistanceMap extends Module {
         String OUTSIDE_ONLY = "Outside only";
 
         String[] ALL = new String[]{INSIDE_AND_OUTSIDE,INSIDE_ONLY,OUTSIDE_ONLY};
+
+    }
+
+    public interface SpatialUnits {
+        String CALIBRATED = "Calibrated";
+        String PIXELS = "Pixel";
+
+        String[] ALL = new String[]{CALIBRATED,PIXELS};
 
     }
 
@@ -172,6 +183,28 @@ public class CreateDistanceMap extends Module {
         }
     }
 
+    static void applyCalibratedUnits(Image inputImage, double dppXY) {
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        ImageTypeConverter.convertType(inputIpl,32,ImageTypeConverter.ScalingModes.CLIP);
+
+        int width = inputIpl.getWidth();
+        int height = inputIpl.getHeight();
+        int nSlices = inputIpl.getNSlices();
+        int nFrames = inputIpl.getNFrames();
+
+        for (int t=0;t<nFrames;t++) {
+            for (int z=0;z<nSlices;z++) {
+                inputIpl.setPosition(1,z+1,t+1);
+                ImageProcessor inputIpr = inputIpl.getProcessor();
+
+                for (int x=0;x<width;x++) {
+                    for (int y=0;y<height;y++) {
+                        inputIpr.setf(x,y,(float) (inputIpr.getf(x,y)*dppXY));
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public String getTitle() {
@@ -204,6 +237,7 @@ public class CreateDistanceMap extends Module {
         boolean invertInside = parameters.getValue(INVERT_MAP_WITHIN_OBJECTS);
         String maskingMode = parameters.getValue(MASKING_MODE);
         boolean normaliseMap = parameters.getValue(NORMALISE_MAP_PER_OBJECT);
+        String spatialUnits = parameters.getValue(SPATIAL_UNITS);
 
         // Initialising the distance map
         Image distanceMap = null;
@@ -224,6 +258,10 @@ public class CreateDistanceMap extends Module {
 
         // Performing normalisation (only when using inside-only masking)
         if (maskingMode.equals(MaskingModes.INSIDE_ONLY) && normaliseMap) applyNormalisation(distanceMap,inputObjects);
+
+        // Applying spatial calibration
+        double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
+        if (spatialUnits.equals(SpatialUnits.CALIBRATED)) applyCalibratedUnits(distanceMap,dppXY);
 
         // Adding distance map to output
         workspace.addImage(distanceMap);
@@ -246,6 +284,7 @@ public class CreateDistanceMap extends Module {
         parameters.add(new Parameter(INVERT_MAP_WITHIN_OBJECTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(MASKING_MODE,Parameter.CHOICE_ARRAY,MaskingModes.INSIDE_AND_OUTSIDE,MaskingModes.ALL));
         parameters.add(new Parameter(NORMALISE_MAP_PER_OBJECT,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
 
     }
 
@@ -270,6 +309,8 @@ public class CreateDistanceMap extends Module {
                 returnedParameters.add(parameters.getParameter(NORMALISE_MAP_PER_OBJECT));
                 break;
         }
+
+        returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
 
         return returnedParameters;
 
