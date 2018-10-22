@@ -16,6 +16,7 @@ import java.util.HashSet;
 public class MeasureObjectOverlap extends Module {
     public final static String OBJECT_SET_1 = "Object set 1";
     public final static String OBJECT_SET_2 = "Object set 2";
+    public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
 
     public interface Measurements {
@@ -26,12 +27,12 @@ public class MeasureObjectOverlap extends Module {
 
     }
 
-    private String getFullName(String objectsName, String measurement) {
+    public static String getFullName(String objectsName, String measurement) {
         return "OBJ_OVERLAP // "+objectsName+"_"+measurement.substring(0,measurement.length()-2);
 
     }
 
-    public int getNOverlappingPoints(Obj inputObject1, ObjCollection inputObjects1, ObjCollection inputObjects2) {
+    public static int getNOverlappingPoints(Obj inputObject1, ObjCollection inputObjects1, ObjCollection inputObjects2, boolean linkInSameFrame) {
         // Creating an Indexer based on the range of each object set
         int[][] limits1 = inputObjects1.getSpatialLimits();
         int[][] limits2 = inputObjects2.getSpatialLimits();
@@ -43,6 +44,9 @@ public class MeasureObjectOverlap extends Module {
 
         // Running through each object, getting a list of overlapping pixels
         for (Obj obj2:inputObjects2.values()) {
+            // If only linking objects in the same frame, we may just skip this object
+            if (linkInSameFrame && inputObject1.getT() != obj2.getT()) continue;
+
             ArrayList<Point<Integer>> currentOverlap = inputObject1.getOverlappingPoints(obj2);
 
             for (Point<Integer> point:currentOverlap) {
@@ -78,10 +82,13 @@ public class MeasureObjectOverlap extends Module {
         String inputObjects2Name = parameters.getValue(OBJECT_SET_2);
         ObjCollection inputObjects2 = workspace.getObjectSet(inputObjects2Name);
 
+        // Getting parameters
+        boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
+
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based on their index
         for (Obj obj1:inputObjects1.values()) {
             double objVolume = (double) obj1.getNVoxels();
-            double overlap = (double) getNOverlappingPoints(obj1,inputObjects1,inputObjects2);
+            double overlap = (double) getNOverlappingPoints(obj1,inputObjects1,inputObjects2,linkInSameFrame);
 
             // Adding the measurements
             double overlapPC = 100*overlap/objVolume;
@@ -93,7 +100,7 @@ public class MeasureObjectOverlap extends Module {
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based on their index
         for (Obj obj2:inputObjects2.values()) {
             double objVolume = (double) obj2.getNVoxels();
-            double overlap = (double) getNOverlappingPoints(obj2,inputObjects2,inputObjects1);
+            double overlap = (double) getNOverlappingPoints(obj2,inputObjects2,inputObjects1,linkInSameFrame);
 
             // Adding the measurements
             double overlapPC = 100*overlap/objVolume;
@@ -107,6 +114,7 @@ public class MeasureObjectOverlap extends Module {
     protected void initialiseParameters() {
         parameters.add(new Parameter(OBJECT_SET_1,Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(OBJECT_SET_2,Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(LINK_IN_SAME_FRAME,Parameter.BOOLEAN,true));
 
     }
 
