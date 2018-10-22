@@ -31,6 +31,30 @@ public class MeasureObjectOverlap extends Module {
 
     }
 
+    public int getNOverlappingPoints(Obj inputObject1, ObjCollection inputObjects1, ObjCollection inputObjects2) {
+        // Creating an Indexer based on the range of each object set
+        int[][] limits1 = inputObjects1.getSpatialLimits();
+        int[][] limits2 = inputObjects2.getSpatialLimits();
+        int[] maxLimits = new int[limits1.length];
+        for (int i=0;i<limits1.length;i++) maxLimits[i] = Math.max(limits1[i][1],limits2[i][1]);
+
+        Indexer indexer = new Indexer(maxLimits);
+        HashSet<Integer> overlap = new HashSet<>();
+
+        // Running through each object, getting a list of overlapping pixels
+        for (Obj obj2:inputObjects2.values()) {
+            ArrayList<Point<Integer>> currentOverlap = inputObject1.getOverlappingPoints(obj2);
+
+            for (Point<Integer> point:currentOverlap) {
+                overlap.add(indexer.getIndex(new int[]{point.getX(),point.getY(),point.getZ()}));
+            }
+        }
+
+        return overlap.size();
+
+    }
+
+
     @Override
     public String getTitle() {
         return "Measure object overlap";
@@ -54,54 +78,26 @@ public class MeasureObjectOverlap extends Module {
         String inputObjects2Name = parameters.getValue(OBJECT_SET_2);
         ObjCollection inputObjects2 = workspace.getObjectSet(inputObjects2Name);
 
-        // Creating an Indexer based on the range of each object set
-        int[][] limits1 = inputObjects1.getSpatialLimits();
-        int[][] limits2 = inputObjects2.getSpatialLimits();
-        int[] maxLimits = new int[limits1.length];
-        for (int i=0;i<limits1.length;i++) {
-            maxLimits[i] = Math.max(limits1[i][1],limits2[i][1]);
-        }
-
-        Indexer indexer = new Indexer(maxLimits);
-
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based on their index
         for (Obj obj1:inputObjects1.values()) {
-            HashSet<Integer> overlap = new HashSet<>();
-
-            // Running through each object, getting a list of overlapping pixels
-            for (Obj obj2:inputObjects2.values()) {
-                ArrayList<Point<Integer>> currentOverlap = obj1.getOverlappingPoints(obj2);
-
-                for (Point<Integer> point:currentOverlap) {
-                    overlap.add(indexer.getIndex(new int[]{point.getX(),point.getY(),point.getZ()}));
-                }
-            }
+            double objVolume = (double) obj1.getNVoxels();
+            double overlap = (double) getNOverlappingPoints(obj1,inputObjects1,inputObjects2);
 
             // Adding the measurements
-            int objVolume = obj1.getNVoxels();
-            double overlapPC = 100*(double) overlap.size()/(double) objVolume;
-            obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_VOX_1),overlap.size()));
+            double overlapPC = 100*overlap/objVolume;
+            obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_VOX_1),overlap));
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_PERCENT_1),overlapPC));
 
         }
 
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based on their index
         for (Obj obj2:inputObjects2.values()) {
-            HashSet<Integer> overlap = new HashSet<>();
-
-            // Running through each object, getting a list of overlapping pixels
-            for (Obj obj1:inputObjects1.values()) {
-                ArrayList<Point<Integer>> currentOverlap = obj2.getOverlappingPoints(obj1);
-
-                for (Point<Integer> point:currentOverlap) {
-                    overlap.add(indexer.getIndex(new int[]{point.getX(),point.getY(),point.getZ()}));
-                }
-            }
+            double objVolume = (double) obj2.getNVoxels();
+            double overlap = (double) getNOverlappingPoints(obj2,inputObjects2,inputObjects1);
 
             // Adding the measurements
-            int objVolume = obj2.getNVoxels();
-            double overlapPC = 100*(double) overlap.size()/(double) objVolume;
-            obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOX_2),overlap.size()));
+            double overlapPC = 100*overlap/objVolume;
+            obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOX_2),overlap));
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_PERCENT_2),overlapPC));
 
         }
@@ -144,12 +140,12 @@ public class MeasureObjectOverlap extends Module {
 
         name = getFullName(objects1Name, Measurements.OVERLAP_VOX_2);
         reference = objectMeasurementReferences.getOrPut(name);
-        reference.setImageObjName(objects1Name);
+        reference.setImageObjName(objects2Name);
         reference.setCalculated(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_PERCENT_2);
         reference = objectMeasurementReferences.getOrPut(name);
-        reference.setImageObjName(objects1Name);
+        reference.setImageObjName(objects2Name);
         reference.setCalculated(true);
 
         return objectMeasurementReferences;
