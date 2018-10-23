@@ -48,99 +48,102 @@ public class ComponentFactory {
 
         JComponent parameterControl = null;
 
-        if (parameter.getType() == Parameter.INPUT_IMAGE | parameter.getType() == Parameter.REMOVED_IMAGE) {
-            // Getting a list of available images
-            LinkedHashSet<Parameter> outputImages = modules.getParametersMatchingType(Parameter.OUTPUT_IMAGE,module);
-            LinkedHashSet<Parameter> removedImages = modules.getParametersMatchingType(Parameter.REMOVED_IMAGE,module);
+        switch (parameter.getType()) {
+            case Parameter.INPUT_IMAGE:
+            case Parameter.REMOVED_IMAGE:
+                // Getting a list of available images
+                LinkedHashSet<Parameter> outputImages = modules.getParametersMatchingType(Parameter.OUTPUT_IMAGE,module);
+                LinkedHashSet<Parameter> removedImages = modules.getParametersMatchingType(Parameter.REMOVED_IMAGE,module);
 
-            // Adding any output images to the list
-            LinkedHashSet<String> namesSet = new LinkedHashSet<>();
-            namesSet.add(null);
-            for (Parameter image : outputImages) {
-                namesSet.add(image.getValue());
+                // Adding any output images to the list
+                LinkedHashSet<String> namesSet = new LinkedHashSet<>();
+                namesSet.add(null);
+                for (Parameter image : outputImages) namesSet.add(image.getValue());
 
-            }
+                // Removing any images which have since been removed from the workspace
+                for (Parameter image : removedImages) namesSet.remove(image.getValue());
 
-            // Removing any images which have since been removed from the workspace
-            for (Parameter image : removedImages) {
-                namesSet.remove(image.getValue());
-            }
+                String[] names = new String[namesSet.size()];
+                int i = 0;
+                for (String name:namesSet) names[i++] = name;
 
-            String[] names = new String[namesSet.size()];
-            int i = 0;
-            for (String name:namesSet) {
-                names[i++] = name;
-            }
+                parameterControl = new ChoiceArrayParameter(module,parameter,names);
 
-            parameterControl = new ChoiceArrayParameter(module,parameter,names);
+                break;
 
-        } else if (parameter.getType() == Parameter.INPUT_OBJECTS || parameter.getType() == Parameter.REMOVED_OBJECTS) {
-            // Getting a list of available images
-            LinkedHashSet<Parameter> objects = modules.getParametersMatchingType(Parameter.OUTPUT_OBJECTS,module);
-            LinkedHashSet<Parameter> removedObjects = modules.getParametersMatchingType(Parameter.REMOVED_OBJECTS,module);
+            case Parameter.INPUT_OBJECTS:
+            case Parameter.REMOVED_OBJECTS:
+                // Getting a list of available images
+                LinkedHashSet<Parameter> objects = modules.getParametersMatchingType(Parameter.OUTPUT_OBJECTS,module);
+                LinkedHashSet<Parameter> removedObjects = modules.getParametersMatchingType(Parameter.REMOVED_OBJECTS,module);
 
-            // Adding any output images to the list
-            LinkedHashSet<String> namesSet = new LinkedHashSet<>();
-            namesSet.add(null);
-            for (Parameter object : objects) {
-                namesSet.add(object.getValue());
-            }
+                // Adding any output images to the list
+                namesSet = new LinkedHashSet<>();
+                namesSet.add(null);
+                for (Parameter object : objects) namesSet.add(object.getValue());
 
-            // Removing any images which have since been removed from the workspace
-            for (Parameter object : removedObjects) {
-                namesSet.remove(object.getValue());
-            }
+                // Removing any images which have since been removed from the workspace
+                for (Parameter object : removedObjects) namesSet.remove(object.getValue());
 
-            String[] names = new String[namesSet.size()];
-            int i = 0;
-            for (String name:namesSet) {
-                names[i++] = name;
-            }
+                names = new String[namesSet.size()];
+                i = 0;
+                for (String name:namesSet) names[i++] = name;
 
-            parameterControl = new ChoiceArrayParameter(module,parameter,names);
+                parameterControl = new ChoiceArrayParameter(module,parameter,names);
+                break;
 
-        } else if (parameter.getType() == Parameter.INTEGER | parameter.getType() == Parameter.DOUBLE
-                | parameter.getType() == Parameter.STRING | parameter.getType() == Parameter.OUTPUT_IMAGE
-                | parameter.getType() == Parameter.OUTPUT_OBJECTS) {
+            case Parameter.INTEGER:
+            case Parameter.DOUBLE:
+            case Parameter.STRING:
+            case Parameter.OUTPUT_IMAGE:
+            case Parameter.OUTPUT_OBJECTS:
+                parameterControl = new TextParameter(module, parameter);
+                break;
 
-            parameterControl = new TextParameter(module, parameter);
+            case Parameter.BOOLEAN:
+                parameterControl = new BooleanParameter(module,parameter);
+                parameterControl.setOpaque(false);
+                break;
 
-        } else if (parameter.getType() == Parameter.BOOLEAN) {
-            parameterControl = new BooleanParameter(module,parameter);
-            parameterControl.setOpaque(false);
+            case Parameter.FILE_PATH:
+                parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.FILE_TYPE);
+                break;
 
-        } else if (parameter.getType() == Parameter.FILE_PATH) {
-            parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.FILE_TYPE);
+            case Parameter.FOLDER_PATH:
+                parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.FOLDER_TYPE);
+                break;
 
-        } else if (parameter.getType() == Parameter.FOLDER_PATH) {
-            parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.FOLDER_TYPE);
+            case Parameter.CHOICE_ARRAY:
+                String[] valueSource = parameter.getValueSource();
+                parameterControl = new ChoiceArrayParameter(module, parameter, valueSource);
+                break;
 
-        } else if (parameter.getType() == Parameter.CHOICE_ARRAY) {
-            String[] valueSource = parameter.getValueSource();
-            parameterControl = new ChoiceArrayParameter(module, parameter, valueSource);
+            case Parameter.IMAGE_MEASUREMENT:
+                String[] measurementChoices = modules.getImageMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
+                parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
+                break;
 
-        } else if (parameter.getType() == Parameter.IMAGE_MEASUREMENT) {
-            String[] measurementChoices = modules.getImageMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
+            case Parameter.OBJECT_MEASUREMENT:
+                measurementChoices = modules.getObjectMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
+                parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
+                break;
 
-            parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
+            case Parameter.CHILD_OBJECTS:
+                RelationshipCollection relationships = modules.getRelationships(module);
+                String[] relationshipChoices = relationships.getChildNames(parameter.getValueSource());
+                parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
+                break;
 
-        } else if (parameter.getType() == Parameter.OBJECT_MEASUREMENT) {
-            String[] measurementChoices = modules.getObjectMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
+            case Parameter.PARENT_OBJECTS:
+                relationships = GUI.getModules().getRelationships(module);
+                relationshipChoices = relationships.getParentNames(parameter.getValueSource());
+                parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
+                break;
 
-            parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
-
-        } else if (parameter.getType() == Parameter.CHILD_OBJECTS) {
-            RelationshipCollection relationships = modules.getRelationships(module);
-            String[] relationshipChoices = relationships.getChildNames(parameter.getValueSource());
-
-            parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
-
-        } else if (parameter.getType() == Parameter.PARENT_OBJECTS) {
-            RelationshipCollection relationships = GUI.getModules().getRelationships(module);
-            String[] relationshipChoices = relationships.getParentNames(parameter.getValueSource());
-
-            parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
-
+            case Parameter.METADATA_ITEM:
+                String[] metadataChoices = modules.getMetadataReferences(module).getMetadataNames();
+                parameterControl = new ChoiceArrayParameter(module,parameter,metadataChoices);
+                break;
         }
 
         // Adding the input component

@@ -706,6 +706,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
 
     }

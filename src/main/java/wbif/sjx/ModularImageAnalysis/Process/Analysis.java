@@ -20,7 +20,6 @@ public class Analysis implements Serializable {
     public OutputControl outputControl = new OutputControl();
     public ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
-//    private boolean updateProgressBar = false;
 
     // CONSTRUCTOR
 

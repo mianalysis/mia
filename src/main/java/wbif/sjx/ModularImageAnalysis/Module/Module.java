@@ -87,6 +87,8 @@ public abstract class Module implements Serializable {
 
     public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
 
+    public abstract MetadataReferenceCollection updateAndGetMetadataReferences();
+
     public MeasurementReference getImageMeasurementReference(String name) {
         return imageMeasurementReferences.getOrPut(name);
     }

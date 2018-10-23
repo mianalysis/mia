@@ -138,9 +138,11 @@ public class AnalysisRunner {
     }
 
     public static Exporter initialiseExporter(OutputControl outputControl, String exportName) {
+        String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
+        String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING);
         boolean exportXLSX = outputControl.isEnabled();
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
-        String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_TYPE);
+        String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_MODE);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
         boolean showChildCounts = outputControl.getParameterValue(OutputControl.SHOW_NUMBER_OF_CHILDREN);
@@ -153,6 +155,7 @@ public class AnalysisRunner {
         // Initialising the exporter (if one was requested)
         Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
         if (exporter != null) {
+            exporter.setMetadataItemForGrouping(metadataItemForGrouping);
             exporter.setExportSummary(exportSummary);
             exporter.setShowObjectCounts(showObjectCounts);
             exporter.setShowChildCounts(showChildCounts);
@@ -163,13 +166,27 @@ public class AnalysisRunner {
             exporter.setCalculateSum(calculateSum);
             exporter.setExportIndividualObjects(exportIndividualObjects);
 
-            switch (summaryType) {
-                case OutputControl.SummaryTypes.ONE_AVERAGE_PER_FILE:
-                    exporter.setSummaryType(Exporter.SummaryType.PER_FILE);
+            switch (exportMode) {
+                case OutputControl.ExportModes.ALL_TOGETHER:
+                    exporter.setExportMode(Exporter.ExportMode.ALL_TOGETHER);
                     break;
 
-                case OutputControl.SummaryTypes.AVERAGE_PER_TIMEPOINT:
-                    exporter.setSummaryType(Exporter.SummaryType.PER_TIMEPOINT_PER_FILE);
+                case OutputControl.ExportModes.GROUP_BY_METADATA:
+                    exporter.setExportMode(Exporter.ExportMode.GROUP_BY_METADATA);
+                    break;
+
+                case OutputControl.ExportModes.INDIVIDUAL_FILES:
+                    exporter.setExportMode(Exporter.ExportMode.INDIVIDUAL_FILES);
+                    break;
+            }
+
+            switch (summaryType) {
+                case OutputControl.SummaryModes.ONE_AVERAGE_PER_FILE:
+                    exporter.setSummaryMode(Exporter.SummaryMode.PER_FILE);
+                    break;
+
+                case OutputControl.SummaryModes.AVERAGE_PER_TIMEPOINT:
+                    exporter.setSummaryMode(Exporter.SummaryMode.PER_TIMEPOINT_PER_FILE);
                     break;
             }
         }

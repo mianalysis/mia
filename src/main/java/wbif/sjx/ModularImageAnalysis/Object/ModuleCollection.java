@@ -69,6 +69,24 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
+    public MetadataReferenceCollection getMetadataReferences(Module cutoffModule) {
+        MetadataReferenceCollection metadataReferences = new MetadataReferenceCollection();
+
+        // Iterating over all modules, collecting any measurements for the current objects
+        for (Module module:this) {
+            if (module == cutoffModule) break;
+            if (!module.isEnabled()) continue;
+            MetadataReferenceCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
+            if (currentMetadataReferences == null) continue;
+
+            metadataReferences.putAll(currentMetadataReferences);
+
+        }
+
+        return metadataReferences;
+
+    }
+
     /**
      * Returns an ArrayList of all parameters of a specific type
      * @param type

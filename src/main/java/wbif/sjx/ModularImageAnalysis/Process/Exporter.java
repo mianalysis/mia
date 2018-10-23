@@ -3,6 +3,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
@@ -35,14 +36,20 @@ public class Exporter {
     public static final int XLSX_EXPORT = 1;
     public static final int JSON_EXPORT = 2;
 
-    public enum SummaryType {
+    public enum ExportMode {
+        ALL_TOGETHER, GROUP_BY_METADATA,INDIVIDUAL_FILES;
+    }
+
+    public enum SummaryMode {
         PER_FILE, PER_TIMEPOINT_PER_FILE;
     }
 
-    private int exportMode = XLSX_EXPORT;
+    private int exportFormat = XLSX_EXPORT;
 
     private String exportFilePath;
     private boolean verbose = false;
+    private ExportMode exportMode = ExportMode.ALL_TOGETHER;
+    private String metadataItemForGrouping = null;
     private boolean exportSummary = true;
     private boolean showObjectCounts = true;
     private boolean showChildCounts = true;
@@ -51,16 +58,16 @@ public class Exporter {
     private boolean calculateMax = true;
     private boolean calculateStd = true;
     private boolean calculateSum = true;
-    private SummaryType summaryType = SummaryType.PER_FILE;
+    private SummaryMode summaryMode = SummaryMode.PER_FILE;
     private boolean exportIndividualObjects = true;
     private boolean addMetadataToObjects = true;
 
 
     // CONSTRUCTOR
 
-    public Exporter(String exportFilePath, int exportMode) {
+    public Exporter(String exportFilePath, int exportFormat) {
         this.exportFilePath = exportFilePath;
-        this.exportMode = exportMode;
+        this.exportFormat = exportFormat;
 
     }
 
@@ -68,13 +75,13 @@ public class Exporter {
     // PUBLIC METHODS
 
     public void exportResults(WorkspaceCollection workspaces, Analysis analysis) throws IOException {
-        if (exportMode == XML_EXPORT) {
+        if (exportFormat == XML_EXPORT) {
             exportXML(workspaces,analysis);
 
-        } else if (exportMode == XLSX_EXPORT) {
+        } else if (exportFormat == XLSX_EXPORT) {
             exportXLSX(workspaces,analysis);
 
-        } else if (exportMode == JSON_EXPORT) {
+        } else if (exportFormat == JSON_EXPORT) {
             exportJSON(workspaces,analysis);
 
         }
@@ -311,6 +318,53 @@ public class Exporter {
     }
 
     private void exportXLSX(WorkspaceCollection workspaces, Analysis analysis) throws IOException {
+        switch (exportMode) {
+            case ALL_TOGETHER:
+                exportXLSX(workspaces,analysis,exportFilePath);
+                break;
+
+            case GROUP_BY_METADATA:
+                // Getting list of unique metadata values
+                HashSet<String> metadataValues = new HashSet<>();
+                for (Workspace workspace:workspaces) {
+                    metadataValues.add(workspace.getMetadata().get(metadataItemForGrouping).toString());
+                }
+
+                for (String metadataValue:metadataValues) {
+                    WorkspaceCollection currentWorkspaces = new WorkspaceCollection();
+
+                    // Adding Workspaces matching this metadata value
+                    for (Workspace workspace:workspaces) {
+                        if (workspace.getMetadata().get(metadataItemForGrouping).toString().equals(metadataValue)) {
+                            currentWorkspaces.add(workspace);
+                        }
+                    }
+
+                    String name = exportFilePath+"_META_"+metadataValue;
+
+                    exportXLSX(currentWorkspaces,analysis,name);
+
+                }
+
+                break;
+
+            case INDIVIDUAL_FILES:
+                for (Workspace workspace:workspaces) {
+                    WorkspaceCollection currentWorkspaces = new WorkspaceCollection();
+                    currentWorkspaces.add(workspace);
+
+                    HCMetadata metadata = workspace.getMetadata();
+                    String name = FilenameUtils.removeExtension(metadata.getFile().getAbsolutePath());
+                    name = name +"_S"+metadata.getSeriesNumber();
+
+                    exportXLSX(currentWorkspaces,analysis,name);
+
+                }
+                break;
+        }
+    }
+
+    private void exportXLSX(WorkspaceCollection workspaces, Analysis analysis, String name) throws IOException {
         // Getting modules
         ModuleCollection modules = analysis.getModules();
 
@@ -320,11 +374,11 @@ public class Exporter {
         // Adding relevant sheets
         prepareParametersXLSX(workbook,modules);
         prepareErrorLogXLSX(workbook);
-        if (exportSummary) prepareSummaryXLSX(workbook,workspaces,modules,summaryType);
+        if (exportSummary) prepareSummaryXLSX(workbook,workspaces,modules, summaryMode);
         if (exportIndividualObjects) prepareObjectsXLSX(workbook,workspaces,modules);
 
         // Writing the workbook to file
-        String outPath = exportFilePath + ".xlsx";
+        String outPath = name + ".xlsx";
         try {
             FileOutputStream outputStream = new FileOutputStream(outPath);
             workbook.write(outputStream);
@@ -332,7 +386,7 @@ public class Exporter {
         } catch(FileNotFoundException e) {
             ZonedDateTime zonedDateTime = ZonedDateTime.now();
             String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-            String newOutPath = exportFilePath + "_("+ dateTime + ").xlsx";
+            String newOutPath = name + "_("+ dateTime + ").xlsx";
             FileOutputStream outputStream = new FileOutputStream(newOutPath);
             workbook.write(outputStream);
 
@@ -420,7 +474,7 @@ public class Exporter {
     }
 
     private void prepareSummaryXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
-                                    SummaryType summaryType) {
+                                    SummaryMode summaryType) {
         // Basing column names on the first workspace in the WorkspaceCollection
         Workspace exampleWorkspace = workspaces.iterator().next();
 
@@ -449,7 +503,7 @@ public class Exporter {
         }
 
         // Add a column to record the timepoint
-        if (summaryType == SummaryType.PER_TIMEPOINT_PER_FILE) {
+        if (summaryType == SummaryMode.PER_TIMEPOINT_PER_FILE) {
             Cell timepointHeaderCell = summaryHeaderRow.createCell(headerCol);
             String timepointDataName = getMetadataString("TIMEPOINT");
             timepointHeaderCell.setCellValue(timepointDataName);
@@ -617,7 +671,7 @@ public class Exporter {
 
     private void addNumberOfChildrenComment(Cell cell, String parent, String child, String calculation) {
         String text = "";
-        switch (summaryType) {
+        switch (summaryMode) {
             case PER_FILE:
                 text = calculation+" number of \""+child+"\" child objects for all \""+parent+"\" parent objects " +
                         "in the input file.";
@@ -634,7 +688,7 @@ public class Exporter {
 
     private void addSummaryComment(Cell cell, MeasurementReference measurement, String calculation) {
         String text = "";
-        switch (summaryType) {
+        switch (summaryMode) {
             case PER_FILE:
                 text = calculation+" value of the measurement (described below) for all \""
                         +measurement.getImageObjName()+"\" objects in the input file." +
@@ -1093,6 +1147,23 @@ public class Exporter {
 
     // GETTERS AND SETTERS
 
+
+    public ExportMode getExportMode() {
+        return exportMode;
+    }
+
+    public void setExportMode(ExportMode exportMode) {
+        this.exportMode = exportMode;
+    }
+
+    public String getMetadataItemForGrouping() {
+        return metadataItemForGrouping;
+    }
+
+    public void setMetadataItemForGrouping(String metadataItemForGrouping) {
+        this.metadataItemForGrouping = metadataItemForGrouping;
+    }
+
     public boolean isVerbose() {
         return verbose;
     }
@@ -1109,12 +1180,12 @@ public class Exporter {
         this.exportSummary = exportSummary;
     }
 
-    public SummaryType getSummaryType() {
-        return summaryType;
+    public SummaryMode getSummaryMode() {
+        return summaryMode;
     }
 
-    public void setSummaryType(SummaryType summaryType) {
-        this.summaryType = summaryType;
+    public void setSummaryMode(SummaryMode summaryMode) {
+        this.summaryMode = summaryMode;
     }
 
     public boolean isExportIndividualObjects() {

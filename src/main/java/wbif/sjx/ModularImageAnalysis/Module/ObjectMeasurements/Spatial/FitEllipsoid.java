@@ -349,6 +349,11 @@ public class FitEllipsoid extends Module {
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
             case OutputModes.CREATE_NEW_OBJECT:

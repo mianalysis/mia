@@ -622,6 +622,11 @@ public class RelateObjects extends Module {
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
         relationships.addRelationship(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS));
 

@@ -684,6 +684,11 @@ public class TrackObjects extends Module {
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);

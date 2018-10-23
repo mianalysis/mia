@@ -267,6 +267,11 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
 
     }

@@ -6,7 +6,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
- * Created by steph on 29/07/2017.
+ * Created by Stephen on 29/07/2017.
  */
 public class InputControl extends Module {
     public static final String INPUT_MODE = "Input mode";
@@ -196,6 +196,11 @@ public class InputControl extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
         return null;
     }
 

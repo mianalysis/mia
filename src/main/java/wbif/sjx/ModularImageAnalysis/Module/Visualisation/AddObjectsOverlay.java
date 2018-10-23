@@ -634,6 +634,11 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
 
     }

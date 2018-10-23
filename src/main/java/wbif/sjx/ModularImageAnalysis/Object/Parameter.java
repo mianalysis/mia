@@ -105,6 +105,11 @@ public class Parameter implements Serializable {
      */
     public final static int PARENT_OBJECTS = 16;
 
+    /**
+     * Metadata item stored for current Workspace.
+     */
+    public final static int METADATA_ITEM = 17;
+
 
     private final String name;
     private int type;
@@ -173,24 +178,22 @@ public class Parameter implements Serializable {
 
     @Override
     public String toString() {
-        if (type == INPUT_IMAGE | type == OUTPUT_IMAGE | type == INPUT_OBJECTS | type == OUTPUT_OBJECTS) {
-            return value.toString();
+        switch (type) {
+            case INPUT_IMAGE:
+            case OUTPUT_IMAGE:
+            case INPUT_OBJECTS:
+            case OUTPUT_OBJECTS:
+            case METADATA_ITEM:
+                return value.toString();
 
-        } else if (type == INTEGER) {
-            return String.valueOf(value);
+            case INTEGER:
+            case DOUBLE:
+            case BOOLEAN:
+                return String.valueOf(value);
 
-        } else if (type == DOUBLE) {
-            return String.valueOf(value);
-
-        } else if (type == STRING) {
-            return (String) value;
-
-        } else if (type == CHOICE_ARRAY) {
-            return (String) value;
-
-        } else if (type == BOOLEAN) {
-            return String.valueOf(value);
-
+            case STRING:
+            case CHOICE_ARRAY:
+                return (String) value;
         }
 
         return "";

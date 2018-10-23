@@ -363,6 +363,11 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
 
     }

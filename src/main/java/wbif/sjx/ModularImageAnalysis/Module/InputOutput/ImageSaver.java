@@ -125,7 +125,7 @@ public class ImageSaver extends Module {
         parameters.add(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FOLDER_PATH,""));
         parameters.add(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
         parameters.add(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
-        parameters.add(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,false));
 
     }
 
@@ -162,6 +162,11 @@ public class ImageSaver extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -213,6 +213,11 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
 
     }

@@ -5,11 +5,13 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
- * Created by steph on 29/07/2017.
+ * Created by Stephen on 29/07/2017.
  */
 public class OutputControl extends Module {
+    public static final String EXPORT_MODE = "Export mode";
+    public static final String METADATA_ITEM_FOR_GROUPING = "Metadata item for grouping";
     public static final String EXPORT_SUMMARY = "Export summary";
-    public static final String SUMMARY_TYPE = "Summary type";
+    public static final String SUMMARY_MODE = "Summary mode";
     public static final String SHOW_OBJECT_COUNTS = "Show object counts";
     public static final String SHOW_NUMBER_OF_CHILDREN = "Show number of children";
     public static final String CALCULATE_SUMMARY_MEAN = "Calculate summary means";
@@ -22,7 +24,16 @@ public class OutputControl extends Module {
     public static final String SAVE_EVERY_N = "Save every n files";
     public static final String SELECT_MEASUREMENTS = "Show measurement selection";
 
-    public interface SummaryTypes {
+    public interface ExportModes {
+        String ALL_TOGETHER = "All together";
+        String GROUP_BY_METADATA = "Group by metadata";
+        String INDIVIDUAL_FILES = "Individual files";
+
+        String[] ALL = new String[]{ALL_TOGETHER,GROUP_BY_METADATA,INDIVIDUAL_FILES};
+
+    }
+
+    public interface SummaryModes {
         String ONE_AVERAGE_PER_FILE = "Per input file";
         String AVERAGE_PER_TIMEPOINT = "Per timepoint per input file";
 
@@ -53,10 +64,10 @@ public class OutputControl extends Module {
 
     @Override
     public void initialiseParameters() {
+        parameters.add(new Parameter(EXPORT_MODE,Parameter.CHOICE_ARRAY,ExportModes.ALL_TOGETHER,ExportModes.ALL));
+        parameters.add(new Parameter(METADATA_ITEM_FOR_GROUPING,Parameter.METADATA_ITEM,""));
         parameters.add(new Parameter(EXPORT_SUMMARY,Parameter.BOOLEAN,true));
-        parameters.add(
-                new Parameter(SUMMARY_TYPE,Parameter.CHOICE_ARRAY,SummaryTypes.ONE_AVERAGE_PER_FILE,SummaryTypes.ALL));
-
+        parameters.add(new Parameter(SUMMARY_MODE,Parameter.CHOICE_ARRAY,SummaryModes.ONE_AVERAGE_PER_FILE,SummaryModes.ALL));
         parameters.add(new Parameter(SHOW_OBJECT_COUNTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(SHOW_NUMBER_OF_CHILDREN,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CALCULATE_SUMMARY_MEAN,Parameter.BOOLEAN,true));
@@ -75,9 +86,16 @@ public class OutputControl extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
+        returnedParameters.add(parameters.getParameter(EXPORT_MODE));
+        switch ((String) parameters.getValue(EXPORT_MODE)) {
+            case ExportModes.GROUP_BY_METADATA:
+                returnedParameters.add(parameters.getParameter(METADATA_ITEM_FOR_GROUPING));
+                break;
+        }
+
         returnedParameters.add(parameters.getParameter(EXPORT_SUMMARY));
         if (parameters.getValue(EXPORT_SUMMARY)) {
-            returnedParameters.add(parameters.getParameter(SUMMARY_TYPE));
+            returnedParameters.add(parameters.getParameter(SUMMARY_MODE));
             returnedParameters.add(parameters.getParameter(SHOW_OBJECT_COUNTS));
             returnedParameters.add(parameters.getParameter(SHOW_NUMBER_OF_CHILDREN));
             returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MEAN));
@@ -107,6 +125,11 @@ public class OutputControl extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
         return null;
     }
 

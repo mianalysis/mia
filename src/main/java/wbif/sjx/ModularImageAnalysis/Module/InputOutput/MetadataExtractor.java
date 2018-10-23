@@ -241,6 +241,40 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        MetadataReferenceCollection metadataReferences = new MetadataReferenceCollection();
+
+        switch((String) parameters.getValue(EXTRACTOR_MODE)) {
+            case ExtractorModes.FILENAME_MODE:
+                switch ((String) parameters.getValue(FILENAME_EXTRACTOR)) {
+                    case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference(HCMetadata.ROW));
+                        metadataReferences.add(new MetadataReference(HCMetadata.COL));
+                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
+                        break;
+                }
+
+                break;
+
+            case ExtractorModes.FOLDERNAME_MODE:
+
+                break;
+
+            case ExtractorModes.KEYWORD_MODE:
+
+                break;
+
+            case ExtractorModes.METADATA_FILE_MODE:
+
+                break;
+
+        }
+
+        return metadataReferences;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
 
     }
