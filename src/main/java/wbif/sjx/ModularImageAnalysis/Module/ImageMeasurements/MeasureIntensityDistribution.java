@@ -259,7 +259,7 @@ public class MeasureIntensityDistribution extends Module {
 
     public static CumStat[] measureDistanceProfile(Image inputImage, Image distanceImage, double[] distanceBins) {
         ImagePlus inputIpl = inputImage.getImagePlus();
-        ImagePlus distanceIpl = distanceImage.getImagePlus();
+        ImagePlus distanceIpl = distanceImage.getImagePlus().duplicate();
 
         CumStat[] cumStats = new CumStat[distanceBins.length];
         for (int i=0;i<cumStats.length;i++) cumStats[i] = new CumStat();

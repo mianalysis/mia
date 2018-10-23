@@ -159,7 +159,7 @@ public class CreateDistanceMap extends Module {
             inputIpl.setPosition(1,z+1,t+1);
             double currentValue = inputIpl.getProcessor().getPixelValue(x,y);
 
-            maxDistance = Math.max(currentValue,maxDistance);
+            maxDistance = Math.max(Math.abs(currentValue),maxDistance);
 
         }
 
@@ -259,9 +259,11 @@ public class CreateDistanceMap extends Module {
         // Performing normalisation (only when using inside-only masking)
         if (maskingMode.equals(MaskingModes.INSIDE_ONLY) && normaliseMap) applyNormalisation(distanceMap,inputObjects);
 
-        // Applying spatial calibration
-        double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
-        if (spatialUnits.equals(SpatialUnits.CALIBRATED)) applyCalibratedUnits(distanceMap,dppXY);
+        // Applying spatial calibration (as long as we're not normalising the map)
+        if (!maskingMode.equals(MaskingModes.INSIDE_ONLY) && !normaliseMap) {
+            double dppXY = inputImage.getImagePlus().getCalibration().pixelWidth;
+            if (spatialUnits.equals(SpatialUnits.CALIBRATED)) applyCalibratedUnits(distanceMap, dppXY);
+        }
 
         // Adding distance map to output
         workspace.addImage(distanceMap);
@@ -310,7 +312,11 @@ public class CreateDistanceMap extends Module {
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+        // If we're not using the inside-only masking with normalisation, allow the units to be specified.
+        if (!parameters.getValue(MASKING_MODE).equals(MaskingModes.INSIDE_ONLY)
+                && !(boolean) parameters.getValue(NORMALISE_MAP_PER_OBJECT)) {
+            returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
+        }
 
         return returnedParameters;
 
