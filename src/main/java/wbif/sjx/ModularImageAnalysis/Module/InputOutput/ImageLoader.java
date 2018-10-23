@@ -46,8 +46,14 @@ import wbif.sjx.common.Object.HCMetadata;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
+import static wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack.interpretRange;
 
 /**
  * Created by sc13967 on 15/05/2017.
@@ -66,18 +72,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String PREFIX = "Prefix";
     public static final String SUFFIX = "Suffix";
     public static final String FILE_PATH = "File path";
-    public static final String USE_ALL_C = "Use all channels";
-    public static final String STARTING_C = "Starting channel";
-    public static final String ENDING_C = "Ending channel";
-    public static final String INTERVAL_C = "Channel interval";
-    public static final String USE_ALL_Z = "Use all Z-slices";
-    public static final String STARTING_Z = "Starting Z-slice";
-    public static final String ENDING_Z = "Ending Z-slice";
-    public static final String INTERVAL_Z = "Slice interval";
-    public static final String USE_ALL_T = "Use all timepoints";
-    public static final String STARTING_T = "Starting timepoint";
-    public static final String ENDING_T = "Ending timepoint";
-    public static final String INTERVAL_T = "Timepoint interval";
+    public static final String CHANNELS = "Channels";
+    public static final String SLICES = "Slices";
+    public static final String FRAMES = "Frames";
     public static final String CHANNEL = "Channel";
     public static final String CROP_IMAGE = "Crop image";
     public static final String LEFT = "Left coordinate";
@@ -154,7 +151,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 //    }
 
 
-    public ImagePlus getBFImage(String path, int seriesNumber, @Nullable int[][] dimRanges, @Nullable int[] crop, boolean localVerbose)
+    public ImagePlus getBFImage(String path, int seriesNumber, @Nullable String[] dimRanges, @Nullable int[] crop, boolean localVerbose)
             throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
@@ -187,6 +184,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int top = 0;
         int width = reader.getSizeX();
         int height = reader.getSizeY();
+
         int sizeC = reader.getSizeC();
         int sizeT = reader.getSizeT();
         int sizeZ = reader.getSizeZ();
@@ -199,36 +197,16 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             height = crop[3];
         }
 
-        int startingC = 1;
-        int endingC = -1;
-        int intervalC = 1;
-        int startingZ = 1;
-        int endingZ = -1;
-        int intervalZ = 1;
-        int startingT = 1;
-        int endingT = -1;
-        int intervalT = 1;
+        int[] channelsList = interpretRange(dimRanges[0]);
+        if (channelsList[channelsList.length-1] == Integer.MAX_VALUE) channelsList = extendRangeToEnd(channelsList,sizeC);
+        int[] slicesList = interpretRange(dimRanges[1]);
+        if (slicesList[slicesList.length-1] == Integer.MAX_VALUE) slicesList = extendRangeToEnd(slicesList,sizeZ);
+        int[] framesList = interpretRange(dimRanges[2]);
+        if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,sizeT);
 
-        if (dimRanges != null) {
-            startingC = dimRanges[0][0];
-            endingC = dimRanges[0][1];
-            intervalC = dimRanges[0][2];
-            startingZ = dimRanges[1][0];
-            endingZ = dimRanges[1][1];
-            intervalZ = dimRanges[1][2];
-            startingT = dimRanges[2][0];
-            endingT = dimRanges[2][1];
-            intervalT = dimRanges[2][2];
-        }
-
-        // Updating ranges for full import dimensions
-        if (endingC == -1) endingC = sizeC;
-        if (endingZ == -1) endingZ = sizeZ;
-        if (endingT == -1) endingT = sizeT;
-
-        int nC = Math.floorDiv((endingC-startingC+1),intervalC);
-        int nZ = Math.floorDiv((endingZ-startingZ+1),intervalZ);
-        int nT = Math.floorDiv((endingT-startingT+1),intervalT);
+        int nC = channelsList.length;
+        int nZ = slicesList.length;
+        int nT = framesList.length;
 
         // Creating the new ImagePlus
         ImagePlus ipl = IJ.createHyperStack("Image", width, height,nC,nZ,nT,bitDepth);
@@ -238,11 +216,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int count = 0;
         int countZ = 1;
 
-        for (int z = startingZ; z <= endingZ; z=z+intervalZ) {
+        for (int z:slicesList) {
             int countC = 1;
-            for (int c = startingC; c <= endingC; c=c+intervalC) {
+            for (int c:channelsList) {
                 int countT = 1;
-                for (int t = startingT; t <= endingT; t=t+intervalT) {
+                for (int t:framesList) {
                     int idx = reader.getIndex(z-1, c-1, t-1);
                     ImageProcessor ip = reader.openProcessors(idx,left,top,width,height)[0];
 //                    ip.setLut(luts[c-1]);
@@ -332,7 +310,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         }
 
         // Determining the dimensions of the input image
-        int[][] dimRanges = new int[][]{{1,1,1},{1,1,1},{1,1,1}};
+        String[] dimRanges = new String[]{"1","1","1"};
         ImagePlus rootIpl = getBFImage(rootFile.getAbsolutePath(),1,dimRanges,crop,false);
         int width = rootIpl.getWidth();
         int height = rootIpl.getHeight();
@@ -363,7 +341,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getIncucyteShortNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
+    private ImagePlus getIncucyteShortNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
         // First, running metadata extraction on the input file
         NameExtractor filenameExtractor = new IncuCyteShortFilenameExtractor();
@@ -402,12 +380,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         };
 
         File[] listOfFiles = parentFile.listFiles(filter);
-        int[][] dimRanges = new int[][]{{1,1,1},{1,1,1},{1,1,1}};
+        String[] dimRanges = new String[]{"1","1","1"};
         return getBFImage(listOfFiles[0].getAbsolutePath(),seriesNumber,dimRanges,crop,true);
 
     }
 
-    private ImagePlus getPrefixNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
+    private ImagePlus getPrefixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -419,7 +397,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getSuffixNameImage(HCMetadata metadata, int seriesNumber, int[][] dimRanges, int[] crop)
+    private ImagePlus getSuffixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -465,18 +443,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String comment = parameters.getValue(COMMENT);
         String prefix = parameters.getValue(PREFIX);
         String suffix = parameters.getValue(SUFFIX);
-        boolean useAllC = parameters.getValue(USE_ALL_C);
-        int startingC = parameters.getValue(STARTING_C);
-        int endingC = parameters.getValue(ENDING_C);
-        int intervalC = parameters.getValue(INTERVAL_C);
-        boolean useAllZ = parameters.getValue(USE_ALL_Z);
-        int startingZ = parameters.getValue(STARTING_Z);
-        int endingZ = parameters.getValue(ENDING_Z);
-        int intervalZ = parameters.getValue(INTERVAL_Z);
-        boolean useAllT = parameters.getValue(USE_ALL_T);
-        int startingT = parameters.getValue(STARTING_T);
-        int endingT = parameters.getValue(ENDING_T);
-        int intervalT = parameters.getValue(INTERVAL_T);
+        String channels = parameters.getValue(CHANNELS);
+        String slices = parameters.getValue(SLICES);
+        String frames = parameters.getValue(FRAMES);
         int channel = parameters.getValue(CHANNEL);
         boolean cropImage = parameters.getValue(CROP_IMAGE);
         int left = parameters.getValue(LEFT);
@@ -492,10 +461,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         // Series number comes from the Workspace
         int seriesNumber = workspace.getMetadata().getSeriesNumber();
 
-        if (useAllC) endingC = -1;
-        if (useAllZ) endingZ = -1;
-        if (useAllT) endingT = -1;
-        int[][] dimRanges = new int[][]{{startingC,endingC,intervalC},{startingZ,endingZ,intervalZ},{startingT,endingT,intervalT}};
+        String[] dimRanges = new String[]{channels,slices,frames};
 
         int[] crop = null;
         if (cropImage) crop = new int[]{left,top,width,height};
@@ -626,18 +592,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
         parameters.add(new Parameter(SUFFIX,Parameter.STRING,""));
         parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(USE_ALL_C, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(STARTING_C, Parameter.INTEGER,1));
-        parameters.add(new Parameter(ENDING_C, Parameter.INTEGER,1));
-        parameters.add(new Parameter(INTERVAL_C, Parameter.INTEGER,1));
-        parameters.add(new Parameter(USE_ALL_Z, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(STARTING_Z, Parameter.INTEGER,1));
-        parameters.add(new Parameter(ENDING_Z, Parameter.INTEGER,1));
-        parameters.add(new Parameter(INTERVAL_Z, Parameter.INTEGER,1));
-        parameters.add(new Parameter(USE_ALL_T, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(STARTING_T, Parameter.INTEGER,1));
-        parameters.add(new Parameter(ENDING_T, Parameter.INTEGER,1));
-        parameters.add(new Parameter(INTERVAL_T, Parameter.INTEGER,1));
+        parameters.add(new Parameter(CHANNELS,Parameter.STRING,"1-end"));
+        parameters.add(new Parameter(SLICES,Parameter.STRING,"1-end"));
+        parameters.add(new Parameter(FRAMES,Parameter.STRING,"1-end"));
         parameters.add(new Parameter(CHANNEL,Parameter.INTEGER,1));
         parameters.add(new Parameter(CROP_IMAGE, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
@@ -708,26 +665,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         if (!parameters.getValue(IMPORT_MODE).equals(ImportModes.IMAGE_SEQUENCE) &&
                 !(parameters.getValue(IMPORT_MODE).equals(ImportModes.MATCHING_FORMAT)
                         && parameters.getValue(NAME_FORMAT).equals(NameFormats.YOKOGAWA))) {
-            returnedParameters.add(parameters.getParameter(STARTING_C));
-            returnedParameters.add(parameters.getParameter(INTERVAL_C));
-            returnedParameters.add(parameters.getParameter(USE_ALL_C));
-            if (!(boolean) parameters.getValue(USE_ALL_C)) {
-                returnedParameters.add(parameters.getParameter(ENDING_C));
-            }
-
-            returnedParameters.add(parameters.getParameter(STARTING_Z));
-            returnedParameters.add(parameters.getParameter(INTERVAL_Z));
-            returnedParameters.add(parameters.getParameter(USE_ALL_Z));
-            if (!(boolean) parameters.getValue(USE_ALL_Z)) {
-                returnedParameters.add(parameters.getParameter(ENDING_Z));
-            }
-
-            returnedParameters.add(parameters.getParameter(STARTING_T));
-            returnedParameters.add(parameters.getParameter(INTERVAL_T));
-            returnedParameters.add(parameters.getParameter(USE_ALL_T));
-            if (!(boolean) parameters.getValue(USE_ALL_T)) {
-                returnedParameters.add(parameters.getParameter(ENDING_T));
-            }
+            returnedParameters.add(parameters.getParameter(CHANNELS));
+            returnedParameters.add(parameters.getParameter(SLICES));
+            returnedParameters.add(parameters.getParameter(FRAMES));
         }
 
         returnedParameters.add(parameters.getParameter(CROP_IMAGE));

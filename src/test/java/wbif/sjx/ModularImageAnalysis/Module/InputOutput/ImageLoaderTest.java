@@ -178,9 +178,9 @@ public class ImageLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,true);
         imageFileLoader.updateParameterValue(ImageLoader.XY_CAL,0.5);
         imageFileLoader.updateParameterValue(ImageLoader.Z_CAL,0.2);
@@ -229,11 +229,9 @@ public class ImageLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,false);
-        imageFileLoader.updateParameterValue(ImageLoader.STARTING_C,2);
-        imageFileLoader.updateParameterValue(ImageLoader.ENDING_C,2);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"2-2");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
@@ -280,11 +278,9 @@ public class ImageLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,false);
-        imageFileLoader.updateParameterValue(ImageLoader.STARTING_Z,3);
-        imageFileLoader.updateParameterValue(ImageLoader.ENDING_Z,6);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,true);
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"3-6");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"1-end");
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
@@ -331,11 +327,9 @@ public class ImageLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,true);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,true);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,false);
-        imageFileLoader.updateParameterValue(ImageLoader.STARTING_T,2);
-        imageFileLoader.updateParameterValue(ImageLoader.ENDING_T,4);
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"1-end");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"2-4");
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
@@ -382,15 +376,9 @@ public class ImageLoaderTest {
         // Setting parameters
         imageFileLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.CURRENT_FILE);
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_C,false);
-        imageFileLoader.updateParameterValue(ImageLoader.STARTING_C,2);
-        imageFileLoader.updateParameterValue(ImageLoader.ENDING_C,2);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_Z,false);
-        imageFileLoader.updateParameterValue(ImageLoader.STARTING_Z,3);
-        imageFileLoader.updateParameterValue(ImageLoader.ENDING_Z,8);
-        imageFileLoader.updateParameterValue(ImageLoader.USE_ALL_T,false);
-        imageFileLoader.updateParameterValue(ImageLoader.STARTING_T,3);
-        imageFileLoader.updateParameterValue(ImageLoader.ENDING_T,4);
+        imageFileLoader.updateParameterValue(ImageLoader.CHANNELS,"2");
+        imageFileLoader.updateParameterValue(ImageLoader.SLICES,"3-8");
+        imageFileLoader.updateParameterValue(ImageLoader.FRAMES,"3,4");
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
