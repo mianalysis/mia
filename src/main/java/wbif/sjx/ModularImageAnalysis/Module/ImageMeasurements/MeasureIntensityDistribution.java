@@ -1,18 +1,41 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
+import ij.gui.Plot;
+import ij.measure.Calibration;
+import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
+import ij.process.StackStatistics;
+import org.apache.commons.compress.compressors.FileNameUtil;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureRadialIntensityProfile;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Point;
 
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -21,17 +44,34 @@ import java.util.HashMap;
 public class MeasureIntensityDistribution extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String MEASUREMENT_TYPE = "Measurement type";
+    public static final String DISTANCE_MAP_IMAGE = "Distance map image";
+    public static final String NUMBER_OF_RADIAL_SAMPLES = "Number of radial samples";
+    public static final String RANGE_MODE = "Range mode";
+    public static final String MIN_DISTANCE = "Minimum distance";
+    public static final String MAX_DISTANCE = "Maximum distance";
+    public static final String SAVE_PROFILE_MODE = "Save profile mode";
+    public static final String PROFILE_FILE_SUFFIX = "Profile file suffix";
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String PROXIMAL_DISTANCE = "Proximal distance";
     public static final String SPATIAL_UNITS = "Spatial units";
     public static final String IGNORE_ON_OBJECTS = "Ignore values on objects";
     public static final String EDGE_DISTANCE_MODE = "Edge distance mode";
 
+
     public interface MeasurementTypes {
+        String DISTANCE_PROFILE = "Distance profile";
         String FRACTION_PROXIMAL_TO_OBJECTS = "Fraction proximal to objects";
         String INTENSITY_WEIGHTED_PROXIMITY = "Intensity-weighted proximity";
 
-        String[] ALL = new String[]{FRACTION_PROXIMAL_TO_OBJECTS,INTENSITY_WEIGHTED_PROXIMITY};
+        String[] ALL = new String[]{DISTANCE_PROFILE,FRACTION_PROXIMAL_TO_OBJECTS,INTENSITY_WEIGHTED_PROXIMITY};
+
+    }
+
+    public interface RangeModes {
+        String AUTOMATIC_RANGE = "Automatic range";
+        String MANUAL_RANGE = "Manual range";
+
+        String[] ALL = new String[]{AUTOMATIC_RANGE,MANUAL_RANGE};
 
     }
 
@@ -49,6 +89,14 @@ public class MeasureIntensityDistribution extends Module {
         String OUTSIDE_ONLY = "Outside only";
 
         String[] ALL = new String[]{INSIDE_AND_OUTSIDE,INSIDE_ONLY,OUTSIDE_ONLY};
+
+    }
+
+    public interface SaveProfileModes {
+        String DONT_SAVE = "Don't save";
+        String INDIVIDUAL_FILES = "Individual files";
+
+        String[] ALL = new String[]{DONT_SAVE,INDIVIDUAL_FILES};
 
     }
 
@@ -71,35 +119,77 @@ public class MeasureIntensityDistribution extends Module {
         return "INT_DISTR // "+objectsName+"_"+measurement;
     }
 
-    public CumStat[] measureFractionProximal(ObjCollection inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
+    /**
+     * Calculates the bin centroids for the distance measurements from the maximum range in the distance map.
+     * @param distanceMap
+     * @param nRadialSamples
+     * @return
+     */
+    public static double[] getDistanceBins(Image distanceMap, int nRadialSamples) {
+        // Getting the maximum distance measurement
+        StackStatistics stackStatistics = new StackStatistics(distanceMap.getImagePlus());
+        double minDistance = stackStatistics.min;
+        double maxDistance = stackStatistics.max;
 
-        // Get binary image showing the objects
-        HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImageOld("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
-        
-        // Calculaing the distance map
-        ImagePlus distIpl = BinaryOperations.getDistanceMap3D(objectsImage.getImagePlus(),true);
+        double[] distanceBins = new double[nRadialSamples];
+        double binWidth = (maxDistance-minDistance)/(nRadialSamples-1);
+        for (int i=0;i<nRadialSamples;i++) {
+            distanceBins[i] = (i*binWidth)+minDistance;
+        }
 
-        // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
-        // for pixels in the proximity range, one for pixels outside it).
-        return measureIntensityFractions(inputImagePlus,distIpl,ignoreOnObjects,proximalDistance);
+        return distanceBins;
 
     }
 
-    private static CumStat[] measureIntensityFractions(ImagePlus inputImagePlus, ImagePlus distIpl, boolean ignoreOnObjects, double proximalDistance) {
+    /**
+     * Calculates the bin centroids for the distance measurements from provided range values.
+     * @param nRadialSamples
+     * @param minDistance
+     * @param maxDistance
+     * @return
+     */
+    public static double[] getDistanceBins(int nRadialSamples, double minDistance, double maxDistance) {
+        double[] distanceBins = new double[nRadialSamples];
+        double binWidth = (maxDistance-minDistance)/(nRadialSamples-1);
+        for (int i=0;i<nRadialSamples;i++) {
+            distanceBins[i] = (i*binWidth)+minDistance;
+        }
+
+        return distanceBins;
+
+    }
+
+    public CumStat[] measureFractionProximal(ObjCollection inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {
+        // Get binary image showing the objects
+        HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
+
+        // Calculaing the distance map
+        ImagePlus distIpl = BinaryOperations.getDistanceMap3D(objectsImage.getImagePlus(),true);
+        Image distanceImage = new Image("Distance map",distIpl);
+
+        // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
+        // for pixels in the proximity range, one for pixels outside it).
+        return measureIntensityFractions(inputImage,distanceImage,ignoreOnObjects,proximalDistance);
+
+    }
+
+    public static CumStat[] measureIntensityFractions(Image inputImage, Image distanceImage, boolean ignoreOnObjects, double proximalDistance) {
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        ImagePlus distanceIpl = distanceImage.getImagePlus();
+
         CumStat[] cs = new CumStat[2];
         cs[0] = new CumStat();
         cs[1] = new CumStat();
 
-        for (int z = 0; z < distIpl.getNSlices(); z++) {
-            for (int c = 0; c < distIpl.getNChannels(); c++) {
-                for (int t = 0; t < distIpl.getNFrames(); t++) {
-                    distIpl.setPosition(c+1, z+1, t+1);
-                    inputImagePlus.setPosition(c+1, z+1, t+1);
+        for (int z = 0; z < distanceIpl.getNSlices(); z++) {
+            for (int c = 0; c < distanceIpl.getNChannels(); c++) {
+                for (int t = 0; t < distanceIpl.getNFrames(); t++) {
+                    distanceIpl.setPosition(c+1, z+1, t+1);
+                    inputIpl.setPosition(c+1, z+1, t+1);
 
-                    float[][] distVals = distIpl.getProcessor().getFloatArray();
-                    float[][] inputVals = inputImagePlus.getProcessor().getFloatArray();
+                    float[][] distVals = distanceIpl.getProcessor().getFloatArray();
+                    float[][] inputVals = inputIpl.getProcessor().getFloatArray();
 
                     for (int x=0;x<distVals.length;x++) {
                         for (int y=0;y<distVals[0].length;y++) {
@@ -119,19 +209,17 @@ public class MeasureIntensityDistribution extends Module {
             }
         }
 
-        distIpl.setPosition(1, 1, 1);
-        inputImagePlus.setPosition(1, 1, 1);
+        distanceIpl.setPosition(1, 1, 1);
+        inputIpl.setPosition(1, 1, 1);
 
         return cs;
 
     }
 
     public static CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, String edgeMode) {
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
-
         // Get binary image showing the objects
         HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImageOld("Objects", inputImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
 
         ImagePlus distIpl = null;
         switch (edgeMode) {
@@ -161,32 +249,75 @@ public class MeasureIntensityDistribution extends Module {
                 break;
         }
 
+        Image distanceImage = new Image("Distance map", distIpl);
+
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
         // for pixels in the proximity range, one for pixels outside it).
-        return measureWeightedDistance(inputImagePlus,distIpl);
+        return measureWeightedDistance(inputImage,distanceImage);
 
     }
 
-    private static CumStat measureWeightedDistance(ImagePlus inputImagePlus, ImagePlus distIpl) {
-        CumStat cs = new CumStat();
+    public static CumStat[] measureDistanceProfile(Image inputImage, Image distanceImage, double[] distanceBins) {
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        ImagePlus distanceIpl = distanceImage.getImagePlus().duplicate();
 
-        for (int z = 0; z < distIpl.getNSlices(); z++) {
-            for (int c = 0; c < distIpl.getNChannels(); c++) {
-                for (int t = 0; t < distIpl.getNFrames(); t++) {
-                    distIpl.setPosition(c+1, z+1, t+1);
-                    inputImagePlus.setPosition(c+1, z+1, t+1);
+        CumStat[] cumStats = new CumStat[distanceBins.length];
+        for (int i=0;i<cumStats.length;i++) cumStats[i] = new CumStat();
 
-                    float[][] distVals = distIpl.getProcessor().getFloatArray();
-                    float[][] inputVals = inputImagePlus.getProcessor().getFloatArray();
+        double minDist = distanceBins[0];
+        double maxDist = distanceBins[distanceBins.length-1];
+        double binWidth = distanceBins[1]-distanceBins[0];
 
-                    for (int x=0;x<distVals.length;x++) {
-                        for (int y=0;y<distVals[0].length;y++) {
-                            float dist = distVals[x][y];
-                            float val = inputVals[x][y];
+        for (int z = 0; z < distanceIpl.getNSlices(); z++) {
+            for (int c = 0; c < distanceIpl.getNChannels(); c++) {
+                for (int t = 0; t < distanceIpl.getNFrames(); t++) {
+                    distanceIpl.setPosition(c+1, z+1, t+1);
+                    inputIpl.setPosition(c+1, z+1, t+1);
 
-                            if (dist == 0) continue;
+                    for (int x=0;x<distanceIpl.getWidth();x++) {
+                        for (int y=0;y<distanceIpl.getHeight();y++) {
+                            double distance = distanceIpl.getProcessor().getPixelValue(x, y);
+                            double intensity = inputIpl.getProcessor().getPixelValue(x, y);
 
-                            cs.addMeasure(dist,val);
+                            if (distance== 0) continue;
+
+                            double bin = Math.round((distance - minDist) / binWidth) * binWidth + minDist;
+
+                            // Ensuring the bin is within the specified range
+                            bin = Math.min(bin, maxDist);
+                            bin = Math.max(bin, minDist);
+                            for (int i=0;i<distanceBins.length;i++) {
+                                if (Math.abs(bin-distanceBins[i]) < binWidth/2) cumStats[i].addMeasure(intensity);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return cumStats;
+    }
+
+    public static CumStat measureWeightedDistance(Image inputImage, Image distanceImage) {
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        ImagePlus distanceIpl = distanceImage.getImagePlus();
+
+        CumStat cumStat = new CumStat();
+
+        for (int z = 0; z < distanceIpl.getNSlices(); z++) {
+            for (int c = 0; c < distanceIpl.getNChannels(); c++) {
+                for (int t = 0; t < distanceIpl.getNFrames(); t++) {
+                    distanceIpl.setPosition(c+1, z+1, t+1);
+                    inputIpl.setPosition(c+1, z+1, t+1);
+
+                    for (int x=0;x<distanceIpl.getWidth();x++) {
+                        for (int y=0;y<distanceIpl.getHeight();y++) {
+                            double distance = distanceIpl.getProcessor().getPixelValue(x, y);
+                            double intensity = inputIpl.getProcessor().getPixelValue(x, y);
+
+                            if (distance== 0) continue;
+
+                            cumStat.addMeasure(distance, intensity);
 
                         }
                     }
@@ -194,11 +325,76 @@ public class MeasureIntensityDistribution extends Module {
             }
         }
 
-        distIpl.setPosition(1, 1, 1);
-        inputImagePlus.setPosition(1, 1, 1);
+        return cumStat;
 
-        return cs;
+    }
 
+    public static void writeResultsFile(String path, double[] distanceBins, CumStat[] results) {
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
+
+        // Adding header rows for the metadata sheet.
+        int rowCount = 0;
+        Sheet sheet = workbook.createSheet("Intensity profile");
+        Row row = sheet.createRow(rowCount++);
+
+        // Adding headers to the row
+        Cell cell = row.createCell(0);
+        cell.setCellValue("Distance");
+
+        cell = row.createCell(1);
+        cell.setCellValue("Mean");
+
+        cell = row.createCell(2);
+        cell.setCellValue("Standard deviation");
+
+        cell = row.createCell(3);
+        cell.setCellValue("N measurements");
+
+        // Iterating over the results, adding to new rows
+        for (int i=0;i<distanceBins.length;i++) {
+            row = sheet.createRow(rowCount++);
+
+            cell = row.createCell(0);
+            cell.setCellValue(distanceBins[i]);
+
+            cell = row.createCell(1);
+            cell.setCellValue(results[i].getMean());
+
+            cell = row.createCell(2);
+            cell.setCellValue(results[i].getStd());
+
+            cell = row.createCell(3);
+            cell.setCellValue(results[i].getN());
+
+        }
+
+        // Writing the workbook to file
+        try {
+            FileOutputStream outputStream = new FileOutputStream(path);
+            workbook.write(outputStream);
+            workbook.close();
+        } catch(FileNotFoundException e) {
+            try {
+                ZonedDateTime zonedDateTime = ZonedDateTime.now();
+                String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+                String rootPath = FilenameUtils.removeExtension(path);
+                String newOutPath = rootPath + "_("+ dateTime + ").xlsx";
+                FileOutputStream outputStream = null;
+
+                outputStream = new FileOutputStream(newOutPath);
+                workbook.write(outputStream);
+                workbook.close();
+
+                System.err.println("Target file ("+new File(path).getName()+") inaccessible");
+                System.err.println("Saved to alternative file ("+new File(newOutPath).getName()+")");
+
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -221,6 +417,13 @@ public class MeasureIntensityDistribution extends Module {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String measurementType = parameters.getValue(MEASUREMENT_TYPE);
+        String distanceMapImageName = parameters.getValue(DISTANCE_MAP_IMAGE);
+        int nRadialSample = parameters.getValue(NUMBER_OF_RADIAL_SAMPLES);
+        String rangeMode = parameters.getValue(RANGE_MODE);
+        double minDistance = parameters.getValue(MIN_DISTANCE);
+        double maxDistance = parameters.getValue(MAX_DISTANCE);
+        String saveProfileMode = parameters.getValue(SAVE_PROFILE_MODE);
+        String profileFileSuffix = parameters.getValue(PROFILE_FILE_SUFFIX);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         double proximalDistance = parameters.getValue(PROXIMAL_DISTANCE);
         String spatialUnits = parameters.getValue(SPATIAL_UNITS);
@@ -230,10 +433,48 @@ public class MeasureIntensityDistribution extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
 
         if (spatialUnits.equals(SpatialUnits.CALIBRATED)) {
-            proximalDistance = inputImage.getImagePlus().getCalibration().getRawX(proximalDistance);
+            Calibration calibration = inputImage.getImagePlus().getCalibration();
+            proximalDistance = calibration.getRawX(proximalDistance);
         }
 
         switch (measurementType) {
+            case MeasurementTypes.DISTANCE_PROFILE:
+                Image distanceMap = workspace.getImage(distanceMapImageName);
+
+                // Getting the distance bin centroids
+                double[] distanceBins = null;
+                switch (rangeMode) {
+                    case RangeModes.AUTOMATIC_RANGE:
+                        distanceBins = getDistanceBins(distanceMap, nRadialSample);
+                        break;
+                    case RangeModes.MANUAL_RANGE:
+                        distanceBins = getDistanceBins(nRadialSample, minDistance, maxDistance);
+                        break;
+                }
+
+                // Processing each object
+                CumStat[] cumStats = measureDistanceProfile(inputImage, distanceMap, distanceBins);
+
+                double[] mean = Arrays.stream(cumStats).mapToDouble(CumStat::getMean).toArray();
+                double[] n = Arrays.stream(cumStats).mapToDouble(CumStat::getMean).toArray();
+
+                switch (saveProfileMode) {
+                    case SaveProfileModes.INDIVIDUAL_FILES:
+                        File rootFile = workspace.getMetadata().getFile();
+                        String path = rootFile.getParent()+ MIA.slashes +FilenameUtils.removeExtension(rootFile.getName());
+                        path = path + "_S" + workspace.getMetadata().getSeriesNumber()  + profileFileSuffix+ ".xlsx";
+                        writeResultsFile(path,distanceBins,cumStats);
+                        break;
+                }
+
+                if (showOutput) {
+                    String title = "File: "+workspace.getMetadata().getFilename()+" intensity profile";
+                    Plot plot = new Plot(title,"Distance (px)","Mean intensity",distanceBins,mean);
+                    plot.show();
+                }
+
+                break;
+
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
                 ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
@@ -292,27 +533,33 @@ public class MeasureIntensityDistribution extends Module {
                 String name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
                 inputImage.addMeasurement(new Measurement(name, cs.getMean()));
                 name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
-                inputImage.addMeasurement(new Measurement(name, cs.getMean()*dppXY));
+                inputImage.addMeasurement(new Measurement(name, cs.getMean() * dppXY));
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
                 inputImage.addMeasurement(new Measurement(name, cs.getStd()));
                 name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
-                inputImage.addMeasurement(new Measurement(name, cs.getStd()*dppXY));
+                inputImage.addMeasurement(new Measurement(name, cs.getStd() * dppXY));
 
-                writeMessage("Mean intensity proximity = " + cs.getMean() + " +/- "+cs.getStd());
+                writeMessage("Mean intensity proximity = " + cs.getMean() + " +/- " + cs.getStd());
 
                 break;
-
         }
     }
 
     @Override
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(MEASUREMENT_TYPE, Parameter.CHOICE_ARRAY,
-                MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS, MeasurementTypes.ALL));
+        parameters.add(new Parameter(MEASUREMENT_TYPE, Parameter.CHOICE_ARRAY,MeasurementTypes.DISTANCE_PROFILE, MeasurementTypes.ALL));
+        parameters.add(new Parameter(DISTANCE_MAP_IMAGE,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(NUMBER_OF_RADIAL_SAMPLES,Parameter.INTEGER,10));
+        parameters.add(new Parameter(RANGE_MODE,Parameter.CHOICE_ARRAY,RangeModes.AUTOMATIC_RANGE,RangeModes.ALL));
+        parameters.add(new Parameter(MIN_DISTANCE,Parameter.DOUBLE,0d));
+        parameters.add(new Parameter(MAX_DISTANCE,Parameter.DOUBLE,1d));
+        parameters.add(new Parameter(SAVE_PROFILE_MODE,Parameter.CHOICE_ARRAY,SaveProfileModes.DONT_SAVE,SaveProfileModes.ALL));
+        parameters.add(new Parameter(PROFILE_FILE_SUFFIX,Parameter.STRING,""));
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
         parameters.add(new Parameter(PROXIMAL_DISTANCE, Parameter.DOUBLE,2d));
         parameters.add(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new Parameter(IGNORE_ON_OBJECTS, Parameter.BOOLEAN, false));
         parameters.add(new Parameter(EDGE_DISTANCE_MODE,Parameter.CHOICE_ARRAY, EdgeDistanceModes.INSIDE_AND_OUTSIDE, EdgeDistanceModes.ALL));
 
     }
@@ -324,18 +571,34 @@ public class MeasureIntensityDistribution extends Module {
         returnedParameters.add(parameters.getParameter(MEASUREMENT_TYPE));
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
+            case MeasurementTypes.DISTANCE_PROFILE:
+                returnedParameters.add(parameters.getParameter(DISTANCE_MAP_IMAGE));
+                returnedParameters.add(parameters.getParameter(NUMBER_OF_RADIAL_SAMPLES));
+                returnedParameters.add(parameters.getParameter(RANGE_MODE));
+                switch ((String) parameters.getValue(RANGE_MODE)) {
+                    case MeasureRadialIntensityProfile.RangeModes.MANUAL_RANGE:
+                        returnedParameters.add(parameters.getParameter(MIN_DISTANCE));
+                        returnedParameters.add(parameters.getParameter(MAX_DISTANCE));
+                        break;
+                }
+                returnedParameters.add(parameters.getParameter(SAVE_PROFILE_MODE));
+                switch ((String) parameters.getValue(SAVE_PROFILE_MODE)) {
+                    case SaveProfileModes.INDIVIDUAL_FILES:
+                        returnedParameters.add(parameters.getParameter(PROFILE_FILE_SUFFIX));
+                        break;
+                }
+                break;
+
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
                 returnedParameters.add(parameters.getParameter(PROXIMAL_DISTANCE));
                 returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
                 returnedParameters.add(parameters.getParameter(IGNORE_ON_OBJECTS));
-
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
                 returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
                 returnedParameters.add(parameters.getParameter(EDGE_DISTANCE_MODE));
-
                 break;
 
         }

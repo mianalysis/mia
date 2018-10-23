@@ -3,23 +3,32 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
 import ij.gui.Roi;
 import ij.gui.TextRoi;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import ij.plugin.SubHyperstackMaker;
+import ij.process.BinaryInterpolator;
+import ij.process.ImageProcessor;
 import ij.process.LUT;
+import ij.process.StackStatistics;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -47,6 +56,18 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_OBJECTS = "Output objects";
+    public static final String INTERPOLATION_MODE = "Interpolation mode";
+
+
+    public interface InterpolationModes {
+        String NONE = "None";
+        String SPATIAL = "Spatial";
+        String TEMPORAL = "Temporal";
+        String SPATIAL_AND_TEMPORAL = "Spatial and temporal";
+
+        String[] ALL = new String[]{NONE, SPATIAL, TEMPORAL, SPATIAL_AND_TEMPORAL};
+
+    }
 
 
     public static void main(String[] args) {
@@ -69,11 +90,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
 
-        JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following<br>(or click \"Finish adding objects\" at any time)</html>");
+        JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following" +
+                "<br>(or click \"Finish adding objects\" at any time)." +
+                "<br>Different timepoints must be added as new objects.</html>");
         headerPanel.add(headerLabel);
 
         frame.add(headerPanel);
-
 
         // Buttons panel
         JPanel buttonsPanel = new JPanel();
@@ -113,6 +135,80 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
+    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode) {
+        // Create a binary image of the objects
+        String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
+        String source = ObjCollection.SingleColours.WHITE;
+        HashMap<Integer, Float> hues = outputObjects.getHues(colourMode, source, false);
+        Image binaryImage = outputObjects.convertObjectsToImage("Binary",templateImage,colourMode,hues);
+        ImagePlus binaryIpl = binaryImage.getImagePlus();
+
+        switch (interpolationMode) {
+            case InterpolationModes.SPATIAL:
+                applySpatialInterpolation(binaryIpl);
+                break;
+
+            case InterpolationModes.TEMPORAL:
+                applyTemporalInterpolation(binaryIpl);
+                break;
+
+            case InterpolationModes.SPATIAL_AND_TEMPORAL:
+                applySpatialInterpolation(binaryIpl);
+                applyTemporalInterpolation(binaryIpl);
+                break;
+        }
+
+        // Converting binary image back to objects
+        return binaryImage.convertImageToObjects(outputObjects.getName(),false);
+
+    }
+
+    void applyTemporalInterpolation(ImagePlus binaryIpl) {
+        int nSlices = binaryIpl.getNSlices();
+        int nFrames = binaryIpl.getNFrames();
+
+        BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
+
+        // We only want to interpolate in time, so need to process each Z-slice of the stack separately
+        for (int z=1;z<=nSlices;z++) {
+            // Extracting the slice and interpolating
+            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
+            if (!checkStackForInterpolation(sliceIpl.getStack())) continue;
+            binaryInterpolator.run(sliceIpl.getStack());
+        }
+    }
+
+    void applySpatialInterpolation(ImagePlus binaryIpl) {
+        int nSlices = binaryIpl.getNSlices();
+        int nFrames = binaryIpl.getNFrames();
+
+        BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
+
+        // We only want to interpolate in z, so need to process each timepoint separately
+        for (int t=1;t<=nFrames;t++) {
+            // Extracting the slice and interpolating
+            ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", "1-" + nSlices, t + "-" + t);
+            if (!checkStackForInterpolation(sliceIpl.getStack())) continue;
+            binaryInterpolator.run(sliceIpl.getStack());
+        }
+    }
+
+    /**
+     * Verifies that at least two images in the stack contain non-zero pixels
+     * @param stack
+     * @return
+     */
+    boolean checkStackForInterpolation(ImageStack stack) {
+        int count = 0;
+        for (int i=1;i<=stack.getSize();i++) {
+            if (stack.getProcessor(i).getStatistics().max > 0) count++;
+        }
+
+        return count >= 2;
+
+    }
+
+
     @Override
     public String getTitle() {
         return "Manually identify objects";
@@ -136,6 +232,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        String interpolationMode = parameters.getValue(INTERPOLATION_MODE);
 
         // Getting input image
         Image inputImage = workspace.getImage(inputImageName);
@@ -159,13 +256,13 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Initialising output objects
         outputObjects = new ObjCollection(outputObjectsName);
-        workspace.addObjects(outputObjects);
 
         // Displaying the image and showing the control
         displayImagePlus.setLut(LUT.createLutFromColor(Color.WHITE));
         displayImagePlus.show();
         showOptionsPanel();
 
+        // All the while the control is open, do nothing
         while (frame != null) {
             try {
                 Thread.sleep(100);
@@ -173,12 +270,33 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 e.printStackTrace();
             }
         }
+
+        // If necessary, apply interpolation
+        switch (interpolationMode) {
+            case InterpolationModes.SPATIAL:
+            case InterpolationModes.TEMPORAL:
+            case InterpolationModes.SPATIAL_AND_TEMPORAL:
+                outputObjects = applyInterpolation(outputObjects, inputImage, interpolationMode);
+                break;
+        }
+
+        workspace.addObjects(outputObjects);
+
+        // Showing the selected objects
+        if (showOutput) {
+            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,mode,hues).getImagePlus();
+            dispIpl.setLut(LUTs.Random(true));
+            dispIpl.show();
+        }
     }
 
     @Override
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
+        parameters.add(new Parameter(INTERPOLATION_MODE,Parameter.CHOICE_ARRAY,InterpolationModes.SPATIAL,InterpolationModes.ALL));
 
     }
 
@@ -213,6 +331,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
                 // Adding the new object
                 Obj outputObject = new Obj(outputObjectsName,ID,dppXY,dppZ,calibrationUnits,twoD);
+                outputObject.setT(displayImagePlus.getT()-1);
                 for (Point point:points) {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
@@ -250,6 +369,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
                 // Adding the new object
                 outputObject = outputObjects.get(ID);
+                outputObject.setT(displayImagePlus.getT()-1);
                 for (Point point:points) {
                     int x = (int) Math.round(point.getX());
                     int y = (int) Math.round(point.getY());
