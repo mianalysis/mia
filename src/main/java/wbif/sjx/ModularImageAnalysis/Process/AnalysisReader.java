@@ -201,6 +201,7 @@ public class AnalysisReader {
                     case Parameter.OBJECT_MEASUREMENT:
                     case Parameter.CHILD_OBJECTS:
                     case Parameter.PARENT_OBJECTS:
+                    case Parameter.METADATA_ITEM:
                         module.updateParameterValue(parameterName, parameterValue);
                         break;
 

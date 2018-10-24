@@ -6,6 +6,8 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MetadataExtractors.*;
 import wbif.sjx.common.Object.HCMetadata;
 
+import java.util.StringTokenizer;
+
 /**
  * Created by sc13967 on 05/05/2017.
  */
@@ -13,6 +15,8 @@ public class MetadataExtractor extends Module {
     public static final String EXTRACTOR_MODE = "Extractor mode";
     public static final String FILENAME_EXTRACTOR = "Filename extractor";
     public static final String FOLDERNAME_EXTRACTOR = "Foldername extractor";
+    public static final String PATTERN = "Pattern";
+    public static final String GROUPS = "Groups (comma separated)";
     public static final String KEYWORD_LIST = "Keyword list";
     public static final String KEYWORD_SOURCE = "Keyword source";
     public static final String METADATA_FILE_EXTRACTOR = "Metadata file extractor";
@@ -28,15 +32,14 @@ public class MetadataExtractor extends Module {
     }
 
     public interface FilenameExtractors {
-        String NONE = "None";
+        String GENERIC = "Generic";
         String CELLVOYAGER_FILENAME_EXTRACTOR = "Cell Voyager filename";
         String INCUCYTE_LONG_FILENAME_EXTRACTOR = "IncuCyte long filename";
         String INCUCYTE_SHORT_FILENAME_EXTRACTOR = "IncuCyte short filename";
         String OPERA_FILENAME_EXTRACTOR = "Opera filename";
-
         String YOKOGAWA_FILENAME_EXTRACTOR = "Yokogawa filename";
 
-        String[] ALL = new String[]{NONE, CELLVOYAGER_FILENAME_EXTRACTOR, INCUCYTE_LONG_FILENAME_EXTRACTOR,
+        String[] ALL = new String[]{GENERIC, CELLVOYAGER_FILENAME_EXTRACTOR, INCUCYTE_LONG_FILENAME_EXTRACTOR,
                 INCUCYTE_SHORT_FILENAME_EXTRACTOR, OPERA_FILENAME_EXTRACTOR, YOKOGAWA_FILENAME_EXTRACTOR};
 
     }
@@ -92,9 +95,21 @@ public class MetadataExtractor extends Module {
                 filenameExtractor = new CV7000FilenameExtractor();
                 break;
 
+            default:
+                return;
+
         }
 
-        if (filenameExtractor != null) filenameExtractor.extract(metadata, metadata.getFile().getName());
+        filenameExtractor.extract(metadata, metadata.getFile().getName());
+
+    }
+
+    private void extractGenericFilename(HCMetadata metadata, String pattern, String groupString) {
+        String[] groups = getGroups(groupString);
+
+        NameExtractor extractor = new GenericExtractor(pattern,groups);
+        extractor.extract(metadata,metadata.getFile().getName());
+
     }
 
     private void extractFoldername(HCMetadata metadata, String foldernameExtractorName) {
@@ -141,6 +156,20 @@ public class MetadataExtractor extends Module {
         if (metadataFileExtractor != null) metadataFileExtractor.extract(metadata,metadata.getFile());
     }
 
+    public String[] getGroups(String groupString) {
+        groupString = groupString.replace(" ","");
+
+        StringTokenizer tokenizer = new StringTokenizer(groupString,",");
+        int nTokens = tokenizer.countTokens();
+
+        int i=0;
+        String[] groups = new String[nTokens];
+        while (tokenizer.hasMoreTokens()) groups[i++] = tokenizer.nextToken();
+
+        return groups;
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -160,30 +189,39 @@ public class MetadataExtractor extends Module {
 
     @Override
     public void run(Workspace workspace) {
+        // Getting parameters
+        String extractorMode = parameters.getValue(EXTRACTOR_MODE);
+        String filenameExtractorName = parameters.getValue(FILENAME_EXTRACTOR);
+        String foldernameExtractorName = parameters.getValue(FOLDERNAME_EXTRACTOR);
+        String pattern = parameters.getValue(PATTERN);
+        String groups = parameters.getValue(GROUPS);
+        String keywordList = parameters.getValue(KEYWORD_LIST);
+        String keywordSource = parameters.getValue(KEYWORD_SOURCE);
+        String metadataFileExtractorName = parameters.getValue(METADATA_FILE_EXTRACTOR);
+
         // Getting current result
         HCMetadata metadata = workspace.getMetadata();
 
-        switch ((String) parameters.getValue(EXTRACTOR_MODE)) {
+        switch (extractorMode) {
             case ExtractorModes.FILENAME_MODE:
                 // Getting filename extractor
-                String filenameExtractorName = parameters.getValue(FILENAME_EXTRACTOR);
-                extractFilename(metadata,filenameExtractorName);
+                if (filenameExtractorName.equals(FilenameExtractors.GENERIC)) {
+                    extractGenericFilename(metadata,pattern,groups);
+                } else {
+                    extractFilename(metadata, filenameExtractorName);
+                }
                 break;
 
             case ExtractorModes.FOLDERNAME_MODE:
-                String foldernameExtractorName = parameters.getValue(FOLDERNAME_EXTRACTOR);
                 extractFoldername(metadata,foldernameExtractorName);
                 break;
 
             case ExtractorModes.KEYWORD_MODE:
-                String keywordList = parameters.getValue(KEYWORD_LIST);
-                String keywordSource = parameters.getValue(KEYWORD_SOURCE);
                 extractKeyword(metadata,keywordList,keywordSource);
                 break;
 
             case ExtractorModes.METADATA_FILE_MODE:
                 // Getting metadata file extractor
-                String metadataFileExtractorName = parameters.getValue(METADATA_FILE_EXTRACTOR);
                 extractMetadataFile(metadata,metadataFileExtractorName);
                 break;
         }
@@ -192,8 +230,10 @@ public class MetadataExtractor extends Module {
     @Override
     public void initialiseParameters() {
         parameters.add(new Parameter(EXTRACTOR_MODE,Parameter.CHOICE_ARRAY,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
-        parameters.add(new Parameter(FILENAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FilenameExtractors.NONE,FilenameExtractors.ALL));
+        parameters.add(new Parameter(FILENAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FilenameExtractors.GENERIC,FilenameExtractors.ALL));
         parameters.add(new Parameter(FOLDERNAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
+        parameters.add(new Parameter(PATTERN,Parameter.STRING,""));
+        parameters.add(new Parameter(GROUPS,Parameter.STRING,""));
         parameters.add(new Parameter(KEYWORD_LIST,Parameter.STRING,""));
         parameters.add(new Parameter(KEYWORD_SOURCE, Parameter.CHOICE_ARRAY,KeywordSources.FILENAME,KeywordSources.ALL));
         parameters.add(new Parameter(METADATA_FILE_EXTRACTOR,Parameter.CHOICE_ARRAY,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
@@ -209,6 +249,12 @@ public class MetadataExtractor extends Module {
         switch((String) parameters.getValue(EXTRACTOR_MODE)) {
             case ExtractorModes.FILENAME_MODE:
                 returnedParameters.add(parameters.getParameter(FILENAME_EXTRACTOR));
+                switch ((String) parameters.getValue(FILENAME_EXTRACTOR)) {
+                    case FilenameExtractors.GENERIC:
+                        returnedParameters.add(parameters.getParameter(PATTERN));
+                        returnedParameters.add(parameters.getParameter(GROUPS));
+                        break;
+                }
                 break;
 
             case ExtractorModes.FOLDERNAME_MODE:
@@ -238,6 +284,117 @@ public class MetadataExtractor extends Module {
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         return null;
+    }
+
+    @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        MetadataReferenceCollection metadataReferences = new MetadataReferenceCollection();
+
+        switch((String) parameters.getValue(EXTRACTOR_MODE)) {
+            case ExtractorModes.FILENAME_MODE:
+                switch ((String) parameters.getValue(FILENAME_EXTRACTOR)) {
+                    case FilenameExtractors.GENERIC:
+                        String groupString = parameters.getValue(GROUPS);
+                        String[] groups = getGroups(groupString);
+                        for (String group:groups) metadataReferences.add(new MetadataReference(group));
+                        break;
+
+                    case FilenameExtractors.CELLVOYAGER_FILENAME_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference(HCMetadata.CHANNEL));
+                        metadataReferences.add(new MetadataReference(HCMetadata.EXTENSION));
+                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataReference(HCMetadata.TIMEPOINT));
+                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
+                        metadataReferences.add(new MetadataReference(HCMetadata.ZPOSITION));
+                        break;
+
+                    case FilenameExtractors.INCUCYTE_LONG_FILENAME_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference(HCMetadata.EXTENSION));
+                        metadataReferences.add(new MetadataReference(HCMetadata.COMMENT));
+                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
+                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataReference(HCMetadata.YEAR));
+                        metadataReferences.add(new MetadataReference(HCMetadata.MONTH));
+                        metadataReferences.add(new MetadataReference(HCMetadata.DAY));
+                        metadataReferences.add(new MetadataReference(HCMetadata.HOUR));
+                        metadataReferences.add(new MetadataReference(HCMetadata.MINUTE));
+                        break;
+
+                    case FilenameExtractors.INCUCYTE_SHORT_FILENAME_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference(HCMetadata.EXTENSION));
+                        metadataReferences.add(new MetadataReference(HCMetadata.COMMENT));
+                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
+                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
+                        break;
+
+                    case FilenameExtractors.OPERA_FILENAME_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference(HCMetadata.ROW));
+                        metadataReferences.add(new MetadataReference(HCMetadata.COL));
+                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
+                        break;
+
+                    case FilenameExtractors.YOKOGAWA_FILENAME_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference(HCMetadata.EXTENSION));
+                        metadataReferences.add(new MetadataReference(HCMetadata.PLATE_NAME));
+                        metadataReferences.add(new MetadataReference(HCMetadata.PLATE_MANUFACTURER));
+                        metadataReferences.add(new MetadataReference(HCMetadata.PLATE_MODEL));
+                        metadataReferences.add(new MetadataReference(HCMetadata.WELL));
+                        metadataReferences.add(new MetadataReference(HCMetadata.TIMEPOINT));
+                        metadataReferences.add(new MetadataReference(HCMetadata.FIELD));
+                        metadataReferences.add(new MetadataReference(HCMetadata.TIMELINE_NUMBER));
+                        metadataReferences.add(new MetadataReference(HCMetadata.ACTION_NUMBER));
+                        metadataReferences.add(new MetadataReference(HCMetadata.ZPOSITION));
+                        metadataReferences.add(new MetadataReference(HCMetadata.CHANNEL));
+                        break;
+                }
+
+                break;
+
+            case ExtractorModes.FOLDERNAME_MODE:
+                switch ((String) parameters.getValue(FOLDERNAME_EXTRACTOR)) {
+                    case FoldernameExtractors.CELLVOYAGER_FOLDERNAME_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference(HCMetadata.YEAR));
+                        metadataReferences.add(new MetadataReference(HCMetadata.MONTH));
+                        metadataReferences.add(new MetadataReference(HCMetadata.DAY));
+                        metadataReferences.add(new MetadataReference(HCMetadata.HOUR));
+                        metadataReferences.add(new MetadataReference(HCMetadata.MINUTE));
+                        metadataReferences.add(new MetadataReference(HCMetadata.SECOND));
+                        metadataReferences.add(new MetadataReference(HCMetadata.MAGNIFICATION));
+                        metadataReferences.add(new MetadataReference(HCMetadata.CELLTYPE));
+                        metadataReferences.add(new MetadataReference(HCMetadata.COMMENT));
+                        break;
+
+                    case FoldernameExtractors.OPERA_FOLDERNAME_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference(HCMetadata.YEAR));
+                        metadataReferences.add(new MetadataReference(HCMetadata.MONTH));
+                        metadataReferences.add(new MetadataReference(HCMetadata.DAY));
+                        metadataReferences.add(new MetadataReference(HCMetadata.HOUR));
+                        metadataReferences.add(new MetadataReference(HCMetadata.MINUTE));
+                        metadataReferences.add(new MetadataReference(HCMetadata.SECOND));
+                        break;
+
+                    case FoldernameExtractors.OPERA_BARCODE_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference("Barcode"));
+                        break;
+                }
+                break;
+
+            case ExtractorModes.KEYWORD_MODE:
+                metadataReferences.add(new MetadataReference(HCMetadata.KEYWORD));
+                break;
+
+            case ExtractorModes.METADATA_FILE_MODE:
+                switch ((String) parameters.getValue(METADATA_FILE_EXTRACTOR)) {
+                    case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
+                        metadataReferences.add(new MetadataReference("AreaName"));
+                        break;
+                }
+                break;
+
+        }
+
+        return metadataReferences;
     }
 
     @Override

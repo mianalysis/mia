@@ -20,7 +20,9 @@ public class EvalButton extends JButton implements ActionListener {
     private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
     private static final ImageIcon amberIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/Dual Ring-1s-12px.gif"), "");
     private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_green_12px.png"), "");
-    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/x-mark-3-12.png"), "");
+    private static final ImageIcon redOpenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_red_12px.png"), "");
+    private static final ImageIcon redClosedIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowclosed_red_12px.png"), "");
+    private static final ImageIcon redStopIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/x-mark-3-12.png"), "");
 
 
     // CONSTRUCTOR
@@ -36,7 +38,7 @@ public class EvalButton extends JButton implements ActionListener {
         addActionListener(this);
         updateColour();
 
-        setEnabled(module.isEnabled());
+        setEnabled(module.isEnabled() && module.isRunnable());
 
     }
 
@@ -46,16 +48,26 @@ public class EvalButton extends JButton implements ActionListener {
         // If the module is being currently evaluated
         if (idx == GUI.getModuleBeingEval()) {
             setIcon(amberIcon);
-            setRolloverIcon(redIcon);
+            setRolloverIcon(redStopIcon);
             return;
         }
 
         if (idx <= GUI.getLastModuleEval()) {
-            setIcon(greenIcon);
-            setRolloverIcon(greenIcon);
+            if (module.isRunnable()) {
+                setIcon(greenIcon);
+                setRolloverIcon(greenIcon);
+            } else {
+                setIcon(redClosedIcon);
+                setRolloverIcon(redClosedIcon);
+            }
         } else {
-            setIcon(blackIcon);
-            setRolloverIcon(blackIcon);
+            if (module.isRunnable()) {
+                setIcon(blackIcon);
+                setRolloverIcon(blackIcon);
+            } else {
+                setIcon(redOpenIcon);
+                setRolloverIcon(redOpenIcon);
+            }
         }
     }
 
@@ -105,7 +117,7 @@ public class EvalButton extends JButton implements ActionListener {
             t = new Thread(() -> {
                 for (int i = GUI.getLastModuleEval() + 1; i <= idx; i++) {
                     Module module = GUI.getModules().get(i);
-                    if (module.isEnabled()) try {
+                    if (module.isEnabled() && module.isRunnable()) try {
                         GUI.evaluateModule(module);
                     } catch (GenericMIAException ex) {
                         IJ.showMessage(ex.getMessage());

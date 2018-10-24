@@ -1352,10 +1352,11 @@ public class TrackObjectsTest {
 
         TrackObjects trackObjects = (TrackObjects) new TrackObjects()
                 .updateParameterValue(TrackObjects.LINKING_METHOD,TrackObjects.LinkingMethods.CENTROID)
+                .updateParameterValue(TrackObjects.MAXIMUM_LINKING_DISTANCE,Double.MAX_VALUE)
                 .updateParameterValue(TrackObjects.USE_MEASUREMENT,false)
                 .updateParameterValue(TrackObjects.USE_VOLUME,false);
 
-        float[][] actual = trackObjects.calculateCostMatrix(previous,current,null,null);
+        double[][] actual = trackObjects.calculateCostMatrix(previous,current,null,null);
         float[][] expected = new float[][]{
                 {60.4154f,39.1152f,58.5577f},
                 {32.2371f,24.2465f,26.4995f},
@@ -1419,10 +1420,11 @@ public class TrackObjectsTest {
 
         TrackObjects trackObjects = (TrackObjects) new TrackObjects()
                 .updateParameterValue(TrackObjects.LINKING_METHOD,TrackObjects.LinkingMethods.CENTROID)
+                .updateParameterValue(TrackObjects.MAXIMUM_LINKING_DISTANCE,Double.MAX_VALUE)
                 .updateParameterValue(TrackObjects.USE_MEASUREMENT,false)
                 .updateParameterValue(TrackObjects.USE_VOLUME,false);
 
-        float[][] actual = trackObjects.calculateCostMatrix(previous,current,null,null);
+        double[][] actual = trackObjects.calculateCostMatrix(previous,current,null,null);
         float[][] expected = new float[][]{
                 {60.4154f,39.1152f,58.5577f,64.9076f},
                 {32.2371f,24.2465f,26.4995f,36.4265f},
@@ -1484,10 +1486,11 @@ public class TrackObjectsTest {
 
         TrackObjects trackObjects = (TrackObjects) new TrackObjects()
                 .updateParameterValue(TrackObjects.LINKING_METHOD,TrackObjects.LinkingMethods.CENTROID)
+                .updateParameterValue(TrackObjects.MAXIMUM_LINKING_DISTANCE,Double.MAX_VALUE)
                 .updateParameterValue(TrackObjects.USE_MEASUREMENT,false)
                 .updateParameterValue(TrackObjects.USE_VOLUME,false);
 
-        float[][] actual = trackObjects.calculateCostMatrix(previous,current,null,null);
+        double[][] actual = trackObjects.calculateCostMatrix(previous,current,null,null);
         float[][] expected = new float[][]{
                 {60.4154f,39.1152f,58.5577f},
                 {32.2371f,24.2465f,26.4995f},

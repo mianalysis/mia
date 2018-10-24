@@ -5,7 +5,6 @@ import ij.ImagePlus;
 import ij.gui.Line;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
-import org.apache.commons.math.geometry.Rotation;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -166,6 +165,11 @@ public class PlotKymograph extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+        return null;
+    }
+
+    @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
         return null;
     }
 

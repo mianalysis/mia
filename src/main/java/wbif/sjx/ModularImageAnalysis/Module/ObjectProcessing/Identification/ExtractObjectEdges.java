@@ -275,6 +275,11 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
+    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+        return null;
+    }
+
+    @Override
     public void addRelationships(RelationshipCollection relationships) {
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
 

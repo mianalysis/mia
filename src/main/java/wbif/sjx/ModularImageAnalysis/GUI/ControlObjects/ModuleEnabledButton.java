@@ -16,7 +16,8 @@ import java.awt.event.ActionListener;
 public class ModuleEnabledButton extends JButton implements ActionListener {
     private Module module;
     private boolean state = true;
-    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_black_12px.png"), "");
+    private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_black_12px.png"), "");
+    private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_red_12px.png"), "");
     private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_brightgreen_12px.png"), "");
 
     public ModuleEnabledButton(Module module) {
@@ -36,8 +37,9 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     }
 
     public void setIcon() {
-        if (state) setIcon(greenIcon);
-        else setIcon(redIcon);
+        if (state && module.isRunnable()) setIcon(greenIcon);
+        else if (state &! module.isRunnable()) setIcon(redIcon);
+        else setIcon(blackIcon);
     }
 
     public Module getModule() {

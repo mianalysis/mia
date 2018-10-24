@@ -20,7 +20,6 @@ public class Analysis implements Serializable {
     public OutputControl outputControl = new OutputControl();
     public ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
-//    private boolean updateProgressBar = false;
 
     // CONSTRUCTOR
 
@@ -57,7 +56,7 @@ public class Analysis implements Serializable {
         int count = 0;
         for (Module module:modules) {
             if (Thread.currentThread().isInterrupted()) break;
-            if (module.isEnabled()) module.execute(workspace);
+            if (module.isEnabled() && module.isRunnable()) module.execute(workspace);
 
             // Updating progress bar
             double percentageComplete = ((double) (count++))/((double) total)*100;
