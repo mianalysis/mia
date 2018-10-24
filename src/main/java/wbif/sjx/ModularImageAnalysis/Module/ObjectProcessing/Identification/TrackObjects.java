@@ -3,11 +3,11 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
+import blogspot.software_and_algorithms.stern_library.optimization.HungarianAlgorithm;
 import ij.ImagePlus;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import org.apache.hadoop.hbase.util.MunkresAssignment;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -102,7 +102,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public float[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
+    public double[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
         String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE);
@@ -116,7 +116,7 @@ public class TrackObjects extends Module {
         String linkingMethod = parameters.getValue(LINKING_METHOD);
 
         // Creating the cost matrix
-        float[][] cost = new float[currObjects.size()][prevObjects.size()];
+        double[][] cost = new double[currObjects.size()][prevObjects.size()];
 
         for (int curr = 0; curr < cost.length; curr++) {
             for (int prev = 0; prev < cost[curr].length; prev++) {
@@ -152,8 +152,10 @@ public class TrackObjects extends Module {
                         break;
                 }
 
-                cost[curr][prev] = (float) (spatialCost + volumeCost*volumeWeighting + directionCost*directionWeighting
-                        + measurementCost*measurementWeighting);
+                boolean linkValid = testLinkValidity(prevObj,currObj,inputObjects,spatialLimits);
+
+                cost[curr][prev] = linkValid ? (spatialCost + volumeCost*volumeWeighting +
+                        directionCost*directionWeighting + measurementCost*measurementWeighting) : Double.MAX_VALUE;
 
             }
         }
@@ -520,8 +522,11 @@ public class TrackObjects extends Module {
                 }
 
                 // Calculating distances between objects and populating the cost matrix
-                float[][] cost = calculateCostMatrix(nPObjects[0],nPObjects[1],inputObjects,spatialLimits);
-                int[] assignment = new MunkresAssignment(cost).solve();
+                double[][] cost = calculateCostMatrix(nPObjects[0],nPObjects[1],inputObjects,spatialLimits);
+                HungarianAlgorithm hungarianAlgorithm = new HungarianAlgorithm(cost);
+                int[] assignment = hungarianAlgorithm.execute();
+
+                for (int i=0;i<assignment.length;i++) System.err.println(i+"_"+assignment[i]);
 
                 // Applying the calculated assignments as relationships
                 for (int curr = 0; curr < assignment.length; curr++) {

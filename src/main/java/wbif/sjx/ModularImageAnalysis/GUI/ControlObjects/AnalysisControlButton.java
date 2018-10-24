@@ -4,10 +4,7 @@ import ij.IJ;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Process.Analysis;
-import wbif.sjx.ModularImageAnalysis.Process.AnalysisReader;
-import wbif.sjx.ModularImageAnalysis.Process.AnalysisRunner;
-import wbif.sjx.ModularImageAnalysis.Process.AnalysisWriter;
+import wbif.sjx.ModularImageAnalysis.Process.*;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
@@ -63,6 +60,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
                     break;
 
                 case START_ANALYSIS:
+                    AnalysisTester.reportStatus(GUI.getModules());
                     Thread t = new Thread(() -> {
                         try {
                             AnalysisRunner.startAnalysis(GUI.getAnalysis());

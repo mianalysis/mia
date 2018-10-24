@@ -75,6 +75,9 @@ public class GUI {
     private static final GUISeparator loadSeparator = new GUISeparator();
     private static final ButtonGroup group = new ButtonGroup();
     private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
+    private static final ModuleButton inputButton = new ModuleButton(analysis.getInputControl());
+    private static final ModuleButton outputButton = new ModuleButton(analysis.getOutputControl());
+
 
     public GUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
         // Only create a GUI if one hasn't already been created
@@ -444,7 +447,6 @@ public class GUI {
         c.anchor = GridBagConstraints.PAGE_START;
         c.fill = GridBagConstraints.BOTH;
 
-        ModuleButton inputButton = new ModuleButton(analysis.getInputControl());
         group.add(inputButton);
         inputEnablePanel.add(inputButton, c);
 
@@ -472,7 +474,6 @@ public class GUI {
         c.anchor = GridBagConstraints.PAGE_START;
         c.fill = GridBagConstraints.BOTH;
 
-        ModuleButton outputButton = new ModuleButton(analysis.getOutputControl());
         group.add(outputButton);
         outputEnablePanel.add(outputButton, c);
 
@@ -1097,6 +1098,14 @@ public class GUI {
 
     public static void updateModules() {
         AnalysisTester.testModules(analysis.getModules());
+
+        boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
+        analysis.getInputControl().setRunnable(runnable);
+        inputButton.setColour();
+        runnable = AnalysisTester.testModule(analysis.getOutputControl(),analysis.getModules());
+        analysis.getInputControl().setRunnable(runnable);
+        outputButton.setColour();
+
         populateModuleList();
         updateEvalButtonStates();
 

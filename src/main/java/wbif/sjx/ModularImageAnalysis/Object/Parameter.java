@@ -116,6 +116,7 @@ public class Parameter implements Serializable {
     private Object valueSource; // Where the possible values come from (used for CHOICE_ARRAY and MEASUREMENT_FOR_COLOUR)
     private Object value;
     private boolean visible = false;
+    private boolean valid = true;
 
 
     // CONSTRUCTORS
@@ -174,6 +175,14 @@ public class Parameter implements Serializable {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     @Override

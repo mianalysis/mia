@@ -57,7 +57,6 @@ public class Analysis implements Serializable {
         for (Module module:modules) {
             if (Thread.currentThread().isInterrupted()) break;
             if (module.isEnabled() && module.isRunnable()) module.execute(workspace);
-            else if (module.isEnabled() && module.isRunnable()) System.err.println("Module \""+module.getTitle()+"\" not runnable (likely a missing input).  This module has been skipped.");
 
             // Updating progress bar
             double percentageComplete = ((double) (count++))/((double) total)*100;

@@ -46,6 +46,12 @@ public class ComponentFactory {
 //        parameterName.setHorizontalAlignment(JTextField.RIGHT);
         paramPanel.add(parameterName, c);
 
+        if (parameter.isValid()) {
+            parameterName.setForeground(Color.BLACK);
+        } else {
+            parameterName.setForeground(Color.RED);
+        }
+
         JComponent parameterControl = null;
 
         switch (parameter.getType()) {
@@ -291,6 +297,8 @@ public class ComponentFactory {
         title.setBorder(null);
         title.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
         title.setOpaque(false);
+        Color color = module.isRunnable() ? Color.BLACK : Color.RED;
+        title.setForeground(color);
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);

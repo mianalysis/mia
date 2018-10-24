@@ -1,9 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
-import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.util.LinkedHashSet;
 
@@ -27,16 +25,12 @@ public class AnalysisTester {
             switch (parameter.getType()) {
                 case Parameter.INPUT_IMAGE:
                 case Parameter.REMOVED_IMAGE:
-                    // Input object-type parameters
-                    runnable = testInputParameter(parameter,module,modules);
-                    break;
-
                 case Parameter.INPUT_OBJECTS:
                 case Parameter.PARENT_OBJECTS:
                 case Parameter.CHILD_OBJECTS:
                 case Parameter.REMOVED_OBJECTS:
                     // Input object-type parameters
-                    runnable = testInputParameter(parameter,module,modules);
+                    runnable = testInputImageObjectParameter(parameter,module,modules);
                     break;
 
                 case Parameter.DOUBLE:
@@ -44,20 +38,16 @@ public class AnalysisTester {
                 case Parameter.STRING:
                 case Parameter.OUTPUT_IMAGE:
                 case Parameter.OUTPUT_OBJECTS:
-                    // Input-output value-type parameters
-                    break;
-
                 case Parameter.FILE_PATH:
                 case Parameter.FOLDER_PATH:
-                    // File-type parameters
+                    // Input-output value-type parameters
+                    runnable = testInputValueParameter(parameter);
                     break;
 
                 case Parameter.OBJECT_MEASUREMENT:
-                    // Object measurement parameter
-                    break;
-
                 case Parameter.IMAGE_MEASUREMENT:
-                    // Image measurement parameter
+                    // Image or object measurement parameter
+                    runnable = testMeasurementParameter(parameter,module,modules);
                     break;
 
                 case Parameter.METADATA_ITEM:
@@ -65,13 +55,18 @@ public class AnalysisTester {
                     break;
 
             }
+
+            parameter.setValid(runnable);
+
+            if (!runnable) return false;
+
         }
 
-        return runnable;
+        return true;
 
     }
 
-    public static boolean testInputParameter(Parameter parameter, Module module, ModuleCollection modules) {
+    public static boolean testInputImageObjectParameter(Parameter parameter, Module module, ModuleCollection modules) {
         // Get available parameters up to this point
         LinkedHashSet<Parameter> availableParameters = null;
         switch (parameter.getType()) {
@@ -99,7 +94,69 @@ public class AnalysisTester {
 
     }
 
-//    public static boolean testInputValueParameter(Parameter parameter) {
-//        switch ()
-//    }
+    public static boolean testInputValueParameter(Parameter parameter) {
+        if (parameter.getValue() == null) return false;
+
+        switch (parameter.getType()) {
+            case Parameter.DOUBLE:
+            case Parameter.INTEGER:
+                return !(parameter.getValue() == null);
+
+            case Parameter.STRING:
+            case Parameter.OUTPUT_IMAGE:
+            case Parameter.OUTPUT_OBJECTS:
+            case Parameter.FILE_PATH:
+            case Parameter.FOLDER_PATH:
+                return !((String) parameter.getValue()).equals("");
+        }
+
+        return false;
+
+    }
+
+    public static boolean testMeasurementParameter(Parameter parameter, Module module, ModuleCollection modules) {
+        MeasurementReferenceCollection measurements = null;
+        switch (parameter.getType()) {
+            case Parameter.IMAGE_MEASUREMENT:
+                measurements = modules.getImageMeasurementReferences(parameter.getValueSource(),module);
+                break;
+
+            case Parameter.OBJECT_MEASUREMENT:
+                measurements = modules.getObjectMeasurementReferences(parameter.getValueSource(),module);
+                break;
+        }
+
+        if (measurements == null) return false;
+
+        // Checking if a parameter with a matching name is in this list
+        for (MeasurementReference measurement:measurements.values()) {
+            if (measurement.getName().equals(parameter.getValue())) return true;
+        }
+
+        return false;
+
+    }
+
+    public static boolean testMetadataParameter(Parameter parameter, Module module, ModuleCollection modules) {
+        MetadataReferenceCollection metadataReferences = modules.getMetadataReferences(module);
+
+        if (metadataReferences == null) return false;
+
+        // Checking if a parameter with a matching name is in this list
+        for (MetadataReference metadataReference:metadataReferences.values()) {
+            if (metadataReference.getName().equals(parameter.getValue())) return true;
+        }
+
+        return false;
+
+    }
+
+    public static void reportStatus(ModuleCollection modules) {
+        for (Module module:modules) {
+            if (module.isEnabled() & !module.isRunnable()) {
+                System.err.println("Module \"" + module.getTitle() +
+                        "\" not runnable (likely a missing input).  This module has been skipped.");
+            }
+        }
+    }
 }
