@@ -30,6 +30,7 @@ public abstract class Module implements Serializable {
     private String packageName;
     private boolean canBeDisabled = false;
     protected boolean showOutput = false;
+    private boolean runnable = true;
 
 
     // CONSTRUCTOR
@@ -183,5 +184,13 @@ public abstract class Module implements Serializable {
 
     public void setShowOutput(boolean showOutput) {
         this.showOutput = showOutput;
+    }
+
+    public boolean isRunnable() {
+        return runnable;
+    }
+
+    public void setRunnable(boolean runnable) {
+        this.runnable = runnable;
     }
 }

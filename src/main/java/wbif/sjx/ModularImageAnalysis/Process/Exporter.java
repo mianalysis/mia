@@ -327,7 +327,9 @@ public class Exporter {
                 // Getting list of unique metadata values
                 HashSet<String> metadataValues = new HashSet<>();
                 for (Workspace workspace:workspaces) {
-                    metadataValues.add(workspace.getMetadata().get(metadataItemForGrouping).toString());
+                    if (workspace.getMetadata().containsKey(metadataItemForGrouping)) {
+                        metadataValues.add(workspace.getMetadata().get(metadataItemForGrouping).toString());
+                    }
                 }
 
                 for (String metadataValue:metadataValues) {
@@ -335,12 +337,13 @@ public class Exporter {
 
                     // Adding Workspaces matching this metadata value
                     for (Workspace workspace:workspaces) {
+                        if (!workspace.getMetadata().containsKey(metadataItemForGrouping)) continue;
                         if (workspace.getMetadata().get(metadataItemForGrouping).toString().equals(metadataValue)) {
                             currentWorkspaces.add(workspace);
                         }
                     }
 
-                    String name = exportFilePath+"_META_"+metadataValue;
+                    String name = exportFilePath+"_"+metadataItemForGrouping+"-"+metadataValue;
 
                     exportXLSX(currentWorkspaces,analysis,name);
 
@@ -490,16 +493,14 @@ public class Exporter {
         HashMap<String,Integer> colNumbers = new HashMap<>();
 
         // Adding metadata headers
-        HCMetadata exampleMetadata = exampleWorkspace.getMetadata();
-        if (exampleMetadata.size() != 0) {
-            // Running through all the metadata values, adding them as new columns
-            for (String name : exampleMetadata.keySet()) {
-                Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                String summaryDataName = getMetadataString(name);
-                summaryHeaderCell.setCellValue(summaryDataName);
-                colNumbers.put(summaryDataName,headerCol++);
+        String[] metadataNames = modules.getMetadataReferences(null).getMetadataNames();
+        // Running through all the metadata values, adding them as new columns
+        for (String name : metadataNames) {
+            Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
+            String summaryDataName = getMetadataString(name);
+            summaryHeaderCell.setCellValue(summaryDataName);
+            colNumbers.put(summaryDataName,headerCol++);
 
-            }
         }
 
         // Add a column to record the timepoint
@@ -707,10 +708,12 @@ public class Exporter {
 
     private void populateSummaryRow(Row summaryValueRow, Workspace workspace, ModuleCollection modules,
                                     HashMap<String,Integer> colNumbers, int timepoint) {
+
         // Adding metadata values
         HCMetadata metadata = workspace.getMetadata();
         for (String name : metadata.keySet()) {
             String headerName = getMetadataString(name);
+            if (!colNumbers.containsKey(headerName)) continue;
             int colNumber = colNumbers.get(headerName);
             Cell metaValueCell = summaryValueRow.createCell(colNumber);
             metaValueCell.setCellValue(metadata.getAsString(name));
@@ -946,12 +949,10 @@ public class Exporter {
                 // Adding metadata headers (if enabled)
                 if (addMetadataToObjects) {
                     // Running through all the metadata values, adding them as new columns
-                    HCMetadata exampleMetadata = exampleWorkspace.getMetadata();
-                    for (String name : exampleMetadata.keySet()) {
+                    String[] metadataNames = modules.getMetadataReferences(null).getMetadataNames();
+                    for (String name : metadataNames) {
                         Cell metaHeaderCell = objectHeaderRow.createCell(col++);
-                        String metadataName = name;//.replaceAll(" ", "_");
-                        metaHeaderCell.setCellValue(metadataName);
-
+                        metaHeaderCell.setCellValue(name);
                     }
                 }
 

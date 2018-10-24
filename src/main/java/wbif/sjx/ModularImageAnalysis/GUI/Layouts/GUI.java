@@ -17,6 +17,7 @@ import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisTester;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
@@ -1095,6 +1096,7 @@ public class GUI {
     }
 
     public static void updateModules() {
+        AnalysisTester.testModules(analysis.getModules());
         populateModuleList();
         updateEvalButtonStates();
 

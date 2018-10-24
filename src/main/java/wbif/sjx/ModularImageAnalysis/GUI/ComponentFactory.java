@@ -51,43 +51,24 @@ public class ComponentFactory {
         switch (parameter.getType()) {
             case Parameter.INPUT_IMAGE:
             case Parameter.REMOVED_IMAGE:
-                // Getting a list of available images
-                LinkedHashSet<Parameter> outputImages = modules.getParametersMatchingType(Parameter.OUTPUT_IMAGE,module);
-                LinkedHashSet<Parameter> removedImages = modules.getParametersMatchingType(Parameter.REMOVED_IMAGE,module);
+                LinkedHashSet<Parameter> images = modules.getAvailableImages(module);
 
                 // Adding any output images to the list
-                LinkedHashSet<String> namesSet = new LinkedHashSet<>();
-                namesSet.add(null);
-                for (Parameter image : outputImages) namesSet.add(image.getValue());
-
-                // Removing any images which have since been removed from the workspace
-                for (Parameter image : removedImages) namesSet.remove(image.getValue());
-
-                String[] names = new String[namesSet.size()];
+                String[] names = new String[images.size()];
                 int i = 0;
-                for (String name:namesSet) names[i++] = name;
+                for (Parameter image:images) names[i++] = image.getValue();
 
                 parameterControl = new ChoiceArrayParameter(module,parameter,names);
-
                 break;
 
             case Parameter.INPUT_OBJECTS:
             case Parameter.REMOVED_OBJECTS:
-                // Getting a list of available images
-                LinkedHashSet<Parameter> objects = modules.getParametersMatchingType(Parameter.OUTPUT_OBJECTS,module);
-                LinkedHashSet<Parameter> removedObjects = modules.getParametersMatchingType(Parameter.REMOVED_OBJECTS,module);
+                LinkedHashSet<Parameter> objects = modules.getAvailableObjects(module);
 
                 // Adding any output images to the list
-                namesSet = new LinkedHashSet<>();
-                namesSet.add(null);
-                for (Parameter object : objects) namesSet.add(object.getValue());
-
-                // Removing any images which have since been removed from the workspace
-                for (Parameter object : removedObjects) namesSet.remove(object.getValue());
-
-                names = new String[namesSet.size()];
+                names = new String[objects.size()];
                 i = 0;
-                for (String name:namesSet) names[i++] = name;
+                for (Parameter object:objects) names[i++] = object.getValue();
 
                 parameterControl = new ChoiceArrayParameter(module,parameter,names);
                 break;

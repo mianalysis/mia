@@ -24,8 +24,10 @@ public class ModuleButton extends JToggleButton implements ActionListener {
         addActionListener(this);
         setText(module.getNickname());
 
-        if (module.isEnabled()) {
+        if (module.isEnabled() && module.isRunnable()) {
             setForeground(Color.BLACK);
+        } else if (module.isEnabled() &! module.isRunnable()) {
+            setForeground(Color.RED);
         } else {
             setForeground(Color.GRAY);
         }

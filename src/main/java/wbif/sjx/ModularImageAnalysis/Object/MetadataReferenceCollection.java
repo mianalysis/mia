@@ -8,7 +8,6 @@ public class MetadataReferenceCollection extends TreeMap<String,MetadataReferenc
     public MetadataReferenceCollection() {
         add(new MetadataReference(HCMetadata.FILE));
         add(new MetadataReference(HCMetadata.FILENAME));
-        add(new MetadataReference(HCMetadata.EXTENSION));
         add(new MetadataReference(HCMetadata.SERIES_NUMBER));
         add(new MetadataReference(HCMetadata.SERIES_NAME));
 
