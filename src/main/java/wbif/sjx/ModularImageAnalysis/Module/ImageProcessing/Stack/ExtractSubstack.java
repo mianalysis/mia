@@ -73,7 +73,7 @@ public class ExtractSubstack extends Module implements ActionListener {
 
         // Header panel
         JLabel headerLabel = new JLabel("<html>Set the range for each type.</html>");
-        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
         headerLabel.setPreferredSize(new Dimension(300,elementHeight));
         frame.add(headerLabel,c);
 
