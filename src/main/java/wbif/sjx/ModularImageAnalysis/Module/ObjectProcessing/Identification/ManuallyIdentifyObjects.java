@@ -473,7 +473,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     public void addObjectToList(ObjRoi objRoi, int ID) {
         JButton button = new JButton();
-        button.setText("Object "+String.valueOf(ID)+", T = "+objRoi.getT()+", Z = "+objRoi.getZ());
+        button.setText("Object "+String.valueOf(ID)+", T = "+(objRoi.getT()+1)+", Z = "+objRoi.getZ());
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
