@@ -25,6 +25,8 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -92,6 +94,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     private void showOptionsPanel() {
+        rois = new HashMap<>();
+        maxID = 0;
         frame = new JFrame();
 
         frame.setLayout(new GridBagLayout());
@@ -147,15 +151,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         objectsC.gridy = 0;
         objectsC.weightx = 1;
         objectsC.weighty = 1;
-        objectsC.insets = new Insets(1,1,1,1);
         objectsC.anchor = GridBagConstraints.NORTHWEST;
         objectsC.fill = GridBagConstraints.HORIZONTAL;
         objectsPanel.setLayout(new GridBagLayout());
-//        objectsPanel.setPreferredSize(new Dimension(290,190));
 
         objectsScrollPane.setPreferredSize(new Dimension(0,200));
-//        objectsScrollPane.setMinimumSize(new Dimension(600,200));
-//        objectsScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
@@ -166,6 +166,21 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.gridheight = 3;
         c.fill = GridBagConstraints.BOTH;
         frame.add(objectsScrollPane,c);
+
+        JCheckBox overlayCheck = new JCheckBox("Display overlay");
+        overlayCheck.setSelected(true);
+        overlayCheck.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayImagePlus.setHideOverlay(!overlayCheck.isSelected());
+            }
+        });
+        c.gridy++;
+        c.gridy++;
+        c.gridy++;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        frame.add(overlayCheck,c);
 
         frame.pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -264,11 +279,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
-        rois = new HashMap<>();
-        maxID = 0;
-
-        // Local access to this is required for the action listeners
+    protected void run(Workspace workspace) throws GenericMIAException {// Local access to this is required for the action listeners
         this.workspace = workspace;
 
         // Getting parameters
@@ -338,7 +349,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
-        parameters.add(new Parameter(INTERPOLATION_MODE,Parameter.CHOICE_ARRAY,InterpolationModes.SPATIAL,InterpolationModes.ALL));
+        parameters.add(new Parameter(INTERPOLATION_MODE,Parameter.CHOICE_ARRAY,InterpolationModes.NONE,InterpolationModes.ALL));
 
     }
 
@@ -399,21 +410,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         currentRois.add(objRoi);
         rois.put(ID,currentRois);
 
-        // Adding overlay showing ROI and its ID number
-        overlay.add(roi);
-        double[] centroid = roi.getContourCentroid();
-        TextRoi textRoi = new TextRoi(centroid[0],centroid[1],String.valueOf(ID));
-        if (displayImagePlus.isHyperStack()) {
-            textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
-        } else {
-            int pos = Math.max(Math.max(1,displayImagePlus.getZ()),displayImagePlus.getT());
-            textRoi.setPosition(pos);
-        }
-        overlay.add(textRoi);
-        displayImagePlus.updateAndDraw();
+        // Displaying the ROI on the overlay
+        addToOverlay(roi,ID);
 
         // Setting the number field to this number
         objectNumberField.setText(String.valueOf(ID));
+
+        // Adding to the list of objects
+        addObjectToList(objRoi,ID);
 
     }
 
@@ -429,21 +433,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         currentRois.add(objRoi);
         rois.put(ID,currentRois);
 
-        // Adding overlay showing ROI and its ID number
-        overlay.add(roi);
-        double[] centroid = roi.getContourCentroid();
-        TextRoi textRoi = new TextRoi(centroid[0],centroid[1],String.valueOf(ID));
-        if (displayImagePlus.isHyperStack()) {
-            textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
-        } else {
-            int pos = Math.max(Math.max(1,displayImagePlus.getZ()),displayImagePlus.getT());
-            textRoi.setPosition(pos);
-        }
-        overlay.add(textRoi);
-        displayImagePlus.updateAndDraw();
+        // Displaying the ROI on the overlay
+        addToOverlay(roi,ID);
 
         // Setting the number field to this number
         objectNumberField.setText(String.valueOf(ID));
+
+        // Adding to the list of objects
+        addObjectToList(objRoi,ID);
 
     }
 
@@ -474,14 +471,14 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         }
     }
 
-    public void addObjectToList(Obj object) {
+    public void addObjectToList(ObjRoi objRoi, int ID) {
         JButton button = new JButton();
-        button.setText("Object "+String.valueOf(object.getID()));
+        button.setText("Object "+String.valueOf(ID)+", T = "+objRoi.getT()+", Z = "+objRoi.getZ());
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Show the object on the image
-                displayObject(object);
+                displayObject(objRoi);
             }
         });
 
@@ -500,8 +497,24 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    void displayObject(Obj object) {
+    public void addToOverlay(Roi roi, int ID) {
+        // Adding overlay showing ROI and its ID number
+        overlay.add(ObjRoi.duplicateRoi(roi));
+        double[] centroid = roi.getContourCentroid();
+        TextRoi textRoi = new TextRoi(centroid[0],centroid[1],String.valueOf(ID));
+        if (displayImagePlus.isHyperStack()) {
+            textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
+        } else {
+            int pos = Math.max(Math.max(1,displayImagePlus.getZ()),displayImagePlus.getT());
+            textRoi.setPosition(pos);
+        }
+        overlay.add(textRoi);
+        displayImagePlus.updateAndDraw();
 
+    }
+
+    void displayObject(ObjRoi objRoi) {
+        displayImagePlus.setRoi(ObjRoi.duplicateRoi(objRoi.getRoi()));
     }
 }
 
@@ -511,24 +524,45 @@ class ObjRoi {
     private final int z;
 
     ObjRoi(Roi roi, int t, int z) {
+        this.roi = duplicateRoi(roi);
         this.t = t;
         this.z = z;
 
+    }
+
+    public static Roi duplicateRoi(Roi roi) {
+        Roi newRoi;
         // Need to process Roi depending on its type
         switch (roi.getType()) {
             case Roi.RECTANGLE:
-                this.roi = new Roi(roi.getBounds());
+                newRoi = new Roi(roi.getBounds());
                 break;
 
             case Roi.OVAL:
                 Rectangle bounds = roi.getBounds();
-                this.roi = new OvalRoi(bounds.x,bounds.y,bounds.width,bounds.height);
+                newRoi = new OvalRoi(bounds.x,bounds.y,bounds.width,bounds.height);
+                break;
+
+            case Roi.POLYGON:
+            case Roi.FREEROI:
+                PolygonRoi polyRoi = (PolygonRoi) roi;
+                int[] x = polyRoi.getXCoordinates();
+                int[] xx = new int[x.length];
+                for (int i=0;i<x.length;i++) xx[i] = x[i]+ (int) polyRoi.getXBase();
+
+                int[] y = polyRoi.getYCoordinates();
+                int[] yy = new int[x.length];
+                for (int i=0;i<y.length;i++) yy[i] = y[i]+ (int) polyRoi.getYBase();
+
+                newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
                 break;
 
             default:
-                this.roi = new Roi(roi.getBounds());
+                newRoi = new Roi(roi.getBounds());
                 break;
         }
+
+        return newRoi;
 
     }
 
