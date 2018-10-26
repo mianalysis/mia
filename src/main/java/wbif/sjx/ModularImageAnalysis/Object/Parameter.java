@@ -110,6 +110,11 @@ public class Parameter implements Serializable {
      */
     public final static int METADATA_ITEM = 17;
 
+    /**
+     * Pseudo parameter which can display text on the parameters page
+     */
+    public final static int TEXT_DISPLAY = 18;
+
 
     private final String name;
     private int type;
@@ -202,6 +207,7 @@ public class Parameter implements Serializable {
 
             case STRING:
             case CHOICE_ARRAY:
+            case TEXT_DISPLAY:
                 return (String) value;
         }
 

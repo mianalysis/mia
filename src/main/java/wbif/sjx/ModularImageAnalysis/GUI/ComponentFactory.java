@@ -131,6 +131,10 @@ public class ComponentFactory {
                 String[] metadataChoices = modules.getMetadataReferences(module).getMetadataNames();
                 parameterControl = new ChoiceArrayParameter(module,parameter,metadataChoices);
                 break;
+
+            case Parameter.TEXT_DISPLAY:
+                parameterControl = new TextDisplayArea(parameter);
+                break;
         }
 
         // Adding the input component
@@ -138,7 +142,7 @@ public class ComponentFactory {
         c.weightx=1;
         c.anchor = GridBagConstraints.EAST;
         if (parameterControl != null) {
-            parameterControl.setPreferredSize(new Dimension(0,elementHeight));
+            if (parameter.getType() != Parameter.TEXT_DISPLAY) parameterControl.setPreferredSize(new Dimension(0,elementHeight));
             paramPanel.add(parameterControl, c);
         }
 

@@ -4,6 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectColocalisation;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -36,6 +37,20 @@ public class ResolveObjectOverlap extends Module {
         String[] ALL = new String[]{MUTUALLY_OPTIMAL, OPTIMAL_FOR_OBJECTS1, OPTIMAL_FOR_OBJECTS2};
 
     }
+
+    public interface Measurements {
+        String FRACTION_1 = "FRACTION1";
+        String FRACTION_2 = "FRACTION2";
+
+        String[] ALL = new String[]{FRACTION_1,FRACTION_2};
+
+    }
+
+    public static String getFullName(String objectName, String measurement) {
+        return "OBJECT_OVERLAP // "+measurement.substring(0,measurement.length()-1)+"_"+objectName;
+
+    }
+
 
     private ObjCollection calculateSpatialOverlap(ObjCollection inputObjects1, ObjCollection inputObjects2,
                                          String outputObjectsName, double minOverlap, String overlapRequirement) {
@@ -200,10 +215,23 @@ public class ResolveObjectOverlap extends Module {
             // Merge objects and adding to output objects
             if (alreadyRemoved) {
                 object2.getPoints().addAll(object1.getPoints());
+                System.err.println("Object already removed");
 
             } else {
                 Obj outputObject = new Obj(outputObjects.getName(), outputObjects.getNextID(),
                         object1.getDistPerPxXY(), object1.getDistPerPxZ(), object1.getCalibratedUnits(), object1.is2D());
+
+                // Adding measurements
+                int nTotalPoints = object1.getNVoxels() + object2.getNVoxels();
+                double fraction1 = (double) object1.getNVoxels()/(double) nTotalPoints;
+                double fraction2 = (double) object2.getNVoxels()/(double) nTotalPoints;
+
+                String name = getFullName(object1.getName(),Measurements.FRACTION_1);
+                outputObject.addMeasurement(new Measurement(name,fraction1));
+                name = getFullName(object1.getName(),Measurements.FRACTION_2);
+                outputObject.addMeasurement(new Measurement(name,fraction2));
+
+                // Assigning points to new object
                 outputObject.getPoints().addAll(object1.getPoints());
                 outputObject.getPoints().addAll(object2.getPoints());
                 outputObjects.add(outputObject);
@@ -213,6 +241,7 @@ public class ResolveObjectOverlap extends Module {
 
                 // Adding the new object to the correspondences HashMap along with the object2 that created it
                 newObjects.put(overlap1[1].intValue(), outputObject);
+
             }
 
             iterator.remove();
@@ -232,7 +261,8 @@ public class ResolveObjectOverlap extends Module {
 
     @Override
     public String getHelp() {
-        return "Identifies overlapping objects and moves them to a new object collection";
+        return "Identifies overlapping objects and moves them to a new object collection\n"+
+                "Objects are linked on a one-to-one basis.";
     }
 
     @Override
@@ -321,7 +351,26 @@ public class ResolveObjectOverlap extends Module {
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        return null;
+        String inputObjectsName1 = parameters.getValue(INPUT_OBJECTS_1);
+        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2);
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
+
+        objectMeasurementReferences.setAllCalculated(false);
+
+        String name = getFullName(inputObjectsName1,Measurements.FRACTION_1);
+        MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(outputObjectsName);
+        reference.setCalculated(true);
+        reference.setDescription("Fraction of overlap object, which is coincident with \""+inputObjectsName1+"\" objects");
+
+        name = getFullName(inputObjectsName2,Measurements.FRACTION_2);
+        reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(outputObjectsName);
+        reference.setCalculated(true);
+        reference.setDescription("Fraction of overlap object, which is coincident with \""+inputObjectsName2+"\" objects");
+
+        return objectMeasurementReferences;
+
     }
 
     @Override
