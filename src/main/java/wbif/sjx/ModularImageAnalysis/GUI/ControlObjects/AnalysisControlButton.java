@@ -51,7 +51,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
 
                     GUI.setLastModuleEval(-1);
                     GUI.updateTestFile();
-                    GUI.updateModules();
+                    GUI.updateModules(true);
                     GUI.populateModuleList();
 
                     break;

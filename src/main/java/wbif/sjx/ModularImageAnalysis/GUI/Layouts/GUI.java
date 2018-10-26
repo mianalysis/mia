@@ -4,6 +4,7 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
+import org.apache.commons.io.output.TeeOutputStream;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
@@ -102,7 +103,7 @@ public class GUI {
         frame.setLocation((screenSize.width - editingFrameWidth) / 2, (screenSize.height - frameHeight) / 2);
         frame.setTitle("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
 
-        if (!debugOn) initialiseStatusTextField();
+        initialiseStatusTextField();
 
         // Creating the menu bar
         initialiseMenuBar();
@@ -198,13 +199,11 @@ public class GUI {
         basicPanel.add(basicModulesScrollPane, c);
 
         // Initialising the status panel
-        if (!debugOn) {
-            c.gridy++;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.weighty = 0;
-            initialiseBasicStatusPanel();
-            basicPanel.add(basicStatusPanel,c);
-        }
+        c.gridy++;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 0;
+        initialiseBasicStatusPanel();
+        basicPanel.add(basicStatusPanel,c);
 
         // Initialising the progress bar
         initialiseBasicProgressBar();
@@ -233,7 +232,6 @@ public class GUI {
         editingPanel.add(controlPanel, c);
 
         // Initialising the status panel
-        if (!debugOn) {
             c.gridheight = 1;
             c.gridy++;
             c.gridy++;
@@ -245,16 +243,6 @@ public class GUI {
             c.insets = new Insets(0,5,5,5);
             initialiseEditingStatusPanel();
             editingPanel.add(editingStatusPanel, c);
-        } else {
-            c.gridheight = 1;
-            c.gridy++;
-            c.gridy++;
-            c.gridy++;
-            c.weighty = 0;
-            c.weightx = 1;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridwidth = 3;
-        }
 
         // Initialising the progress bar
         initialiseEditingProgressBar();
@@ -509,6 +497,7 @@ public class GUI {
         paramsScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         paramsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         paramsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        paramsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 
         paramsPanel.setLayout(new GridBagLayout());
 
@@ -520,7 +509,7 @@ public class GUI {
 
         // Displaying the input controls
         activeModule = analysis.getInputControl();
-        updateModules();
+        updateModules(true);
 
     }
 
@@ -543,9 +532,15 @@ public class GUI {
         textField.setOpaque(false);
 
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
-        PrintStream printStream = new PrintStream(outputStreamTextField);
-        System.setOut(printStream);
+        PrintStream guiPrintStream = new PrintStream(outputStreamTextField);
 
+        if (debugOn) {
+            TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
+            PrintStream printStream = new PrintStream(teeOutputStream);
+            System.setOut(printStream);
+        } else {
+            System.setOut(guiPrintStream);
+        }
     }
 
     private static void initialiseEditingProgressBar() {
@@ -627,6 +622,7 @@ public class GUI {
         basicModulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         basicModulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         basicModulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        basicModulesScrollPane.getVerticalScrollBar().setUnitIncrement(10);
 
         // Initialising the panel for module buttons
         basicModulesPanel.setLayout(new GridBagLayout());
@@ -1046,7 +1042,7 @@ public class GUI {
                 modules.remove(activeModule);
                 modules.add(idx - 1, activeModule);
                 populateModuleList();
-                updateModules();
+                updateModules(true);
             }
         }
     }
@@ -1062,7 +1058,7 @@ public class GUI {
                 modules.remove(activeModule);
                 modules.add(idx + 1, activeModule);
                 populateModuleList();
-                updateModules();
+                updateModules(true);
             }
         }
     }
@@ -1096,8 +1092,12 @@ public class GUI {
         basicProgressBar.setValue(val);
     }
 
-    public static void updateModules() {
-        AnalysisTester.testModules(analysis.getModules());
+    public static void updateModules(boolean verbose) {
+        int nRunnable = AnalysisTester.testModules(analysis.getModules());
+        int nActive = 0;
+        for (Module module:analysis.getModules()) if (module.isEnabled()) nActive++;
+        int nModules = analysis.getModules().size();
+        if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
 
         boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
@@ -1220,14 +1220,14 @@ public class GUI {
         // Setting the index to the previous module.  This will make the currently-evaluated module go red
         lastModuleEval = getModules().indexOf(module) - 1;
         moduleBeingEval = getModules().indexOf(module);
-        updateModules();
+        updateModules(false);
 
         Module.setVerbose(true);
         module.execute(testWorkspace);
         lastModuleEval = getModules().indexOf(module);
         moduleBeingEval = -1;
 
-        updateModules();
+        updateModules(false);
     }
 
     public static void setTestWorkspace(Workspace testWorkspace) {

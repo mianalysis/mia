@@ -106,9 +106,9 @@ public class EvalButton extends JButton implements ActionListener {
                     IJ.showMessage(ex.getMessage());
                 } catch (Exception e1) {
                     GUI.setModuleBeingEval(-1);
-                    GUI.updateModules();
                     e1.printStackTrace();
                 }
+                GUI.updateModules(true);
             });
             t.start();
 
@@ -123,11 +123,11 @@ public class EvalButton extends JButton implements ActionListener {
                         IJ.showMessage(ex.getMessage());
                     } catch (Exception e1) {
                         GUI.setModuleBeingEval(-1);
-                        GUI.updateModules();
                         e1.printStackTrace();
                         Thread.currentThread().getThreadGroup().interrupt();
                     }
                 }
+                GUI.updateModules(true);
             });
             t.start();
         }

@@ -184,13 +184,15 @@ public class MetadataExtractor extends Module {
         for (String group:groups) {
             String value = metadata.getAsString(group);
             if (value == null) value = "NA";
-            stringBuilder.append("Group \""+group+"\": "+value+"\n");
+            stringBuilder.append(group);
+            stringBuilder.append(": ");
+            stringBuilder.append(value);
+            stringBuilder.append("\n");
         }
 
         return stringBuilder.toString();
 
     }
-
 
     @Override
     public String getTitle() {

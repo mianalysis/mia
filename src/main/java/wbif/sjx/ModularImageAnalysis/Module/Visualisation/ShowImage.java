@@ -13,6 +13,11 @@ import wbif.sjx.common.Process.IntensityMinMax;
 public class ShowImage extends Module {
     public final static String DISPLAY_IMAGE = "Display image";
 
+    public ShowImage() {
+        // This module likely wants to have this enabled (otherwise it does nothing)
+        showOutput = true;
+    }
+
     @Override
     public String getTitle() {
         return "Show image";

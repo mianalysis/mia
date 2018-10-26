@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import org.apache.commons.io.FilenameUtils;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
@@ -79,8 +80,8 @@ public class FileParameter extends JButton implements ActionListener {
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        GUI.updateTestFile();
-        GUI.updateModules();
+        if (module.getClass().isInstance(new InputControl())) GUI.updateTestFile();
+        GUI.updateModules(true);
 
     }
 }

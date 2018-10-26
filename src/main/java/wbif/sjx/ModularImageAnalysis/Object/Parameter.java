@@ -198,17 +198,17 @@ public class Parameter implements Serializable {
             case INPUT_OBJECTS:
             case OUTPUT_OBJECTS:
             case METADATA_ITEM:
-                return value.toString();
+                return value == null ? "" : value.toString();
 
             case INTEGER:
             case DOUBLE:
             case BOOLEAN:
-                return String.valueOf(value);
+                return value == null ? "" : String.valueOf(value);
 
             case STRING:
             case CHOICE_ARRAY:
             case TEXT_DISPLAY:
-                return (String) value;
+                return value == null ? "" : (String) value;
         }
 
         return "";

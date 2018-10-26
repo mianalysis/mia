@@ -20,15 +20,16 @@ public class TextDisplayArea extends JPanel {
         c.fill = GridBagConstraints.BOTH;
 
         JTextArea textArea = new JTextArea();
+        textArea.setEditable(false);
+        String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
+        textArea.setText(name);
+
         JScrollPane objectsScrollPane = new JScrollPane(textArea);
         setPreferredSize(new Dimension(0,150));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         add(objectsScrollPane,c);
-
-        String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
-        textArea.setText(name);
 
     }
 

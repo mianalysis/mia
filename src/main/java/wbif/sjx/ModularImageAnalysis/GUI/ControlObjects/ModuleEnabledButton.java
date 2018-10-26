@@ -70,7 +70,7 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
             }
         }
 
-        GUI.updateModules();
+        GUI.updateModules(true);
 
     }
 }

@@ -171,7 +171,7 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new Parameter(INPUT_TRACK_OBJECTS,Parameter.INPUT_OBJECTS,null));
+//        parameters.add(new Parameter(INPUT_TRACK_OBJECTS,Parameter.PARENT_OBJECTS,null));
 //        parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY,OutputModes.DO_NOT_STORE,OutputModes.ALL));
 //        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
 //        parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.CENTROIDS,FittingModes.ALL));

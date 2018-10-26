@@ -39,6 +39,6 @@ public class BooleanParameter extends JCheckBox implements ActionListener {
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
-        GUI.updateModules();
+        GUI.updateModules(true);
     }
 }
