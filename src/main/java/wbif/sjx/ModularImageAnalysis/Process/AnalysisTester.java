@@ -6,13 +6,20 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import java.util.LinkedHashSet;
 
 public class AnalysisTester {
-    public static void testModules(ModuleCollection modules) {
+    public static int testModules(ModuleCollection modules) {
+        int nRunnable = 0;
         for (Module module:modules) {
+            if (!module.isEnabled()) continue;
             boolean runnable = testModule(module,modules);
 
             module.setRunnable(runnable);
 
+            if (runnable) nRunnable++;
+
         }
+
+        return nRunnable;
+
     }
 
     public static boolean testModule(Module module, ModuleCollection modules) {
@@ -116,6 +123,9 @@ public class AnalysisTester {
 
     public static boolean testMeasurementParameter(Parameter parameter, Module module, ModuleCollection modules) {
         MeasurementReferenceCollection measurements = null;
+
+        if (parameter.getValue() == null || parameter.getValueSource() == null) return false;
+
         switch (parameter.getType()) {
             case Parameter.IMAGE_MEASUREMENT:
                 measurements = modules.getImageMeasurementReferences(parameter.getValueSource(),module);

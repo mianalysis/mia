@@ -131,6 +131,10 @@ public class ComponentFactory {
                 String[] metadataChoices = modules.getMetadataReferences(module).getMetadataNames();
                 parameterControl = new ChoiceArrayParameter(module,parameter,metadataChoices);
                 break;
+
+            case Parameter.TEXT_DISPLAY:
+                parameterControl = new TextDisplayArea(parameter);
+                break;
         }
 
         // Adding the input component
@@ -138,7 +142,9 @@ public class ComponentFactory {
         c.weightx=1;
         c.anchor = GridBagConstraints.EAST;
         if (parameterControl != null) {
-            parameterControl.setPreferredSize(new Dimension(0,elementHeight));
+            String value = parameter.toString();
+            parameterControl.setToolTipText(value == null ? "" : value);
+            if (parameter.getType() != Parameter.TEXT_DISPLAY) parameterControl.setPreferredSize(new Dimension(0,elementHeight));
             paramPanel.add(parameterControl, c);
         }
 
@@ -372,7 +378,7 @@ public class ComponentFactory {
             public void mouseClicked(MouseEvent e) {
                 boolean expanded = module.getParameterValue(GUISeparator.EXPANDED_BASIC);
                 module.updateParameterValue(GUISeparator.EXPANDED_BASIC,!expanded);
-                GUI.updateModules();
+                GUI.updateModules(true);
             }
 
             @Override
@@ -422,6 +428,7 @@ public class ComponentFactory {
 
         // If there are visible parameters, but the module isn't enabled only return the heading
         if (!module.isEnabled()) return modulePanel;
+        if (!module.isRunnable()) return modulePanel;
 
         c.insets = new Insets(0,35,0,0);
         for (Parameter parameter : module.updateAndGetParameters().values()) {

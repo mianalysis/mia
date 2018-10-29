@@ -33,25 +33,17 @@ public class MeasureObjectOverlap extends Module {
     }
 
     public static int getNOverlappingPoints(Obj inputObject1, ObjCollection inputObjects1, ObjCollection inputObjects2, boolean linkInSameFrame) {
-        // Creating an Indexer based on the range of each object set
-        int[][] limits1 = inputObjects1.getSpatialLimits();
-        int[][] limits2 = inputObjects2.getSpatialLimits();
-        int[] maxLimits = new int[limits1.length];
-        for (int i=0;i<limits1.length;i++) maxLimits[i] = Math.max(limits1[i][1],limits2[i][1]);
-
-        Indexer indexer = new Indexer(maxLimits);
-        HashSet<Integer> overlap = new HashSet<>();
+        HashSet<Point<Integer>> overlap = new HashSet<>();
 
         // Running through each object, getting a list of overlapping pixels
         for (Obj obj2:inputObjects2.values()) {
             // If only linking objects in the same frame, we may just skip this object
             if (linkInSameFrame && inputObject1.getT() != obj2.getT()) continue;
 
-            ArrayList<Point<Integer>> currentOverlap = inputObject1.getOverlappingPoints(obj2);
+            HashSet<Point<Integer>> currentOverlap = inputObject1.getOverlappingPoints(obj2);
 
-            for (Point<Integer> point:currentOverlap) {
-                overlap.add(indexer.getIndex(new int[]{point.getX(),point.getY(),point.getZ()}));
-            }
+            overlap.addAll(currentOverlap);
+
         }
 
         return overlap.size();

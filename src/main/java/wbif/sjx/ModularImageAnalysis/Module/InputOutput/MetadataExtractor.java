@@ -17,6 +17,9 @@ public class MetadataExtractor extends Module {
     public static final String FOLDERNAME_EXTRACTOR = "Foldername extractor";
     public static final String PATTERN = "Pattern";
     public static final String GROUPS = "Groups (comma separated)";
+    public static final String SHOW_TEST = "Show pattern matching test";
+    public static final String EXAMPLE_STRING = "Example string";
+    public static final String IDENTIFIED_GROUPS = "Identified groups";
     public static final String KEYWORD_LIST = "Keyword list";
     public static final String KEYWORD_SOURCE = "Keyword source";
     public static final String METADATA_FILE_EXTRACTOR = "Metadata file extractor";
@@ -170,6 +173,26 @@ public class MetadataExtractor extends Module {
 
     }
 
+    public String getTestString(String pattern, String groupString, String exampleString) {
+        String[] groups = getGroups(groupString);
+
+        HCMetadata metadata = new HCMetadata();
+        NameExtractor extractor = new GenericExtractor(pattern,groups);
+        extractor.extract(metadata,exampleString);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String group:groups) {
+            String value = metadata.getAsString(group);
+            if (value == null) value = "NA";
+            stringBuilder.append(group);
+            stringBuilder.append(": ");
+            stringBuilder.append(value);
+            stringBuilder.append("\n");
+        }
+
+        return stringBuilder.toString();
+
+    }
 
     @Override
     public String getTitle() {
@@ -234,6 +257,9 @@ public class MetadataExtractor extends Module {
         parameters.add(new Parameter(FOLDERNAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
         parameters.add(new Parameter(PATTERN,Parameter.STRING,""));
         parameters.add(new Parameter(GROUPS,Parameter.STRING,""));
+        parameters.add(new Parameter(SHOW_TEST,Parameter.BOOLEAN,false));
+        parameters.add(new Parameter(EXAMPLE_STRING,Parameter.STRING,""));
+        parameters.add(new Parameter(IDENTIFIED_GROUPS,Parameter.TEXT_DISPLAY,""));
         parameters.add(new Parameter(KEYWORD_LIST,Parameter.STRING,""));
         parameters.add(new Parameter(KEYWORD_SOURCE, Parameter.CHOICE_ARRAY,KeywordSources.FILENAME,KeywordSources.ALL));
         parameters.add(new Parameter(METADATA_FILE_EXTRACTOR,Parameter.CHOICE_ARRAY,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
@@ -253,6 +279,19 @@ public class MetadataExtractor extends Module {
                     case FilenameExtractors.GENERIC:
                         returnedParameters.add(parameters.getParameter(PATTERN));
                         returnedParameters.add(parameters.getParameter(GROUPS));
+
+                        returnedParameters.add(parameters.getParameter(SHOW_TEST));
+                        if (parameters.getValue(SHOW_TEST)) {
+                            returnedParameters.add(parameters.getParameter(EXAMPLE_STRING));
+                            returnedParameters.add(parameters.getParameter(IDENTIFIED_GROUPS));
+
+                            String pattern = parameters.getValue(PATTERN);
+                            String groups = parameters.getValue(GROUPS);
+                            String exampleString = parameters.getValue(EXAMPLE_STRING);
+                            String groupsString = getTestString(pattern,groups,exampleString);
+                            parameters.updateValue(IDENTIFIED_GROUPS,groupsString);
+
+                        }
                         break;
                 }
                 break;

@@ -110,6 +110,11 @@ public class Parameter implements Serializable {
      */
     public final static int METADATA_ITEM = 17;
 
+    /**
+     * Pseudo parameter which can display text on the parameters page
+     */
+    public final static int TEXT_DISPLAY = 18;
+
 
     private final String name;
     private int type;
@@ -193,16 +198,17 @@ public class Parameter implements Serializable {
             case INPUT_OBJECTS:
             case OUTPUT_OBJECTS:
             case METADATA_ITEM:
-                return value.toString();
+                return value == null ? "" : value.toString();
 
             case INTEGER:
             case DOUBLE:
             case BOOLEAN:
-                return String.valueOf(value);
+                return value == null ? "" : String.valueOf(value);
 
             case STRING:
             case CHOICE_ARRAY:
-                return (String) value;
+            case TEXT_DISPLAY:
+                return value == null ? "" : (String) value;
         }
 
         return "";

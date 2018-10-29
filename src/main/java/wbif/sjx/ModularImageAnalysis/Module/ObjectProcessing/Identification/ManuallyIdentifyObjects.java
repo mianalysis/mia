@@ -4,10 +4,7 @@ import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.gui.Overlay;
-import ij.gui.PointRoi;
-import ij.gui.Roi;
-import ij.gui.TextRoi;
+import ij.gui.*;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
@@ -24,9 +21,13 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -36,10 +37,15 @@ import java.util.Iterator;
 public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private JFrame frame;
     private JTextField objectNumberField;
+    private final JPanel objectsPanel = new JPanel();
+    JScrollPane objectsScrollPane = new JScrollPane(objectsPanel);
+    private final GridBagConstraints objectsC = new GridBagConstraints();
 
     private Workspace workspace;
     private ImagePlus displayImagePlus;
     private Overlay overlay;
+    private HashMap<Integer,ArrayList<ObjRoi>> rois;
+    private int maxID;
 
     private String outputObjectsName;
     private ObjCollection outputObjects;
@@ -49,6 +55,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private String calibrationUnits;
     private boolean twoD;
 
+    private int elementHeight = 40;
 
     private static final String ADD_NEW = "Add new";
     private static final String ADD_EXISTING = "Add existing";
@@ -70,67 +77,114 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws GenericMIAException {
         new ImageJ();
+
+        Workspace workspace = new Workspace(0,null,0);
+
         ImagePlus ipl = IJ.createImage("dfsd",400,300,1,8);
-        ipl.show();
+        Image image = new Image("Im",ipl);
+        workspace.addImage(image);
 
-        IJ.runMacro("waitForUser");
-        System.out.println(ipl.getRoi());
+        ManuallyIdentifyObjects manuallyIdentifyObjects = new ManuallyIdentifyObjects();
+        manuallyIdentifyObjects.updateParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE,"Im");
+        manuallyIdentifyObjects.setShowOutput(true);
+        manuallyIdentifyObjects.run(workspace);
 
-        new ManuallyIdentifyObjects().showOptionsPanel();
     }
 
     private void showOptionsPanel() {
-        GridLayout gridLayout = new GridLayout(0, 1);
+        rois = new HashMap<>();
+        maxID = 0;
         frame = new JFrame();
-        frame.setLayout(gridLayout);
 
-        // Header panel
-        JPanel headerPanel = new JPanel();
-        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 3;
+        c.gridheight = 1;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.WEST;
+        c.insets = new Insets(5,5,5,5);
 
         JLabel headerLabel = new JLabel("<html>Draw round an object, then select one of the following" +
                 "<br>(or click \"Finish adding objects\" at any time)." +
                 "<br>Different timepoints must be added as new objects.</html>");
-        headerPanel.add(headerLabel);
+        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
 
-        frame.add(headerPanel);
-
-        // Buttons panel
-        JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+        frame.add(headerLabel,c);
 
         JButton newObjectButton = new JButton("Add as new object");
         newObjectButton.addActionListener(this);
         newObjectButton.setActionCommand(ADD_NEW);
-        buttonsPanel.add(newObjectButton);
+        c.gridy++;
+        c.gridwidth = 1;
+        frame.add(newObjectButton,c);
 
         JButton existingObjectButton = new JButton("Add to existing object");
         existingObjectButton.addActionListener(this);
         existingObjectButton.setActionCommand(ADD_EXISTING);
-        buttonsPanel.add(existingObjectButton);
+        c.gridx++;
+        frame.add(existingObjectButton,c);
 
         JButton finishButton = new JButton("Finish adding objects");
         finishButton.addActionListener(this);
         finishButton.setActionCommand(FINISH);
-        buttonsPanel.add(finishButton);
-
-        frame.add(buttonsPanel);
+        c.gridx++;
+        frame.add(finishButton,c);
 
         // Object number panel
-        JPanel objectNumberPanel = new JPanel();
-        objectNumberPanel.setLayout(new BoxLayout(objectNumberPanel, BoxLayout.X_AXIS));
-
         JLabel objectNumberLabel = new JLabel("Existing object number");
-        objectNumberPanel.add(objectNumberLabel);
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 2;
+        frame.add(objectNumberLabel,c);
 
         objectNumberField = new JTextField();
-        objectNumberPanel.add(objectNumberField);
+        c.gridx++;
+        c.gridwidth = 2;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        frame.add(objectNumberField,c);
 
-        frame.add(objectNumberPanel);
+        objectsC.gridx = 0;
+        objectsC.gridy = 0;
+        objectsC.weightx = 1;
+        objectsC.weighty = 1;
+        objectsC.anchor = GridBagConstraints.NORTHWEST;
+        objectsC.fill = GridBagConstraints.HORIZONTAL;
+        objectsPanel.setLayout(new GridBagLayout());
+
+        objectsScrollPane.setPreferredSize(new Dimension(0,200));
+        objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 3;
+        c.gridheight = 3;
+        c.fill = GridBagConstraints.BOTH;
+        frame.add(objectsScrollPane,c);
+
+        JCheckBox overlayCheck = new JCheckBox("Display overlay");
+        overlayCheck.setSelected(true);
+        overlayCheck.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayImagePlus.setHideOverlay(!overlayCheck.isSelected());
+            }
+        });
+        c.gridy++;
+        c.gridy++;
+        c.gridy++;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        frame.add(overlayCheck,c);
 
         frame.pack();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
         frame.setVisible(true);
 
     }
@@ -225,8 +279,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
-        // Local access to this is required for the action listeners
+    protected void run(Workspace workspace) throws GenericMIAException {// Local access to this is required for the action listeners
         this.workspace = workspace;
 
         // Getting parameters
@@ -296,7 +349,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
         parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
-        parameters.add(new Parameter(INTERPOLATION_MODE,Parameter.CHOICE_ARRAY,InterpolationModes.SPATIAL,InterpolationModes.ALL));
+        parameters.add(new Parameter(INTERPOLATION_MODE,Parameter.CHOICE_ARRAY,InterpolationModes.NONE,InterpolationModes.ALL));
 
     }
 
@@ -329,82 +382,199 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case (ADD_NEW):
-                // Getting points
-                Roi roi = displayImagePlus.getRoi();
-                Point[] points = roi.getContainedPoints();
-                int ID = outputObjects.getNextID();
-
-                // Adding the new object
-                Obj outputObject = new Obj(outputObjectsName,ID,dppXY,dppZ,calibrationUnits,twoD);
-                outputObject.setT(displayImagePlus.getT()-1);
-                for (Point point:points) {
-                    int x = (int) Math.round(point.getX());
-                    int y = (int) Math.round(point.getY());
-                    int z = displayImagePlus.getZ();
-                    if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
-                        outputObject.addCoord(x, y, z - 1);
-                    }
-                }
-
-                // Adding overlay showing ROI and its ID number
-                overlay.add(roi);
-                double[] centroid = roi.getContourCentroid();
-                TextRoi textRoi = new TextRoi(centroid[0],centroid[1],String.valueOf(ID));
-                if (displayImagePlus.isHyperStack()) {
-                    textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
-                } else {
-                    int pos = Math.max(Math.max(1,displayImagePlus.getZ()),displayImagePlus.getT());
-                    textRoi.setPosition(pos);
-                }
-                overlay.add(textRoi);
-                displayImagePlus.updateAndDraw();
-
-                // Setting the number field to this number
-                objectNumberField.setText(String.valueOf(ID));
-
-                outputObjects.add(outputObject);
-
+                addNewObject();
                 break;
 
             case (ADD_EXISTING):
-                // Getting points
-                roi = displayImagePlus.getRoi();
-                points = roi.getContainedPoints();
-                ID = Integer.parseInt(objectNumberField.getText());
-
-                // Adding the new object
-                outputObject = outputObjects.get(ID);
-                outputObject.setT(displayImagePlus.getT()-1);
-                for (Point point:points) {
-                    int x = (int) Math.round(point.getX());
-                    int y = (int) Math.round(point.getY());
-                    int z = displayImagePlus.getZ();
-                    outputObject.addCoord(x,y,z-1);
-                }
-
-                // Adding overlay showing ROI and its ID number
-                overlay.add(roi);
-                centroid = roi.getContourCentroid();
-                textRoi = new TextRoi(centroid[0],centroid[1],String.valueOf(ID));
-                if (displayImagePlus.isHyperStack()) {
-                    textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
-                } else {
-                    int pos = Math.max(Math.max(1,displayImagePlus.getZ()),displayImagePlus.getT());
-                    textRoi.setPosition(pos);
-                }
-                overlay.add(textRoi);
-                displayImagePlus.updateAndDraw();
-
-                outputObjects.add(outputObject);
-
+                addToExistingObject();
                 break;
 
             case (FINISH):
+                processObjects();
                 frame.dispose();
                 frame = null;
                 displayImagePlus.close();
 
                 break;
         }
+    }
+
+    public void addNewObject() {
+        // Getting the ROI
+        Roi roi = displayImagePlus.getRoi();
+        int ID = ++maxID;
+
+        // Adding the ROI to our current collection
+        ArrayList<ObjRoi> currentRois = new ArrayList<>();
+        ObjRoi objRoi = new ObjRoi(roi,displayImagePlus.getT()-1,displayImagePlus.getZ());
+        currentRois.add(objRoi);
+        rois.put(ID,currentRois);
+
+        // Displaying the ROI on the overlay
+        addToOverlay(roi,ID);
+
+        // Setting the number field to this number
+        objectNumberField.setText(String.valueOf(ID));
+
+        // Adding to the list of objects
+        addObjectToList(objRoi,ID);
+
+    }
+
+    public void addToExistingObject() {
+        // Getting points
+        Roi roi = displayImagePlus.getRoi();
+        Point[] points = roi.getContainedPoints();
+        int ID = Integer.parseInt(objectNumberField.getText());
+
+        // Adding the ROI to our current collection
+        ArrayList<ObjRoi> currentRois = rois.get(ID);
+        ObjRoi objRoi = new ObjRoi(roi,displayImagePlus.getT()-1,displayImagePlus.getZ());
+        currentRois.add(objRoi);
+        rois.put(ID,currentRois);
+
+        // Displaying the ROI on the overlay
+        addToOverlay(roi,ID);
+
+        // Setting the number field to this number
+        objectNumberField.setText(String.valueOf(ID));
+
+        // Adding to the list of objects
+        addObjectToList(objRoi,ID);
+
+    }
+
+    public void processObjects() {
+        // Processing each list of Rois, then converting them to objects
+        for (int ID:rois.keySet()) {
+            ArrayList<ObjRoi> currentRois = rois.get(ID);
+
+            // Creating the new object
+            Obj outputObject = new Obj(outputObjectsName, ID, dppXY, dppZ, calibrationUnits, twoD);
+            outputObjects.add(outputObject);
+
+            for (ObjRoi objRoi:currentRois) {
+                Roi roi = objRoi.getRoi();
+                Point[] points = roi.getContainedPoints();
+                int t = objRoi.getT();
+                int z = objRoi.getZ();
+
+                outputObject.setT(t);
+                for (Point point : points) {
+                    int x = (int) Math.round(point.getX());
+                    int y = (int) Math.round(point.getY());
+                    if (x >= 0 && x < displayImagePlus.getWidth() && y >= 0 && y < displayImagePlus.getHeight()) {
+                        outputObject.addCoord(x, y, z - 1);
+                    }
+                }
+            }
+        }
+    }
+
+    public void addObjectToList(ObjRoi objRoi, int ID) {
+        JButton button = new JButton();
+        button.setText("Object "+String.valueOf(ID)+", T = "+(objRoi.getT()+1)+", Z = "+objRoi.getZ());
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Show the object on the image
+                displayObject(objRoi);
+            }
+        });
+
+        objectsPanel.add(button,objectsC);
+
+        objectsC.gridy++;
+        objectsC.weighty = objectsC.weighty*1000;
+
+        objectsPanel.validate();
+        objectsPanel.repaint();
+
+        // Ensuring the scrollbar is visible if necessary and moving to the bottom
+        JScrollBar scrollBar = objectsScrollPane.getVerticalScrollBar();
+        scrollBar.setValue(scrollBar.getMaximum()-1);
+        objectsScrollPane.revalidate();
+
+    }
+
+    public void addToOverlay(Roi roi, int ID) {
+        // Adding overlay showing ROI and its ID number
+        overlay.add(ObjRoi.duplicateRoi(roi));
+        double[] centroid = roi.getContourCentroid();
+        TextRoi textRoi = new TextRoi(centroid[0],centroid[1],String.valueOf(ID));
+        if (displayImagePlus.isHyperStack()) {
+            textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
+        } else {
+            int pos = Math.max(Math.max(1,displayImagePlus.getZ()),displayImagePlus.getT());
+            textRoi.setPosition(pos);
+        }
+        overlay.add(textRoi);
+        displayImagePlus.updateAndDraw();
+
+    }
+
+    void displayObject(ObjRoi objRoi) {
+        displayImagePlus.setRoi(ObjRoi.duplicateRoi(objRoi.getRoi()));
+    }
+}
+
+class ObjRoi {
+    private final Roi roi;
+    private final int t;
+    private final int z;
+
+    ObjRoi(Roi roi, int t, int z) {
+        this.roi = duplicateRoi(roi);
+        this.t = t;
+        this.z = z;
+
+    }
+
+    public static Roi duplicateRoi(Roi roi) {
+        Roi newRoi;
+        // Need to process Roi depending on its type
+        switch (roi.getType()) {
+            case Roi.RECTANGLE:
+                newRoi = new Roi(roi.getBounds());
+                break;
+
+            case Roi.OVAL:
+                Rectangle bounds = roi.getBounds();
+                newRoi = new OvalRoi(bounds.x,bounds.y,bounds.width,bounds.height);
+                break;
+
+            case Roi.POLYGON:
+            case Roi.FREEROI:
+                PolygonRoi polyRoi = (PolygonRoi) roi;
+                int[] x = polyRoi.getXCoordinates();
+                int[] xx = new int[x.length];
+                for (int i=0;i<x.length;i++) xx[i] = x[i]+ (int) polyRoi.getXBase();
+
+                int[] y = polyRoi.getYCoordinates();
+                int[] yy = new int[x.length];
+                for (int i=0;i<y.length;i++) yy[i] = y[i]+ (int) polyRoi.getYBase();
+
+                newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
+                break;
+
+            default:
+                newRoi = new Roi(roi.getBounds());
+                break;
+        }
+
+        return newRoi;
+
+    }
+
+    public Roi getRoi() {
+        return roi;
+    }
+
+    public int getT() {
+        return t;
+    }
+
+    public int getZ() {
+        return z;
     }
 }
