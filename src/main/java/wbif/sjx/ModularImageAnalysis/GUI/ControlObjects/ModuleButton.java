@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.TextAttribute;
+import java.util.Map;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -32,10 +34,27 @@ public class ModuleButton extends JToggleButton implements ActionListener {
     public void setColour() {
         if (module.isEnabled() && module.isRunnable()) {
             setForeground(Color.BLACK);
+
+            String text = getText();
+            Map fontAttributes = getFont().getAttributes();
+            fontAttributes.put(TextAttribute.STRIKETHROUGH,false);
+            setFont(new Font(fontAttributes));
+
         } else if (module.isEnabled() &! module.isRunnable()) {
             setForeground(Color.RED);
+
+            String text = getText();
+            Map fontAttributes = getFont().getAttributes();
+            fontAttributes.put(TextAttribute.STRIKETHROUGH,true);
+            setFont(new Font(fontAttributes));
+
         } else {
             setForeground(Color.GRAY);
+
+            String text = getText();
+            Map fontAttributes = getFont().getAttributes();
+            fontAttributes.put(TextAttribute.STRIKETHROUGH,false);
+            setFont(new Font(fontAttributes));
         }
     }
 
@@ -49,6 +68,6 @@ public class ModuleButton extends JToggleButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         GUI.setActiveModule(module);
-        GUI.updateModules(true);
+        GUI.updateModules(false);
     }
 }

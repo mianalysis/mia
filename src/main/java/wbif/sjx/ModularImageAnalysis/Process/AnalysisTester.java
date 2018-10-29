@@ -123,6 +123,9 @@ public class AnalysisTester {
 
     public static boolean testMeasurementParameter(Parameter parameter, Module module, ModuleCollection modules) {
         MeasurementReferenceCollection measurements = null;
+
+        if (parameter.getValue() == null || parameter.getValueSource() == null) return false;
+
         switch (parameter.getType()) {
             case Parameter.IMAGE_MEASUREMENT:
                 measurements = modules.getImageMeasurementReferences(parameter.getValueSource(),module);

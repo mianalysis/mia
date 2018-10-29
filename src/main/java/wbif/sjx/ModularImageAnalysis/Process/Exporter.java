@@ -708,7 +708,6 @@ public class Exporter {
 
     private void populateSummaryRow(Row summaryValueRow, Workspace workspace, ModuleCollection modules,
                                     HashMap<String,Integer> colNumbers, int timepoint) {
-
         // Adding metadata values
         HCMetadata metadata = workspace.getMetadata();
         for (String name : metadata.keySet()) {
@@ -929,6 +928,9 @@ public class Exporter {
             // measurements in the correct columns
             LinkedHashMap<String, LinkedHashMap<Integer,String>> measurementNames = new LinkedHashMap<>();
 
+            // Metadata names should be the same for all objects
+            String[] metadataNames = null;
+
             // Using the first workspace in the WorkspaceCollection to initialise column headers
             for (String objectName : exampleWorkspace.getObjects().keySet()) {
                 // Creating relevant sheet prefixed with "IM"
@@ -949,10 +951,10 @@ public class Exporter {
                 // Adding metadata headers (if enabled)
                 if (addMetadataToObjects) {
                     // Running through all the metadata values, adding them as new columns
-                    String[] metadataNames = modules.getMetadataReferences(null).getMetadataNames();
+                    metadataNames = modules.getMetadataReferences(null).getMetadataNames();
                     for (String name : metadataNames) {
                         Cell metaHeaderCell = objectHeaderRow.createCell(col++);
-                        metaHeaderCell.setCellValue(name);
+                        metaHeaderCell.setCellValue(getMetadataString(name));
                     }
                 }
 
@@ -1021,12 +1023,11 @@ public class Exporter {
                             objectIDValueCell.setCellValue(object.getID());
 
                             // Adding metadata (if enabled)
-                            if (addMetadataToObjects) {
+                            if (addMetadataToObjects && metadataNames != null) {
                                 HCMetadata metadata = workspace.getMetadata();
-                                for (String name : metadata.keySet()) {
+                                for (String name : metadataNames) {
                                     Cell metaValueCell = objectValueRow.createCell(col++);
                                     metaValueCell.setCellValue(metadata.getAsString(name));
-
                                 }
                             }
 
