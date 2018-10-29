@@ -498,6 +498,7 @@ public class GUI {
         paramsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         paramsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         paramsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        paramsScrollPane.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
 
         paramsPanel.setLayout(new GridBagLayout());
 
@@ -760,7 +761,6 @@ public class GUI {
                 JPanel measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)");
                 c.gridx = 0;
                 c.gridy++;
-                c.fill = GridBagConstraints.HORIZONTAL;
                 paramsPanel.add(measurementHeader,c);
 
                 MeasurementReferenceCollection measurementReferences = getModules().getImageMeasurementReferences(imageName);
@@ -783,7 +783,6 @@ public class GUI {
                 JPanel measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)");
                 c.gridx = 0;
                 c.gridy++;
-                c.fill = GridBagConstraints.HORIZONTAL;
                 paramsPanel.add(measurementHeader,c);
 
                 MeasurementReferenceCollection measurementReferences = getModules().getObjectMeasurementReferences(objectName);
@@ -833,10 +832,10 @@ public class GUI {
             paramsPanel.add(separator,c);
         }
 
-        paramsPanel.validate();
+        paramsPanel.revalidate();
         paramsPanel.repaint();
 
-        paramsScrollPane.validate();
+        paramsScrollPane.revalidate();
         paramsScrollPane.repaint();
 
     }

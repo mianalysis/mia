@@ -95,7 +95,8 @@ public class AddObjectsOverlay extends Module {
 
         for (int i=0;i<xx.length;i++) {
             PointRoi roi = new PointRoi(xx[i]+0.5,yy[i]+0.5);
-            roi.setPointType(PointRoi.NORMAL);
+            roi.setPointType(3);
+            roi.setSize(0);
 
             if (ipl.isHyperStack()) {
                 roi.setPosition(1, (int) zz[i]+1, t);

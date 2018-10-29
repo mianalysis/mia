@@ -512,17 +512,18 @@ public class Exporter {
         }
 
         // Adding image headers
-        HashMap<String,Image> exampleImages = exampleWorkspace.getImages();
-        if (exampleImages.size() != 0) {
-
-            for (Image exampleImage : exampleImages.values()) {
+        LinkedHashSet<Parameter> availableImages = modules.getAvailableImages(null);
+        if (availableImages != null) {
+            for (Parameter exampleImage : availableImages) {
                 String exampleImageName = exampleImage.getName();
 
+                MeasurementReferenceCollection exampleMeasurements = modules.getImageMeasurementReferences(exampleImageName);
+
                 // Running through all the image measurement values, adding them as new columns
-                HashMap<String, Measurement> exampleMeasurements = exampleImage.getMeasurements();
-                for (String measurementName : exampleMeasurements.keySet()) {
+                for (MeasurementReference measurementReference:exampleMeasurements.values()) {
+                    String measurementName = measurementReference.getName();
                     Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    String summaryDataName = getImageString(exampleImageName,measurementName);
+                    String summaryDataName = getImageString(exampleImageName, measurementName);
                     summaryHeaderCell.setCellValue(summaryDataName);
                     colNumbers.put(summaryDataName, headerCol++);
 

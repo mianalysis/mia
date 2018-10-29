@@ -526,8 +526,6 @@ public class TrackObjects extends Module {
                 HungarianAlgorithm hungarianAlgorithm = new HungarianAlgorithm(cost);
                 int[] assignment = hungarianAlgorithm.execute();
 
-                for (int i=0;i<assignment.length;i++) System.err.println(i+"_"+assignment[i]);
-
                 // Applying the calculated assignments as relationships
                 for (int curr = 0; curr < assignment.length; curr++) {
                     // Getting the object from the current frame
