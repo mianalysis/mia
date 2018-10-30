@@ -478,11 +478,6 @@ public class Exporter {
 
     private void prepareSummaryXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
                                     SummaryMode summaryType) {
-        // Basing column names on the first workspace in the WorkspaceCollection
-        Workspace exampleWorkspace = workspaces.iterator().next();
-
-        if (exampleWorkspace == null) return;
-
         int headerCol = 0;
 
         // Adding header rows for the metadata sheet.
@@ -512,18 +507,18 @@ public class Exporter {
         }
 
         // Adding image headers
-        LinkedHashSet<Parameter> availableImages = modules.getAvailableImages(null);
+        LinkedHashSet<Parameter> availableImages = modules.getAvailableImages(null,false);
         if (availableImages != null) {
-            for (Parameter exampleImage : availableImages) {
-                String exampleImageName = exampleImage.getName();
+            for (Parameter availableImage : availableImages) {
+                String availableImageName = availableImage.getValue();
 
-                MeasurementReferenceCollection exampleMeasurements = modules.getImageMeasurementReferences(exampleImageName);
+                MeasurementReferenceCollection availableMeasurements = modules.getImageMeasurementReferences(availableImageName);
 
                 // Running through all the image measurement values, adding them as new columns
-                for (MeasurementReference measurementReference:exampleMeasurements.values()) {
+                for (MeasurementReference measurementReference:availableMeasurements.values()) {
                     String measurementName = measurementReference.getName();
                     Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    String summaryDataName = getImageString(exampleImageName, measurementName);
+                    String summaryDataName = getImageString(availableImageName, measurementName);
                     summaryHeaderCell.setCellValue(summaryDataName);
                     colNumbers.put(summaryDataName, headerCol++);
 
@@ -532,68 +527,68 @@ public class Exporter {
         }
 
         // Adding object headers
-        HashMap<String, ObjCollection> exampleObjSets = exampleWorkspace.getObjects();
-        if (exampleObjSets.size() != 0) {
+        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,false);
+        if (availableObjects != null) {
+            for (Parameter availableObject:availableObjects) {
+                String availableObjectName = availableObject.getValue();
 
-            for (ObjCollection exampleObjCollection : exampleObjSets.values()) {
-                String exampleObjSetName = exampleObjCollection.getName();
                 Cell summaryHeaderCell; String summaryDataName;
 
                 // Adding the number of objects
                 if (showObjectCounts) {
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                    summaryDataName = getObjectString(exampleObjSetName, "", "NUMBER");
+                    summaryDataName = getObjectString(availableObjectName, "", "NUMBER");
                     summaryHeaderCell.setCellValue(summaryDataName);
-                    addComment(summaryHeaderCell,"Number of \""+exampleObjSetName+"\" objects.");
+                    addComment(summaryHeaderCell,"Number of \""+availableObjectName+"\" objects.");
                     colNumbers.put(summaryDataName, headerCol++);
                 }
 
                 // Running through all the object's children
-                if (showChildCounts && !modules.getRelationships().getChildNames(exampleObjSetName)[0].equals("")) {
-                    for (String child : modules.getRelationships().getChildNames(exampleObjSetName)) {
+                if (showChildCounts && !modules.getRelationships().getChildNames(availableObjectName)[0].equals("")) {
+                    for (String child : modules.getRelationships().getChildNames(availableObjectName)) {
                         if (calculateMean) {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(exampleObjSetName, "MEAN", "NUM_CHILDREN_" + child);
+                            summaryDataName = getObjectString(availableObjectName, "MEAN", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Mean");
+                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Mean");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
                         if (calculateMin) {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(exampleObjSetName, "MIN", "NUM_CHILDREN_" + child);
+                            summaryDataName = getObjectString(availableObjectName, "MIN", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Minimum");
+                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Minimum");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
                         if (calculateMax) {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(exampleObjSetName, "MAX", "NUM_CHILDREN_" + child);
+                            summaryDataName = getObjectString(availableObjectName, "MAX", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Maximum");
+                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Maximum");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
                         if (calculateStd) {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(exampleObjSetName, "STD", "NUM_CHILDREN_" + child);
+                            summaryDataName = getObjectString(availableObjectName, "STD", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Standard deviation");
+                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Standard deviation");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
 
                         if (calculateSum) {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                            summaryDataName = getObjectString(exampleObjSetName, "SUM", "NUM_CHILDREN_" + child);
+                            summaryDataName = getObjectString(availableObjectName, "SUM", "NUM_CHILDREN_" + child);
                             summaryHeaderCell.setCellValue(summaryDataName);
-                            addNumberOfChildrenComment(summaryHeaderCell,exampleObjSetName,child,"Sum");
+                            addNumberOfChildrenComment(summaryHeaderCell,availableObjectName,child,"Sum");
                             colNumbers.put(summaryDataName, headerCol++);
                         }
                     }
                 }
 
-                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(exampleObjSetName);
+                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(availableObjectName);
 
                 // If the current object hasn't got any assigned measurements, skip it
                 if (objectMeasurementReferences == null) continue;
@@ -605,7 +600,7 @@ public class Exporter {
 
                     if (calculateMean) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(exampleObjSetName, "MEAN", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "MEAN", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Mean");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -613,7 +608,7 @@ public class Exporter {
 
                     if (calculateMin) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(exampleObjSetName, "MIN", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "MIN", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Minimum");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -621,7 +616,7 @@ public class Exporter {
 
                     if (calculateMax) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(exampleObjSetName, "MAX", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "MAX", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Maximum");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -629,7 +624,7 @@ public class Exporter {
 
                     if (calculateStd) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(exampleObjSetName, "STD", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "STD", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Standard deviation");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -637,7 +632,7 @@ public class Exporter {
 
                     if (calculateSum) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(exampleObjSetName, "SUM", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "SUM", objectMeasurement.getName());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Sum");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -732,7 +727,8 @@ public class Exporter {
             String imageName = image.getName();
             HashMap<String,Measurement> measurements = image.getMeasurements();
 
-            for (String measurementName : measurements.keySet()) {
+            for (Measurement measurement : measurements.values()) {
+                String measurementName = measurement.getName();
                 String headerName = getImageString(imageName,measurementName);
                 int colNum = colNumbers.get(headerName);
 
@@ -912,28 +908,28 @@ public class Exporter {
     }
 
     private void prepareObjectsXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
-        // Basing column names on the first workspace in the WorkspaceCollection
-        Workspace exampleWorkspace = workspaces.iterator().next();
 
-        if (exampleWorkspace != null) {
-            // Creating a new sheet for each object.  Each analysed file has its own set of rows (one for each object)
-            HashMap<String, Sheet> objectSheets = new HashMap<>();
-            HashMap<String, Integer> objectRows = new HashMap<>();
+        // Creating a new sheet for each object.  Each analysed file has its own set of rows (one for each object)
+        HashMap<String, Sheet> objectSheets = new HashMap<>();
+        HashMap<String, Integer> objectRows = new HashMap<>();
 
-            // Creating a LinkedHashMap that links relationship ID names to column numbers.  This keeps the correct
-            // relationships in the correct columns
-            LinkedHashMap<String, LinkedHashMap<Integer,String>> parentNames = new LinkedHashMap<>();
-            LinkedHashMap<String, LinkedHashMap<Integer,String>> childNames = new LinkedHashMap<>();
+        // Creating a LinkedHashMap that links relationship ID names to column numbers.  This keeps the correct
+        // relationships in the correct columns
+        LinkedHashMap<String, LinkedHashMap<Integer,String>> parentNames = new LinkedHashMap<>();
+        LinkedHashMap<String, LinkedHashMap<Integer,String>> childNames = new LinkedHashMap<>();
 
-            // Creating a LinkedHashMap that links measurement names to column numbers.  This keeps the correct
-            // measurements in the correct columns
-            LinkedHashMap<String, LinkedHashMap<Integer,String>> measurementNames = new LinkedHashMap<>();
+        // Creating a LinkedHashMap that links measurement names to column numbers.  This keeps the correct
+        // measurements in the correct columns
+        LinkedHashMap<String, LinkedHashMap<Integer,String>> measurementNames = new LinkedHashMap<>();
 
-            // Metadata names should be the same for all objects
-            String[] metadataNames = null;
+        // Metadata names should be the same for all objects
+        String[] metadataNames = null;
 
-            // Using the first workspace in the WorkspaceCollection to initialise column headers
-            for (String objectName : exampleWorkspace.getObjects().keySet()) {
+        // Using the first workspace in the WorkspaceCollection to initialise column headers
+        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,false);
+        if (availableObjects != null) {
+            for (Parameter availableObject:availableObjects) {
+                String objectName = availableObject.getValue();
                 // Creating relevant sheet prefixed with "IM"
                 objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
 

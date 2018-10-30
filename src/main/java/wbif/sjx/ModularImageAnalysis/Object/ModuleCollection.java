@@ -126,12 +126,14 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public LinkedHashSet<Parameter> getAvailableObjects(Module cutoffModule) {
+    public LinkedHashSet<Parameter> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
         // Getting a list of available images
         LinkedHashSet<Parameter> objects = getParametersMatchingType(Parameter.OUTPUT_OBJECTS,cutoffModule);
-        LinkedHashSet<Parameter> removedObjects = getParametersMatchingType(Parameter.REMOVED_OBJECTS,cutoffModule);
+
+        if (!ignoreRemoved) return objects;
 
         // Removing any objects which have since been removed from the workspace
+        LinkedHashSet<Parameter> removedObjects = getParametersMatchingType(Parameter.REMOVED_OBJECTS,cutoffModule);
         Iterator<Parameter> iterator = objects.iterator();
         while (iterator.hasNext()) {
             Parameter object = iterator.next();
@@ -144,12 +146,22 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
+    public LinkedHashSet<Parameter> getAvailableObjects(Module cutoffModule) {
+        return getAvailableObjects(cutoffModule,true);
+    }
+
     public LinkedHashSet<Parameter> getAvailableImages(Module cutoffModule) {
+        return getAvailableImages(cutoffModule,true);
+    }
+
+    public LinkedHashSet<Parameter> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
         // Getting a list of available images
         LinkedHashSet<Parameter> images = getParametersMatchingType(Parameter.OUTPUT_IMAGE,cutoffModule);
-        LinkedHashSet<Parameter> removedImages = getParametersMatchingType(Parameter.REMOVED_IMAGE,cutoffModule);
+
+        if (!ignoreRemoved) return images;
 
         // Removing any objects which have since been removed from the workspace
+        LinkedHashSet<Parameter> removedImages = getParametersMatchingType(Parameter.REMOVED_IMAGE,cutoffModule);
         Iterator<Parameter> iterator = images.iterator();
         while (iterator.hasNext()) {
             Parameter image = iterator.next();

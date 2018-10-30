@@ -24,8 +24,11 @@ import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import java.io.*;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -34,6 +37,7 @@ import java.util.Map;
 public class MIA implements PlugIn {
     private static final ErrorLog errorLog = new ErrorLog();
     public static String slashes = "\\";
+    private static ArrayList<URL> pluginURLs = new ArrayList<>();
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to add compatibility.
@@ -161,5 +165,17 @@ public class MIA implements PlugIn {
 
     public static boolean isImagePlusMode() {
         return imagePlusMode;
+    }
+
+    public static void addPluginURL(URL url) {
+        pluginURLs.add(url);
+    }
+
+    public static void addPluginURLs(Set<URL> urls) {
+        pluginURLs.addAll(urls);
+    }
+
+    public static ArrayList<URL> getPluginURLs() {
+        return pluginURLs;
     }
 }

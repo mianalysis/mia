@@ -34,27 +34,10 @@ public class ModuleButton extends JToggleButton implements ActionListener {
     public void setColour() {
         if (module.isEnabled() && module.isRunnable()) {
             setForeground(Color.BLACK);
-
-            String text = getText();
-            Map fontAttributes = getFont().getAttributes();
-            fontAttributes.put(TextAttribute.STRIKETHROUGH,false);
-            setFont(new Font(fontAttributes));
-
         } else if (module.isEnabled() &! module.isRunnable()) {
             setForeground(Color.RED);
-
-            String text = getText();
-            Map fontAttributes = getFont().getAttributes();
-            fontAttributes.put(TextAttribute.STRIKETHROUGH,true);
-            setFont(new Font(fontAttributes));
-
         } else {
             setForeground(Color.GRAY);
-
-            String text = getText();
-            Map fontAttributes = getFont().getAttributes();
-            fontAttributes.put(TextAttribute.STRIKETHROUGH,false);
-            setFont(new Font(fontAttributes));
         }
     }
 
