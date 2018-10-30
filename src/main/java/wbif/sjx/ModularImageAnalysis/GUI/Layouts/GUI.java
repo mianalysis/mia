@@ -891,7 +891,7 @@ public class GUI {
         ModuleCollection modules = getModules();
         for (Module module : modules) {
             // If the module is the special-case GUISeparator, create this module, then return
-            JPanel modulePanel;
+            JPanel modulePanel = null;
             if (module.getClass().isInstance(new GUISeparator())) {
                 // Not all GUI separators are show on the basic panel
                 if (!(boolean) module.getParameterValue(GUISeparator.SHOW_BASIC)) continue;
@@ -906,7 +906,9 @@ public class GUI {
                 expanded = module.getParameterValue(GUISeparator.EXPANDED_BASIC);
                 modulePanel = componentFactory.createBasicSeparator(module, basicFrameWidth-80);
             } else {
-                modulePanel = componentFactory.createBasicModuleControl(module,basicFrameWidth-80);
+                if (module.isRunnable()) {
+                    modulePanel = componentFactory.createBasicModuleControl(module, basicFrameWidth - 80);
+                }
             }
 
             if (modulePanel!=null && (expanded || module.getClass().isInstance(new GUISeparator()))) {
@@ -950,8 +952,8 @@ public class GUI {
             }
             Set<Class<? extends Module>> availableModules = new Reflections(builder).getSubTypesOf(Module.class);
 
-            for (URL url:builder.getUrls()) System.err.println("URL: "+url);
-            for (Class clazz:availableModules) System.err.println("Class: "+clazz.getSimpleName());
+//            for (URL url:builder.getUrls()) System.err.println("URL: "+url);
+//            for (Class clazz:availableModules) System.err.println("Class: "+clazz.getSimpleName());
 
             // Creating an alphabetically-ordered list of all modules
             TreeMap<String, Class> modules = new TreeMap<>();
@@ -1098,7 +1100,7 @@ public class GUI {
         for (Module module:analysis.getModules()) if (module.isEnabled()) nActive++;
         int nModules = analysis.getModules().size();
         if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
-
+//
         boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
         inputButton.setColour();
