@@ -77,6 +77,9 @@ public class MeasureObjectOverlap extends Module {
         // Getting parameters
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);
 
+        int totalObjects = inputObjects1.size()+inputObjects2.size();
+        int count = 0;
+
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based on their index
         for (Obj obj1:inputObjects1.values()) {
             double objVolume = (double) obj1.getNVoxels();
@@ -86,6 +89,8 @@ public class MeasureObjectOverlap extends Module {
             double overlapPC = 100*overlap/objVolume;
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_VOX_1),overlap));
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_PERCENT_1),overlapPC));
+
+            writeMessage("Processed "+(++count)+" objects of "+totalObjects);
 
         }
 
@@ -98,6 +103,8 @@ public class MeasureObjectOverlap extends Module {
             double overlapPC = 100*overlap/objVolume;
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOX_2),overlap));
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_PERCENT_2),overlapPC));
+
+            writeMessage("Processed "+(++count)+" objects of "+totalObjects);
 
         }
     }

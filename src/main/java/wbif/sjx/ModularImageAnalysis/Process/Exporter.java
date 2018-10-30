@@ -515,8 +515,10 @@ public class Exporter {
                 MeasurementReferenceCollection availableMeasurements = modules.getImageMeasurementReferences(availableImageName);
 
                 // Running through all the image measurement values, adding them as new columns
-                for (MeasurementReference measurementReference:availableMeasurements.values()) {
-                    String measurementName = measurementReference.getName();
+                for (MeasurementReference imageMeasurement:availableMeasurements.values()) {
+                    if (!imageMeasurement.isCalculated()) continue;
+                    if (!imageMeasurement.isExportable()) continue;
+                    String measurementName = imageMeasurement.getNickname();
                     Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                     String summaryDataName = getImageString(availableImageName, measurementName);
                     summaryHeaderCell.setCellValue(summaryDataName);
@@ -600,7 +602,7 @@ public class Exporter {
 
                     if (calculateMean) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "MEAN", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "MEAN", objectMeasurement.getNickname());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Mean");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -608,7 +610,7 @@ public class Exporter {
 
                     if (calculateMin) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "MIN", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "MIN", objectMeasurement.getNickname());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Minimum");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -616,7 +618,7 @@ public class Exporter {
 
                     if (calculateMax) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "MAX", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "MAX", objectMeasurement.getNickname());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Maximum");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -624,7 +626,7 @@ public class Exporter {
 
                     if (calculateStd) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "STD", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "STD", objectMeasurement.getNickname());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Standard deviation");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -632,7 +634,7 @@ public class Exporter {
 
                     if (calculateSum) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
-                        summaryDataName = getObjectString(availableObjectName, "SUM", objectMeasurement.getName());
+                        summaryDataName = getObjectString(availableObjectName, "SUM", objectMeasurement.getNickname());
                         summaryHeaderCell.setCellValue(summaryDataName);
                         addSummaryComment(summaryHeaderCell,objectMeasurement,"Sum");
                         colNumbers.put(summaryDataName, headerCol++);
@@ -725,15 +727,24 @@ public class Exporter {
         HashMap<String,Image> images = workspace.getImages();
         for (Image image:images.values()) {
             String imageName = image.getName();
-            HashMap<String,Measurement> measurements = image.getMeasurements();
 
-            for (Measurement measurement : measurements.values()) {
-                String measurementName = measurement.getName();
-                String headerName = getImageString(imageName,measurementName);
+            MeasurementReferenceCollection imageMeasurementReferences = modules.getObjectMeasurementReferences(imageName);
+
+            // If the current object hasn't got any assigned measurements, skip it
+            if (imageMeasurementReferences == null) continue;
+
+            // Running through all the object measurement values, adding them as new columns
+            for (MeasurementReference imageMeasurement : imageMeasurementReferences.values()) {
+                if (!imageMeasurement.isCalculated()) continue;
+                if (!imageMeasurement.isExportable()) continue;
+
+                Measurement measurement = image.getMeasurement(imageMeasurement.getName());
+
+                String headerName = getImageString(imageName,imageMeasurement.getNickname());
                 int colNum = colNumbers.get(headerName);
 
                 Cell summaryCell = summaryValueRow.createCell(colNum);
-                double val = measurements.get(measurementName).getValue();
+                double val = measurement.getValue();
                 if (val == Double.NaN) {
                     summaryCell.setCellValue("");
                 } else {
@@ -845,7 +856,7 @@ public class Exporter {
                 }
 
                 if (calculateMean) {
-                    headerName = getObjectString(objSetName, "MEAN", objectMeasurement.getName());
+                    headerName = getObjectString(objSetName, "MEAN", objectMeasurement.getNickname());
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMean();
@@ -857,7 +868,7 @@ public class Exporter {
                 }
 
                 if (calculateMin) {
-                    headerName = getObjectString(objSetName, "MIN", objectMeasurement.getName());
+                    headerName = getObjectString(objSetName, "MIN", objectMeasurement.getNickname());
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMin();
@@ -869,7 +880,7 @@ public class Exporter {
                 }
 
                 if (calculateMax) {
-                    headerName = getObjectString(objSetName, "MAX", objectMeasurement.getName());
+                    headerName = getObjectString(objSetName, "MAX", objectMeasurement.getNickname());
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMax();
@@ -881,7 +892,7 @@ public class Exporter {
                 }
 
                 if (calculateStd) {
-                    headerName = getObjectString(objSetName, "STD", objectMeasurement.getName());
+                    headerName = getObjectString(objSetName, "STD", objectMeasurement.getNickname());
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getStd();
@@ -893,7 +904,7 @@ public class Exporter {
                 }
 
                 if (calculateSum) {
-                    headerName = getObjectString(objSetName, "SUM", objectMeasurement.getName());
+                    headerName = getObjectString(objSetName, "SUM", objectMeasurement.getNickname());
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getSum();
@@ -998,7 +1009,7 @@ public class Exporter {
                     measurementNames.get(objectName).put(col, objectMeasurement.getName());
                     Cell measHeaderCell = objectHeaderRow.createCell(col++);
                     addComment(measHeaderCell,objectMeasurement.getDescription());
-                    measHeaderCell.setCellValue(objectMeasurement.getName());
+                    measHeaderCell.setCellValue(objectMeasurement.getNickname());
 
                 }
             }

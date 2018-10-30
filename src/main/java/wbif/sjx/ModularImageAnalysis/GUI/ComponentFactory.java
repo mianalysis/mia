@@ -473,12 +473,17 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,0,0);
 
-        JTextField measurementName = new JTextField("            "+measurement.getName());
+        MeasurementName measurementName = new MeasurementName(measurement);
         measurementName.setPreferredSize(new Dimension(-1, elementHeight));
-        measurementName.setEditable(false);
-        measurementName.setBorder(null);
+        measurementName.setEditable(true);
         measurementName.setToolTipText("<html><p width=\"500\">" +measurement.getDescription()+"</p></html>");
         measurementPanel.add(measurementName, c);
+
+        ResetMeasurementName resetMeasurementName = new ResetMeasurementName(measurement);
+        c.gridx++;
+        c.weightx = 0;
+        c.anchor = GridBagConstraints.EAST;
+        measurementPanel.add(resetMeasurementName, c);
 
         MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement);
         exportCheck.setPreferredSize(new Dimension(-1, elementHeight));
