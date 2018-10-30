@@ -28,6 +28,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -91,7 +92,7 @@ public class GUI {
         GUI.debugOn = debugOn;
 
         // Starting this process, as it takes longest
-        new Thread(() -> listAvailableModules()).start();
+        new Thread(GUI::listAvailableModules).start();
 
         analysis.getInputControl().initialiseParameters();
         loadSeparator.initialiseParameters();
@@ -311,7 +312,7 @@ public class GUI {
         frame.setMinimumSize(new Dimension(basicFrameWidth,minimumFrameHeight));
 
         frame.pack();
-        frame.revalidate();
+        frame.validate();
         frame.repaint();
 
         populateBasicModules();
@@ -690,10 +691,11 @@ public class GUI {
         separator.setPreferredSize(new Dimension(-1,1));
         modulesPanel.add(separator, c);
 
-        modulesPanel.validate();
-        modulesPanel.repaint();
-        modulesScrollPane.validate();
         modulesScrollPane.repaint();
+        modulesScrollPane.validate();
+
+        modulesPanel.repaint();
+        modulesPanel.validate();
 
     }
 
@@ -832,10 +834,10 @@ public class GUI {
             paramsPanel.add(separator,c);
         }
 
-        paramsPanel.revalidate();
+        paramsPanel.validate();
         paramsPanel.repaint();
 
-        paramsScrollPane.revalidate();
+        paramsScrollPane.validate();
         paramsScrollPane.repaint();
 
     }
@@ -926,9 +928,9 @@ public class GUI {
         separator.setPreferredSize(new Dimension(-1,1));
         basicModulesPanel.add(separator, c);
 
-        basicModulesPanel.validate();
+        basicModulesPanel.revalidate();
         basicModulesPanel.repaint();
-        basicModulesScrollPane.validate();
+        basicModulesScrollPane.revalidate();
         basicModulesScrollPane.repaint();
 
     }
@@ -939,18 +941,17 @@ public class GUI {
             addModuleButton.setToolTipText("Loading modules");
 
             Reflections.log = null;
-            Reflections reflections = null;
-            if (debugOn) {
-                reflections = new Reflections("wbif.sjx.ModularImageAnalysis");
-            } else {
-                ArrayList<URL> urls = new ArrayList<>();
+            ConfigurationBuilder builder = ConfigurationBuilder.build("wbif.sjx.ModularImageAnalysis");
+            builder.addUrls(MIA.getPluginURLs());
+            if (!debugOn) {
                 for (URL url : ClasspathHelper.forClassLoader()) {
-                    if (url.getPath().contains("plugins")) urls.add(url);
+                    if (url.getPath().contains("plugins")) builder.addUrls(url);
                 }
-                reflections = new Reflections(new ConfigurationBuilder().addUrls(urls));
             }
+            Set<Class<? extends Module>> availableModules = new Reflections(builder).getSubTypesOf(Module.class);
 
-            Set<Class<? extends Module>> availableModules = reflections.getSubTypesOf(Module.class);
+            for (URL url:builder.getUrls()) System.err.println("URL: "+url);
+            for (Class clazz:availableModules) System.err.println("Class: "+clazz.getSimpleName());
 
             // Creating an alphabetically-ordered list of all modules
             TreeMap<String, Class> modules = new TreeMap<>();

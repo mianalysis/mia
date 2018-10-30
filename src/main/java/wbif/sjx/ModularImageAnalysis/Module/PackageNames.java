@@ -7,6 +7,7 @@ public class PackageNames {
     public final static String IMAGE_PROCESSING_STACK = "Image processing\\Stack\\";
     public final static String INPUT_OUTPUT = "Input output\\";
     public final static String MISCELLANEOUS = "Miscellaneous\\";
+    public static final String PLUGINS = "Plugins\\";
     public final static String OBJECT_MEASUREMENTS_INTENSITY = "Object measurements\\Intensity\\";
     public final static String OBJECT_MEASUREMENTS_MISCELLANEOUS = "Object measurements\\Miscellaneous\\";
     public final static String OBJECT_MEASUREMENTS_SPATIAL = "Object measurements\\Spatial\\";
