@@ -14,13 +14,18 @@ import java.awt.event.ActionListener;
 public class ResetModuleName extends JButton implements ActionListener {
     private Module module;
 
+    private static final ImageIcon refreshIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/refresh_black_12px.png"), "");
+
     public ResetModuleName(Module module) {
         this.module = module;
 
-        setText("Reset name");
+        setMargin(new Insets(0,0,0,0));
         setFocusPainted(false);
-        setPreferredSize(new Dimension(100, 25));
+        setSelected(false);
+        setName("Refresh module name");
+        setToolTipText("Refresh module name");
         addActionListener(this);
+        setIcon(refreshIcon);
 
     }
 

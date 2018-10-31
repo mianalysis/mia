@@ -305,6 +305,7 @@ public class Exporter {
             Element measurementReferenceElement = doc.createElement("MEASUREMENT");
 
             measurementReferenceElement.setAttribute("NAME",measurementReference.getName());
+            measurementReferenceElement.setAttribute("NICKNAME",measurementReference.getNickname());
             measurementReferenceElement.setAttribute("IS_EXPORTABLE",String.valueOf(measurementReference.isExportable()));
             measurementReferenceElement.setAttribute("TYPE",type);
             measurementReferenceElement.setAttribute("IMAGE_OBJECT_NAME",measurementReference.getImageObjName());

@@ -35,6 +35,55 @@ public class ExpandShrinkObjects extends Module {
 
     }
 
+
+    public static Obj processObject(Obj inputObject, Image templateImage, String method, int radiusChangePx) {
+        ImagePlus templateImagePlus = templateImage.getImagePlus();
+
+        // Convert each object to an image, do the dilation/erosion, then convert back to an object
+        ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
+        objectCollection.add(inputObject);
+        HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
+        Image objectImage = objectCollection.convertObjectsToImageOld("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
+        InvertIntensity.process(objectImage.getImagePlus());
+
+        Prefs.blackBackground = false;
+
+        // Applying morphological transform.  Erode and dilate are used "backwards", as the image that comes
+        // from the converter has white objects on a black background.
+        switch (method) {
+            case Methods.EXPAND_2D:
+                BinaryOperations.applyStockBinaryTransform(objectImage.getImagePlus(),
+                        BinaryOperations.OperationModes.DILATE_2D,radiusChangePx);
+                break;
+
+            case Methods.EXPAND_3D:
+                BinaryOperations.applyDilateErode3D(objectImage.getImagePlus(),
+                        BinaryOperations.OperationModes.DILATE_3D,radiusChangePx);
+                break;
+
+            case Methods.SHRINK_2D:
+                BinaryOperations.applyStockBinaryTransform(objectImage.getImagePlus(),
+                        BinaryOperations.OperationModes.ERODE_2D,radiusChangePx);
+                break;
+
+            case Methods.SHRINK_3D:
+                BinaryOperations.applyDilateErode3D(objectImage.getImagePlus(),
+                        BinaryOperations.OperationModes.ERODE_3D,radiusChangePx);
+                break;
+        }
+
+        InvertIntensity.process(objectImage.getImagePlus());
+
+        // Creating a new object collection (only contains one image) from the transformed image
+        ObjCollection newObjects = objectImage.convertImageToObjects("NewObjects");
+
+        // During object shrinking it's possible the object will disappear entirely
+        if (newObjects.size() == 0) return null;
+
+        return newObjects.getFirst();
+
+    }
+
     @Override
     public String getTitle() {
         return "Expand and shrink objects";
@@ -55,7 +104,6 @@ public class ExpandShrinkObjects extends Module {
         // Getting input image
         String templateImageName = parameters.getValue(INPUT_IMAGE);
         Image templateImage = workspace.getImage(templateImageName);
-        ImagePlus templateImagePlus = templateImage.getImagePlus();
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -86,46 +134,10 @@ public class ExpandShrinkObjects extends Module {
             Obj inputObject = iterator.next();
             writeMessage("Processing object " + (count++) + " of " + total);
 
-            // Convert each object to an image, do the dilation/erosion, then convert back to an object
-            ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
-            objectCollection.add(inputObject);
-            HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-            Image objectImage = objectCollection.convertObjectsToImageOld("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
-            InvertIntensity.process(objectImage.getImagePlus());
-
-            Prefs.blackBackground = false;
-
-            // Applying morphological transform.  Erode and dilate are used "backwards", as the image that comes
-            // from the converter has white objects on a black background.
-            switch (method) {
-                case Methods.EXPAND_2D:
-                    BinaryOperations.applyStockBinaryTransform(objectImage.getImagePlus(),
-                            BinaryOperations.OperationModes.DILATE_2D,radiusChangePx);
-                    break;
-
-                case Methods.EXPAND_3D:
-                    BinaryOperations.applyDilateErode3D(objectImage.getImagePlus(),
-                            BinaryOperations.OperationModes.DILATE_3D,radiusChangePx);
-                    break;
-
-                case Methods.SHRINK_2D:
-                    BinaryOperations.applyStockBinaryTransform(objectImage.getImagePlus(),
-                            BinaryOperations.OperationModes.ERODE_2D,radiusChangePx);
-                    break;
-
-                case Methods.SHRINK_3D:
-                    BinaryOperations.applyDilateErode3D(objectImage.getImagePlus(),
-                            BinaryOperations.OperationModes.ERODE_3D,radiusChangePx);
-                    break;
-            }
-
-            InvertIntensity.process(objectImage.getImagePlus());
-
-            // Creating a new object collection (only contains one image) from the transformed image
-            ObjCollection newObjects = objectImage.convertImageToObjects("NewObjects");
+            Obj newObject = processObject(inputObject,templateImage,method,radiusChangePx);
 
             // During object shrinking it's possible the object will disappear entirely
-            if (newObjects.size() == 0) {
+            if (newObject == null) {
                 iterator.remove();
                 continue;
             }
@@ -133,10 +145,10 @@ public class ExpandShrinkObjects extends Module {
             // If the input objects are to be transformed, taking the new pixel coordinates and applying them to
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.
             if (updateInputObjects) {
-                inputObject.setPoints(newObjects.values().iterator().next().getPoints());
+                inputObject.setPoints(newObject.getPoints());
             } else {
                 Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,twoD);
-                outputObject.setPoints(newObjects.values().iterator().next().getPoints());
+                outputObject.setPoints(newObject.getPoints());
                 outputObjects.add(outputObject);
             }
         }
