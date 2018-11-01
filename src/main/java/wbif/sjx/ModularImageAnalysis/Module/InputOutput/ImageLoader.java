@@ -71,6 +71,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String COMMENT = "Comment";
     public static final String PREFIX = "Prefix";
     public static final String SUFFIX = "Suffix";
+    public static final String INCLUDE_SERIES_NUMBER = "Include series number";
     public static final String FILE_PATH = "File path";
     public static final String CHANNELS = "Channels";
     public static final String SLICES = "Slices";
@@ -385,26 +386,29 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getPrefixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop)
-            throws ServiceException, DependencyException, FormatException, IOException {
-        String absolutePath = metadata.getFile().getAbsolutePath();
-        String path = FilenameUtils.getFullPath(absolutePath);
-        String name = FilenameUtils.getName(absolutePath);
-        String comment = metadata.getComment();
-        String filename = path+comment+name;
-
-        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
-
-    }
-
-    private ImagePlus getSuffixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop)
+    private ImagePlus getPrefixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop, boolean includeSeries)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
         String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
         String extension = FilenameUtils.getExtension(absolutePath);
         String comment = metadata.getComment();
-        String filename = path+name+comment+"."+extension;
+        String series = includeSeries ? "_S"+metadata.getSeriesNumber() : "";
+        String filename = path+comment+name+series+"."+extension;
+
+        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
+
+    }
+
+    private ImagePlus getSuffixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop, boolean includeSeries)
+            throws ServiceException, DependencyException, FormatException, IOException {
+        String absolutePath = metadata.getFile().getAbsolutePath();
+        String path = FilenameUtils.getFullPath(absolutePath);
+        String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
+        String extension = FilenameUtils.getExtension(absolutePath);
+        String comment = metadata.getComment();
+        String series = includeSeries ? "_S"+metadata.getSeriesNumber() : "";
+        String filename = path+name+series+comment+"."+extension;
 
         return getBFImage(filename,seriesNumber,dimRanges,crop,true);
 
@@ -443,6 +447,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String comment = parameters.getValue(COMMENT);
         String prefix = parameters.getValue(PREFIX);
         String suffix = parameters.getValue(SUFFIX);
+        boolean includeSeriesNumber = parameters.getValue(INCLUDE_SERIES_NUMBER);
         String channels = parameters.getValue(CHANNELS);
         String slices = parameters.getValue(SLICES);
         String frames = parameters.getValue(FRAMES);
@@ -504,13 +509,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         case NameFormats.INPUT_FILE_PREFIX:
                             metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(prefix);
-                            ipl = getPrefixNameImage(metadata, seriesNumber, dimRanges,crop);
+                            ipl = getPrefixNameImage(metadata, seriesNumber, dimRanges, crop, includeSeriesNumber);
                             break;
 
                         case NameFormats.INPUT_FILE_SUFFIX:
                             metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(suffix);
-                            ipl = getSuffixNameImage(metadata, seriesNumber, dimRanges,crop);
+                            ipl = getSuffixNameImage(metadata, seriesNumber, dimRanges, crop, includeSeriesNumber);
                             break;
                     }
                     break;
@@ -580,17 +585,16 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.IMAGE, OutputModes.ALL));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(
-                new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
+        parameters.add(new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
         parameters.add(new Parameter(NUMBER_OF_ZEROES,Parameter.INTEGER,4));
         parameters.add(new Parameter(STARTING_INDEX,Parameter.INTEGER,0));
         parameters.add(new Parameter(LIMIT_FRAMES,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FINAL_INDEX,Parameter.INTEGER,1));
-        parameters.add(
-                new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
+        parameters.add(new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
         parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
         parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
         parameters.add(new Parameter(SUFFIX,Parameter.STRING,""));
+        parameters.add(new Parameter(INCLUDE_SERIES_NUMBER,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
         parameters.add(new Parameter(CHANNELS,Parameter.STRING,"1-end"));
         parameters.add(new Parameter(SLICES,Parameter.STRING,"1-end"));
@@ -650,9 +654,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         break;
                     case NameFormats.INPUT_FILE_PREFIX:
                         returnedParameters.add(parameters.getParameter(PREFIX));
+                        returnedParameters.add(parameters.getParameter(INCLUDE_SERIES_NUMBER));
                         break;
                     case NameFormats.INPUT_FILE_SUFFIX:
                         returnedParameters.add(parameters.getParameter(SUFFIX));
+                        returnedParameters.add(parameters.getParameter(INCLUDE_SERIES_NUMBER));
                         break;
                 }
                 break;
