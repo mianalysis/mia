@@ -243,6 +243,11 @@ public class AnalysisReader {
             String type = attributes.getNamedItem("TYPE").getNodeValue();
             String imageObjectName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
 
+            String measurementNickName = measurementName;
+            if (attributes.getNamedItem("NICKNAME") != null) {
+                measurementNickName = attributes.getNamedItem("NICKNAME").getNodeValue();
+            }
+
             // Acquiring the relevant reference
             MeasurementReference measurementReference = null;
             switch (type) {
@@ -259,6 +264,7 @@ public class AnalysisReader {
             if (measurementReference == null) continue;
 
             // Updating the reference's parameters
+            measurementReference.setNickname(measurementNickName);
             measurementReference.setExportable(isExportable);
             measurementReference.setImageObjName(imageObjectName);
 

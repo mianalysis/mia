@@ -43,7 +43,6 @@ public class ComponentFactory {
         parameterName.setEditable(false);
         parameterName.setBorder(null);
         parameterName.setOpaque(false);
-//        parameterName.setHorizontalAlignment(JTextField.RIGHT);
         paramPanel.add(parameterName, c);
 
         if (parameter.isValid()) {
@@ -273,8 +272,10 @@ public class ComponentFactory {
         paramPanel.add(moduleName, c);
 
         ResetModuleName resetModuleName = new ResetModuleName(activeModule);
+        resetModuleName.setPreferredSize(new Dimension(elementHeight,elementHeight));
         c.gridx++;
         c.weightx = 0;
+        c.insets = new Insets(5,5,0,5);
         c.anchor = GridBagConstraints.EAST;
         paramPanel.add(resetModuleName, c);
 
@@ -469,26 +470,38 @@ public class ComponentFactory {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 1;
+        c.weightx = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,0,0);
 
-        JTextField measurementName = new JTextField("            "+measurement.getName());
-        measurementName.setPreferredSize(new Dimension(-1, elementHeight));
-        measurementName.setEditable(false);
-        measurementName.setBorder(null);
-        measurementName.setToolTipText("<html><p width=\"500\">" +measurement.getDescription()+"</p></html>");
-        measurementPanel.add(measurementName, c);
+        JSeparator separator = new JSeparator();
+        separator.setOrientation(JSeparator.HORIZONTAL);
+        separator.setPreferredSize(new Dimension(30, -1));
+        measurementPanel.add(separator,c);
 
         MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement);
-        exportCheck.setPreferredSize(new Dimension(-1, elementHeight));
+        exportCheck.setSelected(measurement.isExportable());
+        c.gridx++;
+        measurementPanel.add(exportCheck, c);
+
+        MeasurementName measurementName = new MeasurementName(measurement);
+        measurementName.setPreferredSize(new Dimension(-1, elementHeight));
+        measurementName.setEditable(true);
+        measurementName.setToolTipText("<html><p width=\"500\">" +measurement.getDescription()+"</p></html>");
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.EAST;
-        exportCheck.setSelected(measurement.isExportable());
-        measurementPanel.add(exportCheck,c);
+        measurementPanel.add(measurementName, c);
+
+        ResetMeasurementName resetMeasurementName = new ResetMeasurementName(measurement);
+        resetMeasurementName.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        c.gridx++;
+        c.weightx = 0;
+        c.anchor = GridBagConstraints.EAST;
+        measurementPanel.add(resetMeasurementName,c);
 
         return measurementPanel;
+
     }
 
 }

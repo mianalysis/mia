@@ -28,7 +28,6 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -740,7 +739,7 @@ public class GUI {
                 JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule);
                 paramsPanel.add(paramPanel, c);
 
-                c.insets = new Insets(2, 5, 0, 0);
+                c.insets = new Insets(2, 5, 0, 5);
                 c.gridx++;
                 c.weightx=0;
                 c.anchor = GridBagConstraints.EAST;
@@ -759,13 +758,15 @@ public class GUI {
             LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);
             for (Parameter imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getValue();
+                MeasurementReferenceCollection measurementReferences = getModules().getImageMeasurementReferences(imageName);
+
+                if (measurementReferences.size() == 0) continue;
 
                 JPanel measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)");
                 c.gridx = 0;
                 c.gridy++;
                 paramsPanel.add(measurementHeader,c);
 
-                MeasurementReferenceCollection measurementReferences = getModules().getImageMeasurementReferences(imageName);
                 // Iterating over the measurements for the current image, adding a control for each
                 for (MeasurementReference measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
@@ -773,6 +774,8 @@ public class GUI {
                     // Adding measurement control
                     JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
                     c.gridy++;
+                    c.gridwidth = 2;
+                    c.anchor = GridBagConstraints.EAST;
                     paramsPanel.add(currentMeasurementPanel,c);
 
                 }
@@ -781,13 +784,15 @@ public class GUI {
             LinkedHashSet<Parameter> objectNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_OBJECTS);
             for (Parameter objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getValue();
+                MeasurementReferenceCollection measurementReferences = getModules().getObjectMeasurementReferences(objectName);
+
+                if (measurementReferences.size() == 0) continue;
 
                 JPanel measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)");
                 c.gridx = 0;
                 c.gridy++;
                 paramsPanel.add(measurementHeader,c);
 
-                MeasurementReferenceCollection measurementReferences = getModules().getObjectMeasurementReferences(objectName);
                 // Iterating over the measurements for the current object, adding a control for each
                 for (MeasurementReference measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
@@ -943,17 +948,15 @@ public class GUI {
             addModuleButton.setToolTipText("Loading modules");
 
             Reflections.log = null;
-            ConfigurationBuilder builder = ConfigurationBuilder.build("wbif.sjx.ModularImageAnalysis");
-            builder.addUrls(MIA.getPluginURLs());
+            ConfigurationBuilder builder = ConfigurationBuilder.build("");
+            builder.addUrls(ClasspathHelper.forPackage("wbif.sjx.ModularImageAnalysis"));
+            for (String packageName:MIA.getPluginPackages()) builder.addUrls(ClasspathHelper.forPackage(packageName));
             if (!debugOn) {
                 for (URL url : ClasspathHelper.forClassLoader()) {
                     if (url.getPath().contains("plugins")) builder.addUrls(url);
                 }
             }
             Set<Class<? extends Module>> availableModules = new Reflections(builder).getSubTypesOf(Module.class);
-
-//            for (URL url:builder.getUrls()) System.err.println("URL: "+url);
-//            for (Class clazz:availableModules) System.err.println("Class: "+clazz.getSimpleName());
 
             // Creating an alphabetically-ordered list of all modules
             TreeMap<String, Class> modules = new TreeMap<>();
