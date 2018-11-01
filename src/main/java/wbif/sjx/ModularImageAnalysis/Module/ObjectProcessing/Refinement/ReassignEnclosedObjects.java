@@ -16,7 +16,7 @@
 //    public static final String INPUT_OBJECTS = "Input objects";
 //    public static final String TEMPLATE_IMAGE = "Template image";
 //
-//    public static Obj getEnclosingObject(Obj object1, ObjCollection objects2, Image templateImage) {
+//    public static Obj testEncloses(Obj object1, ObjCollection objects2, Image templateImage) {
 //        String colourMode = ObjCollection.ColourModes.ID;
 //        HashMap<Integer, Float> hues = objects2.getHues(colourMode, "", false);
 //        Image labelledImage = objects2.convertObjectsToImage("Labelled",templateImage,colourMode,hues);
@@ -72,22 +72,8 @@
 //            Obj inputObject = iterator.next();
 //
 //            // Test for enclosing
-//            Obj enclosingObj = getEnclosingObject(inputObject, inputObjects, templateImage);
+//            testEncloses(inputObject, inputObjects, templateImage);
 //
-//            // If enclosing, add all points from enclosed object to test object, remove
-//            if (enclosingObj != null) {
-//                for (Point<Integer> point : inputObject.getPoints()) {
-//                    enclosingObj.addCoord(point.getX(), point.getY(), point.getZ());
-//                }
-//
-//                // Removing the input object
-//                inputObject.removeRelationships();
-//                iterator.remove();
-//
-//                // Don't bother testing against any others, as a match has been found
-//                break;
-//
-//            }
 //        }
 //    }
 //
