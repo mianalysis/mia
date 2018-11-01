@@ -729,7 +729,7 @@ public class Exporter {
         for (Image image:images.values()) {
             String imageName = image.getName();
 
-            MeasurementReferenceCollection imageMeasurementReferences = modules.getObjectMeasurementReferences(imageName);
+            MeasurementReferenceCollection imageMeasurementReferences = modules.getImageMeasurementReferences(imageName);
 
             // If the current object hasn't got any assigned measurements, skip it
             if (imageMeasurementReferences == null) continue;
@@ -939,164 +939,164 @@ public class Exporter {
 
         // Using the first workspace in the WorkspaceCollection to initialise column headers
         LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,false);
-        if (availableObjects != null) {
-            for (Parameter availableObject:availableObjects) {
-                String objectName = availableObject.getValue();
-                // Creating relevant sheet prefixed with "IM"
-                objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
+        if (availableObjects == null) return;
 
-                objectRows.put(objectName, 1);
-                Row objectHeaderRow = objectSheets.get(objectName).createRow(0);
+        for (Parameter availableObject:availableObjects) {
+            String objectName = availableObject.getValue();
+            // Creating relevant sheet prefixed with "OBJ"
+            objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
 
-                // Adding headers to each column
-                int col = 0;
+            objectRows.put(objectName, 1);
+            Row objectHeaderRow = objectSheets.get(objectName).createRow(0);
 
-                Cell objectIDHeaderCell = objectHeaderRow.createCell(col++);
-                objectIDHeaderCell.setCellValue("OBJECT_ID");
-                String text = "ID number for this object.  Unique in the present image, but can be duplicated in other " +
-                        "images";
-                addComment(objectIDHeaderCell,text);
+            // Adding headers to each column
+            int col = 0;
 
-                // Adding metadata headers (if enabled)
-                if (addMetadataToObjects) {
-                    // Running through all the metadata values, adding them as new columns
-                    metadataNames = modules.getMetadataReferences(null).getMetadataNames();
-                    for (String name : metadataNames) {
-                        Cell metaHeaderCell = objectHeaderRow.createCell(col++);
-                        metaHeaderCell.setCellValue(getMetadataString(name));
-                    }
+            Cell objectIDHeaderCell = objectHeaderRow.createCell(col++);
+            objectIDHeaderCell.setCellValue("OBJECT_ID");
+            String text = "ID number for this object.  Unique in the present image, but can be duplicated in other " +
+                    "images";
+            addComment(objectIDHeaderCell,text);
+
+            // Adding metadata headers (if enabled)
+            if (addMetadataToObjects) {
+                // Running through all the metadata values, adding them as new columns
+                metadataNames = modules.getMetadataReferences(null).getMetadataNames();
+                for (String name : metadataNames) {
+                    Cell metaHeaderCell = objectHeaderRow.createCell(col++);
+                    metaHeaderCell.setCellValue(getMetadataString(name));
                 }
+            }
 
-                // Adding parent IDs
-                RelationshipCollection relationships = modules.getRelationships();
-                String[] parents = relationships.getParentNames(objectName);
-                if (!parents[0].equals("")) {
-                    for (String parent : parents) {
-                        parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
-                        parentNames.get(objectName).put(col, parent);
-                        Cell parentHeaderCell = objectHeaderRow.createCell(col++);
-                        parentHeaderCell.setCellValue("PARENT_" + parent + "_ID");
-
-                    }
-                }
-
-                // Adding number of children for each child type
-                String[] children = relationships.getChildNames(objectName);
-                if (!children[0].equals("")) {
-                    for (String child : children) {
-                        childNames.putIfAbsent(objectName, new LinkedHashMap<>());
-                        childNames.get(objectName).put(col, child);
-                        Cell childHeaderCell = objectHeaderRow.createCell(col++);
-                        childHeaderCell.setCellValue("NUMBER_OF_" + child + "_CHILDREN");
-
-                    }
-                }
-
-                // Adding timepoint header
-                Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
-                timepointHeaderCell.setCellValue("TIMEPOINT");
-
-                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(objectName);
-
-                // If the current object hasn't got any assigned measurements, skip it
-                if (objectMeasurementReferences == null) continue;
-
-                // Running through all the object measurement values, adding them as new columns
-                for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
-                    if (!objectMeasurement.isCalculated()) continue;
-                    if (!objectMeasurement.isExportable()) continue;
-
-                    measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
-                    measurementNames.get(objectName).put(col, objectMeasurement.getName());
-                    Cell measHeaderCell = objectHeaderRow.createCell(col++);
-                    addComment(measHeaderCell,objectMeasurement.getDescription());
-                    measHeaderCell.setCellValue(objectMeasurement.getNickname());
+            // Adding parent IDs
+            RelationshipCollection relationships = modules.getRelationships();
+            String[] parents = relationships.getParentNames(objectName);
+            if (!parents[0].equals("")) {
+                for (String parent : parents) {
+                    parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
+                    parentNames.get(objectName).put(col, parent);
+                    Cell parentHeaderCell = objectHeaderRow.createCell(col++);
+                    parentHeaderCell.setCellValue("PARENT_" + parent + "_ID");
 
                 }
             }
 
-            // Running through each Workspace, adding rows
-            for (Workspace workspace : workspaces) {
-                for (String objectName : workspace.getObjects().keySet()) {
-                    ObjCollection objects = workspace.getObjects().get(objectName);
+            // Adding number of children for each child type
+            String[] children = relationships.getChildNames(objectName);
+            if (!children[0].equals("")) {
+                for (String child : children) {
+                    childNames.putIfAbsent(objectName, new LinkedHashMap<>());
+                    childNames.get(objectName).put(col, child);
+                    Cell childHeaderCell = objectHeaderRow.createCell(col++);
+                    childHeaderCell.setCellValue("NUMBER_OF_" + child + "_CHILDREN");
 
-                    if (objects.values().iterator().hasNext()) {
-                        for (Obj object : objects.values()) {
-                            // Adding the measurements from this image
-                            int col = 0;
+                }
+            }
 
-                            Row objectValueRow = objectSheets.get(objectName).createRow(objectRows.get(objectName));
-                            objectRows.compute(objectName, (k, v) -> v = v + 1);
+            // Adding timepoint header
+            Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
+            timepointHeaderCell.setCellValue("TIMEPOINT");
 
-                            Cell objectIDValueCell = objectValueRow.createCell(col++);
-                            objectIDValueCell.setCellValue(object.getID());
+            MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(objectName);
 
-                            // Adding metadata (if enabled)
-                            if (addMetadataToObjects && metadataNames != null) {
-                                HCMetadata metadata = workspace.getMetadata();
-                                for (String name : metadataNames) {
-                                    Cell metaValueCell = objectValueRow.createCell(col++);
-                                    metaValueCell.setCellValue(metadata.getAsString(name));
+            // If the current object hasn't got any assigned measurements, skip it
+            if (objectMeasurementReferences == null) continue;
+
+            // Running through all the object measurement values, adding them as new columns
+            for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
+                if (!objectMeasurement.isCalculated()) continue;
+                if (!objectMeasurement.isExportable()) continue;
+
+                measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
+                measurementNames.get(objectName).put(col, objectMeasurement.getName());
+                Cell measHeaderCell = objectHeaderRow.createCell(col++);
+                addComment(measHeaderCell,objectMeasurement.getDescription());
+                measHeaderCell.setCellValue(objectMeasurement.getNickname());
+
+            }
+        }
+
+        // Running through each Workspace, adding rows
+        for (Workspace workspace : workspaces) {
+            for (String objectName : workspace.getObjects().keySet()) {
+                ObjCollection objects = workspace.getObjects().get(objectName);
+
+                if (objects.values().iterator().hasNext()) {
+                    for (Obj object : objects.values()) {
+                        // Adding the measurements from this image
+                        int col = 0;
+
+                        Row objectValueRow = objectSheets.get(objectName).createRow(objectRows.get(objectName));
+                        objectRows.compute(objectName, (k, v) -> v = v + 1);
+
+                        Cell objectIDValueCell = objectValueRow.createCell(col++);
+                        objectIDValueCell.setCellValue(object.getID());
+
+                        // Adding metadata (if enabled)
+                        if (addMetadataToObjects && metadataNames != null) {
+                            HCMetadata metadata = workspace.getMetadata();
+                            for (String name : metadataNames) {
+                                Cell metaValueCell = objectValueRow.createCell(col++);
+                                metaValueCell.setCellValue(metadata.getAsString(name));
+                            }
+                        }
+
+                        // Adding parents to the columns specified in parentNames
+                        if (parentNames.get(objectName) != null) {
+                            for (int column : parentNames.get(objectName).keySet()) {
+                                Cell parentValueCell = objectValueRow.createCell(column);
+                                String parentName = parentNames.get(objectName).get(column);
+                                Obj parent = object.getParent(parentName);
+                                if (parent != null) {
+                                    parentValueCell.setCellValue(parent.getID());
+                                } else {
+                                    parentValueCell.setCellValue("");
                                 }
+                                col++;
+                            }
+                        }
+
+                        // Adding number of children to the columns specified in childNames
+                        if (childNames.get(objectName) != null) {
+                            for (int column : childNames.get(objectName).keySet()) {
+                                Cell childValueCell = objectValueRow.createCell(column);
+                                String childName = childNames.get(objectName).get(column);
+                                ObjCollection children = object.getChildren(childName);
+                                if (children != null) {
+                                    childValueCell.setCellValue(children.size());
+                                } else {
+                                    childValueCell.setCellValue("0");
+                                }
+                                col++;
+                            }
+                        }
+
+                        Cell timepointValueCell = objectValueRow.createCell(col++);
+                        timepointValueCell.setCellValue(object.getT());
+
+                        if (measurementNames.get(objectName) == null) continue;
+
+                        // Adding measurements to the columns specified in measurementNames
+                        for (int column : measurementNames.get(objectName).keySet()) {
+                            Cell measValueCell = objectValueRow.createCell(column);
+                            String measurementName = measurementNames.get(objectName).get(column);
+                            Measurement measurement = object.getMeasurement(measurementName);
+
+                            // If there isn't a corresponding value for this object, set a blank cell
+                            if (measurement == null) {
+                                measValueCell.setCellValue("");
+                                continue;
                             }
 
-                            // Adding parents to the columns specified in parentNames
-                            if (parentNames.get(objectName) != null) {
-                                for (int column : parentNames.get(objectName).keySet()) {
-                                    Cell parentValueCell = objectValueRow.createCell(column);
-                                    String parentName = parentNames.get(objectName).get(column);
-                                    Obj parent = object.getParent(parentName);
-                                    if (parent != null) {
-                                        parentValueCell.setCellValue(parent.getID());
-                                    } else {
-                                        parentValueCell.setCellValue("");
-                                    }
-                                    col++;
-                                }
-                            }
-
-                            // Adding number of children to the columns specified in childNames
-                            if (childNames.get(objectName) != null) {
-                                for (int column : childNames.get(objectName).keySet()) {
-                                    Cell childValueCell = objectValueRow.createCell(column);
-                                    String childName = childNames.get(objectName).get(column);
-                                    ObjCollection children = object.getChildren(childName);
-                                    if (children != null) {
-                                        childValueCell.setCellValue(children.size());
-                                    } else {
-                                        childValueCell.setCellValue("0");
-                                    }
-                                    col++;
-                                }
-                            }
-
-                            Cell timepointValueCell = objectValueRow.createCell(col++);
-                            timepointValueCell.setCellValue(object.getT());
-
-                            if (measurementNames.get(objectName) == null) continue;
-
-                            // Adding measurements to the columns specified in measurementNames
-                            for (int column : measurementNames.get(objectName).keySet()) {
-                                Cell measValueCell = objectValueRow.createCell(column);
-                                String measurementName = measurementNames.get(objectName).get(column);
-                                Measurement measurement = object.getMeasurement(measurementName);
-
-                                // If there isn't a corresponding value for this object, set a blank cell
-                                if (measurement == null) {
-                                    measValueCell.setCellValue("");
-                                    continue;
-                                }
-
-                                // If the value is a NaN, also set a blank cell
-                                if (Double.isNaN(measurement.getValue())) {
-                                    measValueCell.setCellValue("");
-                                    continue;
-
-                                }
-
-                                measValueCell.setCellValue(measurement.getValue());
+                            // If the value is a NaN, also set a blank cell
+                            if (Double.isNaN(measurement.getValue())) {
+                                measValueCell.setCellValue("");
+                                continue;
 
                             }
+
+                            measValueCell.setCellValue(measurement.getValue());
+
                         }
                     }
                 }
