@@ -9,8 +9,10 @@ import ij.plugin.*;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.binary.ChamferWeights3D;
+import inra.ijpb.morphology.GeodesicReconstruction3D;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.Strel3D;
+import inra.ijpb.plugins.FillHolesPlugin;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
@@ -44,13 +46,14 @@ public class BinaryOperations extends Module {
         String ERODE_2D = "Erode 2D";
         String ERODE_3D = "Erode 3D";
         String FILL_HOLES_2D = "Fill holes 2D";
+        String FILL_HOLES_3D = "Fill holes 3D";
         String OUTLINE_2D = "Outline 2D";
         String SKELETONISE_2D = "Skeletonise 2D";
         String WATERSHED_2D = "Watershed 2D";
         String WATERSHED_3D = "Watershed 3D";
 
-        String[] ALL = new String[]{DILATE_2D,DILATE_3D,DISTANCE_MAP_3D,ERODE_2D,ERODE_3D,FILL_HOLES_2D,OUTLINE_2D,
-                SKELETONISE_2D,WATERSHED_2D,WATERSHED_3D};
+        String[] ALL = new String[]{DILATE_2D,DILATE_3D,DISTANCE_MAP_3D,ERODE_2D,ERODE_3D,FILL_HOLES_2D,FILL_HOLES_3D,
+                OUTLINE_2D,SKELETONISE_2D,WATERSHED_2D,WATERSHED_3D};
 
     }
 
@@ -144,6 +147,10 @@ public class BinaryOperations extends Module {
                 }
             }
         }
+
+        // Flipping the intensities back
+        InvertIntensity.process(ipl);
+
     }
 
     public static ImagePlus getDistanceMap3D(ImagePlus ipl, boolean matchZToXY) {
@@ -171,6 +178,36 @@ public class BinaryOperations extends Module {
 
         return ipl;
 
+    }
+
+    public static void applyFillHoles3D(ImagePlus ipl) {
+        int width = ipl.getWidth();
+        int height = ipl.getHeight();
+        int nChannels = ipl.getNChannels();
+        int nSlices = ipl.getNSlices();
+        int nFrames = ipl.getNFrames();
+
+        // MorphoLibJ takes objects as being white
+        InvertIntensity.process(ipl);
+
+        for (int c=1;c<=nChannels;c++) {
+            for (int t = 1; t <= nFrames; t++) {
+                ImagePlus iplOrig = SubHyperstackMaker.makeSubhyperstack(ipl, c + "-" + c, "1-" + nSlices, t + "-" + t);
+                ImageStack iplFill = GeodesicReconstruction3D.fillHoles(iplOrig.getImageStack());
+
+                for (int z = 1; z <= iplFill.getSize(); z++) {
+                    ipl.setPosition(c, z, t);
+                    ImageProcessor iprOrig = ipl.getProcessor();
+                    ImageProcessor iprFilt = iplFill.getProcessor(z);
+
+                    for (int x = 0; x < width; x++) {
+                        for (int y = 0; y < height; y++) {
+                            iprOrig.setf(x, y, iprFilt.getf(x, y));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void applyWatershed3D(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) {
@@ -315,6 +352,10 @@ public class BinaryOperations extends Module {
 
             case (OperationModes.DISTANCE_MAP_3D):
                 inputImagePlus = getDistanceMap3D(inputImagePlus,matchZToXY);
+                break;
+
+            case (OperationModes.FILL_HOLES_3D):
+                applyFillHoles3D(inputImagePlus);
                 break;
 
             case (OperationModes.WATERSHED_3D):
