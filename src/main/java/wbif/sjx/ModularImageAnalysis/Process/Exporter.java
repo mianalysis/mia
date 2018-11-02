@@ -508,7 +508,7 @@ public class Exporter {
         }
 
         // Adding image headers
-        LinkedHashSet<Parameter> availableImages = modules.getAvailableImages(null,false);
+        LinkedHashSet<Parameter> availableImages = modules.getAvailableImages(null,true);
         if (availableImages != null) {
             for (Parameter availableImage : availableImages) {
                 String availableImageName = availableImage.getValue();
@@ -530,7 +530,7 @@ public class Exporter {
         }
 
         // Adding object headers
-        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,false);
+        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,true);
         if (availableObjects != null) {
             for (Parameter availableObject:availableObjects) {
                 String availableObjectName = availableObject.getValue();
@@ -938,7 +938,7 @@ public class Exporter {
         String[] metadataNames = null;
 
         // Using the first workspace in the WorkspaceCollection to initialise column headers
-        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,false);
+        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,true);
         if (availableObjects == null) return;
 
         for (Parameter availableObject:availableObjects) {

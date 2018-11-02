@@ -8,10 +8,10 @@ import java.io.OutputStream;
  * Created by sc13967 on 24/05/2017.
  */
 public class OutputStreamTextField extends OutputStream {
-    private final JTextField textField;
+    private final JLabel textField;
     private String currText = "";
 
-    public OutputStreamTextField(JTextField textField) {
+    public OutputStreamTextField(JLabel textField) {
         this.textField = textField;
 
     }

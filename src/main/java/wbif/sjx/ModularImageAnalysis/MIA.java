@@ -4,6 +4,7 @@
 
 package wbif.sjx.ModularImageAnalysis;
 
+import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
 import net.imagej.ui.swing.updater.ResolveDependencies;
@@ -81,6 +82,11 @@ public class MIA implements PlugIn {
 
     @Override
     public void run(String s) {
+        // Setting the file path slashes depending on the operating system
+        if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
+        else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";
+        else if (SystemUtils.IS_OS_LINUX) slashes = "/";
+
         // Checking the relevant plugins are available
         boolean[] toInstall = new boolean[2];
         Arrays.fill(toInstall,false);

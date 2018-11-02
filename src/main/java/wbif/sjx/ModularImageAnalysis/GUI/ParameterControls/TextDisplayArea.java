@@ -23,6 +23,7 @@ public class TextDisplayArea extends JPanel {
         textArea.setEditable(false);
         String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
         textArea.setText(name);
+        textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
         JScrollPane objectsScrollPane = new JScrollPane(textArea);
         setPreferredSize(new Dimension(0,150));

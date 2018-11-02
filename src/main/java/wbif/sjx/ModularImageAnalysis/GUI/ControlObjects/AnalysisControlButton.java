@@ -28,6 +28,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
         addActionListener(this);
         setFocusPainted(false);
         setMargin(new Insets(0,0,0,0));
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(command);
         setPreferredSize(new Dimension(buttonSize, buttonSize));
 

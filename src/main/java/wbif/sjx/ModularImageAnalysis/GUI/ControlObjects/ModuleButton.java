@@ -24,6 +24,7 @@ public class ModuleButton extends JToggleButton implements ActionListener {
         setFocusPainted(false);
         setSelected(false);
         addActionListener(this);
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(module.getNickname());
         setColour();
     }

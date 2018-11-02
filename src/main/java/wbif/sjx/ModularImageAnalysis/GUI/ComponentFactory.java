@@ -38,9 +38,9 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(2,5,0,0);
 
-        JTextField parameterName = new JTextField(parameter.getName());
+        JLabel parameterName = new JLabel(parameter.getName());
+        parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         parameterName.setPreferredSize(new Dimension(0,elementHeight));
-        parameterName.setEditable(false);
         parameterName.setBorder(null);
         parameterName.setOpaque(false);
         paramPanel.add(parameterName, c);
@@ -254,6 +254,7 @@ public class ComponentFactory {
 
         // Adding the nickname control to the top of the panel
         DisableableCheck disableableCheck = new DisableableCheck(activeModule);
+        disableableCheck.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         if (activeModule.getClass() == InputControl.class || activeModule.getClass() == GUISeparator.class) {
             disableableCheck.setEnabled(false);
             disableableCheck.setOpaque(false);
@@ -267,6 +268,7 @@ public class ComponentFactory {
         paramPanel.add(separator);
 
         ModuleName moduleName = new ModuleName(activeModule);
+        moduleName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         c.gridx++;
         c.weightx = 1;
         paramPanel.add(moduleName, c);
@@ -457,6 +459,7 @@ public class ComponentFactory {
         c.anchor = GridBagConstraints.WEST;
 
         JTextField headerName = new JTextField("      "+name);
+        headerName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         headerName.setPreferredSize(new Dimension(-1, elementHeight));
         headerName.setEditable(false);
         headerName.setBorder(null);
@@ -485,6 +488,7 @@ public class ComponentFactory {
         measurementPanel.add(exportCheck, c);
 
         MeasurementName measurementName = new MeasurementName(measurement);
+        measurementName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         measurementName.setPreferredSize(new Dimension(-1, elementHeight));
         measurementName.setEditable(true);
         measurementName.setToolTipText("<html><p width=\"500\">" +measurement.getDescription()+"</p></html>");

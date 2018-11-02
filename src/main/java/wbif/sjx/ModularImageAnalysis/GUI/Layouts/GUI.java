@@ -47,7 +47,7 @@ public class GUI {
     private static int minimumFrameHeight = 600;
     private static int frameHeight = 800;
     private static int elementHeight = 26;
-    private static int bigButtonSize = 40;
+    private static int bigButtonSize = 45;
     private static int moduleButtonWidth = 295;
     private static int statusHeight = 20;
 
@@ -58,7 +58,6 @@ public class GUI {
     private static ComponentFactory componentFactory;
     private static final JFrame frame = new JFrame();
     private static final JMenuBar menuBar = new JMenuBar();
-    private static final JMenu viewMenu = new JMenu("View");
     private static final JPanel basicPanel = new JPanel();
     private static final JPanel editingPanel = new JPanel();
     private static final JPanel modulesPanel = new JPanel();
@@ -132,12 +131,14 @@ public class GUI {
     private static void initialiseMenuBar() {
         // Creating the file menu
         JMenu menu = new JMenu("File");
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.LOAD_ANALYSIS));
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.SAVE_ANALYSIS));
 
         // Creating the edit menu
         menu = new JMenu("Edit");
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.CLEAR_PIPELINE));
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.ENABLE_ALL));
@@ -147,23 +148,20 @@ public class GUI {
 
         // Creating the analysis menu
         menu = new JMenu("Analysis");
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
-//        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.START_ANALYSIS));
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.STOP_ANALYSIS));
 
         // Creating the new menu
-        menuBar.add(viewMenu);
-        ButtonGroup group = new ButtonGroup();
-        ViewControlButton rbMenuItem = new ViewControlButton(ViewControlButton.BASIC_MODE);
-        rbMenuItem.setSelected(!debugOn);
-        group.add(rbMenuItem);
-        viewMenu.add(rbMenuItem);
-
-        rbMenuItem = new ViewControlButton(ViewControlButton.EDITING_MODE);
-        rbMenuItem.setSelected(debugOn);
-        group.add(rbMenuItem);
-        viewMenu.add(rbMenuItem);
+        menu = new JMenu("View");
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        menuBar.add(menu);
+        if (debugOn) {
+            menu.add(new AnalysisMenuItem(AnalysisMenuItem.BASIC_VIEW));
+        } else {
+            menu.add(new AnalysisMenuItem(AnalysisMenuItem.EDITING_VIEW));
+        }
 
     }
 
@@ -528,7 +526,6 @@ public class GUI {
         textField.setBorder(null);
         textField.setText("MIA (version " + MIA.class.getPackage().getImplementationVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        textField.setEditable(false);
         textField.setToolTipText(textField.getText());
         textField.setOpaque(false);
 
@@ -1074,10 +1071,6 @@ public class GUI {
 
     public static JPopupMenu getModuleListMenu() {
         return moduleListMenu;
-    }
-
-    public static JMenu getViewMenu() {
-        return viewMenu;
     }
 
     public static boolean isBasicGUI() {

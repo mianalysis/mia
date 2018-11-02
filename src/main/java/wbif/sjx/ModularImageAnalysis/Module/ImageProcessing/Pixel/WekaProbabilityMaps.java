@@ -17,6 +17,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
+import weka.core.WekaPackageManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,7 +34,6 @@ public class WekaProbabilityMaps extends Module {
 
 
     public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName, String classifierFilePath, int blockSize) {
-        // Initialising the training system, which shows a warning, so temporarily diverting output to error stream
         WekaSegmentation wekaSegmentation = new WekaSegmentation();
 
         // Checking classifier can be loaded
@@ -44,6 +44,7 @@ public class WekaProbabilityMaps extends Module {
 
         writeMessage("Loading classifier");
         wekaSegmentation.loadClassifier(classifierFilePath);
+        writeMessage("Classifier loaded");
 
         int nThreads = Prefs.getThreads();
         int width = inputImagePlus.getWidth();

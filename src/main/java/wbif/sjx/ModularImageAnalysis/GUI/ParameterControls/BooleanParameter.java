@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,6 +20,7 @@ public class BooleanParameter extends JCheckBox implements ActionListener {
         this.module = module;
         this.parameter = parameter;
 
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setSelected(parameter.getValue());
         addActionListener(this);
 

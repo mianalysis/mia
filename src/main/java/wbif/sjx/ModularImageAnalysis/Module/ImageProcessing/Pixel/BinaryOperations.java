@@ -306,9 +306,9 @@ public class BinaryOperations extends Module {
 
     @Override
     public String getHelp() {
-        return "Expects black objects on a white background" +
-                "\nPerforms 2D fill holes, dilate and erode using ImageJ functions" +
-                "\nUses MorphoLibJ to do 3D Watershed";
+        return "Expects black objects on a white background." +
+                "\nPerforms 2D fill holes, dilate and erode using ImageJ functions." +
+                "\nUses MorphoLibJ to do 3D operations.";
 
     }
 
@@ -333,7 +333,7 @@ public class BinaryOperations extends Module {
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
+        if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
 
         switch (operationMode) {
             case (OperationModes.DILATE_2D):

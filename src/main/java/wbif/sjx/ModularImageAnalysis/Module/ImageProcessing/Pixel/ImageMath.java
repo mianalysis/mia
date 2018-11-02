@@ -158,16 +158,19 @@ public class ImageMath extends Module {
         returnedParameters.add(parameters.getParameter(CALCULATION_TYPE));
         returnedParameters.add(parameters.getParameter(VALUE_SOURCE));
 
-        if (parameters.getValue(VALUE_SOURCE).equals(ValueSources.MEASUREMENT)) {
-            returnedParameters.add(parameters.getParameter(MEASUREMENT));
+        switch ((String) parameters.getValue(VALUE_SOURCE)) {
+            case ValueSources.FIXED:
+                returnedParameters.add(parameters.getParameter(MATH_VALUE));
+                break;
 
-            if (parameters.getValue(INPUT_IMAGE) != null) {
-                parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_IMAGE));
+            case ValueSources.MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
-            }
+                if (parameters.getValue(INPUT_IMAGE) != null) {
+                    parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_IMAGE));
+                }
+                break;
         }
-
-        returnedParameters.add(parameters.getParameter(MATH_VALUE));
 
         return returnedParameters;
 

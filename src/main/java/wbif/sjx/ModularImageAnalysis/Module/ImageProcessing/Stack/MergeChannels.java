@@ -152,6 +152,9 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         // Spatial calibration has to be reapplied, as it's lost in the translation between ImagePlus and ImgPlus
         ipl.setCalibration(inputImage1.getImagePlus().getCalibration());
 
+        ipl.setPosition(1,1,1);
+        ipl.updateChannelAndDraw();
+
         return new Image(outputImageName,ipl);
 
     }
@@ -263,7 +266,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
                 inputImage2.setImagePlus(mergedImage.getImagePlus());
                 break;
         }
-        
+
         if (showOutput) {
             ImagePlus showIpl = new Duplicator().run(mergedImage.getImagePlus());
             showIpl.setTitle(outputImageName);
@@ -288,11 +291,13 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
         returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
 
-        if (parameters.getValue(OVERWRITE_MODE).equals(ImageCalculator.OverwriteModes.CREATE_NEW)) {
-            returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        switch ((String) parameters.getValue(OVERWRITE_MODE)) {
+            case OverwriteModes.CREATE_NEW:
+                returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+                break;
         }
 
-        return parameters;
+        return returnedParameters;
     }
 
     @Override

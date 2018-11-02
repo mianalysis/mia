@@ -4,6 +4,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,6 +21,7 @@ public class ChoiceArrayParameter extends WiderDropDownCombo implements ActionLi
         this.module = module;
         this.parameter = parameter;
 
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setSelectedItem(parameter.getValue());
         addActionListener(this);
         setWide(true);

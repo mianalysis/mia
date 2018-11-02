@@ -7,6 +7,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -31,6 +32,7 @@ public class FileParameter extends JButton implements ActionListener {
         this.parameter = parameter;
         this.fileType = fileType;
 
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setToolTipText(parameter.getValue());
         setText(FilenameUtils.getName(parameter.getValue()));
         addActionListener(this);
