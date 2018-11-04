@@ -117,12 +117,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     public interface NameFormats {
+        String HUYGENS = "Huygens";
         String INCUCYTE_SHORT = "Incucyte short filename";
         String YOKOGAWA = "Yokogowa";
         String INPUT_FILE_PREFIX = "Input filename with prefix";
         String INPUT_FILE_SUFFIX = "Input filename with suffix";
 
-        String[] ALL = new String[]{INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
+        String[] ALL = new String[]{HUYGENS,INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
 
     }
 
@@ -342,6 +343,27 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    public ImagePlus getHuygensImage(HCMetadata metadata, String[] dimRanges, int[] crop)
+            throws ServiceException, DependencyException, FormatException, IOException {
+        String absolutePath = metadata.getFile().getAbsolutePath();
+        String path = FilenameUtils.getFullPath(absolutePath);
+        String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
+        String extension = FilenameUtils.getExtension(absolutePath);
+
+        // The name will end with "_chxx" where "xx" is a two-digit number
+        Pattern pattern = Pattern.compile("([\\s\\w]+)_ch([0-9]{2})");
+        Matcher matcher = pattern.matcher(name);
+        if (matcher.find()) {
+            String comment = metadata.getComment();
+            String filename = path+matcher.group(1)+"_ch"+comment+"."+extension;
+            System.err.println(filename);
+            return getBFImage(filename,1,dimRanges,crop,true);
+        }
+
+        return null;
+
+    }
+
     private ImagePlus getIncucyteShortNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
         // First, running metadata extraction on the input file
@@ -496,8 +518,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 case ImportModes.MATCHING_FORMAT:
                     switch (nameFormat) {
-                        case NameFormats.INCUCYTE_SHORT:
+                        case NameFormats.HUYGENS:
                             HCMetadata metadata = (HCMetadata) workspace.getMetadata().clone();
+                            metadata.setComment(comment);
+                            ipl = getHuygensImage(metadata,dimRanges,crop);
+                            break;
+
+                        case NameFormats.INCUCYTE_SHORT:
+                            metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(comment);
                             ipl = getIncucyteShortNameImage(metadata, seriesNumber, dimRanges,crop);
                             break;
@@ -590,7 +618,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(STARTING_INDEX,Parameter.INTEGER,0));
         parameters.add(new Parameter(LIMIT_FRAMES,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FINAL_INDEX,Parameter.INTEGER,1));
-        parameters.add(new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
+        parameters.add(new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.HUYGENS,NameFormats.ALL));
         parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
         parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
         parameters.add(new Parameter(SUFFIX,Parameter.STRING,""));
@@ -646,6 +674,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             case ImportModes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(NAME_FORMAT));
                 switch ((String) parameters.getValue(NAME_FORMAT)) {
+                    case NameFormats.HUYGENS:
                     case NameFormats.INCUCYTE_SHORT:
                         returnedParameters.add(parameters.getParameter(COMMENT));
                         break;

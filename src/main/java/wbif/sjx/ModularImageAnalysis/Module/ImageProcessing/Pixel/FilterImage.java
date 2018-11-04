@@ -324,7 +324,7 @@ public class FilterImage extends Module {
         }
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
+        if (!applyToInput) {inputImagePlus = inputImagePlus.duplicate();}
 
         // Applying smoothing filter
         switch (filterMode) {
@@ -387,7 +387,7 @@ public class FilterImage extends Module {
 
             // If selected, displaying the image
             if (showOutput) {
-                ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
+                ImagePlus dispIpl = outputImage.getImagePlus().duplicate();
                 IntensityMinMax.run(dispIpl,true,0.001);
                 dispIpl.setTitle(outputImage.getName());
                 dispIpl.show();
@@ -396,7 +396,7 @@ public class FilterImage extends Module {
         } else {
             // If selected, displaying the image
             if (showOutput) {
-                ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
+                ImagePlus dispIpl = inputImagePlus.duplicate();
                 IntensityMinMax.run(dispIpl,true,0.001);
                 dispIpl.setTitle(inputImage.getName());
                 dispIpl.show();
