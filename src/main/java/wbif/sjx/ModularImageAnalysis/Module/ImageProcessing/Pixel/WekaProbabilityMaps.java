@@ -133,14 +133,11 @@ public class WekaProbabilityMaps extends Module {
         ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath,blockSize);
 
         // Adding the probability maps to the Workspace
-        workspace.addImage(new Image(outputImageName,probabilityMaps));
+        Image probabilityImage = new Image(outputImageName,probabilityMaps);
+        workspace.addImage(probabilityImage);
 
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(probabilityMaps);
-            IntensityMinMax.run(dispIpl,true);
-            dispIpl.setTitle(outputImageName);
-            dispIpl.show();
-        }
+        if (showOutput) showImage(probabilityImage);
+
     }
 
     @Override

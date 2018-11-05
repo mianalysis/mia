@@ -117,11 +117,8 @@ public class PlotKymograph extends Module {
 
         workspace.addImage(outputImage);
 
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
-        }
+        if (showOutput) showImage(outputImage);
+
     }
 
     @Override

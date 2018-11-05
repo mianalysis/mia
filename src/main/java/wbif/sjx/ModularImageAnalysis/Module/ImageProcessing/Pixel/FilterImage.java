@@ -382,25 +382,11 @@ public class FilterImage extends Module {
         if (!applyToInput) {
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-
-            outputImage.getImagePlus().setPosition(1,1,1);
-
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus dispIpl = outputImage.getImagePlus().duplicate();
-                IntensityMinMax.run(dispIpl,true,0.001);
-                dispIpl.setTitle(outputImage.getName());
-                dispIpl.show();
-            }
+            if (showOutput) showImage(outputImage);
 
         } else {
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus dispIpl = inputImagePlus.duplicate();
-                IntensityMinMax.run(dispIpl,true,0.001);
-                dispIpl.setTitle(inputImage.getName());
-                dispIpl.show();
-            }
+            if (showOutput) showImage(inputImage);
+
         }
     }
 

@@ -135,6 +135,8 @@ public class IdentifyObjects extends Module {
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
             ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,mode,hues).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
             dispIpl.show();
         }
     }

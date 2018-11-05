@@ -55,23 +55,11 @@ public class BleachingCorrection extends Module {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
-                IntensityMinMax.run(dispIpl,true);
-                dispIpl.setTitle(outputImage.getName());
-                dispIpl.show();
-            }
+            if (showOutput) showImage(outputImage);
 
         } else {
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
-                IntensityMinMax.run(dispIpl,true);
-                dispIpl.setTitle(inputImage.getName());
-                dispIpl.show();
-            }
+            if (showOutput) showImage(inputImage);
+
         }
     }
 

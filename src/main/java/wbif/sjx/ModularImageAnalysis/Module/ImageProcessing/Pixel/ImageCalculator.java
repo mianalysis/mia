@@ -231,27 +231,15 @@ public class ImageCalculator extends Module {
             case OverwriteModes.CREATE_NEW:
                 Image outputImage = new Image(outputImageName,newIpl);
                 workspace.addImage(outputImage);
-                if (showOutput) {
-                    ImagePlus showIpl = new Duplicator().run(newIpl);
-                    showIpl.setTitle(outputImageName);
-                    showIpl.show();
-                }
+                if (showOutput) showImage(outputImage);
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE1:
-                if (showOutput) {
-                    ImagePlus showIpl = new Duplicator().run(inputImagePlus1);
-                    showIpl.setTitle(outputImageName);
-                    showIpl.show();
-                }
+                if (showOutput) showImage(inputImage1);
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE2:
-                if (showOutput) {
-                    ImagePlus showIpl = new Duplicator().run(inputImagePlus2);
-                    showIpl.setTitle(outputImageName);
-                    showIpl.show();
-                }
+                if (showOutput) showImage(inputImage2);
                 break;
         }
     }

@@ -179,6 +179,8 @@ public class HoughObjectDetection extends Module {
                     .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,labelSize))
                     .createOverlay(dispIpl,outputObjects,colours,IDs);
 
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
             dispIpl.show();
 
         }

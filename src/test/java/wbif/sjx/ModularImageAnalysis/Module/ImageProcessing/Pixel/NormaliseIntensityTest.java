@@ -330,7 +330,7 @@ public class NormaliseIntensityTest {
     }
 
     @Test
-    public void testNormaliseIntensity8bit2DClip() throws Exception {
+    public void testNormaliseIntensity8bit2DClipPrecise() throws Exception {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -352,6 +352,7 @@ public class NormaliseIntensityTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.INPUT_IMAGE,"Test_image");
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,false);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
+        normaliseIntensity.updateParameterValue(NormaliseIntensity.CALCULATION_MODE,NormaliseIntensity.CalculationModes.PRECISE);
         normaliseIntensity.updateParameterValue(NormaliseIntensity.CLIP_FRACTION,0.01);
 
         // Running NormaliseIntensity

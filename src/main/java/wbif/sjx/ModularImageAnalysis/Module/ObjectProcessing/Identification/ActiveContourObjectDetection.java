@@ -195,6 +195,8 @@ public class ActiveContourObjectDetection extends Module {
                 addObjectsOverlay.createOverlay(dispIpl,outputObjects,colours,null);
             }
 
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
             dispIpl.show();
         }
 

@@ -4,10 +4,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -16,7 +16,6 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.HashMap;
 
@@ -80,7 +79,7 @@ public class CreateDistanceMap extends Module {
         }
 
         // Calculating the distance map
-        distanceMap = BinaryOperations.getDistanceMap3D(distanceMap,true);
+        distanceMap = DistanceMap.getDistanceMap(distanceMap,true);
 
         return new Image(outputImageName,distanceMap);
 
@@ -94,10 +93,10 @@ public class CreateDistanceMap extends Module {
         ImagePlus objIpl = inputObjects.convertObjectsToImage(outputImageName,inputImage,colourMode,hues).getImagePlus();
 
         // Calculating the distance maps.  The inside map is set to negative
-        ImagePlus outsideDistIpl = BinaryOperations.getDistanceMap3D(objIpl,true);
+        ImagePlus outsideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
         InvertIntensity.process(objIpl);
-        BinaryOperations.applyStockBinaryTransform(objIpl,BinaryOperations.OperationModes.ERODE_2D,1);
-        ImagePlus insideDistIpl = BinaryOperations.getDistanceMap3D(objIpl,true);
+        BinaryOperations2D.process(objIpl,BinaryOperations2D.OperationModes.ERODE,1);
+        ImagePlus insideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
 
         // If selected, inverting the inside of the object, so values here are negative
         if (invertInside) ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
@@ -269,12 +268,8 @@ public class CreateDistanceMap extends Module {
         workspace.addImage(distanceMap);
 
         // If necessary, displaying the distance map
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(distanceMap.getImagePlus());
-            dispIpl.setTitle(distanceMap.getName());
-            IntensityMinMax.run(dispIpl,true);
-            dispIpl.show();
-        }
+        if (showOutput) showImage(distanceMap);
+
     }
 
     @Override

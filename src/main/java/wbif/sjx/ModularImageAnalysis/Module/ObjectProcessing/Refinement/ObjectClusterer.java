@@ -10,16 +10,15 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import org.apache.commons.math3.ml.clustering.*;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume;
 
 import java.awt.*;
 import java.util.*;
@@ -114,7 +113,7 @@ public class ObjectClusterer extends Module {
         // Reducing the size of the cluster area by eps
         ImagePlus objectIpl = outputObject.convertObjToImage("Object").getImagePlus();
         InvertIntensity.process(objectIpl);
-        objectIpl = BinaryOperations.getDistanceMap3D(objectIpl,true);
+        objectIpl = DistanceMap.getDistanceMap(objectIpl,true);
 
         // Iterating over each coordinate in the object, removing it if its distance to the edge is less than eps
         Iterator<Point<Integer>> iterator = outputObject.getPoints().iterator();
@@ -228,6 +227,8 @@ public class ObjectClusterer extends Module {
 
             // Adding overlay and displaying image
             addObjectsOverlay.createOverlay(dispIpl,inputObjects,colours,null);
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
             dispIpl.show();
 
         }

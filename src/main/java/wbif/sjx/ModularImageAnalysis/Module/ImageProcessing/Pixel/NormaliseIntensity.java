@@ -24,6 +24,7 @@ public class NormaliseIntensity extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String REGION_MODE = "Region mode";
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String CALCULATION_MODE = "Calculation mode";
     public static final String CLIP_FRACTION = "Clipping fraction";
 
     public interface RegionModes {
@@ -34,18 +35,37 @@ public class NormaliseIntensity extends Module {
 
     }
 
+    public interface CalculationModes {
+        String FAST = "Fast";
+        String PRECISE = "Precise";
 
-    public static void normaliseIntensity(ImagePlus ipl, double clipFraction) {
-        normaliseIntensity(ipl,clipFraction,null);
+        String[] ALL = new String[]{FAST,PRECISE};
+
     }
 
-    public static void normaliseIntensity(ImagePlus ipl, double clipFraction, @Nullable Obj maskObject) {
+
+    public static void normaliseIntensity(ImagePlus ipl, double clipFraction, String calculationMode) {
+        normaliseIntensity(ipl,clipFraction,calculationMode,null);
+    }
+
+    public static void normaliseIntensity(ImagePlus ipl, double clipFraction, String calculationMode, @Nullable Obj maskObject) {
         int bitDepth = ipl.getProcessor().getBitDepth();
 
         // Get min max values for whole stack
         if (maskObject == null) {
             for (int c = 1; c <= ipl.getNChannels(); c++) {
-                double[] range = IntensityMinMax.getWeightedChannelRange(ipl, c - 1, clipFraction);
+                double[] range;
+                switch (calculationMode) {
+                    case CalculationModes.FAST:
+                    default:
+                        range = IntensityMinMax.getWeightedChannelRangeFast(ipl, c - 1, clipFraction);
+                        break;
+
+                    case CalculationModes.PRECISE:
+                        range = IntensityMinMax.getWeightedChannelRangePrecise(ipl, c - 1, clipFraction);
+                        break;
+                }
+
                 double min = range[0];
                 double max = range[1];
 
@@ -65,7 +85,18 @@ public class NormaliseIntensity extends Module {
         } else {
             for (int c = 1; c <= ipl.getNChannels(); c++) {
                 int frame = maskObject.getT();
-                double[] range = IntensityMinMax.getWeightedChannelRange(ipl, maskObject, c - 1, frame,  clipFraction);
+                double[] range;
+                switch (calculationMode) {
+                    case CalculationModes.FAST:
+                    default:
+                        range = IntensityMinMax.getWeightedChannelRangeFast(ipl, maskObject, c - 1, frame, clipFraction);
+                        break;
+
+                    case CalculationModes.PRECISE:
+                        range = IntensityMinMax.getWeightedChannelRangePrecise(ipl, maskObject, c - 1, frame, clipFraction);
+                        break;
+                }
+
                 double min = range[0];
                 double max = range[1];
 
@@ -89,7 +120,7 @@ public class NormaliseIntensity extends Module {
         ipl.setPosition(1,1,1);
 
         // Set brightness/contrast
-        IntensityMinMax.run(ipl,true,0);
+        IntensityMinMax.run(ipl,true);
 
     }
 
@@ -121,6 +152,7 @@ public class NormaliseIntensity extends Module {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String regionMode = parameters.getValue(REGION_MODE);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String calculationMode = parameters.getValue(CALCULATION_MODE);
         double clipFraction = parameters.getValue(CLIP_FRACTION);
 
         // If applying to a new image, the input image is duplicated
@@ -129,7 +161,7 @@ public class NormaliseIntensity extends Module {
         // Running intensity normalisation
         switch (regionMode) {
             case RegionModes.ENTIRE_IMAGE:
-                normaliseIntensity(inputImagePlus,clipFraction);
+                normaliseIntensity(inputImagePlus,clipFraction,calculationMode);
                 break;
 
             case RegionModes.PER_OBJECT:
@@ -138,7 +170,7 @@ public class NormaliseIntensity extends Module {
                 int total = inputObjects.size();
                 for (Obj inputObject:inputObjects.values()) {
                     writeMessage("Processing "+(++count)+" of "+total+" objects");
-                    normaliseIntensity(inputImagePlus,clipFraction,inputObject);
+                    normaliseIntensity(inputImagePlus,clipFraction,calculationMode,inputObject);
                 }
                 break;
         }
@@ -148,21 +180,11 @@ public class NormaliseIntensity extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
-                showIpl.setTitle(outputImageName);
-                showIpl.show();
-            }
+            if (showOutput) showImage(outputImage);
 
         } else {
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus showIpl = new Duplicator().run(inputImagePlus);
-                showIpl.setTitle(inputImageName);
-                showIpl.show();
-            }
+            if (showOutput) showImage(inputImage);
+
         }
     }
 
@@ -173,6 +195,7 @@ public class NormaliseIntensity extends Module {
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(REGION_MODE,Parameter.CHOICE_ARRAY,RegionModes.ENTIRE_IMAGE,RegionModes.ALL));
         parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
+        parameters.add(new Parameter(CALCULATION_MODE,Parameter.CHOICE_ARRAY,CalculationModes.FAST,CalculationModes.ALL));
         parameters.add(new Parameter(CLIP_FRACTION,Parameter.DOUBLE,0d));
 
     }
@@ -194,6 +217,7 @@ public class NormaliseIntensity extends Module {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(CALCULATION_MODE));
         returnedParameters.add(parameters.getParameter(CLIP_FRACTION));
 
         return returnedParameters;

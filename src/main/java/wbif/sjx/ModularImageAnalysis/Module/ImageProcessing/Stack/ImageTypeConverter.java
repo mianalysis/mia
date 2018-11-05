@@ -176,15 +176,11 @@ public class ImageTypeConverter extends Module {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
+            if (showOutput) showImage(outputImage);
 
-        }
+        } else {
+            if (showOutput) showImage(inputImage);
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
-            IntensityMinMax.run(dispIpl,true);
-            dispIpl.setTitle(inputImage.getName());
-            dispIpl.show();
         }
     }
 

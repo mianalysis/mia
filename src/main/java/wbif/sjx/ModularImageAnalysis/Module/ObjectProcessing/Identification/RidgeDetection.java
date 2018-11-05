@@ -233,8 +233,8 @@ public class RidgeDetection extends Module {
             writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
 
             // Creating a duplicate of the input image
-            ImagePlus inputImagePlus = inputImage.getImagePlus().duplicate();
-            IntensityMinMax.run(inputImagePlus, true);
+            ImagePlus dispIpl = inputImage.getImagePlus().duplicate();
+            IntensityMinMax.run(dispIpl, true);
 
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
@@ -245,10 +245,12 @@ public class RidgeDetection extends Module {
                     .updateParameterValue(AddObjectsOverlay.POSITION_MODE,positionMode)
                     .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8)
                     .updateParameterValue(AddObjectsOverlay.LINE_WIDTH,0.25))
-                    .createOverlay(inputImagePlus,outputObjects,colours,null);
+                    .createOverlay(dispIpl,outputObjects,colours,null);
 
             // Displaying the overlay
-            inputImagePlus.show();
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
+            dispIpl.show();
 
         }
     }

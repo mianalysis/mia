@@ -356,8 +356,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         if (matcher.find()) {
             String comment = metadata.getComment();
             String filename = path+matcher.group(1)+"_ch"+comment+"."+extension;
-            System.err.println(filename);
+
             return getBFImage(filename,1,dimRanges,crop,true);
+
         }
 
         return null;
@@ -588,23 +589,23 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         switch (outputMode) {
             case OutputModes.IMAGE:
                 writeMessage("Adding image (" + outputImageName + ") to workspace");
-                workspace.addImage(new Image(outputImageName, ipl));
+                Image outputImage = new Image(outputImageName, ipl);
+                workspace.addImage(outputImage);
+
+                if (showOutput) showImage(outputImage);
+
                 break;
 
             case OutputModes.OBJECTS:
-                Image outputImage = new Image(outputObjectsName, ipl);
+                outputImage = new Image(outputObjectsName, ipl);
                 ObjCollection outputObjects = outputImage.convertImageToObjects(outputObjectsName);
 
                 writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
                 workspace.addObjects(outputObjects);
-                break;
-        }
 
-        // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
-        if (showOutput && ipl != null) {
-            ipl = new Duplicator().run(ipl);
-            ipl.setTitle(outputImageName);
-            ipl.show();
+                if (showOutput) showImage(outputImage);
+
+                break;
         }
     }
 

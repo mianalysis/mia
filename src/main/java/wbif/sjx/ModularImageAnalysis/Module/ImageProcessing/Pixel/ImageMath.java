@@ -115,18 +115,16 @@ public class ImageMath extends Module {
 
         process(inputImagePlus,calculationType,mathValue);
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(inputImagePlus);
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
-        }
-
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
+            if (showOutput) showImage(outputImage);
+
+        } else {
+            if (showOutput) showImage(inputImage);
+
         }
     }
 

@@ -130,26 +130,23 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
         int[] shifts = getPixelShifts(inputImage);
 
         // Processing the input image
-        if (!applyToInput) {
-            inputImagePlus = new Duplicator().run(inputImagePlus);
-            inputImage = new Image(outputImageName,inputImagePlus);
-        }
+        if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
+
         Calibration calibration = inputImagePlus.getCalibration();
         shiftImage(inputImage,shifts);
         inputImage.getImagePlus().setCalibration(calibration);
 
-        // If necessary, adding the output image to the workspace
         if (!applyToInput) {
-            workspace.addImage(inputImage);
+            writeMessage("Adding image ("+outputImageName+") to workspace");
+            Image outputImage = new Image(outputImageName,inputImagePlus);
+            workspace.addImage(outputImage);
+            if (showOutput) showImage(outputImage);
+
+        } else {
+            if (showOutput) showImage(inputImage);
+
         }
 
-        // If necessary, showing the shifted image
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(inputImage.getImagePlus());
-            IntensityMinMax.run(dispIpl,true);
-            dispIpl.setTitle(inputImage.getName());
-            dispIpl.show();
-        }
     }
 
     @Override

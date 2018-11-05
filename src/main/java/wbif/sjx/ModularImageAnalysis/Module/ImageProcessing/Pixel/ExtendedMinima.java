@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -59,20 +60,14 @@ public class ExtendedMinima extends Module {
         // MorphoLibJ gives white objects on a black background.  Inverting this to match the logic of ImageJ
         IJ.run(inputImagePlus,"Invert","stack");
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
-            IntensityMinMax.run(dispIpl,true);
-            dispIpl.setTitle(inputImage.getName());
-            dispIpl.show();
-        }
-
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-
+            if (showOutput) showImage(outputImage);
+        } else {
+            if (showOutput) showImage(inputImage);
         }
     }
 
@@ -82,7 +77,7 @@ public class ExtendedMinima extends Module {
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
-        parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY, BinaryOperations.Connectivity3D.SIX, BinaryOperations.Connectivity3D.ALL));
+        parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY, BinaryOperations2D.Connectivity3D.SIX, BinaryOperations2D.Connectivity3D.ALL));
 
     }
 

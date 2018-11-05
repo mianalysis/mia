@@ -138,9 +138,7 @@ public class FitLongestChord extends Module {
         if (addOverlay) {
             if (showOutput) {
                 Image inputImage = workspace.getImage(inputImageName);
-                ImagePlus showIpl = new Duplicator().run(inputImage.getImagePlus());
-                showIpl.setTitle(inputImageName);
-                showIpl.show();
+                showImage(inputImage);
             }
 
             // If the user requested, the output image can be added to the workspace

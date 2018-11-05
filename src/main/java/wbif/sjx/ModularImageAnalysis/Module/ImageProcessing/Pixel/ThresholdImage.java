@@ -296,13 +296,7 @@ public class ThresholdImage extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
-            inputImage.setImagePlus(inputImagePlus);
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus showIpl = new Duplicator().run(inputImagePlus);
-                showIpl.setTitle(inputImageName);
-                showIpl.show();
-            }
+            if (showOutput) showImage(inputImage);
 
             if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(inputImage,threshold);
 
@@ -310,13 +304,7 @@ public class ThresholdImage extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
-                showIpl.setTitle(outputImageName);
-                showIpl.show();
-            }
+            if (showOutput) showImage(outputImage);
 
             if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(outputImage,threshold);
         }

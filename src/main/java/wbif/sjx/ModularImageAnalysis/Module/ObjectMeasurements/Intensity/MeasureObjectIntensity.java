@@ -2,13 +2,13 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageMath;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
@@ -20,7 +20,6 @@ import wbif.sjx.common.MathFunc.CumStat;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -185,10 +184,10 @@ public class MeasureObjectIntensity extends Module {
         ImagePlus objIpl = object.convertObjToImage("Inside dist", intensityIpl).getImagePlus();
 
         // Calculating the distance maps.  The inside map is set to negative
-        ImagePlus outsideDistIpl = BinaryOperations.getDistanceMap3D(objIpl,true);
+        ImagePlus outsideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
         InvertIntensity.process(objIpl);
-        BinaryOperations.applyStockBinaryTransform(objIpl,BinaryOperations.OperationModes.ERODE_2D,1);
-        ImagePlus insideDistIpl = BinaryOperations.getDistanceMap3D(objIpl,true);
+        BinaryOperations2D.process(objIpl,BinaryOperations2D.OperationModes.ERODE,1);
+        ImagePlus insideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
         ImageMath.process(insideDistIpl,ImageMath.CalculationTypes.MULTIPLY,-1.0);
         ImagePlus distIpl = new ImageCalculator().process(insideDistIpl,outsideDistIpl,
                 ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.CREATE_NEW,true,true);

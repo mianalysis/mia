@@ -3,7 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 import ij.ImagePlus;
 import ij.gui.Plot;
 import ij.measure.Calibration;
-import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
 import ij.process.StackStatistics;
 import org.apache.commons.io.FilenameUtils;
@@ -13,7 +12,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.MIA;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -23,14 +23,11 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.Point;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -164,7 +161,7 @@ public class MeasureIntensityDistribution extends Module {
         Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
 
         // Calculaing the distance map
-        ImagePlus distIpl = BinaryOperations.getDistanceMap3D(objectsImage.getImagePlus(),true);
+        ImagePlus distIpl = DistanceMap.getDistanceMap(objectsImage.getImagePlus(),true);
         Image distanceImage = new Image("Distance map",distIpl);
 
         // Iterating over all pixels in the input image, adding intensity measurements to CumStat objects (one
@@ -226,10 +223,10 @@ public class MeasureIntensityDistribution extends Module {
                 ImagePlus dist1 = new Duplicator().run(objectsImage.getImagePlus());
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
 
-                dist1 = BinaryOperations.getDistanceMap3D(dist1,true);
+                dist1 = DistanceMap.getDistanceMap(dist1,true);
                 InvertIntensity.process(distIpl);
-                BinaryOperations.applyStockBinaryTransform(distIpl,BinaryOperations.OperationModes.ERODE_2D,1);
-                distIpl = BinaryOperations.getDistanceMap3D(distIpl,true);
+                BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1);
+                distIpl = DistanceMap.getDistanceMap(distIpl,true);
 
                 new ImageCalculator().process(dist1,distIpl,ImageCalculator.CalculationMethods.ADD,ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2,false,true);
 
@@ -238,13 +235,13 @@ public class MeasureIntensityDistribution extends Module {
             case EdgeDistanceModes.INSIDE_ONLY:
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
                 InvertIntensity.process(distIpl);
-                BinaryOperations.applyStockBinaryTransform(distIpl,BinaryOperations.OperationModes.ERODE_2D,1);
-                distIpl = BinaryOperations.getDistanceMap3D(distIpl,true);
+                BinaryOperations2D.process(distIpl,BinaryOperations2D.OperationModes.ERODE,1);
+                distIpl = DistanceMap.getDistanceMap(distIpl,true);
                 break;
 
             case EdgeDistanceModes.OUTSIDE_ONLY:
                 distIpl = new Duplicator().run(objectsImage.getImagePlus());
-                distIpl = BinaryOperations.getDistanceMap3D(distIpl,true);
+                distIpl = DistanceMap.getDistanceMap(distIpl,true);
                 break;
         }
 

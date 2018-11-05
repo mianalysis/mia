@@ -1,6 +1,6 @@
 // TODO: What happens when 3D distance map is run on 4D or 5D image hyperstack?
 
-package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
+package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -16,6 +16,7 @@ import inra.ijpb.plugins.FillHolesPlugin;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -296,19 +297,18 @@ public class BinaryOperations extends Module {
 
     @Override
     public String getTitle() {
-        return "Binary operations";
+        return "Binary operations (legacy)";
     }
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
+        return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override
     public String getHelp() {
-        return "Expects black objects on a white background." +
-                "\nPerforms 2D fill holes, dilate and erode using ImageJ functions." +
-                "\nUses MorphoLibJ to do 3D operations.";
+        return "***DEPRECATED***" +
+                "\n This module will be removed soon.  Please use individual binary modules.";
 
     }
 

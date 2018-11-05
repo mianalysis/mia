@@ -155,31 +155,23 @@ public class ColourDeconvolution extends Module {
         ImagePlus[] outputImagePluses = process(inputImagePlus,outputImageNames,stainMatrix);
 
         // If selected, displaying the image
-        if (showOutput) {
-            if (outputImage1) {
-                ImagePlus showIpl = new Duplicator().run(outputImagePluses[0]);
-                showIpl.setTitle(outputImageName1);
-                showIpl.show();
-            }
-
-            if (outputImage2) {
-                ImagePlus showIpl = new Duplicator().run(outputImagePluses[1]);
-                showIpl.setTitle(outputImageName2);
-                showIpl.show();
-            }
-
-            if (outputImage3) {
-                ImagePlus showIpl = new Duplicator().run(outputImagePluses[2]);
-                showIpl.setTitle(outputImageName3);
-                showIpl.show();
-            }
+        if (outputImage1) {
+            Image outImage1 = new Image(outputImageName1,outputImagePluses[0]);
+            workspace.addImage(outImage1);
+            if (showOutput) showImage(outImage1);
         }
 
-        // If the image is being saved as a new image, adding it to the workspace
-        if (outputImage1) workspace.addImage(new Image(outputImageName1,outputImagePluses[0]));
-        if (outputImage2) workspace.addImage(new Image(outputImageName2,outputImagePluses[1]));
-        if (outputImage3) workspace.addImage(new Image(outputImageName3,outputImagePluses[2]));
+        if (outputImage2) {
+            Image outImage2 = new Image(outputImageName2,outputImagePluses[1]);
+            workspace.addImage(outImage2);
+            if (showOutput) showImage(outImage2);
+        }
 
+        if (outputImage3) {
+            Image outImage3 = new Image(outputImageName3,outputImagePluses[2]);
+            workspace.addImage(outImage3);
+            if (showOutput) showImage(outImage3);
+        }
     }
 
     @Override

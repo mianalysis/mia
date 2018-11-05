@@ -171,22 +171,14 @@ public class FocusStack extends Module {
         // Running stack focusing
         Image[] outputImages = focusStack(inputImage,outputFocusedImageName,range,smooth,outputHeightImageName,inputHeightImage);
 
-        // If requested, showing image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(outputImages[0].getImagePlus());
-            showIpl.setTitle(outputFocusedImageName);
-            showIpl.show();
-        }
-
         // Adding output image to Workspace
         workspace.addImage(outputImages[0]);
+        if (showOutput) showImage(outputImages[0]);
 
         // If necessary, processing the height image
         if (addHeightMap) {
             if (parameters.getValue(SHOW_HEIGHT_IMAGE)) {
-                ImagePlus showIpl = new Duplicator().run(outputImages[1].getImagePlus());
-                showIpl.setTitle(outputHeightImageName);
-                showIpl.show();
+                showImage(outputImages[1]);
             }
 
             // Adding output image to Workspace

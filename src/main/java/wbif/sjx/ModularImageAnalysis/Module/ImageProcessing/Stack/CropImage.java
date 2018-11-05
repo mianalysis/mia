@@ -96,21 +96,15 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
         Image outputImage = cropImage(inputImage,outputImageName,top,left,width,height);
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
-            IntensityMinMax.run(showIpl,true);
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
-        }
-
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
             inputImage.setImagePlus(outputImage.getImagePlus());
+            if (showOutput) showImage(inputImage);
 
         } else {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             workspace.addImage(outputImage);
+            if (showOutput) showImage(outputImage);
         }
     }
 
@@ -118,7 +112,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
         parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
         parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));

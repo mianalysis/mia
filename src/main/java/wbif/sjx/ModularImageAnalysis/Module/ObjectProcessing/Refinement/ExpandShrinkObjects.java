@@ -3,9 +3,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 import ij.ImagePlus;
 import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DilateErode;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -52,23 +53,21 @@ public class ExpandShrinkObjects extends Module {
         // from the converter has white objects on a black background.
         switch (method) {
             case Methods.EXPAND_2D:
-                BinaryOperations.applyStockBinaryTransform(objectImage.getImagePlus(),
-                        BinaryOperations.OperationModes.DILATE_2D,radiusChangePx);
+                BinaryOperations2D.process(objectImage.getImagePlus(),
+                        BinaryOperations2D.OperationModes.DILATE,radiusChangePx);
                 break;
 
             case Methods.EXPAND_3D:
-                BinaryOperations.applyDilateErode3D(objectImage.getImagePlus(),
-                        BinaryOperations.OperationModes.DILATE_3D,radiusChangePx);
+                DilateErode.process(objectImage.getImagePlus(),DilateErode.OperationModes.DILATE_3D,radiusChangePx);
                 break;
 
             case Methods.SHRINK_2D:
-                BinaryOperations.applyStockBinaryTransform(objectImage.getImagePlus(),
-                        BinaryOperations.OperationModes.ERODE_2D,radiusChangePx);
+                BinaryOperations2D.process(objectImage.getImagePlus(),
+                        BinaryOperations2D.OperationModes.ERODE,radiusChangePx);
                 break;
 
             case Methods.SHRINK_3D:
-                BinaryOperations.applyDilateErode3D(objectImage.getImagePlus(),
-                        BinaryOperations.OperationModes.ERODE_3D,radiusChangePx);
+                DilateErode.process(objectImage.getImagePlus(),DilateErode.OperationModes.ERODE_3D,radiusChangePx);
                 break;
         }
 

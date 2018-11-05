@@ -307,12 +307,8 @@ public class ExtractSubstack extends Module implements ActionListener {
         workspace.addImage(outputImage);
 
         // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(outputImagePlus);
-            IntensityMinMax.run(dispIpl,true);
+        if (showOutput) showImage(outputImage);
 
-            dispIpl.show();
-        }
     }
 
     @Override

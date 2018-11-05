@@ -58,15 +58,18 @@ public class RunImageJMacro extends Module {
         if (showOutput) {
             ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
             IntensityMinMax.run(dispIpl,true);
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
             dispIpl.show();
         }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
-            writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-
+            if (showOutput) showImage(outputImage);
+        } else {
+            if (showOutput) showImage(inputImage);
         }
     }
 

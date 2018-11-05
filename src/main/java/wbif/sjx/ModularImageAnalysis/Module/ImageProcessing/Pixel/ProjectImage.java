@@ -119,12 +119,8 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
         // Adding projected image to workspace
         workspace.addImage(outputImage);
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
-        }
+        if (showOutput) showImage(outputImage);
+
     }
 
     @Override
