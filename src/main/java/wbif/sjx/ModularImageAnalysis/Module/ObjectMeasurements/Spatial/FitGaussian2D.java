@@ -1,7 +1,6 @@
 // TODO: Show original and fit PSFs - maybe as a mosaic - to demonstrate the process is working correctly
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
@@ -9,11 +8,9 @@ import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.RunTrackMate;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
-import wbif.sjx.common.MathFunc.GaussianFitter;
 
 import java.util.Iterator;
 

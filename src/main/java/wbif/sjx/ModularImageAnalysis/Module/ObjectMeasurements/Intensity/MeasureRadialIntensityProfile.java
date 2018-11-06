@@ -3,21 +3,14 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
-import ij.process.ImageProcessor;
-import ij.process.StackStatistics;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
-import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
-
-import java.util.LinkedHashMap;
 
 import static wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution.getDistanceBins;
 
@@ -123,7 +116,7 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);

@@ -2,16 +2,10 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
-import ij.plugin.Duplicator;
 //import ij.plugin.ZProjector;
 import ij.plugin.ZProjector;
-import net.imglib2.Cursor;
-import net.imglib2.img.Img;
-import net.imglib2.img.ImgFactory;
-import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;

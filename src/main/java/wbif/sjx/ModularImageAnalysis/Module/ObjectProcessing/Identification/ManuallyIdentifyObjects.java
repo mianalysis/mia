@@ -9,10 +9,7 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
-import ij.process.ImageProcessor;
 import ij.process.LUT;
-import ij.process.StackStatistics;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -21,15 +18,11 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -77,7 +70,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
 
-    public static void main(String[] args) throws GenericMIAException {
+    public static void main(String[] args) {
         new ImageJ();
 
         Workspace workspace = new Workspace(0,null,0);
@@ -279,7 +272,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {// Local access to this is required for the action listeners
+    protected void run(Workspace workspace) {// Local access to this is required for the action listeners
         this.workspace = workspace;
 
         // Getting parameters

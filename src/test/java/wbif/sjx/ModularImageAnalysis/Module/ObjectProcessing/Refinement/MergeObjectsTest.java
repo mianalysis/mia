@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.MergedObjects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
@@ -26,7 +25,7 @@ public class MergeObjectsTest {
     }
 
     @Test
-    public void testRunWithObjectDeletion() throws GenericMIAException {
+    public void testRunWithObjectDeletion() {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -72,7 +71,7 @@ public class MergeObjectsTest {
     }
 
     @Test
-    public void testRunWithoutObjectDeletion() throws GenericMIAException {
+    public void testRunWithoutObjectDeletion() {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 

@@ -1,11 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 03/05/2017.

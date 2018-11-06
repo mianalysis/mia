@@ -1,35 +1,20 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import fiji.stacks.Hyperstack_rearranger;
-import ij.CompositeImage;
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
-import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import ij.process.LUT;
-import ij3d.ColorTable;
 import net.imagej.ImgPlus;
-import net.imagej.autoscale.DefaultAutoscaleMethod;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
 import net.imagej.axis.IdentityAxis;
-import net.imagej.display.ColorTables;
-import net.imagej.interval.DefaultCalibratedRealInterval;
 import net.imglib2.Cursor;
-import net.imglib2.RealInterval;
-import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.view.Views;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -37,8 +22,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by sc13967 on 22/02/2018.
@@ -236,7 +219,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting parameters
         String inputImage1Name = parameters.getValue(INPUT_IMAGE1);
         String inputImage2Name = parameters.getValue(INPUT_IMAGE2);

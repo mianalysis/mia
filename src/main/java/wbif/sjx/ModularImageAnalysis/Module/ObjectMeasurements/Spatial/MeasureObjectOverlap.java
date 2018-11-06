@@ -1,13 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -67,7 +64,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting objects
         String inputObjects1Name = parameters.getValue(OBJECT_SET_1);
         ObjCollection inputObjects1 = workspace.getObjectSet(inputObjects1Name);

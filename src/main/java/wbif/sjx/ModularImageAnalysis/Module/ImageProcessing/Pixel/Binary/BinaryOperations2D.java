@@ -32,22 +32,6 @@ public class BinaryOperations2D extends Module {
 
     }
 
-    public interface IntensityModes {
-        String DISTANCE = "Distance";
-        String INPUT_IMAGE = "Input image intensity";
-
-        String[] ALL = new String[]{DISTANCE,INPUT_IMAGE};
-
-    }
-
-    public interface Connectivity3D {
-        String SIX = "6";
-        String TWENTYSIX = "26";
-
-        String[] ALL = new String[]{SIX,TWENTYSIX};
-
-    }
-
 
     public static void process(ImagePlus ipl, String operationMode, int numIterations) {
         // Applying process to stack

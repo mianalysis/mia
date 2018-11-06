@@ -8,7 +8,6 @@ import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
-import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureImageColocalisation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -233,7 +232,6 @@ public class ThresholdImage extends Module {
 
         // Image must be 8-bit
         if (inputImagePlus.getBitDepth() != 8) {
-            System.err.println("[ThresholdImage] Image \""+inputImageName+"\" converted to 8-bit with normalised intensity");
             IntensityMinMax.run(inputImagePlus, true);
             IJ.run(inputImagePlus, "8-bit", null);
         }

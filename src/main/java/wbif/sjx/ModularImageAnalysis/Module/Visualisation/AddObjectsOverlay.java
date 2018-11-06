@@ -3,13 +3,10 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import ij.CompositeImage;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import net.imagej.overlay.CompositeOverlay;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -18,7 +15,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.TreeMap;
 

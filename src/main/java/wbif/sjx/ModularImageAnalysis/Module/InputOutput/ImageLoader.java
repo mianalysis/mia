@@ -2,18 +2,11 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.io.FileInfo;
-import ij.io.FileOpener;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
-import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
-import ij.plugin.filter.Calibrator;
 import ij.process.ImageProcessor;
-import ij.process.StackConverter;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -29,9 +22,6 @@ import ome.units.quantity.Length;
 import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
-import org.janelia.it.h5j.fiji.adapter.FijiAdapter;
-import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -46,11 +36,8 @@ import wbif.sjx.common.Object.HCMetadata;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
 import static wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack.interpretRange;
@@ -455,7 +442,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public void run(Workspace workspace) throws GenericMIAException {
+    public void run(Workspace workspace) {
         // Getting parameters
         String outputMode = parameters.getValue(OUTPUT_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -499,8 +486,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             switch (importMode) {
                 case ImportModes.CURRENT_FILE:
                     File file = workspace.getMetadata().getFile();
-                    if (file == null)
-                        throw new GenericMIAException("Set file in Input Control");
+
                     if (useImageJReader) {
                         ipl = IJ.openImage(workspace.getMetadata().getFile().getAbsolutePath());
                     } else {

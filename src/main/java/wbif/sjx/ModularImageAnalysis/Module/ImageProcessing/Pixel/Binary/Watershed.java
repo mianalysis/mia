@@ -6,7 +6,6 @@ import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -20,7 +19,7 @@ public class Watershed extends Module {
     public static final String INTENSITY_MODE = "Intensity mode";
     public static final String INTENSITY_IMAGE = "Intensity image";
     public static final String DYNAMIC = "Dynamic";
-    public static final String CONNECTIVITY_3D = "Connectivity (3D)";
+    public static final String CONNECTIVITY = "Connectivity";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
 
     public interface IntensityModes {
@@ -30,6 +29,15 @@ public class Watershed extends Module {
         String[] ALL = new String[]{DISTANCE,INPUT_IMAGE};
 
     }
+
+    public interface Connectivity {
+        String SIX = "6";
+        String TWENTYSIX = "26";
+
+        String[] ALL = new String[]{SIX,TWENTYSIX};
+
+    }
+
 
     public void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) {
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
@@ -132,7 +140,7 @@ public class Watershed extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
 // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -146,7 +154,7 @@ public class Watershed extends Module {
         String intensityMode = parameters.getValue(INTENSITY_MODE);
         String intensityImageName = parameters.getValue(INTENSITY_IMAGE);
         int dynamic = parameters.getValue(DYNAMIC);
-        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY_3D));
+        int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY));
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
 
         // If applying to a new image, the input image is duplicated
@@ -191,10 +199,10 @@ public class Watershed extends Module {
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(USE_MARKERS, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MARKER_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INTENSITY_MODE, Parameter.CHOICE_ARRAY,BinaryOperations2D.IntensityModes.DISTANCE,BinaryOperations2D.IntensityModes.ALL));
+        parameters.add(new Parameter(INTENSITY_MODE, Parameter.CHOICE_ARRAY,IntensityModes.DISTANCE,IntensityModes.ALL));
         parameters.add(new Parameter(INTENSITY_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
-        parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY,BinaryOperations2D.Connectivity3D.SIX,BinaryOperations2D.Connectivity3D.ALL));
+        parameters.add(new Parameter(CONNECTIVITY, Parameter.CHOICE_ARRAY,Connectivity.SIX,Connectivity.ALL));
         parameters.add(new Parameter(MATCH_Z_TO_X, Parameter.BOOLEAN, true));
 
     }
@@ -218,15 +226,15 @@ public class Watershed extends Module {
 
         returnedParameters.add(parameters.getParameter(INTENSITY_MODE));
         switch ((String) parameters.getValue(INTENSITY_MODE)) {
-            case BinaryOperations2D.IntensityModes.DISTANCE:
+            case IntensityModes.DISTANCE:
                 returnedParameters.add(parameters.getParameter(MATCH_Z_TO_X));
                 break;
 
-            case BinaryOperations2D.IntensityModes.INPUT_IMAGE:
+            case IntensityModes.INPUT_IMAGE:
                 returnedParameters.add(parameters.getParameter(INTENSITY_IMAGE));
                 break;
         }
-        returnedParameters.add(parameters.getParameter(CONNECTIVITY_3D));
+        returnedParameters.add(parameters.getParameter(CONNECTIVITY));
 
         return returnedParameters;
 

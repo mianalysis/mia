@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
 import org.xml.sax.SAXException;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
@@ -75,8 +74,6 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                             AnalysisRunner.startAnalysis(GUI.getAnalysis());
                         } catch (IOException | InterruptedException e1) {
                             e1.printStackTrace();
-                        } catch (GenericMIAException e1) {
-                            IJ.showMessage(e1.getMessage());
                         }
                     });
                     t.start();

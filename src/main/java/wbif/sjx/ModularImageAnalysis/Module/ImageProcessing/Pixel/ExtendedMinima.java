@@ -4,12 +4,10 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 07/03/2018.
@@ -20,6 +18,15 @@ public class ExtendedMinima extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
+
+
+    public interface Connectivity {
+        String SIX = "6";
+        String TWENTYSIX = "26";
+
+        String[] ALL = new String[]{SIX,TWENTYSIX};
+
+    }
 
 
     @Override
@@ -38,7 +45,7 @@ public class ExtendedMinima extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -77,7 +84,7 @@ public class ExtendedMinima extends Module {
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
-        parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY, BinaryOperations2D.Connectivity3D.SIX, BinaryOperations2D.Connectivity3D.ALL));
+        parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY, Connectivity.SIX, Connectivity.ALL));
 
     }
 

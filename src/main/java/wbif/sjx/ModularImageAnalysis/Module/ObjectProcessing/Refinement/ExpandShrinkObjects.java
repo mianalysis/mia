@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import ij.ImagePlus;
 import ij.Prefs;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DilateErode;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -99,7 +98,7 @@ public class ExpandShrinkObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String templateImageName = parameters.getValue(INPUT_IMAGE);
         Image templateImage = workspace.getImage(templateImageName);

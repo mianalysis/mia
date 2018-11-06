@@ -5,9 +5,6 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
-import java.util.Iterator;
-import java.util.Set;
-
 public class CalculateStatsForChildren extends Module {
     public static final String PARENT_OBJECTS = "Parent objects";
     public static final String CHILD_OBJECTS = "Child objects";

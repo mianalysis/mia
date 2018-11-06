@@ -7,7 +7,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
 import ij.measure.Calibration;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
@@ -205,7 +204,7 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         Calendar calendar = Calendar.getInstance();
 
         // Getting input image

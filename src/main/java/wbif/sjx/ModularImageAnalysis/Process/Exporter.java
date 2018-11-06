@@ -432,7 +432,7 @@ public class Exporter {
         nameValueCell.setCellValue("MIA_VERSION");
 
         Cell valueValueCell = row.createCell(paramCol++);
-        valueValueCell.setCellValue(getClass().getPackage().getImplementationVersion());
+        valueValueCell.setCellValue(MIA.getVersion());
 
         Cell moduleValueCell = row.createCell(paramCol);
         moduleValueCell.setCellValue("");

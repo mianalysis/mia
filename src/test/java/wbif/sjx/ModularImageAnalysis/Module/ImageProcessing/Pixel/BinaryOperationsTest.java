@@ -3,7 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;

@@ -12,7 +12,6 @@ import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.morphology.GeodesicReconstruction3D;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.Strel3D;
-import inra.ijpb.plugins.FillHolesPlugin;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;

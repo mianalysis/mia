@@ -3,20 +3,14 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
 import ij.plugin.RGBStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
-import sc.fiji.colourDeconvolution.Colour_Deconvolution;
 import sc.fiji.colourDeconvolution.StainMatrix;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
-import java.io.*;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class ColourDeconvolution extends Module {
@@ -134,7 +128,7 @@ public class ColourDeconvolution extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);

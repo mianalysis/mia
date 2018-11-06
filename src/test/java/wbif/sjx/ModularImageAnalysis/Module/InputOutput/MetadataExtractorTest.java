@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
