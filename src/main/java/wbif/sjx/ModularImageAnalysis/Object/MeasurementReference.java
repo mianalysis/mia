@@ -8,6 +8,7 @@ public class MeasurementReference extends Reference {
     private String imageObjName = "";
     private String description = "";
     private String nickname = "";
+    private boolean exportGlobal = true; // This is mainly for the GUI
     private boolean exportIndividual = true;
     private boolean exportMean = true;
     private boolean exportMin = true;
@@ -39,6 +40,14 @@ public class MeasurementReference extends Reference {
     public MeasurementReference setCalculated(boolean calculated) {
         this.calculated = calculated;
         return this;
+    }
+
+    public void setExportGlobal(boolean exportGlobal) {
+        this.exportGlobal = exportGlobal;
+    }
+
+    public boolean isExportGlobal() {
+        return exportGlobal;
     }
 
     public boolean isExportIndividual() {

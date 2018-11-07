@@ -688,11 +688,11 @@ public class GUI {
         separator.setPreferredSize(new Dimension(-1,1));
         modulesPanel.add(separator, c);
 
+        modulesScrollPane.revalidate();
         modulesScrollPane.repaint();
-        modulesScrollPane.validate();
 
+        modulesPanel.revalidate();
         modulesPanel.repaint();
-        modulesPanel.validate();
 
     }
 

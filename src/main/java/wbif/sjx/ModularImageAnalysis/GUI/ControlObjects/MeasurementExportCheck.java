@@ -3,16 +3,19 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementReference;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementReferenceCollection;
+import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedHashSet;
 
 /**
  * Created by Stephen Cross on 02/12/2017.
  */
 public class MeasurementExportCheck extends JCheckBox implements ActionListener {
-    public enum Statistic {GLOBAL,INDIVIDUAL, MEAN, MIN, MAX, SUM, STD}
+    public enum Statistic {INDIVIDUAL, MEAN, MIN, MAX, SUM, STD}
     public enum Type {SINGLE_MEASUREMENT, ALL_MEASUREMENTS};
 
 
@@ -34,14 +37,6 @@ public class MeasurementExportCheck extends JCheckBox implements ActionListener 
 
     private void setStates(MeasurementReference measurementReference) {
         switch (statistic) {
-            case GLOBAL:
-                measurementReference.setExportIndividual(isSelected());
-                measurementReference.setExportMean(isSelected());
-                measurementReference.setExportMin(isSelected());
-                measurementReference.setExportMax(isSelected());
-                measurementReference.setExportSum(isSelected());
-                measurementReference.setExportStd(isSelected());
-                break;
             case INDIVIDUAL:
                 measurementReference.setExportIndividual(isSelected());
                 break;
@@ -70,10 +65,21 @@ public class MeasurementExportCheck extends JCheckBox implements ActionListener 
                 setStates(measurementReference);
                 break;
             case ALL_MEASUREMENTS:
-                MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
-                measurementReferences.putAll(GUI.getModules().getObjectMeasurementReferences());
-                measurementReferences.putAll(GUI.getModules().getImageMeasurementReferences());
-                for (MeasurementReference measurementReference:measurementReferences.values()) setStates(measurementReference);
+                ModuleCollection modules = GUI.getModules();
+
+                for (Parameter objectName:modules.getAvailableObjects(null)) {
+                    MeasurementReferenceCollection measurementReferences = modules.getObjectMeasurementReferences(objectName.getValue());
+                    for (MeasurementReference measurementReference:measurementReferences.values()) {
+                        setStates(measurementReference);
+                    }
+                }
+
+                for (Parameter imageName:modules.getAvailableImages(null)) {
+                    MeasurementReferenceCollection measurementReferences = modules.getImageMeasurementReferences(imageName.getValue());
+                    for (MeasurementReference measurementReference:measurementReferences.values()) {
+                        setStates(measurementReference);
+                    }
+                }
 
                 setStates(measurementReference);
                 

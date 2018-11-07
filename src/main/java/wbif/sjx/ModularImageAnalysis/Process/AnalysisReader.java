@@ -261,14 +261,49 @@ public class AnalysisReader {
             if (attributes.getNamedItem("NICKNAME") != null) measurementNickName = attributes.getNamedItem("NICKNAME").getNodeValue();
             measurementReference.setNickname(measurementNickName);
             measurementReference.setImageObjName(attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue());
-            measurementReference.setExportIndividual(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_INDIVIDUAL").getNodeValue()));
-            measurementReference.setExportMean(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MEAN").getNodeValue()));
-            measurementReference.setExportMin(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MIN").getNodeValue()));
-            measurementReference.setExportMax(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MAX").getNodeValue()));
-            measurementReference.setExportSum(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_SUM").getNodeValue()));
-            measurementReference.setExportStd(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_STD").getNodeValue()));
+
+            boolean exportGlobal = true;
+            if (attributes.getNamedItem("EXPORT_GLOBAL") != null) {
+                exportGlobal= Boolean.parseBoolean(attributes.getNamedItem("EXPORT_GLOBAL").getNodeValue());
+            }
+            measurementReference.setExportGlobal(exportGlobal);
+
+            boolean exportIndividual = true;
+            if (attributes.getNamedItem("EXPORT_INDIVIDUAL") != null) {
+                exportIndividual = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_INDIVIDUAL").getNodeValue());
+            }
+            measurementReference.setExportIndividual(exportIndividual);
+
+            boolean exportMean = true;
+            if (attributes.getNamedItem("EXPORT_MEAN") != null) {
+                exportMean = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MEAN").getNodeValue());
+            }
+            measurementReference.setExportMean(exportMean);
+
+            boolean exportMin = true;
+            if (attributes.getNamedItem("EXPORT_MIN") != null) {
+                exportMin = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MIN").getNodeValue());
+            }
+            measurementReference.setExportMin(exportMin);
+
+            boolean exportMax = true;
+            if (attributes.getNamedItem("EXPORT_MAX") != null) {
+                exportMax = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MAX").getNodeValue());
+            }
+            measurementReference.setExportMax(exportMax);
+
+            boolean exportSum = true;
+            if (attributes.getNamedItem("EXPORT_SUM") != null) {
+                exportSum = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_SUM").getNodeValue());
+            }
+            measurementReference.setExportSum(exportSum);
+
+            boolean exportStd = true;
+            if (attributes.getNamedItem("EXPORT_STD") != null) {
+                exportStd = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_STD").getNodeValue());
+            }
+            measurementReference.setExportStd(exportStd);
 
         }
     }
-
 }

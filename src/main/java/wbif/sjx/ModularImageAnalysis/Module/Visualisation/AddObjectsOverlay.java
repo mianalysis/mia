@@ -243,7 +243,8 @@ public class AddObjectsOverlay extends Module {
         Overlay ovl = ipl.getOverlay();
 
         // Adding text label
-        TextRoi text = new TextRoi(labelCoords[0]-labelSize/2, labelCoords[1]-labelSize/2+5, label);
+        TextRoi text = new TextRoi(labelCoords[0]-5, labelCoords[1]-5, label);
+
         text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
         if (ipl.isHyperStack()) {
             text.setPosition(1, (int) labelCoords[2], (int) labelCoords[3]);

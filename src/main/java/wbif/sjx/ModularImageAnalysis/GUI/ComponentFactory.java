@@ -527,7 +527,7 @@ public class ComponentFactory {
         MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportIndividual());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportIndividual);
+        exportCheck.setEnabled(exportIndividual && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -535,7 +535,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportMean());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary);
+        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -543,7 +543,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportMin());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary);
+        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -551,7 +551,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportMax());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary);
+        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -559,7 +559,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportSum());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary);
+        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -567,7 +567,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportStd());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary);
+        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -653,19 +653,17 @@ public class ComponentFactory {
         separator.setPreferredSize(new Dimension(30, -1));
         measurementPanel.add(separator,c);
 
-        MeasurementExportCheck.Type type = MeasurementExportCheck.Type.SINGLE_MEASUREMENT;
-        MeasurementExportCheck.Statistic statistic = MeasurementExportCheck.Statistic.GLOBAL;
-        MeasurementExportCheck  exportCheck = new MeasurementExportCheck(measurement,statistic,type);
-
-        exportCheck.setSelected(measurement.isExportIndividual());
+        MeasurementEnabledButton enabledButton = new MeasurementEnabledButton(measurement);
+        enabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
         c.gridx++;
-        measurementPanel.add(exportCheck, c);
+        measurementPanel.add(enabledButton, c);
 
         MeasurementName measurementName = new MeasurementName(measurement);
         measurementName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         measurementName.setPreferredSize(new Dimension(-1, elementHeight));
         measurementName.setEditable(true);
         measurementName.setToolTipText("<html><p width=\"500\">" +measurement.getDescription()+"</p></html>");
+        measurementName.setEnabled(measurement.isExportGlobal());
         c.gridx++;
         c.weightx = 1;
         c.anchor = GridBagConstraints.EAST;
@@ -678,6 +676,7 @@ public class ComponentFactory {
 
         ResetMeasurement resetMeasurement = new ResetMeasurement(measurement);
         resetMeasurement.setPreferredSize(new Dimension(elementHeight,elementHeight));
+        resetMeasurement.setEnabled(measurement.isExportGlobal());
         c.gridx++;
         c.anchor = GridBagConstraints.EAST;
         measurementPanel.add(resetMeasurement,c);
