@@ -3,9 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -87,7 +86,7 @@ public class MeasureObjectCurvature extends Module {
         InvertIntensity.process(objectIpl);
 
         // Skeletonise fish to get single backbone
-        BinaryOperations.applyStockBinaryTransform(objectIpl, BinaryOperations.OperationModes.SKELETONISE_2D, 1);
+        BinaryOperations2D.process(objectIpl, BinaryOperations2D.OperationModes.SKELETONISE, 1);
 
         // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
         return new Skeleton(objectIpl).getLongestPath();
@@ -313,7 +312,7 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -400,9 +399,7 @@ public class MeasureObjectCurvature extends Module {
         }
 
         if (showOutput && drawSpline) {
-            ImagePlus showIpl = new Duplicator().run(referenceImageImagePlus);
-            showIpl.setTitle(referenceImageName);
-            showIpl.show();
+            showImage(new Image("Spline",referenceImageImagePlus));
         }
     }
 

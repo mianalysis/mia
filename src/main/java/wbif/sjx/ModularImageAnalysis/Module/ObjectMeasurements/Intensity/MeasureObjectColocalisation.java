@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -50,7 +49,7 @@ public class MeasureObjectColocalisation extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection objects = workspace.getObjects().get(objectName);

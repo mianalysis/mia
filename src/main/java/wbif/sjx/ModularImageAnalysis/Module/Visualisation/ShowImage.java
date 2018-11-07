@@ -1,11 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 03/05/2017.
@@ -36,15 +33,11 @@ public class ShowImage extends Module {
 
     @Override
     public void run(Workspace workspace) {
-        if (showOutput) {
-            String imageName = parameters.getValue(DISPLAY_IMAGE);
-            ImagePlus imageToShow = workspace.getImage(imageName).getImagePlus();
-            imageToShow = new Duplicator().run(imageToShow);
-            imageToShow.setTitle(imageName);
+        String imageName = parameters.getValue(DISPLAY_IMAGE);
+        Image image = workspace.getImage(imageName);
 
-            IntensityMinMax.run(imageToShow, true, 0.001);
-            imageToShow.show();
-        }
+        if (showOutput) showImage(image);
+
     }
 
     @Override

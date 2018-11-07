@@ -1,30 +1,23 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
-import net.imglib2.ops.parse.token.Int;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by sc13967 on 18/01/2018.
@@ -241,7 +234,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -307,12 +300,8 @@ public class ExtractSubstack extends Module implements ActionListener {
         workspace.addImage(outputImage);
 
         // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(outputImagePlus);
-            IntensityMinMax.run(dispIpl,true);
+        if (showOutput) showImage(outputImage);
 
-            dispIpl.show();
-        }
     }
 
     @Override

@@ -14,7 +14,6 @@ import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
@@ -57,7 +56,7 @@ public class BatchProcessor extends FileCrawler {
 
     // PUBLIC METHODS
 
-    public void runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, GenericMIAException, InterruptedException {
+    public void runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, InterruptedException {
         shutdownEarly = false;
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
@@ -149,7 +148,7 @@ public class BatchProcessor extends FileCrawler {
                         if (continuousExport && nComplete % saveNFiles == 0)
                             exporter.exportResults(workspaces, analysis);
 
-                    } catch (GenericMIAException | IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
 
                     } catch (Throwable t) {

@@ -2,16 +2,12 @@
 
 package wbif.sjx.ModularImageAnalysis.Module;
 
+import ij.ImagePlus;
 import ij.Prefs;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.formats.FormatException;
-import net.imglib2.type.NativeType;
-import net.imglib2.type.numeric.RealType;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Process.IntensityMinMax;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -52,9 +48,9 @@ public abstract class Module implements Serializable {
 
     public abstract String getHelp();
 
-    protected abstract void run(Workspace workspace) throws GenericMIAException;
+    protected abstract void run(Workspace workspace);
 
-    public void execute(Workspace workspace) throws GenericMIAException {
+    public void execute(Workspace workspace) {
         writeMessage("Processing");
 
         // By default all modules should use this format
@@ -127,6 +123,16 @@ public abstract class Module implements Serializable {
 
     public ParameterCollection getAllParameters() {
         return parameters;
+    }
+
+    protected void showImage(Image image) {
+        ImagePlus dispIpl = new Duplicator().run(image.getImagePlus());
+        dispIpl.setTitle(image.getName());
+        IntensityMinMax.run(dispIpl,true);
+        dispIpl.setPosition(1,1,1);
+        dispIpl.updateChannelAndDraw();
+        dispIpl.show();
+
     }
 
 

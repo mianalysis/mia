@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -194,7 +194,7 @@ public class RelateObjects extends Module {
             Image parentImage = parentObject.convertObjToImage("Parent");
             InvertIntensity.process(parentImage.getImagePlus());
 
-            ImagePlus distIpl = BinaryOperations.getDistanceMap3D(parentImage.getImagePlus(),true);
+            ImagePlus distIpl = DistanceMap.getDistanceMap(parentImage.getImagePlus(),true);
 
             Image projectedImage = new ProjectImage().projectImageInZ(new Image("Dist", distIpl), "Projected", ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;

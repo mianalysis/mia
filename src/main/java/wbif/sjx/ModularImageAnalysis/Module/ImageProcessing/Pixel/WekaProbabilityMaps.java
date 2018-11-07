@@ -1,27 +1,16 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
-import ij.plugin.HyperStackMaker;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import trainableSegmentation.WekaSegmentation;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.IntensityMinMax;
-import weka.classifiers.Classifier;
-import weka.core.Instances;
-import weka.core.WekaPackageManager;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 
 /**
  * Created by sc13967 on 22/03/2018.
@@ -118,7 +107,7 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -133,14 +122,11 @@ public class WekaProbabilityMaps extends Module {
         ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath,blockSize);
 
         // Adding the probability maps to the Workspace
-        workspace.addImage(new Image(outputImageName,probabilityMaps));
+        Image probabilityImage = new Image(outputImageName,probabilityMaps);
+        workspace.addImage(probabilityImage);
 
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(probabilityMaps);
-            IntensityMinMax.run(dispIpl,true);
-            dispIpl.setTitle(outputImageName);
-            dispIpl.show();
-        }
+        if (showOutput) showImage(probabilityImage);
+
     }
 
     @Override

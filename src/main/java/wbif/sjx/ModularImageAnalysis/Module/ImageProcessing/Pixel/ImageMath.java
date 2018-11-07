@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -89,7 +88,7 @@ public class ImageMath extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -115,18 +114,16 @@ public class ImageMath extends Module {
 
         process(inputImagePlus,calculationType,mathValue);
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(inputImagePlus);
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
-        }
-
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
+            if (showOutput) showImage(outputImage);
+
+        } else {
+            if (showOutput) showImage(inputImage);
+
         }
     }
 

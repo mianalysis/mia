@@ -8,7 +8,6 @@ import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
-import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureImageColocalisation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -233,7 +232,6 @@ public class ThresholdImage extends Module {
 
         // Image must be 8-bit
         if (inputImagePlus.getBitDepth() != 8) {
-            System.err.println("[ThresholdImage] Image \""+inputImageName+"\" converted to 8-bit with normalised intensity");
             IntensityMinMax.run(inputImagePlus, true);
             IJ.run(inputImagePlus, "8-bit", null);
         }
@@ -296,13 +294,7 @@ public class ThresholdImage extends Module {
 
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
-            inputImage.setImagePlus(inputImagePlus);
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus showIpl = new Duplicator().run(inputImagePlus);
-                showIpl.setTitle(inputImageName);
-                showIpl.show();
-            }
+            if (showOutput) showImage(inputImage);
 
             if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(inputImage,threshold);
 
@@ -310,13 +302,7 @@ public class ThresholdImage extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
-                showIpl.setTitle(outputImageName);
-                showIpl.show();
-            }
+            if (showOutput) showImage(outputImage);
 
             if (thresholdType.equals(ThresholdTypes.GLOBAL) && storeMeasurement) addGlobalThresholdMeasurement(outputImage,threshold);
         }

@@ -4,13 +4,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import fiji.stacks.Hyperstack_rearranger;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.*;
 import ij.plugin.filter.RankFilters;
 import ij.process.ImageProcessor;
-import ij.process.TypeConverter;
 import inra.ijpb.morphology.Morphology;
 import inra.ijpb.morphology.strel.DiskStrel;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConverter;
@@ -19,7 +17,6 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Filters.DoG;
 import wbif.sjx.common.Filters.RidgeEnhancement;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 
 /**
@@ -382,25 +379,11 @@ public class FilterImage extends Module {
         if (!applyToInput) {
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-
-            outputImage.getImagePlus().setPosition(1,1,1);
-
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus dispIpl = outputImage.getImagePlus().duplicate();
-                IntensityMinMax.run(dispIpl,true,0.001);
-                dispIpl.setTitle(outputImage.getName());
-                dispIpl.show();
-            }
+            if (showOutput) showImage(outputImage);
 
         } else {
-            // If selected, displaying the image
-            if (showOutput) {
-                ImagePlus dispIpl = inputImagePlus.duplicate();
-                IntensityMinMax.run(dispIpl,true,0.001);
-                dispIpl.setTitle(inputImage.getName());
-                dispIpl.show();
-            }
+            if (showOutput) showImage(inputImage);
+
         }
     }
 

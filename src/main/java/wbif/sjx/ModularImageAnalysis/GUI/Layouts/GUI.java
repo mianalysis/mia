@@ -5,10 +5,10 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import org.apache.commons.io.output.TeeOutputStream;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
@@ -101,7 +101,7 @@ public class GUI {
         // Setting location of panel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - editingFrameWidth) / 2, (screenSize.height - frameHeight) / 2);
-        frame.setTitle("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
+        frame.setTitle("MIA (version " + MIA.getVersion() + ")");
 
         initialiseStatusTextField();
 
@@ -525,7 +525,7 @@ public class GUI {
     private static void initialiseStatusTextField() {
         textField.setPreferredSize(new Dimension(Integer.MAX_VALUE,statusHeight));
         textField.setBorder(null);
-        textField.setText("MIA (version " + MIA.class.getPackage().getImplementationVersion() + ")");
+        textField.setText("MIA (version " + MIA.getVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
         textField.setToolTipText(textField.getText());
         textField.setOpaque(false);
@@ -1231,7 +1231,7 @@ public class GUI {
         GUI.activeModule = activeModule;
     }
 
-    public static void evaluateModule(Module module) throws GenericMIAException {
+    public static void evaluateModule(Module module) {
         // Setting the index to the previous module.  This will make the currently-evaluated module go red
         lastModuleEval = getModules().indexOf(module) - 1;
         moduleBeingEval = getModules().indexOf(module);

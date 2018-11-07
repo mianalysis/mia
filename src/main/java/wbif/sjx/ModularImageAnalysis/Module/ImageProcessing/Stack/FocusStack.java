@@ -2,13 +2,11 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -144,7 +142,7 @@ public class FocusStack extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -171,22 +169,14 @@ public class FocusStack extends Module {
         // Running stack focusing
         Image[] outputImages = focusStack(inputImage,outputFocusedImageName,range,smooth,outputHeightImageName,inputHeightImage);
 
-        // If requested, showing image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(outputImages[0].getImagePlus());
-            showIpl.setTitle(outputFocusedImageName);
-            showIpl.show();
-        }
-
         // Adding output image to Workspace
         workspace.addImage(outputImages[0]);
+        if (showOutput) showImage(outputImages[0]);
 
         // If necessary, processing the height image
         if (addHeightMap) {
             if (parameters.getValue(SHOW_HEIGHT_IMAGE)) {
-                ImagePlus showIpl = new Duplicator().run(outputImages[1].getImagePlus());
-                showIpl.setTitle(outputHeightImageName);
-                showIpl.show();
+                showImage(outputImages[1]);
             }
 
             // Adding output image to Workspace

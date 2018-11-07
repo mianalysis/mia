@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -160,7 +159,7 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting parameters
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String spotObjectsName = parameters.getValue(SPOT_OBJECTS);

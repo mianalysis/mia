@@ -11,11 +11,9 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 public class CropImage < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -81,7 +79,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -96,21 +94,15 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
         Image outputImage = cropImage(inputImage,outputImageName,top,left,width,height);
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
-            IntensityMinMax.run(showIpl,true);
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
-        }
-
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
             inputImage.setImagePlus(outputImage.getImagePlus());
+            if (showOutput) showImage(inputImage);
 
         } else {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             workspace.addImage(outputImage);
+            if (showOutput) showImage(outputImage);
         }
     }
 
@@ -118,7 +110,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
         parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
         parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));

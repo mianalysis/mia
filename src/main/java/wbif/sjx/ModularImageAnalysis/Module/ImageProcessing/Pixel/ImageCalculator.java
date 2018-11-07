@@ -4,7 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -207,7 +206,7 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input images
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
@@ -231,27 +230,15 @@ public class ImageCalculator extends Module {
             case OverwriteModes.CREATE_NEW:
                 Image outputImage = new Image(outputImageName,newIpl);
                 workspace.addImage(outputImage);
-                if (showOutput) {
-                    ImagePlus showIpl = new Duplicator().run(newIpl);
-                    showIpl.setTitle(outputImageName);
-                    showIpl.show();
-                }
+                if (showOutput) showImage(outputImage);
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE1:
-                if (showOutput) {
-                    ImagePlus showIpl = new Duplicator().run(inputImagePlus1);
-                    showIpl.setTitle(outputImageName);
-                    showIpl.show();
-                }
+                if (showOutput) showImage(inputImage1);
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE2:
-                if (showOutput) {
-                    ImagePlus showIpl = new Duplicator().run(inputImagePlus2);
-                    showIpl.setTitle(outputImageName);
-                    showIpl.show();
-                }
+                if (showOutput) showImage(inputImage2);
                 break;
         }
     }

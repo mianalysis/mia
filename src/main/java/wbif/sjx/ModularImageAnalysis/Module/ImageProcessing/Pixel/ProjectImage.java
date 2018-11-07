@@ -2,16 +2,10 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
-import ij.plugin.Duplicator;
 //import ij.plugin.ZProjector;
 import ij.plugin.ZProjector;
-import net.imglib2.Cursor;
-import net.imglib2.img.Img;
-import net.imglib2.img.ImgFactory;
-import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -119,12 +113,8 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
         // Adding projected image to workspace
         workspace.addImage(outputImage);
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(outputImage.getImagePlus());
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
-        }
+        if (showOutput) showImage(outputImage);
+
     }
 
     @Override

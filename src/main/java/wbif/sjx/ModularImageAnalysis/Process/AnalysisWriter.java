@@ -4,6 +4,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,7 +34,7 @@ public class AnalysisWriter {
 
         // Adding MIA version number as an attribute
         Attr version = doc.createAttribute("MIA_VERSION");
-        version.appendChild(doc.createTextNode(AnalysisWriter.class.getPackage().getImplementationVersion()));
+        version.appendChild(doc.createTextNode(MIA.getVersion()));
         root.setAttributeNode(version);
 
         root.appendChild(Exporter.prepareModulesXML(doc,inOutModules));

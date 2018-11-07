@@ -49,14 +49,11 @@ public class ChannelExtractor extends Module {
 
         // Adding image to workspace
         writeMessage("Adding image ("+outputImageName+") to workspace");
-        workspace.addImage(new Image(outputImageName,outputChannelImagePlus));
+        Image outputImage = new Image(outputImageName,outputChannelImagePlus);
+        workspace.addImage(outputImage);
 
-        // (If selected) displaying the loaded image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(outputChannelImagePlus);
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
-        }
+        if (showOutput) showImage(outputImage);
+
     }
 
     @Override
