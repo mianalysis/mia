@@ -5,10 +5,15 @@ package wbif.sjx.ModularImageAnalysis.Object;
  */
 public class MeasurementReference extends Reference {
     private boolean calculated = true;
-    private boolean exportable = true;
     private String imageObjName = "";
     private String description = "";
     private String nickname = "";
+    private boolean exportIndividual = true;
+    private boolean exportMean = true;
+    private boolean exportMin = true;
+    private boolean exportMax = true;
+    private boolean exportSum = true;
+    private boolean exportStd = true;
 
 
     public MeasurementReference(String name) {
@@ -36,12 +41,57 @@ public class MeasurementReference extends Reference {
         return this;
     }
 
-    public boolean isExportable() {
-        return exportable;
+    public boolean isExportIndividual() {
+        return exportIndividual;
     }
 
-    public MeasurementReference setExportable(boolean exportable) {
-        this.exportable = exportable;
+    public MeasurementReference setExportIndividual(boolean exportIndividual) {
+        this.exportIndividual = exportIndividual;
+        return this;
+    }
+
+    public boolean isExportMean() {
+        return exportMean;
+    }
+
+    public MeasurementReference setExportMean(boolean exportMean) {
+        this.exportMean = exportMean;
+        return this;
+    }
+
+    public boolean isExportMin() {
+        return exportMin;
+    }
+
+    public MeasurementReference setExportMin(boolean exportMin) {
+        this.exportMin = exportMin;
+        return this;
+    }
+
+    public boolean isExportMax() {
+        return exportMax;
+    }
+
+    public MeasurementReference setExportMax(boolean exportMax) {
+        this.exportMax = exportMax;
+        return this;
+    }
+
+    public boolean isExportSum() {
+        return exportSum;
+    }
+
+    public MeasurementReference setExportSum(boolean exportSum) {
+        this.exportSum = exportSum;
+        return this;
+    }
+
+    public boolean isExportStd() {
+        return exportStd;
+    }
+
+    public MeasurementReference setExportStd(boolean exportStd) {
+        this.exportStd = exportStd;
         return this;
     }
 

@@ -77,6 +77,7 @@ public class GUI {
     private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
     private static final ModuleButton inputButton = new ModuleButton(analysis.getInputControl());
     private static final ModuleButton outputButton = new ModuleButton(analysis.getOutputControl());
+    private static final MeasurementReference globalMeasurementReference = new MeasurementReference("Global");
 
 
     public GUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
@@ -752,6 +753,20 @@ public class GUI {
                 && analysis.getOutputControl().isEnabled()
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
 
+            // Creating global controls for the different statistics
+            JPanel measurementHeader = componentFactory.createMeasurementHeader("Global control");
+            c.gridx = 0;
+            c.gridy++;
+            c.gridwidth = 2;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.WEST;
+            paramsPanel.add(measurementHeader,c);
+
+            JPanel currentMeasurementPanel = componentFactory.createGlobalMeasurementControl(globalMeasurementReference);
+            c.gridy++;
+            c.anchor = GridBagConstraints.EAST;
+            paramsPanel.add(currentMeasurementPanel,c);
+
             LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);
             for (Parameter imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getValue();
@@ -759,9 +774,10 @@ public class GUI {
 
                 if (measurementReferences.size() == 0) continue;
 
-                JPanel measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)");
+                measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)");
                 c.gridx = 0;
                 c.gridy++;
+                c.anchor = GridBagConstraints.WEST;
                 paramsPanel.add(measurementHeader,c);
 
                 // Iterating over the measurements for the current image, adding a control for each
@@ -769,9 +785,8 @@ public class GUI {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
-                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
+                    currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
                     c.gridy++;
-                    c.gridwidth = 2;
                     c.anchor = GridBagConstraints.EAST;
                     paramsPanel.add(currentMeasurementPanel,c);
 
@@ -785,9 +800,10 @@ public class GUI {
 
                 if (measurementReferences.size() == 0) continue;
 
-                JPanel measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)");
+                measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)");
                 c.gridx = 0;
                 c.gridy++;
+                c.anchor = GridBagConstraints.WEST;
                 paramsPanel.add(measurementHeader,c);
 
                 // Iterating over the measurements for the current object, adding a control for each
@@ -795,8 +811,9 @@ public class GUI {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
-                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
+                    currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
                     c.gridy++;
+                    c.anchor = GridBagConstraints.EAST;
                     paramsPanel.add(currentMeasurementPanel,c);
 
                 }
@@ -1238,5 +1255,9 @@ public class GUI {
 
     public static Workspace getTestWorkspace() {
         return testWorkspace;
+    }
+
+    public static MeasurementReference getGlobalMeasurementReference() {
+        return globalMeasurementReference;
     }
 }

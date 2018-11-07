@@ -239,14 +239,7 @@ public class AnalysisReader {
             // Getting measurement properties
             NamedNodeMap attributes = referenceNode.getAttributes();
             String measurementName = attributes.getNamedItem("NAME").getNodeValue();
-            boolean isExportable = Boolean.parseBoolean(attributes.getNamedItem("IS_EXPORTABLE").getNodeValue());
             String type = attributes.getNamedItem("TYPE").getNodeValue();
-            String imageObjectName = attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue();
-
-            String measurementNickName = measurementName;
-            if (attributes.getNamedItem("NICKNAME") != null) {
-                measurementNickName = attributes.getNamedItem("NICKNAME").getNodeValue();
-            }
 
             // Acquiring the relevant reference
             MeasurementReference measurementReference = null;
@@ -264,9 +257,16 @@ public class AnalysisReader {
             if (measurementReference == null) continue;
 
             // Updating the reference's parameters
+            String measurementNickName = measurementName;
+            if (attributes.getNamedItem("NICKNAME") != null) measurementNickName = attributes.getNamedItem("NICKNAME").getNodeValue();
             measurementReference.setNickname(measurementNickName);
-            measurementReference.setExportable(isExportable);
-            measurementReference.setImageObjName(imageObjectName);
+            measurementReference.setImageObjName(attributes.getNamedItem("IMAGE_OBJECT_NAME").getNodeValue());
+            measurementReference.setExportIndividual(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_INDIVIDUAL").getNodeValue()));
+            measurementReference.setExportMean(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MEAN").getNodeValue()));
+            measurementReference.setExportMin(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MIN").getNodeValue()));
+            measurementReference.setExportMax(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_MAX").getNodeValue()));
+            measurementReference.setExportSum(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_SUM").getNodeValue()));
+            measurementReference.setExportStd(Boolean.parseBoolean(attributes.getNamedItem("EXPORT_STD").getNodeValue()));
 
         }
     }
