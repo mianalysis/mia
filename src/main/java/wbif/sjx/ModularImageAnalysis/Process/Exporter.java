@@ -306,6 +306,7 @@ public class Exporter {
 
             measurementReferenceElement.setAttribute("NAME",measurementReference.getName());
             measurementReferenceElement.setAttribute("NICKNAME",measurementReference.getNickname());
+            measurementReferenceElement.setAttribute("EXPORT_GLOBAL",String.valueOf(measurementReference.isExportGlobal()));
             measurementReferenceElement.setAttribute("EXPORT_INDIVIDUAL",String.valueOf(measurementReference.isExportIndividual()));
             measurementReferenceElement.setAttribute("EXPORT_MEAN",String.valueOf(measurementReference.isExportMean()));
             measurementReferenceElement.setAttribute("EXPORT_MIN",String.valueOf(measurementReference.isExportMin()));

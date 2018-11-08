@@ -43,36 +43,6 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public MeasurementReferenceCollection getObjectMeasurementReferences() {
-        MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
-
-        // Getting a list of object names
-        LinkedHashSet<Parameter> objectNames = getAvailableObjects(null);
-
-        for (Parameter objectName:objectNames) {
-            MeasurementReferenceCollection currentReferences = getObjectMeasurementReferences(objectName.getValue());
-            measurementReferences.putAll(currentReferences);
-        }
-
-        return measurementReferences;
-
-    }
-
-    public MeasurementReferenceCollection getImageMeasurementReferences() {
-        MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
-
-        // Getting a list of object names
-        LinkedHashSet<Parameter> imageNames = getAvailableImages(null);
-
-        for (Parameter imageName:imageNames) {
-            MeasurementReferenceCollection currentReferences = getImageMeasurementReferences(imageName.getValue());
-            measurementReferences.putAll(currentReferences);
-        }
-
-        return measurementReferences;
-
-    }
-
     public MeasurementReferenceCollection getObjectMeasurementReferences(String objectName) {
         return getObjectMeasurementReferences(objectName,null);
 
