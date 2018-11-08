@@ -245,20 +245,16 @@ public class AddObjectsOverlay extends Module {
 
         // Adding text label
         TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label);
-        text.setJustification(TextRoi.CENTER);
-        double textX = text.getXBase();
-        double textY = text.getYBase();
-        double textWidth = text.getFloatWidth();
-        double textHeight = text.getFloatHeight();
-        text.setLocation(textX - textWidth/2, textY-textHeight/2);
-
         text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
+        text.setJustification(TextRoi.CENTER);
+        text.setStrokeColor(colour);
+        text.setLocation(labelCoords[0] - text.getFloatWidth()/2, labelCoords[1]-text.getFloatHeight()/2);
+
         if (ipl.isHyperStack()) {
             text.setPosition(1, (int) labelCoords[2], (int) labelCoords[3]);
         } else {
             text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), labelCoords[3]));
         }
-        text.setStrokeColor(colour);
         ovl.addElement(text);
 
     }

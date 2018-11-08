@@ -208,10 +208,13 @@ public class Parameter implements Serializable {
             case STRING:
             case CHOICE_ARRAY:
             case TEXT_DISPLAY:
+            case FILE_PATH:
+            case FOLDER_PATH:
                 return value == null ? "" : (String) value;
+
+            default:
+                return "";
+
         }
-
-        return "";
-
     }
 }
