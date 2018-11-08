@@ -7,6 +7,7 @@ import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import org.apache.poi.ss.formula.functions.T;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -243,7 +244,13 @@ public class AddObjectsOverlay extends Module {
         Overlay ovl = ipl.getOverlay();
 
         // Adding text label
-        TextRoi text = new TextRoi(labelCoords[0]-5, labelCoords[1]-5, label);
+        TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label);
+        text.setJustification(TextRoi.CENTER);
+        double textX = text.getXBase();
+        double textY = text.getYBase();
+        double textWidth = text.getFloatWidth();
+        double textHeight = text.getFloatHeight();
+        text.setLocation(textX - textWidth/2, textY-textHeight/2);
 
         text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
         if (ipl.isHyperStack()) {

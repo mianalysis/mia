@@ -183,7 +183,7 @@ public class CreateDistanceMap extends Module {
 
     static void applyCalibratedUnits(Image inputImage, double dppXY) {
         ImagePlus inputIpl = inputImage.getImagePlus();
-        ImageTypeConverter.convertType(inputIpl,32,ImageTypeConverter.ScalingModes.CLIP);
+        ImageTypeConverter.applyConversion(inputIpl,32,ImageTypeConverter.ScalingModes.CLIP);
 
         int width = inputIpl.getWidth();
         int height = inputIpl.getHeight();

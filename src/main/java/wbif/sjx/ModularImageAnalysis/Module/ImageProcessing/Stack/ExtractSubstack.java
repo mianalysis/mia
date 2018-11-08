@@ -218,6 +218,28 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     }
 
+    public static Image extractSubstack(Image inputImage, String outputImageName, String channels, String slices, String frames) {
+        ImagePlus inputImagePlus = inputImage.getImagePlus();
+
+        int[] channelsList = interpretRange(channels);
+        if (channelsList[channelsList.length-1] == Integer.MAX_VALUE) channelsList = extendRangeToEnd(channelsList,inputImagePlus.getNChannels());
+
+        int[] slicesList = interpretRange(slices);
+        if (slicesList[slicesList.length-1] == Integer.MAX_VALUE) slicesList = extendRangeToEnd(slicesList,inputImagePlus.getNSlices());
+
+        int[] framesList = interpretRange(frames);
+        if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,inputImagePlus.getNFrames());
+
+        List<Integer> cList = java.util.Arrays.stream(channelsList).boxed().collect(Collectors.toList());
+        List<Integer> zList = java.util.Arrays.stream(slicesList).boxed().collect(Collectors.toList());
+        List<Integer> tList = java.util.Arrays.stream(framesList).boxed().collect(Collectors.toList());
+
+        // Generating the substack and adding to the workspace
+        ImagePlus outputImagePlus =  SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();
+        return new Image(outputImageName,outputImagePlus);
+
+    }
+
     @Override
     public String getTitle() {
         return "Extract substack";
@@ -238,7 +260,6 @@ public class ExtractSubstack extends Module implements ActionListener {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
         String selectionMode = parameters.getValue(SELECTION_MODE);
@@ -252,7 +273,8 @@ public class ExtractSubstack extends Module implements ActionListener {
 
         switch (selectionMode) {
             case SelectionModes.MANUAL:
-                ImagePlus displayImagePlus = inputImagePlus.duplicate();
+                // Displaying the image and control panel
+                ImagePlus displayImagePlus = inputImage.getImagePlus().duplicate();
                 displayImagePlus.show();
 
                 String inputChannelsRange = enableChannels ? channels : null;
@@ -281,22 +303,8 @@ public class ExtractSubstack extends Module implements ActionListener {
                 break;
         }
 
-        int[] channelsList = interpretRange(channels);
-        if (channelsList[channelsList.length-1] == Integer.MAX_VALUE) channelsList = extendRangeToEnd(channelsList,inputImagePlus.getNChannels());
+        Image outputImage = extractSubstack(inputImage,outputImageName,channels,slices,frames);
 
-        int[] slicesList = interpretRange(slices);
-        if (slicesList[slicesList.length-1] == Integer.MAX_VALUE) slicesList = extendRangeToEnd(slicesList,inputImagePlus.getNSlices());
-
-        int[] framesList = interpretRange(frames);
-        if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,inputImagePlus.getNFrames());
-
-        List<Integer> cList = java.util.Arrays.stream(channelsList).boxed().collect(Collectors.toList());
-        List<Integer> zList = java.util.Arrays.stream(slicesList).boxed().collect(Collectors.toList());
-        List<Integer> tList = java.util.Arrays.stream(framesList).boxed().collect(Collectors.toList());
-
-        // Generating the substack and adding to the workspace
-        ImagePlus outputImagePlus =  SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();
-        Image outputImage = new Image(outputImageName,outputImagePlus);
         workspace.addImage(outputImage);
 
         // If selected, displaying the image

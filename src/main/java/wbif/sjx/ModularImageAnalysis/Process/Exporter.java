@@ -606,6 +606,7 @@ public class Exporter {
                 for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
                     if (!objectMeasurement.isCalculated()) continue;
                     if (!objectMeasurement.isExportIndividual()) continue;
+                    if (!objectMeasurement.isExportGlobal()) continue;
 
                     if (objectMeasurement.isExportMean()) {
                         summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
@@ -744,6 +745,7 @@ public class Exporter {
             for (MeasurementReference imageMeasurement : imageMeasurementReferences.values()) {
                 if (!imageMeasurement.isCalculated()) continue;
                 if (!imageMeasurement.isExportIndividual()) continue;
+                if (!imageMeasurement.isExportGlobal()) continue;
 
                 Measurement measurement = image.getMeasurement(imageMeasurement.getName());
 
@@ -854,6 +856,7 @@ public class Exporter {
             for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
                 if (!objectMeasurement.isCalculated()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
+                if (!objectMeasurement.isExportGlobal()) continue;
 
                 // Running through all objects in this set, adding measurements to a CumStat object
                 CumStat cs = new CumStat();
@@ -1012,6 +1015,7 @@ public class Exporter {
             for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
                 if (!objectMeasurement.isCalculated()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
+                if (!objectMeasurement.isExportGlobal()) continue;
 
                 measurementNames.putIfAbsent(objectName, new LinkedHashMap<>());
                 measurementNames.get(objectName).put(col, objectMeasurement.getName());

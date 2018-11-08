@@ -40,11 +40,11 @@ public class NormaliseIntensity extends Module {
     }
 
 
-    public static void normaliseIntensity(ImagePlus ipl, double clipFraction, String calculationMode) {
-        normaliseIntensity(ipl,clipFraction,calculationMode,null);
+    public static void applyNormalisation(ImagePlus ipl, double clipFraction, String calculationMode) {
+        applyNormalisation(ipl,clipFraction,calculationMode,null);
     }
 
-    public static void normaliseIntensity(ImagePlus ipl, double clipFraction, String calculationMode, @Nullable Obj maskObject) {
+    public static void applyNormalisation(ImagePlus ipl, double clipFraction, String calculationMode, @Nullable Obj maskObject) {
         int bitDepth = ipl.getProcessor().getBitDepth();
 
         // Get min max values for whole stack
@@ -157,7 +157,7 @@ public class NormaliseIntensity extends Module {
         // Running intensity normalisation
         switch (regionMode) {
             case RegionModes.ENTIRE_IMAGE:
-                normaliseIntensity(inputImagePlus,clipFraction,calculationMode);
+                applyNormalisation(inputImagePlus,clipFraction,calculationMode);
                 break;
 
             case RegionModes.PER_OBJECT:
@@ -166,7 +166,7 @@ public class NormaliseIntensity extends Module {
                 int total = inputObjects.size();
                 for (Obj inputObject:inputObjects.values()) {
                     writeMessage("Processing "+(++count)+" of "+total+" objects");
-                    normaliseIntensity(inputImagePlus,clipFraction,calculationMode,inputObject);
+                    applyNormalisation(inputImagePlus,clipFraction,calculationMode,inputObject);
                 }
                 break;
         }

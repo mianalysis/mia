@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.ExpectedObjects;
 
-import au.com.bytecode.opencsv.CSVReader;
+import util.opencsv.CSVReader;
 import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;

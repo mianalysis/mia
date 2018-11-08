@@ -2,10 +2,20 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 //import ij.plugin.ZProjector;
 import ij.plugin.ZProjector;
+import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.ops.Ops;
+import net.imagej.ops.special.computer.UnaryComputerOp;
+import net.imglib2.display.projector.sampler.ProjectedSampler;
+import net.imglib2.display.projector.sampler.SamplingProjector2D;
+import net.imglib2.img.Img;
+import net.imglib2.img.ImgFactory;
+import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -33,7 +43,35 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     }
 
-    public Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
+//    public Image project(Image inputImage, String projectionDimension, String projectionMode) {
+//        final ImageJ ij = new ImageJ();
+//
+//        ImgPlus inputImg = inputImage.getImgPlus();
+//
+//        int d;
+//        int[] projected_dimensions = new int[inputImg.numDimensions()-1];
+//        int dim = inputImg.dimensionIndex(Axes.Z);
+//        for (d=0; d < inputImg.numDimensions();++d){
+//            if(d != dim) projected_dimensions[d]= (int) inputImg.dimension(d);
+//        }
+//
+//        Img<T> proj = (Img<T>) ij.op().create().img(projected_dimensions);
+//
+//        // 1.  Use Computers.unary to get op
+//        //UnaryComputerOp mean_op =Computers.unary(ij.op(), Ops.Stats.Mean.class, RealType.class, Iterable.class);
+//
+//        // or 2. Cast it
+//        UnaryComputerOp mean_op =(UnaryComputerOp) ij.op().op(Ops.Stats.Mean.NAME, inputImg);
+//
+//        Img<T> projection=(Img<T>)ij.op().transform().project(proj, inputImg, mean_op, dim);
+//
+//        ij.ui().show(projection);
+//
+//        return null;
+//
+//    }
+
+    public static Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
         // If the input image is multi-channel, but with 1 slice it will try and project the channels
         if (inputImage.getImagePlus().getNChannels() > 1 && inputImage.getImagePlus().getNSlices() == 1) {
             return new Image(outputImageName,inputImage.getImagePlus().duplicate());
