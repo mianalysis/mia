@@ -1,13 +1,15 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.BinaryOperations;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
+
+import java.util.TreeSet;
 
 /**
  * Created by sc13967 on 04/05/2017.
@@ -21,6 +23,8 @@ public class RelateObjects extends Module {
     public static final String LIMIT_LINKING_BY_DISTANCE = "Limit linking by distance";
     public final static String LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String INSIDE_OUTSIDE_MODE = "Inside/outside mode";
+    public static final String MINIMUM_PERCENTAGE_OVERLAP = "Minimum percentage overlap";
+    public static final String REQUIRE_CENTROID_OVERLAP = "Require centroid overlap";
     public final static String LINK_IN_SAME_FRAME = "Only link objects in same frame";
 
 
@@ -60,6 +64,7 @@ public class RelateObjects extends Module {
         String DIST_CENT_SURF_PX = "DIST_FROM_CENT_TO_${PARENT}_SURF_(PX)";
         String DIST_CENT_SURF_CAL = "DIST_FROM_CENT_TO_${PARENT}_SURF_(${CAL})";
         String DIST_CENT_SURF_FRAC = "DIST_FROM_CENT_TO_${PARENT}_SURF_(FRAC)";
+        String OVERLAP_PC = "OVERLAP_WITH_${PARENT}_PERCENTAGE";
 
     }
 
@@ -194,7 +199,7 @@ public class RelateObjects extends Module {
             Image parentImage = parentObject.convertObjToImage("Parent");
             InvertIntensity.process(parentImage.getImagePlus());
 
-            ImagePlus distIpl = BinaryOperations.getDistanceMap3D(parentImage.getImagePlus(),true);
+            ImagePlus distIpl = DistanceMap.getDistanceMap(parentImage.getImagePlus(),true);
 
             Image projectedImage = new ProjectImage().projectImageInZ(new Image("Dist", distIpl), "Projected", ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;
@@ -311,73 +316,64 @@ public class RelateObjects extends Module {
         }
     }
 
-//    public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame) {
-//        int nCombi = parentObjects.size()*childObjects.size();
-//        int count = 0;
-//
-//        // Runs through each child object against each parent object
-//        for (Obj parentObject:parentObjects.values()) {
-//            // Getting parent coordinates
-//            ArrayList<Integer> parentX = parentObject.getXCoords();
-//            ArrayList<Integer> parentY = parentObject.getYCoords();
-//            ArrayList<Integer> parentZ = parentObject.getZCoords();
-//
-//            // Creating a Hyperstack to hold the distance transform
-//            double[][] range = parentObject.getExtents(true,false);
-//            ImagePlus ipl = IJ.createHyperStack("Objects", (int) (range[0][1]-range[0][0] + 1),
-//                    (int) (range[1][1]-range[1][0] + 1), 1, (int) (range[2][1]-range[2][0]), 1, 8);
-//
-//            // Setting pixels corresponding to the parent object to 1
-//            for (int i=0;i<parentX.size();i++) {
-//                ipl.setPosition(1,(int) (parentZ.get(i)-range[2][0]+1),1);
-//                ipl.getProcessor().set((int) (parentX.get(i)-range[0][0]), (int) (parentY.get(i)-range[1][0]),255);
-//            }
-//
-//            for (Obj childObject:childObjects.values()) {
-//                // Only testing if the child is present in the same timepoint as the parent
-//                if (linkInSameFrame && parentObject.getT() != childObject.getT()) continue;
-//
-//                // Getting the child centroid location
-//                int xCent = (int) Math.round(childObject.getXMean(true));
-//                int yCent = (int) Math.round(childObject.getYMean(true));
-//                int zCent = (int) Math.round(childObject.getZMean(true,false)); // Relates to image location
-//
-//                // Testing if the child centroid exists in the object
-//                for (int i=0;i<parentX.size();i++) {
-//                    if (parentX.get(i)==xCent & parentY.get(i)==yCent & parentZ.get(i)==zCent) {
-//                        parentObject.addChild(childObject);
-//                        childObject.addParent(parentObject);
-//
-//                        break;
-//
-//                    }
-//                }
-//            }
-//            writeMessage("Compared "+(childObjects.size()*count++)+" of "+nCombi+" pairs");
-//        }
-//    }
+    public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, double minOverlap,
+                               boolean centroidOverlap, boolean linkInSameFrame) {
 
-    public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, boolean linkInSameFrame) {
         int nCombi = parentObjects.size()*childObjects.size();
         int count = 0;
+        String overlapMeasurementName = getFullName(Measurements.OVERLAP_PC,parentObjects.getName());
 
         // Runs through each child object against each parent object
         for (Obj parentObject:parentObjects.values()) {
             for (Obj childObject:childObjects.values()) {
-                // Only testing if the child is present in the same timepoint as the parent
+                // Testing if the two objects are in the same frame (if this matters)
                 if (linkInSameFrame && parentObject.getT() != childObject.getT()) continue;
 
-                int xCent = (int) Math.round(childObject.getXMean(true));
-                int yCent = (int) Math.round(childObject.getYMean(true));
-                int zCent = (int) Math.round(childObject.getZMean(true,false)); // Relates to image location
-                Point<Integer> centroid = new Point<>(xCent,yCent,zCent);
+                // If requiring the child centroid is overlapped with the parent object
+                if (centroidOverlap) {
+                    int xCent = (int) Math.round(childObject.getXMean(true));
+                    int yCent = (int) Math.round(childObject.getYMean(true));
+                    int zCent = (int) Math.round(childObject.getZMean(true, false)); // Relates to image location
+                    Point<Integer> centroid = new Point<>(xCent, yCent, zCent);
 
-                if (parentObject.containsPoint(centroid)) {
-                    parentObject.addChild(childObject);
-                    childObject.addParent(parentObject);
+                    // If the centroid doesn't overlap, skip this link
+                    if (!parentObject.containsPoint(centroid)) continue;
+
                 }
+
+                // Calculates the percentage overlap
+                double nTotal = (double) childObject.getNVoxels();
+                double nOverlap = (double) parentObject.getOverlap(childObject);
+                double overlap  = (nOverlap/nTotal)*100;
+
+                // Testing the minimum overlap requirement
+                if (overlap < minOverlap) continue;
+
+                // If the tests are successful, add the link.  If the child has already been linked, but with a smaller
+                // overlap, remove that link.
+                Obj oldParent = childObject.getParent(parentObject.getName());
+                if (oldParent != null) {
+                    if (childObject.getMeasurement(overlapMeasurementName).getValue() < overlap) {
+                        oldParent.removeChild(childObject);
+                    } else {
+                        // If the previous link had a better overlap, skip the assignment
+                        continue;
+                    }
+                }
+
+                // Creating the link
+                parentObject.addChild(childObject);
+                childObject.addParent(parentObject);
+
+                // Adding the overlap as a measurement
+                Measurement measurement = new Measurement(getFullName(Measurements.OVERLAP_PC,parentObject.getName()));
+                measurement.setValue(overlap);
+                childObject.addMeasurement(measurement);
+
             }
-            writeMessage("Compared "+(childObjects.size()*count++)+" of "+nCombi+" pairs");
+
+            writeMessage("Compared "+(childObjects.size()*++count)+" of "+nCombi+" pairs");
+
         }
     }
 
@@ -433,7 +429,8 @@ public class RelateObjects extends Module {
         String referencePoint = parameters.getValue(REFERENCE_POINT);
         boolean limitLinking = parameters.getValue(LIMIT_LINKING_BY_DISTANCE);
         double linkingDistance = parameters.getValue(LINKING_DISTANCE);
-
+        double minOverlap = parameters.getValue(MINIMUM_PERCENTAGE_OVERLAP);
+        boolean centroidOverlap = parameters.getValue(REQUIRE_CENTROID_OVERLAP);
 
         switch (relateMode) {
             case RelateModes.MATCHING_IDS:
@@ -453,7 +450,7 @@ public class RelateObjects extends Module {
 
             case RelateModes.SPATIAL_OVERLAP:
                 writeMessage("Relating objects by spatial overlap");
-                spatialOverlap(parentObjects,childObjects,linkInSameFrame);
+                spatialOverlap(parentObjects,childObjects,minOverlap,centroidOverlap,linkInSameFrame);
                 break;
 
         }
@@ -469,6 +466,8 @@ public class RelateObjects extends Module {
         parameters.add(new Parameter(LIMIT_LINKING_BY_DISTANCE,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LINKING_DISTANCE,Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(INSIDE_OUTSIDE_MODE,Parameter.CHOICE_ARRAY,InsideOutsideModes.INSIDE_AND_OUTSIDE,InsideOutsideModes.ALL));
+        parameters.add(new Parameter(MINIMUM_PERCENTAGE_OVERLAP,Parameter.DOUBLE,0d));
+        parameters.add(new Parameter(REQUIRE_CENTROID_OVERLAP,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(LINK_IN_SAME_FRAME,Parameter.BOOLEAN,true));
 
     }
@@ -513,9 +512,12 @@ public class RelateObjects extends Module {
                 parameters.updateValueSource(TEST_CHILD_OBJECTS,parentObjectNames);
 
                 break;
+
+            case RelateModes.SPATIAL_OVERLAP:
+                returnedParameters.add(parameters.getParameter(MINIMUM_PERCENTAGE_OVERLAP));
+                returnedParameters.add(parameters.getParameter(REQUIRE_CENTROID_OVERLAP));
+                break;
         }
-
-
 
         returnedParameters.add(parameters.getParameter(LINK_IN_SAME_FRAME));
 
@@ -576,6 +578,11 @@ public class RelateObjects extends Module {
                 "closest \""+ parentObjectName+"\" object.  Calculated as a fraction of the furthest possible distance " +
                 "to the \""+parentObjectName+"\" surface.");
 
+        measurementName = getFullName(Measurements.OVERLAP_PC,parentObjectName);
+        MeasurementReference overlapPercentage  = objectMeasurementReferences.getOrPut(measurementName);
+        overlapPercentage.setDescription("Percentage of pixels that overlap with the \""+ parentObjectName+"\" object "+
+                "with which it has the largest overlap.");
+
         distSurfPx.setImageObjName(childObjectsName);
         distCentPx.setImageObjName(childObjectsName);
         distSurfCal.setImageObjName(childObjectsName);
@@ -583,6 +590,7 @@ public class RelateObjects extends Module {
         distCentSurfPx.setImageObjName(childObjectsName);
         distCentSurfCal.setImageObjName(childObjectsName);
         distCentSurfFrac.setImageObjName(childObjectsName);
+        overlapPercentage.setImageObjName(childObjectsName);
 
         distCentPx.setCalculated(false);
         distCentCal.setCalculated(false);
@@ -591,6 +599,7 @@ public class RelateObjects extends Module {
         distCentSurfPx.setCalculated(false);
         distCentSurfCal.setCalculated(false);
         distCentSurfFrac.setCalculated(false);
+        overlapPercentage.setCalculated(false);
 
         switch ((String) parameters.getValue(RELATE_MODE)) {
             case RelateModes.PROXIMITY:
@@ -614,6 +623,10 @@ public class RelateObjects extends Module {
                         }
                         break;
                 }
+                break;
+
+            case RelateModes.SPATIAL_OVERLAP:
+                overlapPercentage.setCalculated(true);
                 break;
         }
 

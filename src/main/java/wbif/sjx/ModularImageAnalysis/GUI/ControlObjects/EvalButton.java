@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
@@ -102,8 +101,6 @@ public class EvalButton extends JButton implements ActionListener {
                     // For some reason it's necessary to have a brief pause here to prevent the module executing twice
                     Thread.sleep(1);
                     GUI.evaluateModule(module);
-                } catch (GenericMIAException ex) {
-                    IJ.showMessage(ex.getMessage());
                 } catch (Exception e1) {
                     GUI.setModuleBeingEval(-1);
                     e1.printStackTrace();
@@ -119,8 +116,6 @@ public class EvalButton extends JButton implements ActionListener {
                     Module module = GUI.getModules().get(i);
                     if (module.isEnabled() && module.isRunnable()) try {
                         GUI.evaluateModule(module);
-                    } catch (GenericMIAException ex) {
-                        IJ.showMessage(ex.getMessage());
                     } catch (Exception e1) {
                         GUI.setModuleBeingEval(-1);
                         e1.printStackTrace();

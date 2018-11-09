@@ -305,17 +305,21 @@ public class Stack_Focuser_ implements PlugInFilter
             default: break;
         }
         // construct the title of the new window
-        ImagePlus focused = null;
-        ImagePlus height_map = null;
+        ImagePlus dispFocusedIpl = null;
+        ImagePlus dispHeightIpl = null;
         String n_title = "Focused_"+o_title;
-        focused = new ImagePlus(n_title, focused_ip);
-        focused.show();
-        focused.updateAndDraw();
+        dispFocusedIpl = new ImagePlus(n_title, focused_ip);
+        dispFocusedIpl.setPosition(1,1,1);
+        dispFocusedIpl.updateChannelAndDraw();
+        dispFocusedIpl.show();
+
         if (create_map) {
             String nm_title = "HeightMap_" + o_title;
-            height_map = new ImagePlus(nm_title, height_ip);
-            height_map.show();
-            height_map.updateAndDraw();
+            dispHeightIpl = new ImagePlus(nm_title, height_ip);
+            dispHeightIpl.setPosition(1,1,1);
+            dispHeightIpl.updateChannelAndDraw();
+            dispHeightIpl.show();
+
         }
     }
 

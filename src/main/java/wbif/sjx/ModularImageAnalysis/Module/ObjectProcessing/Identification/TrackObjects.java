@@ -8,7 +8,6 @@ import ij.ImagePlus;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -469,7 +468,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) throws GenericMIAException {
+    public void run(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);

@@ -2,18 +2,11 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import fiji.stacks.Hyperstack_rearranger;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.io.FileInfo;
-import ij.io.FileOpener;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
-import ij.plugin.Duplicator;
-import ij.plugin.HyperStackConverter;
-import ij.plugin.filter.Calibrator;
 import ij.process.ImageProcessor;
-import ij.process.StackConverter;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -29,9 +22,6 @@ import ome.units.quantity.Length;
 import ome.units.unit.Unit;
 import ome.xml.meta.IMetadata;
 import org.apache.commons.io.FilenameUtils;
-import org.janelia.it.h5j.fiji.adapter.FijiAdapter;
-import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -46,11 +36,8 @@ import wbif.sjx.common.Object.HCMetadata;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
 import static wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack.interpretRange;
@@ -117,12 +104,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     public interface NameFormats {
+        String HUYGENS = "Huygens";
         String INCUCYTE_SHORT = "Incucyte short filename";
         String YOKOGAWA = "Yokogowa";
         String INPUT_FILE_PREFIX = "Input filename with prefix";
         String INPUT_FILE_SUFFIX = "Input filename with suffix";
 
-        String[] ALL = new String[]{INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
+        String[] ALL = new String[]{HUYGENS,INCUCYTE_SHORT,YOKOGAWA,INPUT_FILE_PREFIX,INPUT_FILE_SUFFIX};
 
     }
 
@@ -342,6 +330,28 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    public ImagePlus getHuygensImage(HCMetadata metadata, String[] dimRanges, int[] crop)
+            throws ServiceException, DependencyException, FormatException, IOException {
+        String absolutePath = metadata.getFile().getAbsolutePath();
+        String path = FilenameUtils.getFullPath(absolutePath);
+        String name = FilenameUtils.removeExtension(FilenameUtils.getName(absolutePath));
+        String extension = FilenameUtils.getExtension(absolutePath);
+
+        // The name will end with "_chxx" where "xx" is a two-digit number
+        Pattern pattern = Pattern.compile("([\\s\\w]+)_ch([0-9]{2})");
+        Matcher matcher = pattern.matcher(name);
+        if (matcher.find()) {
+            String comment = metadata.getComment();
+            String filename = path+matcher.group(1)+"_ch"+comment+"."+extension;
+
+            return getBFImage(filename,1,dimRanges,crop,true);
+
+        }
+
+        return null;
+
+    }
+
     private ImagePlus getIncucyteShortNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop)
             throws ServiceException, DependencyException, FormatException, IOException {
         // First, running metadata extraction on the input file
@@ -432,7 +442,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public void run(Workspace workspace) throws GenericMIAException {
+    public void run(Workspace workspace) {
         // Getting parameters
         String outputMode = parameters.getValue(OUTPUT_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -476,8 +486,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             switch (importMode) {
                 case ImportModes.CURRENT_FILE:
                     File file = workspace.getMetadata().getFile();
-                    if (file == null)
-                        throw new GenericMIAException("Set file in Input Control");
+
                     if (useImageJReader) {
                         ipl = IJ.openImage(workspace.getMetadata().getFile().getAbsolutePath());
                     } else {
@@ -496,8 +505,14 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 case ImportModes.MATCHING_FORMAT:
                     switch (nameFormat) {
-                        case NameFormats.INCUCYTE_SHORT:
+                        case NameFormats.HUYGENS:
                             HCMetadata metadata = (HCMetadata) workspace.getMetadata().clone();
+                            metadata.setComment(comment);
+                            ipl = getHuygensImage(metadata,dimRanges,crop);
+                            break;
+
+                        case NameFormats.INCUCYTE_SHORT:
+                            metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(comment);
                             ipl = getIncucyteShortNameImage(metadata, seriesNumber, dimRanges,crop);
                             break;
@@ -560,23 +575,23 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         switch (outputMode) {
             case OutputModes.IMAGE:
                 writeMessage("Adding image (" + outputImageName + ") to workspace");
-                workspace.addImage(new Image(outputImageName, ipl));
+                Image outputImage = new Image(outputImageName, ipl);
+                workspace.addImage(outputImage);
+
+                if (showOutput) showImage(outputImage);
+
                 break;
 
             case OutputModes.OBJECTS:
-                Image outputImage = new Image(outputObjectsName, ipl);
+                outputImage = new Image(outputObjectsName, ipl);
                 ObjCollection outputObjects = outputImage.convertImageToObjects(outputObjectsName);
 
                 writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
                 workspace.addObjects(outputObjects);
-                break;
-        }
 
-        // Displaying the image (the image is duplicated, so it doesn't get deleted if the window is closed)
-        if (showOutput && ipl != null) {
-            ipl = new Duplicator().run(ipl);
-            ipl.setTitle(outputImageName);
-            ipl.show();
+                if (showOutput) showImage(outputImage);
+
+                break;
         }
     }
 
@@ -590,7 +605,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(STARTING_INDEX,Parameter.INTEGER,0));
         parameters.add(new Parameter(LIMIT_FRAMES,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FINAL_INDEX,Parameter.INTEGER,1));
-        parameters.add(new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INCUCYTE_SHORT,NameFormats.ALL));
+        parameters.add(new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.HUYGENS,NameFormats.ALL));
         parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
         parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
         parameters.add(new Parameter(SUFFIX,Parameter.STRING,""));
@@ -646,6 +661,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             case ImportModes.MATCHING_FORMAT:
                 returnedParameters.add(parameters.getParameter(NAME_FORMAT));
                 switch ((String) parameters.getValue(NAME_FORMAT)) {
+                    case NameFormats.HUYGENS:
                     case NameFormats.INCUCYTE_SHORT:
                         returnedParameters.add(parameters.getParameter(COMMENT));
                         break;

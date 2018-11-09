@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -27,7 +26,7 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) throws GenericMIAException {
+    public void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 

@@ -4,6 +4,7 @@
 
 package wbif.sjx.ModularImageAnalysis;
 
+import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
 import net.imagej.ui.swing.updater.ResolveDependencies;
@@ -11,9 +12,12 @@ import net.imagej.updater.*;
 import net.imagej.updater.util.*;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Object.ErrorLog;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
@@ -38,6 +42,7 @@ public class MIA implements PlugIn {
     private static final ErrorLog errorLog = new ErrorLog();
     public static String slashes = "\\";
     private static ArrayList<String> pluginPackageNames = new ArrayList<>();
+    private static String version = "";
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to add compatibility.
@@ -49,6 +54,15 @@ public class MIA implements PlugIn {
         if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
         else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";
         else if (SystemUtils.IS_OS_LINUX) slashes = "/";
+
+        // Determining the version number from the pom file
+        try {
+            FileReader reader = new FileReader("pom.xml");
+            Model model = new MavenXpp3Reader().read(reader);
+            version = new MavenProject(model).getVersion();
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
 
         // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
         ErrorLog errorLog = new ErrorLog();
@@ -73,7 +87,8 @@ public class MIA implements PlugIn {
 
             }
 
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ParserConfigurationException | IOException | GenericMIAException | InterruptedException | SAXException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IOException | SAXException |
+                UnsupportedLookAndFeelException | ParserConfigurationException | InterruptedException e) {
             e.printStackTrace(System.err);
 
         }
@@ -81,6 +96,20 @@ public class MIA implements PlugIn {
 
     @Override
     public void run(String s) {
+        // Setting the file path slashes depending on the operating system
+        if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
+        else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";
+        else if (SystemUtils.IS_OS_LINUX) slashes = "/";
+
+        // Determining the version number from the pom file
+        try {
+            FileReader reader = new FileReader("pom.xml");
+            Model model = new MavenXpp3Reader().read(reader);
+            version = new MavenProject(model).getVersion();
+        } catch (XmlPullParserException | IOException e) {
+            version = getClass().getPackage().getImplementationVersion();
+        }
+
         // Checking the relevant plugins are available
         boolean[] toInstall = new boolean[2];
         Arrays.fill(toInstall,false);
@@ -173,5 +202,9 @@ public class MIA implements PlugIn {
 
     public static ArrayList<String> getPluginPackages() {
         return pluginPackageNames;
+    }
+
+    public static String getVersion() {
+        return version;
     }
 }

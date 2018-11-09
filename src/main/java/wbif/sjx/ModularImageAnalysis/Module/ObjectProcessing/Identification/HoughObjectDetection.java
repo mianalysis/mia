@@ -3,7 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
@@ -56,7 +55,7 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -179,6 +178,8 @@ public class HoughObjectDetection extends Module {
                     .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,labelSize))
                     .createOverlay(dispIpl,outputObjects,colours,IDs);
 
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
             dispIpl.show();
 
         }

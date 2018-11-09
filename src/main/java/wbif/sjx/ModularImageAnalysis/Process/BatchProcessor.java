@@ -14,7 +14,6 @@ import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
@@ -57,7 +56,7 @@ public class BatchProcessor extends FileCrawler {
 
     // PUBLIC METHODS
 
-    public void runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, GenericMIAException, InterruptedException {
+    public void runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, InterruptedException {
         shutdownEarly = false;
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
@@ -77,7 +76,14 @@ public class BatchProcessor extends FileCrawler {
 
         // Saving the results
         if (shutdownEarly || exporter == null) return;
-        exporter.exportResults(workspaces,analysis);
+
+        String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
+        switch (exportMode) {
+            case OutputControl.ExportModes.ALL_TOGETHER:
+            case OutputControl.ExportModes.GROUP_BY_METADATA:
+                exporter.exportResults(workspaces,analysis);
+                break;
+        }
 
         GUI.setProgress(0);
 
@@ -88,6 +94,7 @@ public class BatchProcessor extends FileCrawler {
 
         boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
         int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
+        String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
 
         Module.setVerbose(false);
 
@@ -146,10 +153,11 @@ public class BatchProcessor extends FileCrawler {
                                 + " (" + dfDec.format(percentageComplete) + "%), " + finalNext.getName();
                         System.out.println(string);
 
-                        if (continuousExport && nComplete % saveNFiles == 0)
-                            exporter.exportResults(workspaces, analysis);
+                        if (continuousExport && nComplete % saveNFiles == 0) exporter.exportResults(workspaces, analysis);
 
-                    } catch (GenericMIAException | IOException e) {
+                        if (exportMode.equals(OutputControl.ExportModes.INDIVIDUAL_FILES)) exporter.exportResults(workspace, analysis);
+
+                    } catch (IOException e) {
                         e.printStackTrace();
 
                     } catch (Throwable t) {

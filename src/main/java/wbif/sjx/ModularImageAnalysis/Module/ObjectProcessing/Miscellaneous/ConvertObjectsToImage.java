@@ -8,7 +8,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
-import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
@@ -105,27 +104,29 @@ public class ConvertObjectsToImage extends Module {
             workspace.addImage(outputImage);
 
             if (showOutput) {
-                ImagePlus iplShow = new Duplicator().run(outputImage.getImagePlus());
-                iplShow.setTitle(outputImage.getName());
+                ImagePlus dispIpl = new Duplicator().run(outputImage.getImagePlus());
+                dispIpl.setTitle(outputImage.getName());
 
                 switch (colourMode) {
                     case ColourModes.ID:
                     case ColourModes.PARENT_ID:
                     case ColourModes.RANDOM_COLOUR:
-                        iplShow.setLut(LUTs.Random(true));
+                        dispIpl.setLut(LUTs.Random(true));
                         break;
 
                     case ColourModes.MEASUREMENT_VALUE:
-                        iplShow.setLut(LUTs.BlackFire());
+                        dispIpl.setLut(LUTs.BlackFire());
                         break;
 
                     case ColourModes.SINGLE_COLOUR:
-                        IJ.run(iplShow,"Grays","");
+                        IJ.run(dispIpl,"Grays","");
                         break;
                 }
 
-                IntensityMinMax.run(iplShow,iplShow.getNSlices() > 1);
-                iplShow.show();
+                IntensityMinMax.run(dispIpl,dispIpl.getNSlices() > 1);
+                dispIpl.setPosition(1,1,1);
+                dispIpl.updateChannelAndDraw();
+                dispIpl.show();
 
             }
         }

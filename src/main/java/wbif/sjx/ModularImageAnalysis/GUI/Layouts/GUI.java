@@ -5,10 +5,10 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import org.apache.commons.io.output.TeeOutputStream;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
@@ -47,7 +47,7 @@ public class GUI {
     private static int minimumFrameHeight = 600;
     private static int frameHeight = 800;
     private static int elementHeight = 26;
-    private static int bigButtonSize = 40;
+    private static int bigButtonSize = 45;
     private static int moduleButtonWidth = 295;
     private static int statusHeight = 20;
 
@@ -58,7 +58,6 @@ public class GUI {
     private static ComponentFactory componentFactory;
     private static final JFrame frame = new JFrame();
     private static final JMenuBar menuBar = new JMenuBar();
-    private static final JMenu viewMenu = new JMenu("View");
     private static final JPanel basicPanel = new JPanel();
     private static final JPanel editingPanel = new JPanel();
     private static final JPanel modulesPanel = new JPanel();
@@ -78,6 +77,7 @@ public class GUI {
     private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
     private static final ModuleButton inputButton = new ModuleButton(analysis.getInputControl());
     private static final ModuleButton outputButton = new ModuleButton(analysis.getOutputControl());
+    private static final MeasurementReference globalMeasurementReference = new MeasurementReference("Global");
 
 
     public GUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
@@ -101,7 +101,7 @@ public class GUI {
         // Setting location of panel
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setLocation((screenSize.width - editingFrameWidth) / 2, (screenSize.height - frameHeight) / 2);
-        frame.setTitle("MIA (version " + getClass().getPackage().getImplementationVersion() + ")");
+        frame.setTitle("MIA (version " + MIA.getVersion() + ")");
 
         initialiseStatusTextField();
 
@@ -132,12 +132,14 @@ public class GUI {
     private static void initialiseMenuBar() {
         // Creating the file menu
         JMenu menu = new JMenu("File");
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.LOAD_ANALYSIS));
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.SAVE_ANALYSIS));
 
         // Creating the edit menu
         menu = new JMenu("Edit");
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.CLEAR_PIPELINE));
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.ENABLE_ALL));
@@ -147,23 +149,20 @@ public class GUI {
 
         // Creating the analysis menu
         menu = new JMenu("Analysis");
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
-//        menu.add(new AnalysisMenuItem(this, AnalysisMenuItem.SET_FILE_TO_ANALYSE));
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.START_ANALYSIS));
         menu.add(new AnalysisMenuItem(AnalysisMenuItem.STOP_ANALYSIS));
 
         // Creating the new menu
-        menuBar.add(viewMenu);
-        ButtonGroup group = new ButtonGroup();
-        ViewControlButton rbMenuItem = new ViewControlButton(ViewControlButton.BASIC_MODE);
-        rbMenuItem.setSelected(!debugOn);
-        group.add(rbMenuItem);
-        viewMenu.add(rbMenuItem);
-
-        rbMenuItem = new ViewControlButton(ViewControlButton.EDITING_MODE);
-        rbMenuItem.setSelected(debugOn);
-        group.add(rbMenuItem);
-        viewMenu.add(rbMenuItem);
+        menu = new JMenu("View");
+        menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        menuBar.add(menu);
+        if (debugOn) {
+            menu.add(new AnalysisMenuItem(AnalysisMenuItem.BASIC_VIEW));
+        } else {
+            menu.add(new AnalysisMenuItem(AnalysisMenuItem.EDITING_VIEW));
+        }
 
     }
 
@@ -526,9 +525,8 @@ public class GUI {
     private static void initialiseStatusTextField() {
         textField.setPreferredSize(new Dimension(Integer.MAX_VALUE,statusHeight));
         textField.setBorder(null);
-        textField.setText("MIA (version " + MIA.class.getPackage().getImplementationVersion() + ")");
+        textField.setText("MIA (version " + MIA.getVersion() + ")");
         textField.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-        textField.setEditable(false);
         textField.setToolTipText(textField.getText());
         textField.setOpaque(false);
 
@@ -690,11 +688,11 @@ public class GUI {
         separator.setPreferredSize(new Dimension(-1,1));
         modulesPanel.add(separator, c);
 
+        modulesScrollPane.revalidate();
         modulesScrollPane.repaint();
-        modulesScrollPane.validate();
 
+        modulesPanel.revalidate();
         modulesPanel.repaint();
-        modulesPanel.validate();
 
     }
 
@@ -755,6 +753,20 @@ public class GUI {
                 && analysis.getOutputControl().isEnabled()
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
 
+            // Creating global controls for the different statistics
+            JPanel measurementHeader = componentFactory.createMeasurementHeader("Global control",null);
+            c.gridx = 0;
+            c.gridy++;
+            c.gridwidth = 2;
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.WEST;
+            paramsPanel.add(measurementHeader,c);
+
+            JPanel currentMeasurementPanel = componentFactory.createGlobalMeasurementControl(globalMeasurementReference);
+            c.gridy++;
+            c.anchor = GridBagConstraints.EAST;
+            paramsPanel.add(currentMeasurementPanel,c);
+
             LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);
             for (Parameter imageNameParameter:imageNameParameters) {
                 String imageName = imageNameParameter.getValue();
@@ -762,9 +774,10 @@ public class GUI {
 
                 if (measurementReferences.size() == 0) continue;
 
-                JPanel measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)");
+                measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)", measurementReferences);
                 c.gridx = 0;
                 c.gridy++;
+                c.anchor = GridBagConstraints.WEST;
                 paramsPanel.add(measurementHeader,c);
 
                 // Iterating over the measurements for the current image, adding a control for each
@@ -772,9 +785,8 @@ public class GUI {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
-                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
+                    currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
                     c.gridy++;
-                    c.gridwidth = 2;
                     c.anchor = GridBagConstraints.EAST;
                     paramsPanel.add(currentMeasurementPanel,c);
 
@@ -788,9 +800,10 @@ public class GUI {
 
                 if (measurementReferences.size() == 0) continue;
 
-                JPanel measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)");
+                measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)",measurementReferences);
                 c.gridx = 0;
                 c.gridy++;
+                c.anchor = GridBagConstraints.WEST;
                 paramsPanel.add(measurementHeader,c);
 
                 // Iterating over the measurements for the current object, adding a control for each
@@ -798,8 +811,9 @@ public class GUI {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
-                    JPanel currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
+                    currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
                     c.gridy++;
+                    c.anchor = GridBagConstraints.EAST;
                     paramsPanel.add(currentMeasurementPanel,c);
 
                 }
@@ -1076,10 +1090,6 @@ public class GUI {
         return moduleListMenu;
     }
 
-    public static JMenu getViewMenu() {
-        return viewMenu;
-    }
-
     public static boolean isBasicGUI() {
         return basicGUI;
     }
@@ -1221,7 +1231,7 @@ public class GUI {
         GUI.activeModule = activeModule;
     }
 
-    public static void evaluateModule(Module module) throws GenericMIAException {
+    public static void evaluateModule(Module module) {
         // Setting the index to the previous module.  This will make the currently-evaluated module go red
         lastModuleEval = getModules().indexOf(module) - 1;
         moduleBeingEval = getModules().indexOf(module);
@@ -1245,5 +1255,9 @@ public class GUI {
 
     public static Workspace getTestWorkspace() {
         return testWorkspace;
+    }
+
+    public static MeasurementReference getGlobalMeasurementReference() {
+        return globalMeasurementReference;
     }
 }

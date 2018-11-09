@@ -9,12 +9,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ResetMeasurementName extends JButton implements ActionListener {
+public class ResetMeasurement extends JButton implements ActionListener {
     private MeasurementReference measurementReference;
 
     private static final ImageIcon refreshIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/refresh_black_12px.png"), "");
 
-    public ResetMeasurementName(MeasurementReference measurementReference) {
+    public ResetMeasurement(MeasurementReference measurementReference) {
         this.measurementReference = measurementReference;
 
         setMargin(new Insets(0,0,0,0));
@@ -30,6 +30,12 @@ public class ResetMeasurementName extends JButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         measurementReference.setNickname(measurementReference.getName());
+        measurementReference.setExportIndividual(true);
+        measurementReference.setExportMean(true);
+        measurementReference.setExportMin(true);
+        measurementReference.setExportMax(true);
+        measurementReference.setExportSum(true);
+        measurementReference.setExportStd(true);
 
         GUI.populateModuleParameters();
 

@@ -13,7 +13,6 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.NormaliseIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -286,7 +285,7 @@ public class RunTrackMate extends Module {
         // If image should be normalised
         if (normaliseIntensity) {
             ipl = new Duplicator().run(ipl);
-            NormaliseIntensity.normaliseIntensity(ipl,0);
+            IntensityMinMax.run(ipl,true);
         }
 
         // Initialising TrackMate model to store data

@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -89,7 +88,7 @@ public class ImageMath extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -115,18 +114,16 @@ public class ImageMath extends Module {
 
         process(inputImagePlus,calculationType,mathValue);
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(inputImagePlus);
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
-        }
-
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
+            if (showOutput) showImage(outputImage);
+
+        } else {
+            if (showOutput) showImage(inputImage);
+
         }
     }
 
@@ -158,16 +155,19 @@ public class ImageMath extends Module {
         returnedParameters.add(parameters.getParameter(CALCULATION_TYPE));
         returnedParameters.add(parameters.getParameter(VALUE_SOURCE));
 
-        if (parameters.getValue(VALUE_SOURCE).equals(ValueSources.MEASUREMENT)) {
-            returnedParameters.add(parameters.getParameter(MEASUREMENT));
+        switch ((String) parameters.getValue(VALUE_SOURCE)) {
+            case ValueSources.FIXED:
+                returnedParameters.add(parameters.getParameter(MATH_VALUE));
+                break;
 
-            if (parameters.getValue(INPUT_IMAGE) != null) {
-                parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_IMAGE));
+            case ValueSources.MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
-            }
+                if (parameters.getValue(INPUT_IMAGE) != null) {
+                    parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_IMAGE));
+                }
+                break;
         }
-
-        returnedParameters.add(parameters.getParameter(MATH_VALUE));
 
         return returnedParameters;
 

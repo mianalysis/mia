@@ -1,43 +1,27 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import fiji.stacks.Hyperstack_rearranger;
-import ij.CompositeImage;
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
-import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import ij.process.LUT;
-import ij3d.ColorTable;
 import net.imagej.ImgPlus;
-import net.imagej.autoscale.DefaultAutoscaleMethod;
 import net.imagej.axis.Axes;
 import net.imagej.axis.CalibratedAxis;
 import net.imagej.axis.IdentityAxis;
-import net.imagej.display.ColorTables;
-import net.imagej.interval.DefaultCalibratedRealInterval;
 import net.imglib2.Cursor;
-import net.imglib2.RealInterval;
-import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
-import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.view.Views;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by sc13967 on 22/02/2018.
@@ -45,7 +29,18 @@ import java.util.Map;
 public class MergeChannels< T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE1 = "Input image 1";
     public static final String INPUT_IMAGE2 = "Input image 2";
+    public static final String OVERWRITE_MODE = "Overwrite mode";
     public static final String OUTPUT_IMAGE = "Output image";
+
+
+    public interface OverwriteModes {
+        String CREATE_NEW = "Create new image";
+        String OVERWRITE_IMAGE1 = "Overwrite image 1";
+        String OVERWRITE_IMAGE2 = "Overwrite image 2";
+
+        String[] ALL = new String[]{CREATE_NEW,OVERWRITE_IMAGE1,OVERWRITE_IMAGE2};
+
+    }
 
 
 //    public void forceSameType(Image inputImage1, Image inputImage2) {
@@ -135,10 +130,13 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite"));
 
         // Updating the display range to help show all the colours
-        IntensityMinMax.run(ipl,true,0.001);
+        IntensityMinMax.run(ipl,true,0.001,IntensityMinMax.PROCESS_FAST);
 
         // Spatial calibration has to be reapplied, as it's lost in the translation between ImagePlus and ImgPlus
         ipl.setCalibration(inputImage1.getImagePlus().getCalibration());
+
+        ipl.setPosition(1,1,1);
+        ipl.updateChannelAndDraw();
 
         return new Image(outputImageName,ipl);
 
@@ -221,10 +219,11 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting parameters
         String inputImage1Name = parameters.getValue(INPUT_IMAGE1);
         String inputImage2Name = parameters.getValue(INPUT_IMAGE2);
+        String overwriteMode = parameters.getValue(OVERWRITE_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
         Image inputImage1 = workspace.getImage(inputImage1Name);
@@ -234,26 +233,51 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 //        forceSameType(inputImage1,inputImage2);
 
         Image mergedImage = combineImages(inputImage1,inputImage2,outputImageName);
-        workspace.addImage(mergedImage);
 
-        if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(mergedImage.getImagePlus());
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
+        // If the image is being saved as a new image, adding it to the workspace
+        switch (overwriteMode) {
+            case ImageCalculator.OverwriteModes.CREATE_NEW:
+                Image outputImage = new Image(outputImageName,mergedImage.getImagePlus());
+                workspace.addImage(outputImage);
+                break;
+
+            case ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1:
+                inputImage1.setImagePlus(mergedImage.getImagePlus());
+                break;
+
+            case ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2:
+                inputImage2.setImagePlus(mergedImage.getImagePlus());
+                break;
         }
+
+        if (showOutput) showImage(mergedImage);
+
     }
 
     @Override
     protected void initialiseParameters() {
         parameters.add(new Parameter(INPUT_IMAGE1,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(INPUT_IMAGE2,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(OVERWRITE_MODE,Parameter.CHOICE_ARRAY,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE1));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
+        returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
+
+        switch ((String) parameters.getValue(OVERWRITE_MODE)) {
+            case OverwriteModes.CREATE_NEW:
+                returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+                break;
+        }
+
+        return returnedParameters;
     }
 
     @Override

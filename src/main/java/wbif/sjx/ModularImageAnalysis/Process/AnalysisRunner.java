@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
@@ -18,7 +17,7 @@ import java.io.IOException;
 public class AnalysisRunner {
     private static BatchProcessor batchProcessor;
 
-    public static void startAnalysis(Analysis analysis) throws IOException, GenericMIAException, InterruptedException {
+    public static void startAnalysis(Analysis analysis) throws IOException, InterruptedException {
         // Getting input/output controls
         InputControl inputControl = analysis.getInputControl();
         OutputControl outputControl = analysis.getOutputControl();
@@ -146,11 +145,11 @@ public class AnalysisRunner {
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
         boolean showChildCounts = outputControl.getParameterValue(OutputControl.SHOW_NUMBER_OF_CHILDREN);
-        boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MEAN);
-        boolean calculateMin = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MIN);
-        boolean calculateMax = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_MAX);
-        boolean calculateStd = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_STD);
-        boolean calculateSum = outputControl.getParameterValue(OutputControl.CALCULATE_SUMMARY_SUM);
+        boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_MEAN);
+        boolean calculateMin = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_MIN);
+        boolean calculateMax = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_MAX);
+        boolean calculateStd = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_STD);
+        boolean calculateSum = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_SUM);
 
         // Initialising the exporter (if one was requested)
         Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
@@ -159,11 +158,11 @@ public class AnalysisRunner {
             exporter.setExportSummary(exportSummary);
             exporter.setShowObjectCounts(showObjectCounts);
             exporter.setShowChildCounts(showChildCounts);
-            exporter.setCalculateMean(calculateMean);
-            exporter.setCalculateMin(calculateMin);
-            exporter.setCalculateMax(calculateMax);
-            exporter.setCalculateStd(calculateStd);
-            exporter.setCalculateSum(calculateSum);
+            exporter.setCalculateCountMean(calculateMean);
+            exporter.setCalculateCountMin(calculateMin);
+            exporter.setCalculateCountMax(calculateMax);
+            exporter.setCalculateCountStd(calculateStd);
+            exporter.setCalculateCountSum(calculateSum);
             exporter.setExportIndividualObjects(exportIndividualObjects);
 
             switch (exportMode) {

@@ -1,8 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
 import net.imglib2.*;
 import net.imglib2.img.Img;
@@ -14,11 +12,9 @@ import net.imglib2.realtransform.*;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.*;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
  * Created by sc13967 on 05/02/2018.
@@ -105,7 +101,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Loading image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image<T> inputImage = workspace.getImage(inputImageName);

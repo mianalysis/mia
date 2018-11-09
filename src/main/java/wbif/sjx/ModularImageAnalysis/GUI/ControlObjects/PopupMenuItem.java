@@ -6,6 +6,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,7 +18,9 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
 
     public PopupMenuItem(Module module) {
         this.module = module;
-        if (module != null) setText(module.getTitle());
+
+        setText(module.getTitle());
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         addActionListener(this);
 
     }

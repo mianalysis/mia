@@ -13,12 +13,10 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.IntensityMinMax;
 
 public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -116,7 +114,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    protected void run(Workspace workspace) throws GenericMIAException {
+    protected void run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -130,26 +128,23 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
         int[] shifts = getPixelShifts(inputImage);
 
         // Processing the input image
-        if (!applyToInput) {
-            inputImagePlus = new Duplicator().run(inputImagePlus);
-            inputImage = new Image(outputImageName,inputImagePlus);
-        }
+        if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
+
         Calibration calibration = inputImagePlus.getCalibration();
         shiftImage(inputImage,shifts);
         inputImage.getImagePlus().setCalibration(calibration);
 
-        // If necessary, adding the output image to the workspace
         if (!applyToInput) {
-            workspace.addImage(inputImage);
+            writeMessage("Adding image ("+outputImageName+") to workspace");
+            Image outputImage = new Image(outputImageName,inputImagePlus);
+            workspace.addImage(outputImage);
+            if (showOutput) showImage(outputImage);
+
+        } else {
+            if (showOutput) showImage(inputImage);
+
         }
 
-        // If necessary, showing the shifted image
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(inputImage.getImagePlus());
-            IntensityMinMax.run(dispIpl,true);
-            dispIpl.setTitle(inputImage.getName());
-            dispIpl.show();
-        }
     }
 
     @Override

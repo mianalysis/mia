@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;

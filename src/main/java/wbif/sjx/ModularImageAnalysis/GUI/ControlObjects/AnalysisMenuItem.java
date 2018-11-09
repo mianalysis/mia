@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
 import org.xml.sax.SAXException;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
@@ -13,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Process.AnalysisWriter;
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -30,8 +30,11 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
     public static final String DISABLE_ALL = "Disable all modules";
     public static final String OUTPUT_ALL = "Show output for all modules";
     public static final String SILENCE_ALL = "Hide output for all modules";
+    public static final String BASIC_VIEW = "Switch to basic view";
+    public static final String EDITING_VIEW = "Switch to editing view";
 
     public AnalysisMenuItem(String command) {
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(command);
         addActionListener(this);
 
@@ -71,8 +74,6 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                             AnalysisRunner.startAnalysis(GUI.getAnalysis());
                         } catch (IOException | InterruptedException e1) {
                             e1.printStackTrace();
-                        } catch (GenericMIAException e1) {
-                            IJ.showMessage(e1.getMessage());
                         }
                     });
                     t.start();
@@ -119,6 +120,19 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     GUI.populateModuleList();
                     break;
 
+                case BASIC_VIEW:
+                    GUI.renderBasicMode();
+                    setText(AnalysisMenuItem.EDITING_VIEW);
+                    break;
+
+                case EDITING_VIEW:
+                    try {
+                        GUI.renderEditingMode();
+                    } catch (InstantiationException | IllegalAccessException e1) {
+                        e1.printStackTrace();
+                    }
+                    setText(AnalysisMenuItem.BASIC_VIEW);
+                    break;
             }
 
         } catch (IOException | ClassNotFoundException | ParserConfigurationException | SAXException

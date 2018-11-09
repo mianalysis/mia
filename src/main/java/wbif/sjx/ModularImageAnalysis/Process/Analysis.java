@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
@@ -41,16 +40,7 @@ public class Analysis implements Serializable {
      * @param workspace Workspace containing stores for images and objects
      * @return
      */
-    public boolean execute(Workspace workspace) throws GenericMIAException {
-        // Check that all available parameters have been set
-        for (Module module:modules) {
-            ParameterCollection activeParameters = module.updateAndGetParameters();
-            for (Parameter activeParameter:activeParameters.values()) {
-                if (activeParameter.getValue() == null) throw new GenericMIAException(
-                        "Module \""+module.getTitle()+"\" parameter \""+activeParameter.getName()+"\" not set");
-            }
-        }
-
+    public boolean execute(Workspace workspace) {
         // Running through modules
         int total = modules.size();
         int count = 0;

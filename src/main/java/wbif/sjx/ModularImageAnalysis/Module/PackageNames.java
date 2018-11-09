@@ -4,6 +4,7 @@ public class PackageNames {
     public final static String IMAGE_MEASUREMENTS = "Image measurements\\";
     public final static String IMAGE_PROCESSING_MISCELLANEOUS = "Image processing\\Miscellaneous\\";
     public final static String IMAGE_PROCESSING_PIXEL = "Image processing\\Pixel\\";
+    public final static String IMAGE_PROCESSING_PIXEL_BINARY = "Image processing\\Pixel\\Binary\\";
     public final static String IMAGE_PROCESSING_STACK = "Image processing\\Stack\\";
     public final static String INPUT_OUTPUT = "Input output\\";
     public final static String MISCELLANEOUS = "Miscellaneous\\";

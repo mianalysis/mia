@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import ij.IJ;
 import org.xml.sax.SAXException;
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Process.*;
 
@@ -28,6 +27,7 @@ public class AnalysisControlButton extends JButton implements ActionListener {
         addActionListener(this);
         setFocusPainted(false);
         setMargin(new Insets(0,0,0,0));
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(command);
         setPreferredSize(new Dimension(buttonSize, buttonSize));
 
@@ -65,10 +65,6 @@ public class AnalysisControlButton extends JButton implements ActionListener {
                     Thread t = new Thread(() -> {
                         try {
                             AnalysisRunner.startAnalysis(GUI.getAnalysis());
-                        } catch (IOException | InterruptedException e1) {
-                            e1.printStackTrace();
-                        } catch (GenericMIAException e1) {
-                            IJ.showMessage(e1.getMessage());
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }

@@ -4,6 +4,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class ModuleListMenu extends JMenu implements MouseListener {
         for (Module module : modules) {
             add(new PopupMenuItem(module));
         }
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         addMouseListener(this);
 
     }

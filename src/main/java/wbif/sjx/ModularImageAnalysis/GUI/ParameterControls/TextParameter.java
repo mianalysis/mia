@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameter;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -20,6 +21,7 @@ public class TextParameter extends JTextField implements FocusListener {
         this.parameter = parameter;
 
         String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(name);
         addFocusListener(this);
 

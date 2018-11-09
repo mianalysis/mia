@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -14,11 +13,11 @@ public class OutputControl extends Module {
     public static final String SUMMARY_MODE = "Summary mode";
     public static final String SHOW_OBJECT_COUNTS = "Show object counts";
     public static final String SHOW_NUMBER_OF_CHILDREN = "Show number of children";
-    public static final String CALCULATE_SUMMARY_MEAN = "Calculate summary means";
-    public static final String CALCULATE_SUMMARY_MIN = "Calculate summary minima";
-    public static final String CALCULATE_SUMMARY_MAX = "Calculate summary maxima";
-    public static final String CALCULATE_SUMMARY_STD = "Calculate summary standard deviations";
-    public static final String CALCULATE_SUMMARY_SUM = "Calculate summary sums";
+    public static final String CALCULATE_COUNT_MEAN = "Calculate count means";
+    public static final String CALCULATE_COUNT_MIN = "Calculate count minima";
+    public static final String CALCULATE_COUNT_MAX = "Calculate count maxima";
+    public static final String CALCULATE_COUNT_STD = "Calculate count standard deviations";
+    public static final String CALCULATE_COUNT_SUM = "Calculate count sums";
     public static final String EXPORT_INDIVIDUAL_OBJECTS = "Export individual objects";
     public static final String CONTINUOUS_DATA_EXPORT = "Continuous data export";
     public static final String SAVE_EVERY_N = "Save every n files";
@@ -58,7 +57,7 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) throws GenericMIAException {
+    public void run(Workspace workspace) {
 
     }
 
@@ -70,11 +69,11 @@ public class OutputControl extends Module {
         parameters.add(new Parameter(SUMMARY_MODE,Parameter.CHOICE_ARRAY,SummaryModes.ONE_AVERAGE_PER_FILE,SummaryModes.ALL));
         parameters.add(new Parameter(SHOW_OBJECT_COUNTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(SHOW_NUMBER_OF_CHILDREN,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_SUMMARY_MEAN,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_SUMMARY_MIN,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_SUMMARY_MAX,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_SUMMARY_STD,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_SUMMARY_SUM,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CALCULATE_COUNT_MEAN,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CALCULATE_COUNT_MIN,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CALCULATE_COUNT_MAX,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CALCULATE_COUNT_STD,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(CALCULATE_COUNT_SUM,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(EXPORT_INDIVIDUAL_OBJECTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CONTINUOUS_DATA_EXPORT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SAVE_EVERY_N,Parameter.INTEGER,10));
@@ -98,11 +97,14 @@ public class OutputControl extends Module {
             returnedParameters.add(parameters.getParameter(SUMMARY_MODE));
             returnedParameters.add(parameters.getParameter(SHOW_OBJECT_COUNTS));
             returnedParameters.add(parameters.getParameter(SHOW_NUMBER_OF_CHILDREN));
-            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MEAN));
-            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MIN));
-            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_MAX));
-            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_STD));
-            returnedParameters.add(parameters.getParameter(CALCULATE_SUMMARY_SUM));
+
+            if (parameters.getValue(SHOW_NUMBER_OF_CHILDREN)) {
+                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_MEAN));
+                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_MIN));
+                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_MAX));
+                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_STD));
+                returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_SUM));
+            }
         }
 
         returnedParameters.add(parameters.getParameter(EXPORT_INDIVIDUAL_OBJECTS));

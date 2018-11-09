@@ -3,13 +3,11 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import ij.CompositeImage;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import net.imagej.overlay.CompositeOverlay;
+import org.apache.poi.ss.formula.functions.T;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -18,7 +16,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -247,14 +244,17 @@ public class AddObjectsOverlay extends Module {
         Overlay ovl = ipl.getOverlay();
 
         // Adding text label
-        TextRoi text = new TextRoi(labelCoords[0]-labelSize/2, labelCoords[1]-labelSize/2+5, label);
+        TextRoi text = new TextRoi(labelCoords[0], labelCoords[1], label);
         text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
+        text.setJustification(TextRoi.CENTER);
+        text.setStrokeColor(colour);
+        text.setLocation(labelCoords[0] - text.getFloatWidth()/2, labelCoords[1]-text.getFloatHeight()/2);
+
         if (ipl.isHyperStack()) {
             text.setPosition(1, (int) labelCoords[2], (int) labelCoords[3]);
         } else {
             text.setPosition((int) Math.max(Math.max(1, labelCoords[2]), labelCoords[3]));
         }
-        text.setStrokeColor(colour);
         ovl.addElement(text);
 
     }
@@ -490,9 +490,11 @@ public class AddObjectsOverlay extends Module {
         // Duplicating the image, then displaying it.  Duplicating prevents the image being removed from the workspace
         // if it's closed
         if (showOutput) {
-            ImagePlus showIpl = new Duplicator().run(ipl);
-            showIpl.setTitle(outputImageName);
-            showIpl.show();
+            ImagePlus dispIpl = new Duplicator().run(ipl);
+            dispIpl.setTitle(outputImageName);
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
+            dispIpl.show();
         }
     }
 

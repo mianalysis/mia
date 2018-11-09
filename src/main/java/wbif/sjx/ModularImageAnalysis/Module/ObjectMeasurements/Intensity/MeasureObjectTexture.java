@@ -9,8 +9,6 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
-import java.util.ArrayList;
-
 /**
  * Takes a set of objects and measures intensity texture values on a provided image.  Measurements are stored with the
  * objects.

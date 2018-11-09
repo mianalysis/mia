@@ -1,8 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
-import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 /**
@@ -82,7 +80,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) throws GenericMIAException {
+    public void run(Workspace workspace) {
 
     }
 

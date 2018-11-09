@@ -14,11 +14,12 @@ public class WiderDropDownCombo extends JComboBox {
     private boolean wide = false;
 
     public WiderDropDownCombo() {
-
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
     }
 
     public WiderDropDownCombo(Object[] objs) {
         super(objs);
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
     }
 
     public boolean isWide() {
