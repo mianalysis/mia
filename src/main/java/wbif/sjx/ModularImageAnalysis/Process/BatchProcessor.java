@@ -76,7 +76,14 @@ public class BatchProcessor extends FileCrawler {
 
         // Saving the results
         if (shutdownEarly || exporter == null) return;
-        exporter.exportResults(workspaces,analysis);
+
+        String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
+        switch (exportMode) {
+            case OutputControl.ExportModes.ALL_TOGETHER:
+            case OutputControl.ExportModes.GROUP_BY_METADATA:
+                exporter.exportResults(workspaces,analysis);
+                break;
+        }
 
         GUI.setProgress(0);
 
@@ -87,6 +94,7 @@ public class BatchProcessor extends FileCrawler {
 
         boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
         int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
+        String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
 
         Module.setVerbose(false);
 
@@ -145,8 +153,9 @@ public class BatchProcessor extends FileCrawler {
                                 + " (" + dfDec.format(percentageComplete) + "%), " + finalNext.getName();
                         System.out.println(string);
 
-                        if (continuousExport && nComplete % saveNFiles == 0)
-                            exporter.exportResults(workspaces, analysis);
+                        if (continuousExport && nComplete % saveNFiles == 0) exporter.exportResults(workspaces, analysis);
+
+                        if (exportMode.equals(OutputControl.ExportModes.INDIVIDUAL_FILES)) exporter.exportResults(workspace, analysis);
 
                     } catch (IOException e) {
                         e.printStackTrace();

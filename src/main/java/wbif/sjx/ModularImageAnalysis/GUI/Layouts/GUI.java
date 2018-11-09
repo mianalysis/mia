@@ -754,7 +754,7 @@ public class GUI {
                 && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
 
             // Creating global controls for the different statistics
-            JPanel measurementHeader = componentFactory.createMeasurementHeader("Global control");
+            JPanel measurementHeader = componentFactory.createMeasurementHeader("Global control",null);
             c.gridx = 0;
             c.gridy++;
             c.gridwidth = 2;
@@ -774,7 +774,7 @@ public class GUI {
 
                 if (measurementReferences.size() == 0) continue;
 
-                measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)");
+                measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)", measurementReferences);
                 c.gridx = 0;
                 c.gridy++;
                 c.anchor = GridBagConstraints.WEST;
@@ -800,7 +800,7 @@ public class GUI {
 
                 if (measurementReferences.size() == 0) continue;
 
-                measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)");
+                measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)",measurementReferences);
                 c.gridx = 0;
                 c.gridy++;
                 c.anchor = GridBagConstraints.WEST;

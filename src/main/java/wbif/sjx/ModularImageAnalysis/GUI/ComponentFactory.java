@@ -605,21 +605,37 @@ public class ComponentFactory {
         return measurementPanel;
     }
 
-    public JPanel createMeasurementHeader(String name) {
+    public JPanel createMeasurementHeader(String name, MeasurementReferenceCollection measurementReferences) {
         JPanel headerPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(5,5,0,0);
-        c.weightx = 1;
+        c.weightx = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
 
-        JLabel headerName = new JLabel("      "+name);
+        if (measurementReferences != null) {
+            EnableMeasurementsButton enableButton = new EnableMeasurementsButton(measurementReferences);
+            enableButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
+            headerPanel.add(enableButton, c);
+
+            DisableMeasurementsButton disableButton = new DisableMeasurementsButton(measurementReferences);
+            disableButton.setPreferredSize(new Dimension(elementHeight, elementHeight));
+            c.gridx++;
+            headerPanel.add(disableButton, c);
+
+        } else {
+            c.gridx = -1;
+        }
+
+        JLabel headerName = new JLabel(name);
         headerName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         headerName.setPreferredSize(new Dimension(-1, elementHeight));
         headerName.setBorder(null);
+        c.gridx++;
+        c.weightx = 1;
         headerPanel.add(headerName, c);
 
         JPanel labelPanel = createMeasurementExportLabels();
@@ -648,14 +664,8 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,0,0);
 
-        JSeparator separator = new JSeparator();
-        separator.setOrientation(JSeparator.HORIZONTAL);
-        separator.setPreferredSize(new Dimension(30, -1));
-        measurementPanel.add(separator,c);
-
         MeasurementEnabledButton enabledButton = new MeasurementEnabledButton(measurement);
         enabledButton.setPreferredSize(new Dimension(elementHeight,elementHeight));
-        c.gridx++;
         measurementPanel.add(enabledButton, c);
 
         MeasurementName measurementName = new MeasurementName(measurement);

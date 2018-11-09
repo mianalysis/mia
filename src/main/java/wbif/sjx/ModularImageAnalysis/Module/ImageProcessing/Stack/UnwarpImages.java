@@ -25,6 +25,16 @@ public class UnwarpImages extends Module {
     public static final String RELATIVE_MODE = "Relative mode";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
+    public static final String REGISTRATION_MODE = "Registration mode";
+    public static final String SUBSAMPLE_FACTOR = "Subsample factor";
+    public static final String INITIAL_DEFORMATION_MODE = "Initial deformation mode";
+    public static final String FINAL_DEFORMATION_MODE = "Final deformation mode";
+    public static final String DIVERGENCE_WEIGHT = "Divergence weight";
+    public static final String CURL_WEIGHT = "Curl weight";
+    public static final String LANDMARK_WEIGHT = "Landmark weight";
+    public static final String IMAGE_WEIGHT = "Image weight";
+    public static final String CONSISTENCY_WEIGHT = "Consistency weight";
+    public static final String STOP_THRESHOLD = "Stop threshold";
 
 
     public interface RelativeModes {
@@ -36,21 +46,82 @@ public class UnwarpImages extends Module {
 
     }
 
-    public static Transformation getTransformation(Image referenceImage, Image warpedImage) {
+    public interface RegistrationModes {
+        String FAST = "Fast";
+        String ACCURATE = "Accurate";
+        String MONO = "Mono";
+
+        String[] ALL = new String[]{FAST,ACCURATE,MONO};
+
+    }
+
+    public interface InitialDeformationModes {
+        String VERY_COARSE = "Very Coarse";
+        String COARSE = "Coarse";
+        String FINE = "Fine";
+        String VERY_FINE = "Very Fine";
+
+        String[] ALL = new String[]{VERY_COARSE,COARSE,FINE,VERY_FINE};
+
+    }
+
+    public interface FinalDeformationModes {
+        String VERY_COARSE = "Very Coarse";
+        String COARSE = "Coarse";
+        String FINE = "Fine";
+        String VERY_FINE = "Very Fine";
+        String SUPER_FINE = "Super Fine";
+
+        String[] ALL = new String[]{VERY_COARSE,COARSE,FINE,VERY_FINE,SUPER_FINE};
+
+    }
+
+
+    private int getRegistrationMode(String registrationMode) {
+        switch (registrationMode) {
+            case RegistrationModes.FAST:
+                default:
+                return 0;
+            case RegistrationModes.ACCURATE:
+                return 1;
+            case RegistrationModes.MONO:
+                return 2;
+        }
+    }
+
+    private int getInitialDeformationMode(String initialDeformationMode) {
+        switch (initialDeformationMode) {
+            case InitialDeformationModes.VERY_COARSE:
+            default:
+                return 0;
+            case InitialDeformationModes.COARSE:
+                return 1;
+            case InitialDeformationModes.FINE:
+                return 2;
+            case InitialDeformationModes.VERY_FINE:
+                return 3;
+        }
+    }
+
+    private int getFinalDeformationMode(String finalDeformationMode) {
+        switch (finalDeformationMode) {
+            case FinalDeformationModes.VERY_COARSE:
+            default:
+                return 0;
+            case FinalDeformationModes.COARSE:
+                return 1;
+            case FinalDeformationModes.FINE:
+                return 2;
+            case FinalDeformationModes.VERY_FINE:
+                return 3;
+            case FinalDeformationModes.SUPER_FINE:
+                return 4;
+        }
+    }
+
+    public static Transformation getTransformation(Image referenceImage, Image warpedImage, Param param) {
         ImagePlus referenceIpl = referenceImage.getImagePlus();
         ImagePlus warpedIpl = warpedImage.getImagePlus();
-
-        Param param = new Param();
-        param.mode = 2; // Accurate
-        param.img_subsamp_fact = 0;
-        param.min_scale_deformation = 0; // Very coarse
-        param.max_scale_deformation = 2; // Fine
-        param.divWeight = 0;
-        param.curlWeight = 0;
-        param.landmarkWeight = 0;
-        param.imageWeight = 1;
-        param.consistencyWeight = 10;
-        param.stopThreshold = 0.01;
 
         return bUnwarpJ_.computeTransformationBatch(referenceIpl, warpedIpl, null, null, param);
 
@@ -103,7 +174,7 @@ public class UnwarpImages extends Module {
         }
     }
 
-    public void process(Image inputImage, int calculationChannel, String relativeMode, @Nullable Image reference) {
+    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, @Nullable Image reference) {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -124,7 +195,7 @@ public class UnwarpImages extends Module {
         int count = 0;
         int total = inputImage.getImagePlus().getNFrames();
         for (int t = 1; t <= inputImage.getImagePlus().getNFrames(); t++) {
-            writeMessage("Processing image "+(++count)+" of "+total);
+            writeMessage("Processing timepoint "+(++count)+" of "+total);
 
             // If the reference image is the previous frame, calculate this now
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
@@ -142,7 +213,7 @@ public class UnwarpImages extends Module {
 
             // Calculating the transformation for this image pair
             if (projectedReference == null) return;
-            Transformation transformation = getTransformation(projectedReference, projectedWarped);
+            Transformation transformation = getTransformation(projectedReference, projectedWarped, param);
 
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same transformation.
@@ -185,13 +256,38 @@ public class UnwarpImages extends Module {
         String relativeMode = parameters.getValue(RELATIVE_MODE);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
+        String registrationMode = parameters.getValue(REGISTRATION_MODE);
+        int subsampleFactor = parameters.getValue(SUBSAMPLE_FACTOR);
+        String initialDeformationMode = parameters.getValue(INITIAL_DEFORMATION_MODE);
+        String finalDeformationMode = parameters.getValue(FINAL_DEFORMATION_MODE);
+        double divergenceWeight = parameters.getValue(DIVERGENCE_WEIGHT);
+        double curlWeight = parameters.getValue(CURL_WEIGHT);
+        double landmarkWeight = parameters.getValue(LANDMARK_WEIGHT);
+        double imageWeight = parameters.getValue(IMAGE_WEIGHT);
+        double consistencyWeight = parameters.getValue(CONSISTENCY_WEIGHT);
+        double stopThreshold = parameters.getValue(STOP_THRESHOLD);
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
-        // Loops over each channel
-           Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE)
-                    ? workspace.getImage(referenceImageName) : null;
-            process(inputImage,calculationChannel,relativeMode,reference);
+        // Setting up the parameters
+        Param param = new Param();
+        param.mode = getRegistrationMode(registrationMode);
+        param.img_subsamp_fact = subsampleFactor;
+        param.min_scale_deformation = getInitialDeformationMode(initialDeformationMode); // Very coarse
+        param.max_scale_deformation = getFinalDeformationMode(finalDeformationMode); // Fine
+        param.divWeight = divergenceWeight;
+        param.curlWeight = curlWeight;
+        param.landmarkWeight = landmarkWeight;
+        param.imageWeight = imageWeight;
+        if (registrationMode.equals(RegistrationModes.MONO)) {
+            param.consistencyWeight = 10.0;
+        } else {
+            param.consistencyWeight = consistencyWeight;
+        }
+        param.stopThreshold = stopThreshold;
+
+        Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
+        process(inputImage,calculationChannel,relativeMode,param,reference);
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
@@ -207,6 +303,16 @@ public class UnwarpImages extends Module {
         parameters.add(new Parameter(RELATIVE_MODE,Parameter.CHOICE_ARRAY,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
         parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(CALCULATION_CHANNEL, Parameter.INTEGER,1));
+        parameters.add(new Parameter(REGISTRATION_MODE,Parameter.CHOICE_ARRAY,RegistrationModes.FAST,RegistrationModes.ALL));
+        parameters.add(new Parameter(SUBSAMPLE_FACTOR,Parameter.INTEGER,0));
+        parameters.add(new Parameter(INITIAL_DEFORMATION_MODE,Parameter.CHOICE_ARRAY,InitialDeformationModes.VERY_COARSE,InitialDeformationModes.ALL));
+        parameters.add(new Parameter(FINAL_DEFORMATION_MODE,Parameter.CHOICE_ARRAY,FinalDeformationModes.FINE,FinalDeformationModes.ALL));
+        parameters.add(new Parameter(DIVERGENCE_WEIGHT, Parameter.DOUBLE,0d));
+        parameters.add(new Parameter(CURL_WEIGHT, Parameter.DOUBLE,0d));
+        parameters.add(new Parameter(LANDMARK_WEIGHT, Parameter.DOUBLE,0d));
+        parameters.add(new Parameter(IMAGE_WEIGHT, Parameter.DOUBLE,1d));
+        parameters.add(new Parameter(CONSISTENCY_WEIGHT, Parameter.DOUBLE,10d));
+        parameters.add(new Parameter(STOP_THRESHOLD, Parameter.DOUBLE,0.01));
 
     }
 
@@ -227,6 +333,23 @@ public class UnwarpImages extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
+        returnedParameters.add(parameters.getParameter(REGISTRATION_MODE));
+        returnedParameters.add(parameters.getParameter(SUBSAMPLE_FACTOR));
+        returnedParameters.add(parameters.getParameter(INITIAL_DEFORMATION_MODE));
+        returnedParameters.add(parameters.getParameter(FINAL_DEFORMATION_MODE));
+        returnedParameters.add(parameters.getParameter(DIVERGENCE_WEIGHT));
+        returnedParameters.add(parameters.getParameter(CURL_WEIGHT));
+        returnedParameters.add(parameters.getParameter(LANDMARK_WEIGHT));
+        returnedParameters.add(parameters.getParameter(IMAGE_WEIGHT));
+
+        switch ((String) parameters.getValue(REGISTRATION_MODE)) {
+            case RegistrationModes.ACCURATE:
+            case RegistrationModes.FAST:
+                returnedParameters.add(parameters.getParameter(CONSISTENCY_WEIGHT));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(STOP_THRESHOLD));
 
         return returnedParameters;
 

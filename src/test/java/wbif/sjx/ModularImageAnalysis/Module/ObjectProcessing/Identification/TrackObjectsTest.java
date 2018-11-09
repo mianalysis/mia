@@ -1308,7 +1308,7 @@ public class TrackObjectsTest {
     }
 
 
-    // Testing calculateCostMatrix FOR CENTROID MODE
+    // Testing calculateCostMatrix FOR CENTROID REGISTRATION_MODE
 
     @Test
     public void testCalculateCostMatrixCentroid() {
@@ -1508,14 +1508,14 @@ public class TrackObjectsTest {
     }
 
 
-    // Testing calculateCostMatrix FOR OVERLAP MODE
+    // Testing calculateCostMatrix FOR OVERLAP REGISTRATION_MODE
 
     @Test @Ignore
     public void testCalculateCostMatrixOverlap() {
     }
 
 
-    // Testing testLinkValidity FOR CENTROID MODE
+    // Testing testLinkValidity FOR CENTROID REGISTRATION_MODE
 
     @Test
     public void testTestLinkValidityOnMaxLinkingDistance() {

@@ -34,7 +34,6 @@ import java.util.*;
 public class Exporter {
     public static final int XML_EXPORT = 0;
     public static final int XLSX_EXPORT = 1;
-    public static final int JSON_EXPORT = 2;
 
     public enum ExportMode {
         ALL_TOGETHER, GROUP_BY_METADATA,INDIVIDUAL_FILES;
@@ -81,10 +80,12 @@ public class Exporter {
         } else if (exportFormat == XLSX_EXPORT) {
             exportXLSX(workspaces,analysis);
 
-        } else if (exportFormat == JSON_EXPORT) {
-            exportJSON(workspaces,analysis);
-
         }
+    }
+
+    public void exportResults(Workspace workspace, Analysis analysis) throws IOException {
+        exportXLSX(workspace,analysis);
+
     }
 
     private void exportXML(WorkspaceCollection workspaces, Analysis analysis) {
@@ -358,21 +359,20 @@ public class Exporter {
 
                 break;
 
-            case INDIVIDUAL_FILES:
-                for (Workspace workspace:workspaces) {
-                    WorkspaceCollection currentWorkspaces = new WorkspaceCollection();
-                    currentWorkspaces.add(workspace);
-
-                    HCMetadata metadata = workspace.getMetadata();
-                    String name = FilenameUtils.removeExtension(metadata.getFile().getAbsolutePath());
-                    name = name +"_S"+metadata.getSeriesNumber();
-
-                    exportXLSX(currentWorkspaces,analysis,name);
-
-                }
-                break;
         }
     }
+
+    private void exportXLSX(Workspace workspace, Analysis analysis) throws IOException {
+        WorkspaceCollection currentWorkspaces = new WorkspaceCollection();
+        currentWorkspaces.add(workspace);
+
+        HCMetadata metadata = workspace.getMetadata();
+        String name = FilenameUtils.removeExtension(metadata.getFile().getAbsolutePath());
+        name = name +"_S"+metadata.getSeriesNumber();
+
+        exportXLSX(currentWorkspaces,analysis,name);
+    }
+
 
     private void exportXLSX(WorkspaceCollection workspaces, Analysis analysis, String name) throws IOException {
         // Getting modules
@@ -525,6 +525,8 @@ public class Exporter {
                 for (MeasurementReference imageMeasurement:availableMeasurements.values()) {
                     if (!imageMeasurement.isCalculated()) continue;
                     if (!imageMeasurement.isExportIndividual()) continue;
+                    if (!imageMeasurement.isExportGlobal()) continue;
+
                     String measurementName = imageMeasurement.getNickname();
                     Cell summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                     String summaryDataName = getImageString(availableImageName, measurementName);
@@ -754,11 +756,8 @@ public class Exporter {
 
                 Cell summaryCell = summaryValueRow.createCell(colNum);
                 double val = measurement.getValue();
-                if (val == Double.NaN) {
-                    summaryCell.setCellValue("");
-                } else {
-                    summaryCell.setCellValue(val);
-                }
+                if (Double.isNaN(val)) summaryCell.setCellValue("");
+                else summaryCell.setCellValue(val);
             }
         }
 
@@ -790,11 +789,8 @@ public class Exporter {
                         colNum = colNumbers.get(headerName);
                         summaryCell = summaryValueRow.createCell(colNum);
                         val = cs.getMean();
-                        if (val == Double.NaN) {
-                            summaryCell.setCellValue("");
-                        } else {
-                            summaryCell.setCellValue(val);
-                        }
+                        if (Double.isNaN(val)) summaryCell.setCellValue("");
+                        else summaryCell.setCellValue(val);
                     }
 
                     if (calculateCountMin) {
@@ -802,11 +798,8 @@ public class Exporter {
                         colNum = colNumbers.get(headerName);
                         summaryCell = summaryValueRow.createCell(colNum);
                         val = cs.getMin();
-                        if (val == Double.NaN) {
-                            summaryCell.setCellValue("");
-                        } else {
-                            summaryCell.setCellValue(val);
-                        }
+                        if (Double.isNaN(val)) summaryCell.setCellValue("");
+                        else summaryCell.setCellValue(val);
                     }
 
                     if (calculateCountMax) {
@@ -814,11 +807,8 @@ public class Exporter {
                         colNum = colNumbers.get(headerName);
                         summaryCell = summaryValueRow.createCell(colNum);
                         val = cs.getMax();
-                        if (val == Double.NaN) {
-                            summaryCell.setCellValue("");
-                        } else {
-                            summaryCell.setCellValue(val);
-                        }
+                        if (Double.isNaN(val)) summaryCell.setCellValue("");
+                        else summaryCell.setCellValue(val);
                     }
 
                     if (calculateCountStd) {
@@ -826,11 +816,8 @@ public class Exporter {
                         colNum = colNumbers.get(headerName);
                         summaryCell = summaryValueRow.createCell(colNum);
                         val = cs.getStd();
-                        if (val == Double.NaN) {
-                            summaryCell.setCellValue("");
-                        } else {
-                            summaryCell.setCellValue(val);
-                        }
+                        if (Double.isNaN(val)) summaryCell.setCellValue("");
+                        else summaryCell.setCellValue(val);
                     }
 
                     if (calculateCountSum) {
@@ -838,11 +825,8 @@ public class Exporter {
                         colNum = colNumbers.get(headerName);
                         summaryCell = summaryValueRow.createCell(colNum);
                         val = cs.getSum();
-                        if (val == Double.NaN) {
-                            summaryCell.setCellValue("");
-                        } else {
-                            summaryCell.setCellValue(val);
-                        }
+                        if (Double.isNaN(val)) summaryCell.setCellValue("");
+                        else summaryCell.setCellValue(val);
                     }
                 }
             }
@@ -870,11 +854,8 @@ public class Exporter {
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMean();
-                    if (val == Double.NaN) {
-                        summaryCell.setCellValue("");
-                    } else {
-                        summaryCell.setCellValue(val);
-                    }
+                    if (Double.isNaN(val)) summaryCell.setCellValue("");
+                    else summaryCell.setCellValue(val);
                 }
 
                 if (objectMeasurement.isExportMin()) {
@@ -882,11 +863,8 @@ public class Exporter {
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMin();
-                    if (val == Double.NaN) {
-                        summaryCell.setCellValue("");
-                    } else {
-                        summaryCell.setCellValue(val);
-                    }
+                    if (Double.isNaN(val)) summaryCell.setCellValue("");
+                    else summaryCell.setCellValue(val);
                 }
 
                 if (objectMeasurement.isExportMax()) {
@@ -894,11 +872,8 @@ public class Exporter {
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getMax();
-                    if (val == Double.NaN) {
-                        summaryCell.setCellValue("");
-                    } else {
-                        summaryCell.setCellValue(val);
-                    }
+                    if (Double.isNaN(val)) summaryCell.setCellValue("");
+                    else summaryCell.setCellValue(val);
                 }
 
                 if (objectMeasurement.isExportStd()) {
@@ -906,11 +881,8 @@ public class Exporter {
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getStd();
-                    if (val == Double.NaN) {
-                        summaryCell.setCellValue("");
-                    } else {
-                        summaryCell.setCellValue(val);
-                    }
+                    if (Double.isNaN(val)) summaryCell.setCellValue("");
+                    else summaryCell.setCellValue(val);
                 }
 
                 if (objectMeasurement.isExportSum()) {
@@ -918,11 +890,8 @@ public class Exporter {
                     colNum = colNumbers.get(headerName);
                     summaryCell = summaryValueRow.createCell(colNum);
                     val = cs.getSum();
-                    if (val == Double.NaN) {
-                        summaryCell.setCellValue("");
-                    } else {
-                        summaryCell.setCellValue(val);
-                    }
+                    if (Double.isNaN(val)) summaryCell.setCellValue("");
+                    else summaryCell.setCellValue(val);
                 }
             }
         }
