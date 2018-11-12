@@ -159,13 +159,19 @@ public class FilterObjects extends Module {
         }
     }
 
-    public void filterObjectsWithMeasSmallerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String measurement, MeasurementReference measurementReference) {
+    public void filterObjectsWithMeasSmallerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String measurementName, MeasRef measurementReference) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
             // Removing the object if it has no children
-            double value = inputObject.getMeasurement(measurement).getValue();
+            Measurement measurement = inputObject.getMeasurement(measurementName);
+            if (measurement == null) {
+                processRemoval(inputObject,outputObjects,iterator);
+                continue;
+            }
+
+            double value = measurement.getValue();
             double referenceValue = measurementReference.getValue(inputObject);
 
             if (Double.isNaN(referenceValue)) processRemoval(inputObject,outputObjects,iterator);
@@ -174,13 +180,19 @@ public class FilterObjects extends Module {
         }
     }
 
-    public void filterObjectsWithMeasLargerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String measurement, MeasurementReference measurementReference) {
+    public void filterObjectsWithMeasLargerThan(ObjCollection inputObjects, @Nullable ObjCollection outputObjects, String measurementName, MeasRef measurementReference) {
         Iterator<Obj> iterator = inputObjects.values().iterator();
         while (iterator.hasNext()) {
             Obj inputObject = iterator.next();
 
+            Measurement measurement = inputObject.getMeasurement(measurementName);
+            if (measurement == null) {
+                processRemoval(inputObject,outputObjects,iterator);
+                continue;
+            }
+
             // Removing the object if it has no children
-            double value = inputObject.getMeasurement(measurement).getValue();
+            double value = measurement.getValue();
             double referenceValue = measurementReference.getValue(inputObject);
 
             if (Double.isNaN(referenceValue)) processRemoval(inputObject,outputObjects,iterator);
@@ -266,17 +278,17 @@ public class FilterObjects extends Module {
                 break;
 
             case FilterMethods.MEASUREMENTS_SMALLER_THAN:
-                MeasurementReference measurementReference = null;
+                MeasRef measurementReference = null;
                 switch (referenceMode) {
                     case ReferenceModes.FIXED_VALUE:
-                        measurementReference = new MeasurementReference(ReferenceModes.FIXED_VALUE,referenceValue,1);
+                        measurementReference = new MeasRef(ReferenceModes.FIXED_VALUE,referenceValue,1);
                         break;
                     case ReferenceModes.IMAGE_MEASUREMENT:
                         double value = workspace.getImage(referenceValueImage).getMeasurement(referenceImageMeasurement).getValue();
-                        measurementReference = new MeasurementReference(ReferenceModes.IMAGE_MEASUREMENT,value,referenceMultiplier);
+                        measurementReference = new MeasRef(ReferenceModes.IMAGE_MEASUREMENT,value,referenceMultiplier);
                         break;
                     case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-                        measurementReference = new MeasurementReference(ReferenceModes.PARENT_OBJECT_MEASUREMENT,referenceValueParent,referenceObjectMeasurement,referenceMultiplier);
+                        measurementReference = new MeasRef(ReferenceModes.PARENT_OBJECT_MEASUREMENT,referenceValueParent,referenceObjectMeasurement,referenceMultiplier);
                         break;
                 }
 
@@ -287,14 +299,14 @@ public class FilterObjects extends Module {
                 measurementReference = null;
                 switch (referenceMode) {
                     case ReferenceModes.FIXED_VALUE:
-                        measurementReference = new MeasurementReference(ReferenceModes.FIXED_VALUE,referenceValue,1);
+                        measurementReference = new MeasRef(ReferenceModes.FIXED_VALUE,referenceValue,1);
                         break;
                     case ReferenceModes.IMAGE_MEASUREMENT:
                         double value = workspace.getImage(referenceValueImage).getMeasurement(referenceImageMeasurement).getValue();
-                        measurementReference = new MeasurementReference(ReferenceModes.IMAGE_MEASUREMENT,value,referenceMultiplier);
+                        measurementReference = new MeasRef(ReferenceModes.IMAGE_MEASUREMENT,value,referenceMultiplier);
                         break;
                     case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
-                        measurementReference = new MeasurementReference(ReferenceModes.PARENT_OBJECT_MEASUREMENT,referenceValueParent,referenceObjectMeasurement,referenceMultiplier);
+                        measurementReference = new MeasRef(ReferenceModes.PARENT_OBJECT_MEASUREMENT,referenceValueParent,referenceObjectMeasurement,referenceMultiplier);
                         break;
                 }
 
@@ -434,7 +446,7 @@ public class FilterObjects extends Module {
     }
 
 
-    public class MeasurementReference {
+    public class MeasRef {
         final String referenceType;
         final double value;
         final String referenceName;
@@ -445,7 +457,7 @@ public class FilterObjects extends Module {
          * Constructing a fixed- or image-value type
          * @param value
          */
-        public MeasurementReference(String referenceType, double value, double referenceMultiplier) {
+        public MeasRef(String referenceType, double value, double referenceMultiplier) {
             this.referenceType = referenceType;
             this.value = value;
             this.referenceName = null;
@@ -461,7 +473,7 @@ public class FilterObjects extends Module {
          * @param referenceMeasurementName
          * @param referenceMultiplier
          */
-        public MeasurementReference(String referenceType, String referenceName, String referenceMeasurementName, double referenceMultiplier) {
+        public MeasRef(String referenceType, String referenceName, String referenceMeasurementName, double referenceMultiplier) {
             this.referenceType = referenceType;
             this.value = 0;
             this.referenceName = referenceName;

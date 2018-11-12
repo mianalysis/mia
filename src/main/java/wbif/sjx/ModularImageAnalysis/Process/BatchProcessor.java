@@ -56,7 +56,7 @@ public class BatchProcessor extends FileCrawler {
 
     // PUBLIC METHODS
 
-    public void runAnalysisOnStructure(Analysis analysis, Exporter exporter) throws IOException, InterruptedException {
+    public void run(Analysis analysis, Exporter exporter) throws IOException, InterruptedException {
         shutdownEarly = false;
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
@@ -67,23 +67,23 @@ public class BatchProcessor extends FileCrawler {
         // The protocol to run will depend on if a single file or a folder was selected
         if (rootFolder.getFolderAsFile().isFile()) {
             runSingle(workspaces, analysis);
+            exporter.exportResults(workspaces,analysis);
 
         } else {
             // The system can run multiple files in parallel or one at a time
             runParallel(workspaces, analysis, exporter);
 
+            String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
+            switch (exportMode) {
+                case OutputControl.ExportModes.ALL_TOGETHER:
+                case OutputControl.ExportModes.GROUP_BY_METADATA:
+                    exporter.exportResults(workspaces,analysis);
+                    break;
+            }
         }
 
         // Saving the results
         if (shutdownEarly || exporter == null) return;
-
-        String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
-        switch (exportMode) {
-            case OutputControl.ExportModes.ALL_TOGETHER:
-            case OutputControl.ExportModes.GROUP_BY_METADATA:
-                exporter.exportResults(workspaces,analysis);
-                break;
-        }
 
         GUI.setProgress(0);
 
@@ -98,9 +98,11 @@ public class BatchProcessor extends FileCrawler {
 
         Module.setVerbose(false);
 
-        // Set the number of Fiji threads to 1, so it doesn't clash with MIA multi-threading
-        if ((int) analysis.getInputControl().getParameterValue(InputControl.NUMBER_OF_THREADS) != 1) {
-            Prefs.setThreads(1);
+        // Set the number of Fiji threads to maximise the number of jobs, so it doesn't clash with MIA multi-threading.
+        int nSimultaneousJobs = analysis.getInputControl().getParameterValue(InputControl.NUMBER_OF_SIMULTANEOUS_JOBS);
+        if (nSimultaneousJobs != 1) {
+            int nThreads = Math.floorDiv(origThreads,nSimultaneousJobs);
+            Prefs.setThreads(nThreads);
             Prefs.savePreferences();
         }
 
