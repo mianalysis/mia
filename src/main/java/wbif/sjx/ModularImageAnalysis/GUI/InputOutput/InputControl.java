@@ -10,7 +10,7 @@ public class InputControl extends Module {
     public static final String INPUT_MODE = "Input mode";
     public static final String SINGLE_FILE_PATH = "Single file path";
     public static final String BATCH_FOLDER_PATH = "Batch folder path";
-    public static final String NUMBER_OF_THREADS = "Number of CPU threads";
+    public static final String NUMBER_OF_SIMULTANEOUS_JOBS = "Number of simultaneous jobs";
     public static final String FILE_EXTENSION = "File extension";
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_LIST = "Series list";
@@ -90,7 +90,7 @@ public class InputControl extends Module {
         parameters.add(new Parameter(SINGLE_FILE_PATH, Parameter.FILE_PATH,null));
         parameters.add(new Parameter(BATCH_FOLDER_PATH, Parameter.FOLDER_PATH,null));
         int nThreads = Runtime.getRuntime().availableProcessors()/2;
-        parameters.add(new Parameter(NUMBER_OF_THREADS,Parameter.INTEGER,nThreads));
+        parameters.add(new Parameter(NUMBER_OF_SIMULTANEOUS_JOBS,Parameter.INTEGER,nThreads));
         parameters.add(new Parameter(FILE_EXTENSION, Parameter.STRING,"tif"));
         parameters.add(new Parameter(SERIES_MODE,Parameter.CHOICE_ARRAY,SeriesModes.ALL_SERIES,SeriesModes.ALL));
         parameters.add(new Parameter(SERIES_LIST,Parameter.STRING,"1"));
@@ -181,7 +181,7 @@ public class InputControl extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
-        returnedParameters.add(parameters.getParameter(NUMBER_OF_THREADS));
+        returnedParameters.add(parameters.getParameter(NUMBER_OF_SIMULTANEOUS_JOBS));
 
         return returnedParameters;
 

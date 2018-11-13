@@ -5,7 +5,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import org.apache.commons.io.output.TeeOutputStream;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
@@ -1030,6 +1029,7 @@ public class GUI {
     public static void addModule() {
         moduleListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
         moduleListMenu.setVisible(true);
+        updateModules(true);
 
     }
 
@@ -1046,6 +1046,7 @@ public class GUI {
 
             populateModuleList();
             populateModuleParameters();
+            updateModules(true);
 
         }
     }
@@ -1136,7 +1137,7 @@ public class GUI {
         String singleFile = inputControl.getParameterValue(InputControl.SINGLE_FILE_PATH);
         String batchFolder = inputControl.getParameterValue(InputControl.BATCH_FOLDER_PATH);
         String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
-        int nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS);
+        int nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_SIMULTANEOUS_JOBS);
         boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
         String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
         String filenameFilterType1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_1);
@@ -1243,6 +1244,7 @@ public class GUI {
         moduleBeingEval = -1;
 
         updateModules(false);
+
     }
 
     public static void setTestWorkspace(Workspace testWorkspace) {

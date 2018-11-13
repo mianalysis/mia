@@ -32,7 +32,7 @@ public class AnalysisRunner {
 
         // Initialising BatchProcessor
         batchProcessor = new BatchProcessor(inputFile);
-        batchProcessor.setnThreads(inputControl.getParameterValue(InputControl.NUMBER_OF_THREADS));
+        batchProcessor.setnThreads(inputControl.getParameterValue(InputControl.NUMBER_OF_SIMULTANEOUS_JOBS));
         addFilenameFilters(inputControl);
 
         // Resetting progress monitor
@@ -40,7 +40,7 @@ public class AnalysisRunner {
         GUI.setProgress(0);
 
         // Running the analysis
-        batchProcessor.runAnalysisOnStructure(analysis,exporter);
+        batchProcessor.run(analysis,exporter);
 
         // Cleaning up
         Runtime.getRuntime().gc();
