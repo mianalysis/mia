@@ -259,7 +259,6 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-
     public HashMap<Integer,Color> getColours(ObjCollection inputObjects) {
         String colourMode = parameters.getValue(COLOUR_MODE);
         String singleColour = parameters.getValue(SINGLE_COLOUR);

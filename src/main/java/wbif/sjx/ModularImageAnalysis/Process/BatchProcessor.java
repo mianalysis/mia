@@ -99,7 +99,7 @@ public class BatchProcessor extends FileCrawler {
         Module.setVerbose(false);
 
         // Set the number of Fiji threads to maximise the number of jobs, so it doesn't clash with MIA multi-threading.
-        int nSimultaneousJobs = analysis.getInputControl().getParameterValue(InputControl.NUMBER_OF_SIMULTANEOUS_JOBS);
+        int nSimultaneousJobs = analysis.getInputControl().getParameterValue(InputControl.SIMULTANEOUS_JOBS);
         if (nSimultaneousJobs != 1) {
             int nThreads = Math.floorDiv(origThreads,nSimultaneousJobs);
             Prefs.setThreads(nThreads);

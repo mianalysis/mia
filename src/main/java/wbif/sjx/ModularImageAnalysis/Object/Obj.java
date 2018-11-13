@@ -141,7 +141,18 @@ public class Obj extends Volume {
     }
 
     public Obj getParent(String name) {
-        return parents.get(name);
+        Obj parent = parents.get(name);
+
+        // If no parent was found, search the ancestors
+        if (parent == null) {
+            for (Obj currParent:parents.values()) {
+                return currParent.getParent(name);
+            }
+        } else {
+            return parent;
+        }
+
+        return null;
 
     }
 

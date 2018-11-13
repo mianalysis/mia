@@ -948,8 +948,8 @@ public class Exporter {
 
             // Adding parent IDs
             RelationshipCollection relationships = modules.getRelationships();
-            String[] parents = relationships.getParentNames(objectName);
-            if (!parents[0].equals("")) {
+            TreeSet<String> parents = relationships.getParentNames(objectName,false,null);
+            if (parents.size() > 0) {
                 for (String parent : parents) {
                     parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
                     parentNames.get(objectName).put(col, parent);

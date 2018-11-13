@@ -1,8 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
+import javax.annotation.Nullable;
+import java.util.*;
 
 /**
  * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple
@@ -30,31 +29,26 @@ public class RelationshipCollection {
 
     }
 
-    public String[] getParentNames(String childName) {
-        if (parents.get(childName) == null) {
-            return new String[]{""};
-        }
+    public TreeSet<String> getParentNames(String childName, boolean useHierarchy, @Nullable String rootName) {
+        if (rootName == null) rootName = "";
 
         // Adding each parent and then the parent of that
-        HashSet<String> parentHierarchy = new HashSet<>(parents.get(childName));
+        TreeSet<String> parentNames = new TreeSet<>(parents.get(childName));
+        for (String parentName:parentNames) {
+            parentName = rootName + parentName;
+        }
+
+        if (!useHierarchy) return parentNames;
 
         // Takes the parentHierarchy HashSet and adds all parents of each object.  As we're using a HashSet we won't get
         // duplicates.  Therefore, this loop terminates when no more objects are added.
-        int lastNParents = 0;
-        while (parentHierarchy.size() != lastNParents) {
-            lastNParents = parentHierarchy.size();
 
-            ArrayList<String> newParents = new ArrayList<>();
-            for (String parent:parentHierarchy) {
-                if (parents.get(parent) == null) continue;
-                newParents.addAll(parents.get(parent));
-
-            }
-
-            parentHierarchy.addAll(newParents);
+        for (String parentName:parentNames) {
+            TreeSet<String> currentParentNames = getParentNames(parentName,true,rootName+" // "+parentName);
+            parentNames.addAll(currentParentNames);
         }
 
-        return parentHierarchy.toArray(new String[parentHierarchy.size()]);
+        return parentNames;
 
     }
 }

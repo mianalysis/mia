@@ -123,7 +123,8 @@ public class ComponentFactory {
 
             case Parameter.PARENT_OBJECTS:
                 relationships = GUI.getModules().getRelationships(module);
-                relationshipChoices = relationships.getParentNames(parameter.getValueSource());
+                TreeSet<String> parentNames = relationships.getParentNames(parameter.getValueSource(),true,null);
+                relationshipChoices = parentNames.toArray(new String[parentNames.size()]);;
                 parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
                 break;
 

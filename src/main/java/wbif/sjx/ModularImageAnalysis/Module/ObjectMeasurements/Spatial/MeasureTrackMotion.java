@@ -34,6 +34,7 @@ public class MeasureTrackMotion extends Module {
         String MEAN_Y_VELOCITY_CAL = "MEAN_Y_VELOCITY_(${CAL}/FRAME)";
         String MEAN_Z_VELOCITY_SLICES = "MEAN_Z_VELOCITY_(SLICES/FRAME)";
         String MEAN_Z_VELOCITY_CAL = "MEAN_Z_VELOCITY_(${CAL}/FRAME)";
+        String MEAN_INSTANTANEOUS_SPEED_CAL = "MEAN_INSTANTANEOUS_SPEED_(${CAL}/FRAME)";
         String TOTAL_PATH_LENGTH_PX = "TOTAL_PATH_LENGTH_(PX)";
         String TOTAL_PATH_LENGTH_CAL = "TOTAL_PATH_LENGTH_(${CAL})";
         String EUCLIDEAN_DISTANCE_PX = "EUCLIDEAN_DISTANCE_(PX)";
@@ -153,24 +154,32 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
+            name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, Double.NaN));
 
         } else {
             // Calculating track motion
             double distPerPxXY = trackObject.getDistPerPxXY();
             double distPerPxZ = trackObject.getDistPerPxZ();
+            double ratio = distPerPxZ/distPerPxXY;
+
+            TreeMap<Integer, Double> xVelocity = track.getInstantaneousXVelocity();
+            TreeMap<Integer, Double> yVelocity = track.getInstantaneousYVelocity();
+            TreeMap<Integer, Double> zVelocity = track.getInstantaneousZVelocity();
+            TreeMap<Integer, Double> speed = track.getInstantaneousSpeed();
 
             CumStat cumStatX = new CumStat();
             CumStat cumStatY = new CumStat();
             CumStat cumStatZ = new CumStat();
+            CumStat cumStatSpeed = new CumStat();
 
-            Timepoint<Double> prev = null;
-            for (Timepoint<Double> timepoint:track.values()) {
-                if (prev != null) {
-                    cumStatX.addMeasure((timepoint.getX()-prev.getX())/(timepoint.getF()-prev.getF()));
-                    cumStatY.addMeasure((timepoint.getY()-prev.getY())/(timepoint.getF()-prev.getF()));
-                    cumStatZ.addMeasure((timepoint.getZ()-prev.getZ())/(timepoint.getF()-prev.getF()));
-                }
-                prev = timepoint;
+            for (int frame:xVelocity.keySet()) {
+                // The first value is set to zero
+                if (frame == 0) continue;
+                cumStatX.addMeasure(xVelocity.get(frame));
+                cumStatY.addMeasure(yVelocity.get(frame));
+                cumStatZ.addMeasure(zVelocity.get(frame));
+                cumStatSpeed.addMeasure(speed.get(frame));
             }
 
             String name = getFullName(Measurements.MEAN_X_VELOCITY_PX,averageSubtracted);
@@ -185,6 +194,12 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY/distPerPxZ));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY));
+            name = getFullName(Measurements.MEAN_Z_VELOCITY_SLICES,averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY/distPerPxZ));
+            name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY));
+            name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, cumStatSpeed.getMean() * distPerPxXY));
 
         }
     }
@@ -452,6 +467,11 @@ public class MeasureTrackMotion extends Module {
         reference.setCalculated(true);
 
         name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,subtractAverage);
+        reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,subtractAverage);
         reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);

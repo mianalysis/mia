@@ -222,6 +222,10 @@ public class MeasureTrackMotionTest {
         assertNotNull(trackObject.getMeasurement(name));
         assertEquals(0.11,trackObject.getMeasurement(name).getValue(),tolerance);
 
+        name = MeasureTrackMotion.getFullName(MeasureTrackMotion.Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,subtractAverage);
+        assertNotNull(trackObject.getMeasurement(name));
+        assertEquals(1.73,trackObject.getMeasurement(name).getValue(),tolerance);
+
     }
 
     @Test
@@ -270,6 +274,10 @@ public class MeasureTrackMotionTest {
         name = MeasureTrackMotion.getFullName(MeasureTrackMotion.Measurements.MEAN_Z_VELOCITY_CAL,subtractAverage);
         assertNotNull(trackObject.getMeasurement(name));
         assertEquals(0.02,trackObject.getMeasurement(name).getValue(),tolerance);
+
+        name = MeasureTrackMotion.getFullName(MeasureTrackMotion.Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,subtractAverage);
+        assertNotNull(trackObject.getMeasurement(name));
+        assertEquals(1.79,trackObject.getMeasurement(name).getValue(),tolerance);
 
     }
 
