@@ -46,6 +46,7 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
+
     public interface Measurements {
         String X_Y_REL_ORIENTATION = "X-Y PLANE RELATIVE TO \"${REFERENCE}\" (DEGS)";
 
@@ -141,6 +142,27 @@ public class MeasureRelativeOrientation extends Module {
                 Point<Double> referencePoint = new Point<>(x, y, z);
                 centres.put(t, referencePoint);
             }
+        }
+
+        // Checking each frame has a reference.  For those that don't taking the closest reference in time.
+        for (int t=0;t<nFrames;t++) {
+            if (centres.get(t) != null) continue;
+
+            int dt = Integer.MAX_VALUE;
+            Point<Double> reference = null;
+            for (int tt=0;tt<nFrames;tt++) {
+                // Only proceed if there's a reference at this timepoint
+                if (centres.get(tt) == null) continue;
+
+                // Calculating the time gap to this frame and storing the object if it's the smallest gap yet
+                if (Math.abs(t-tt) < dt) {
+                    dt = Math.abs(t-tt);
+                    reference = centres.get(tt);
+                }
+            }
+
+            centres.put(t,reference);
+
         }
 
         return centres;

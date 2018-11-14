@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
+import ij.macro.Tokenizer;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
@@ -141,7 +142,23 @@ public class Obj extends Volume {
     }
 
     public Obj getParent(String name) {
-        return parents.get(name);
+        // Split name down by " // " tokenizer
+        String[] elements = name.split(" // ");
+
+        // Getting the first parent
+        Obj parent = parents.get(elements[0]);
+
+        // If the first parent was the only one listed, returning this
+        if (elements.length == 1) return parent;
+
+        // If there are additional parents listed, re-constructing the string and running this method on the parent
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i=1;i<elements.length;i++) {
+            stringBuilder.append(elements[i]);
+            if (i != elements.length-1) stringBuilder.append(" // ");
+        }
+
+        return parent.getParent(stringBuilder.toString());
 
     }
 
@@ -163,7 +180,32 @@ public class Obj extends Volume {
     }
 
     public ObjCollection getChildren(String name) {
-        return children.containsKey(name) ? children.get(name) : new ObjCollection(name);
+        // Split name down by " // " tokenizer
+        String[] elements = name.split(" // ");
+
+        // Getting the first set of children
+        ObjCollection allChildren = children.get(elements[0]);
+        if (allChildren == null) return new ObjCollection(elements[0]);
+
+        // If the first set of children was the only one listed, returning this
+        if (elements.length == 1) return allChildren;
+
+        // If there are additional parents listed, re-constructing the string and running this method on the parent
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i=1;i<elements.length;i++) {
+            stringBuilder.append(elements[i]);
+            if (i != elements.length-1) stringBuilder.append(" // ");
+        }
+
+        // Going through each child in the current set, then adding all their children to the output set
+        ObjCollection outputChildren = new ObjCollection("name");
+        for (Obj child:allChildren.values()) {
+            ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
+            for (Obj currentChild:currentChildren.values()) outputChildren.add(currentChild);
+        }
+
+        return outputChildren;
+
     }
 
     public void setChildren(LinkedHashMap<String, ObjCollection> children) {

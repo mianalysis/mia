@@ -300,6 +300,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         calibrationUnits = calibration.getUnits();
         twoD = inputImagePlus.getNSlices()==1;
 
+        // Clearing any ROIs stored from previous runs
+        rois = new HashMap<>();
+        objectsPanel.removeAll();
+
         // Initialising output objects
         outputObjects = new ObjCollection(outputObjectsName);
 

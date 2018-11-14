@@ -555,8 +555,8 @@ public class Exporter {
                 }
 
                 // Running through all the object's children
-                if (showChildCounts && !modules.getRelationships().getChildNames(availableObjectName)[0].equals("")) {
-                    for (String child : modules.getRelationships().getChildNames(availableObjectName)) {
+                if (showChildCounts && modules.getRelationships().getChildNames(availableObjectName,false) != null) {
+                    for (String child : modules.getRelationships().getChildNames(availableObjectName,false)) {
                         if (calculateCountMean) {
                             summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                             summaryDataName = getObjectString(availableObjectName, "MEAN", "NUM_CHILDREN_" + child);
@@ -775,8 +775,8 @@ public class Exporter {
             }
 
             // Running through all the object's children
-            if (showChildCounts && !modules.getRelationships().getChildNames(objSetName)[0].equals("")) {
-                for (String child : modules.getRelationships().getChildNames(objSetName)) {
+            if (showChildCounts && modules.getRelationships().getChildNames(objSetName,false) != null) {
+                for (String child : modules.getRelationships().getChildNames(objSetName,false)) {
                     // Running through all objects in this set, adding children to a CumStat object
                     CumStat cs = new CumStat();
                     for (Obj obj : objCollection.values()) {
@@ -948,8 +948,8 @@ public class Exporter {
 
             // Adding parent IDs
             RelationshipCollection relationships = modules.getRelationships();
-            String[] parents = relationships.getParentNames(objectName);
-            if (!parents[0].equals("")) {
+            String[] parents = relationships.getParentNames(objectName,false);
+            if (parents != null) {
                 for (String parent : parents) {
                     parentNames.putIfAbsent(objectName, new LinkedHashMap<>());
                     parentNames.get(objectName).put(col, parent);
@@ -960,8 +960,8 @@ public class Exporter {
             }
 
             // Adding number of children for each child type
-            String[] children = relationships.getChildNames(objectName);
-            if (!children[0].equals("")) {
+            String[] children = relationships.getChildNames(objectName,false);
+            if (children != null) {
                 for (String child : children) {
                     childNames.putIfAbsent(objectName, new LinkedHashMap<>());
                     childNames.get(objectName).put(col, child);

@@ -1114,7 +1114,7 @@ public class GUI {
         for (Module module:analysis.getModules()) if (module.isEnabled()) nActive++;
         int nModules = analysis.getModules().size();
         if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
-//
+
         boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
         inputButton.setColour();
@@ -1137,7 +1137,7 @@ public class GUI {
         String singleFile = inputControl.getParameterValue(InputControl.SINGLE_FILE_PATH);
         String batchFolder = inputControl.getParameterValue(InputControl.BATCH_FOLDER_PATH);
         String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
-        int nThreads = inputControl.getParameterValue(InputControl.NUMBER_OF_SIMULTANEOUS_JOBS);
+        int nThreads = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
         boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
         String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
         String filenameFilterType1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_1);

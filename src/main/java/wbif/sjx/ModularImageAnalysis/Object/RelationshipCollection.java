@@ -1,60 +1,83 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
+import com.drew.lang.annotations.Nullable;
+
+import java.util.*;
 
 /**
  * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple
  * different types of children these are stored in an ArrayList.
  */
 public class RelationshipCollection {
-    private LinkedHashMap<String,ArrayList<String>> parents = new LinkedHashMap<>();
-    private LinkedHashMap<String,ArrayList<String>> children = new LinkedHashMap<>();
+    private LinkedHashMap<String,TreeSet<String>> parents = new LinkedHashMap<>();
+    private LinkedHashMap<String,TreeSet<String>> children = new LinkedHashMap<>();
 
     public void addRelationship(String parent, String child) {
-        parents.computeIfAbsent(child,k -> new ArrayList<>());
+        parents.computeIfAbsent(child,k -> new TreeSet<>());
         parents.get(child).add(parent);
 
-        children.computeIfAbsent(parent, k -> new ArrayList<>());
+        children.computeIfAbsent(parent, k -> new TreeSet<>());
         children.get(parent).add(child);
 
     }
 
-    public String[] getChildNames(String parentName) {
-        if (children.get(parentName) == null) {
-            return new String[]{""};
+    private TreeSet<String> getChildNames(String parentName, boolean useHierarchy, @Nullable String rootName) {
+        if (rootName == null) rootName = "";
+
+        // Adding each parent and then the parent of that
+        TreeSet<String> childNames = children.get(parentName);
+        if (childNames == null) return new TreeSet<>();
+
+        // Appending root name
+        TreeSet<String> newChildNames = new TreeSet<>();
+        for (String childName:childNames) newChildNames.add(rootName+childName);
+
+        if (!useHierarchy) return newChildNames;
+
+        // Adding parent names from parents
+        for (String childName:childNames) {
+            TreeSet<String> currentParentNames = getChildNames(childName,true,rootName+childName+" // ");
+            newChildNames.addAll(currentParentNames);
         }
 
-        return children.get(parentName).toArray(new String[children.get(parentName).size()]);
+        return newChildNames;
 
     }
 
-    public String[] getParentNames(String childName) {
-        if (parents.get(childName) == null) {
-            return new String[]{""};
-        }
+    public String[] getChildNames(String parentName, boolean useHierarchy) {
+        TreeSet<String> childNames = getChildNames(parentName,useHierarchy,"");
+
+        return childNames.toArray(new String[0]);
+
+    }
+
+    private TreeSet<String> getParentNames(String childName, boolean useHierarchy, @Nullable String rootName) {
+        if (rootName == null) rootName = "";
 
         // Adding each parent and then the parent of that
-        HashSet<String> parentHierarchy = new HashSet<>(parents.get(childName));
+        TreeSet<String> parentNames = parents.get(childName);
+        if (parentNames == null) return new TreeSet<>();
 
-        // Takes the parentHierarchy HashSet and adds all parents of each object.  As we're using a HashSet we won't get
-        // duplicates.  Therefore, this loop terminates when no more objects are added.
-        int lastNParents = 0;
-        while (parentHierarchy.size() != lastNParents) {
-            lastNParents = parentHierarchy.size();
+        // Appending root name
+        TreeSet<String> newParentNames = new TreeSet<>();
+        for (String parentName:parentNames) newParentNames.add(rootName+parentName);
 
-            ArrayList<String> newParents = new ArrayList<>();
-            for (String parent:parentHierarchy) {
-                if (parents.get(parent) == null) continue;
-                newParents.addAll(parents.get(parent));
+        if (!useHierarchy) return newParentNames;
 
-            }
-
-            parentHierarchy.addAll(newParents);
+        // Adding parent names from parents
+        for (String parentName:parentNames) {
+            TreeSet<String> currentParentNames = getParentNames(parentName,true,rootName+parentName+" // ");
+            newParentNames.addAll(currentParentNames);
         }
 
-        return parentHierarchy.toArray(new String[parentHierarchy.size()]);
+        return newParentNames;
+
+    }
+
+    public String[] getParentNames(String childName, boolean useHierarchy) {
+        TreeSet<String> parentNames = getParentNames(childName,useHierarchy,"");
+
+        return parentNames.toArray(new String[0]);
 
     }
 }

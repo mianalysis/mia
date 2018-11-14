@@ -93,7 +93,7 @@ public class AddObjectsOverlayTest {
 
         AddObjectsOverlay addObjectsOverlay = (AddObjectsOverlay) new AddObjectsOverlay()
                 .updateParameterValue(AddObjectsOverlay.INPUT_OBJECTS,inputObjectsName)
-                .updateParameterValue(AddObjectsOverlay.TRACK_OBJECTS,trackObjectsName)
+                .updateParameterValue(AddObjectsOverlay.SPOT_OBJECTS,trackObjectsName)
                 .updateParameterValue(AddObjectsOverlay.INPUT_IMAGE,imageName)
                 .updateParameterValue(AddObjectsOverlay.POSITION_MODE,AddObjectsOverlay.PositionModes.TRACKS)
                 .updateParameterValue(AddObjectsOverlay.LINE_WIDTH,1d)

@@ -7,7 +7,6 @@ import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import org.apache.poi.ss.formula.functions.T;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -45,7 +44,7 @@ public class AddObjectsOverlay extends Module {
     public static final String SINGLE_COLOUR = "Single colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
-    public static final String TRACK_OBJECTS = "Track objects";
+    public static final String SPOT_OBJECTS = "Spot objects";
     public static final String LIMIT_TRACK_HISTORY = "Limit track history";
     public static final String TRACK_HISTORY = "Track history (frames)";
     public static final String LINE_WIDTH = "Line width";
@@ -239,6 +238,59 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
+    public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize, boolean limitHistory, int history) {
+        ObjCollection pointObjects = object.getChildren(spotObjectsName);
+
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        Overlay ovl = ipl.getOverlay();
+
+        // Putting the current track points into a TreeMap stored by the frame
+        TreeMap<Integer,Obj> points = new TreeMap<>();
+        for (Obj pointObject:pointObjects.values()) {
+            points.put(pointObject.getT(),pointObject);
+        }
+
+        //  Iterating over all points in the track, drawing lines between them
+        int nFrames = ipl.getNFrames();
+        Obj p1 = null;
+        for (Obj p2:points.values()) {
+            if (p1 != null) {
+                int x1 = (int) Math.round(p1.getXMean(true));
+                int y1 = (int) Math.round(p1.getYMean(true));
+                int x2 = (int) Math.round(p2.getXMean(true));
+                int y2 = (int) Math.round(p2.getYMean(true));
+
+                int maxFrame = nFrames;
+                if (limitHistory) maxFrame = p2.getT()+history;
+
+                for (int t = p2.getT();t<=maxFrame-1;t++) {
+                    PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
+
+                    if (ipl.isHyperStack()) {
+                        ipl.setPosition(1,1,t+1);
+                        line.setPosition(1,1, t+1);
+                    } else {
+                        int pos = Math.max(Math.max(1, 1), t+1);
+                        ipl.setPosition(pos);
+                        line.setPosition(pos);
+                    }
+
+                    line.setStrokeWidth(lineWidth);
+                    line.setStrokeColor(colour);
+                    ovl.addElement(line);
+                }
+
+                if (!label.equals("")) {
+                    double[] labelCoords = new double[]{x2, y2, 1, p2.getT()+1};
+                    addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
+                }
+            }
+
+            p1 = p2;
+
+        }
+    }
+
     public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour,   int labelSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
@@ -258,7 +310,6 @@ public class AddObjectsOverlay extends Module {
         ovl.addElement(text);
 
     }
-
 
     public HashMap<Integer,Color> getColours(ObjCollection inputObjects) {
         String colourMode = parameters.getValue(COLOUR_MODE);
@@ -326,6 +377,9 @@ public class AddObjectsOverlay extends Module {
         String positionMode = parameters.getValue(POSITION_MODE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         int labelSize = parameters.getValue(LABEL_SIZE);
+        String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
+        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
+        int history = parameters.getValue(TRACK_HISTORY);
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
@@ -356,70 +410,12 @@ public class AddObjectsOverlay extends Module {
                     String[] posMeasurements = getPositionMeasurements();
                     addPositionMeasurementsOverlay(object,ipl,colour,lineWidth,posMeasurements,label,labelSize);
                     break;
+
+                case PositionModes.TRACKS:
+                    addTrackOverlay(object,spotObjectsName,ipl,colour,lineWidth,label,labelSize,limitHistory,history);
             }
 
             writeMessage("Rendered "+(++count)+" objects of "+inputObjects.size());
-
-        }
-    }
-
-    public void createTrackOverlay(ImagePlus ipl, ObjCollection trackObjects, HashMap<Integer,Color> colours) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
-        int history = parameters.getValue(TRACK_HISTORY);
-
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
-        Overlay ovl = ipl.getOverlay();
-
-        int count = 0;
-        for (Obj trackObject:trackObjects.values()) {
-            ObjCollection pointObjects = trackObject.getChildren(inputObjectsName);
-
-            // Putting the current track points into a TreeMap stored by the frame
-            TreeMap<Integer,Obj> points = new TreeMap<>();
-            for (Obj pointObject:pointObjects.values()) {
-                points.put(pointObject.getT(),pointObject);
-            }
-
-            //  Iterating over all points in the track, drawing lines between them
-            int nFrames = ipl.getNFrames();
-            Obj p1 = null;
-            for (Obj p2:points.values()) {
-                Color color = colours.get(p2.getID());
-
-                if (p1 != null) {
-                    int x1 = (int) Math.round(p1.getXMean(true));
-                    int y1 = (int) Math.round(p1.getYMean(true));
-                    int x2 = (int) Math.round(p2.getXMean(true));
-                    int y2 = (int) Math.round(p2.getYMean(true));
-
-                    int maxFrame = nFrames;
-                    if (limitHistory) maxFrame = p2.getT()+history;
-
-                    for (int t = p2.getT();t<maxFrame-1;t++) {
-                        PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
-
-                        if (ipl.isHyperStack()) {
-                            ipl.setPosition(1,1,t+1);
-                            line.setPosition(1,1, t+1);
-                        } else {
-                            int pos = Math.max(Math.max(1, 1), t+1);
-                            ipl.setPosition(pos);
-                            line.setPosition(pos);
-                        }
-
-                        line.setStrokeWidth(lineWidth);
-                        line.setStrokeColor(color);
-                        ovl.addElement(line);
-                    }
-                }
-
-                p1 = p2;
-
-            }
-
-            writeMessage("Rendered "+(count++)+" tracks of "+trackObjects.size());
 
         }
     }
@@ -447,7 +443,7 @@ public class AddObjectsOverlay extends Module {
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String positionMode = parameters.getValue(POSITION_MODE);
-        String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
+        String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -467,19 +463,8 @@ public class AddObjectsOverlay extends Module {
         // Generating labels for each object
         HashMap<Integer,String> labels = getLabels(inputObjects);
 
-        switch (positionMode) {
-            case PositionModes.ALL_POINTS:
-            case PositionModes.CENTROID:
-            case PositionModes.OUTLINE:
-            case PositionModes.POSITION_MEASUREMENTS:
-                createOverlay(ipl,inputObjects,colours,labels);
-                break;
-
-            case PositionModes.TRACKS:
-                ObjCollection tracks = workspace.getObjectSet(trackObjectsName);
-                createTrackOverlay(ipl,tracks,colours);
-                break;
-        }
+        // Adding the overlay element
+        createOverlay(ipl,inputObjects,colours,labels);
 
         // If necessary, adding output image to workspace
         if (addOutputToWorkspace) {
@@ -507,8 +492,8 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(SHOW_LABEL, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LABEL_MODE, Parameter.CHOICE_ARRAY, LabelModes.ID, LabelModes.ALL));
-        parameters.add(new Parameter(DECIMAL_PLACES, Parameter.INTEGER,2));
-        parameters.add(new Parameter(USE_SCIENTIFIC,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(DECIMAL_PLACES, Parameter.INTEGER,0));
+        parameters.add(new Parameter(USE_SCIENTIFIC,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(MEASUREMENT_FOR_ID, Parameter.OBJECT_MEASUREMENT,null,null));
@@ -522,7 +507,7 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(SINGLE_COLOUR,Parameter.CHOICE_ARRAY,SingleColours.WHITE,SingleColours.ALL));
         parameters.add(new Parameter(MEASUREMENT_FOR_COLOUR, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(TRACK_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
         parameters.add(new Parameter(LIMIT_TRACK_HISTORY, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(TRACK_HISTORY, Parameter.INTEGER,10));
         parameters.add(new Parameter(LINE_WIDTH,Parameter.DOUBLE,1.0));
@@ -589,7 +574,7 @@ public class AddObjectsOverlay extends Module {
         }
 
         if (parameters.getValue(POSITION_MODE).equals(PositionModes.TRACKS)) {
-            returnedParameters.add(parameters.getParameter(TRACK_OBJECTS));
+            returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
             returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
             if (parameters.getValue(LIMIT_TRACK_HISTORY)) {
@@ -597,7 +582,8 @@ public class AddObjectsOverlay extends Module {
             }
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(TRACK_OBJECTS,inputObjectsName);
+            parameters.updateValueSource(SPOT_OBJECTS,inputObjectsName);
+
         }
 
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));

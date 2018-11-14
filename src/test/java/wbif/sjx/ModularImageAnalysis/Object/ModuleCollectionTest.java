@@ -417,14 +417,14 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         RelationshipCollection actualRelationships = modules.getRelationships();
 
         // Getting actual relationships for spots
-        String[] actualSpotChildren = actualRelationships.getChildNames(spotsName);
-        String[] actualSpotParents = actualRelationships.getParentNames(spotsName);
+        String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);
+        String[] actualSpotParents = actualRelationships.getParentNames(spotsName,false);
 
         // Getting expected relationships for spots
         String[] expectedSpotChildren = new String[]{""};
         String[] expectedSpotParents = new String[]{tracksName,clustersName};
 
-        assertEquals(1,actualSpotChildren.length);
+        assertEquals(0,actualSpotChildren.length);
         assertEquals(2,actualSpotParents.length);
 
         for (String actualChild:actualSpotChildren) {
@@ -450,15 +450,15 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Getting actual relationships for spots
-        String[] actualTrackChildren = actualRelationships.getChildNames(tracksName);
-        String[] actualTrackParents = actualRelationships.getParentNames(tracksName);
+        String[] actualTrackChildren = actualRelationships.getChildNames(tracksName,false);
+        String[] actualTrackParents = actualRelationships.getParentNames(tracksName,false);
 
         // Getting expected relationships for spots
         String[] expectedTrackChildren = new String[]{spotsName};
         String[] expectedTrackParents = new String[]{""};
 
         assertEquals(1,actualTrackChildren.length);
-        assertEquals(1,actualTrackParents.length);
+        assertEquals(0,actualTrackParents.length);
 
         for (String actualChild:actualTrackChildren) {
             boolean found = false;
@@ -483,15 +483,15 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Getting actual relationships for spots
-        String[] actualClusterChildren = actualRelationships.getChildNames(clustersName);
-        String[] actualClusterParents = actualRelationships.getParentNames(clustersName);
+        String[] actualClusterChildren = actualRelationships.getChildNames(clustersName,false);
+        String[] actualClusterParents = actualRelationships.getParentNames(clustersName,false);
 
         // Getting expected relationships for spots
         String[] expectedClusterChildren = new String[]{spotsName};
         String[] expectedClusterParents = new String[]{""};
 
         assertEquals(1,actualClusterChildren.length);
-        assertEquals(1,actualClusterParents.length);
+        assertEquals(0,actualClusterParents.length);
 
         for (String actualChild:actualClusterChildren) {
             boolean found = false;
@@ -547,14 +547,14 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         RelationshipCollection actualRelationships = modules.getRelationships(objectClusterer);
 
         // Getting actual relationships for spots
-        String[] actualSpotChildren = actualRelationships.getChildNames(spotsName);
-        String[] actualSpotParents = actualRelationships.getParentNames(spotsName);
+        String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);
+        String[] actualSpotParents = actualRelationships.getParentNames(spotsName,false);
 
         // Getting expected relationships for spots
         String[] expectedSpotChildren = new String[]{""};
         String[] expectedSpotParents = new String[]{tracksName};
 
-        assertEquals(1,actualSpotChildren.length);
+        assertEquals(0,actualSpotChildren.length);
         assertEquals(1,actualSpotParents.length);
 
         for (String actualChild:actualSpotChildren) {
@@ -580,15 +580,15 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Getting actual relationships for spots
-        String[] actualTrackChildren = actualRelationships.getChildNames(tracksName);
-        String[] actualTrackParents = actualRelationships.getParentNames(tracksName);
+        String[] actualTrackChildren = actualRelationships.getChildNames(tracksName,false);
+        String[] actualTrackParents = actualRelationships.getParentNames(tracksName,false);
 
         // Getting expected relationships for spots
         String[] expectedTrackChildren = new String[]{spotsName};
         String[] expectedTrackParents = new String[]{""};
 
         assertEquals(1,actualTrackChildren.length);
-        assertEquals(1,actualTrackParents.length);
+        assertEquals(0,actualTrackParents.length);
 
         for (String actualChild:actualTrackChildren) {
             boolean found = false;
@@ -613,15 +613,15 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Getting actual relationships for spots
-        String[] actualClusterChildren = actualRelationships.getChildNames(clustersName);
-        String[] actualClusterParents = actualRelationships.getParentNames(clustersName);
+        String[] actualClusterChildren = actualRelationships.getChildNames(clustersName,false);
+        String[] actualClusterParents = actualRelationships.getParentNames(clustersName,false);
 
         // Getting expected relationships for spots
         String[] expectedClusterChildren = new String[]{""};
         String[] expectedClusterParents = new String[]{""};
 
-        assertEquals(1,actualClusterChildren.length);
-        assertEquals(1,actualClusterParents.length);
+        assertEquals(0,actualClusterChildren.length);
+        assertEquals(0,actualClusterParents.length);
 
         for (String actualChild:actualClusterChildren) {
             boolean found = false;

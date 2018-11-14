@@ -117,13 +117,13 @@ public class ComponentFactory {
 
             case Parameter.CHILD_OBJECTS:
                 RelationshipCollection relationships = modules.getRelationships(module);
-                String[] relationshipChoices = relationships.getChildNames(parameter.getValueSource());
+                String[] relationshipChoices = relationships.getChildNames(parameter.getValueSource(),true);
                 parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
                 break;
 
             case Parameter.PARENT_OBJECTS:
                 relationships = GUI.getModules().getRelationships(module);
-                relationshipChoices = relationships.getParentNames(parameter.getValueSource());
+                relationshipChoices = relationships.getParentNames(parameter.getValueSource(),true);
                 parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
                 break;
 
