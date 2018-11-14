@@ -34,6 +34,7 @@ public class MeasureTrackMotion extends Module {
         String MEAN_Y_VELOCITY_CAL = "MEAN_Y_VELOCITY_(${CAL}/FRAME)";
         String MEAN_Z_VELOCITY_SLICES = "MEAN_Z_VELOCITY_(SLICES/FRAME)";
         String MEAN_Z_VELOCITY_CAL = "MEAN_Z_VELOCITY_(${CAL}/FRAME)";
+        String MEAN_INSTANTANEOUS_SPEED_PX = "MEAN_INSTANTANEOUS_SPEED_(PX/FRAME)";
         String MEAN_INSTANTANEOUS_SPEED_CAL = "MEAN_INSTANTANEOUS_SPEED_(${CAL}/FRAME)";
         String TOTAL_PATH_LENGTH_PX = "TOTAL_PATH_LENGTH_(PX)";
         String TOTAL_PATH_LENGTH_CAL = "TOTAL_PATH_LENGTH_(${CAL})";
@@ -154,6 +155,8 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
+            name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_PX,averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, Double.NaN));
             name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
 
@@ -198,6 +201,8 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY/distPerPxZ));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY));
+            name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, cumStatSpeed.getMean()));
             name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, cumStatSpeed.getMean() * distPerPxXY));
 
@@ -467,6 +472,11 @@ public class MeasureTrackMotion extends Module {
         reference.setCalculated(true);
 
         name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,subtractAverage);
+        reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
+        name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_PX,subtractAverage);
         reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
