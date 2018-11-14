@@ -7,7 +7,6 @@ import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import org.apache.poi.ss.formula.functions.T;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -45,7 +44,7 @@ public class AddObjectsOverlay extends Module {
     public static final String SINGLE_COLOUR = "Single colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
-    public static final String TRACK_OBJECTS = "Track objects";
+    public static final String SPOT_OBJECTS = "Spot objects";
     public static final String LIMIT_TRACK_HISTORY = "Limit track history";
     public static final String TRACK_HISTORY = "Track history (frames)";
     public static final String LINE_WIDTH = "Line width";
@@ -362,9 +361,9 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public void createTrackOverlay(ImagePlus ipl, ObjCollection trackObjects, HashMap<Integer,Color> colours) {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+    public void createTrackOverlay(ImagePlus ipl, ObjCollection trackObjects, String spotObjectsName, HashMap<Integer,Color> colours , @Nullable HashMap<Integer,String> labels) {
         double lineWidth = parameters.getValue(LINE_WIDTH);
+        int labelSize = parameters.getValue(LABEL_SIZE);
         boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
         int history = parameters.getValue(TRACK_HISTORY);
 
@@ -373,7 +372,7 @@ public class AddObjectsOverlay extends Module {
 
         int count = 0;
         for (Obj trackObject:trackObjects.values()) {
-            ObjCollection pointObjects = trackObject.getChildren(inputObjectsName);
+            ObjCollection pointObjects = trackObject.getChildren(spotObjectsName);
 
             // Putting the current track points into a TreeMap stored by the frame
             TreeMap<Integer,Obj> points = new TreeMap<>();
@@ -385,7 +384,8 @@ public class AddObjectsOverlay extends Module {
             int nFrames = ipl.getNFrames();
             Obj p1 = null;
             for (Obj p2:points.values()) {
-                Color color = colours.get(p2.getID());
+                Color colour = colours.get(trackObject.getID());
+                String label = labels == null ? "" : labels.get(trackObject.getID());
 
                 if (p1 != null) {
                     int x1 = (int) Math.round(p1.getXMean(true));
@@ -409,8 +409,13 @@ public class AddObjectsOverlay extends Module {
                         }
 
                         line.setStrokeWidth(lineWidth);
-                        line.setStrokeColor(color);
+                        line.setStrokeColor(colour);
                         ovl.addElement(line);
+                    }
+
+                    if (!label.equals("")) {
+                        double[] labelCoords = new double[]{x2, y2, 1, maxFrame};
+                        addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
                     }
                 }
 
@@ -446,7 +451,7 @@ public class AddObjectsOverlay extends Module {
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String positionMode = parameters.getValue(POSITION_MODE);
-        String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
+        String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
 
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -475,8 +480,7 @@ public class AddObjectsOverlay extends Module {
                 break;
 
             case PositionModes.TRACKS:
-                ObjCollection tracks = workspace.getObjectSet(trackObjectsName);
-                createTrackOverlay(ipl,tracks,colours);
+                createTrackOverlay(ipl,inputObjects,spotObjectsName,colours,labels);
                 break;
         }
 
@@ -521,7 +525,7 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(SINGLE_COLOUR,Parameter.CHOICE_ARRAY,SingleColours.WHITE,SingleColours.ALL));
         parameters.add(new Parameter(MEASUREMENT_FOR_COLOUR, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(TRACK_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
         parameters.add(new Parameter(LIMIT_TRACK_HISTORY, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(TRACK_HISTORY, Parameter.INTEGER,10));
         parameters.add(new Parameter(LINE_WIDTH,Parameter.DOUBLE,1.0));
@@ -588,7 +592,7 @@ public class AddObjectsOverlay extends Module {
         }
 
         if (parameters.getValue(POSITION_MODE).equals(PositionModes.TRACKS)) {
-            returnedParameters.add(parameters.getParameter(TRACK_OBJECTS));
+            returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
             returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
             if (parameters.getValue(LIMIT_TRACK_HISTORY)) {
@@ -596,7 +600,8 @@ public class AddObjectsOverlay extends Module {
             }
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(TRACK_OBJECTS,inputObjectsName);
+            parameters.updateValueSource(SPOT_OBJECTS,inputObjectsName);
+
         }
 
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));

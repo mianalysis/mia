@@ -417,8 +417,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         RelationshipCollection actualRelationships = modules.getRelationships();
 
         // Getting actual relationships for spots
-        String[] actualSpotChildren = actualRelationships.getChildNames(spotsName);
-        String[] actualSpotParents = actualRelationships.getParentNames(spotsName);
+        String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);
+        String[] actualSpotParents = actualRelationships.getParentNames(spotsName,false);
 
         // Getting expected relationships for spots
         String[] expectedSpotChildren = new String[]{""};
@@ -450,8 +450,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Getting actual relationships for spots
-        String[] actualTrackChildren = actualRelationships.getChildNames(tracksName);
-        String[] actualTrackParents = actualRelationships.getParentNames(tracksName);
+        String[] actualTrackChildren = actualRelationships.getChildNames(tracksName,false);
+        String[] actualTrackParents = actualRelationships.getParentNames(tracksName,false);
 
         // Getting expected relationships for spots
         String[] expectedTrackChildren = new String[]{spotsName};
@@ -483,8 +483,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Getting actual relationships for spots
-        String[] actualClusterChildren = actualRelationships.getChildNames(clustersName);
-        String[] actualClusterParents = actualRelationships.getParentNames(clustersName);
+        String[] actualClusterChildren = actualRelationships.getChildNames(clustersName,false);
+        String[] actualClusterParents = actualRelationships.getParentNames(clustersName,false);
 
         // Getting expected relationships for spots
         String[] expectedClusterChildren = new String[]{spotsName};
@@ -547,8 +547,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         RelationshipCollection actualRelationships = modules.getRelationships(objectClusterer);
 
         // Getting actual relationships for spots
-        String[] actualSpotChildren = actualRelationships.getChildNames(spotsName);
-        String[] actualSpotParents = actualRelationships.getParentNames(spotsName);
+        String[] actualSpotChildren = actualRelationships.getChildNames(spotsName,false);
+        String[] actualSpotParents = actualRelationships.getParentNames(spotsName,false);
 
         // Getting expected relationships for spots
         String[] expectedSpotChildren = new String[]{""};
@@ -580,8 +580,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Getting actual relationships for spots
-        String[] actualTrackChildren = actualRelationships.getChildNames(tracksName);
-        String[] actualTrackParents = actualRelationships.getParentNames(tracksName);
+        String[] actualTrackChildren = actualRelationships.getChildNames(tracksName,false);
+        String[] actualTrackParents = actualRelationships.getParentNames(tracksName,false);
 
         // Getting expected relationships for spots
         String[] expectedTrackChildren = new String[]{spotsName};
@@ -613,8 +613,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         }
 
         // Getting actual relationships for spots
-        String[] actualClusterChildren = actualRelationships.getChildNames(clustersName);
-        String[] actualClusterParents = actualRelationships.getParentNames(clustersName);
+        String[] actualClusterChildren = actualRelationships.getChildNames(clustersName,false);
+        String[] actualClusterParents = actualRelationships.getParentNames(clustersName,false);
 
         // Getting expected relationships for spots
         String[] expectedClusterChildren = new String[]{""};

@@ -82,9 +82,11 @@ public class AnalysisTester {
                 availableParameters = modules.getAvailableImages(module);
                 break;
 
-            case Parameter.INPUT_OBJECTS:
             case Parameter.PARENT_OBJECTS:
             case Parameter.CHILD_OBJECTS:
+                return true;
+
+            case Parameter.INPUT_OBJECTS:
             case Parameter.REMOVED_OBJECTS:
                 availableParameters = modules.getAvailableObjects(module);
                 break;

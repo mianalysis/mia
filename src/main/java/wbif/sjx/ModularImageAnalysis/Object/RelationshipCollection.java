@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
+
 import java.util.*;
 
 /**
@@ -8,47 +9,75 @@ import java.util.*;
  * different types of children these are stored in an ArrayList.
  */
 public class RelationshipCollection {
-    private LinkedHashMap<String,ArrayList<String>> parents = new LinkedHashMap<>();
-    private LinkedHashMap<String,ArrayList<String>> children = new LinkedHashMap<>();
+    private LinkedHashMap<String,TreeSet<String>> parents = new LinkedHashMap<>();
+    private LinkedHashMap<String,TreeSet<String>> children = new LinkedHashMap<>();
 
     public void addRelationship(String parent, String child) {
-        parents.computeIfAbsent(child,k -> new ArrayList<>());
+        parents.computeIfAbsent(child,k -> new TreeSet<>());
         parents.get(child).add(parent);
 
-        children.computeIfAbsent(parent, k -> new ArrayList<>());
+        children.computeIfAbsent(parent, k -> new TreeSet<>());
         children.get(parent).add(child);
 
     }
 
-    public String[] getChildNames(String parentName) {
-        if (children.get(parentName) == null) {
-            return new String[]{""};
-        }
-
-        return children.get(parentName).toArray(new String[children.get(parentName).size()]);
-
-    }
-
-    public TreeSet<String> getParentNames(String childName, boolean useHierarchy, @Nullable String rootName) {
+    private TreeSet<String> getChildNames(String parentName, boolean useHierarchy, @Nullable String rootName) {
         if (rootName == null) rootName = "";
 
         // Adding each parent and then the parent of that
-        TreeSet<String> parentNames = new TreeSet<>(parents.get(childName));
-        for (String parentName:parentNames) {
-            parentName = rootName + parentName;
+        TreeSet<String> childNames = children.get(parentName);
+        if (childNames == null) return new TreeSet<>();
+
+        // Appending root name
+        TreeSet<String> newChildNames = new TreeSet<>();
+        for (String childName:childNames) newChildNames.add(rootName+childName);
+
+        if (!useHierarchy) return newChildNames;
+
+        // Adding parent names from parents
+        for (String childName:childNames) {
+            TreeSet<String> currentParentNames = getChildNames(childName,true,rootName+childName+" // ");
+            newChildNames.addAll(currentParentNames);
         }
 
-        if (!useHierarchy) return parentNames;
+        return newChildNames;
 
-        // Takes the parentHierarchy HashSet and adds all parents of each object.  As we're using a HashSet we won't get
-        // duplicates.  Therefore, this loop terminates when no more objects are added.
+    }
 
+    public String[] getChildNames(String parentName, boolean useHierarchy) {
+        TreeSet<String> childNames = getChildNames(parentName,useHierarchy,"");
+
+        return childNames.toArray(new String[0]);
+
+    }
+
+    private TreeSet<String> getParentNames(String childName, boolean useHierarchy, @Nullable String rootName) {
+        if (rootName == null) rootName = "";
+
+        // Adding each parent and then the parent of that
+        TreeSet<String> parentNames = parents.get(childName);
+        if (parentNames == null) return new TreeSet<>();
+
+        // Appending root name
+        TreeSet<String> newParentNames = new TreeSet<>();
+        for (String parentName:parentNames) newParentNames.add(rootName+parentName);
+
+        if (!useHierarchy) return newParentNames;
+
+        // Adding parent names from parents
         for (String parentName:parentNames) {
-            TreeSet<String> currentParentNames = getParentNames(parentName,true,rootName+" // "+parentName);
-            parentNames.addAll(currentParentNames);
+            TreeSet<String> currentParentNames = getParentNames(parentName,true,rootName+parentName+" // ");
+            newParentNames.addAll(currentParentNames);
         }
 
-        return parentNames;
+        return newParentNames;
+
+    }
+
+    public String[] getParentNames(String childName, boolean useHierarchy) {
+        TreeSet<String> parentNames = getParentNames(childName,useHierarchy,"");
+
+        return parentNames.toArray(new String[0]);
 
     }
 }
