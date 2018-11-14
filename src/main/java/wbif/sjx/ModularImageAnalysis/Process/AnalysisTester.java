@@ -93,7 +93,7 @@ public class AnalysisTester {
             case Parameter.CHILD_OBJECTS:
                 availableParameters = modules.getAvailableObjects(module);
                 int lastIdx = value.lastIndexOf(" // ");
-                value = value.substring(lastIdx+4,value.length());
+                if (lastIdx != -1) value = value.substring(lastIdx+4,value.length());
                 break;
         }
 
