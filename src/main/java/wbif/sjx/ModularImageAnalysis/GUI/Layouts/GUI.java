@@ -1114,7 +1114,7 @@ public class GUI {
         for (Module module:analysis.getModules()) if (module.isEnabled()) nActive++;
         int nModules = analysis.getModules().size();
         if (verbose && nModules > 0) System.out.println(nRunnable+" of "+nActive+" active modules are runnable");
-//
+
         boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
         inputButton.setColour();

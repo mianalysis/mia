@@ -74,6 +74,8 @@ public class AnalysisTester {
     }
 
     public static boolean testInputImageObjectParameter(Parameter parameter, Module module, ModuleCollection modules) {
+        String value = parameter.getValue();
+
         // Get available parameters up to this point
         LinkedHashSet<Parameter> availableParameters = null;
         switch (parameter.getType()) {
@@ -82,13 +84,16 @@ public class AnalysisTester {
                 availableParameters = modules.getAvailableImages(module);
                 break;
 
-            case Parameter.PARENT_OBJECTS:
-            case Parameter.CHILD_OBJECTS:
-                return true;
-
             case Parameter.INPUT_OBJECTS:
             case Parameter.REMOVED_OBJECTS:
                 availableParameters = modules.getAvailableObjects(module);
+                break;
+
+            case Parameter.PARENT_OBJECTS:
+            case Parameter.CHILD_OBJECTS:
+                availableParameters = modules.getAvailableObjects(module);
+                int lastIdx = value.lastIndexOf(" // ");
+                value = value.substring(lastIdx+4,value.length());
                 break;
         }
 
@@ -96,7 +101,7 @@ public class AnalysisTester {
 
         // Checking if a parameter with a matching name is in this list
         for (Parameter availableParameter:availableParameters) {
-            if (availableParameter.getValue().equals(parameter.getValue())) return true;
+            if (availableParameter.getValue().equals(value)) return true;
         }
 
         return false;

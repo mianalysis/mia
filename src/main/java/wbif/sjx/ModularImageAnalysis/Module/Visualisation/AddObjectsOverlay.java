@@ -238,6 +238,59 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
+    public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize, boolean limitHistory, int history) {
+        ObjCollection pointObjects = object.getChildren(spotObjectsName);
+
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+        Overlay ovl = ipl.getOverlay();
+
+        // Putting the current track points into a TreeMap stored by the frame
+        TreeMap<Integer,Obj> points = new TreeMap<>();
+        for (Obj pointObject:pointObjects.values()) {
+            points.put(pointObject.getT(),pointObject);
+        }
+
+        //  Iterating over all points in the track, drawing lines between them
+        int nFrames = ipl.getNFrames();
+        Obj p1 = null;
+        for (Obj p2:points.values()) {
+            if (p1 != null) {
+                int x1 = (int) Math.round(p1.getXMean(true));
+                int y1 = (int) Math.round(p1.getYMean(true));
+                int x2 = (int) Math.round(p2.getXMean(true));
+                int y2 = (int) Math.round(p2.getYMean(true));
+
+                int maxFrame = nFrames;
+                if (limitHistory) maxFrame = p2.getT()+history;
+
+                for (int t = p2.getT();t<=maxFrame-1;t++) {
+                    PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
+
+                    if (ipl.isHyperStack()) {
+                        ipl.setPosition(1,1,t+1);
+                        line.setPosition(1,1, t+1);
+                    } else {
+                        int pos = Math.max(Math.max(1, 1), t+1);
+                        ipl.setPosition(pos);
+                        line.setPosition(pos);
+                    }
+
+                    line.setStrokeWidth(lineWidth);
+                    line.setStrokeColor(colour);
+                    ovl.addElement(line);
+                }
+
+                if (!label.equals("")) {
+                    double[] labelCoords = new double[]{x2, y2, 1, p2.getT()+1};
+                    addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
+                }
+            }
+
+            p1 = p2;
+
+        }
+    }
+
     public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour,   int labelSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
         Overlay ovl = ipl.getOverlay();
@@ -324,6 +377,9 @@ public class AddObjectsOverlay extends Module {
         String positionMode = parameters.getValue(POSITION_MODE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         int labelSize = parameters.getValue(LABEL_SIZE);
+        String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
+        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
+        int history = parameters.getValue(TRACK_HISTORY);
 
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
@@ -354,76 +410,12 @@ public class AddObjectsOverlay extends Module {
                     String[] posMeasurements = getPositionMeasurements();
                     addPositionMeasurementsOverlay(object,ipl,colour,lineWidth,posMeasurements,label,labelSize);
                     break;
+
+                case PositionModes.TRACKS:
+                    addTrackOverlay(object,spotObjectsName,ipl,colour,lineWidth,label,labelSize,limitHistory,history);
             }
 
             writeMessage("Rendered "+(++count)+" objects of "+inputObjects.size());
-
-        }
-    }
-
-    public void createTrackOverlay(ImagePlus ipl, ObjCollection trackObjects, String spotObjectsName, HashMap<Integer,Color> colours , @Nullable HashMap<Integer,String> labels) {
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        int labelSize = parameters.getValue(LABEL_SIZE);
-        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
-        int history = parameters.getValue(TRACK_HISTORY);
-
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
-        Overlay ovl = ipl.getOverlay();
-
-        int count = 0;
-        for (Obj trackObject:trackObjects.values()) {
-            ObjCollection pointObjects = trackObject.getChildren(spotObjectsName);
-
-            // Putting the current track points into a TreeMap stored by the frame
-            TreeMap<Integer,Obj> points = new TreeMap<>();
-            for (Obj pointObject:pointObjects.values()) {
-                points.put(pointObject.getT(),pointObject);
-            }
-
-            //  Iterating over all points in the track, drawing lines between them
-            int nFrames = ipl.getNFrames();
-            Obj p1 = null;
-            for (Obj p2:points.values()) {
-                Color colour = colours.get(trackObject.getID());
-                String label = labels == null ? "" : labels.get(trackObject.getID());
-
-                if (p1 != null) {
-                    int x1 = (int) Math.round(p1.getXMean(true));
-                    int y1 = (int) Math.round(p1.getYMean(true));
-                    int x2 = (int) Math.round(p2.getXMean(true));
-                    int y2 = (int) Math.round(p2.getYMean(true));
-
-                    int maxFrame = nFrames;
-                    if (limitHistory) maxFrame = p2.getT()+history;
-
-                    for (int t = p2.getT();t<maxFrame-1;t++) {
-                        PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
-
-                        if (ipl.isHyperStack()) {
-                            ipl.setPosition(1,1,t+1);
-                            line.setPosition(1,1, t+1);
-                        } else {
-                            int pos = Math.max(Math.max(1, 1), t+1);
-                            ipl.setPosition(pos);
-                            line.setPosition(pos);
-                        }
-
-                        line.setStrokeWidth(lineWidth);
-                        line.setStrokeColor(colour);
-                        ovl.addElement(line);
-                    }
-
-                    if (!label.equals("")) {
-                        double[] labelCoords = new double[]{x2, y2, 1, maxFrame};
-                        addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
-                    }
-                }
-
-                p1 = p2;
-
-            }
-
-            writeMessage("Rendered "+(count++)+" tracks of "+trackObjects.size());
 
         }
     }
@@ -471,18 +463,8 @@ public class AddObjectsOverlay extends Module {
         // Generating labels for each object
         HashMap<Integer,String> labels = getLabels(inputObjects);
 
-        switch (positionMode) {
-            case PositionModes.ALL_POINTS:
-            case PositionModes.CENTROID:
-            case PositionModes.OUTLINE:
-            case PositionModes.POSITION_MEASUREMENTS:
-                createOverlay(ipl,inputObjects,colours,labels);
-                break;
-
-            case PositionModes.TRACKS:
-                createTrackOverlay(ipl,inputObjects,spotObjectsName,colours,labels);
-                break;
-        }
+        // Adding the overlay element
+        createOverlay(ipl,inputObjects,colours,labels);
 
         // If necessary, adding output image to workspace
         if (addOutputToWorkspace) {
@@ -510,8 +492,8 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(SHOW_LABEL, Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LABEL_MODE, Parameter.CHOICE_ARRAY, LabelModes.ID, LabelModes.ALL));
-        parameters.add(new Parameter(DECIMAL_PLACES, Parameter.INTEGER,2));
-        parameters.add(new Parameter(USE_SCIENTIFIC,Parameter.BOOLEAN,true));
+        parameters.add(new Parameter(DECIMAL_PLACES, Parameter.INTEGER,0));
+        parameters.add(new Parameter(USE_SCIENTIFIC,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
         parameters.add(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
         parameters.add(new Parameter(MEASUREMENT_FOR_ID, Parameter.OBJECT_MEASUREMENT,null,null));

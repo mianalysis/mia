@@ -180,18 +180,15 @@ public class Obj extends Volume {
     }
 
     public ObjCollection getChildren(String name) {
-        System.err.println("Name "+name);
         // Split name down by " // " tokenizer
         String[] elements = name.split(" // ");
 
         // Getting the first set of children
         ObjCollection allChildren = children.get(elements[0]);
+        if (allChildren == null) return new ObjCollection(elements[0]);
 
         // If the first set of children was the only one listed, returning this
         if (elements.length == 1) return allChildren;
-
-//        int lastIdx = spotObjectsName.lastIndexOf(" // ");
-//        spotObjectsName = spotObjectsName.substring(lastIdx+4,spotObjectsName.length()-1);
 
         // If there are additional parents listed, re-constructing the string and running this method on the parent
         StringBuilder stringBuilder = new StringBuilder();
@@ -206,8 +203,6 @@ public class Obj extends Volume {
             ObjCollection currentChildren = child.getChildren(stringBuilder.toString());
             for (Obj currentChild:currentChildren.values()) outputChildren.add(currentChild);
         }
-
-        System.err.println(stringBuilder.toString()+"_"+outputChildren.size());
 
         return outputChildren;
 

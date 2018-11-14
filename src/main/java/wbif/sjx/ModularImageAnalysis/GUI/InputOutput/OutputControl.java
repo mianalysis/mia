@@ -27,8 +27,9 @@ public class OutputControl extends Module {
         String ALL_TOGETHER = "All together";
         String GROUP_BY_METADATA = "Group by metadata";
         String INDIVIDUAL_FILES = "Individual files";
+        String NONE = "None";
 
-        String[] ALL = new String[]{ALL_TOGETHER,GROUP_BY_METADATA,INDIVIDUAL_FILES};
+        String[] ALL = new String[]{ALL_TOGETHER,GROUP_BY_METADATA,INDIVIDUAL_FILES,NONE};
 
     }
 

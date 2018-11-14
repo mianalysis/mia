@@ -58,6 +58,7 @@ public class BatchProcessor extends FileCrawler {
 
     public void run(Analysis analysis, Exporter exporter) throws IOException, InterruptedException {
         shutdownEarly = false;
+        String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
 
@@ -67,13 +68,15 @@ public class BatchProcessor extends FileCrawler {
         // The protocol to run will depend on if a single file or a folder was selected
         if (rootFolder.getFolderAsFile().isFile()) {
             runSingle(workspaces, analysis);
-            exporter.exportResults(workspaces,analysis);
+
+            if (!exportMode.equals(OutputControl.ExportModes.NONE)) {
+                exporter.exportResults(workspaces, analysis);
+            }
 
         } else {
             // The system can run multiple files in parallel or one at a time
             runParallel(workspaces, analysis, exporter);
 
-            String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
             switch (exportMode) {
                 case OutputControl.ExportModes.ALL_TOGETHER:
                 case OutputControl.ExportModes.GROUP_BY_METADATA:

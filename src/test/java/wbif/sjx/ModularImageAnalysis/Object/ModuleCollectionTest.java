@@ -424,7 +424,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         String[] expectedSpotChildren = new String[]{""};
         String[] expectedSpotParents = new String[]{tracksName,clustersName};
 
-        assertEquals(1,actualSpotChildren.length);
+        assertEquals(0,actualSpotChildren.length);
         assertEquals(2,actualSpotParents.length);
 
         for (String actualChild:actualSpotChildren) {
@@ -458,7 +458,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         String[] expectedTrackParents = new String[]{""};
 
         assertEquals(1,actualTrackChildren.length);
-        assertEquals(1,actualTrackParents.length);
+        assertEquals(0,actualTrackParents.length);
 
         for (String actualChild:actualTrackChildren) {
             boolean found = false;
@@ -491,7 +491,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         String[] expectedClusterParents = new String[]{""};
 
         assertEquals(1,actualClusterChildren.length);
-        assertEquals(1,actualClusterParents.length);
+        assertEquals(0,actualClusterParents.length);
 
         for (String actualChild:actualClusterChildren) {
             boolean found = false;
@@ -554,7 +554,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         String[] expectedSpotChildren = new String[]{""};
         String[] expectedSpotParents = new String[]{tracksName};
 
-        assertEquals(1,actualSpotChildren.length);
+        assertEquals(0,actualSpotChildren.length);
         assertEquals(1,actualSpotParents.length);
 
         for (String actualChild:actualSpotChildren) {
@@ -588,7 +588,7 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         String[] expectedTrackParents = new String[]{""};
 
         assertEquals(1,actualTrackChildren.length);
-        assertEquals(1,actualTrackParents.length);
+        assertEquals(0,actualTrackParents.length);
 
         for (String actualChild:actualTrackChildren) {
             boolean found = false;
@@ -620,8 +620,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         String[] expectedClusterChildren = new String[]{""};
         String[] expectedClusterParents = new String[]{""};
 
-        assertEquals(1,actualClusterChildren.length);
-        assertEquals(1,actualClusterParents.length);
+        assertEquals(0,actualClusterChildren.length);
+        assertEquals(0,actualClusterParents.length);
 
         for (String actualChild:actualClusterChildren) {
             boolean found = false;
