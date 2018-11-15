@@ -53,7 +53,6 @@ public class FitEllipse extends Module {
 
 
     public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, double maxAxisLength, String fittingMode) {
-
         EllipseCalculator calculator = null;
         switch (fittingMode) {
             case FitEllipsoid.FittingModes.FIT_TO_WHOLE:
@@ -68,9 +67,9 @@ public class FitEllipse extends Module {
                 break;
         }
 
-        if (calculator == null || Double.isNaN(calculator.getXCentre())) return;
-
         addMeasurements(inputObject,calculator);
+
+        if (calculator == null || Double.isNaN(calculator.getXCentre())) return;
 
         Volume ellipse = calculator.getContainedPoints();
 
@@ -114,6 +113,8 @@ public class FitEllipse extends Module {
 
     public void addMeasurements(Obj inputObject, EllipseCalculator calculator) {
         if (calculator.getEllipseFit() == null) {
+            inputObject.addMeasurement(new Measurement(Measurements.MAJOR_MINOR_RATIO,Double.NaN,this));
+            inputObject.addMeasurement(new Measurement(Measurements.ECCENTRICITY,Double.NaN,this));
             inputObject.addMeasurement(new Measurement(Measurements.ORIENTATION_DEGS,Double.NaN,this));
             inputObject.addMeasurement(new Measurement(Measurements.X_CENTRE_PX,Double.NaN,this));
             inputObject.addMeasurement(new Measurement(Units.replace(Measurements.X_CENTRE_CAL),Double.NaN,this));

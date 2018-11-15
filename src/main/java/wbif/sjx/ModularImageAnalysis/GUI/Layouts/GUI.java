@@ -1122,6 +1122,7 @@ public class GUI {
         analysis.getInputControl().setRunnable(runnable);
         outputButton.setColour();
 
+
         populateModuleList();
         updateEvalButtonStates();
 

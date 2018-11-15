@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import ij.Prefs;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
@@ -186,6 +187,11 @@ public class AnalysisRunner {
         System.err.println("STOPPING");
         if (batchProcessor != null) {
             batchProcessor.stopAnalysis();
+        } else {
+            GUI.setModuleBeingEval(-1);
+            GUI.updateModules(false);
+            Thread.currentThread().getThreadGroup().stop();
+            System.out.println("Shutdown complete!");
         }
     }
 }
