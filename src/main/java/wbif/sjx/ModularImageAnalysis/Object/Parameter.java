@@ -84,36 +84,42 @@ public class Parameter implements Serializable {
     public final static int FOLDER_PATH = 12;
 
     /**
-     * HCMeasurement input to the module.  This could be used as a parameter for plotting, or as a value for another
-     * parameter
+     * System file parameter.  These are displayed as buttons for loading file open dialog.  This is stored as an
+     * absolute path String.
      */
-    public final static int IMAGE_MEASUREMENT = 13;
+    public final static int FILE_FOLDER_PATH = 13;
 
     /**
      * HCMeasurement input to the module.  This could be used as a parameter for plotting, or as a value for another
      * parameter
      */
-    public final static int OBJECT_MEASUREMENT = 14;
+    public final static int IMAGE_MEASUREMENT = 14;
+
+    /**
+     * HCMeasurement input to the module.  This could be used as a parameter for plotting, or as a value for another
+     * parameter
+     */
+    public final static int OBJECT_MEASUREMENT = 15;
 
     /**
      * Child object of the given parent object.
      */
-    public final static int CHILD_OBJECTS = 15;
+    public final static int CHILD_OBJECTS = 16;
 
     /**
      * Parent object of the given child object.
      */
-    public final static int PARENT_OBJECTS = 16;
+    public final static int PARENT_OBJECTS = 17;
 
     /**
      * Metadata item stored for current Workspace.
      */
-    public final static int METADATA_ITEM = 17;
+    public final static int METADATA_ITEM = 18;
 
     /**
      * Pseudo parameter which can display text on the parameters page
      */
-    public final static int TEXT_DISPLAY = 18;
+    public final static int TEXT_DISPLAY = 19;
 
 
     private final String name;
@@ -210,6 +216,7 @@ public class Parameter implements Serializable {
             case TEXT_DISPLAY:
             case FILE_PATH:
             case FOLDER_PATH:
+            case FILE_FOLDER_PATH:
                 return value == null ? "" : (String) value;
 
             default:

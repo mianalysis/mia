@@ -201,7 +201,7 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY/distPerPxZ));
             name = getFullName(Measurements.MEAN_Z_VELOCITY_CAL,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, cumStatZ.getMean() * distPerPxXY));
-            name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,averageSubtracted);
+            name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_PX,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, cumStatSpeed.getMean()));
             name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, cumStatSpeed.getMean() * distPerPxXY));

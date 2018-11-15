@@ -49,21 +49,10 @@ public class AnalysisRunner {
     }
 
     public static File getInputFile(InputControl inputControl) {
-        String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
-        String singleFile = inputControl.getParameterValue(InputControl.SINGLE_FILE_PATH);
-        String batchFolder = inputControl.getParameterValue(InputControl.BATCH_FOLDER_PATH);
+        String inputPath = inputControl.getParameterValue(InputControl.INPUT_PATH);
 
-        switch (inputMode) {
-            case InputControl.InputModes.SINGLE_FILE:
-                if (!checkInputFileValidity(singleFile)) return null;
-                return new File(singleFile);
-
-            case InputControl.InputModes.BATCH:
-                if (!checkInputFileValidity(batchFolder)) return null;
-                return new File(batchFolder);
-        }
-
-        return null;
+        if (!checkInputFileValidity(inputPath)) return null;
+        return new File(inputPath);
 
     }
 
@@ -85,33 +74,32 @@ public class AnalysisRunner {
     }
 
     public static String getExportName(InputControl inputControl, File inputFile) {
-        String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
         String seriesMode = inputControl.getParameterValue(InputControl.SERIES_MODE);
         String seriesList = inputControl.getParameterValue(InputControl.SERIES_LIST);
         int seriesNumber = inputControl.getParameterValue(InputControl.SERIES_NUMBER);
 
-        switch (inputMode) {
-            case InputControl.InputModes.SINGLE_FILE:
-                switch (seriesMode) {
-                    case InputControl.SeriesModes.ALL_SERIES:
-                        return FilenameUtils.removeExtension(inputFile.getAbsolutePath());
-                    case InputControl.SeriesModes.SERIES_LIST:
-                        return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesList.replace(" ","");
-                    case InputControl.SeriesModes.SINGLE_SERIES:
-                        return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesNumber;
-                }
-            case InputControl.InputModes.BATCH:
-                switch (seriesMode) {
-                    case InputControl.SeriesModes.ALL_SERIES:
-                        return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName();
-                    case InputControl.SeriesModes.SERIES_LIST:
-                        return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName() + "_S" + seriesList.replace(" ","");
-                    case InputControl.SeriesModes.SINGLE_SERIES:
-                        return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName() + "_S" + seriesNumber;
-                }
-            default:
-                return "";
+        if (inputFile.isFile()) {
+            switch (seriesMode) {
+                case InputControl.SeriesModes.ALL_SERIES:
+                    return FilenameUtils.removeExtension(inputFile.getAbsolutePath());
+                case InputControl.SeriesModes.SERIES_LIST:
+                    return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesList.replace(" ", "");
+                case InputControl.SeriesModes.SINGLE_SERIES:
+                    return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesNumber;
+            }
+        } else if (inputFile.isDirectory()) {
+            switch (seriesMode) {
+                case InputControl.SeriesModes.ALL_SERIES:
+                    return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName();
+                case InputControl.SeriesModes.SERIES_LIST:
+                    return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName() + "_S" + seriesList.replace(" ","");
+                case InputControl.SeriesModes.SINGLE_SERIES:
+                    return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName() + "_S" + seriesNumber;
+            }
         }
+
+        return "";
+
     }
 
     public static void addFilenameFilters(InputControl inputControl) {

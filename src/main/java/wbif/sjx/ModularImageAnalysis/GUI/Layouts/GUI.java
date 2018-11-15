@@ -230,17 +230,17 @@ public class GUI {
         editingPanel.add(controlPanel, c);
 
         // Initialising the status panel
-            c.gridheight = 1;
-            c.gridy++;
-            c.gridy++;
-            c.gridy++;
-            c.weighty = 0;
-            c.weightx = 1;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridwidth = 3;
-            c.insets = new Insets(0,5,5,5);
-            initialiseEditingStatusPanel();
-            editingPanel.add(editingStatusPanel, c);
+        c.gridheight = 1;
+        c.gridy++;
+        c.gridy++;
+        c.gridy++;
+        c.weighty = 0;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = 3;
+        c.insets = new Insets(0,5,5,5);
+        initialiseEditingStatusPanel();
+        editingPanel.add(editingStatusPanel, c);
 
         // Initialising the progress bar
         initialiseEditingProgressBar();
@@ -1133,9 +1133,7 @@ public class GUI {
     public static void updateTestFile() {
         // Ensuring the input file specified in the InputControl is active in the test workspace
         InputControl inputControl = getAnalysis().getInputControl();
-        String inputMode = inputControl.getParameterValue(InputControl.INPUT_MODE);
-        String singleFile = inputControl.getParameterValue(InputControl.SINGLE_FILE_PATH);
-        String batchFolder = inputControl.getParameterValue(InputControl.BATCH_FOLDER_PATH);
+        String inputPath = inputControl.getParameterValue(InputControl.INPUT_PATH);
         String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
         int nThreads = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
         boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
@@ -1150,35 +1148,30 @@ public class GUI {
 
         Units.setUnits(inputControl.getParameterValue(InputControl.SPATIAL_UNITS));
 
+        if (inputPath == null) return;
+
         String inputFile = "";
-        switch (inputMode) {
-            case InputControl.InputModes.SINGLE_FILE:
-                inputFile = singleFile;
-                break;
+        if (new File(inputPath).isFile()) {
+            inputFile = inputPath;
+        } else {
+            BatchProcessor batchProcessor = new BatchProcessor(new File(inputPath));
+            batchProcessor.setnThreads(nThreads);
 
-            case InputControl.InputModes.BATCH:
-                // Initialising BatchProcessor
-                if (batchFolder == null) return;
+            // Adding extension filter
+            batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
 
-                BatchProcessor batchProcessor = new BatchProcessor(new File(batchFolder));
-                batchProcessor.setnThreads(nThreads);
+            // Adding filename filters
+            if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1, filenameFilter1);
+            if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2, filenameFilter2);
+            if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3, filenameFilter3);
 
-                // Adding extension filter
-                batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
-
-                // Adding filename filters
-                if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1);
-                if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2);
-                if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3);
-
-                // Running the analysis
-                File nextFile = batchProcessor.getNextValidFileInStructure();
-                if (nextFile == null) {
-                    inputFile = null;
-                } else {
-                    inputFile = nextFile.getAbsolutePath();
-                }
-                break;
+            // Running the analysis
+            File nextFile = batchProcessor.getNextValidFileInStructure();
+            if (nextFile == null) {
+                inputFile = null;
+            } else {
+                inputFile = nextFile.getAbsolutePath();
+            }
         }
 
         if (inputFile == null) return;
