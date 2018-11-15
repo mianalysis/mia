@@ -62,6 +62,10 @@ public class RidgeDetection extends Module {
         double dppZ = calibration.getZ(1);
         String calibrationUnits = calibration.getUnits();
         boolean twoD = inputImagePlus.getNSlices()==1;
+        int imWidth = inputImagePlus.getWidth();
+        int imHeight = inputImagePlus.getHeight();
+        int nChannels = inputImagePlus.getNChannels();
+        int nSlices = inputImagePlus.getNSlices();
 
         LineDetector lineDetector = new LineDetector();
         boolean darkLine = contourContrast.equals(ContourContrast.DARK_LINE);
@@ -70,8 +74,8 @@ public class RidgeDetection extends Module {
         int count = 1;
         int total = inputImagePlus.getNChannels()*inputImagePlus.getNSlices()*inputImagePlus.getNFrames();
 
-        for (int c=0;c<inputImagePlus.getNChannels();c++) {
-            for (int z=0;z<inputImagePlus.getNSlices();z++) {
+        for (int c=0;c<nChannels;c++) {
+            for (int z=0;z<nSlices;z++) {
                 for (int t = 0; t < inputImagePlus.getNFrames(); t++) {
                     writeMessage("Processing image "+(count++)+" of "+total);
                     inputImagePlus.setPosition(c+1,z+1,t+1);
@@ -146,11 +150,12 @@ public class RidgeDetection extends Module {
                                     int xMax = Math.round(x[i]+halfWidth);
                                     int yMin = Math.round(y[i]-halfWidth);
                                     int yMax = Math.round(y[i]+halfWidth);
+
                                     for (int xx=xMin;xx<=xMax;xx++) {
                                         for (int yy=yMin;yy<=yMax;yy++) {
-                                            if (Math.sqrt((xx-x[i])*(xx-x[i])+(yy-y[i])*(yy-y[i])) <= halfWidth) {
-                                                outputObject.addCoord(xx, yy, z);
-                                            }
+                                            if (Math.sqrt((xx-x[i])*(xx-x[i])+(yy-y[i])*(yy-y[i])) > halfWidth) continue;
+                                            if (xx<0 || xx>=imWidth || yy<0 || yy>=imHeight) continue;
+                                            outputObject.addCoord(xx, yy, z);
                                         }
                                     }
                                 }
@@ -283,30 +288,47 @@ public class RidgeDetection extends Module {
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
         objectMeasurementReferences.setAllCalculated(false);
 
+        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+
         MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.LENGTH_PX);
         reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         reference.setCalculated(true);
+        reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in pixel " +
+                "units.");
 
         reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.LENGTH_CAL));
         reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         reference.setCalculated(true);
+        reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in calibrated " +
+                "("+Units.getOMEUnits().getSymbol()+") units.");
 
         if (parameters.getValue(ESTIMATE_WIDTH)) {
             reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setCalculated(true);
+            reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
+                    "is from the central (backbone) of the ridge to the edge.  Measured in pixel units.");
 
             reference = objectMeasurementReferences.getOrPut(Measurements.STDEV_HALFWIDTH_PX);
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setCalculated(true);
+            reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
+                    "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
+                    "pixel units.");
 
             reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_HALFWIDTH_CAL));
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setCalculated(true);
+            reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
+                    "is from the central (backbone) of the ridge to the edge.  Measured in calibrated " +
+                    "("+Units.getOMEUnits().getSymbol()+") units.");
 
             reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.STDEV_HALFWIDTH_CAL));
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setCalculated(true);
+            reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
+                    "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
+                    "calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         }
 
         return objectMeasurementReferences;

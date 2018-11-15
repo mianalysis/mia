@@ -100,6 +100,10 @@ public class ComponentFactory {
                 parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.FOLDER_TYPE);
                 break;
 
+            case Parameter.FILE_FOLDER_PATH:
+                parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.EITHER_TYPE);
+                break;
+
             case Parameter.CHOICE_ARRAY:
                 String[] valueSource = parameter.getValueSource();
                 parameterControl = new ChoiceArrayParameter(module, parameter, valueSource);

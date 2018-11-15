@@ -150,9 +150,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         MeasureObjectShape measureObjectShape = new MeasureObjectShape();
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA,false);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.VOLUMETRIC_MEASURES,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.PROJECTED_MEASURES,true);
         modules.add(measureObjectShape);
 
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture();
@@ -189,12 +188,18 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
 
         // Checking the values for the second object set
         MeasurementReferenceCollection references2 = modules.getObjectMeasurementReferences(obj2Name);
-        assertEquals(5,references2.size());
+        assertEquals(10,references2.size());
 
         String[] expectedNames2 = new String[]{
                 Units.replace(MeasureObjectShape.Measurements.PROJ_DIA_CAL),
                 MeasureObjectShape.Measurements.PROJ_DIA_PX,
-                Units.replace(MeasureObjectShape.Measurements.VOLUME_CAL),
+                Units.replace(MeasureObjectShape.Measurements.PROJ_PERIM_CAL),
+                MeasureObjectShape.Measurements.PROJ_PERIM_PX,
+                Units.replace(MeasureObjectShape.Measurements.PROJ_AREA_CAL),
+                MeasureObjectShape.Measurements.PROJ_AREA_PX,
+                Units.replace(MeasureObjectShape.Measurements.PROJ_CIRCULATIRY),
+                Units.replace(MeasureObjectShape.Measurements.N_VOXELS),
+                Units.replace(MeasureObjectShape.Measurements.VOLUME_PX),
                 Units.replace(MeasureObjectShape.Measurements.VOLUME_CAL)};
 
         for (String expectedName2:expectedNames2) {
@@ -220,9 +225,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         MeasureObjectShape measureObjectShape = new MeasureObjectShape();
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA,false);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.VOLUMETRIC_MEASURES,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.PROJECTED_MEASURES,true);
         modules.add(measureObjectShape);
 
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture();
@@ -276,10 +280,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         MeasureObjectShape measureObjectShape = new MeasureObjectShape();
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA,false);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_PERIM,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.VOLUMETRIC_MEASURES,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.PROJECTED_MEASURES,false);
         modules.add(measureObjectShape);
 
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture();
@@ -300,16 +302,14 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
 
         // Getting expected values
         LinkedHashSet<Parameter> expectedParams = new LinkedHashSet<>();
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_VOLUME,Parameter.BOOLEAN,true));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_DIA,Parameter.BOOLEAN,true));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_AREA,Parameter.BOOLEAN,false));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_PERIM,Parameter.BOOLEAN,false));
+        expectedParams.add(new Parameter(MeasureObjectShape.VOLUMETRIC_MEASURES,Parameter.BOOLEAN,true));
+        expectedParams.add(new Parameter(MeasureObjectShape.PROJECTED_MEASURES,Parameter.BOOLEAN,false));
         expectedParams.add(new Parameter(MeasureObjectTexture.POINT_MEASUREMENT,Parameter.BOOLEAN,true));
         expectedParams.add(new Parameter(MeasureObjectTexture.CALIBRATED_RADIUS,Parameter.BOOLEAN,false));
         expectedParams.add(new Parameter(MeasureObjectTexture.CALIBRATED_OFFSET,Parameter.BOOLEAN,false));
 
         // Checking the parameters are what are expected
-        assertEquals(7,actualParams.size());
+        assertEquals(5,actualParams.size());
 
         for (Parameter actualParam:actualParams) {
             boolean found = false;
@@ -342,10 +342,8 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         MeasureObjectShape measureObjectShape = new MeasureObjectShape();
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,obj2Name);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_VOLUME,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_DIA,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_AREA,false);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_PERIM,false);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.VOLUMETRIC_MEASURES,true);
+        measureObjectShape.updateParameterValue(MeasureObjectShape.PROJECTED_MEASURES,false);
         modules.add(measureObjectShape);
 
         MeasureObjectTexture measureObjectTexture = new MeasureObjectTexture();
@@ -365,13 +363,11 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
 
         // Getting expected values
         LinkedHashSet<Parameter> expectedParams = new LinkedHashSet<>();
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_VOLUME,Parameter.BOOLEAN,true));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_DIA,Parameter.BOOLEAN,true));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_AREA,Parameter.BOOLEAN,false));
-        expectedParams.add(new Parameter(MeasureObjectShape.MEASURE_PROJECTED_PERIM,Parameter.BOOLEAN,false));
+        expectedParams.add(new Parameter(MeasureObjectShape.VOLUMETRIC_MEASURES,Parameter.BOOLEAN,true));
+        expectedParams.add(new Parameter(MeasureObjectShape.PROJECTED_MEASURES,Parameter.BOOLEAN,false));
 
         // Checking the parameters are what are expected
-        assertEquals(4,actualParams.size());
+        assertEquals(2,actualParams.size());
 
         for (Parameter actualParam:actualParams) {
             boolean found = false;

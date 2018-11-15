@@ -177,7 +177,6 @@ public class AnalysisReader {
             NamedNodeMap parameterAttributes = parameterNode.getAttributes();
             String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
             String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
-
             boolean parameterVisible = false;
             if (parameterAttributes.getNamedItem("VISIBLE") != null) {
                 parameterVisible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
@@ -197,6 +196,7 @@ public class AnalysisReader {
                     case Parameter.CHOICE_ARRAY:
                     case Parameter.FILE_PATH:
                     case Parameter.FOLDER_PATH:
+                        case Parameter.FILE_FOLDER_PATH:
                     case Parameter.IMAGE_MEASUREMENT:
                     case Parameter.OBJECT_MEASUREMENT:
                     case Parameter.CHILD_OBJECTS:
