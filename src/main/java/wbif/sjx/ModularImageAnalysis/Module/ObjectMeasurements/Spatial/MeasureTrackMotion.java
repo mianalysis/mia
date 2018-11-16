@@ -48,8 +48,11 @@ public class MeasureTrackMotion extends Module {
         String ROLLING_EUCLIDEAN_DISTANCE_PX = "ROLLING_EUCLIDEAN_DISTANCE_(PX)";
         String ROLLING_EUCLIDEAN_DISTANCE_CAL = "ROLLING_EUCLIDEAN_DISTANCE_(${CAL})";
         String ROLLING_DIRECTIONALITY_RATIO = "ROLLING_DIRECTIONALITY_RATIO";
+        String DETECTION_FRACTION = "DETECTION_FRACTION";
+        String RELATIVE_FRAME = "RELATIVE_FRAME";
 
     }
+
 
     public static String getFullName(String measurement, boolean subtractAverageMotion) {
         if (subtractAverageMotion) return Units.replace("TRACK_ANALYSIS // (AV_SUB) " + measurement);
@@ -129,14 +132,22 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
             name = getFullName(Measurements.FIRST_FRAME,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, Double.NaN));
+            name = getFullName(Measurements.DETECTION_FRACTION,averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, Double.NaN));
 
         } else {
             Timepoint<Double> firstPoint = track.values().iterator().next();
 
+            int duration = track.getDuration();
             String name = getFullName(Measurements.DURATION,averageSubtracted);
-            trackObject.addMeasurement(new Measurement(name, track.getDuration()));
+            trackObject.addMeasurement(new Measurement(name, duration));
             name = getFullName(Measurements.FIRST_FRAME,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, firstPoint.getF()));
+
+            int nSpots = track.values().size();
+            double detectionFraction = (double) nSpots/(double) duration;
+            name = getFullName(Measurements.DETECTION_FRACTION,averageSubtracted);
+            trackObject.addMeasurement(new Measurement(name, detectionFraction));
 
         }
     }
@@ -205,6 +216,19 @@ public class MeasureTrackMotion extends Module {
             trackObject.addMeasurement(new Measurement(name, cumStatSpeed.getMean()));
             name = getFullName(Measurements.MEAN_INSTANTANEOUS_SPEED_CAL,averageSubtracted);
             trackObject.addMeasurement(new Measurement(name, cumStatSpeed.getMean() * distPerPxXY));
+
+        }
+    }
+
+    public static void calculateRelativeTimepoint(Obj trackObject, Track track, String inputSpotObjectsName, boolean averageSubtracted) {
+        if (track.size() == 0) return;
+
+        int firstTimepoint = track.values().iterator().next().getF();
+
+        for (Obj spotObject : trackObject.getChildren(inputSpotObjectsName).values()) {
+            int currentTimepoint = spotObject.getT();
+            String name = getFullName(Measurements.RELATIVE_FRAME, averageSubtracted);
+            spotObject.addMeasurement(new Measurement(name, currentTimepoint-firstTimepoint));
 
         }
     }
@@ -372,6 +396,7 @@ public class MeasureTrackMotion extends Module {
             calculateSpatialMeasurements(trackObject,track,subtractAverage);
             calculateInstantaneousVelocity(trackObject,track,inputSpotObjectsName,subtractAverage);
             calculateInstantaneousSpatialMeasurements(trackObject,track,inputSpotObjectsName,subtractAverage);
+            calculateRelativeTimepoint(trackObject,track,inputSpotObjectsName,subtractAverage);
 
         }
     }
@@ -486,6 +511,11 @@ public class MeasureTrackMotion extends Module {
         reference.setImageObjName(inputTrackObjects);
         reference.setCalculated(true);
 
+        name = getFullName(Measurements.DETECTION_FRACTION,subtractAverage);
+        reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(inputTrackObjects);
+        reference.setCalculated(true);
+
         name = getFullName(Measurements.X_VELOCITY_PX,subtractAverage);
         reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(inputSpotObjects);
@@ -547,6 +577,11 @@ public class MeasureTrackMotion extends Module {
         reference.setCalculated(true);
 
         name = getFullName(Measurements.ROLLING_DIRECTIONALITY_RATIO,subtractAverage);
+        reference = objectMeasurementReferences.getOrPut(name);
+        reference.setImageObjName(inputSpotObjects);
+        reference.setCalculated(true);
+
+        name = getFullName(Measurements.RELATIVE_FRAME,subtractAverage);
         reference = objectMeasurementReferences.getOrPut(name);
         reference.setImageObjName(inputSpotObjects);
         reference.setCalculated(true);
