@@ -537,6 +537,8 @@ public class RelateObjects extends Module {
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
 
+        if (parentObjectName == null || childObjectsName == null) return objectMeasurementReferences;
+
         String measurementName = getFullName(Measurements.DIST_SURFACE_PX,parentObjectName);
         MeasurementReference distSurfPx = objectMeasurementReferences.getOrPut(measurementName);
         distSurfPx.setDescription("Shortest distance between the surface of this object and that of the closest \""
