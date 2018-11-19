@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
+package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -36,7 +36,7 @@ public class ExtendedMinima extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL;
+        return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
     }
 
     @Override
