@@ -9,7 +9,7 @@ public class AnalysisTester {
     public static int testModules(ModuleCollection modules) {
         int nRunnable = 0;
         for (Module module:modules) {
-            if (!module.isEnabled()) continue;
+//            if (!module.isEnabled()) continue;
             boolean runnable = testModule(module,modules);
 
             module.setRunnable(runnable);
@@ -92,6 +92,7 @@ public class AnalysisTester {
             case Parameter.PARENT_OBJECTS:
             case Parameter.CHILD_OBJECTS:
                 availableParameters = modules.getAvailableObjects(module);
+                if (value == null) return false;
                 int lastIdx = value.lastIndexOf(" // ");
                 if (lastIdx != -1) value = value.substring(lastIdx+4,value.length());
                 break;

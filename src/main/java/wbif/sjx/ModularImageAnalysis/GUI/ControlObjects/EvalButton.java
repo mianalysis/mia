@@ -87,12 +87,10 @@ public class EvalButton extends JButton implements ActionListener {
         if (idx == GUI.getModuleBeingEval()) {
             System.out.println("Stopping");
             GUI.setModuleBeingEval(-1);
-            t.getThreadGroup().interrupt();
+            GUI.updateModules(false);
+            t.stop();
             return;
         }
-
-        // Terminating any previously-executing threads
-        if (t != null) t.interrupt();
 
         // If the module is ready to be evaluated
         if (idx <= GUI.getLastModuleEval()) {
@@ -103,9 +101,9 @@ public class EvalButton extends JButton implements ActionListener {
                     GUI.evaluateModule(module);
                 } catch (Exception e1) {
                     GUI.setModuleBeingEval(-1);
+                    GUI.updateModules(false);
                     e1.printStackTrace();
                 }
-                GUI.updateModules(false);
             });
             t.start();
 
@@ -122,7 +120,6 @@ public class EvalButton extends JButton implements ActionListener {
                         Thread.currentThread().getThreadGroup().interrupt();
                     }
                 }
-                GUI.updateModules(false);
             });
             t.start();
         }
