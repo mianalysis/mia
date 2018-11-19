@@ -23,6 +23,8 @@ public class UnwarpImages extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String RELATIVE_MODE = "Relative mode";
+    public static final String ROLLING_CORRECTION = "Rolling correction";
+    public static final String CORRECTION_INTERVAL = "Correction interval";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
     public static final String REGISTRATION_MODE = "Registration mode";
@@ -46,33 +48,41 @@ public class UnwarpImages extends Module {
 
     }
 
-    public interface RegistrationModes {
-        String FAST = "Fast";
-        String ACCURATE = "Accurate";
-        String MONO = "Mono";
+    public interface RollingCorrectionModes {
+        final String NONE = "None";
+        final String EVERY_NTH_FRAME = "Every nth frame";
 
-        String[] ALL = new String[]{FAST,ACCURATE,MONO};
+        final String[] ALL = new String[]{NONE,EVERY_NTH_FRAME};
+
+    }
+
+    public interface RegistrationModes {
+        final String FAST = "Fast";
+        final String ACCURATE = "Accurate";
+        final String MONO = "Mono";
+
+        final String[] ALL = new String[]{FAST,ACCURATE,MONO};
 
     }
 
     public interface InitialDeformationModes {
-        String VERY_COARSE = "Very Coarse";
-        String COARSE = "Coarse";
-        String FINE = "Fine";
-        String VERY_FINE = "Very Fine";
+        final String VERY_COARSE = "Very Coarse";
+        final String COARSE = "Coarse";
+        final String FINE = "Fine";
+        final String VERY_FINE = "Very Fine";
 
-        String[] ALL = new String[]{VERY_COARSE,COARSE,FINE,VERY_FINE};
+        final String[] ALL = new String[]{VERY_COARSE,COARSE,FINE,VERY_FINE};
 
     }
 
     public interface FinalDeformationModes {
-        String VERY_COARSE = "Very Coarse";
-        String COARSE = "Coarse";
-        String FINE = "Fine";
-        String VERY_FINE = "Very Fine";
-        String SUPER_FINE = "Super Fine";
+        final String VERY_COARSE = "Very Coarse";
+        final String COARSE = "Coarse";
+        final String FINE = "Fine";
+        final String VERY_FINE = "Very Fine";
+        final String SUPER_FINE = "Super Fine";
 
-        String[] ALL = new String[]{VERY_COARSE,COARSE,FINE,VERY_FINE,SUPER_FINE};
+        final String[] ALL = new String[]{VERY_COARSE,COARSE,FINE,VERY_FINE,SUPER_FINE};
 
     }
 
@@ -80,7 +90,7 @@ public class UnwarpImages extends Module {
     private int getRegistrationMode(String registrationMode) {
         switch (registrationMode) {
             case RegistrationModes.FAST:
-                default:
+            default:
                 return 0;
             case RegistrationModes.ACCURATE:
                 return 1;
@@ -174,7 +184,7 @@ public class UnwarpImages extends Module {
         }
     }
 
-    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, @Nullable Image reference) {
+    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, @Nullable Image reference) {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -215,15 +225,25 @@ public class UnwarpImages extends Module {
             if (projectedReference == null) return;
             Transformation transformation = getTransformation(projectedReference, projectedWarped, param);
 
+            // Setting the time range for the correction.  This is only the case if a correction interval for "previous-
+            // frame" correction is used and the current frame number is an integer multiple of the interval.
+            String tRange = String.valueOf(t);
+            switch (relativeMode) {
+                case RelativeModes.PREVIOUS_FRAME:
+                    if (correctionInterval != -1 && t%correctionInterval == 0) {
+                        tRange = t+"-"+inputImage.getImagePlus().getNFrames();
+                    }
+                    break;
+            }
+
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same transformation.
-            for (int c=1;c<=inputImage.getImagePlus().getNChannels();c++) {
-                warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(t));
+            for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
+                warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", tRange);
                 applyTransformation(warped, transformation);
 
                 // Replacing the original stack with the warped one
                 replaceStack(inputImage, warped, c, t);
-
             }
         }
     }
@@ -254,6 +274,8 @@ public class UnwarpImages extends Module {
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String relativeMode = parameters.getValue(RELATIVE_MODE);
+        String rollingCorrectionMode = parameters.getValue(ROLLING_CORRECTION);
+        int correctionInterval = parameters.getValue(CORRECTION_INTERVAL);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         String registrationMode = parameters.getValue(REGISTRATION_MODE);
@@ -268,6 +290,9 @@ public class UnwarpImages extends Module {
         double stopThreshold = parameters.getValue(STOP_THRESHOLD);
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
+
+        // If the rolling correction mode is off, set the interval to -1
+        if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
 
         // Setting up the parameters
         Param param = new Param();
@@ -287,7 +312,7 @@ public class UnwarpImages extends Module {
         param.stopThreshold = stopThreshold;
 
         Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
-        process(inputImage,calculationChannel,relativeMode,param,reference);
+        process(inputImage,calculationChannel,relativeMode,param,correctionInterval,reference);
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
@@ -301,6 +326,8 @@ public class UnwarpImages extends Module {
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(RELATIVE_MODE,Parameter.CHOICE_ARRAY,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
+        parameters.add(new Parameter(ROLLING_CORRECTION,Parameter.CHOICE_ARRAY,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
+        parameters.add(new Parameter(CORRECTION_INTERVAL, Parameter.INTEGER,1));
         parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(CALCULATION_CHANNEL, Parameter.INTEGER,1));
         parameters.add(new Parameter(REGISTRATION_MODE,Parameter.CHOICE_ARRAY,RegistrationModes.FAST,RegistrationModes.ALL));
@@ -327,6 +354,15 @@ public class UnwarpImages extends Module {
 
         returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
         switch ((String) parameters.getValue(RELATIVE_MODE)) {
+            case RelativeModes.PREVIOUS_FRAME:
+                returnedParameters.add(parameters.getParameter(ROLLING_CORRECTION));
+                switch ((String) parameters.getValue(ROLLING_CORRECTION)) {
+                    case RollingCorrectionModes.EVERY_NTH_FRAME:
+                        returnedParameters.add(parameters.getParameter(CORRECTION_INTERVAL));
+                        break;
+                }
+                break;
+
             case RelativeModes.SPECIFIC_IMAGE:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                 break;
