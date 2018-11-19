@@ -227,23 +227,25 @@ public class UnwarpImages extends Module {
 
             // Setting the time range for the correction.  This is only the case if a correction interval for "previous-
             // frame" correction is used and the current frame number is an integer multiple of the interval.
-            String tRange = String.valueOf(t);
+            int t2 = t;
             switch (relativeMode) {
                 case RelativeModes.PREVIOUS_FRAME:
                     if (correctionInterval != -1 && t%correctionInterval == 0) {
-                        tRange = t+"-"+inputImage.getImagePlus().getNFrames();
+                        t2 = inputImage.getImagePlus().getNFrames();
                     }
                     break;
             }
 
             // Applying the transformation to the whole stack.
             // All channels should move in the same way, so are processed with the same transformation.
-            for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
-                warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", tRange);
-                applyTransformation(warped, transformation);
+            for (int tt = t; tt <= t2; tt++) {
+                for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
+                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
+                    applyTransformation(warped, transformation);
 
-                // Replacing the original stack with the warped one
-                replaceStack(inputImage, warped, c, t);
+                    // Replacing the original stack with the warped one
+                    replaceStack(inputImage, warped, c, tt);
+                }
             }
         }
     }
