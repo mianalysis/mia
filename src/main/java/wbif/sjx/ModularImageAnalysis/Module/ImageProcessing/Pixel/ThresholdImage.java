@@ -383,7 +383,8 @@ public class ThresholdImage extends Module {
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
         imageMeasurementReferences.setAllCalculated(false);
 
-        if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)) {
+        if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)
+                && (boolean) parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT)) {
             String imageName = parameters.getValue(APPLY_TO_INPUT) ? parameters.getValue(INPUT_IMAGE) : parameters.getValue(OUTPUT_IMAGE);
             String method = parameters.getValue(GLOBAL_ALGORITHM);
             String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);

@@ -70,6 +70,7 @@ public class BatchProcessor extends FileCrawler {
             runSingle(workspaces, analysis);
 
             if (!exportMode.equals(OutputControl.ExportModes.NONE)) {
+                System.out.println("Exporting results to spreadsheet");
                 exporter.exportResults(workspaces, analysis);
             }
 
@@ -80,6 +81,7 @@ public class BatchProcessor extends FileCrawler {
             switch (exportMode) {
                 case OutputControl.ExportModes.ALL_TOGETHER:
                 case OutputControl.ExportModes.GROUP_BY_METADATA:
+                    System.out.println("Exporting results to spreadsheet");
                     exporter.exportResults(workspaces,analysis);
                     break;
             }

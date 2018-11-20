@@ -49,8 +49,7 @@ public class MeasureObjectShapeTest {
         MeasureObjectShape measureObjectShape = new MeasureObjectShape();
         measureObjectShape.initialiseParameters();
         measureObjectShape.updateParameterValue(MeasureObjectShape.INPUT_OBJECTS,inputObjectsName);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.VOLUMETRIC_MEASURES,true);
-        measureObjectShape.updateParameterValue(MeasureObjectShape.PROJECTED_MEASURES,false);
+
 
         // Running IdentifyObjects
         measureObjectShape.run(workspace);
