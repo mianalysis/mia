@@ -6,6 +6,7 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
+import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;

@@ -190,10 +190,9 @@ public class BatchProcessor extends FileCrawler {
         }
 
         // Starting the jobs
-        for (Runnable task:tasks) pool.submit(task);
-
         double nTotal = pool.getTaskCount();
         String string = "Started processing "+dfInt.format(nTotal)+" jobs";
+        for (Runnable task:tasks) pool.submit(task);
 
         // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
         pool.shutdown();
