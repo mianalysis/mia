@@ -5,6 +5,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import de.biomedical_imaging.ij.steger.*;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -13,6 +14,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
@@ -142,7 +144,9 @@ public class RidgeDetection extends Module {
                                 width.addMeasure(halfWidth);
 
                                 // Adding central point
-                                outputObject.addCoord(Math.round(x[i]), Math.round(y[i]), z);
+                                if (x[i]>=0 && x[i]<imWidth && y[i]>=0 && y[i]<imHeight) {
+                                    outputObject.addCoord(Math.round(x[i]), Math.round(y[i]), z);
+                                }
 
                                 // If selected, adding other points within the width of that point
                                 if (estimateWidth) {

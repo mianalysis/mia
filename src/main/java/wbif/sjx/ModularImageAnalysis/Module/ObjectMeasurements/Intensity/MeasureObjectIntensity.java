@@ -17,6 +17,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Object.Point;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -97,6 +98,11 @@ public class MeasureObjectIntensity extends Module {
         // Running through all pixels in this object and adding the intensity to the MultiCumStat object
         int t = object.getT()+1;
         int nSlices = ipl.getNSlices();
+
+//        for (Point<Integer>pt:object.getPoints()) {
+//            System.err.println(pt.getX()+"_"+pt.getY()+"_"+pt.getZ());
+//        }
+
         ImageStack timeStack = SubHyperstackMaker.makeSubhyperstack(ipl, "1-1", "1-"+nSlices, t+"-"+t).getStack();
         CumStat cs = IntensityCalculator.calculate(timeStack,object);
 
