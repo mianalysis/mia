@@ -182,8 +182,7 @@ public class BatchProcessor extends FileCrawler {
             }
 
             // Displaying the current progress
-            String string = "Initialising "+dfInt.format(loadTotal)+" jobs";
-            System.out.println(string);
+            System.out.println("Initialising "+dfInt.format(loadTotal)+" jobs");
 
             next = getNextValidFileInStructure();
 
@@ -191,7 +190,7 @@ public class BatchProcessor extends FileCrawler {
 
         // Starting the jobs
         double nTotal = pool.getTaskCount();
-        String string = "Started processing "+dfInt.format(nTotal)+" jobs";
+        System.out.println("Started processing "+dfInt.format(loadTotal)+" jobs");
         for (Runnable task:tasks) pool.submit(task);
 
         // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
