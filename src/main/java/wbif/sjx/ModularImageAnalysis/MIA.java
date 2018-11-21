@@ -6,6 +6,7 @@ package wbif.sjx.ModularImageAnalysis;
 
 import ij.IJ;
 import ij.ImageJ;
+import ij.ImagePlus;
 import ij.plugin.PlugIn;
 import net.imagej.ui.swing.updater.ResolveDependencies;
 import net.imagej.updater.*;
@@ -15,6 +16,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
+import org.bytedeco.javacpp.avutil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
@@ -24,15 +26,16 @@ import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisReader;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisRunner;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 
 
 /**
@@ -49,7 +52,7 @@ public class MIA implements PlugIn {
      */
     private static final boolean imagePlusMode = true;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {// The following works, but loads the entire video to RAM without an apparent way to prevent this
         // Setting the file path slashes depending on the operating system
         if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
         else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";

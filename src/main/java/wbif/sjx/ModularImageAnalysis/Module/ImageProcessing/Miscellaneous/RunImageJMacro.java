@@ -53,15 +53,6 @@ public class RunImageJMacro extends Module {
         // Applying the macro
         IJ.run(inputImagePlus,macroTitle,arguments);
 
-        // If selected, displaying the image
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(inputImagePlus);
-            IntensityMinMax.run(dispIpl,true);
-            dispIpl.setPosition(1,1,1);
-            dispIpl.updateChannelAndDraw();
-            dispIpl.show();
-        }
-
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             Image outputImage = new Image(outputImageName,inputImagePlus);

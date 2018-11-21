@@ -12,8 +12,11 @@ import java.util.ArrayList;
  */
 public class MeasureObjectShape extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
-    public static final String VOLUMETRIC_MEASURES = "Volumetric measures";
-    public static final String PROJECTED_MEASURES = "Projected measures";
+    public static final String MEASURE_VOLUME = "Measure volume";
+    public static final String FITTING_MODE = "Fit convex hull to";
+    public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
+    public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
+    public static final String MEASURE_PROJECTED_PERIM = "Measure projected perimeter";
 
 
     public interface Measurements {
@@ -26,7 +29,7 @@ public class MeasureObjectShape extends Module {
         String PROJ_DIA_CAL = "SHAPE // PROJ_DIA_(${CAL})";
         String PROJ_PERIM_PX = "SHAPE // PROJ_PERIM_(PX)";
         String PROJ_PERIM_CAL = "SHAPE // PROJ_PERIM_(${CAL})";
-        String PROJ_CIRCULATIRY = "SHAPE // PROJ_CIRCULARITY";
+        String PROJ_CIRCULARITY = "SHAPE // PROJ_CIRCULARITY";
 
     }
 
@@ -87,15 +90,17 @@ public class MeasureObjectShape extends Module {
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
 
         // Getting parameters
-        boolean volumetricMeasures = parameters.getValue(VOLUMETRIC_MEASURES);
-        boolean projectedMeasures = parameters.getValue(PROJECTED_MEASURES);
+        boolean measureVolume = parameters.getValue(MEASURE_VOLUME);
+        boolean measureProjectedArea = parameters.getValue(MEASURE_PROJECTED_AREA);
+        boolean measureProjectedDiameter = parameters.getValue(MEASURE_PROJECTED_DIA);
+        boolean measureProjectedPerimeter = parameters.getValue(MEASURE_PROJECTED_PERIM);
 
         // Running through each object, making the measurements
         for (Obj inputObject:inputObjects.values()) {
             ArrayList<Integer> x = inputObject.getXCoords();
 
             // Adding the volume measurements
-            if (volumetricMeasures) {
+            if (measureVolume) {
                 inputObject.addMeasurement(new Measurement(Measurements.N_VOXELS,x.size(),this));
 
                 double containedVolumePx = inputObject.getContainedVolume(true);
@@ -107,30 +112,36 @@ public class MeasureObjectShape extends Module {
 
             // If necessary analyses are included
             Obj projectedObject = null;
-            if (projectedMeasures) {
-                projectedObject = ProjectObjects.createProjection(inputObject, "Projected", inputObject.is2D());
+            if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
+                projectedObject = ProjectObjects.createProjection(inputObject, "Projected",inputObject.is2D());
+            }
 
-                // Adding the projected-object area measurements
+            // Adding the projected-object area measurements
+            if (measureProjectedArea) {
                 double areaPx = projectedObject.getNVoxels();
-                double areaCal = areaPx * projectedObject.getDistPerPxXY() * projectedObject.getDistPerPxXY();
+                double areaCal = areaPx*projectedObject.getDistPerPxXY()*projectedObject.getDistPerPxXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_AREA_PX, areaPx, this));
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_AREA_CAL), areaCal, this));
+            }
 
-                // Adding the projected-object diameter measurements
+            // Adding the projected-object diameter measurements
+            if (measureProjectedDiameter) {
                 double maxDistancePx = calculateMaximumPointPointDistance(projectedObject);
-                double maxDistanceCal = calculateMaximumPointPointDistance(projectedObject) * inputObject.getDistPerPxXY();
+                double maxDistanceCal = calculateMaximumPointPointDistance(projectedObject)*inputObject.getDistPerPxXY();
                 inputObject.addMeasurement(new Measurement(Measurements.PROJ_DIA_PX, maxDistancePx, this));
                 inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_DIA_CAL), maxDistanceCal, this));
+            }
 
-                // Adding the projected-object perimeter measurements
+            // Adding the projected-object perimeter measurements
+            if (measureProjectedPerimeter) {
+                double areaPx = projectedObject.getNVoxels();
                 double perimeterPx = projectedObject.getRoi(0).getLength();
-                double perimeterCal = perimeterPx * inputObject.getDistPerPxXY();
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX, perimeterPx, this));
-                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_PERIM_CAL), perimeterCal, this));
+                double perimeterCal = perimeterPx*inputObject.getDistPerPxXY();
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_PERIM_PX,perimeterPx,this));
+                inputObject.addMeasurement(new Measurement(Units.replace(Measurements.PROJ_PERIM_CAL),perimeterCal,this));
 
-                // Adding the circularity
                 double circularity = 4*Math.PI*areaPx/(perimeterPx*perimeterPx);
-                inputObject.addMeasurement(new Measurement(Measurements.PROJ_CIRCULATIRY, circularity, this));
+                inputObject.addMeasurement(new Measurement(Measurements.PROJ_CIRCULARITY, circularity, this));
 
             }
         }
@@ -139,8 +150,10 @@ public class MeasureObjectShape extends Module {
     @Override
     public void initialiseParameters() {
         parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(VOLUMETRIC_MEASURES, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(PROJECTED_MEASURES, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_VOLUME, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(MEASURE_PROJECTED_PERIM, Parameter.BOOLEAN, false));
 
     }
 
@@ -160,7 +173,7 @@ public class MeasureObjectShape extends Module {
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        if (parameters.getValue(VOLUMETRIC_MEASURES)) {
+        if (parameters.getValue(MEASURE_VOLUME)) {
             MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.N_VOXELS);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
@@ -183,7 +196,7 @@ public class MeasureObjectShape extends Module {
                     " to calibrated units.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         }
 
-        if (parameters.getValue(PROJECTED_MEASURES)) {
+        if (parameters.getValue(MEASURE_PROJECTED_AREA)) {
             MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_AREA_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
@@ -195,8 +208,10 @@ public class MeasureObjectShape extends Module {
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
                     "in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
+        }
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_PX);
+        if (parameters.getValue(MEASURE_PROJECTED_DIA)) {
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
@@ -208,8 +223,10 @@ public class MeasureObjectShape extends Module {
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
                     + inputObjectsName+"\".  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                     "units.");
+        }
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_PERIM_PX);
+        if (parameters.getValue(MEASURE_PROJECTED_PERIM)) {
+            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_PERIM_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
@@ -222,11 +239,12 @@ public class MeasureObjectShape extends Module {
                     "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                     "units.");
 
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_CIRCULATIRY));
+            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_CIRCULARITY));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Circularity of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Uses the calculation \"circularity = 4pi(area/perimeter^2)\".  This measurement has no units.");
+
         }
 
         return objectMeasurementReferences;

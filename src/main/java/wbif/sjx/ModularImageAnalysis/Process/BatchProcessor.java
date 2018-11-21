@@ -70,6 +70,7 @@ public class BatchProcessor extends FileCrawler {
             runSingle(workspaces, analysis);
 
             if (!exportMode.equals(OutputControl.ExportModes.NONE)) {
+                System.out.println("Exporting results to spreadsheet");
                 exporter.exportResults(workspaces, analysis);
             }
 
@@ -80,6 +81,7 @@ public class BatchProcessor extends FileCrawler {
             switch (exportMode) {
                 case OutputControl.ExportModes.ALL_TOGETHER:
                 case OutputControl.ExportModes.GROUP_BY_METADATA:
+                    System.out.println("Exporting results to spreadsheet");
                     exporter.exportResults(workspaces,analysis);
                     break;
             }
@@ -180,18 +182,16 @@ public class BatchProcessor extends FileCrawler {
             }
 
             // Displaying the current progress
-            String string = "Initialising "+dfInt.format(loadTotal)+" jobs";
-            System.out.println(string);
+            System.out.println("Initialising "+dfInt.format(loadTotal)+" jobs");
 
             next = getNextValidFileInStructure();
 
         }
 
         // Starting the jobs
-        for (Runnable task:tasks) pool.submit(task);
-
         double nTotal = pool.getTaskCount();
-        String string = "Started processing "+dfInt.format(nTotal)+" jobs";
+        System.out.println("Started processing "+dfInt.format(loadTotal)+" jobs");
+        for (Runnable task:tasks) pool.submit(task);
 
         // Telling the pool not to accept any more jobs and to wait until all queued jobs have completed
         pool.shutdown();

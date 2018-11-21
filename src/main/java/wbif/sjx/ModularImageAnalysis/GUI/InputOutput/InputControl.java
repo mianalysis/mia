@@ -3,6 +3,8 @@ package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
+import java.io.File;
+
 /**
  * Created by Stephen on 29/07/2017.
  */
@@ -117,7 +119,11 @@ public class InputControl extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_PATH));
-        returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
+        if (parameters.getValue(INPUT_PATH) != null) {
+            if (new File((String) parameters.getValue(INPUT_PATH)).isDirectory()) {
+                returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
+            }
+        }
 
         returnedParameters.add(parameters.getParameter(SERIES_MODE));
         switch ((String) parameters.getValue(SERIES_MODE)) {
