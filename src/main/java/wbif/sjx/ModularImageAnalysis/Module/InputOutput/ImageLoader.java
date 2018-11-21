@@ -518,11 +518,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             switch (importMode) {
                 case ImportModes.CURRENT_FILE:
                     File file = workspace.getMetadata().getFile();
-
                     if (useImageJReader) {
-                        ipl = IJ.openImage(workspace.getMetadata().getFile().getAbsolutePath());
+                        ipl = IJ.openImage(file.getAbsolutePath());
                     } else {
-                        ipl = getBFImage(workspace.getMetadata().getFile().getAbsolutePath(), seriesNumber, dimRanges, crop, true);
+                        ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, true);
                     }
                     break;
 
