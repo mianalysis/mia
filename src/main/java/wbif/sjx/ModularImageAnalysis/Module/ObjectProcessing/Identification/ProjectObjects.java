@@ -71,7 +71,7 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
@@ -84,6 +84,8 @@ public class ProjectObjects extends Module {
         }
 
         workspace.addObjects(outputObjects);
+
+        return true;
 
     }
 

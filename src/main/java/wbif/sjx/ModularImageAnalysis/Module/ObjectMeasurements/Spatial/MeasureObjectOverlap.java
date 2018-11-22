@@ -64,7 +64,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting objects
         String inputObjects1Name = parameters.getValue(OBJECT_SET_1);
         ObjCollection inputObjects1 = workspace.getObjectSet(inputObjects1Name);
@@ -104,6 +104,9 @@ public class MeasureObjectOverlap extends Module {
             writeMessage("Processed "+(++count)+" objects of "+totalObjects);
 
         }
+
+        return true;
+
     }
 
     @Override

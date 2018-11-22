@@ -272,7 +272,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    protected void run(Workspace workspace) {// Local access to this is required for the action listeners
+    protected boolean run(Workspace workspace) {// Local access to this is required for the action listeners
         this.workspace = workspace;
 
         // Getting parameters
@@ -342,6 +342,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             dispIpl.updateChannelAndDraw();
             dispIpl.show();
         }
+
+        return true;
+
     }
 
     @Override

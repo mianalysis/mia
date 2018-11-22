@@ -219,7 +219,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting parameters
         String inputImage1Name = parameters.getValue(INPUT_IMAGE1);
         String inputImage2Name = parameters.getValue(INPUT_IMAGE2);
@@ -251,6 +251,8 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
         }
 
         if (showOutput) showImage(mergedImage);
+
+        return true;
 
     }
 

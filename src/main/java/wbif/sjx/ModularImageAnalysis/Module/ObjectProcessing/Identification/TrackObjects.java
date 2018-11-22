@@ -468,7 +468,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
@@ -481,7 +481,7 @@ public class TrackObjects extends Module {
         workspace.addObjects(trackObjects);
 
         // If there are no input objects, create a blank track set and skip this module
-        if (inputObjects.size() == 0) return;
+        if (inputObjects.size() == 0) return true;
 
         // Clearing previous relationships and measurements (in case module has been run before)
         for (Obj inputObj:inputObjects.values()) {
@@ -557,6 +557,8 @@ public class TrackObjects extends Module {
 
         // Adding track objects to the workspace
         writeMessage("Assigned "+trackObjects.size()+" tracks");
+
+        return true;
 
     }
 

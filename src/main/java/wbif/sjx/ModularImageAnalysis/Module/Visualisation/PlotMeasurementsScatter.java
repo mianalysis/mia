@@ -64,7 +64,7 @@ public class PlotMeasurementsScatter extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -159,6 +159,9 @@ public class PlotMeasurementsScatter extends Module {
             plot.show();
 
         }
+
+        return true;
+
     }
 
     @Override

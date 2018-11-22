@@ -114,7 +114,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -144,6 +144,8 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
             if (showOutput) showImage(inputImage);
 
         }
+
+        return true;
 
     }
 

@@ -31,8 +31,8 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    protected void run(Workspace workspace) {
-
+    protected boolean run(Workspace workspace) {
+        return true;
     }
 
     @Override

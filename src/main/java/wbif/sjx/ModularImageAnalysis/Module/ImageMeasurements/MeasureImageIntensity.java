@@ -46,7 +46,7 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
        // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         writeMessage("Loading image ("+inputImageName+")");
@@ -67,6 +67,8 @@ public class MeasureImageIntensity extends Module {
             inputImage.addMeasurement(new Measurement(Measurements.STDEV, cs.getStd(CumStat.SAMPLE)));
         if (parameters.getValue(MEASURE_SUM))
             inputImage.addMeasurement(new Measurement(Measurements.SUM, cs.getSum()));
+
+        return true;
 
     }
 

@@ -40,7 +40,7 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
         int yOffs = parameters.getValue(Y_OFFSET);
@@ -75,6 +75,8 @@ public class MeasureImageTexture extends Module {
         entropyMeasurement.setSource(this);
         inputImage.addMeasurement(entropyMeasurement);
         writeMessage("Entropy = " + entropyMeasurement.getValue());
+
+        return true;
 
     }
 

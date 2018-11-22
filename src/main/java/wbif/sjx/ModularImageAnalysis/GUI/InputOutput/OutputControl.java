@@ -58,8 +58,8 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
-
+    public boolean run(Workspace workspace) {
+        return true;
     }
 
     @Override

@@ -149,7 +149,7 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -170,7 +170,7 @@ public class ObjectClusterer extends Module {
         Obj firstObject = inputObjects.getFirst();
         if (firstObject == null) {
             workspace.addObjects(outputObjects);
-            return;
+            return true;
         }
 
         // Getting object parameters
@@ -231,6 +231,9 @@ public class ObjectClusterer extends Module {
             dispIpl.show();
 
         }
+
+        return true;
+
     }
 
     @Override

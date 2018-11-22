@@ -60,7 +60,7 @@ public class DistanceMap extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -78,6 +78,8 @@ public class DistanceMap extends Module {
         Image outputImage = new Image(outputImageName,inputImagePlus);
         workspace.addImage(outputImage);
         if (showOutput) showImage(outputImage);
+
+        return true;
 
     }
 

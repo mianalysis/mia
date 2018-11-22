@@ -101,7 +101,7 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -117,7 +117,7 @@ public class CalculateNearestNeighbour extends Module {
 
         // If there are no input objects skip the module
         Obj firstObj = inputObjects.getFirst();
-        if (firstObj == null) return;
+        if (firstObj == null) return true;
 
         // If the maximum linking distance was specified in calibrated units convert it to pixels
         if (limitLinkingDistance && calibratedDistance) maxLinkingDist = maxLinkingDist/firstObj.getDistPerPxXY();
@@ -157,6 +157,9 @@ public class CalculateNearestNeighbour extends Module {
                 addMeasurements(inputObject,nearestNeighbour,nearestNeighbourName);
             }
         }
+
+        return true;
+
     }
 
     @Override

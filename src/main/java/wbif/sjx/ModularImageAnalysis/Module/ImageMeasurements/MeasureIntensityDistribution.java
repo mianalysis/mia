@@ -408,7 +408,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting parameters
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String measurementType = parameters.getValue(MEASUREMENT_TYPE);
@@ -484,7 +484,7 @@ public class MeasureIntensityDistribution extends Module {
                     inputImage.addMeasurement(
                             new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), Double.NaN));
 
-                    return;
+                    return true;
                 }
 
                 CumStat[] css = measureFractionProximal(inputObjects, inputImage, proximalDistance, ignoreOnObjects);
@@ -520,7 +520,7 @@ public class MeasureIntensityDistribution extends Module {
                     inputImage.addMeasurement(new Measurement(name, Double.NaN));
                     name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
                     inputImage.addMeasurement(new Measurement(name, Double.NaN));
-                    return;
+                    return true;
                 }
 
                 CumStat cs = measureIntensityWeightedProximity(inputObjects, inputImage, edgeDistanceMode);
@@ -538,6 +538,9 @@ public class MeasureIntensityDistribution extends Module {
 
                 break;
         }
+
+        return true;
+
     }
 
     @Override

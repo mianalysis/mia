@@ -119,7 +119,7 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -130,7 +130,7 @@ public class MeasureObjectTexture extends Module {
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 
         // If no objects were detected, skipping this module
-        if (inputObjects.size() == 0) return;
+        if (inputObjects.size() == 0) return true;
 
         // Getting parameters
         double xOffsIn = parameters.getValue(X_OFFSET);
@@ -158,6 +158,9 @@ public class MeasureObjectTexture extends Module {
             writeMessage("Processed "+(++iter)+" of "+nObjects);
             processObject(object,inputImage,textureCalculator,centroidMeasurement,offs,calibratedOffset);
         }
+
+        return true;
+
     }
 
     @Override

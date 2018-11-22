@@ -103,7 +103,7 @@ public class FitLongestChord extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -145,6 +145,9 @@ public class FitLongestChord extends Module {
                 Image outputImage = new Image(outputImageName, inputImagePlus);
             }
         }
+
+        return true;
+
     }
 
     @Override

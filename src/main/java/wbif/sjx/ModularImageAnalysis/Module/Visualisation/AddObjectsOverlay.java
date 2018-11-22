@@ -437,7 +437,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -481,6 +481,9 @@ public class AddObjectsOverlay extends Module {
             dispIpl.updateChannelAndDraw();
             dispIpl.show();
         }
+
+        return true;
+
     }
 
     @Override

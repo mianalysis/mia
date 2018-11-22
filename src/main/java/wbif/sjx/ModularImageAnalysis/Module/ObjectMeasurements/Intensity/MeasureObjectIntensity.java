@@ -269,7 +269,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection objects = workspace.getObjects().get(objectName);
@@ -296,6 +296,9 @@ public class MeasureObjectIntensity extends Module {
         if (parameters.getValue(MEASURE_EDGE_INTENSITY_PROFILE)) {
             for (Obj object:objects.values()) measureEdgeIntensityProfile(object,ipl);
         }
+
+        return true;
+
     }
 
     @Override

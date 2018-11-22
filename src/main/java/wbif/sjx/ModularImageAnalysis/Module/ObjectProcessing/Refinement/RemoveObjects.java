@@ -26,10 +26,12 @@ public class RemoveObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         workspace.removeObject(inputObjectsName);
+
+        return true;
 
     }
 

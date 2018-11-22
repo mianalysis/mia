@@ -98,7 +98,7 @@ public class ExpandShrinkObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input image
         String templateImageName = parameters.getValue(INPUT_IMAGE);
         Image templateImage = workspace.getImage(templateImageName);
@@ -166,6 +166,9 @@ public class ExpandShrinkObjects extends Module {
                 outputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
             }
         }
+
+        return true;
+
     }
 
     @Override

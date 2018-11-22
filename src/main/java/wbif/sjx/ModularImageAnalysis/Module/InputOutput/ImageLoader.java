@@ -473,7 +473,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting parameters
         String outputMode = parameters.getValue(OUTPUT_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -624,6 +624,9 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 break;
         }
+
+        return true;
+
     }
 
     @Override

@@ -166,7 +166,7 @@ public class VideoLoader extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String importMode = parameters.getValue(IMPORT_MODE);
@@ -220,14 +220,14 @@ public class VideoLoader extends Module {
                 break;
         }
 
-        if (pathName == null) return;
+        if (pathName == null) return false;
 
         Image outputImage = null;
         try {
             outputImage = getFFMPEGVideo(pathName,outputImageName,frameRange,crop);
         } catch (Exception e) {
             e.printStackTrace();
-            return;
+            return false;
         }
 
         // If necessary, setting the spatial calibration
@@ -255,6 +255,8 @@ public class VideoLoader extends Module {
         workspace.addImage(outputImage);
 
         if (showOutput) showImage(outputImage);
+
+        return true;
 
     }
 

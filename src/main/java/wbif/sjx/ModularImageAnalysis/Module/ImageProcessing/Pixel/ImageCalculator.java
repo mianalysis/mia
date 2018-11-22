@@ -206,7 +206,7 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input images
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
         Image inputImage1 = workspace.getImages().get(inputImageName1);
@@ -241,6 +241,9 @@ public class ImageCalculator extends Module {
                 if (showOutput) showImage(inputImage2);
                 break;
         }
+
+        return true;
+
     }
 
     @Override

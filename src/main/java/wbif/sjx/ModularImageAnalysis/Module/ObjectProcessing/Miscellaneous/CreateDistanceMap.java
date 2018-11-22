@@ -220,7 +220,7 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -249,7 +249,7 @@ public class CreateDistanceMap extends Module {
                 break;
         }
 
-        if (distanceMap == null) return;
+        if (distanceMap == null) return true;
 
         // Applying masking
         applyMasking(distanceMap,inputObjects,maskingMode);
@@ -268,6 +268,8 @@ public class CreateDistanceMap extends Module {
 
         // If necessary, displaying the distance map
         if (showOutput) showImage(distanceMap);
+
+        return true;
 
     }
 

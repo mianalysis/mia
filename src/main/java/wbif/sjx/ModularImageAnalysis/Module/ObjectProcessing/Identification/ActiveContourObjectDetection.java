@@ -56,7 +56,7 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -73,7 +73,7 @@ public class ActiveContourObjectDetection extends Module {
         // If there are no input objects, creating an empty collection
         if (inputObjects.getFirst() == null) {
             workspace.addObjects(outputObjects);
-            return;
+            return true;
         }
 
         // Getting parameters
@@ -201,6 +201,8 @@ public class ActiveContourObjectDetection extends Module {
 
         // If selected, adding new ObjCollection to the Workspace
         if (!updateInputObjects) workspace.addObjects(outputObjects);
+
+        return true;
 
     }
 

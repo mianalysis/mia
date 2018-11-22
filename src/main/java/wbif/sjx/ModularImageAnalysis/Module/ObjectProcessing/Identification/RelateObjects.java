@@ -414,7 +414,7 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input objects
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
         ObjCollection parentObjects = workspace.getObjects().get(parentObjectName);
@@ -454,6 +454,9 @@ public class RelateObjects extends Module {
                 break;
 
         }
+
+        return true;
+
     }
 
     @Override
