@@ -48,7 +48,7 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String saveLocation = parameters.getValue(SAVE_LOCATION);
@@ -115,6 +115,9 @@ public class ImageSaver extends Module {
                 break;
 
         }
+
+        return true;
+
     }
 
     @Override

@@ -160,7 +160,7 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(REFERENCE_IMAGE);
@@ -178,6 +178,8 @@ public class GetLocalObjectRegion extends Module {
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);
         writeMessage("Adding objects ("+outputObjectsName+") to workspace");
+
+        return true;
 
     }
 

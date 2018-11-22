@@ -256,7 +256,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -309,6 +309,8 @@ public class ExtractSubstack extends Module implements ActionListener {
 
         // If selected, displaying the image
         if (showOutput) showImage(outputImage);
+
+        return true;
 
     }
 

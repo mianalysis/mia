@@ -35,7 +35,7 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -59,6 +59,9 @@ public class BinObjectsByMeasurement extends Module {
             inputObject.addMeasurement(new Measurement(getFullName(measurementName),bin));
 
         }
+
+        return true;
+
     }
 
     @Override

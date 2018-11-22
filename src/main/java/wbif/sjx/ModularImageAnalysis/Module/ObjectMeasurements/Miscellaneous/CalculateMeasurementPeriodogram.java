@@ -159,7 +159,7 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting parameters
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
@@ -192,6 +192,9 @@ public class CalculateMeasurementPeriodogram extends Module {
                     break;
             }
         }
+
+        return true;
+
     }
 
     @Override

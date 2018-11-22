@@ -49,7 +49,7 @@ public class MeasureObjectColocalisation extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection objects = workspace.getObjects().get(objectName);
@@ -65,6 +65,9 @@ public class MeasureObjectColocalisation extends Module {
         for (Obj inputObject:objects.values()) {
             measurePCC(inputObject,image1,image2);
         }
+
+        return true;
+
     }
 
     @Override

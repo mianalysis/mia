@@ -32,11 +32,13 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         String imageName = parameters.getValue(DISPLAY_IMAGE);
         Image image = workspace.getImage(imageName);
 
         if (showOutput) showImage(image);
+
+        return true;
 
     }
 

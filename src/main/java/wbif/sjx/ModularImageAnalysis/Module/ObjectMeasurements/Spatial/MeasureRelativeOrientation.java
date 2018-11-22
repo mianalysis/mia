@@ -227,7 +227,7 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -259,7 +259,7 @@ public class MeasureRelativeOrientation extends Module {
                 break;
         }
 
-        if (referencePoints == null) return;
+        if (referencePoints == null) return true;
 
         // Processing each object
         for (Obj inputObject:inputObjects.values()) {
@@ -272,6 +272,9 @@ public class MeasureRelativeOrientation extends Module {
                 processObject(inputObject, xyOriMeasName, xzOriMeasName, referencePoint, orientationMode, measurementReference);
             }
         }
+
+        return true;
+
     }
 
     @Override

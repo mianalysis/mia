@@ -48,18 +48,24 @@ public abstract class Module implements Serializable {
 
     public abstract String getHelp();
 
-    protected abstract void run(Workspace workspace);
+    protected abstract boolean run(Workspace workspace);
 
-    public void execute(Workspace workspace) {
+    public boolean execute(Workspace workspace) {
         writeMessage("Processing");
 
         // By default all modules should use this format
         Prefs.blackBackground = false;
 
         // Running the main module code
-        run(workspace);
+        boolean status = run(workspace);
 
-        writeMessage("Complete");
+        if (status) {
+            writeMessage("Completed");
+        } else {
+            writeMessage("Did not complete");
+        }
+
+        return status;
 
     }
 

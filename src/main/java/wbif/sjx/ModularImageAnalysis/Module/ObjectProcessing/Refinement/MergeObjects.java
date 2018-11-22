@@ -32,7 +32,7 @@ public class MergeObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjects1Name = parameters.getValue(INPUT_OBJECTS_1);
         ObjCollection inputObjects1 = workspace.getObjectSet(inputObjects1Name);
@@ -87,6 +87,9 @@ public class MergeObjects extends Module {
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
             outputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
         }
+
+        return true;
+
     }
 
     @Override

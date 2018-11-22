@@ -93,7 +93,7 @@ public class PlotKymograph extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting the input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -116,6 +116,8 @@ public class PlotKymograph extends Module {
         workspace.addImage(outputImage);
 
         if (showOutput) showImage(outputImage);
+
+        return true;
 
     }
 

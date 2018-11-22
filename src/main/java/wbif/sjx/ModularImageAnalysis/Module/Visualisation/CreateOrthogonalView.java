@@ -101,7 +101,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Loading image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image<T> inputImage = workspace.getImage(inputImageName);
@@ -169,6 +169,9 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
         if (showOutput) {
             ImageJFunctions.show(orthoImg);
         }
+
+        return true;
+
     }
 
     @Override

@@ -86,7 +86,7 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input objects
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         ObjCollection parentObjects = workspace.getObjects().get(parentObjectsName);
@@ -104,6 +104,9 @@ public class CalculateStatsForChildren extends Module {
         for (Obj parentObject:parentObjects.values()) {
             processObject(parentObject,childObjectsName,measurement,statsToCalculate);
         }
+
+        return true;
+
     }
 
     @Override

@@ -142,7 +142,7 @@ public class FocusStack extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -183,6 +183,9 @@ public class FocusStack extends Module {
             workspace.addImage(outputImages[1]);
 
         }
+
+        return true;
+
     }
 
     @Override

@@ -26,13 +26,15 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         // Removing the relevant image from the workspace
         writeMessage("Removing image ("+inputImageName+") from workspace");
         workspace.removeImage(inputImageName);
+
+        return true;
 
     }
 

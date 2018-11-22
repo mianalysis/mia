@@ -83,7 +83,7 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -304,6 +304,8 @@ public class FitGaussian2D extends Module {
         writeMessage("Fit "+inputObjects.size()+" objects");
 
         inputImagePlus.setPosition(1,1,1);
+
+        return true;
 
     }
 

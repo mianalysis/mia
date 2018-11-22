@@ -84,7 +84,7 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -145,6 +145,9 @@ public class MeasureObjectShape extends Module {
 
             }
         }
+
+        return true;
+
     }
 
     @Override

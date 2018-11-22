@@ -213,7 +213,7 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         Calendar calendar = Calendar.getInstance();
 
         // Getting input image
@@ -261,6 +261,9 @@ public class RidgeDetection extends Module {
             dispIpl.show();
 
         }
+
+        return true;
+
     }
 
     @Override

@@ -79,7 +79,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -104,6 +104,9 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
             workspace.addImage(outputImage);
             if (showOutput) showImage(outputImage);
         }
+
+        return true;
+
     }
 
     @Override

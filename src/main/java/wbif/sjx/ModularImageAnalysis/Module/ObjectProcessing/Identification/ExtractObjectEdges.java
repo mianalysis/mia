@@ -168,7 +168,7 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -218,6 +218,8 @@ public class ExtractObjectEdges extends Module {
 
         if (createEdgeObjects) workspace.addObjects(outputEdgeObjects);
         if (createInteriorObjects) workspace.addObjects(outputInteriorObjects);
+
+        return true;
 
     }
 

@@ -34,7 +34,7 @@ public class AddPause extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting parameters
         boolean showImage = parameters.getValue(SHOW_IMAGE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -72,6 +72,9 @@ public class AddPause extends Module {
                 break;
 
         }
+
+        return true;
+
     }
 
     @Override

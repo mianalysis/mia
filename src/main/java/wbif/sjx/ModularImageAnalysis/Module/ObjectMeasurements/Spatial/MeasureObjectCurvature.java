@@ -312,7 +312,7 @@ public class MeasureObjectCurvature extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectName);
@@ -339,7 +339,7 @@ public class MeasureObjectCurvature extends Module {
         int fittingRange = parameters.getValue(FITTING_RANGE_PX);
 
         // If there are no objects, exit the module
-        if (inputObjects.size() == 0) return;
+        if (inputObjects.size() == 0) return true;
 
         // If no reference is provided there's nothing to tell the sign of the curvature
         if (!useReference) {
@@ -401,6 +401,9 @@ public class MeasureObjectCurvature extends Module {
         if (showOutput && drawSpline) {
             showImage(new Image("Spline",referenceImageImagePlus));
         }
+
+        return true;
+
     }
 
     @Override

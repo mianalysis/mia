@@ -187,7 +187,7 @@ public class FitEllipsoid extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
@@ -218,6 +218,9 @@ public class FitEllipsoid extends Module {
             processObject(inputObject,outputObjects,objectOutputMode,templateImage,fittingMode,useIntensityWeighting,maxAxisLength);
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
+
+        return true;
+
     }
 
     @Override

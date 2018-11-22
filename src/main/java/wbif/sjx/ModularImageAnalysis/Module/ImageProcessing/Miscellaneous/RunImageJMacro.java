@@ -35,7 +35,7 @@ public class RunImageJMacro extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -61,6 +61,9 @@ public class RunImageJMacro extends Module {
         } else {
             if (showOutput) showImage(inputImage);
         }
+
+        return true;
+
     }
 
     @Override

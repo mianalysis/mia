@@ -266,7 +266,7 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Loading input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
@@ -331,6 +331,8 @@ public class RunTrackMate extends Module {
 
         // Reapplying calibration to input image
         inputImage.getImagePlus().setCalibration(calibration);
+
+        return true;
 
     }
 

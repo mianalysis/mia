@@ -80,7 +80,7 @@ public class ReassignEnclosedObjects extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
 
@@ -88,6 +88,8 @@ public class ReassignEnclosedObjects extends Module {
         Image templateImage = workspace.getImage(templateImageName);
 
         testEncloses(inputObjects, templateImage);
+
+        return true;
 
     }
 

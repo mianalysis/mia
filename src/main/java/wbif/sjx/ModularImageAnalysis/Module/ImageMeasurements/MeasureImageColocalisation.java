@@ -100,7 +100,7 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    protected void run(Workspace workspace) {
+    protected boolean run(Workspace workspace) {
         // Getting input images
         String imageName1 = parameters.getValue(INPUT_IMAGE_1);
         Image image1 = workspace.getImages().get(imageName1);
@@ -120,6 +120,8 @@ public class MeasureImageColocalisation extends Module {
 
         // Running measurements
         measurePCC(image1,image2,mask);
+
+        return true;
 
     }
 

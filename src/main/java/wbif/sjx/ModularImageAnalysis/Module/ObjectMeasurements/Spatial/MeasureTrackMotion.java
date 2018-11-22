@@ -370,7 +370,7 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
         ObjCollection trackObjects = workspace.getObjects().get(inputTrackObjectsName);
@@ -399,6 +399,9 @@ public class MeasureTrackMotion extends Module {
             calculateRelativeTimepoint(trackObject,track,inputSpotObjectsName,subtractAverage);
 
         }
+
+        return true;
+
     }
 
     @Override

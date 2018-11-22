@@ -58,7 +58,7 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         String conversionMode = parameters.getValue(CONVERSION_MODE);
 
         if (conversionMode.equals(ConversionModes.IMAGE_TO_OBJECTS)) {
@@ -130,6 +130,9 @@ public class ConvertObjectsToImage extends Module {
 
             }
         }
+
+        return true;
+
     }
 
     @Override

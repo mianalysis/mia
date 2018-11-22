@@ -22,13 +22,14 @@ public class BinaryOperations2D extends Module {
 
     public interface OperationModes {
         String DILATE = "Dilate";
+        String DISTANCE_MAP = "Distance map";
         String ERODE = "Erode";
         String FILL_HOLES = "Fill holes";
         String OUTLINE = "Outline";
         String SKELETONISE = "Skeletonise";
         String WATERSHED = "Watershed";
 
-        String[] ALL = new String[]{DILATE, ERODE, FILL_HOLES, OUTLINE, SKELETONISE, WATERSHED};
+        String[] ALL = new String[]{DILATE, DISTANCE_MAP, ERODE, FILL_HOLES, OUTLINE, SKELETONISE, WATERSHED};
 
     }
 
@@ -77,13 +78,12 @@ public class BinaryOperations2D extends Module {
     @Override
     public String getHelp() {
         return "Expects black objects on a white background." +
-                "\nPerforms 2D fill holes, dilate and erode using ImageJ functions." +
-                "\nUses MorphoLibJ to do 3D operations.";
+                "\nPerforms 2D fill holes, dilate and erode using ImageJ functions.";
 
     }
 
     @Override
-    public void run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -98,7 +98,11 @@ public class BinaryOperations2D extends Module {
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
 
-        process(inputImagePlus,operationMode,numIterations);
+        if (operationMode.equals(OperationModes.DISTANCE_MAP)) {
+            IJ.run(inputImagePlus,"Distance Map", "stack");
+        } else {
+            process(inputImagePlus, operationMode, numIterations);
+        }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
@@ -111,6 +115,9 @@ public class BinaryOperations2D extends Module {
             if (showOutput) showImage(inputImage);
 
         }
+
+        return true;
+
     }
 
     @Override
@@ -118,8 +125,7 @@ public class BinaryOperations2D extends Module {
         parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(
-                new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE,OperationModes.ALL));
+        parameters.add(new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE,OperationModes.ALL));
         parameters.add(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
 
     }
@@ -135,7 +141,16 @@ public class BinaryOperations2D extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(OPERATION_MODE));
-        returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
+        switch ((String) parameters.getValue(OPERATION_MODE)) {
+            case OperationModes.DILATE:
+            case OperationModes.ERODE:
+            case OperationModes.FILL_HOLES:
+            case OperationModes.OUTLINE:
+            case OperationModes.SKELETONISE:
+            case OperationModes.WATERSHED:
+                returnedParameters.add(parameters.getParameter(NUM_ITERATIONS));
+                break;
+        }
 
         return returnedParameters;
 
