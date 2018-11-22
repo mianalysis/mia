@@ -7,6 +7,8 @@ import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.FilenameUtils;
+import org.bytedeco.javacpp.BytePointer;
+import org.janelia.it.jacs.shared.ffmpeg.FFMPGByteAcceptor;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
@@ -100,10 +102,6 @@ public class VideoLoader extends Module {
             frame = loader.grabFrame();
 
         }
-
-        loader.stop();
-        loader.close();
-        loader = null;
 
         // This will probably load as a Z-stack rather than timeseries, so convert it to a stack
         if (((ipl.getNFrames() == 1 && ipl.getNSlices() > 1) || (ipl.getNSlices() == 1 && ipl.getNFrames() > 1) )) {
