@@ -27,6 +27,7 @@ public class AddObjectsOverlay extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String POSITION_MODE = "Position mode";
     public static final String SHOW_LABEL = "Show label";
     public static final String LABEL_MODE = "Label mode";
     public static final String DECIMAL_PLACES = "Decimal places";
@@ -34,7 +35,6 @@ public class AddObjectsOverlay extends Module {
     public static final String LABEL_SIZE = "Label size";
     public static final String PARENT_OBJECT_FOR_ID = "Parent object for ID";
     public static final String MEASUREMENT_FOR_ID = "Measurement for ID";
-    public static final String POSITION_MODE = "Position mode";
     public static final String X_POSITION_MEASUREMENT = "X-position measurement";
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
@@ -59,11 +59,12 @@ public class AddObjectsOverlay extends Module {
     public interface PositionModes {
         String ALL_POINTS = "All points";
         String CENTROID = "Centroid";
+        String LABEL_ONLY = "Label only";
         String OUTLINE = "Outline";
         String POSITION_MEASUREMENTS = "Position measurements";
         String TRACKS = "Tracks";
 
-        String[] ALL = new String[]{ALL_POINTS, CENTROID, OUTLINE, POSITION_MEASUREMENTS, TRACKS};
+        String[] ALL = new String[]{ALL_POINTS, CENTROID, LABEL_ONLY, OUTLINE, POSITION_MEASUREMENTS, TRACKS};
 
     }
 
@@ -261,7 +262,7 @@ public class AddObjectsOverlay extends Module {
                 int y2 = (int) Math.round(p2.getYMean(true));
 
                 int maxFrame = nFrames;
-                if (limitHistory) maxFrame = p2.getT()+history;
+                if (limitHistory) maxFrame = Math.min(nFrames,p2.getT()+history);
 
                 for (int t = p2.getT();t<=maxFrame-1;t++) {
                     PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
@@ -335,7 +336,6 @@ public class AddObjectsOverlay extends Module {
     }
 
     public HashMap<Integer,String> getLabels(ObjCollection inputObjects) {
-        boolean showID = parameters.getValue(SHOW_LABEL);
         String labelMode = parameters.getValue(LABEL_MODE);
         int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
         boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
@@ -352,11 +352,8 @@ public class AddObjectsOverlay extends Module {
                 break;
         }
 
-        if (showID) {
-            return inputObjects.getIDs(labelMode,souceLabel,decimalPlaces,useScientific);
-        } else {
-            return null;
-        }
+        return inputObjects.getIDs(labelMode,souceLabel,decimalPlaces,useScientific);
+
     }
 
     public String[] getPositionMeasurements() {
@@ -392,7 +389,6 @@ public class AddObjectsOverlay extends Module {
             Color colour = colours.get(object.getID());
             String label = labels == null ? "" : labels.get(object.getID());
 
-            double[] labelCoords = new double[0];
             switch (positionMode) {
                 case PositionModes.ALL_POINTS:
                     addAllPointsOverlay(object,ipl,colour,lineWidth,label,labelSize);
@@ -400,6 +396,16 @@ public class AddObjectsOverlay extends Module {
 
                 case PositionModes.CENTROID:
                     addCentroidOverlay(object,ipl,colour,lineWidth,label,labelSize);
+                    break;
+
+                case PositionModes.LABEL_ONLY:
+                    double xMean = object.getXMean(true);
+                    double yMean = object.getYMean(true);
+                    double zMean = object.getZMean(true,false);
+                    int z = (int) Math.round(zMean+1);
+                    int t = object.getT()+1;
+
+                    addLabelsOverlay(ipl, label, new double[]{xMean, yMean, z, t}, colour, labelSize);
                     break;
 
                 case PositionModes.OUTLINE:
@@ -461,7 +467,8 @@ public class AddObjectsOverlay extends Module {
         HashMap<Integer,Color> colours = getColours(inputObjects);
 
         // Generating labels for each object
-        HashMap<Integer,String> labels = getLabels(inputObjects);
+        boolean showLabels = positionMode.equals(PositionModes.LABEL_ONLY) || (boolean) parameters.getValue(SHOW_LABEL);
+        HashMap<Integer,String> labels = showLabels ? getLabels(inputObjects) : null;
 
         // Adding the overlay element
         createOverlay(ipl,inputObjects,colours,labels);
@@ -533,31 +540,6 @@ public class AddObjectsOverlay extends Module {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(SHOW_LABEL));
-
-        if (parameters.getValue(SHOW_LABEL)) {
-            returnedParameters.add(parameters.getParameter(LABEL_MODE));
-
-            switch ((String) parameters.getValue(LABEL_MODE)) {
-                case LabelModes.MEASUREMENT_VALUE:
-                    returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ID));
-                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(MEASUREMENT_FOR_ID,inputObjectsName);
-                    break;
-
-                case LabelModes.PARENT_ID:
-                    returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_ID));
-                    inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(PARENT_OBJECT_FOR_ID,inputObjectsName);
-                    break;
-            }
-
-            returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
-            returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
-            returnedParameters.add(parameters.getParameter(LABEL_SIZE));
-
-        }
-
         returnedParameters.add(parameters.getParameter(POSITION_MODE));
         if (parameters.getValue(POSITION_MODE).equals(PositionModes.POSITION_MEASUREMENTS)) {
             returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT));
@@ -610,6 +592,33 @@ public class AddObjectsOverlay extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+
+        if (!parameters.getValue(POSITION_MODE).equals(PositionModes.LABEL_ONLY)) {
+            returnedParameters.add(parameters.getParameter(SHOW_LABEL));
+        }
+
+        if (parameters.getValue(POSITION_MODE).equals(PositionModes.LABEL_ONLY)
+                || (boolean) parameters.getValue(SHOW_LABEL)) {
+            returnedParameters.add(parameters.getParameter(LABEL_MODE));
+
+            switch ((String) parameters.getValue(LABEL_MODE)) {
+                case LabelModes.MEASUREMENT_VALUE:
+                    returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ID));
+                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    parameters.updateValueSource(MEASUREMENT_FOR_ID,inputObjectsName);
+                    break;
+
+                case LabelModes.PARENT_ID:
+                    returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_ID));
+                    inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    parameters.updateValueSource(PARENT_OBJECT_FOR_ID,inputObjectsName);
+                    break;
+            }
+
+            returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
+            returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
+            returnedParameters.add(parameters.getParameter(LABEL_SIZE));
+        }
 
         return returnedParameters;
 

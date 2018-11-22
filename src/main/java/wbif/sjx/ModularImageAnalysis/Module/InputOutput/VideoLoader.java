@@ -101,6 +101,10 @@ public class VideoLoader extends Module {
 
         }
 
+        loader.stop();
+        loader.close();
+        loader = null;
+
         // This will probably load as a Z-stack rather than timeseries, so convert it to a stack
         if (((ipl.getNFrames() == 1 && ipl.getNSlices() > 1) || (ipl.getNSlices() == 1 && ipl.getNFrames() > 1) )) {
             ConvertStackToTimeseries.process(ipl);

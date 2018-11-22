@@ -26,6 +26,8 @@ public class UnwarpImages extends Module {
     public static final String ROLLING_CORRECTION = "Rolling correction";
     public static final String CORRECTION_INTERVAL = "Correction interval";
     public static final String REFERENCE_IMAGE = "Reference image";
+    public static final String CALCULATION_SOURCE = "Calculation source";
+    public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
     public static final String REGISTRATION_MODE = "Registration mode";
     public static final String SUBSAMPLE_FACTOR = "Subsample factor";
@@ -53,6 +55,14 @@ public class UnwarpImages extends Module {
         final String EVERY_NTH_FRAME = "Every nth frame";
 
         final String[] ALL = new String[]{NONE,EVERY_NTH_FRAME};
+
+    }
+
+    public interface CalculationSources {
+        String INTERNAL = "Internal";
+        String EXTERNAL = "External";
+
+        String[] ALL = new String[]{INTERNAL,EXTERNAL};
 
     }
 
@@ -184,14 +194,17 @@ public class UnwarpImages extends Module {
         }
     }
 
-    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, @Nullable Image reference) {
+    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, @Nullable Image reference, @Nullable Image externalSource) {
         // Creating a reference image
         Image projectedReference = null;
+
+        // Assigning source image
+        Image source = externalSource == null ? inputImage : externalSource;
 
         // Assigning fixed reference images
         switch (relativeMode) {
             case RelativeModes.FIRST_FRAME:
-                reference = ExtractSubstack.extractSubstack(inputImage, "Reference", String.valueOf(calculationChannel), "1-end", "1");
+                reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", "1");
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
 
@@ -203,8 +216,8 @@ public class UnwarpImages extends Module {
 
         // Iterate over each time-step
         int count = 0;
-        int total = inputImage.getImagePlus().getNFrames();
-        for (int t = 1; t <= inputImage.getImagePlus().getNFrames(); t++) {
+        int total = source.getImagePlus().getNFrames();
+        for (int t = 1; t <= source.getImagePlus().getNFrames(); t++) {
             writeMessage("Processing timepoint "+(++count)+" of "+total);
 
             // If the reference image is the previous frame, calculate this now
@@ -212,13 +225,13 @@ public class UnwarpImages extends Module {
                 // Can't process if this is the first frame
                 if (t == 1) continue;
 
-                reference = ExtractSubstack.extractSubstack(inputImage, "Reference", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
+                reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
 
             }
 
             // Getting the projected image at this time-point
-            Image warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(calculationChannel), "1-end", String.valueOf(t));
+            Image warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(calculationChannel), "1-end", String.valueOf(t));
             Image projectedWarped = ProjectImage.projectImageInZ(warped, "ProjectedWarped", ProjectImage.ProjectionModes.MAX);
 
             // Calculating the transformation for this image pair
@@ -231,7 +244,7 @@ public class UnwarpImages extends Module {
             switch (relativeMode) {
                 case RelativeModes.PREVIOUS_FRAME:
                     if (correctionInterval != -1 && t%correctionInterval == 0) {
-                        t2 = inputImage.getImagePlus().getNFrames();
+                        t2 = source.getImagePlus().getNFrames();
                     }
                     break;
             }
@@ -279,6 +292,8 @@ public class UnwarpImages extends Module {
         String rollingCorrectionMode = parameters.getValue(ROLLING_CORRECTION);
         int correctionInterval = parameters.getValue(CORRECTION_INTERVAL);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
+        String calculationSource = parameters.getValue(CALCULATION_SOURCE);
+        String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         String registrationMode = parameters.getValue(REGISTRATION_MODE);
         int subsampleFactor = parameters.getValue(SUBSAMPLE_FACTOR);
@@ -314,7 +329,8 @@ public class UnwarpImages extends Module {
         param.stopThreshold = stopThreshold;
 
         Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
-        process(inputImage,calculationChannel,relativeMode,param,correctionInterval,reference);
+        Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
+        process(inputImage,calculationChannel,relativeMode,param,correctionInterval,reference,externalSource);
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
@@ -333,6 +349,8 @@ public class UnwarpImages extends Module {
         parameters.add(new Parameter(ROLLING_CORRECTION,Parameter.CHOICE_ARRAY,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
         parameters.add(new Parameter(CORRECTION_INTERVAL, Parameter.INTEGER,1));
         parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
+        parameters.add(new Parameter(CALCULATION_SOURCE,Parameter.CHOICE_ARRAY,CalculationSources.INTERNAL,CalculationSources.ALL));
+        parameters.add(new Parameter(EXTERNAL_SOURCE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(CALCULATION_CHANNEL, Parameter.INTEGER,1));
         parameters.add(new Parameter(REGISTRATION_MODE,Parameter.CHOICE_ARRAY,RegistrationModes.FAST,RegistrationModes.ALL));
         parameters.add(new Parameter(SUBSAMPLE_FACTOR,Parameter.INTEGER,0));
@@ -369,6 +387,13 @@ public class UnwarpImages extends Module {
 
             case RelativeModes.SPECIFIC_IMAGE:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                break;
+        }
+
+        returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
+        switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+            case CalculationSources.EXTERNAL:
+                returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
                 break;
         }
 
