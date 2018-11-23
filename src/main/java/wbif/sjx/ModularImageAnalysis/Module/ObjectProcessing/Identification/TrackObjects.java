@@ -360,28 +360,40 @@ public class TrackObjects extends Module {
 
     }
 
+    public static double getInstantaneousOrientationRads(Obj object, ObjCollection objects, String orientationMode) {
+        double prevAngle = Double.NaN;
+        double nextAngle = Double.NaN;
+
+        if ((orientationMode.equals(OrientationModes.RELATIVE_TO_PREV)
+                || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
+                && object.getMeasurement(Measurements.TRACK_PREV_ID) != null) {
+            Obj prevObj = objects.get((int) object.getMeasurement(Measurements.TRACK_PREV_ID).getValue());
+            prevAngle = prevObj.calculateAngle2D(object);
+        }
+
+        if ((orientationMode.equals(OrientationModes.RELATIVE_TO_NEXT)
+                || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
+                && object.getMeasurement(Measurements.TRACK_NEXT_ID) != null) {
+            Obj nextObj = objects.get((int) object.getMeasurement(Measurements.TRACK_NEXT_ID).getValue());
+            nextAngle = object.calculateAngle2D(nextObj);
+        }
+
+        if (Double.isNaN(prevAngle) && Double.isNaN(nextAngle)) return Double.NaN;
+        else if (!Double.isNaN(prevAngle) && Double.isNaN(nextAngle)) return prevAngle;
+        else if (Double.isNaN(prevAngle) && !Double.isNaN(nextAngle)) return nextAngle;
+        else if (!Double.isNaN(prevAngle) && !Double.isNaN(nextAngle)) return (prevAngle + nextAngle) / 2;
+
+        return Double.NaN;
+
+    }
+
     public void identifyLeading(ObjCollection objects) {
         String orientationMode = parameters.getValue(ORIENTATION_MODE);
 
         for (Obj obj:objects.values()) {
-            double prevAngle = Double.NaN;
-            double nextAngle = Double.NaN;
+            double angle = getInstantaneousOrientationRads(obj,objects,orientationMode);
 
-            if ((orientationMode.equals(OrientationModes.RELATIVE_TO_PREV)
-                    || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
-                    && obj.getMeasurement(Measurements.TRACK_PREV_ID) != null) {
-                Obj prevObj = objects.get((int) obj.getMeasurement(Measurements.TRACK_PREV_ID).getValue());
-                prevAngle = prevObj.calculateAngle2D(obj);
-            }
-
-            if ((orientationMode.equals(OrientationModes.RELATIVE_TO_NEXT)
-                    || orientationMode.equals(OrientationModes.RELATIVE_TO_BOTH))
-                    && obj.getMeasurement(Measurements.TRACK_NEXT_ID) != null) {
-                Obj nextObj = objects.get((int) obj.getMeasurement(Measurements.TRACK_NEXT_ID).getValue());
-                nextAngle = obj.calculateAngle2D(nextObj);
-            }
-
-            if (Double.isNaN(prevAngle) && Double.isNaN(nextAngle)) {
+            if (Double.isNaN(angle)) {
                 // Adding furthest point coordinates to measurements
                 obj.addMeasurement(new Measurement(Measurements.ORIENTATION, Double.NaN));
                 obj.addMeasurement(new Measurement(Measurements.LEADING_X_PX, Double.NaN));
@@ -389,15 +401,6 @@ public class TrackObjects extends Module {
                 obj.addMeasurement(new Measurement(Measurements.LEADING_Z_PX, Double.NaN));
 
             } else {
-                double angle;
-                if (!Double.isNaN(prevAngle) && Double.isNaN(nextAngle)) {
-                    angle = prevAngle;
-                } else if (Double.isNaN(prevAngle) && !Double.isNaN(nextAngle)) {
-                    angle = nextAngle;
-                } else {
-                    angle = (prevAngle+nextAngle)/2;
-                }
-
                 double xCent = obj.getXMean(true);
                 double yCent = obj.getYMean(true);
 

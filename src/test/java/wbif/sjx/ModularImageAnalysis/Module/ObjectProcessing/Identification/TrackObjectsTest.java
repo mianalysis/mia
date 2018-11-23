@@ -1597,6 +1597,607 @@ public class TrackObjectsTest {
     }
 
 
+    // Testing instantaneous orientation
+
+    @Test
+    public void testGetInstantaneousOrientationRadsPrevFrameTopRight() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(12,14,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(15,18,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        double expected = Double.NaN;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        expected = 1.1071;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        expected = 0.9273;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsNextFrameTopRight() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(12,14,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(15,18,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        double expected = 1.1071;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        expected = 0.9273;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        expected = Double.NaN;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsBothFramesTopRight() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(12,14,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(15,18,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        double expected = 1.1071;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = 1.0172;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = 0.9273;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsPrevFrameBottomRight() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(12,7,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(17,4,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        double expected = Double.NaN;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        expected = -0.9828;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        expected = -0.5404;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsNextFrameBottomRight() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(12,7,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(17,4,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        double expected = -0.9828;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        expected = -0.7616;
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        expected = -0.5404;
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsBothFramesBottomRight() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(12,7,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(17,4,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        double expected = -0.9828;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = -0.5404;
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = Double.NaN;
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsPrevFrameBottomLeft() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(-3,2,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(-5,-7,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        double expected = Double.NaN;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        expected = -2.5899;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        expected = -1.7895;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsNextFrameBottomLeft() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(-3,2,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(-5,-7,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        double expected = -2.5899;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        expected = -1.7895;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        expected = Double.NaN;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsBothFramesBottomLeft() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(-3,2,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(-5,-7,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        double expected = -2.5899;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = -2.1897;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = -1.7895;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsPrevFrameTopLeft() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(6,12,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(-3,15,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        double expected = Double.NaN;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        expected = 2.6779;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_PREV);
+        expected = 2.8198;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsNextFrameTopLeft() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(6,12,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(-3,15,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        double expected = 2.6779;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        expected = 2.8198;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_NEXT);
+        expected = Double.NaN;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsBothFramesTopLeft() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,25);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(6,12,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(-3,15,25);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        double expected = 2.6779;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = 2.7489;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = 2.8198;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsBothFramesTopLeftDifferentZ() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,35);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(6,12,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(-3,15,15);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        double expected = 2.6779;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = 2.7489;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = 2.8198;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+    @Test
+    public void testGetInstantaneousOrientationRadsBothFramesNoMotion() {
+        // Setting object parameters
+        String inputObjectsName = "Spot";
+        double dppXY = 0.02;
+        double dppZ = 0.1;
+        String calibratedUnits = "µm";
+
+        // Creating ObjCollection
+        ObjCollection objects = new ObjCollection(inputObjectsName);
+
+        // Creating the previous frame objects
+        Obj obj1 = new Obj(inputObjectsName,2,dppXY,dppZ,calibratedUnits,false).setT(20);
+        obj1.addCoord(10,10,35);
+        obj1.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,5));
+        objects.add(obj1);
+
+        Obj obj2 = new Obj(inputObjectsName,5,dppXY,dppZ,calibratedUnits,false).setT(21);
+        obj2.addCoord(10,10,25);
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,2));
+        obj2.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_NEXT_ID,8));
+        objects.add(obj2);
+
+        Obj obj3 = new Obj(inputObjectsName,8,dppXY,dppZ,calibratedUnits,false).setT(22);
+        obj3.addCoord(10,10,15);
+        obj3.addMeasurement(new Measurement(TrackObjects.Measurements.TRACK_PREV_ID,5));
+        objects.add(obj3);
+
+        // Calculating the angle
+        double actual = TrackObjects.getInstantaneousOrientationRads(obj1,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        double expected = 0;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj2,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = 0;
+        assertEquals(expected,actual,tolerance);
+
+        actual = TrackObjects.getInstantaneousOrientationRads(obj3,objects,TrackObjects.OrientationModes.RELATIVE_TO_BOTH);
+        expected = 0;
+        assertEquals(expected,actual,tolerance);
+
+    }
+
+
     // Testing linkObjects
 
     @Test

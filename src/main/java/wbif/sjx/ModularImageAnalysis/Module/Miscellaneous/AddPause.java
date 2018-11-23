@@ -64,12 +64,10 @@ public class AddPause extends Module {
 
         switch ((String) optionPane.getValue()) {
             case RESUME:
-                break;
+                return true;
 
             case TERMINATE:
-                System.out.println("Complete!");
-                Thread.currentThread().interrupt();
-                break;
+                return false;
 
         }
 
