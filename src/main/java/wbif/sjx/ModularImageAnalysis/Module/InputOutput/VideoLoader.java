@@ -85,6 +85,7 @@ public class VideoLoader extends Module {
             // Checking if the current frame is in the list to be imported
             if (!frames.contains(i+1)) {
                 // We still need to progress to the next frame
+                frame.release();
                 frame = loader.grabFrame();
                 continue;
             }
@@ -99,6 +100,8 @@ public class VideoLoader extends Module {
                 ipr = ipr.crop();
             }
             ipl.setProcessor(ipr);
+
+            frame.release();
             frame = loader.grabFrame();
 
         }

@@ -24,7 +24,9 @@ import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.Module.InputOutput.VideoLoader;
 import wbif.sjx.ModularImageAnalysis.Object.ErrorLog;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisReader;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisRunner;
@@ -56,43 +58,6 @@ public class MIA implements PlugIn {
     private static final boolean imagePlusMode = true;
 
     public static void main(String[] args) throws Exception {// The following works, but loads the entire video to RAM without an apparent way to prevent this
-        FFMPGByteAcceptor acceptor = new FFMPGByteAcceptor() {
-            @Override
-            public void accept(BytePointer bytePointer, int i, int i1, int i2) {
-                System.err.println("1");
-            }
-
-            @Override
-            public void accept(byte[] bytes, int i, int i1, int i2) {
-                System.err.println("2");
-            }
-
-            @Override
-            public void setFrameNum(int i) {
-
-            }
-
-            @Override
-            public void setPixelBytes(int i) {
-
-            }
-        };
-
-        String path = "E:\\Lizzie\\1g lab 1minrec 1.mp4";
-
-        FFMpegLoader loader = new FFMpegLoader(path);
-        loader.start();
-
-        for (int i=0;i<100;i++) {
-            loader.grabFrame();
-            loader.saveFrame((i+1),acceptor);
-        }
-
-
-
-
-
-
         // Setting the file path slashes depending on the operating system
         if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
         else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";
