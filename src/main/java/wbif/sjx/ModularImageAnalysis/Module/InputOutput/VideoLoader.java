@@ -7,6 +7,8 @@ import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.FilenameUtils;
+import org.bytedeco.javacpp.BytePointer;
+import org.janelia.it.jacs.shared.ffmpeg.FFMPGByteAcceptor;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
@@ -83,6 +85,7 @@ public class VideoLoader extends Module {
             // Checking if the current frame is in the list to be imported
             if (!frames.contains(i+1)) {
                 // We still need to progress to the next frame
+                frame.release();
                 frame = loader.grabFrame();
                 continue;
             }
@@ -97,13 +100,11 @@ public class VideoLoader extends Module {
                 ipr = ipr.crop();
             }
             ipl.setProcessor(ipr);
+
+            frame.release();
             frame = loader.grabFrame();
 
         }
-
-        loader.stop();
-        loader.close();
-        loader = null;
 
         // This will probably load as a Z-stack rather than timeseries, so convert it to a stack
         if (((ipl.getNFrames() == 1 && ipl.getNSlices() > 1) || (ipl.getNSlices() == 1 && ipl.getNFrames() > 1) )) {

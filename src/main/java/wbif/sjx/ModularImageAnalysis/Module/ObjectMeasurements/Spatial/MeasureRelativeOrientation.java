@@ -13,6 +13,7 @@ public class MeasureRelativeOrientation extends Module {
     public static final String ORIENTATION_MODE = "Orientation mode";
     public static final String ORIENTATION_IN_X_Y_MEASUREMENT = "Orientation in X/Y measurement";
     public static final String ORIENTATION_IN_XY_Z_MEASUREMENT = "Orientation in XY/Z measurement";
+    public static final String MEASUREMENT_RANGE = "Measurement range";
     public static final String REFERENCE_MODE = "Reference mode";
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String REFERENCE_OBJECTS = "Reference objects";
@@ -27,6 +28,14 @@ public class MeasureRelativeOrientation extends Module {
 
         //        String[] ALL = new String[]{X_Y_PLANE,XY_Z_PLANE,BOTH_X_Y_AND_XY_Z_PLANES,FULL_3D};
         String[] ALL = new String[]{X_Y_PLANE};
+
+    }
+
+    public interface MeasurementRanges {
+        String ZERO_NINETY = "0-90 degrees";
+        String ZERO_ONE_EIGHTY = "0-180 degrees";
+
+        String[] ALL = new String[]{ZERO_NINETY,ZERO_ONE_EIGHTY};
 
     }
 
@@ -169,11 +178,11 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    public static void processObject(Obj object, String xyOriMeasName, String xzOriMeasName, Point<Double> referencePoint, String orientationMode, String measurementReference) {
+    public static void processObject(Obj object, String xyOriMeasName, String xzOriMeasName, String measurementRange, Point<Double> referencePoint, String orientationMode, String measurementReference) {
         switch (orientationMode) {
             case OrientationModes.X_Y_PLANE:
                 double xyOrientation = object.getMeasurement(xyOriMeasName).getValue();
-                double xyAngle = getXYAngle(object,xyOrientation,referencePoint);
+                double xyAngle = getXYAngle(object,xyOrientation,measurementRange,referencePoint);
 
                 // Adding the measurement
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,measurementReference);
@@ -193,17 +202,25 @@ public class MeasureRelativeOrientation extends Module {
         }
     }
 
-    public static double getXYAngle(Obj object, double xyOrientation, Point<Double> referencePoint) {
+    public static double getXYAngle(Obj object, double xyOrientation, String measurementRange, Point<Double> referencePoint) {
         xyOrientation = Math.toRadians(xyOrientation);
+        if (xyOrientation == -Math.PI) xyOrientation = Math.PI;
         double angleToReference = object.calculateAngle2D(referencePoint);
 
-        Vector2D v1 = new Vector2D(1, -Math.tan(xyOrientation));
-        Vector2D v2 = new Vector2D(1, -Math.tan(angleToReference));
-
-        double angle = Vector2D.angle(v1, v2);
+        double angle = xyOrientation - angleToReference;
+        angle = Math.abs((angle + Math.PI) % (2*Math.PI) - Math.PI);
 
         // Putting it into the range -90 to +90 degrees (or radian equivalent)
-        if (angle >= Math.PI / 2) angle = angle - Math.PI;
+        switch (measurementRange) {
+            case MeasurementRanges.ZERO_NINETY:
+                if (angle >= Math.PI / 2) angle = angle - Math.PI;
+                break;
+
+            case MeasurementRanges.ZERO_ONE_EIGHTY:
+                if (angle >= Math.PI) angle = angle - 2*Math.PI;
+                break;
+
+        }
 
         // We are only interested in the deviation (i.e. absolute value)
         return Math.abs(Math.toDegrees(angle));
@@ -236,6 +253,7 @@ public class MeasureRelativeOrientation extends Module {
         String orientationMode= parameters.getValue(ORIENTATION_MODE);
         String xyOriMeasName = parameters.getValue(ORIENTATION_IN_X_Y_MEASUREMENT);
         String xzOriMeasName = parameters.getValue(ORIENTATION_IN_XY_Z_MEASUREMENT);
+        String measurementRange = parameters.getValue(MEASUREMENT_RANGE);
         String referenceMode = parameters.getValue(REFERENCE_MODE);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
@@ -269,7 +287,7 @@ public class MeasureRelativeOrientation extends Module {
                 assignMissingMeasurements(inputObject, xyOriMeasName, xzOriMeasName, orientationMode, measurementReference);
             } else {
                 Point<Double> referencePoint = referencePoints.get(t);
-                processObject(inputObject, xyOriMeasName, xzOriMeasName, referencePoint, orientationMode, measurementReference);
+                processObject(inputObject, xyOriMeasName, xzOriMeasName, measurementRange, referencePoint, orientationMode, measurementReference);
             }
         }
 
@@ -283,6 +301,7 @@ public class MeasureRelativeOrientation extends Module {
         parameters.add(new Parameter(ORIENTATION_MODE,Parameter.CHOICE_ARRAY,OrientationModes.X_Y_PLANE,OrientationModes.ALL));
         parameters.add(new Parameter(ORIENTATION_IN_X_Y_MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null));
         parameters.add(new Parameter(ORIENTATION_IN_XY_Z_MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null));
+        parameters.add(new Parameter(MEASUREMENT_RANGE,Parameter.CHOICE_ARRAY,MeasurementRanges.ZERO_NINETY,MeasurementRanges.ALL));
         parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.IMAGE_CENTRE,ReferenceModes.ALL));
         parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(REFERENCE_OBJECTS,Parameter.INPUT_OBJECTS,null));
@@ -316,6 +335,8 @@ public class MeasureRelativeOrientation extends Module {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         parameters.updateValueSource(ORIENTATION_IN_X_Y_MEASUREMENT,inputObjectsName);
         parameters.updateValueSource(ORIENTATION_IN_XY_Z_MEASUREMENT,inputObjectsName);
+
+        returnedParameters.add(parameters.getParameter(MEASUREMENT_RANGE));
 
         returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
         switch ((String) parameters.getValue(REFERENCE_MODE)) {

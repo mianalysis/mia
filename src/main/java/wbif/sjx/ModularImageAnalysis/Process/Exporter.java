@@ -755,6 +755,8 @@ public class Exporter {
                 int colNum = colNumbers.get(headerName);
 
                 Cell summaryCell = summaryValueRow.createCell(colNum);
+                if (measurement == null) continue;
+
                 double val = measurement.getValue();
                 if (Double.isNaN(val)) summaryCell.setCellValue("");
                 else summaryCell.setCellValue(val);

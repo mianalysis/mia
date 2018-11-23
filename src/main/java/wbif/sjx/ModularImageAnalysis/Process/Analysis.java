@@ -46,7 +46,18 @@ public class Analysis implements Serializable {
         int count = 0;
         for (Module module:modules) {
             if (Thread.currentThread().isInterrupted()) break;
-            if (module.isEnabled() && module.isRunnable()) module.execute(workspace);
+            if (module.isEnabled() && module.isRunnable()) {
+                boolean status = module.execute(workspace);
+                if (!status) {
+                    // The module failed or requested analysis termination.  Add this message to the log
+                    System.err.println("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
+                            "\" by module \""+module.getTitle()+"\" (\""+module.getNickname()+"\").");
+
+                    // End the analysis run
+                    break;
+
+                }
+            }
 
             // Updating progress bar
             double percentageComplete = ((double) (count++))/((double) total)*100;
