@@ -15,7 +15,6 @@ public class ConditionalAnalysisTermination extends Module {
     public static final String REFERENCE_VALUE = "Reference value";
 
 
-
     public interface TestModes {
         String IMAGE_MEASUREMENT = "Image measurement";
 
@@ -24,8 +23,8 @@ public class ConditionalAnalysisTermination extends Module {
     }
 
     public interface ReferenceModes {
-        String MEASUREMENT_LESS_THAN = "Continue if measurement less than";
-        String MEASUREMENT_GREATER_THAN = "Continue if measurement greater than";
+        String MEASUREMENT_LESS_THAN = "Terminate if measurement less than";
+        String MEASUREMENT_GREATER_THAN = "Terminate if measurement greater than";
 
         String[] ALL = new String[]{MEASUREMENT_LESS_THAN,MEASUREMENT_GREATER_THAN};
 
@@ -43,10 +42,10 @@ public class ConditionalAnalysisTermination extends Module {
         double measurementValue = measurement.getValue();
         switch (referenceMode) {
             case ReferenceModes.MEASUREMENT_LESS_THAN:
-                return measurementValue < referenceValue;
+                return !(measurementValue < referenceValue);
 
             case ReferenceModes.MEASUREMENT_GREATER_THAN:
-                return measurementValue > referenceValue;
+                return !(measurementValue > referenceValue);
 
         }
 
