@@ -189,7 +189,9 @@ public class MetadataExtractor extends Module {
                 referenceValues.put(split[0], split[1]);
             }
 
-            return referenceValues.get(metadata.get(metadataItemToMatch).toString());
+            if (metadata.containsKey(metadataItemToMatch)) {
+                return referenceValues.get(metadata.get(metadataItemToMatch).toString());
+            } else return null;
 
         } catch (IOException e) {
             return null;
@@ -301,7 +303,7 @@ public class MetadataExtractor extends Module {
                                 return true;
                         }
                         String metadataString = getExternalMetadata(metadata,metadataSourcePath,metadataItemToMatch);
-                        extractGeneric(metadata,metadataString,pattern,groups);
+                        if (metadataString != null) extractGeneric(metadata,metadataString,pattern,groups);
                         break;
 
                     case MetadataFileExtractors.OPERA_METADATA_FILE_EXTRACTOR:
