@@ -291,7 +291,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
         if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
-            values().forEach(e -> cs.addMeasure(e.getMeasurement(source).getValue()));
+            for (Obj obj:values()) {
+                if (obj.getMeasurement(source) != null) cs.addMeasure(obj.getMeasurement(source).getValue());
+            }
         }
 
         for (Obj object:values()) {
@@ -344,6 +346,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
                     break;
 
                 case ColourModes.MEASUREMENT_VALUE:
+                    Measurement measurement = object.getMeasurement(source);
+                    if (measurement == null) break;
                     H = (float) object.getMeasurement(source).getValue();
                     if (normalised) {
                         double startH = 0;
