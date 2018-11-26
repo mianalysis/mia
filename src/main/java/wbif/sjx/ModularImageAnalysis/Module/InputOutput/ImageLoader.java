@@ -246,8 +246,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         if (meta != null) {
             if (meta.getPixelsPhysicalSizeX(seriesNumber-1) != null) {
                 Length physicalSizeX = meta.getPixelsPhysicalSizeX(seriesNumber-1);
-                if (!unit.isConvertible(physicalSizeX.unit()))
-                    System.err.println("Can't convert units for file \""+new File(path).getName()+"\".  Spatially calibrated values may be wrong");
+                if (!unit.isConvertible(physicalSizeX.unit())) {
+                    System.err.println("Can't convert units for file \"" + new File(path).getName() + "\".  Spatially calibrated values may be wrong");
+                    reader.close();
+                    return ipl;
+                }
                 ipl.getCalibration().pixelWidth = (double) physicalSizeX.value(unit);
                 ipl.getCalibration().setXUnit(unit.getSymbol());
             } else {
