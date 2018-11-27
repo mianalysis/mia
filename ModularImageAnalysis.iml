@@ -150,7 +150,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:1.4.2">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_161/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -246,12 +246,6 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:20.0" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.21.0-GA" level="project" />
     <orderEntry type="library" name="Maven: com.github.kevinstern:software-and-algorithms:1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.github.SJCross:Common:v1.4.20" level="project" />
-    <orderEntry type="library" name="Maven: org.bonej:boneJ-legacy-plugins:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bonej:bonej-legacy-util:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:AnalyzeSkeleton_:3.1.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:LocalThickness_:4.0.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:Skeletonize3D_:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:VIB_:3.0.0" level="project" />
+    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.4.21" level="project" />
   </component>
 </module>
