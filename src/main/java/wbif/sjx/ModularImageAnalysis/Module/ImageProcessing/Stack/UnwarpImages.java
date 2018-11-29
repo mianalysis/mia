@@ -163,22 +163,11 @@ public class UnwarpImages extends Module {
 
         if (tempPath == null) return;
 
-        // Iterate over all images in the stack
+        // Applying transformation to images
         ImagePlus inputIpl = inputImage.getImagePlus();
-        for (int c=1;c<=inputIpl.getNChannels();c++) {
-            for (int z=1;z<=inputIpl.getNSlices();z++) {
-                for (int t=1;t<=inputIpl.getNFrames();t++) {
-                    inputIpl.setPosition(c,z,t);
-                    ImagePlus slice = new ImagePlus("Slice",inputIpl.getProcessor().duplicate());
+        bUnwarpJ_.applyTransformToSource(tempPath,inputIpl,inputIpl);
+        ImageTypeConverter.applyConversion(inputIpl,8,ImageTypeConverter.ScalingModes.CLIP);
 
-                    bUnwarpJ_.applyTransformToSource(tempPath,slice,slice);
-                    ImageTypeConverter.applyConversion(slice,8,ImageTypeConverter.ScalingModes.CLIP);
-
-                    inputIpl.setProcessor(slice.getProcessor());
-
-                }
-            }
-        }
     }
 
     public static void replaceStack(Image inputImage, Image newStack, int channel, int timepoint) {
