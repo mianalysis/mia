@@ -4,9 +4,7 @@ import bunwarpj.Param;
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
-import ij.plugin.HyperStackMaker;
-import ij.plugin.SubHyperstackMaker;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.NormaliseIntensity;
+import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -17,6 +15,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class UnwarpImages extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -163,11 +164,50 @@ public class UnwarpImages extends Module {
 
         if (tempPath == null) return;
 
-        // Applying transformation to images
+        // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
-        bUnwarpJ_.applyTransformToSource(tempPath,inputIpl,inputIpl);
-        ImageTypeConverter.applyConversion(inputIpl,8,ImageTypeConverter.ScalingModes.CLIP);
 
+        // Setting up the ExecutorService, which will manage the threads
+        int nThreads = Prefs.getThreads();
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+
+        for (int c=1;c<=inputIpl.getNChannels();c++) {
+            for (int z=1;z<=inputIpl.getNSlices();z++) {
+                for (int t=1;t<=inputIpl.getNFrames();t++) {
+                    String finalTempPath = tempPath;
+                    int finalC = c;
+                    int finalZ = z;
+                    int finalT = t;
+                    Runnable task = () -> {
+                        ImagePlus slice = getOrReplaceSlice(inputIpl,null,finalC,finalZ,finalT,false);
+
+                        bUnwarpJ_.applyTransformToSource(finalTempPath, slice, slice);
+                        ImageTypeConverter.applyConversion(slice, 8, ImageTypeConverter.ScalingModes.CLIP);
+
+                        getOrReplaceSlice(inputIpl,slice,finalC,finalZ,finalT,true);
+
+                    };
+                    pool.submit(task);
+                }
+            }
+        }
+
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            return;
+        }
+    }
+
+    private static synchronized ImagePlus getOrReplaceSlice(ImagePlus inputIpl, @Nullable ImagePlus slice, int c, int z, int t, boolean add) {
+        inputIpl.setPosition(c, z, t);
+        if (add) {
+            inputIpl.setProcessor(slice.getProcessor());
+            return null;
+        } else {
+            return new ImagePlus("Slice", inputIpl.getProcessor().duplicate());
+        }
     }
 
     public static void replaceStack(Image inputImage, Image newStack, int channel, int timepoint) {
