@@ -11,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,6 +36,8 @@ public class AddObjectsOverlay extends Module {
     public static final String LABEL_SIZE = "Label size";
     public static final String PARENT_OBJECT_FOR_ID = "Parent object for ID";
     public static final String MEASUREMENT_FOR_ID = "Measurement for ID";
+    public static final String PARENT_OBJECT_FOR_MEASUREMENT = "Parent object for measurement";
+    public static final String PARENT_MEASUREMENT = "Parent measurement";
     public static final String X_POSITION_MEASUREMENT = "X-position measurement";
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
@@ -52,7 +55,7 @@ public class AddObjectsOverlay extends Module {
 
     public interface ColourModes extends ObjCollection.ColourModes {}
 
-    public interface SingleColours extends ObjCollection.SingleColours {}
+    public interface SingleColours extends ColourFactory.SingleColours {}
 
     public interface LabelModes extends ObjCollection.LabelModes {}
 
@@ -312,27 +315,22 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public HashMap<Integer,Color> getColours(ObjCollection inputObjects) {
+    public HashMap<Integer,Float> getHues(ObjCollection inputObjects) {
         String colourMode = parameters.getValue(COLOUR_MODE);
         String singleColour = parameters.getValue(SINGLE_COLOUR);
         String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
         String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
 
         // Generating colours for each object
-        String[] sourceColour = null;
         switch (colourMode) {
             case ColourModes.SINGLE_COLOUR:
-                sourceColour = new String[]{singleColour};
-                break;
+            default:
+                return ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
             case ColourModes.MEASUREMENT_VALUE:
-                sourceColour = new String[]{measurementForColour};
-                break;
+                return ColourFactory.getMeasurementValueHues(inputObjects,measurementForColour,true);
             case ColourModes.PARENT_ID:
-                sourceColour = new String[]{parentObjectsForColourName};
-                break;
+                return ColourFactory.getParentIDHues(inputObjects,parentObjectsForColourName,true);
         }
-        return inputObjects.getColours(colourMode,sourceColour,true);
-
     }
 
     public HashMap<Integer,String> getLabels(ObjCollection inputObjects) {
@@ -370,7 +368,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Color> colours, @Nullable HashMap<Integer,String> labels) {
+    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Float> hues, @Nullable HashMap<Integer,String> labels) {
         String positionMode = parameters.getValue(POSITION_MODE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         int labelSize = parameters.getValue(LABEL_SIZE);
@@ -386,7 +384,8 @@ public class AddObjectsOverlay extends Module {
         // Running through each object, adding it to the overlay along with an ID label
         int count = 0;
         for (Obj object:inputObjects.values()) {
-            Color colour = colours.get(object.getID());
+            float hue = hues.get(object.getID());
+            Color colour = ColourFactory.getColour(hue);
             String label = labels == null ? "" : labels.get(object.getID());
 
             switch (positionMode) {
@@ -464,14 +463,14 @@ public class AddObjectsOverlay extends Module {
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Color> colours = getColours(inputObjects);
+        HashMap<Integer,Float> hues= getHues(inputObjects);
 
         // Generating labels for each object
         boolean showLabels = positionMode.equals(PositionModes.LABEL_ONLY) || (boolean) parameters.getValue(SHOW_LABEL);
         HashMap<Integer,String> labels = showLabels ? getLabels(inputObjects) : null;
 
         // Adding the overlay element
-        createOverlay(ipl,inputObjects,colours,labels);
+        createOverlay(ipl,inputObjects,hues,labels);
 
         // If necessary, adding output image to workspace
         if (addOutputToWorkspace) {

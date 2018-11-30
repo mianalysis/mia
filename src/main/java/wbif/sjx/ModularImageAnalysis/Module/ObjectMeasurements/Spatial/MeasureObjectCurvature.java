@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.Conve
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
@@ -76,20 +77,20 @@ public class MeasureObjectCurvature extends Module {
     }
 
 
-    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject, ImagePlus templateImage) {
+    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject, Image templateImage) {
         // Converting object to image, then inverting, so we have a black object on a white background
         ObjCollection tempObjects = new ObjCollection("Backbone");
         tempObjects.add(inputObject);
 
-        HashMap<Integer,Float> hues = tempObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        ImagePlus objectIpl = tempObjects.convertObjectsToImageOld("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues).getImagePlus();
-        InvertIntensity.process(objectIpl);
+        HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(tempObjects,ColourFactory.SingleColours.WHITE);
+        Image objectImage = tempObjects.convertObjectsToImage("Objects",templateImage,hues,8);
+        InvertIntensity.process(objectImage);
 
         // Skeletonise fish to get single backbone
-        BinaryOperations2D.process(objectIpl, BinaryOperations2D.OperationModes.SKELETONISE, 1);
+        BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1);
 
         // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
-        return new Skeleton(objectIpl).getLongestPath();
+        return new Skeleton(objectImage.getImagePlus()).getLongestPath();
 
     }
 
@@ -351,7 +352,7 @@ public class MeasureObjectCurvature extends Module {
             referenceImageImagePlus = new Duplicator().run(referenceImageImagePlus);
         }
 
-        ImagePlus templateImage = IJ.createImage("Template",referenceImageImagePlus.getWidth(),referenceImageImagePlus.getHeight(),1,8);
+        ImagePlus templateIpl = IJ.createImage("Template",referenceImageImagePlus.getWidth(),referenceImageImagePlus.getHeight(),1,8);
         int count = 1;
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
@@ -359,7 +360,7 @@ public class MeasureObjectCurvature extends Module {
             initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
-            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject, templateImage);
+            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject, new Image("Template",templateIpl));
 
             // If the object is too small to be fit
             if (longestPath.size() < 3) continue;

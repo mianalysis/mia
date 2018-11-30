@@ -14,6 +14,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConve
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.Point;
 
 import java.util.HashMap;
@@ -86,10 +87,8 @@ public class CreateDistanceMap extends Module {
 
     public static Image getEdgeDistanceMap(Image inputImage, ObjCollection inputObjects, String outputImageName, boolean invertInside) {
         // Creating an objects image
-        String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
-        String[] colourSource = new String[]{ObjCollection.SingleColours.WHITE};
-        HashMap<Integer, Float> hues = inputObjects.getHues(colourMode, colourSource, false);
-        ImagePlus objIpl = inputObjects.convertObjectsToImage(outputImageName,inputImage,colourMode,hues).getImagePlus();
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
+        ImagePlus objIpl = inputObjects.convertObjectsToImage(outputImageName,inputImage,hues,8).getImagePlus();
 
         // Calculating the distance maps.  The inside map is set to negative
         ImagePlus outsideDistIpl = DistanceMap.getDistanceMap(objIpl,true);
@@ -115,10 +114,8 @@ public class CreateDistanceMap extends Module {
         ImagePlus inputIpl = inputImage.getImagePlus();
 
         // Convert to image (and possibly invert), set to binary image (0 and 1) and multiply as appropriate
-        String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
-        String[] colourSource = new String[]{ObjCollection.SingleColours.WHITE};
-        HashMap<Integer, Float> hues = inputObjects.getHues(colourMode, colourSource, false);
-        ImagePlus objIpl = inputObjects.convertObjectsToImage("Objects",inputImage,colourMode,hues).getImagePlus();
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
+        ImagePlus objIpl = inputObjects.convertObjectsToImage("Objects",inputImage,hues,8).getImagePlus();
 
         // For outside only masks invert the mask
         if (maskingMode.equals(MaskingModes.OUTSIDE_ONLY)) InvertIntensity.process(objIpl);

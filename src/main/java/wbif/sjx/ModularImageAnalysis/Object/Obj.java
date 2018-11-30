@@ -7,6 +7,7 @@ import ij.macro.Tokenizer;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 
@@ -278,8 +279,8 @@ public class Obj extends Volume {
         double[][] extents = getExtents2D(true);
         ImagePlus sliceIpl = IJ.createImage("SliceIm",(int)extents[0][1]+1,(int)extents[1][1]+1,1,8);
 
-        HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectImage = objectCollection.convertObjectsToImageOld("Output",sliceIpl, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
+        HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
+        Image objectImage = objectCollection.convertObjectsToImage("Output",new Image("Template",sliceIpl), hues, 8);
         IJ.run(objectImage.getImagePlus(), "Invert", "stack");
 
         ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
@@ -335,20 +336,8 @@ public class Obj extends Volume {
         tempObj.add(this);
 
         // Getting the image
-        HashMap<Integer, Float> hues = tempObj.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
-        return tempObj.convertObjectsToImage(outputName,templateImage,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
-
-    }
-
-    @Deprecated
-    public Image convertObjToImage(String outputName, ImagePlus templateIpl) {
-        // Creating an ObjCollection to hold this image
-        ObjCollection tempObj = new ObjCollection(outputName);
-        tempObj.add(this);
-
-        // Getting the image
-        HashMap<Integer, Float> hues = tempObj.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
-        return tempObj.convertObjectsToImageOld(outputName,templateIpl,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
+        return tempObj.convertObjectsToImage(outputName,templateImage,hues,8);
 
     }
 
@@ -358,8 +347,8 @@ public class Obj extends Volume {
         tempObj.add(this);
 
         // Getting the image
-        HashMap<Integer, Float> hues = tempObj.getHues(ObjCollection.ColourModes.SINGLE_COLOUR, "", false);
-        return tempObj.convertObjectsToImageOld(outputName,null,ObjCollection.ColourModes.SINGLE_COLOUR,hues);
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
+        return tempObj.convertObjectsToImage(outputName,null,hues,8);
 
     }
 

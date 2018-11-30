@@ -17,6 +17,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
@@ -223,15 +224,12 @@ public class RunTrackMate extends Module {
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
         boolean doTracking = parameters.getValue(DO_TRACKING);
 
-        HashMap<Integer, Color> colours;
+        HashMap<Integer, Float> hues;
         // Colours will depend on the detection/tracking mode
         if (doTracking) {
-            String colourMode = ObjCollection.ColourModes.PARENT_ID;
-            colours = spotObjects.getColours(colourMode, trackObjectsName, true);
+            hues = ColourFactory.getParentIDHues(spotObjects,trackObjectsName,true);
         } else {
-            String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
-            String colourName = ObjCollection.SingleColours.ORANGE;
-            colours = spotObjects.getColours(colourMode,colourName,true);
+            hues = ColourFactory.getSingleColourHues(spotObjects,ColourFactory.SingleColours.ORANGE);
         }
 
         // Creating a duplicate of the input image
@@ -242,7 +240,7 @@ public class RunTrackMate extends Module {
         ((AddObjectsOverlay) new AddObjectsOverlay()
                 .updateParameterValue(AddObjectsOverlay.POSITION_MODE,AddObjectsOverlay.PositionModes.CENTROID)
                 .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8))
-                .createOverlay(ipl,spotObjects,colours,null);
+                .createOverlay(ipl,spotObjects,hues,null);
 
         // Displaying the overlay
         ipl.show();

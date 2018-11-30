@@ -15,6 +15,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.Conve
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
@@ -184,10 +185,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode) {
         // Create a binary image of the objects
-        String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
-        String[] source = new String[]{ObjCollection.SingleColours.WHITE};
-        HashMap<Integer, Float> hues = outputObjects.getHues(colourMode, source, false);
-        Image binaryImage = outputObjects.convertObjectsToImage("Binary",templateImage,colourMode,hues);
+        HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(outputObjects,ColourFactory.SingleColours.WHITE);
+        Image binaryImage = outputObjects.convertObjectsToImage("Binary",templateImage,hues,8);
         ImagePlus binaryIpl = binaryImage.getImagePlus();
 
         switch (interpolationMode) {
@@ -334,9 +333,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Showing the selected objects
         if (showOutput) {
-            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,null,false);
-            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,mode,hues).getImagePlus();
+            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
+            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,hues,8).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();

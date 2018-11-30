@@ -4,6 +4,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 
 import java.util.HashMap;
 
@@ -83,9 +84,9 @@ public class MergeObjects extends Module {
         }
 
         if (showOutput) {
-            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,null,false);
+            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            outputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
+            outputObjects.convertObjectsToImage("Objects", null, hues, 8).getImagePlus().show();
         }
 
         return true;

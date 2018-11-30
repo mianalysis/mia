@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Process.ActiveContour.ContourInitialiser;
 import wbif.sjx.common.Process.ActiveContour.Energies.BendingEnergy;
 import wbif.sjx.common.Process.ActiveContour.Energies.ElasticEnergy;
@@ -187,11 +188,11 @@ public class ActiveContourObjectDetection extends Module {
                     .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8));
 
             if (updateInputObjects) {
-                HashMap<Integer,Color> colours = inputObjects.getColours(colourMode,null,true);
-                addObjectsOverlay.createOverlay(dispIpl,inputObjects,colours,null);
+                HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
+                addObjectsOverlay.createOverlay(dispIpl,inputObjects,hues,null);
             } else {
-                HashMap<Integer,Color> colours = outputObjects.getColours(colourMode,null,true);
-                addObjectsOverlay.createOverlay(dispIpl,outputObjects,colours,null);
+                HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
+                addObjectsOverlay.createOverlay(dispIpl,outputObjects,hues,null);
             }
 
             dispIpl.setPosition(1,1,1);

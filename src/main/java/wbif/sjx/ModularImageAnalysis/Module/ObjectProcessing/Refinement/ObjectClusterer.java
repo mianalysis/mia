@@ -17,6 +17,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetL
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.Point;
 
 import java.awt.*;
@@ -222,10 +223,10 @@ public class ObjectClusterer extends Module {
                     .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8);
 
             // Generating colours
-            HashMap<Integer,Color> colours = inputObjects.getColours(ObjCollection.ColourModes.PARENT_ID,new String[]{outputObjectsName},true);
+            HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(inputObjects,outputObjectsName,true);
 
             // Adding overlay and displaying image
-            addObjectsOverlay.createOverlay(dispIpl,inputObjects,colours,null);
+            addObjectsOverlay.createOverlay(dispIpl,inputObjects,hues,null);
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
             dispIpl.show();

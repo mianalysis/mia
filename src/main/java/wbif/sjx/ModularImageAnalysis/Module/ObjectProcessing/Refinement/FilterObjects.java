@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 
 import javax.annotation.Nullable;
@@ -318,9 +319,9 @@ public class FilterObjects extends Module {
 
         // Showing objects
         if (showOutput) {
-            HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,null,false);
+            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            ImagePlus dispIpl = inputObjects.convertObjectsToImage("Objects", inputImage, mode, hues).getImagePlus();
+            ImagePlus dispIpl = inputObjects.convertObjectsToImage("Objects", inputImage, hues, 8).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();

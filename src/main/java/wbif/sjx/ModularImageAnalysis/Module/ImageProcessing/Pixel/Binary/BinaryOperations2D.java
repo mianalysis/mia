@@ -33,8 +33,13 @@ public class BinaryOperations2D extends Module {
 
     }
 
-
     public static void process(ImagePlus ipl, String operationMode, int numIterations) {
+        process(new Image("Image",ipl),operationMode,numIterations);
+    }
+
+    public static void process(Image image, String operationMode, int numIterations) {
+        ImagePlus ipl = image.getImagePlus();
+
         // Applying process to stack
         switch (operationMode) {
             case OperationModes.DILATE:

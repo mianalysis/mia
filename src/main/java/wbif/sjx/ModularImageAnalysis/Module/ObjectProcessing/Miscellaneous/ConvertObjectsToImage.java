@@ -13,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -83,18 +84,20 @@ public class ConvertObjectsToImage extends Module {
             Image templateImage = workspace.getImages().get(templateImageName);
 
             // Generating colours for each object
-            String[] sourceColour = null;
+            HashMap<Integer, Float> hues = null;
             switch (colourMode) {
                 case AddObjectsOverlay.ColourModes.MEASUREMENT_VALUE:
-                    sourceColour = new String[]{measurementForColour};
+                    hues = ColourFactory.getMeasurementValueHues(inputObjects,measurementForColour,false);
                     break;
                 case AddObjectsOverlay.ColourModes.PARENT_ID:
-                    sourceColour = new String[]{parentForColour};
+                    hues = ColourFactory.getParentIDHues(inputObjects,parentForColour,false);
+                    break;
+                default:
+                    hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
                     break;
             }
-            HashMap<Integer, Float> hues = inputObjects.getHues(colourMode, sourceColour,false);
 
-            Image outputImage = inputObjects.convertObjectsToImageOld(outputImageName, templateImage.getImagePlus(), colourMode,hues);
+            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage, hues, 32);
 
             // Applying spatial calibration from template image
             Calibration calibration = templateImage.getImagePlus().getCalibration();

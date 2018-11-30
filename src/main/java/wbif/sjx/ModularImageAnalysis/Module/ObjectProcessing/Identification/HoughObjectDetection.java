@@ -8,6 +8,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
@@ -164,7 +165,7 @@ public class HoughObjectDetection extends Module {
             IntensityMinMax.run(dispIpl,true);
 
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-            HashMap<Integer,Color> colours = outputObjects.getColours(colourMode,null,true);
+            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
 
             HashMap<Integer, String> IDs = null;
             if (showHoughScore) {
@@ -176,7 +177,7 @@ public class HoughObjectDetection extends Module {
             ((AddObjectsOverlay) new AddObjectsOverlay()
                     .updateParameterValue(AddObjectsOverlay.POSITION_MODE,positionMode)
                     .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,labelSize))
-                    .createOverlay(dispIpl,outputObjects,colours,IDs);
+                    .createOverlay(dispIpl,outputObjects,hues,IDs);
 
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();

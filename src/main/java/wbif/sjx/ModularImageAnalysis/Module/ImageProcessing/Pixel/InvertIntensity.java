@@ -15,6 +15,10 @@ public class InvertIntensity extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
 
+    public static void process(Image inputImage) {
+        IJ.run(inputImage.getImagePlus(),"Invert","stack");
+    }
+
     public static void process(ImagePlus inputImagePlus) {
         IJ.run(inputImagePlus,"Invert","stack");
 
