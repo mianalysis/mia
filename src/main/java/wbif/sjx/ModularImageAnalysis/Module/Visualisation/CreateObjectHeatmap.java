@@ -2,7 +2,6 @@
 //
 //import ij.IJ;
 //import ij.ImagePlus;
-//import ij.Prefs;
 //import ij.measure.Calibration;
 //import ij.process.ImageProcessor;
 //import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -13,10 +12,6 @@
 //import wbif.sjx.common.MathFunc.MidpointCircle;
 //import wbif.sjx.common.Object.Point;
 //
-//import java.util.concurrent.LinkedBlockingQueue;
-//import java.util.concurrent.ThreadPoolExecutor;
-//import java.util.concurrent.TimeUnit;
-//
 //public class CreateObjectHeatmap extends Module {
 //    public static final String INPUT_OBJECTS = "Input objects";
 //    public static final String TEMPLATE_IMAGE = "Template image";
@@ -26,19 +21,7 @@
 //    public static final String AVERAGE_TIME = "Average time";
 //
 //
-//    public interface Statistics {
-//        String MEAN = "Mean";
-//        String MIN = "Minimum";
-//        String MAX = "Maximum";
-//        String STD = "Standard deviation";
-//        String SUM = "Sum";
-//
-//        String[] ALL = new String[]{MEAN,MIN,MAX,STD,SUM};
-//
-//    }
-//
-//
-//    public Object[] createStatisticImage(ObjCollection objects, Image image, String measurementName, boolean averageZ, boolean averageT) {
+//    public Image process(ObjCollection objects, Image image, String outputImageName, boolean averageZ, boolean averageT, int downsampleRange) {
 //        ImagePlus ipl = image.getImagePlus();
 //
 //        // Get final CumStat[] dimensions
@@ -47,79 +30,34 @@
 //        int nSlices = averageZ ? 1 : ipl.getNSlices();
 //        int nFrames = averageT ? 1 : ipl.getNFrames();
 //
-//        // Create CumStat[] and Indexer
-//        CumStat[] cumStats =  new CumStat[width*height*nSlices*nFrames];
-//        Indexer indexer = new Indexer(new int[]{width,height,nSlices,nFrames});
+//        // Creating ImagePlus
+//        ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,1,nSlices,nFrames,16);
+//        outputIpl.setCalibration(ipl.getCalibration());
 //
-//        // Initialise CumStats
-//        for (int i=0;i<cumStats.length;i++) cumStats[i] = new CumStat();
+//        // Getting coordinates of reference points
+//        MidpointCircle midpointCircle = new MidpointCircle(downsampleRange);
+//        int[] xSamp = midpointCircle.getXCircleFill();
+//        int[] ySamp = midpointCircle.getYCircleFill();
 //
 //        // Adding objects
 //        for (Obj object:objects.values()) {
-//            // Getting measurement value.  Skip if null or NaN.
-//            Measurement measurement = object.getMeasurement(measurementName);
-//            if (measurement == null) continue;
-//            double measurementValue = measurement.getValue();
-//            if (Double.isNaN(measurementValue)) continue;
-//
 //            // Getting all object points
 //            for (Point<Integer> point:object.getPoints()) {
 //                // Getting index for this point
+//                int x = point.getX();
+//                int y = point.getY();
 //                int z = averageZ ? 0 : point.getZ();
 //                int t = averageT ? 0 : object.getT();
-//                int idx = indexer.getIndex(new int[]{point.getX(),point.getY(),z,t});
 //
-//                // Adding measurement
-//                cumStats[idx].addMeasure(measurementValue);
+//                // Incrementing object count
+//                for (int i = 0; i < xSamp.length; i++) {
+//                    int xx = x + xSamp[i];
+//                    int yy = y + ySamp[i];
 //
-//            }
-//        }
-//
-//        return new Object[]{cumStats,indexer};
-//
-//    }
-//
-//    public Image convertToImage(CumStat[] cumStats, Indexer indexer, String statistic, String outputImageName, Calibration calibration) {
-//        int[] dim = indexer.getDim();
-//        int width = dim[0];
-//        int height = dim[1];
-//        int nSlices = dim[2];
-//        int nFrames = dim[3];
-//
-//        // Creating ImagePlus
-//        ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,1,nSlices,nFrames,32);
-//
-//        // Iterating over all points in the image
-//        for (int z=0;z<nSlices;z++) {
-//            for (int t=0;t<nFrames;t++) {
-//                outputIpl.setPosition(1,z+1,t+1);
-//                ImageProcessor ipr = outputIpl.getProcessor();
-//
-//                for (int x=0;x<width;x++) {
-//                    for (int y=0;y<height;y++) {
-//                        // Getting relevant index
-//                        int idx = indexer.getIndex(new int[]{x,y,z,t});
-//                        CumStat cumStat = cumStats[idx];
-//
-//                        // Getting statistic
-//                        switch (statistic) {
-//                            case Statistics.MEAN:
-//                                ipr.setf(x,y,(float) cumStat.getMean());
-//                                break;
-//                            case Statistics.MIN:
-//                                ipr.setf(x,y,(float) cumStat.getMin());
-//                                break;
-//                            case Statistics.MAX:
-//                                ipr.setf(x,y,(float) cumStat.getMax());
-//                                break;
-//                            case Statistics.STD:
-//                                ipr.setf(x,y,(float) cumStat.getStd());
-//                                break;
-//                            case Statistics.SUM:
-//                                ipr.setf(x,y,(float) cumStat.getSum());
-//                                break;
-//                        }
-//                    }
+//                    if (xx < 0 || xx >= width || yy < 0 || yy >= height) continue;
+//                    outputIpl.setPosition(1, z + 1, t + 1);
+//                    ImageProcessor ipr = outputIpl.getProcessor();
+//                    ipr.set(xx, yy, ipr.get(xx, yy) + 1);
 //                }
 //            }
 //        }
@@ -128,65 +66,6 @@
 //
 //    }
 //
-//    public CumStat[] applyBlur(CumStat[] inputCumstats, Indexer indexer, int downsampleRange) {
-//        // Create CumStat array to calculate scores for neighbouring objects
-//        CumStat[] outputCumStats =  new CumStat[inputCumstats.length];
-//        for (int i=0;i<outputCumStats.length;i++) outputCumStats[i] = new CumStat();
-//
-//        // Getting coordinates of reference points
-//        MidpointCircle midpointCircle = new MidpointCircle(downsampleRange);
-//        int[] xSamp = midpointCircle.getXCircleFill();
-//        int[] ySamp = midpointCircle.getYCircleFill();
-//
-//        // Setting up the ExecutorService, which will manage the threads
-//        int nThreads = Prefs.getThreads();
-//        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-//
-//        // Iterating over each pixel in the CumStat array
-//        int[] dims = indexer.getDim();
-//
-//        for (int z=0;z<dims[2];z++) {
-//            for (int t = 0; t < dims[3]; t++) {
-//                for (int x = 0; x < dims[0]; x++) {
-//                    for (int y = 0; y < dims[1]; y++) {
-//                        int finalX = x;
-//                        int finalY = y;
-//                        int finalZ = z;
-//                        int finalT = t;
-//
-//                        Runnable task = () -> {
-//                            int idx = indexer.getIndex(new int[]{finalX, finalY, finalZ, finalT});
-//                            // Getting neighbour measurements
-//                            for (int i = 0; i < xSamp.length; i++) {
-//                                int xx = finalX + xSamp[i];
-//                                int yy = finalY + ySamp[i];
-//
-//                                int idx2 = indexer.getIndex(new int[]{xx, yy, finalZ, finalT});
-//                                if (idx2 == -1) continue;
-//
-//                                double dist = Math.sqrt((xx - finalX) * (xx - finalX) + (yy - finalY) * (yy - finalY));
-//                                double measurementValue = inputCumstats[idx2].getMean();
-//
-//                                outputCumStats[idx].addMeasure(measurementValue, dist);
-//
-//                            }
-//                        };
-//                        pool.submit(task);
-//                    }
-//                }
-//            }
-//        }
-//
-//        pool.shutdown();
-//        try {
-//            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-//        } catch (InterruptedException e) {
-//            return null;
-//        }
-//
-//        return outputCumStats;
-//
-//    }
 //
 //    @Override
 //    public String getTitle() {
@@ -220,19 +99,8 @@
 //        boolean averageT = parameters.getValue(AVERAGE_TIME);
 //
 //        // Create statistic image
-//        Object[] statsOutput = createStatisticImage(inputObjects,templateImage,measurementName,averageZ,averageT);
-//        CumStat[] cumStats = (CumStat[]) statsOutput[0];
-//        Indexer indexer = (Indexer) statsOutput[1];
-//
-//        // Blurring image
-//        CumStat[] blurCumStats = applyBlur(cumStats,indexer,downsampleRange);
-//
-//        // If cancelled, blurring will return null
-//        if (blurCumStats == null) return false;
-//
-//        // Converting statistic array to Image
 //        Calibration calibration = templateImage.getImagePlus().getCalibration();
-//        Image outputImage = convertToImage(blurCumStats,indexer,statistic,outputImageName,calibration);
+//        Image outputImage = process(inputObjects,templateImage,outputImageName,averageZ,averageT,downsampleRange);
 //
 //        workspace.addImage(outputImage);
 //        if (showOutput) showImage(outputImage);

@@ -187,6 +187,11 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
+            <artifactId>register_virtual_stack_slices</artifactId>
+            <version>3.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
             <artifactId>Trainable_Segmentation</artifactId>
             <version>3.2.26</version>
             <scope>${myscope}</scope>

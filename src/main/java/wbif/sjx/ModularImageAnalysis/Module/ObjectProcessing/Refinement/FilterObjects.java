@@ -318,7 +318,7 @@ public class FilterObjects extends Module {
 
         // Showing objects
         if (showOutput) {
-            HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+            HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,null,false);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
             ImagePlus dispIpl = inputObjects.convertObjectsToImage("Objects", inputImage, mode, hues).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));

@@ -97,6 +97,7 @@ public class CreateMeasurementMap extends Module {
 
         // Creating ImagePlus
         ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,1,nSlices,nFrames,32);
+        outputIpl.setCalibration(calibration);
 
         // Iterating over all points in the image
         for (int z=0;z<nSlices;z++) {
@@ -175,9 +176,7 @@ public class CreateMeasurementMap extends Module {
 
                                 double dist = Math.sqrt((xx - finalX) * (xx - finalX) + (yy - finalY) * (yy - finalY));
                                 double measurementValue = inputCumstats[idx2].getMean();
-
-                                outputCumStats[idx].addMeasure(measurementValue, dist);
-
+                                outputCumStats[idx].addMeasure(measurementValue, (downsampleRange - dist));
                             }
                         };
                         pool.submit(task);

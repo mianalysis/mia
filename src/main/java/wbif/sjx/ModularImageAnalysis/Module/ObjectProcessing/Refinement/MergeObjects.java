@@ -83,7 +83,7 @@ public class MergeObjects extends Module {
         }
 
         if (showOutput) {
-            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,null,false);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
             outputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
         }

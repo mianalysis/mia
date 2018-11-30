@@ -185,7 +185,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode) {
         // Create a binary image of the objects
         String colourMode = ObjCollection.ColourModes.SINGLE_COLOUR;
-        String source = ObjCollection.SingleColours.WHITE;
+        String[] source = new String[]{ObjCollection.SingleColours.WHITE};
         HashMap<Integer, Float> hues = outputObjects.getHues(colourMode, source, false);
         Image binaryImage = outputObjects.convertObjectsToImage("Binary",templateImage,colourMode,hues);
         ImagePlus binaryIpl = binaryImage.getImagePlus();
@@ -334,7 +334,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Showing the selected objects
         if (showOutput) {
-            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+            HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,null,false);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
             ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,mode,hues).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));

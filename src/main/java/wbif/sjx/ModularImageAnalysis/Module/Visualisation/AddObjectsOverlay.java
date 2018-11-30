@@ -319,16 +319,16 @@ public class AddObjectsOverlay extends Module {
         String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
 
         // Generating colours for each object
-        String sourceColour = "";
+        String[] sourceColour = null;
         switch (colourMode) {
             case ColourModes.SINGLE_COLOUR:
-                sourceColour = singleColour;
+                sourceColour = new String[]{singleColour};
                 break;
             case ColourModes.MEASUREMENT_VALUE:
-                sourceColour = measurementForColour;
+                sourceColour = new String[]{measurementForColour};
                 break;
             case ColourModes.PARENT_ID:
-                sourceColour = parentObjectsForColourName;
+                sourceColour = new String[]{parentObjectsForColourName};
                 break;
         }
         return inputObjects.getColours(colourMode,sourceColour,true);
@@ -342,13 +342,13 @@ public class AddObjectsOverlay extends Module {
         String parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
         String measurementForID = parameters.getValue(MEASUREMENT_FOR_ID);
 
-        String souceLabel = null;
+        String[] souceLabel = null;
         switch (labelMode) {
             case LabelModes.MEASUREMENT_VALUE:
-                souceLabel = measurementForID;
+                souceLabel = new String[]{measurementForID};
                 break;
             case LabelModes.PARENT_ID:
-                souceLabel = parentObjectsForIDName;
+                souceLabel = new String[]{parentObjectsForIDName};
                 break;
         }
 

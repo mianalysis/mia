@@ -83,13 +83,13 @@ public class ConvertObjectsToImage extends Module {
             Image templateImage = workspace.getImages().get(templateImageName);
 
             // Generating colours for each object
-            String sourceColour = "";
+            String[] sourceColour = null;
             switch (colourMode) {
                 case AddObjectsOverlay.ColourModes.MEASUREMENT_VALUE:
-                    sourceColour = measurementForColour;
+                    sourceColour = new String[]{measurementForColour};
                     break;
                 case AddObjectsOverlay.ColourModes.PARENT_ID:
-                    sourceColour = parentForColour;
+                    sourceColour = new String[]{parentForColour};
                     break;
             }
             HashMap<Integer, Float> hues = inputObjects.getHues(colourMode, sourceColour,false);

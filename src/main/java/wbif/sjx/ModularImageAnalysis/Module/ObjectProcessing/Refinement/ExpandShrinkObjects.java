@@ -42,7 +42,7 @@ public class ExpandShrinkObjects extends Module {
         // Convert each object to an image, do the dilation/erosion, then convert back to an object
         ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
         objectCollection.add(inputObject);
-        HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
+        HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,null,false);
         Image objectImage = objectCollection.convertObjectsToImageOld("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
         InvertIntensity.process(objectImage.getImagePlus());
 
@@ -157,11 +157,11 @@ public class ExpandShrinkObjects extends Module {
         // Displaying updated objects
         if (showOutput) {
             if (updateInputObjects) {
-                HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+                HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,null,false);
                 String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
                 inputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
             } else {
-                HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
+                HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,null,false);
                 String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
                 outputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
             }

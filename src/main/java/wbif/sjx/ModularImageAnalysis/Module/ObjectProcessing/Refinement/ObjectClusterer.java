@@ -222,7 +222,7 @@ public class ObjectClusterer extends Module {
                     .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8);
 
             // Generating colours
-            HashMap<Integer,Color> colours = inputObjects.getColours(ObjCollection.ColourModes.PARENT_ID,outputObjectsName,true);
+            HashMap<Integer,Color> colours = inputObjects.getColours(ObjCollection.ColourModes.PARENT_ID,new String[]{outputObjectsName},true);
 
             // Adding overlay and displaying image
             addObjectsOverlay.createOverlay(dispIpl,inputObjects,colours,null);
