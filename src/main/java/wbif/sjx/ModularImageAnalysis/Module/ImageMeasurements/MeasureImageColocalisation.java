@@ -37,14 +37,14 @@ public class MeasureImageColocalisation extends Module {
             case MaskingModes.MEASURE_INSIDE_OBJECTS:
                 // Creating the new Obj
                 HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(objects,ColourFactory.SingleColours.WHITE);
-                Image image = objects.convertObjectsToImage("Mask",templateImage,hues,8);
+                Image image = objects.convertObjectsToImage("Mask",templateImage,hues,8,false);
                 InvertIntensity.process(image.getImagePlus());
                 return image;
 
             case MaskingModes.MEASURE_OUTSIDE_OBJECTS:
                 // Creating the new Obj
                 hues = ColourFactory.getSingleColourHues(objects,ColourFactory.SingleColours.WHITE);
-                return objects.convertObjectsToImage("Mask",templateImage,hues,8);
+                return objects.convertObjectsToImage("Mask",templateImage,hues,8,false);
 
             case MaskingModes.NONE:
                 return null;

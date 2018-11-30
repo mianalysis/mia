@@ -10,7 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import javax.annotation.Nullable;
 
-public class ApplySIFTImageRegistration extends Module {
+public class RegisterImages extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -120,7 +120,7 @@ public class ApplySIFTImageRegistration extends Module {
 
     @Override
     public String getTitle() {
-        return "Apply SIFT image registration";
+        return "Register images";
     }
 
     @Override
@@ -130,7 +130,7 @@ public class ApplySIFTImageRegistration extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "Uses SIFT image registration toolbox";
     }
 
     @Override

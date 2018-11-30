@@ -44,7 +44,7 @@ public class ExpandShrinkObjects extends Module {
         ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
         objectCollection.add(inputObject);
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
-        Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImage, hues, 8);
+        Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImage, hues, 8,false);
         InvertIntensity.process(objectImage.getImagePlus());
 
         Prefs.blackBackground = false;
@@ -159,10 +159,10 @@ public class ExpandShrinkObjects extends Module {
         if (showOutput) {
             if (updateInputObjects) {
                 HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
-                inputObjects.convertObjectsToImage("Objects", null, hues, 8).getImagePlus().show();
+                inputObjects.convertObjectsToImage("Objects", null, hues, 8,false).getImagePlus().show();
             } else {
                 HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-                outputObjects.convertObjectsToImage("Objects", null, hues, 8).getImagePlus().show();
+                outputObjects.convertObjectsToImage("Objects", null, hues, 8,false).getImagePlus().show();
             }
         }
 

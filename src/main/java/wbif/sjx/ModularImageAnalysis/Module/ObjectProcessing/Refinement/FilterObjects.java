@@ -321,7 +321,7 @@ public class FilterObjects extends Module {
         if (showOutput) {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            ImagePlus dispIpl = inputObjects.convertObjectsToImage("Objects", inputImage, hues, 8).getImagePlus();
+            ImagePlus dispIpl = inputObjects.convertObjectsToImage("Objects", inputImage, hues, 8,false).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();

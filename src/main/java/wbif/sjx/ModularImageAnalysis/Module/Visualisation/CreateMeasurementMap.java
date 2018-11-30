@@ -110,6 +110,7 @@ public class CreateMeasurementMap extends Module {
                         // Getting relevant index
                         int idx = indexer.getIndex(new int[]{x,y,z,t});
                         CumStat cumStat = cumStats[idx];
+                        if (cumStat.getMean() < 0) System.err.println(cumStat.getMean()+"_"+x+"_"+y);
 
                         // Getting statistic
                         switch (statistic) {
@@ -176,7 +177,7 @@ public class CreateMeasurementMap extends Module {
 
                                 double dist = Math.sqrt((xx - finalX) * (xx - finalX) + (yy - finalY) * (yy - finalY));
                                 double measurementValue = inputCumstats[idx2].getMean();
-                                outputCumStats[idx].addMeasure(measurementValue, (downsampleRange - dist));
+                                outputCumStats[idx].addMeasure(measurementValue, Math.max(0,downsampleRange - dist));
                             }
                         };
                         pool.submit(task);

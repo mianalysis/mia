@@ -134,7 +134,7 @@ public class IdentifyObjects extends Module {
         if (showOutput) {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,hues,8).getImagePlus();
+            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,hues,8,false).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();

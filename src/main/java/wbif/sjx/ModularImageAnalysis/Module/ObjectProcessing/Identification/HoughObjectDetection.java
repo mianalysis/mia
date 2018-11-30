@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.ModularImageAnalysis.Process.LabelFactory;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
@@ -168,10 +169,7 @@ public class HoughObjectDetection extends Module {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
 
             HashMap<Integer, String> IDs = null;
-            if (showHoughScore) {
-                String labelMode = ObjCollection.LabelModes.MEASUREMENT_VALUE;
-                IDs = outputObjects.getIDs(labelMode, new String[]{Measurements.SCORE},0,true);
-            }
+            if (showHoughScore) IDs = LabelFactory.getMeasurementLabels(outputObjects,Measurements.SCORE,0,true);
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 
             ((AddObjectsOverlay) new AddObjectsOverlay()

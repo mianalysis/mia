@@ -30,8 +30,8 @@ public class ConvertObjectsToImage extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String COLOUR_MODE = "Colour mode";
-    public static final String MEASUREMENT = "Measurement";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
+    public static final String MEASUREMENT = "Measurement";
 
     public interface ConversionModes {
         String IMAGE_TO_OBJECTS = "Image to objects";
@@ -85,8 +85,10 @@ public class ConvertObjectsToImage extends Module {
 
             // Generating colours for each object
             HashMap<Integer, Float> hues = null;
+            boolean nanBackground = false;
             switch (colourMode) {
                 case AddObjectsOverlay.ColourModes.MEASUREMENT_VALUE:
+                    nanBackground = true;
                     hues = ColourFactory.getMeasurementValueHues(inputObjects,measurementForColour,false);
                     break;
                 case AddObjectsOverlay.ColourModes.PARENT_ID:
@@ -97,7 +99,7 @@ public class ConvertObjectsToImage extends Module {
                     break;
             }
 
-            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage, hues, 32);
+            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage, hues, 32, nanBackground);
 
             // Applying spatial calibration from template image
             Calibration calibration = templateImage.getImagePlus().getCalibration();
@@ -167,22 +169,30 @@ public class ConvertObjectsToImage extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             returnedParameters.add(parameters.getParameter(COLOUR_MODE));
-            if (parameters.getValue(COLOUR_MODE).equals(ColourModes.MEASUREMENT_VALUE)) {
-                // Use measurement
-                returnedParameters.add(parameters.getParameter(MEASUREMENT));
+            switch ((String) parameters.getValue(COLOUR_MODE)) {
+                case ColourModes.MEASUREMENT_VALUE:
+                    returnedParameters.add(parameters.getParameter(MEASUREMENT));
+                    if (parameters.getValue(INPUT_OBJECTS) != null) {
+                        parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                    }
+                    break;
 
-                if (parameters.getValue(INPUT_OBJECTS) != null) {
-                    parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                case ColourModes.PARENT_ID:
+                    returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+                    break;
 
-                }
+                case ColourModes.PARENT_MEASUREMENT_VALUE:
+                    returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                    inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
-            } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
-                // Use Parent ID
-                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                    String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+                    returnedParameters.add(parameters.getParameter(MEASUREMENT));
+                    if (parentObjectsName != null) parameters.updateValueSource(MEASUREMENT,parentObjectsName);
 
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
-
+                    break;
             }
         }
 

@@ -110,8 +110,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-
-    public Image convertObjectsToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth) {
+    public Image convertObjectsToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
         ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
         ImagePlus ipl;
 
@@ -129,7 +128,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (bitDepth == 32) {
+        if (bitDepth == 32 && nanBackground) {
             for (int z = 1; z <= ipl.getNSlices(); z++) {
                 for (int c = 1; c <= ipl.getNChannels(); c++) {
                     for (int t = 1; t <= ipl.getNFrames(); t++) {

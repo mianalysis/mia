@@ -12,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.ModularImageAnalysis.Process.LabelFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,10 +35,8 @@ public class AddObjectsOverlay extends Module {
     public static final String DECIMAL_PLACES = "Decimal places";
     public static final String USE_SCIENTIFIC = "Use scientific notation";
     public static final String LABEL_SIZE = "Label size";
-    public static final String PARENT_OBJECT_FOR_ID = "Parent object for ID";
-    public static final String MEASUREMENT_FOR_ID = "Measurement for ID";
-    public static final String PARENT_OBJECT_FOR_MEASUREMENT = "Parent object for measurement";
-    public static final String PARENT_MEASUREMENT = "Parent measurement";
+    public static final String PARENT_OBJECT_FOR_LABEL = "Parent object for label";
+    public static final String MEASUREMENT_FOR_LABEL = "Measurement for label";
     public static final String X_POSITION_MEASUREMENT = "X-position measurement";
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
@@ -57,7 +56,7 @@ public class AddObjectsOverlay extends Module {
 
     public interface SingleColours extends ColourFactory.SingleColours {}
 
-    public interface LabelModes extends ObjCollection.LabelModes {}
+    public interface LabelModes extends LabelFactory.LabelModes {}
 
     public interface PositionModes {
         String ALL_POINTS = "All points";
@@ -325,11 +324,17 @@ public class AddObjectsOverlay extends Module {
         switch (colourMode) {
             case ColourModes.SINGLE_COLOUR:
             default:
-                return ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
+                return ColourFactory.getSingleColourHues(inputObjects,singleColour);
+            case ColourModes.ID:
+                return ColourFactory.getIDHues(inputObjects,true);
+            case ColourModes.RANDOM_COLOUR:
+                return ColourFactory.getRandomHues(inputObjects);
             case ColourModes.MEASUREMENT_VALUE:
                 return ColourFactory.getMeasurementValueHues(inputObjects,measurementForColour,true);
             case ColourModes.PARENT_ID:
                 return ColourFactory.getParentIDHues(inputObjects,parentObjectsForColourName,true);
+            case ColourModes.PARENT_MEASUREMENT_VALUE:
+                return ColourFactory.getParentMeasurementValueHues(inputObjects,parentObjectsForColourName,measurementForColour,true);
         }
     }
 
@@ -337,20 +342,21 @@ public class AddObjectsOverlay extends Module {
         String labelMode = parameters.getValue(LABEL_MODE);
         int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
         boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
-        String parentObjectsForIDName = parameters.getValue(PARENT_OBJECT_FOR_ID);
-        String measurementForID = parameters.getValue(MEASUREMENT_FOR_ID);
+        String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
+        String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL);
 
-        String[] souceLabel = null;
         switch (labelMode) {
+            case LabelModes.ID:
+                return LabelFactory.getIDLabels(inputObjects,decimalPlaces,useScientific);
             case LabelModes.MEASUREMENT_VALUE:
-                souceLabel = new String[]{measurementForID};
-                break;
+                return LabelFactory.getMeasurementLabels(inputObjects,measurementForLabel,decimalPlaces,useScientific);
             case LabelModes.PARENT_ID:
-                souceLabel = new String[]{parentObjectsForIDName};
-                break;
+                return LabelFactory.getParentIDLabels(inputObjects,parentObjectsForLabelName,decimalPlaces,useScientific);
+            case LabelModes.PARENT_MEASUREMENT_VALUE:
+                return LabelFactory.getParentMeasurementLabels(inputObjects,parentObjectsForLabelName,measurementForLabel,decimalPlaces,useScientific);
         }
 
-        return inputObjects.getIDs(labelMode,souceLabel,decimalPlaces,useScientific);
+        return null;
 
     }
 
@@ -504,8 +510,8 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new Parameter(DECIMAL_PLACES, Parameter.INTEGER,0));
         parameters.add(new Parameter(USE_SCIENTIFIC,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
-        parameters.add(new Parameter(PARENT_OBJECT_FOR_ID, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(MEASUREMENT_FOR_ID, Parameter.OBJECT_MEASUREMENT,null,null));
+        parameters.add(new Parameter(PARENT_OBJECT_FOR_LABEL, Parameter.PARENT_OBJECTS,null,null));
+        parameters.add(new Parameter(MEASUREMENT_FOR_LABEL, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(POSITION_MODE, Parameter.CHOICE_ARRAY, PositionModes.CENTROID, PositionModes.ALL));
         parameters.add(new Parameter(X_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(Y_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
@@ -588,6 +594,17 @@ public class AddObjectsOverlay extends Module {
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
                 parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
                 break;
+
+            case ColourModes.PARENT_MEASUREMENT_VALUE:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+
+                returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
+                String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+                if (parentObjectsName != null) parameters.updateValueSource(MEASUREMENT_FOR_COLOUR,parentObjectsName);
+
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
@@ -602,16 +619,26 @@ public class AddObjectsOverlay extends Module {
 
             switch ((String) parameters.getValue(LABEL_MODE)) {
                 case LabelModes.MEASUREMENT_VALUE:
-                    returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ID));
+                    returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
                     String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(MEASUREMENT_FOR_ID,inputObjectsName);
+                    parameters.updateValueSource(MEASUREMENT_FOR_LABEL,inputObjectsName);
                     break;
 
                 case LabelModes.PARENT_ID:
-                    returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_ID));
+                    returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
                     inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(PARENT_OBJECT_FOR_ID,inputObjectsName);
+                    parameters.updateValueSource(PARENT_OBJECT_FOR_LABEL,inputObjectsName);
                     break;
+
+                case LabelModes.PARENT_MEASUREMENT_VALUE:
+                    returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
+                    inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    parameters.updateValueSource(PARENT_OBJECT_FOR_LABEL,inputObjectsName);
+
+                    returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
+                    String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
+                    if (parentObjectsName != null) parameters.updateValueSource(MEASUREMENT_FOR_LABEL,parentObjectsName);
+
             }
 
             returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));

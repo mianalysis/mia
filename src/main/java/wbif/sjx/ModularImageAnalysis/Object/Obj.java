@@ -280,7 +280,7 @@ public class Obj extends Volume {
         ImagePlus sliceIpl = IJ.createImage("SliceIm",(int)extents[0][1]+1,(int)extents[1][1]+1,1,8);
 
         HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
-        Image objectImage = objectCollection.convertObjectsToImage("Output",new Image("Template",sliceIpl), hues, 8);
+        Image objectImage = objectCollection.convertObjectsToImage("Output",new Image("Template",sliceIpl), hues, 8,false);
         IJ.run(objectImage.getImagePlus(), "Invert", "stack");
 
         ImageProcessor ipr = objectImage.getImagePlus().getProcessor();
@@ -337,7 +337,7 @@ public class Obj extends Volume {
 
         // Getting the image
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
-        return tempObj.convertObjectsToImage(outputName,templateImage,hues,8);
+        return tempObj.convertObjectsToImage(outputName,templateImage,hues,8,false);
 
     }
 
@@ -348,7 +348,7 @@ public class Obj extends Volume {
 
         // Getting the image
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(tempObj,ColourFactory.SingleColours.WHITE);
-        return tempObj.convertObjectsToImage(outputName,null,hues,8);
+        return tempObj.convertObjectsToImage(outputName,null,hues,8,false);
 
     }
 

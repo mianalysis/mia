@@ -36,9 +36,9 @@ public class ColourFactoryTest {
         HashMap<Integer, Float> actual = ColourFactory.getSingleColourHues(collection,ColourFactory.SingleColours.WHITE);
 
         assertEquals(3,actual.size());
-        assertEquals(1f,actual.get(0),tolerance);
-        assertEquals(1f,actual.get(1),tolerance);
-        assertEquals(1f,actual.get(2),tolerance);
+        assertEquals(Float.MAX_VALUE,actual.get(0),tolerance);
+        assertEquals(Float.MAX_VALUE,actual.get(1),tolerance);
+        assertEquals(Float.MAX_VALUE,actual.get(2),tolerance);
 
     }
 
@@ -308,9 +308,9 @@ public class ColourFactoryTest {
         HashMap<Integer, Color> actual = ColourFactory.getColours(hues);
 
         assertEquals(3,actual.size());
-        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(0));
-        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(1));
-        assertEquals(Color.getHSBColor(1f,1f,1f),actual.get(2));
+        assertEquals(Color.getHSBColor(1f,0f,1f),actual.get(0));
+        assertEquals(Color.getHSBColor(1f,0f,1f),actual.get(1));
+        assertEquals(Color.getHSBColor(1f,0f,1f),actual.get(2));
 
     }
 
