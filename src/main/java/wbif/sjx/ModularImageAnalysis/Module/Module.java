@@ -5,7 +5,9 @@ package wbif.sjx.ModularImageAnalysis.Module;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.Duplicator;
+import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.Serializable;
@@ -131,14 +133,19 @@ public abstract class Module implements Serializable {
         return parameters;
     }
 
-    protected void showImage(Image image) {
+    protected void showImage(Image image, LUT lut) {
         ImagePlus dispIpl = new Duplicator().run(image.getImagePlus());
         dispIpl.setTitle(image.getName());
         IntensityMinMax.run(dispIpl,true);
         dispIpl.setPosition(1,1,1);
         dispIpl.updateChannelAndDraw();
+        dispIpl.setLut(lut);
         dispIpl.show();
 
+    }
+
+    protected void showImage(Image image) {
+        showImage(image, LUTs.Grey());
     }
 
 

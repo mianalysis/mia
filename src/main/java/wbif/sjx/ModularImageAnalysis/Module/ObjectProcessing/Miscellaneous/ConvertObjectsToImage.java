@@ -1,7 +1,3 @@
-// TODO: For image to objects, could add the image ID number as a measurement to the object
-// TODO: For image to objects, could create parent object for all instances of that image ID in different frames
-// TODO: Colour based on parent measurement
-
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous;
 
 import ij.IJ;
@@ -10,7 +6,6 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
@@ -87,13 +82,23 @@ public class ConvertObjectsToImage extends Module {
             HashMap<Integer, Float> hues = null;
             boolean nanBackground = false;
             switch (colourMode) {
-                case AddObjectsOverlay.ColourModes.MEASUREMENT_VALUE:
+                case ColourModes.ID:
+                    hues = ColourFactory.getIDHues(inputObjects,false);
+                    break;
+                case ColourModes.RANDOM_COLOUR:
+                    hues = ColourFactory.getRandomHues(inputObjects);
+                    break;
+                case ColourModes.MEASUREMENT_VALUE:
                     nanBackground = true;
                     hues = ColourFactory.getMeasurementValueHues(inputObjects,measurementForColour,false);
                     break;
-                case AddObjectsOverlay.ColourModes.PARENT_ID:
+                case ColourModes.PARENT_ID:
                     hues = ColourFactory.getParentIDHues(inputObjects,parentForColour,false);
                     break;
+                case ColourModes.PARENT_MEASUREMENT_VALUE:
+                    hues = ColourFactory.getParentMeasurementValueHues(inputObjects,parentForColour,measurementForColour,false);
+                    break;
+                case ColourModes.SINGLE_COLOUR:
                 default:
                     hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
                     break;

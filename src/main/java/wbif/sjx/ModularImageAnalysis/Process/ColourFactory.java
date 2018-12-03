@@ -30,6 +30,7 @@ public class ColourFactory {
 
     public static HashMap<Integer,Float> getRandomHues(ObjCollection objects) {
         HashMap<Integer,Float> hues = new HashMap<>();
+        if (objects == null) return hues;
 
         for (Obj object:objects.values()) {
             int ID = object.getID();
@@ -47,6 +48,7 @@ public class ColourFactory {
 
     public static HashMap<Integer,Float> getIDHues(ObjCollection objects, boolean normalised) {
         HashMap<Integer,Float> hues = new HashMap<>();
+        if (objects == null) return hues;
 
         for (Obj object:objects.values()) {
             int ID = object.getID();
@@ -65,6 +67,7 @@ public class ColourFactory {
 
     public static HashMap<Integer,Float> getParentIDHues(ObjCollection objects, String parentObjectsName, boolean normalised) {
         HashMap<Integer,Float> hues = new HashMap<>();
+        if (objects == null) return hues;
 
         for (Obj object:objects.values()) {
             int ID = object.getID();
@@ -90,6 +93,7 @@ public class ColourFactory {
 
     public static HashMap<Integer,Float> getSingleColourHues(ObjCollection objects, String colour) {
         HashMap<Integer,Float> hues = new HashMap<>();
+        if (objects == null) return hues;
 
         for (Obj object:objects.values()) {
             int ID = object.getID();
@@ -141,6 +145,7 @@ public class ColourFactory {
 
     public static HashMap<Integer,Float> getMeasurementValueHues(ObjCollection objects, String measurementName, boolean normalised) {
         HashMap<Integer,Float> hues = new HashMap<>();
+        if (objects == null) return hues;
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
@@ -174,6 +179,7 @@ public class ColourFactory {
 
     public static HashMap<Integer,Float> getParentMeasurementValueHues(ObjCollection objects, String parentObjectsName, String measurementName, boolean normalised) {
         HashMap<Integer,Float> hues = new HashMap<>();
+        if (objects == null) return hues;
 
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();

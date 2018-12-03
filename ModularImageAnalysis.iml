@@ -12,6 +12,33 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: sc.fiji:register_virtual_stack_slices:3.0.5" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:TrakEM2_:1.0i" level="project" />
+    <orderEntry type="library" name="Maven: postgresql:postgresql:8.2-507.jdbc3" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.media:jai-codec:1.1.3" level="project" />
+    <orderEntry type="library" name="Maven: javax.media:jai-core:1.1.3" level="project" />
+    <orderEntry type="library" name="Maven: mpicbg:mpicbg_:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:VectorString:2.0.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:Simple_Neurite_Tracer:3.1.0" level="project" />
+    <orderEntry type="library" name="Maven: ca.mcgill:Sholl_Analysis:3.6.8" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:legacy-imglib1:1.1.6" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:VIB_:3.0.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:Lasso_and_Blow_Tool:2.0.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:level_sets:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.scijava:jython-shaded:2.5.3" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:trakem2-transform:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: mpicbg:mpicbg:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:IO_:3.0.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-bridge:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-anim:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-parser:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-script:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-svg-dom:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-constants:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-gvt:1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.jclarion:image4j:0.7" level="project" />
+    <orderEntry type="library" name="Maven: org.jpedal:jpedalSTD:2.80b11" level="project" />
+    <orderEntry type="library" name="Maven: com.jcraft:jzlib:1.1.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven.plugins:maven-project-info-reports-plugin:maven-plugin:2.9" level="project" />
@@ -150,7 +177,7 @@
     <orderEntry type="module-library">
       <library name="Maven: com.sun:tools:1.4.2">
         <CLASSES>
-          <root url="jar://C:/Program Files/Java/jdk1.8.0_51/lib/tools.jar!/" />
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_161/lib/tools.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -272,7 +299,7 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:20.0" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.21.0-GA" level="project" />
     <orderEntry type="library" name="Maven: com.github.kevinstern:software-and-algorithms:1.0" level="project" />
-    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.4.21" level="project" />
+    <orderEntry type="library" name="Maven: wbif.sjx:Common:1.4.22" level="project" />
     <orderEntry type="library" name="Maven: org.bonej:boneJ-legacy-plugins:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.bonej:bonej-legacy-util:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:AnalyzeSkeleton_:3.1.0" level="project" />

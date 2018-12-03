@@ -46,6 +46,8 @@ public class LabelFactory {
 
     public static HashMap<Integer,String> getIDLabels(ObjCollection objects, int nDecimalPlaces, boolean useScientific) {
         HashMap<Integer,String> IDs = new HashMap<>();
+        if (objects == null) return IDs;
+
         DecimalFormat df = getDecimalFormat(nDecimalPlaces,useScientific);
 
         for (Obj object:objects.values()) IDs.put(object.getID(),df.format(object.getID()));
@@ -56,6 +58,8 @@ public class LabelFactory {
 
     public static HashMap<Integer,String> getParentIDLabels(ObjCollection objects, String parentObjectsName, int nDecimalPlaces, boolean useScientific) {
         HashMap<Integer,String> IDs = new HashMap<>();
+        if (objects == null) return IDs;
+
         DecimalFormat df = getDecimalFormat(nDecimalPlaces,useScientific);
 
         for (Obj object:objects.values()) {
@@ -72,6 +76,8 @@ public class LabelFactory {
 
     public static HashMap<Integer,String> getMeasurementLabels(ObjCollection objects, String measurementName, int nDecimalPlaces, boolean useScientific) {
         HashMap<Integer,String> IDs = new HashMap<>();
+        if (objects == null) return IDs;
+
         DecimalFormat df = getDecimalFormat(nDecimalPlaces,useScientific);
 
         for (Obj object:objects.values()) {
@@ -88,6 +94,8 @@ public class LabelFactory {
 
     public static HashMap<Integer,String> getParentMeasurementLabels(ObjCollection objects, String parentObjectsName, String measurementName, int nDecimalPlaces, boolean useScientific) {
         HashMap<Integer,String> IDs = new HashMap<>();
+        if (objects == null) return IDs;
+
         DecimalFormat df = getDecimalFormat(nDecimalPlaces,useScientific);
 
         for (Obj object:objects.values()) {

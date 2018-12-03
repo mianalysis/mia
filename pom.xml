@@ -189,6 +189,7 @@
             <groupId>sc.fiji</groupId>
             <artifactId>register_virtual_stack_slices</artifactId>
             <version>3.0.5</version>
+            <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
@@ -233,7 +234,7 @@
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.4.21</version>
+            <version>1.4.22</version>
             <!--<groupId>com.github.SJCross</groupId>-->
             <!--<artifactId>Common</artifactId>-->
             <!--<version>v1.4.21</version>-->

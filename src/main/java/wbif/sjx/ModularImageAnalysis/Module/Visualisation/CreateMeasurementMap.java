@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.Prefs;
 import ij.measure.Calibration;
 import ij.process.ImageProcessor;
+import org.apache.commons.math3.analysis.function.Gaussian;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -22,32 +23,34 @@ public class CreateMeasurementMap extends Module {
     public static final String TEMPLATE_IMAGE = "Template image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String MEASUREMENT_MODE = "Measurement mode";
+    public static final String PARENT_OBJECT = "Parent object";
     public static final String MEASUREMENT = "Measurement";
     public static final String STATISTIC = "Statistic";
-    public static final String DOWNSAMPLE_RANGE = "Downsample range";
+    public static final String RANGE = "Range";
     public static final String AVERAGE_SLICES = "Average slices";
     public static final String AVERAGE_TIME = "Average time";
 
     public interface MeasurementModes {
         String MEASUREMENT = "Measurement";
+        String PARENT_MEASUREMENT = "Parent object measurement";
 
-        String[] ALL = new String[]{MEASUREMENT};
+        String[] ALL = new String[]{MEASUREMENT,PARENT_MEASUREMENT};
 
     }
 
     public interface Statistics {
+        String COUNT = "Count";
         String MEAN = "Mean";
         String MIN = "Minimum";
         String MAX = "Maximum";
         String STD = "Standard deviation";
         String SUM = "Sum";
 
-        String[] ALL = new String[]{MEAN,MIN,MAX,STD,SUM};
+        String[] ALL = new String[]{COUNT,MEAN,MIN,MAX,STD,SUM};
 
     }
 
-
-    public Object[] createStatisticImage(ObjCollection objects, Image image, String measurementName, boolean averageZ, boolean averageT) {
+    public static Indexer initialiseIndexer(Image image, boolean averageZ, boolean averageT) {
         ImagePlus ipl = image.getImagePlus();
 
         // Get final CumStat[] dimensions
@@ -56,13 +59,31 @@ public class CreateMeasurementMap extends Module {
         int nSlices = averageZ ? 1 : ipl.getNSlices();
         int nFrames = averageT ? 1 : ipl.getNFrames();
 
-        // Create CumStat[] and Indexer
+        // Create Indexer
+        return new Indexer(new int[]{width,height,nSlices,nFrames});
+
+    }
+
+    public static CumStat[] initialiseCumStats(Image image, boolean averageZ, boolean averageT) {
+        ImagePlus ipl = image.getImagePlus();
+
+        // Get final CumStat[] dimensions
+        int width = ipl.getWidth();
+        int height = ipl.getHeight();
+        int nSlices = averageZ ? 1 : ipl.getNSlices();
+        int nFrames = averageT ? 1 : ipl.getNFrames();
+
+        // Create CumStat[]
         CumStat[] cumStats =  new CumStat[width*height*nSlices*nFrames];
-        Indexer indexer = new Indexer(new int[]{width,height,nSlices,nFrames});
 
         // Initialise CumStats
         for (int i=0;i<cumStats.length;i++) cumStats[i] = new CumStat();
 
+        return cumStats;
+
+    }
+
+    public static void processObjectMeasurement(CumStat[] cumStats, Indexer indexer, ObjCollection objects, String measurementName) {
         // Adding objects
         for (Obj object:objects.values()) {
             // Getting measurement value.  Skip if null or NaN.
@@ -74,8 +95,8 @@ public class CreateMeasurementMap extends Module {
             // Getting all object points
             for (Point<Integer> point:object.getPoints()) {
                 // Getting index for this point
-                int z = averageZ ? 0 : point.getZ();
-                int t = averageT ? 0 : object.getT();
+                int z = indexer.getDim()[2] == 1 ? 0 : point.getZ();
+                int t = indexer.getDim()[3] == 1 ? 0 : object.getT();
                 int idx = indexer.getIndex(new int[]{point.getX(),point.getY(),z,t});
 
                 // Adding measurement
@@ -83,69 +104,46 @@ public class CreateMeasurementMap extends Module {
 
             }
         }
-
-        return new Object[]{cumStats,indexer};
-
     }
 
-    public Image convertToImage(CumStat[] cumStats, Indexer indexer, String statistic, String outputImageName, Calibration calibration) {
-        int[] dim = indexer.getDim();
-        int width = dim[0];
-        int height = dim[1];
-        int nSlices = dim[2];
-        int nFrames = dim[3];
+    public static void processParentMeasurements(CumStat[] cumStats, Indexer indexer, ObjCollection objects, String parentObjectsName, String measurementName) {
+        // Adding objects
+        for (Obj object:objects.values()) {
+            // Getting parent object
+            Obj parentObject = object.getParent(parentObjectsName);
+            if (parentObject == null) return;
 
-        // Creating ImagePlus
-        ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,1,nSlices,nFrames,32);
-        outputIpl.setCalibration(calibration);
+            // Getting measurement value.  Skip if null or NaN.
+            Measurement measurement = parentObject.getMeasurement(measurementName);
+            if (measurement == null) continue;
 
-        // Iterating over all points in the image
-        for (int z=0;z<nSlices;z++) {
-            for (int t=0;t<nFrames;t++) {
-                outputIpl.setPosition(1,z+1,t+1);
-                ImageProcessor ipr = outputIpl.getProcessor();
+            double measurementValue = measurement.getValue();
+            if (Double.isNaN(measurementValue)) continue;
 
-                for (int x=0;x<width;x++) {
-                    for (int y=0;y<height;y++) {
-                        // Getting relevant index
-                        int idx = indexer.getIndex(new int[]{x,y,z,t});
-                        CumStat cumStat = cumStats[idx];
-                        if (cumStat.getMean() < 0) System.err.println(cumStat.getMean()+"_"+x+"_"+y);
+            // Getting all object points
+            for (Point<Integer> point:object.getPoints()) {
+                // Getting index for this point
+                int z = indexer.getDim()[2] == 1 ? 0 : point.getZ();
+                int t = indexer.getDim()[3] == 1 ? 0 : object.getT();
+                int idx = indexer.getIndex(new int[]{point.getX(),point.getY(),z,t});
 
-                        // Getting statistic
-                        switch (statistic) {
-                            case Statistics.MEAN:
-                                ipr.setf(x,y,(float) cumStat.getMean());
-                                break;
-                            case Statistics.MIN:
-                                ipr.setf(x,y,(float) cumStat.getMin());
-                                break;
-                            case Statistics.MAX:
-                                ipr.setf(x,y,(float) cumStat.getMax());
-                                break;
-                            case Statistics.STD:
-                                ipr.setf(x,y,(float) cumStat.getStd());
-                                break;
-                            case Statistics.SUM:
-                                ipr.setf(x,y,(float) cumStat.getSum());
-                                break;
-                        }
-                    }
-                }
+                // Adding measurement
+                cumStats[idx].addMeasure(measurementValue);
+
             }
         }
-
-        return new Image(outputImageName,outputIpl);
-
     }
 
-    public CumStat[] applyBlur(CumStat[] inputCumstats, Indexer indexer, int downsampleRange) {
+    public static CumStat[] applyBlur(CumStat[] inputCumstats, Indexer indexer, int range, String statistic) {
         // Create CumStat array to calculate scores for neighbouring objects
         CumStat[] outputCumStats =  new CumStat[inputCumstats.length];
         for (int i=0;i<outputCumStats.length;i++) outputCumStats[i] = new CumStat();
 
+        // Initialising the Gaussian calculator for distance weights
+        Gaussian gaussian = new Gaussian(0,range);
+
         // Getting coordinates of reference points
-        MidpointCircle midpointCircle = new MidpointCircle(downsampleRange);
+        MidpointCircle midpointCircle = new MidpointCircle(3*range);
         int[] xSamp = midpointCircle.getXCircleFill();
         int[] ySamp = midpointCircle.getYCircleFill();
 
@@ -176,8 +174,31 @@ public class CreateMeasurementMap extends Module {
                                 if (idx2 == -1) continue;
 
                                 double dist = Math.sqrt((xx - finalX) * (xx - finalX) + (yy - finalY) * (yy - finalY));
-                                double measurementValue = inputCumstats[idx2].getMean();
-                                outputCumStats[idx].addMeasure(measurementValue, Math.max(0,downsampleRange - dist));
+                                double measurementValue = 0;
+                                switch (statistic) {
+                                    case Statistics.COUNT:
+                                        measurementValue = inputCumstats[idx2].getN();
+                                        break;
+                                    case Statistics.MEAN:
+                                        measurementValue = inputCumstats[idx2].getMean();
+                                        break;
+                                    case Statistics.MIN:
+                                        measurementValue = inputCumstats[idx2].getMin();
+                                        break;
+                                    case Statistics.MAX:
+                                        measurementValue = inputCumstats[idx2].getMax();
+                                        break;
+                                    case Statistics.STD:
+                                        measurementValue = inputCumstats[idx2].getStd();
+                                        break;
+                                    case Statistics.SUM:
+                                        measurementValue = inputCumstats[idx2].getSum();
+                                        break;
+                                }
+
+                                double weight = gaussian.value(dist);
+                                outputCumStats[idx].addMeasure(measurementValue, weight);
+
                             }
                         };
                         pool.submit(task);
@@ -194,6 +215,38 @@ public class CreateMeasurementMap extends Module {
         }
 
         return outputCumStats;
+
+    }
+
+    public static Image convertToImage(CumStat[] cumStats, Indexer indexer, String outputImageName, Calibration calibration) {
+        int[] dim = indexer.getDim();
+        int width = dim[0];
+        int height = dim[1];
+        int nSlices = dim[2];
+        int nFrames = dim[3];
+
+        // Creating ImagePlus
+        ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,1,nSlices,nFrames,32);
+        outputIpl.setCalibration(calibration);
+
+        // Iterating over all points in the image
+        for (int z=0;z<nSlices;z++) {
+            for (int t=0;t<nFrames;t++) {
+                outputIpl.setPosition(1,z+1,t+1);
+                ImageProcessor ipr = outputIpl.getProcessor();
+
+                for (int x=0;x<width;x++) {
+                    for (int y=0;y<height;y++) {
+                        // Getting relevant index
+                        int idx = indexer.getIndex(new int[]{x,y,z,t});
+                        CumStat cumStat = cumStats[idx];
+                        ipr.setf(x,y,(float) cumStat.getMean());
+                    }
+                }
+            }
+        }
+
+        return new Image(outputImageName,outputIpl);
 
     }
 
@@ -225,26 +278,33 @@ public class CreateMeasurementMap extends Module {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String measurementMode = parameters.getValue(MEASUREMENT_MODE);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT);
         String measurementName = parameters.getValue(MEASUREMENT);
         String statistic = parameters.getValue(STATISTIC);
-        int downsampleRange = parameters.getValue(DOWNSAMPLE_RANGE);
+        int range = parameters.getValue(RANGE);
         boolean averageZ = parameters.getValue(AVERAGE_SLICES);
         boolean averageT = parameters.getValue(AVERAGE_TIME);
 
-        // Create statistic image
-        Object[] statsOutput = createStatisticImage(inputObjects,templateImage,measurementName,averageZ,averageT);
-        CumStat[] cumStats = (CumStat[]) statsOutput[0];
-        Indexer indexer = (Indexer) statsOutput[1];
+        // Initialising stores
+        CumStat[] cumStats = initialiseCumStats(templateImage,averageZ,averageT);
+        Indexer indexer = initialiseIndexer(templateImage,averageZ,averageT);
+
+        // Compressing relevant measures
+        switch (measurementMode) {
+            case MeasurementModes.MEASUREMENT:
+                processObjectMeasurement(cumStats,indexer,inputObjects,measurementName);
+                break;
+            case MeasurementModes.PARENT_MEASUREMENT:
+                processParentMeasurements(cumStats,indexer,inputObjects,parentObjectsName,measurementName);
+                break;
+        }
 
         // Blurring image
-        CumStat[] blurCumStats = applyBlur(cumStats,indexer,downsampleRange);
-
-        // If cancelled, blurring will return null
-        if (blurCumStats == null) return false;
+        CumStat[] blurCumStats = applyBlur(cumStats,indexer,range,statistic);
 
         // Converting statistic array to Image
         Calibration calibration = templateImage.getImagePlus().getCalibration();
-        Image outputImage = convertToImage(blurCumStats,indexer,statistic,outputImageName,calibration);
+        Image outputImage = convertToImage(blurCumStats,indexer,outputImageName,calibration);
 
         workspace.addImage(outputImage);
         if (showOutput) showImage(outputImage);
@@ -260,8 +320,9 @@ public class CreateMeasurementMap extends Module {
         parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(MEASUREMENT_MODE,Parameter.CHOICE_ARRAY,MeasurementModes.MEASUREMENT,MeasurementModes.ALL));
         parameters.add(new Parameter(STATISTIC,Parameter.CHOICE_ARRAY,Statistics.MEAN,Statistics.ALL));
+        parameters.add(new Parameter(PARENT_OBJECT,Parameter.PARENT_OBJECTS,null));
         parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null));
-        parameters.add(new Parameter(DOWNSAMPLE_RANGE,Parameter.INTEGER,3));
+        parameters.add(new Parameter(RANGE,Parameter.INTEGER,3));
         parameters.add(new Parameter(AVERAGE_SLICES,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(AVERAGE_TIME,Parameter.BOOLEAN,true));
 
@@ -286,9 +347,19 @@ public class CreateMeasurementMap extends Module {
                 parameters.updateValueSource(MEASUREMENT,inputObjectsName);
 
                 break;
+
+            case MeasurementModes.PARENT_MEASUREMENT:
+                returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
+                returnedParameters.add(parameters.getParameter(MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(STATISTIC));
+
+                parameters.updateValueSource(PARENT_OBJECT,inputObjectsName);
+                parameters.updateValueSource(MEASUREMENT,parameters.getValue(PARENT_OBJECT));
+
+                break;
         }
 
-        returnedParameters.add(parameters.getParameter(DOWNSAMPLE_RANGE));
+        returnedParameters.add(parameters.getParameter(RANGE));
         returnedParameters.add(parameters.getParameter(AVERAGE_SLICES));
         returnedParameters.add(parameters.getParameter(AVERAGE_TIME));
 

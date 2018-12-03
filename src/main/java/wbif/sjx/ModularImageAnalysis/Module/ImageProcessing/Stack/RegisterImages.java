@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import bunwarpj.Param;
 import bunwarpj.Transformation;
-import mpicbg.ij.SIFT;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -47,6 +46,7 @@ public class RegisterImages extends Module {
 
     }
 
+
     public void process(Image inputImage, int calculationChannel, String relativeMode, int correctionInterval, @Nullable Image reference, @Nullable Image externalSource) {
         // Creating a reference image
         Image projectedReference = null;
@@ -87,9 +87,11 @@ public class RegisterImages extends Module {
             Image warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(calculationChannel), "1-end", String.valueOf(t));
             Image projectedWarped = ProjectImage.projectImageInZ(warped, "ProjectedWarped", ProjectImage.ProjectionModes.MAX);
 
+            // Calculating the transformation for this image pair
+            if (projectedReference == null) return;
 
-//            // Calculating the transformation for this image pair
-//            if (projectedReference == null) return;
+
+
 //            Transformation transformation = getTransformation(projectedReference, projectedWarped, param);
 //
 //            // Setting the time range for the correction.  This is only the case if a correction interval for "previous-
@@ -116,7 +118,6 @@ public class RegisterImages extends Module {
 //            }
         }
     }
-
 
     @Override
     public String getTitle() {
