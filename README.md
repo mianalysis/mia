@@ -19,7 +19,7 @@ Note: "Biomedgroup" enables the [Ridge Detection](https://github.com/thorstenwag
 
 Usage
 -----
-- In Fiji, run the plugin from Plugins > Wolfson Bioimaging > Modular Image Analysis
+- In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
 - To run an existing analysis workflow
 > - Click "Load" and select the .mia workflow file
 > - Depending on workflow configuration, a number of controls may be visible
