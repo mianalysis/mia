@@ -7,9 +7,11 @@ import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.awt.*;
 import java.io.Serializable;
 
 /**
@@ -145,7 +147,7 @@ public abstract class Module implements Serializable {
     }
 
     protected void showImage(Image image) {
-        showImage(image, LUTs.Grey());
+        showImage(image, LUT.createLutFromColor(Color.WHITE));
     }
 
 

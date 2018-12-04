@@ -62,6 +62,17 @@ public class RegisterImages extends Module {
 
 
     public void process(Image inputImage, int calculationChannel, String relativeMode, int correctionInterval, @Nullable Image reference, @Nullable Image externalSource) {
+        FloatArray2DSIFT.Param p = new FloatArray2DSIFT.Param();
+        p.initialSigma = 1.6f;
+        p.steps = 3;
+        p.minOctaveSize = 64;
+        p.maxOctaveSize = 1024;
+        p.fdSize = 4;
+        p.fdBins = 8;
+        float rod = 0.92f;
+        float maxEpsilon = 25.0f;
+        float minInlierRatio = 0.05f;
+
         // Creating a reference image
         Image projectedReference = null;
 
@@ -94,7 +105,6 @@ public class RegisterImages extends Module {
 
                 reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
-
             }
 
             // Getting the projected image at this time-point
@@ -104,19 +114,21 @@ public class RegisterImages extends Module {
             // Calculating the transformation for this image pair
             if (projectedReference == null) return;
 
-            ImagePlus ipl1 = projectedReference.getImagePlus();
-            ImagePlus ipl2 = projectedWarped.getImagePlus();
-
-            FloatArray2DSIFT.Param p = new FloatArray2DSIFT.Param();
-            p.initialSigma = 1.6f;
-            p.steps = 3;
-            p.minOctaveSize = 64;
-            p.maxOctaveSize = 1024;
-            p.fdSize = 4;
-            p.fdBins = 8;
-            float rod = 0.92f;
-            float maxEpsilon = 25.0f;
-            float minInlierRatio = 0.05f;
+//            // If we're using the previous frame we may need to crop out the boundaries
+//            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
+//                // Getting largest non-black rectangle
+//                Rectangle rectangle = getLargestLimits(projectedReference);
+//
+//                // Cropping references to this rectangle
+//                int top = rectangle.y;
+//                int left = rectangle.x;
+//                int width = rectangle.width;
+//                int height = rectangle.height;
+//
+//                projectedReference = CropImage.cropImage(projectedReference, "ProjectedReference", top, left, width, height);
+//                projectedWarped = CropImage.cropImage(projectedWarped, "ProjectedWarped", top, left, width, height);
+//
+//            }
 
             Mapping mapping = getTransformation(projectedReference,projectedWarped,p,rod,maxEpsilon,minInlierRatio);
 
@@ -142,6 +154,48 @@ public class RegisterImages extends Module {
             }
         }
     }
+
+//    public static Rectangle getLargestLimits(Image image) {
+//        ImageProcessor ipr = image.getImagePlus().getProcessor();
+//
+//        int top = 0;
+//        int left = 0;
+//        int width = 0;
+//        int height = 0;
+//        int imWidth = ipr.getWidth();
+//        int imHeight = ipr.getHeight();
+//        int largestArea = 0;
+//
+//        for (int x=0;x<imWidth;x++) {
+//            for (int y=0;y<imHeight;y++) {
+//                for (int xx=(imWidth-1);xx>x;xx--) {
+//                    for (int yy=(imHeight-1);yy>y;yy--) {
+//                        // If this rectangle has a smaller area than the previous best, skip the rest of this loop
+//                        int area = (xx-x)*(yy-y);
+//                        if (area <= largestArea) break;
+//
+//                        // Checking that the corners are non-zero
+//                        if (ipr.get(x,y) == 0) continue;
+//                        if (ipr.get(x,yy) == 0) continue;
+//                        if (ipr.get(xx,y) == 0) continue;
+//                        if (ipr.get(xx,yy) == 0) continue;
+//
+//                        // If we got here, we have the largest current rectangle
+//                        top = y;
+//                        left = x;
+//                        width = (xx-x);
+//                        height = (yy-y);
+//                        largestArea = area;
+//                        break;
+//
+//                    }
+//                }
+//            }
+//        }
+//
+//        return new Rectangle(left,top,width,height);
+//
+//    }
 
     public static Mapping getTransformation(Image referenceImage, Image warpedImage, FloatArray2DSIFT.Param param, float rod, float maxEpsilon, float minInlierRatio) {
         ImagePlus referenceIpl = referenceImage.getImagePlus();
@@ -187,10 +241,10 @@ public class RegisterImages extends Module {
                     inputIpl.setPosition(c, z, t);
 
                     final ImageProcessor originalSlice = inputIpl.getProcessor();
-                    originalSlice.setInterpolationMethod( ImageProcessor.BILINEAR );
-                    final ImageProcessor alignedSlice = originalSlice.createProcessor(originalSlice.getWidth(), originalSlice.getHeight() );
-                    alignedSlice.setMinAndMax( originalSlice.getMin(), originalSlice.getMax());
-                    mapping.mapInterpolated( originalSlice, alignedSlice );
+                    originalSlice.setInterpolationMethod(ImageProcessor.BILINEAR);
+                    final ImageProcessor alignedSlice = originalSlice.createProcessor(originalSlice.getWidth(), originalSlice.getHeight());
+                    alignedSlice.setMinAndMax(originalSlice.getMin(), originalSlice.getMax());
+                    mapping.mapInterpolated(originalSlice, alignedSlice);
 
                     inputIpl.setProcessor(alignedSlice);
 

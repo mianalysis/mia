@@ -234,7 +234,7 @@
         <dependency>
             <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.4.22</version>
+            <version>1.4.21</version>
             <!--<groupId>com.github.SJCross</groupId>-->
             <!--<artifactId>Common</artifactId>-->
             <!--<version>v1.4.21</version>-->
