@@ -34,6 +34,17 @@ public class RegisterImages extends Module {
     public static final String CALCULATION_SOURCE = "Calculation source";
     public static final String EXTERNAL_SOURCE = "External source";
     public static final String CALCULATION_CHANNEL = "Calculation channel";
+    public static final String TRANSFORMATION_MODE = "Transformation mode";
+    public static final String INITIAL_SIGMA = "Initial Gaussian blur (px)";
+    public static final String STEPS = "Steps per scale";
+    public static final String MINIMUM_IMAGE_SIZE = "Minimum image size (px)";
+    public static final String MAXIMUM_IMAGE_SIZE = "Maximum image size (px)";
+    public static final String FD_SIZE = "Feature descriptor size";
+    public static final String FD_ORIENTATION_BINS = "Feature descriptor orientation bins";
+    public static final String ROD = "Closest/next closest ratio";
+    public static final String MAX_EPSILON = "Maximal alignment error (px)";
+    public static final String MIN_INLIER_RATIO = "Inlier ratio";
+
 
     public interface RelativeModes {
         final String FIRST_FRAME = "First frame";
@@ -60,19 +71,18 @@ public class RegisterImages extends Module {
 
     }
 
+    public interface TransformationModes {
+        String AFFINE = "Affine";
+        String RIGID = "Rigid";
+        String SIMILARITY = "Similarity";
+        String TRANSLATION = "Translation";
 
-    public void process(Image inputImage, int calculationChannel, String relativeMode, int correctionInterval, @Nullable Image reference, @Nullable Image externalSource) {
-        FloatArray2DSIFT.Param p = new FloatArray2DSIFT.Param();
-        p.initialSigma = 1.6f;
-        p.steps = 3;
-        p.minOctaveSize = 64;
-        p.maxOctaveSize = 1024;
-        p.fdSize = 4;
-        p.fdBins = 8;
-        float rod = 0.92f;
-        float maxEpsilon = 25.0f;
-        float minInlierRatio = 0.05f;
+        String[] ALL = new String[]{AFFINE,RIGID,SIMILARITY,TRANSLATION};
 
+    }
+
+
+    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, @Nullable Image reference, @Nullable Image externalSource) {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -130,7 +140,7 @@ public class RegisterImages extends Module {
 //
 //            }
 
-            Mapping mapping = getTransformation(projectedReference,projectedWarped,p,rod,maxEpsilon,minInlierRatio);
+            Mapping mapping = getTransformation(projectedReference,projectedWarped,param);
 
             int t2 = t;
             switch (relativeMode) {
@@ -152,6 +162,9 @@ public class RegisterImages extends Module {
                     replaceStack(inputImage, warped, c, tt);
                 }
             }
+
+            mapping = null;
+            System.gc();
         }
     }
 
@@ -197,7 +210,7 @@ public class RegisterImages extends Module {
 //
 //    }
 
-    public static Mapping getTransformation(Image referenceImage, Image warpedImage, FloatArray2DSIFT.Param param, float rod, float maxEpsilon, float minInlierRatio) {
+    public static Mapping getTransformation(Image referenceImage, Image warpedImage, Param param) {
         ImagePlus referenceIpl = referenceImage.getImagePlus();
         ImagePlus warpedIpl = warpedImage.getImagePlus();
 
@@ -212,14 +225,34 @@ public class RegisterImages extends Module {
         ijSIFT.extractFeatures(warpedIpl.getProcessor(),featureList2);
 
         // Running registration
-        AbstractAffineModel2D model = new TranslationModel2D();
+        AbstractAffineModel2D model;
+        AbstractAffineModel2D< ? > currentModel;
+        switch (param.transformationMode) {
+            case TransformationModes.AFFINE:
+                model = new AffineModel2D();
+                currentModel = new AffineModel2D();
+                break;
+            case TransformationModes.RIGID:
+            default:
+                model = new RigidModel2D();
+                currentModel = new RigidModel2D();
+                break;
+            case TransformationModes.SIMILARITY:
+                model = new SimilarityModel2D();
+                currentModel = new SimilarityModel2D();
+                break;
+            case TransformationModes.TRANSLATION:
+                model = new TranslationModel2D();
+                currentModel = new TranslationModel2D();
+                break;
+        }
+
         Mapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
-        Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2,featureList1,1.5f,null, Float.MAX_VALUE,rod);
+        Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2,featureList1,1.5f,null, Float.MAX_VALUE,param.rod);
         Vector<PointMatch> inliers = new Vector<PointMatch>();
-        AbstractAffineModel2D< ? > currentModel = new TranslationModel2D();
 
         try {
-            currentModel.filterRansac(candidates,inliers,1000,maxEpsilon,minInlierRatio);
+            currentModel.filterRansac(candidates,inliers,1000,param.maxEpsilon,param.minInlierRatio);
         } catch (NotEnoughDataPointsException e) {
             e.printStackTrace();
             return null;
@@ -297,15 +330,33 @@ public class RegisterImages extends Module {
         String calculationSource = parameters.getValue(CALCULATION_SOURCE);
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
+        double initialSigma = parameters.getValue(INITIAL_SIGMA);
+        double rod = parameters.getValue(ROD);
+        double maxEpsilon = parameters.getValue(MAX_EPSILON);
+        double minInlierRatio = parameters.getValue(MIN_INLIER_RATIO);
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
         // If the rolling correction mode is off, set the interval to -1
         if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
 
+        // Setting up the parameters
+
+        Param param = new Param();
+        param.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
+        param.initialSigma = (float) initialSigma;
+        param.steps = parameters.getValue(STEPS);
+        param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
+        param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
+        param.fdSize = parameters.getValue(FD_SIZE);
+        param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
+        param.rod = (float) rod;
+        param.maxEpsilon = (float) maxEpsilon;
+        param.minInlierRatio = (float) minInlierRatio;
+
         Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
         Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
-        process(inputImage,calculationChannel,relativeMode,correctionInterval,reference,externalSource);
+        process(inputImage,calculationChannel,relativeMode,param,correctionInterval,reference,externalSource);
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
@@ -327,6 +378,16 @@ public class RegisterImages extends Module {
         parameters.add(new Parameter(CALCULATION_SOURCE,Parameter.CHOICE_ARRAY,CalculationSources.INTERNAL,CalculationSources.ALL));
         parameters.add(new Parameter(EXTERNAL_SOURCE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(CALCULATION_CHANNEL, Parameter.INTEGER,1));
+        parameters.add(new Parameter(TRANSFORMATION_MODE,Parameter.CHOICE_ARRAY,TransformationModes.RIGID,TransformationModes.ALL));
+        parameters.add(new Parameter(INITIAL_SIGMA, Parameter.DOUBLE,1.6));
+        parameters.add(new Parameter(STEPS, Parameter.INTEGER,3));
+        parameters.add(new Parameter(MINIMUM_IMAGE_SIZE, Parameter.INTEGER,64));
+        parameters.add(new Parameter(MAXIMUM_IMAGE_SIZE, Parameter.INTEGER,1024));
+        parameters.add(new Parameter(FD_SIZE, Parameter.INTEGER,4));
+        parameters.add(new Parameter(FD_ORIENTATION_BINS, Parameter.INTEGER,8));
+        parameters.add(new Parameter(ROD, Parameter.DOUBLE,0.92));
+        parameters.add(new Parameter(MAX_EPSILON, Parameter.DOUBLE,25.0));
+        parameters.add(new Parameter(MIN_INLIER_RATIO, Parameter.DOUBLE,0.05));
 
     }
 
@@ -363,6 +424,16 @@ public class RegisterImages extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
+        returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
+        returnedParameters.add(parameters.getParameter(INITIAL_SIGMA));
+        returnedParameters.add(parameters.getParameter(STEPS));
+        returnedParameters.add(parameters.getParameter(MINIMUM_IMAGE_SIZE));
+        returnedParameters.add(parameters.getParameter(MAXIMUM_IMAGE_SIZE));
+        returnedParameters.add(parameters.getParameter(FD_SIZE));
+        returnedParameters.add(parameters.getParameter(FD_ORIENTATION_BINS));
+        returnedParameters.add(parameters.getParameter(ROD));
+        returnedParameters.add(parameters.getParameter(MAX_EPSILON));
+        returnedParameters.add(parameters.getParameter(MIN_INLIER_RATIO));
 
         return returnedParameters;
 
@@ -387,4 +458,14 @@ public class RegisterImages extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
+
+    private class Param extends FloatArray2DSIFT.Param {
+        String transformationMode = TransformationModes.RIGID;
+        float rod = 0.92f;
+        float maxEpsilon = 25.0f;
+        float minInlierRatio = 0.05f;
+
+    }
+
 }

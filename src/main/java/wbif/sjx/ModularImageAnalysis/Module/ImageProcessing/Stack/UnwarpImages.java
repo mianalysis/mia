@@ -325,15 +325,6 @@ public class UnwarpImages extends Module {
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         String registrationMode = parameters.getValue(REGISTRATION_MODE);
-        int subsampleFactor = parameters.getValue(SUBSAMPLE_FACTOR);
-        String initialDeformationMode = parameters.getValue(INITIAL_DEFORMATION_MODE);
-        String finalDeformationMode = parameters.getValue(FINAL_DEFORMATION_MODE);
-        double divergenceWeight = parameters.getValue(DIVERGENCE_WEIGHT);
-        double curlWeight = parameters.getValue(CURL_WEIGHT);
-        double landmarkWeight = parameters.getValue(LANDMARK_WEIGHT);
-        double imageWeight = parameters.getValue(IMAGE_WEIGHT);
-        double consistencyWeight = parameters.getValue(CONSISTENCY_WEIGHT);
-        double stopThreshold = parameters.getValue(STOP_THRESHOLD);
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
@@ -343,19 +334,19 @@ public class UnwarpImages extends Module {
         // Setting up the parameters
         Param param = new Param();
         param.mode = getRegistrationMode(registrationMode);
-        param.img_subsamp_fact = subsampleFactor;
-        param.min_scale_deformation = getInitialDeformationMode(initialDeformationMode); // Very coarse
-        param.max_scale_deformation = getFinalDeformationMode(finalDeformationMode); // Fine
-        param.divWeight = divergenceWeight;
-        param.curlWeight = curlWeight;
-        param.landmarkWeight = landmarkWeight;
-        param.imageWeight = imageWeight;
+        param.img_subsamp_fact = parameters.getValue(SUBSAMPLE_FACTOR);
+        param.min_scale_deformation = getInitialDeformationMode(parameters.getValue(INITIAL_DEFORMATION_MODE));
+        param.max_scale_deformation = getFinalDeformationMode(parameters.getValue(FINAL_DEFORMATION_MODE));
+        param.divWeight = parameters.getValue(DIVERGENCE_WEIGHT);
+        param.curlWeight = parameters.getValue(CURL_WEIGHT);
+        param.landmarkWeight = parameters.getValue(LANDMARK_WEIGHT);
+        param.imageWeight = parameters.getValue(IMAGE_WEIGHT);
         if (registrationMode.equals(RegistrationModes.MONO)) {
             param.consistencyWeight = 10.0;
         } else {
-            param.consistencyWeight = consistencyWeight;
+            param.consistencyWeight = parameters.getValue(CONSISTENCY_WEIGHT);
         }
-        param.stopThreshold = stopThreshold;
+        param.stopThreshold = parameters.getValue(STOP_THRESHOLD);
 
         Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
         Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
