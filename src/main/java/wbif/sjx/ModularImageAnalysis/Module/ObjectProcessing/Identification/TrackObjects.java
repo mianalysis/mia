@@ -12,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Object.Point;
@@ -441,10 +442,10 @@ public class TrackObjects extends Module {
 
     public void showObjects(ObjCollection spotObjects, String trackObjectsName) {
         String colourMode = ObjCollection.ColourModes.PARENT_ID;
-        HashMap<Integer, Float> hues = spotObjects.getHues(colourMode, trackObjectsName, true);
+        HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects,trackObjectsName,true);
 
         // Creating a parent-ID encoded image of the objects
-        Image dispImage = spotObjects.convertObjectsToImage(spotObjects.getName(),null,colourMode,hues);
+        Image dispImage = spotObjects.convertObjectsToImage(spotObjects.getName(),null,hues,32,false);
 
         // Displaying the overlay
         ImagePlus ipl = dispImage.getImagePlus();

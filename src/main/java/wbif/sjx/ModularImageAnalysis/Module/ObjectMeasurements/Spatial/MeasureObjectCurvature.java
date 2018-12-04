@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.Conve
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Analysis.CurvatureCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
@@ -49,22 +50,22 @@ public class MeasureObjectCurvature extends Module {
     }
 
     public interface Measurements {
-        String MEAN_ABSOLUTE_CURVATURE_PX = "CURVATURE // MEAN_ABSOLUTE_CURVATURE_(PX)";
-        String MIN_ABSOLUTE_CURVATURE_PX = "CURVATURE // MIN_ABSOLUTE_CURVATURE_(PX)";
-        String MAX_ABSOLUTE_CURVATURE_PX = "CURVATURE // MAX_ABSOLUTE_CURVATURE_(PX)";
-        String STD_ABSOLUTE_CURVATURE_PX = "CURVATURE // STD_ABSOLUTE_CURVATURE_(PX)";
-        String MEAN_ABSOLUTE_CURVATURE_CAL = "CURVATURE // MEAN_ABSOLUTE_CURVATURE_(${CAL})";
-        String MIN_ABSOLUTE_CURVATURE_CAL = "CURVATURE // MIN_ABSOLUTE_CURVATURE_(${CAL})";
-        String MAX_ABSOLUTE_CURVATURE_CAL = "CURVATURE // MAX_ABSOLUTE_CURVATURE_(${CAL})";
-        String STD_ABSOLUTE_CURVATURE_CAL = "CURVATURE // STD_ABSOLUTE_CURVATURE_(${CAL})";
-        String MEAN_SIGNED_CURVATURE_PX = "CURVATURE // MEAN_SIGNED_CURVATURE_(PX)";
-        String MIN_SIGNED_CURVATURE_PX = "CURVATURE // MIN_SIGNED_CURVATURE_(PX)";
-        String MAX_SIGNED_CURVATURE_PX = "CURVATURE // MAX_SIGNED_CURVATURE_(PX)";
-        String STD_SIGNED_CURVATURE_PX = "CURVATURE // STD_SIGNED_CURVATURE_(PX)";
-        String MEAN_SIGNED_CURVATURE_CAL = "CURVATURE // MEAN_SIGNED_CURVATURE_(${CAL})";
-        String MIN_SIGNED_CURVATURE_CAL = "CURVATURE // MIN_SIGNED_CURVATURE_(${CAL})";
-        String MAX_SIGNED_CURVATURE_CAL = "CURVATURE // MAX_SIGNED_CURVATURE_(${CAL})";
-        String STD_SIGNED_CURVATURE_CAL = "CURVATURE // STD_SIGNED_CURVATURE_(${CAL})";
+        String MEAN_ABSOLUTE_CURVATURE_PX = "CURVATURE // MEAN_ABSOLUTE_CURVATURE_(PX^-1)";
+        String MIN_ABSOLUTE_CURVATURE_PX = "CURVATURE // MIN_ABSOLUTE_CURVATURE_(PX^-1)";
+        String MAX_ABSOLUTE_CURVATURE_PX = "CURVATURE // MAX_ABSOLUTE_CURVATURE_(PX^-1)";
+        String STD_ABSOLUTE_CURVATURE_PX = "CURVATURE // STD_ABSOLUTE_CURVATURE_(PX^-1)";
+        String MEAN_ABSOLUTE_CURVATURE_CAL = "CURVATURE // MEAN_ABSOLUTE_CURVATURE_(${CAL}^-1)";
+        String MIN_ABSOLUTE_CURVATURE_CAL = "CURVATURE // MIN_ABSOLUTE_CURVATURE_(${CAL}^-1)";
+        String MAX_ABSOLUTE_CURVATURE_CAL = "CURVATURE // MAX_ABSOLUTE_CURVATURE_(${CAL}^-1)";
+        String STD_ABSOLUTE_CURVATURE_CAL = "CURVATURE // STD_ABSOLUTE_CURVATURE_(${CAL}^-1)";
+        String MEAN_SIGNED_CURVATURE_PX = "CURVATURE // MEAN_SIGNED_CURVATURE_(PX^-1)";
+        String MIN_SIGNED_CURVATURE_PX = "CURVATURE // MIN_SIGNED_CURVATURE_(PX^-1)";
+        String MAX_SIGNED_CURVATURE_PX = "CURVATURE // MAX_SIGNED_CURVATURE_(PX^-1)";
+        String STD_SIGNED_CURVATURE_PX = "CURVATURE // STD_SIGNED_CURVATURE_(PX^-1)";
+        String MEAN_SIGNED_CURVATURE_CAL = "CURVATURE // MEAN_SIGNED_CURVATURE_(${CAL}^-1)";
+        String MIN_SIGNED_CURVATURE_CAL = "CURVATURE // MIN_SIGNED_CURVATURE_(${CAL}^-1)";
+        String MAX_SIGNED_CURVATURE_CAL = "CURVATURE // MAX_SIGNED_CURVATURE_(${CAL}^-1)";
+        String STD_SIGNED_CURVATURE_CAL = "CURVATURE // STD_SIGNED_CURVATURE_(${CAL}^-1)";
         String SPLINE_LENGTH_PX = "CURVATURE // SPLINE_LENGTH_(PX)";
         String SPLINE_LENGTH_CAL = "CURVATURE // SPLINE_LENGTH_(${CAL})";
         String FIRST_POINT_X_PX = "CURVATURE // FIRST_POINT_X_(PX)";
@@ -76,20 +77,20 @@ public class MeasureObjectCurvature extends Module {
     }
 
 
-    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject, ImagePlus templateImage) {
+    public static LinkedHashSet<Vertex> getSkeletonBackbone(Obj inputObject, Image templateImage) {
         // Converting object to image, then inverting, so we have a black object on a white background
         ObjCollection tempObjects = new ObjCollection("Backbone");
         tempObjects.add(inputObject);
 
-        HashMap<Integer,Float> hues = tempObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        ImagePlus objectIpl = tempObjects.convertObjectsToImageOld("Objects", templateImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues).getImagePlus();
-        InvertIntensity.process(objectIpl);
+        HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(tempObjects,ColourFactory.SingleColours.WHITE);
+        Image objectImage = tempObjects.convertObjectsToImage("Objects",templateImage,hues,8,false);
+        InvertIntensity.process(objectImage);
 
         // Skeletonise fish to get single backbone
-        BinaryOperations2D.process(objectIpl, BinaryOperations2D.OperationModes.SKELETONISE, 1);
+        BinaryOperations2D.process(objectImage, BinaryOperations2D.OperationModes.SKELETONISE, 1);
 
         // Using the Common library's Skeleton tools to extract the longest branch.  This requires coordinates for the
-        return new Skeleton(objectIpl).getLongestPath();
+        return new Skeleton(objectImage.getImagePlus()).getLongestPath();
 
     }
 
@@ -351,7 +352,7 @@ public class MeasureObjectCurvature extends Module {
             referenceImageImagePlus = new Duplicator().run(referenceImageImagePlus);
         }
 
-        ImagePlus templateImage = IJ.createImage("Template",referenceImageImagePlus.getWidth(),referenceImageImagePlus.getHeight(),1,8);
+        ImagePlus templateIpl = IJ.createImage("Template",referenceImageImagePlus.getWidth(),referenceImageImagePlus.getHeight(),1,8);
         int count = 1;
         int total = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
@@ -359,7 +360,7 @@ public class MeasureObjectCurvature extends Module {
             initialiseObjectMeasurements(inputObject,fitSpline,absoluteCurvature,signedCurvature,useReference);
 
             // Getting the backbone of the object
-            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject, templateImage);
+            LinkedHashSet<Vertex> longestPath = getSkeletonBackbone(inputObject, new Image("Template",templateIpl));
 
             // If the object is too small to be fit
             if (longestPath.size() < 3) continue;

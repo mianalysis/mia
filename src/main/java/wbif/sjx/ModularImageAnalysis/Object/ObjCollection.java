@@ -26,35 +26,12 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         String MEASUREMENT_VALUE = "Measurement value";
         String ID = "ID";
         String PARENT_ID = "Parent ID";
+        String PARENT_MEASUREMENT_VALUE = "Parent measurement value";
 
-        String[] ALL = new String[]{SINGLE_COLOUR, RANDOM_COLOUR, MEASUREMENT_VALUE, ID, PARENT_ID};
-
-    }
-
-    public interface SingleColours {
-        String WHITE = "White";
-        String BLACK = "Black";
-        String RED = "Red";
-        String ORANGE = "Orange";
-        String YELLOW = "Yellow";
-        String GREEN = "Green";
-        String CYAN = "Cyan";
-        String BLUE = "Blue";
-        String VIOLET = "Violet";
-        String MAGENTA = "Magenta";
-
-        String[] ALL = new String[]{WHITE,BLACK,RED,ORANGE,YELLOW,GREEN,CYAN,BLUE,VIOLET,MAGENTA};
+        String[] ALL = new String[]{SINGLE_COLOUR, RANDOM_COLOUR, MEASUREMENT_VALUE, ID, PARENT_ID, PARENT_MEASUREMENT_VALUE};
 
     }
 
-    public interface LabelModes {
-        String ID = "ID";
-        String MEASUREMENT_VALUE = "Measurement value";
-        String PARENT_ID = "Parent ID";
-
-        String[] ALL = new String[]{ID,MEASUREMENT_VALUE,PARENT_ID};
-
-    }
 
     public ObjCollection(String name) {
         this.name = name;
@@ -133,31 +110,9 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    @Deprecated
-    public Image convertObjectsToImageOld(String outputName, @Nullable ImagePlus templateIpl, String colourMode, HashMap<Integer,Float> hues) {
-        Image templateImage = new Image("Template",templateIpl);
-        return convertObjectsToImage(outputName,templateImage,colourMode,hues);
-
-    }
-
-    public Image convertObjectsToImage(String outputName, @Nullable Image templateImage, String colourMode, HashMap<Integer,Float> hues) {
+    public Image convertObjectsToImage(String outputName, @Nullable Image templateImage, HashMap<Integer,Float> hues, int bitDepth, boolean nanBackground) {
         ImagePlus templateIpl = templateImage == null ? null : templateImage.getImagePlus();
         ImagePlus ipl;
-
-        int bitDepth = 8;
-        switch (colourMode){
-            case ColourModes.RANDOM_COLOUR:
-            case ColourModes.SINGLE_COLOUR:
-                bitDepth = 8;
-                break;
-
-            case ColourModes.MEASUREMENT_VALUE:
-            case ColourModes.ID:
-            case ColourModes.PARENT_ID:
-                bitDepth = 32;
-                break;
-
-        }
 
         if (templateIpl == null) {
             // Getting range of object pixels
@@ -167,15 +122,13 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             // Creating a new image
             ipl = IJ.createHyperStack(outputName, spatialLimits[0][1] + 1,spatialLimits[1][1] + 1,
                     1, spatialLimits[2][1] + 1, temporalLimits[1] + 1,bitDepth);
-
         } else {
             ipl = IJ.createHyperStack(outputName,templateIpl.getWidth(),templateIpl.getHeight(),
                     templateIpl.getNChannels(),templateIpl.getNSlices(),templateIpl.getNFrames(),bitDepth);
-
         }
 
         // If it's a 32-bit image, set all background pixels to NaN
-        if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
+        if (bitDepth == 32 && nanBackground) {
             for (int z = 1; z <= ipl.getNSlices(); z++) {
                 for (int c = 1; c <= ipl.getNChannels(); c++) {
                     for (int t = 1; t <= ipl.getNFrames(); t++) {
@@ -202,14 +155,14 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
                 ipl.setPosition(1,zPos+1,tPos+1);
 
-                if (colourMode.equals(ColourModes.SINGLE_COLOUR) | colourMode.equals(ColourModes.RANDOM_COLOUR)) {
-
-                    ipl.getProcessor().putPixel(x.get(i), y.get(i), Math.round(hues.get(object.getID())*255));
-
-                } else if (colourMode.equals(ColourModes.MEASUREMENT_VALUE) | colourMode.equals(ColourModes.ID)
-                        | colourMode.equals(ColourModes.PARENT_ID)) {
-                    ipl.getProcessor().putPixelValue(x.get(i), y.get(i), hues.get(object.getID()));
-
+                switch (bitDepth) {
+                    case 8:
+                    case 16:
+                        ipl.getProcessor().putPixel(x.get(i), y.get(i), Math.round(hues.get(object.getID())*255));
+                        break;
+                    case 32:
+                        ipl.getProcessor().putPixelValue(x.get(i), y.get(i), hues.get(object.getID()));
+                        break;
                 }
             }
         }
@@ -229,178 +182,6 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         return new Image(outputName,ipl);
-
-    }
-
-    public HashMap<Integer,String> getIDs(String labelMode, String source, int nDecimalPlaces, boolean useScientific) {
-        HashMap<Integer,String> IDs = new HashMap<>();
-
-        DecimalFormat df;
-        if (nDecimalPlaces == 0) {
-            df = new DecimalFormat("0");
-        } else {
-            if (useScientific) {
-                StringBuilder zeros = new StringBuilder("0.");
-                for (int i = 0; i < nDecimalPlaces; i++) {
-                    zeros.append("0");
-                }
-                zeros.append("E0");
-                df = new DecimalFormat(zeros.toString());
-            } else {
-                StringBuilder zeros = new StringBuilder("0");
-                if (nDecimalPlaces != 0) zeros.append(".");
-                for (int i = 0;i <nDecimalPlaces; i++) {
-                    zeros.append("0");
-                }
-                df = new DecimalFormat(zeros.toString());
-            }
-        }
-
-        for (Obj object:values()) {
-            switch (labelMode) {
-                case LabelModes.ID:
-                    IDs.put(object.getID(),df.format(object.getID()));
-                    break;
-
-                case LabelModes.MEASUREMENT_VALUE:
-                    if (Double.isNaN(object.getMeasurement(source).getValue())) {
-                        IDs.put(object.getID(), "NA");
-                    } else {
-                        IDs.put(object.getID(), df.format(object.getMeasurement(source).getValue()));
-                    }
-                    break;
-
-                case LabelModes.PARENT_ID:
-                    if (object.getParent(source) == null) {
-                        IDs.put(object.getID(), "NA");
-                    } else {
-                        IDs.put(object.getID(), df.format(object.getParent(source).getID()));
-                    }
-
-                    break;
-            }
-        }
-
-        return IDs;
-
-    }
-
-    public HashMap<Integer,Float> getHues(String colourMode, @Nonnull String source, boolean normalised) {
-        HashMap<Integer,Float> hues = new HashMap<>();
-
-        // Getting minimum and maximum values from measurement (if required)
-        CumStat cs = new CumStat();
-        if (colourMode.equals(ColourModes.MEASUREMENT_VALUE)) {
-            for (Obj obj:values()) {
-                if (obj.getMeasurement(source) != null) cs.addMeasure(obj.getMeasurement(source).getValue());
-            }
-        }
-
-        for (Obj object:values()) {
-            int ID = object.getID();
-
-            // Default hue value in case none is assigned
-            float H = 0f;
-
-            switch (colourMode) {
-                case ColourModes.SINGLE_COLOUR:
-                    switch (source) {
-                        case "":
-                        case SingleColours.WHITE:
-                            H = 1f;
-                            break;
-                        case SingleColours.BLACK:
-                            H = 0f;
-                            break;
-                        case SingleColours.RED:
-                            H = 0f;
-                            break;
-                        case SingleColours.ORANGE:
-                            H = 0.078f;
-                            break;
-                        case SingleColours.YELLOW:
-                            H = 0.157f;
-                            break;
-                        case SingleColours.GREEN:
-                            H = 0.314f;
-                            break;
-                        case SingleColours.CYAN:
-                            H = 0.471f;
-                            break;
-                        case SingleColours.BLUE:
-                            H = 0.627f;
-                            break;
-                        case SingleColours.VIOLET:
-                            H = 0.706f;
-                            break;
-                        case SingleColours.MAGENTA:
-                            H = 0.784f;
-                            break;
-                    }
-
-                    break;
-
-                case ColourModes.RANDOM_COLOUR:
-                    // Random colours
-                    H = new Random().nextFloat();
-                    break;
-
-                case ColourModes.MEASUREMENT_VALUE:
-                    Measurement measurement = object.getMeasurement(source);
-                    if (measurement == null) break;
-                    H = (float) object.getMeasurement(source).getValue();
-                    if (normalised) {
-                        double startH = 0;
-                        double endH = 120d / 255d;
-                        H = (float) ((H - cs.getMin()) * (endH - startH) / (cs.getMax() - cs.getMin()) + startH);
-                    }
-                    break;
-
-                case ColourModes.ID:
-                    H = (float) object.getID();
-                    if (normalised) H = (H* 1048576 % 255) / 255;
-                    break;
-
-                case ColourModes.PARENT_ID:
-                    if (object.getParent(source) == null) {
-                        H = -1f;
-                    } else {
-                        H = (float) object.getParent(source).getID();
-                    }
-
-                    if (normalised & object.getParent(source) != null) H = (H* 1048576 % 255) / 255;
-
-                    break;
-
-            }
-
-            hues.put(ID,H);
-
-        }
-
-        return hues;
-
-    }
-
-    public HashMap<Integer,Color> getColours(String colourMode, String source, boolean normalised) {
-        HashMap<Integer,Float> hues = getHues(colourMode,source,normalised);
-        HashMap<Integer,Color> colours = new HashMap<>();
-
-        for (int key:hues.keySet()) {
-            if (colourMode.equals(ColourModes.SINGLE_COLOUR) && source.equals(SingleColours.WHITE)) {
-                colours.put(key,Color.getHSBColor(0f,0f,1f));
-            } else if (colourMode.equals(ColourModes.SINGLE_COLOUR) && source.equals(SingleColours.BLACK)) {
-                colours.put(key,Color.getHSBColor(0f,0f,0f));
-            } else {
-                // Have to add 1E-8 to prevent 0 values having a rounding error that makes them negative
-                colours.put(key,Color.getHSBColor(hues.get(key)+1E-8f,1f,1f));
-            }
-
-            // If the hue was assigned as -1 (for example, no parent found), setting the colour to white
-            if (hues.get(key) == -1) colours.put(key,Color.getHSBColor(0f,0f,1f));
-        }
-
-        return colours;
 
     }
 

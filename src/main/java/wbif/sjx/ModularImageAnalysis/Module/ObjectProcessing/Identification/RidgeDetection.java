@@ -13,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
@@ -246,14 +247,14 @@ public class RidgeDetection extends Module {
 
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-            HashMap<Integer,Color> colours = outputObjects.getColours(colourMode,"",true);
+            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
             String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 
             ((AddObjectsOverlay) new AddObjectsOverlay()
                     .updateParameterValue(AddObjectsOverlay.POSITION_MODE,positionMode)
                     .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8)
                     .updateParameterValue(AddObjectsOverlay.LINE_WIDTH,0.25))
-                    .createOverlay(dispIpl,outputObjects,colours,null);
+                    .createOverlay(dispIpl,outputObjects,hues,null);
 
             // Displaying the overlay
             dispIpl.setPosition(1,1,1);

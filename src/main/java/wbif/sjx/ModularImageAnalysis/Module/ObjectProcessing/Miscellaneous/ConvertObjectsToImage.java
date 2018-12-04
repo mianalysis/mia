@@ -1,7 +1,3 @@
-// TODO: For image to objects, could add the image ID number as a measurement to the object
-// TODO: For image to objects, could create parent object for all instances of that image ID in different frames
-// TODO: Colour based on parent measurement
-
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous;
 
 import ij.IJ;
@@ -10,9 +6,9 @@ import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -29,8 +25,8 @@ public class ConvertObjectsToImage extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String COLOUR_MODE = "Colour mode";
-    public static final String MEASUREMENT = "Measurement";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
+    public static final String MEASUREMENT = "Measurement";
 
     public interface ConversionModes {
         String IMAGE_TO_OBJECTS = "Image to objects";
@@ -83,18 +79,32 @@ public class ConvertObjectsToImage extends Module {
             Image templateImage = workspace.getImages().get(templateImageName);
 
             // Generating colours for each object
-            String sourceColour = "";
+            HashMap<Integer, Float> hues = null;
+            boolean nanBackground = false;
             switch (colourMode) {
-                case AddObjectsOverlay.ColourModes.MEASUREMENT_VALUE:
-                    sourceColour = measurementForColour;
+                case ColourModes.ID:
+                    hues = ColourFactory.getIDHues(inputObjects,false);
                     break;
-                case AddObjectsOverlay.ColourModes.PARENT_ID:
-                    sourceColour = parentForColour;
+                case ColourModes.RANDOM_COLOUR:
+                    hues = ColourFactory.getRandomHues(inputObjects);
+                    break;
+                case ColourModes.MEASUREMENT_VALUE:
+                    nanBackground = true;
+                    hues = ColourFactory.getMeasurementValueHues(inputObjects,measurementForColour,false);
+                    break;
+                case ColourModes.PARENT_ID:
+                    hues = ColourFactory.getParentIDHues(inputObjects,parentForColour,false);
+                    break;
+                case ColourModes.PARENT_MEASUREMENT_VALUE:
+                    hues = ColourFactory.getParentMeasurementValueHues(inputObjects,parentForColour,measurementForColour,false);
+                    break;
+                case ColourModes.SINGLE_COLOUR:
+                default:
+                    hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
                     break;
             }
-            HashMap<Integer, Float> hues = inputObjects.getHues(colourMode, sourceColour,false);
 
-            Image outputImage = inputObjects.convertObjectsToImageOld(outputImageName, templateImage.getImagePlus(), colourMode,hues);
+            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage, hues, 32, nanBackground);
 
             // Applying spatial calibration from template image
             Calibration calibration = templateImage.getImagePlus().getCalibration();
@@ -164,22 +174,30 @@ public class ConvertObjectsToImage extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
 
             returnedParameters.add(parameters.getParameter(COLOUR_MODE));
-            if (parameters.getValue(COLOUR_MODE).equals(ColourModes.MEASUREMENT_VALUE)) {
-                // Use measurement
-                returnedParameters.add(parameters.getParameter(MEASUREMENT));
+            switch ((String) parameters.getValue(COLOUR_MODE)) {
+                case ColourModes.MEASUREMENT_VALUE:
+                    returnedParameters.add(parameters.getParameter(MEASUREMENT));
+                    if (parameters.getValue(INPUT_OBJECTS) != null) {
+                        parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                    }
+                    break;
 
-                if (parameters.getValue(INPUT_OBJECTS) != null) {
-                    parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                case ColourModes.PARENT_ID:
+                    returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+                    break;
 
-                }
+                case ColourModes.PARENT_MEASUREMENT_VALUE:
+                    returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                    inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+                    parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
 
-            } else if (parameters.getValue(COLOUR_MODE).equals(ColourModes.PARENT_ID)) {
-                // Use Parent ID
-                returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
+                    String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+                    returnedParameters.add(parameters.getParameter(MEASUREMENT));
+                    if (parentObjectsName != null) parameters.updateValueSource(MEASUREMENT,parentObjectsName);
 
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
-
+                    break;
             }
         }
 

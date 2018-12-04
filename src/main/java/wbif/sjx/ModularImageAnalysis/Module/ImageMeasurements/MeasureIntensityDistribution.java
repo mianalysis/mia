@@ -21,6 +21,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.Conve
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.io.File;
@@ -156,8 +157,8 @@ public class MeasureIntensityDistribution extends Module {
 
     public CumStat[] measureFractionProximal(ObjCollection inputObjects, Image inputImage, double proximalDistance, boolean ignoreOnObjects) {
         // Get binary image showing the objects
-        HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
+        HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImage, hues, 8,false);
 
         // Calculaing the distance map
         ImagePlus distIpl = DistanceMap.getDistanceMap(objectsImage.getImagePlus(),true);
@@ -213,8 +214,8 @@ public class MeasureIntensityDistribution extends Module {
 
     public static CumStat measureIntensityWeightedProximity(ObjCollection inputObjects, Image inputImage, String edgeMode) {
         // Get binary image showing the objects
-        HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImage, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR, hues);
+        HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(inputObjects,ColourFactory.SingleColours.WHITE);
+        Image objectsImage = inputObjects.convertObjectsToImage("Objects", inputImage, hues, 8,false);
 
         ImagePlus distIpl = null;
         switch (edgeMode) {

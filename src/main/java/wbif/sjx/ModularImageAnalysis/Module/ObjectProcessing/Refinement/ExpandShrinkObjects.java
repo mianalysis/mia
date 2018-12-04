@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.Conve
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,8 +43,8 @@ public class ExpandShrinkObjects extends Module {
         // Convert each object to an image, do the dilation/erosion, then convert back to an object
         ObjCollection objectCollection = new ObjCollection("ObjectToMorph");
         objectCollection.add(inputObject);
-        HashMap<Integer,Float> hues = objectCollection.getHues(ObjCollection.ColourModes.SINGLE_COLOUR,"",false);
-        Image objectImage = objectCollection.convertObjectsToImageOld("Object image", templateImagePlus, ConvertObjectsToImage.ColourModes.SINGLE_COLOUR,hues);
+        HashMap<Integer,Float> hues = ColourFactory.getSingleColourHues(objectCollection,ColourFactory.SingleColours.WHITE);
+        Image objectImage = objectCollection.convertObjectsToImage("Object image", templateImage, hues, 8,false);
         InvertIntensity.process(objectImage.getImagePlus());
 
         Prefs.blackBackground = false;
@@ -157,13 +158,11 @@ public class ExpandShrinkObjects extends Module {
         // Displaying updated objects
         if (showOutput) {
             if (updateInputObjects) {
-                HashMap<Integer,Float> hues = inputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
-                String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-                inputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
+                HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
+                inputObjects.convertObjectsToImage("Objects", null, hues, 8,false).getImagePlus().show();
             } else {
-                HashMap<Integer,Float> hues = outputObjects.getHues(ObjCollection.ColourModes.RANDOM_COLOUR,"",false);
-                String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
-                outputObjects.convertObjectsToImage("Objects", null, mode, hues).getImagePlus().show();
+                HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
+                outputObjects.convertObjectsToImage("Objects", null, hues, 8,false).getImagePlus().show();
             }
         }
 

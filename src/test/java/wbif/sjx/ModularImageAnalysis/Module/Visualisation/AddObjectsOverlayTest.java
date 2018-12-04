@@ -99,7 +99,7 @@ public class AddObjectsOverlayTest {
                 .updateParameterValue(AddObjectsOverlay.LINE_WIDTH,1d)
                 .updateParameterValue(AddObjectsOverlay.LIMIT_TRACK_HISTORY,false);
 
-//        HashMap<Integer, Color> colours = testObjects.getColours(ObjCollection.ColourModes.PARENT_ID,trackObjectsName, false);
+//        HashMap<Integer, Color> colours = testObjects.getHues(ObjCollection.ColourModes.PARENT_ID,trackObjectsName, false);
 //        ObjCollection trackObjects = workspace.getObjectSet(trackObjectsName);
 //        addObjectsOverlay.createTrackOverlay(ipl,trackObjects,colours);
 

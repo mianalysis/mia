@@ -4,9 +4,7 @@ import bunwarpj.Param;
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
-import ij.plugin.HyperStackMaker;
-import ij.plugin.SubHyperstackMaker;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.NormaliseIntensity;
+import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -17,6 +15,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class UnwarpImages extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -165,19 +166,47 @@ public class UnwarpImages extends Module {
 
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
+
+        // Setting up the ExecutorService, which will manage the threads
+        int nThreads = Prefs.getThreads();
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+
         for (int c=1;c<=inputIpl.getNChannels();c++) {
             for (int z=1;z<=inputIpl.getNSlices();z++) {
                 for (int t=1;t<=inputIpl.getNFrames();t++) {
-                    inputIpl.setPosition(c,z,t);
-                    ImagePlus slice = new ImagePlus("Slice",inputIpl.getProcessor().duplicate());
+                    String finalTempPath = tempPath;
+                    int finalC = c;
+                    int finalZ = z;
+                    int finalT = t;
+                    Runnable task = () -> {
+                        ImagePlus slice = getOrReplaceSlice(inputIpl,null,finalC,finalZ,finalT,false);
 
-                    bUnwarpJ_.applyTransformToSource(tempPath,slice,slice);
-                    ImageTypeConverter.applyConversion(slice,8,ImageTypeConverter.ScalingModes.CLIP);
+                        bUnwarpJ_.applyTransformToSource(finalTempPath, slice, slice);
+                        ImageTypeConverter.applyConversion(slice, 8, ImageTypeConverter.ScalingModes.CLIP);
 
-                    inputIpl.setProcessor(slice.getProcessor());
+                        getOrReplaceSlice(inputIpl,slice,finalC,finalZ,finalT,true);
 
+                    };
+                    pool.submit(task);
                 }
             }
+        }
+
+        pool.shutdown();
+        try {
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+        } catch (InterruptedException e) {
+            return;
+        }
+    }
+
+    private static synchronized ImagePlus getOrReplaceSlice(ImagePlus inputIpl, @Nullable ImagePlus slice, int c, int z, int t, boolean add) {
+        inputIpl.setPosition(c, z, t);
+        if (add) {
+            inputIpl.setProcessor(slice.getProcessor());
+            return null;
+        } else {
+            return new ImagePlus("Slice", inputIpl.getProcessor().duplicate());
         }
     }
 
@@ -296,15 +325,6 @@ public class UnwarpImages extends Module {
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         String registrationMode = parameters.getValue(REGISTRATION_MODE);
-        int subsampleFactor = parameters.getValue(SUBSAMPLE_FACTOR);
-        String initialDeformationMode = parameters.getValue(INITIAL_DEFORMATION_MODE);
-        String finalDeformationMode = parameters.getValue(FINAL_DEFORMATION_MODE);
-        double divergenceWeight = parameters.getValue(DIVERGENCE_WEIGHT);
-        double curlWeight = parameters.getValue(CURL_WEIGHT);
-        double landmarkWeight = parameters.getValue(LANDMARK_WEIGHT);
-        double imageWeight = parameters.getValue(IMAGE_WEIGHT);
-        double consistencyWeight = parameters.getValue(CONSISTENCY_WEIGHT);
-        double stopThreshold = parameters.getValue(STOP_THRESHOLD);
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
@@ -314,19 +334,19 @@ public class UnwarpImages extends Module {
         // Setting up the parameters
         Param param = new Param();
         param.mode = getRegistrationMode(registrationMode);
-        param.img_subsamp_fact = subsampleFactor;
-        param.min_scale_deformation = getInitialDeformationMode(initialDeformationMode); // Very coarse
-        param.max_scale_deformation = getFinalDeformationMode(finalDeformationMode); // Fine
-        param.divWeight = divergenceWeight;
-        param.curlWeight = curlWeight;
-        param.landmarkWeight = landmarkWeight;
-        param.imageWeight = imageWeight;
+        param.img_subsamp_fact = parameters.getValue(SUBSAMPLE_FACTOR);
+        param.min_scale_deformation = getInitialDeformationMode(parameters.getValue(INITIAL_DEFORMATION_MODE));
+        param.max_scale_deformation = getFinalDeformationMode(parameters.getValue(FINAL_DEFORMATION_MODE));
+        param.divWeight = parameters.getValue(DIVERGENCE_WEIGHT);
+        param.curlWeight = parameters.getValue(CURL_WEIGHT);
+        param.landmarkWeight = parameters.getValue(LANDMARK_WEIGHT);
+        param.imageWeight = parameters.getValue(IMAGE_WEIGHT);
         if (registrationMode.equals(RegistrationModes.MONO)) {
             param.consistencyWeight = 10.0;
         } else {
-            param.consistencyWeight = consistencyWeight;
+            param.consistencyWeight = parameters.getValue(CONSISTENCY_WEIGHT);
         }
-        param.stopThreshold = stopThreshold;
+        param.stopThreshold = parameters.getValue(STOP_THRESHOLD);
 
         Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
         Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;

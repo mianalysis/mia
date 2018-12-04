@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -56,8 +58,8 @@ public class ShowObjectsTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
 
         // Converting objects to image
-        HashMap<Integer,Float> hues = testObjects.getHues(colourMode,"",false);
-        Image testImage = testObjects.convertObjectsToImageOld("Test image",ipl,colourMode,hues);
+        HashMap<Integer,Float> hues = ColourFactory.getIDHues(testObjects,false);
+        Image testImage = testObjects.convertObjectsToImage("Test image",new Image("Image",ipl),hues,32,false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
@@ -108,8 +110,8 @@ public class ShowObjectsTest {
         ImagePlus ipl = IJ.openImage(pathToImage);
 
         // Converting objects to image
-        HashMap<Integer,Float> hues = testObjects.getHues(colourMode,"",false);
-        Image testImage = testObjects.convertObjectsToImageOld("Test image",ipl,colourMode,hues);
+        HashMap<Integer,Float> hues = ColourFactory.getIDHues(testObjects,false);
+        Image testImage = testObjects.convertObjectsToImage("Test image",new Image("Image",ipl),hues,32,false);
 
         // Testing the resultant image is the expected size
         ImagePlus testImagePlus = testImage.getImagePlus();
