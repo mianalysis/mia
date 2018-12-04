@@ -1,13 +1,27 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import bunwarpj.Param;
-import bunwarpj.Transformation;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.Prefs;
+import ij.process.ImageProcessor;
+import mpicbg.ij.FeatureTransform;
+import mpicbg.ij.InverseTransformMapping;
+import mpicbg.ij.Mapping;
+import mpicbg.ij.SIFT;
+import mpicbg.imagefeatures.Feature;
+import mpicbg.imagefeatures.FloatArray2DSIFT;
+import mpicbg.models.*;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import javax.annotation.Nullable;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Vector;
 
 public class RegisterImages extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -90,32 +104,111 @@ public class RegisterImages extends Module {
             // Calculating the transformation for this image pair
             if (projectedReference == null) return;
 
+            ImagePlus ipl1 = projectedReference.getImagePlus();
+            ImagePlus ipl2 = projectedWarped.getImagePlus();
 
+            FloatArray2DSIFT.Param p = new FloatArray2DSIFT.Param();
+            p.initialSigma = 1.6f;
+            p.steps = 3;
+            p.minOctaveSize = 64;
+            p.maxOctaveSize = 1024;
+            p.fdSize = 4;
+            p.fdBins = 8;
+            float rod = 0.92f;
+            float maxEpsilon = 25.0f;
+            float minInlierRatio = 0.05f;
 
-//            Transformation transformation = getTransformation(projectedReference, projectedWarped, param);
-//
-//            // Setting the time range for the correction.  This is only the case if a correction interval for "previous-
-//            // frame" correction is used and the current frame number is an integer multiple of the interval.
-//            int t2 = t;
-//            switch (relativeMode) {
-//                case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
-//                    if (correctionInterval != -1 && t%correctionInterval == 0) {
-//                        t2 = source.getImagePlus().getNFrames();
-//                    }
-//                    break;
-//            }
-//
-//            // Applying the transformation to the whole stack.
-//            // All channels should move in the same way, so are processed with the same transformation.
-//            for (int tt = t; tt <= t2; tt++) {
-//                for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
-//                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-//                    applyTransformation(warped, transformation);
-//
-//                    // Replacing the original stack with the warped one
-//                    replaceStack(inputImage, warped, c, tt);
-//                }
-//            }
+            Mapping mapping = getTransformation(projectedReference,projectedWarped,p,rod,maxEpsilon,minInlierRatio);
+
+            int t2 = t;
+            switch (relativeMode) {
+                case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
+                    if (correctionInterval != -1 && t%correctionInterval == 0) {
+                        t2 = source.getImagePlus().getNFrames();
+                    }
+                    break;
+            }
+
+            // Applying the transformation to the whole stack.
+            // All channels should move in the same way, so are processed with the same transformation.
+            for (int tt = t; tt <= t2; tt++) {
+                for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
+                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
+                    applyTransformation(warped, mapping);
+
+                    // Replacing the original stack with the warped one
+                    replaceStack(inputImage, warped, c, tt);
+                }
+            }
+        }
+    }
+
+    public static Mapping getTransformation(Image referenceImage, Image warpedImage, FloatArray2DSIFT.Param param, float rod, float maxEpsilon, float minInlierRatio) {
+        ImagePlus referenceIpl = referenceImage.getImagePlus();
+        ImagePlus warpedIpl = warpedImage.getImagePlus();
+
+        // Initialising SIFT feature extractor
+        FloatArray2DSIFT sift = new FloatArray2DSIFT(param);
+        SIFT ijSIFT = new SIFT(sift);
+
+        // Extracting features
+        ArrayList<Feature> featureList1 = new ArrayList<Feature>();
+        ijSIFT.extractFeatures(referenceIpl.getProcessor(),featureList1);
+        ArrayList<Feature> featureList2 = new ArrayList<Feature>();
+        ijSIFT.extractFeatures(warpedIpl.getProcessor(),featureList2);
+
+        // Running registration
+        AbstractAffineModel2D model = new TranslationModel2D();
+        Mapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
+        Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2,featureList1,1.5f,null, Float.MAX_VALUE,rod);
+        Vector<PointMatch> inliers = new Vector<PointMatch>();
+        AbstractAffineModel2D< ? > currentModel = new TranslationModel2D();
+
+        try {
+            currentModel.filterRansac(candidates,inliers,1000,maxEpsilon,minInlierRatio);
+        } catch (NotEnoughDataPointsException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        model.concatenate(currentModel);
+
+        return mapping;
+
+    }
+
+    public static void applyTransformation(Image inputImage, Mapping mapping) {
+        // Iterate over all images in the stack
+        ImagePlus inputIpl = inputImage.getImagePlus();
+
+        for (int c=1;c<=inputIpl.getNChannels();c++) {
+            for (int z=1;z<=inputIpl.getNSlices();z++) {
+                for (int t=1;t<=inputIpl.getNFrames();t++) {
+                    inputIpl.setPosition(c, z, t);
+
+                    final ImageProcessor originalSlice = inputIpl.getProcessor();
+                    originalSlice.setInterpolationMethod( ImageProcessor.BILINEAR );
+                    final ImageProcessor alignedSlice = originalSlice.createProcessor(originalSlice.getWidth(), originalSlice.getHeight() );
+                    alignedSlice.setMinAndMax( originalSlice.getMin(), originalSlice.getMax());
+                    mapping.mapInterpolated( originalSlice, alignedSlice );
+
+                    inputIpl.setProcessor(alignedSlice);
+
+                }
+            }
+        }
+    }
+
+    public static void replaceStack(Image inputImage, Image newStack, int channel, int timepoint) {
+        ImagePlus inputImagePlus = inputImage.getImagePlus();
+        ImagePlus newStackImagePlus = newStack.getImagePlus();
+
+        for (int z=1;z<=newStackImagePlus.getNSlices();z++) {
+            inputImagePlus.setPosition(channel,z,timepoint);
+            newStackImagePlus.setPosition(1,z,1);
+
+            inputImagePlus.setProcessor(newStackImagePlus.getProcessor());
+
         }
     }
 

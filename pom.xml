@@ -186,9 +186,9 @@
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>register_virtual_stack_slices</artifactId>
-            <version>3.0.5</version>
+            <groupId>mpicbg</groupId>
+            <artifactId>mpicbg</artifactId>
+            <version>1.1.1</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
