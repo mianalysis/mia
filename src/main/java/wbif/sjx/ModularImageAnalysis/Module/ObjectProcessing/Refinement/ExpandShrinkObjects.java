@@ -177,7 +177,7 @@ public class ExpandShrinkObjects extends Module {
         parameters.add(new Parameter(UPDATE_INPUT_OBJECTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
         parameters.add(new Parameter(METHOD,Parameter.CHOICE_ARRAY,Methods.EXPAND_2D,Methods.ALL));
-        parameters.add(new Parameter(RADIUS_CHANGE_PX,Parameter.INTEGER,1.0));
+        parameters.add(new Parameter(RADIUS_CHANGE_PX,Parameter.INTEGER,1));
 
     }
 

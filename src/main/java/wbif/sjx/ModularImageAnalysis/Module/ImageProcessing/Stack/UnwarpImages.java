@@ -294,7 +294,7 @@ public class UnwarpImages extends Module {
                     for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
                         warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
                         applyTransformation(warped, transformation);
-                        replaceStack(inputImage, warped, c, tt);
+                        replaceStack(source, warped, c, tt);
                     }
                 }
             }

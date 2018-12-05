@@ -66,14 +66,9 @@ public class RunTrackMate extends Module {
 
         // Applying conversion to parameters
         if (calibratedUnits) {
-            double dppXY = calibration.getX(1);
-            double dppZ = calibration.getZ(1);
-            String calibrationUnits = calibration.getUnits();
-
             radius = calibration.getRawX(radius);
             maxLinkDist = calibration.getRawX(maxLinkDist);
             maxGapDist = calibration.getRawX(maxGapDist);
-
         }
 
         // Initialising settings for TrackMate

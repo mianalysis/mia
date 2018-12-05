@@ -5,7 +5,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import de.biomedical_imaging.ij.steger.*;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -15,10 +14,8 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
 
-import java.awt.*;
 import java.util.*;
 
 /**
@@ -30,9 +27,10 @@ public class RidgeDetection extends Module {
     public static final String LOWER_THRESHOLD = "Lower threshold";
     public static final String UPPER_THRESHOLD = "Upper threshold";
     public static final String SIGMA = "Sigma";
+    public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String ESTIMATE_WIDTH = "Estimate width";
-    public static final String MIN_LENGTH = "Minimum length (px)";
-    public static final String MAX_LENGTH = "Maximum length (px)";
+    public static final String MIN_LENGTH = "Minimum length";
+    public static final String MAX_LENGTH = "Maximum length";
     public static final String CONTOUR_CONTRAST = "Contour contrast";
     public static final String LINK_CONTOURS = "Link contours";
 
@@ -53,9 +51,9 @@ public class RidgeDetection extends Module {
 
     }
 
-    public ObjCollection processImage(Image inputImage, String outputObjectsName, String contourContrast, double sigma,
-                                      double upperThreshold, double lowerThreshold, double minLength, double maxLength,
-                                      boolean linkContours, boolean estimateWidth) {
+    public ObjCollection process(Image inputImage, String outputObjectsName, String contourContrast, double sigma,
+                                 double upperThreshold, double lowerThreshold, double minLength, double maxLength,
+                                 boolean linkContours, boolean estimateWidth) {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Storing the image calibration
@@ -226,13 +224,25 @@ public class RidgeDetection extends Module {
         double lowerThreshold = parameters.getValue(LOWER_THRESHOLD);
         double upperThreshold = parameters.getValue(UPPER_THRESHOLD);
         double sigma = parameters.getValue(SIGMA);
+        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
         boolean estimateWidth = parameters.getValue(ESTIMATE_WIDTH);
         String contourContrast = parameters.getValue(CONTOUR_CONTRAST);
         double minLength = parameters.getValue(MIN_LENGTH);
         double maxLength = parameters.getValue(MAX_LENGTH);
         boolean linkContours = parameters.getValue(LINK_CONTOURS);
 
-        ObjCollection outputObjects = processImage(inputImage,outputObjectsName,contourContrast,sigma,upperThreshold,
+        // Converting distances to calibrated units if necessary
+        if (calibratedUnits) {
+            Calibration calibration = inputImage.getImagePlus().getCalibration();
+
+            sigma = calibration.getRawX(sigma);
+            minLength = calibration.getRawX(minLength);
+            maxLength = calibration.getRawX(maxLength);
+
+        }
+
+        // Running on the present image
+        ObjCollection outputObjects = process(inputImage,outputObjectsName,contourContrast,sigma,upperThreshold,
                 lowerThreshold,minLength,maxLength,linkContours,estimateWidth);
 
         workspace.addObjects(outputObjects);
@@ -274,6 +284,7 @@ public class RidgeDetection extends Module {
         parameters.add(new Parameter(LOWER_THRESHOLD,Parameter.DOUBLE, 0.5));
         parameters.add(new Parameter(UPPER_THRESHOLD,Parameter.DOUBLE, 0.85));
         parameters.add(new Parameter(SIGMA,Parameter.DOUBLE, 3d));
+        parameters.add(new Parameter(CALIBRATED_UNITS,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(ESTIMATE_WIDTH,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(CONTOUR_CONTRAST,Parameter.CHOICE_ARRAY,ContourContrast.DARK_LINE,ContourContrast.ALL));
         parameters.add(new Parameter(MIN_LENGTH,Parameter.DOUBLE, 0d));
