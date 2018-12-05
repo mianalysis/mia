@@ -111,7 +111,7 @@ public class CreateMeasurementMap extends Module {
         for (Obj object:objects.values()) {
             // Getting parent object
             Obj parentObject = object.getParent(parentObjectsName);
-            if (parentObject == null) return;
+            if (parentObject == null) continue;
 
             // Getting measurement value.  Skip if null or NaN.
             Measurement measurement = parentObject.getMeasurement(measurementName);

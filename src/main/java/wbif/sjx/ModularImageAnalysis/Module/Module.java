@@ -183,6 +183,10 @@ public abstract class Module implements Serializable {
         if (verbose) new Thread(() -> System.out.println("[" + moduleName + "] "+message)).start();
     }
 
+    protected static void writeMessage(String message, String moduleName) {
+        if (verbose) new Thread(() -> System.out.println("[" + moduleName + "] "+message)).start();
+    }
+
     public boolean canBeDisabled() {
         return canBeDisabled;
     }
