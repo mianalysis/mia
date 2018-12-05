@@ -19,7 +19,7 @@ Note: "Biomedgroup" enables the [Ridge Detection](https://github.com/thorstenwag
 
 Usage
 -----
-- In Fiji, run the plugin from Plugins > Wolfson Bioimaging > Modular Image Analysis
+- In Fiji, run the plugin from Plugins > Bristol WBIF > Modular Image Analysis
 - To run an existing analysis workflow
 > - Click "Load" and select the .mia workflow file
 > - Depending on workflow configuration, a number of controls may be visible
@@ -44,9 +44,11 @@ The plugin makes use of a combination of plugins packaged with Fiji as well as o
 
 Required plugins pre-packaged with Fiji:
 - [Auto Threshold](https://github.com/fiji/Auto_Threshold)
+- [bUnwarpJ](https://github.com/fiji/bUnwarpJ)
 - [BioFormats](https://github.com/openmicroscopy/bioformats)
 - [Colour Deconvolution](https://github.com/fiji/Colour_Deconvolution)
 - [Correct Bleach](https://github.com/fiji/CorrectBleach)
+- [MPICBG](https://github.com/axtimwalde/mpicbg)
 - [TrackMate](https://github.com/fiji/TrackMate)
 - [Weka Trainable Segmentation](https://github.com/fiji/Trainable_Segmentation)
 
@@ -55,8 +57,8 @@ Required plugins that need installing via the Fiji updater:
 - [MorphoLibJ](https://github.com/ijpb/MorphoLibJ)
 
 Plugins bundled with MIA:
-- [BoneJ](https://github.com/mdoube/BoneJ)
+- [BoneJ legacy plugins](https://github.com/mdoube/BoneJ)
 - [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html)
 
 
-A list of bundled dependencies along with their respective licenses can be found [here](https://cdn.rawgit.com/SJCross/ModularImageAnalysis/master/target/site/dependencies.html).
+A list of bundled dependencies along with their respective licenses can be found [here](https://cdn.staticaly.com/gh/SJCross/ModularImageAnalysis/908a49be/target/site/dependencies.html).
