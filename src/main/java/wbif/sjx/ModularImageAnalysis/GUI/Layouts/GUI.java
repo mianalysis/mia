@@ -1139,12 +1139,15 @@ public class GUI {
         int nThreads = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
         boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
         String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
+        String filenameFilterSource1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_1);
         String filenameFilterType1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_1);
         boolean useFilenameFilter2 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_2);
         String filenameFilter2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_2);
+        String filenameFilterSource2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_2);
         String filenameFilterType2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_2);
         boolean useFilenameFilter3 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_3);
         String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
+        String filenameFilterSource3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_3);
         String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
 
         Units.setUnits(inputControl.getParameterValue(InputControl.SPATIAL_UNITS));
@@ -1162,9 +1165,9 @@ public class GUI {
             batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
 
             // Adding filename filters
-            if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1, filenameFilter1);
-            if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2, filenameFilter2);
-            if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3, filenameFilter3);
+            if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1, filenameFilter1, filenameFilterSource1);
+            if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2, filenameFilter2, filenameFilterSource2);
+            if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3, filenameFilter3, filenameFilterSource3);
 
             // Running the analysis
             File nextFile = batchProcessor.getNextValidFileInStructure();

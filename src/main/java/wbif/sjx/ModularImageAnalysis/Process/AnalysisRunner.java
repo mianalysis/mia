@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
-import ij.Prefs;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
@@ -107,21 +106,24 @@ public class AnalysisRunner {
         String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
         boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
         String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
+        String filenameFilterSource1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_1);
         String filenameFilterType1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_1);
         boolean useFilenameFilter2 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_2);
         String filenameFilter2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_2);
+        String filenameFilterSource2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_2);
         String filenameFilterType2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_2);
         boolean useFilenameFilter3 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_3);
         String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
+        String filenameFilterSource3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_3);
         String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
 
         // Adding extension filter
         batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
 
         // Adding filename filters
-        if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1);
-        if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2);
-        if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3);
+        if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1,filenameFilterSource1);
+        if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2,filenameFilterSource2);
+        if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3,filenameFilterSource3);
 
     }
 
@@ -132,6 +134,7 @@ public class AnalysisRunner {
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_MODE);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
+        String appendDateTimeMode = outputControl.getParameterValue(OutputControl.APPEND_DATETIME_MODE);
         boolean showObjectCounts = outputControl.getParameterValue(OutputControl.SHOW_OBJECT_COUNTS);
         boolean showChildCounts = outputControl.getParameterValue(OutputControl.SHOW_NUMBER_OF_CHILDREN);
         boolean calculateMean = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_MEAN);
@@ -175,6 +178,20 @@ public class AnalysisRunner {
 
                 case OutputControl.SummaryModes.AVERAGE_PER_TIMEPOINT:
                     exporter.setSummaryMode(Exporter.SummaryMode.PER_TIMEPOINT_PER_FILE);
+                    break;
+            }
+
+            switch (appendDateTimeMode) {
+                case OutputControl.AppendDateTimeModes.ALWAYS:
+                    exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.ALWAYS);
+                    break;
+
+                case OutputControl.AppendDateTimeModes.IF_FILE_EXISTS:
+                    exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.IF_FILE_EXISTS);
+                    break;
+
+                case OutputControl.AppendDateTimeModes.NEVER:
+                    exporter.setAppendDateTimeMode(Exporter.AppendDateTimeMode.NEVER);
                     break;
             }
         }

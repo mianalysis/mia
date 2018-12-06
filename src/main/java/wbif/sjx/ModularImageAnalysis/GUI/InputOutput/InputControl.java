@@ -26,12 +26,15 @@ public class InputControl extends Module {
     public static final String SERIESNAME_FILTER_TYPE_3 = "Seriesname filter type 3";
     public static final String USE_FILENAME_FILTER_1 = "Use filename filter 1";
     public static final String FILENAME_FILTER_1 = "Filename filter 1";
+    public static final String FILENAME_FILTER_SOURCE_1 = "Filename filter source 1";
     public static final String FILENAME_FILTER_TYPE_1 = "Filter type 1";
     public static final String USE_FILENAME_FILTER_2 = "Use filename filter 2";
     public static final String FILENAME_FILTER_2 = "Filename filter 2";
+    public static final String FILENAME_FILTER_SOURCE_2 = "Filename filter source 2";
     public static final String FILENAME_FILTER_TYPE_2 = "Filter type 2";
     public static final String USE_FILENAME_FILTER_3 = "Use filename filter 3";
     public static final String FILENAME_FILTER_3 = "Filename filter 3";
+    public static final String FILENAME_FILTER_SOURCE_3 = "Filename filter source 3";
     public static final String FILENAME_FILTER_TYPE_3 = "Filter type 3";
     public static final String SPATIAL_UNITS = "Spatial units";
 
@@ -49,6 +52,14 @@ public class InputControl extends Module {
         String SINGLE_SERIES = "Single series";
 
         String[] ALL = new String[]{ALL_SERIES,SERIES_LIST,SINGLE_SERIES};
+
+    }
+
+    public interface FilenameFilterSource {
+        String FILENAME = "Filename";
+        String FILEPATH = "Filepath";
+
+        String[] ALL = new String[]{FILENAME,FILEPATH};
 
     }
 
@@ -103,12 +114,15 @@ public class InputControl extends Module {
         parameters.add(new Parameter(SERIESNAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
+        parameters.add(new Parameter(FILENAME_FILTER_SOURCE_1,Parameter.CHOICE_ARRAY,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
         parameters.add(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new Parameter(USE_FILENAME_FILTER_2,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FILENAME_FILTER_2,Parameter.STRING,""));
+        parameters.add(new Parameter(FILENAME_FILTER_SOURCE_2,Parameter.CHOICE_ARRAY,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
         parameters.add(new Parameter(FILENAME_FILTER_TYPE_2,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new Parameter(USE_FILENAME_FILTER_3,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FILENAME_FILTER_3,Parameter.STRING,""));
+        parameters.add(new Parameter(FILENAME_FILTER_SOURCE_3,Parameter.CHOICE_ARRAY,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
         parameters.add(new Parameter(FILENAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new Parameter(SPATIAL_UNITS,Parameter.CHOICE_ARRAY,SpatialUnits.MICROMETRE,SpatialUnits.ALL));
 
@@ -127,6 +141,25 @@ public class InputControl extends Module {
 
         returnedParameters.add(parameters.getParameter(SERIES_MODE));
         switch ((String) parameters.getValue(SERIES_MODE)) {
+            case SeriesModes.ALL_SERIES:
+                returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_1));
+                if (parameters.getValue(USE_SERIESNAME_FILTER_1)) {
+                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_1));
+                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_1));
+                }
+
+                returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_2));
+                if (parameters.getValue(USE_SERIESNAME_FILTER_2)) {
+                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_2));
+                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_2));
+                }
+
+                returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_3));
+                if (parameters.getValue(USE_SERIESNAME_FILTER_3)) {
+                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_3));
+                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_3));
+                }
+                break;
             case SeriesModes.SERIES_LIST:
                 returnedParameters.add(parameters.getParameter(SERIES_LIST));
                 break;
@@ -135,39 +168,24 @@ public class InputControl extends Module {
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_1));
-        if (parameters.getValue(USE_SERIESNAME_FILTER_1)) {
-            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_1));
-            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_1));
-        }
-
-        returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_2));
-        if (parameters.getValue(USE_SERIESNAME_FILTER_2)) {
-            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_2));
-            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_2));
-        }
-
-        returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_3));
-        if (parameters.getValue(USE_SERIESNAME_FILTER_3)) {
-            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_3));
-            returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_3));
-        }
-
         returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_1));
         if (returnedParameters.getValue(USE_FILENAME_FILTER_1)) {
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_1));
+            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_SOURCE_1));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_1));
         }
 
         returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_2));
         if (returnedParameters.getValue(USE_FILENAME_FILTER_2)) {
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_2));
+            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_SOURCE_2));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_2));
         }
 
         returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_3));
         if (returnedParameters.getValue(USE_FILENAME_FILTER_3)) {
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_3));
+            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_SOURCE_3));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_3));
         }
 

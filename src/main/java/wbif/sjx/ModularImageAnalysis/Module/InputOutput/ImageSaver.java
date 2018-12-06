@@ -10,6 +10,9 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Created by sc13967 on 26/06/2017.
@@ -19,6 +22,7 @@ public class ImageSaver extends Module {
     public static final String SAVE_LOCATION = "Save location";
     public static final String MIRROR_DIRECTORY_ROOT = "Mirrored directory root";
     public static final String SAVE_FILE_PATH = "File path";
+    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
     public static final String SAVE_SUFFIX = "Add filename suffix";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
@@ -31,6 +35,32 @@ public class ImageSaver extends Module {
 
     }
 
+    public interface AppendDateTimeModes {
+        String ALWAYS = "Always";
+        String IF_FILE_EXISTS = "If file exists";
+        String NEVER = "Never";
+
+        String[] ALL = new String[]{ALWAYS,IF_FILE_EXISTS, NEVER};
+
+    }
+
+
+    public static String appendDateTime(String inputName, String appendDateTimeMode) {
+        switch (appendDateTimeMode) {
+            case AppendDateTimeModes.IF_FILE_EXISTS:
+                File file = new File(inputName);
+                if (!file.exists()) return inputName;
+            case AppendDateTimeModes.ALWAYS:
+                String nameWithoutExtension = FilenameUtils.removeExtension(inputName);
+                String extension = FilenameUtils.getExtension(inputName);
+                ZonedDateTime zonedDateTime = ZonedDateTime.now();
+                String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+                return  nameWithoutExtension+ "_("+ dateTime + ")."+extension;
+            case AppendDateTimeModes.NEVER:
+            default:
+                return inputName;
+        }
+    }
 
     @Override
     public String getTitle() {
@@ -54,6 +84,7 @@ public class ImageSaver extends Module {
         String saveLocation = parameters.getValue(SAVE_LOCATION);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT);
         String filePath = parameters.getValue(SAVE_FILE_PATH);
+        String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
         String suffix = parameters.getValue(SAVE_SUFFIX);
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
 
@@ -73,6 +104,7 @@ public class ImageSaver extends Module {
             }
         }
 
+        String path;
         switch (saveLocation) {
             case SaveLocations.MIRRORED_DIRECTORY:
                 File rootFile = workspace.getMetadata().getFile();
@@ -88,33 +120,29 @@ public class ImageSaver extends Module {
                 for (int i=0;i<fileDepth;i++) {
                     sb.insert(0,parentFile.getName()+MIA.slashes);
                     parentFile = parentFile.getParentFile();
-
                 }
 
                 new File(mirroredDirectoryRoot+ MIA.slashes +sb).mkdirs();
 
-                String path = mirroredDirectoryRoot+ MIA.slashes +sb+FilenameUtils.removeExtension(rootFile.getName());
-                path = path + "_S" + workspace.getMetadata().getSeriesNumber();
-                path = path + suffix + ".tif";
-                IJ.save(inputImagePlus,path);
+                path = mirroredDirectoryRoot+ MIA.slashes +sb+FilenameUtils.removeExtension(rootFile.getName());
                 break;
 
             case SaveLocations.SAVE_WITH_INPUT:
+            default:
                 rootFile = workspace.getMetadata().getFile();
                 path = rootFile.getParent()+ MIA.slashes +FilenameUtils.removeExtension(rootFile.getName());
-                path = path + "_S" + workspace.getMetadata().getSeriesNumber();
-                path = path + suffix + ".tif";
-                IJ.save(inputImagePlus,path);
                 break;
 
             case SaveLocations.SPECIFIC_LOCATION:
                 path = FilenameUtils.removeExtension(filePath);
-                path = path + "_S" + workspace.getMetadata().getSeriesNumber();
-                path = path + suffix + ".tif";
-                IJ.save(inputImagePlus,path);
                 break;
-
         }
+
+        // Adding last bits to name
+        path = path + "_S" + workspace.getMetadata().getSeriesNumber();
+        path = path + suffix + ".tif";
+        path = appendDateTime(path,appendDateTimeMode);
+        IJ.save(inputImagePlus,path);
 
         return true;
 
@@ -126,6 +154,7 @@ public class ImageSaver extends Module {
         parameters.add(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
         parameters.add(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FOLDER_PATH,""));
         parameters.add(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
+        parameters.add(new Parameter(APPEND_DATETIME_MODE, Parameter.CHOICE_ARRAY, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
         parameters.add(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,false));
 
@@ -133,27 +162,27 @@ public class ImageSaver extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParamters = new ParameterCollection();
+        ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParamters.add(parameters.getParameter(INPUT_IMAGE));
-        returnedParamters.add(parameters.getParameter(SAVE_LOCATION));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(SAVE_LOCATION));
 
         switch ((String) parameters.getValue(SAVE_LOCATION)) {
             case SaveLocations.SPECIFIC_LOCATION:
-                returnedParamters.add(parameters.getParameter(SAVE_FILE_PATH));
+                returnedParameters.add(parameters.getParameter(SAVE_FILE_PATH));
                 break;
 
             case SaveLocations.MIRRORED_DIRECTORY:
-                returnedParamters.add(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
+                returnedParameters.add(parameters.getParameter(MIRROR_DIRECTORY_ROOT));
                 break;
 
         }
 
-        returnedParamters.add(parameters.getParameter(SAVE_SUFFIX));
-        returnedParamters.add(parameters.getParameter(FLATTEN_OVERLAY));
+        returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
+        returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
+        returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
 
-
-        return returnedParamters;
+        return returnedParameters;
 
     }
 

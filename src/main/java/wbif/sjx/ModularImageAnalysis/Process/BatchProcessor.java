@@ -21,6 +21,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
+import wbif.sjx.common.FileConditions.ParentContainsString;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
@@ -268,27 +269,35 @@ public class BatchProcessor extends FileCrawler {
      * @param filenameFilterType
      * @param filenameFilter
      */
-    public void addFilenameFilter(String filenameFilterType, String filenameFilter) {
-        addFileCondition(getFilenameFilter(filenameFilterType,filenameFilter));
+    public void addFilenameFilter(String filenameFilterType, String filenameFilter, String filenameSource) {
+        addFileCondition(getFilenameFilter(filenameFilterType,filenameFilter,filenameSource));
     }
 
-    private NameContainsString getFilenameFilter(String filenameFilterType, String filenameFilter) {
+    private FileCondition getFilenameFilter(String filenameFilterType, String filenameFilter, String filenameFilterSource) {
+        int fileCondition;
         switch (filenameFilterType) {
             case InputControl.FilterTypes.INCLUDE_MATCHES_PARTIALLY:
-                return new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL);
-
+            default:
+                fileCondition = FileCondition.INC_PARTIAL;
+                break;
             case InputControl.FilterTypes.INCLUDE_MATCHES_COMPLETELY:
-                return new NameContainsString(filenameFilter, FileCondition.INC_PARTIAL);
-
+                fileCondition = FileCondition.INC_COMPLETE;
+                break;
             case InputControl.FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
-                return new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL);
-
+                fileCondition = FileCondition.EXC_PARTIAL;
+                break;
             case InputControl.FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
-                return new NameContainsString(filenameFilter, FileCondition.EXC_PARTIAL);
+                fileCondition = FileCondition.EXC_COMPLETE;
+                break;
         }
 
-        return null;
-
+        switch (filenameFilterSource) {
+            case InputControl.FilenameFilterSource.FILENAME:
+                default:
+                return new NameContainsString(filenameFilter, fileCondition);
+            case InputControl.FilenameFilterSource.FILEPATH:
+                return new ParentContainsString(filenameFilter, fileCondition);
+        }
     }
 
     private TreeMap<Integer,String> getSeriesNumbers(Analysis analysis, File inputFile) {
@@ -322,9 +331,16 @@ public class BatchProcessor extends FileCrawler {
 
                     for (int seriesNumber=0;seriesNumber<reader.getSeriesCount();seriesNumber++) {
                         String name = meta.getImageName(seriesNumber);
-                        if (name!= null && useFilter1 &!getFilenameFilter(filterType1,filter1).test(name)) continue;
-                        if (useFilter2 &!getFilenameFilter(filterType2,filter2).test(name)) continue;
-                        if (useFilter3 &!getFilenameFilter(filterType3,filter3).test(name)) continue;
+                        String source = InputControl.FilenameFilterSource.FILENAME;
+
+                        NameContainsString test1 = (NameContainsString) getFilenameFilter(filterType1,filter1,source);
+                        if (name!= null && useFilter1 &! test1.test(name)) continue;
+
+                        NameContainsString test2 = (NameContainsString) getFilenameFilter(filterType2,filter2,source);
+                        if (useFilter2 &!test2.test(name)) continue;
+
+                        NameContainsString test3 = (NameContainsString) getFilenameFilter(filterType3,filter3,source);
+                        if (useFilter3 &!test3.test(name)) continue;
                         namesAndNumbers.put(seriesNumber+1,name);
                     }
                     break;
