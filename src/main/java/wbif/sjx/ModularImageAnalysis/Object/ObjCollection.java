@@ -155,13 +155,14 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
                 ipl.setPosition(1,zPos+1,tPos+1);
 
+                float hue = hues.get(object.getID());
                 switch (bitDepth) {
                     case 8:
                     case 16:
-                        ipl.getProcessor().putPixel(x.get(i), y.get(i), Math.round(hues.get(object.getID())*255));
+                        ipl.getProcessor().putPixel(x.get(i), y.get(i), Math.round(hue*255));
                         break;
                     case 32:
-                        ipl.getProcessor().putPixelValue(x.get(i), y.get(i), hues.get(object.getID()));
+                        ipl.getProcessor().putPixelValue(x.get(i), y.get(i), hue);
                         break;
                 }
             }

@@ -14,6 +14,7 @@ import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Object.Point;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -83,9 +84,12 @@ public class CreateMeasurementMap extends Module {
 
     }
 
-    public static void processObjectMeasurement(CumStat[] cumStats, Indexer indexer, ObjCollection objects, String measurementName) {
+    public static void processObjectMeasurement(CumStat[] cumStats, Indexer indexer, ObjCollection objects, String measurementName, @Nullable String message) {
         // Adding objects
+        int count = 0;
+        int nTotal = objects.size();
         for (Obj object:objects.values()) {
+            if (message != null) writeMessage("Processing object "+(++count)+" of "+nTotal,message);
             // Getting measurement value.  Skip if null or NaN.
             Measurement measurement = object.getMeasurement(measurementName);
             if (measurement == null) continue;
@@ -106,9 +110,13 @@ public class CreateMeasurementMap extends Module {
         }
     }
 
-    public static void processParentMeasurements(CumStat[] cumStats, Indexer indexer, ObjCollection objects, String parentObjectsName, String measurementName) {
+    public static void processParentMeasurements(CumStat[] cumStats, Indexer indexer, ObjCollection objects, String parentObjectsName, String measurementName, @Nullable String message) {
         // Adding objects
+        int count = 0;
+        int nTotal = objects.size();
         for (Obj object:objects.values()) {
+            if (message != null) writeMessage("Processing object "+(++count)+" of "+nTotal,message);
+
             // Getting parent object
             Obj parentObject = object.getParent(parentObjectsName);
             if (parentObject == null) continue;
@@ -292,14 +300,15 @@ public class CreateMeasurementMap extends Module {
         // Compressing relevant measures
         switch (measurementMode) {
             case MeasurementModes.MEASUREMENT:
-                processObjectMeasurement(cumStats,indexer,inputObjects,measurementName);
+                processObjectMeasurement(cumStats,indexer,inputObjects,measurementName,getTitle());
                 break;
             case MeasurementModes.PARENT_MEASUREMENT:
-                processParentMeasurements(cumStats,indexer,inputObjects,parentObjectsName,measurementName);
+                processParentMeasurements(cumStats,indexer,inputObjects,parentObjectsName,measurementName,getTitle());
                 break;
         }
 
         // Blurring image
+        writeMessage("Blurring image");
         CumStat[] blurCumStats = applyBlur(cumStats,indexer,range,statistic);
 
         // Converting statistic array to Image

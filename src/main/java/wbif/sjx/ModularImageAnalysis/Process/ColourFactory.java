@@ -150,7 +150,7 @@ public class ColourFactory {
         // Getting minimum and maximum values from measurement (if required)
         CumStat cs = new CumStat();
         for (Obj obj:objects.values()) {
-            if (obj.getMeasurement(measurementName) == null) break;
+            if (obj.getMeasurement(measurementName) == null) continue;
             cs.addMeasure(obj.getMeasurement(measurementName).getValue());
         }
 
@@ -161,7 +161,10 @@ public class ColourFactory {
             float H = 0f;
 
             Measurement measurement = object.getMeasurement(measurementName);
-            if (measurement == null) break;
+            if (measurement == null) {
+                hues.put(ID,H);
+                continue;
+            }
             H = (float) object.getMeasurement(measurementName).getValue();
             if (normalised) {
                 double startH = 0;
@@ -185,8 +188,8 @@ public class ColourFactory {
         CumStat cs = new CumStat();
         for (Obj obj:objects.values()) {
             Obj parentObj = obj.getParent(parentObjectsName);
-            if (parentObj == null) break;
-            if (parentObj.getMeasurement(measurementName) == null) break;
+            if (parentObj == null) continue;
+            if (parentObj.getMeasurement(measurementName) == null) continue;
             cs.addMeasure(parentObj.getMeasurement(measurementName).getValue());
         }
 
@@ -197,8 +200,14 @@ public class ColourFactory {
             float H = 0f;
 
             Obj parentObj = object.getParent(parentObjectsName);
-            if (parentObj == null) break;
-            if (parentObj.getMeasurement(measurementName) == null) break;
+            if (parentObj == null) {
+                hues.put(ID,H);
+                continue;
+            }
+            if (parentObj.getMeasurement(measurementName) == null) {
+                hues.put(ID,H);
+                continue;
+            }
 
             H = (float) parentObj.getMeasurement(measurementName).getValue();
             if (normalised) {

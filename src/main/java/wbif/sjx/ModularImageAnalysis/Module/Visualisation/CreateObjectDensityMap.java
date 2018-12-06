@@ -12,6 +12,8 @@ import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
 
+import javax.annotation.Nullable;
+
 
 public class CreateObjectDensityMap extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -22,9 +24,13 @@ public class CreateObjectDensityMap extends Module {
     public static final String AVERAGE_TIME = "Average time";
 
 
-    public void process(CumStat[] cumStats, Indexer indexer, ObjCollection objects) {
+    public static void process(CumStat[] cumStats, Indexer indexer, ObjCollection objects, @Nullable String message) {
         // Adding objects
+        int count = 0;
+        int nTotal = objects.size();
         for (Obj object:objects.values()) {
+            if (message != null) writeMessage("Processing object "+(++count)+" of "+nTotal,message);
+
             // Getting all object points
             for (Point<Integer> point:object.getPoints()) {
                 // Getting index for this point
@@ -108,9 +114,10 @@ public class CreateObjectDensityMap extends Module {
         Indexer indexer = CreateMeasurementMap.initialiseIndexer(templateImage,averageZ,averageT);
 
         // Compressing relevant measures
-        process(cumStats,indexer,inputObjects);
+        process(cumStats,indexer,inputObjects,getTitle());
 
         // Converting statistic array to Image
+        writeMessage("Creating output image");
         Calibration calibration = templateImage.getImagePlus().getCalibration();
         Image outputImage = convertToImage(cumStats,indexer,outputImageName,calibration);
 
