@@ -21,6 +21,7 @@ public class OutputControl extends Module {
     public static final String EXPORT_INDIVIDUAL_OBJECTS = "Export individual objects";
     public static final String CONTINUOUS_DATA_EXPORT = "Continuous data export";
     public static final String SAVE_EVERY_N = "Save every n files";
+    public static final String APPEND_DATETIME_MODE = "Append date/time mode";
     public static final String SELECT_MEASUREMENTS = "Show measurement selection";
 
     public interface ExportModes {
@@ -38,6 +39,15 @@ public class OutputControl extends Module {
         String AVERAGE_PER_TIMEPOINT = "Per timepoint per input file";
 
         String[] ALL = new String[]{ONE_AVERAGE_PER_FILE,AVERAGE_PER_TIMEPOINT};
+
+    }
+
+    public interface AppendDateTimeModes {
+        String ALWAYS = "Always";
+        String IF_FILE_EXISTS = "If file exists";
+        String NEVER = "Never";
+
+        String[] ALL = new String[]{ALWAYS,IF_FILE_EXISTS, NEVER};
 
     }
 
@@ -78,6 +88,7 @@ public class OutputControl extends Module {
         parameters.add(new Parameter(EXPORT_INDIVIDUAL_OBJECTS,Parameter.BOOLEAN,true));
         parameters.add(new Parameter(CONTINUOUS_DATA_EXPORT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(SAVE_EVERY_N,Parameter.INTEGER,10));
+        parameters.add(new Parameter(APPEND_DATETIME_MODE, Parameter.CHOICE_ARRAY, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new Parameter(SELECT_MEASUREMENTS,Parameter.BOOLEAN,false));
 
     }
@@ -114,6 +125,7 @@ public class OutputControl extends Module {
             returnedParameters.add(parameters.getParameter(SAVE_EVERY_N));
         }
 
+        returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
         returnedParameters.add(parameters.getParameter(SELECT_MEASUREMENTS));
 
 

@@ -43,6 +43,10 @@ public class Exporter {
         PER_FILE, PER_TIMEPOINT_PER_FILE;
     }
 
+    public enum AppendDateTimeMode {
+        ALWAYS, IF_FILE_EXISTS, NEVER;
+    }
+
     private int exportFormat = XLSX_EXPORT;
 
     private String exportFilePath;
@@ -60,6 +64,7 @@ public class Exporter {
     private SummaryMode summaryMode = SummaryMode.PER_FILE;
     private boolean exportIndividualObjects = true;
     private boolean addMetadataToObjects = true;
+    private AppendDateTimeMode appendDateTimeMode = AppendDateTimeMode.NEVER;
 
 
     // CONSTRUCTOR
@@ -389,14 +394,21 @@ public class Exporter {
 
         // Writing the workbook to file
         String outPath = name + ".xlsx";
+        switch (appendDateTimeMode) {
+            case ALWAYS:
+                outPath = appendDateTime(outPath);
+                break;
+            case IF_FILE_EXISTS:
+                if (new File(outPath).exists()) outPath = appendDateTime(outPath);
+                break;
+        }
+
         try {
             FileOutputStream outputStream = new FileOutputStream(outPath);
             workbook.write(outputStream);
 
         } catch(FileNotFoundException e) {
-            ZonedDateTime zonedDateTime = ZonedDateTime.now();
-            String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-            String newOutPath = name + "_("+ dateTime + ").xlsx";
+            String newOutPath = appendDateTime(outPath);
             FileOutputStream outputStream = new FileOutputStream(newOutPath);
             workbook.write(outputStream);
 
@@ -409,6 +421,12 @@ public class Exporter {
 
         if (verbose) System.out.println("Saved results");
 
+    }
+
+    private static String appendDateTime(String inputName) {
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+        return inputName + "_("+ dateTime + ").xlsx";
     }
 
     private void prepareParametersXLSX(SXSSFWorkbook workbook, ModuleCollection modules) {
@@ -1178,6 +1196,14 @@ public class Exporter {
 
     public void setSummaryMode(SummaryMode summaryMode) {
         this.summaryMode = summaryMode;
+    }
+
+    public AppendDateTimeMode getAppendDateTimeMode() {
+        return appendDateTimeMode;
+    }
+
+    public void setAppendDateTimeMode(AppendDateTimeMode appendDateTimeMode) {
+        this.appendDateTimeMode = appendDateTimeMode;
     }
 
     public boolean isExportIndividualObjects() {

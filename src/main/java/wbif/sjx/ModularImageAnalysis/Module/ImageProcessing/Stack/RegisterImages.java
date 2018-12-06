@@ -23,9 +23,6 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class RegisterImages extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -281,59 +278,21 @@ public class RegisterImages extends Module {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
 
-        // Setting up the ExecutorService, which will manage the threads
-        int nThreads = Prefs.getThreads();
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-
-        for (int c=1;c<=inputIpl.getNChannels();c++) {
-            for (int z=1;z<=inputIpl.getNSlices();z++) {
-                for (int t=1;t<=inputIpl.getNFrames();t++) {
-                    int finalC = c;
-                    int finalZ = z;
-                    int finalT = t;
-                    Runnable task = () -> {
-                        ImageProcessor originalSlice = getOrReplaceSlice(inputIpl,null,finalC,finalZ,finalT,false);
-                        if (originalSlice == null) return;
-
-                        originalSlice.setInterpolationMethod(ImageProcessor.BILINEAR);
-                        ImageProcessor alignedSlice = originalSlice.createProcessor(originalSlice.getWidth(), originalSlice.getHeight());
-                        alignedSlice.setMinAndMax(originalSlice.getMin(), originalSlice.getMax());
-                        mapping.mapInterpolated(originalSlice, alignedSlice);
-
-                        getOrReplaceSlice(inputIpl,alignedSlice,finalC,finalZ,finalT,true);
-
-                    };
-                    pool.submit(task);
-                }
-            }
-        }
-
-        pool.shutdown();
-        try {
-            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-        } catch (InterruptedException e) {
-            return;
-        }
-
         for (int c=1;c<=inputIpl.getNChannels();c++) {
             for (int z=1;z<=inputIpl.getNSlices();z++) {
                 for (int t=1;t<=inputIpl.getNFrames();t++) {
                     inputIpl.setPosition(c, z, t);
+                    ImageProcessor originalSlice = inputIpl.getProcessor();
 
+                    originalSlice.setInterpolationMethod(ImageProcessor.BILINEAR);
+                    ImageProcessor alignedSlice = originalSlice.createProcessor(originalSlice.getWidth(), originalSlice.getHeight());
+                    alignedSlice.setMinAndMax(originalSlice.getMin(), originalSlice.getMax());
+                    mapping.mapInterpolated(originalSlice, alignedSlice);
 
+                    inputIpl.setProcessor(alignedSlice);
 
                 }
             }
-        }
-    }
-
-    private static synchronized ImageProcessor getOrReplaceSlice(ImagePlus inputIpl, @Nullable ImageProcessor slice, int c, int z, int t, boolean add) {
-        inputIpl.setPosition(c, z, t);
-        if (add) {
-            inputIpl.setProcessor(slice);
-            return null;
-        } else {
-            return inputIpl.getProcessor();
         }
     }
 
