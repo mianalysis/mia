@@ -253,5 +253,7 @@
     <orderEntry type="library" name="Maven: sc.fiji:LocalThickness_:4.0.0" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:Skeletonize3D_:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:VIB_:3.0.0" level="project" />
+    <orderEntry type="library" name="makesqr" level="project" />
+    <orderEntry type="library" name="javabuilder" level="project" />
   </component>
 </module>

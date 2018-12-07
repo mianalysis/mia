@@ -4,10 +4,13 @@
 
 package wbif.sjx.ModularImageAnalysis;
 
+import com.mathworks.toolbox.javabuilder.MWClassID;
+import com.mathworks.toolbox.javabuilder.MWNumericArray;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.PlugIn;
+import makesqr.Class1;
 import net.imagej.ui.swing.updater.ResolveDependencies;
 import net.imagej.updater.*;
 import net.imagej.updater.util.*;
@@ -57,7 +60,18 @@ public class MIA implements PlugIn {
      */
     private static final boolean imagePlusMode = true;
 
-    public static void main(String[] args) throws Exception {// The following works, but loads the entire video to RAM without an apparent way to prevent this
+    public static void main(String[] args) throws Exception {
+//        MWNumericArray n = null;
+//        Object[] result = null;
+//        Class1 class1 = new Class1();
+//        n = new MWNumericArray(Double.valueOf(5),MWClassID.DOUBLE);
+//        Object[] res = class1.makesqr(1,n);
+//        System.err.println(res[0]);
+//        System.err.println(n);
+//
+//        MWNumericArray res1 = (MWNumericArray) res[0];
+//        System.err.println(res1.numberOfDimensions());
+
         // Setting the file path slashes depending on the operating system
         if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
         else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";
