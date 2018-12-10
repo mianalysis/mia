@@ -19,6 +19,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisTester;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
+import wbif.sjx.ModularImageAnalysis.Process.ModuleReader;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import javax.swing.*;
@@ -52,7 +53,6 @@ public class GUI {
 
     private static boolean initialised = false;
     private static boolean basicGUI = true;
-    private static boolean debugOn = false;
 
     private static ComponentFactory componentFactory;
     private static final JFrame frame = new JFrame();
@@ -79,15 +79,13 @@ public class GUI {
     private static final MeasurementReference globalMeasurementReference = new MeasurementReference("Global");
 
 
-    public GUI(boolean debugOn) throws InstantiationException, IllegalAccessException {
+    public GUI() throws InstantiationException, IllegalAccessException {
         // Only create a GUI if one hasn't already been created
         if (initialised) {
             frame.setVisible(true);
             return;
         }
         initialised = true;
-
-        GUI.debugOn = debugOn;
 
         // Starting this process, as it takes longest
         new Thread(GUI::listAvailableModules).start();
@@ -111,7 +109,7 @@ public class GUI {
         initialiseBasicMode();
         initialiseEditingMode();
 
-        if (debugOn) {
+        if (MIA.isDebug()) {
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             renderEditingMode();
         } else {
@@ -157,7 +155,7 @@ public class GUI {
         menu = new JMenu("View");
         menu.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         menuBar.add(menu);
-        if (debugOn) {
+        if (MIA.isDebug()) {
             menu.add(new AnalysisMenuItem(AnalysisMenuItem.BASIC_VIEW));
         } else {
             menu.add(new AnalysisMenuItem(AnalysisMenuItem.EDITING_VIEW));
@@ -532,7 +530,7 @@ public class GUI {
         OutputStreamTextField outputStreamTextField = new OutputStreamTextField(textField);
         PrintStream guiPrintStream = new PrintStream(outputStreamTextField);
 
-        if (debugOn) {
+        if (MIA.isDebug()) {
             TeeOutputStream teeOutputStream = new TeeOutputStream(System.out,guiPrintStream);
             PrintStream printStream = new PrintStream(teeOutputStream);
             System.setOut(printStream);
@@ -960,16 +958,7 @@ public class GUI {
             addModuleButton.setEnabled(false);
             addModuleButton.setToolTipText("Loading modules");
 
-            Reflections.log = null;
-            ConfigurationBuilder builder = ConfigurationBuilder.build("");
-            builder.addUrls(ClasspathHelper.forPackage("wbif.sjx.ModularImageAnalysis"));
-            for (String packageName:MIA.getPluginPackages()) builder.addUrls(ClasspathHelper.forPackage(packageName));
-            if (!debugOn) {
-                for (URL url : ClasspathHelper.forClassLoader()) {
-                    if (url.getPath().contains("plugins")) builder.addUrls(url);
-                }
-            }
-            Set<Class<? extends Module>> availableModules = new Reflections(builder).getSubTypesOf(Module.class);
+            Set<Class<? extends Module>> availableModules = ModuleReader.getModules(MIA.isDebug());
 
             // Creating an alphabetically-ordered list of all modules
             TreeMap<String, Class> modules = new TreeMap<>();
