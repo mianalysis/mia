@@ -1,9 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
+import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Object.LUTs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,6 +88,17 @@ public class ProjectObjects extends Module {
         }
 
         workspace.addObjects(outputObjects);
+
+        // Showing objects
+        if (showOutput) {
+            HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
+            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
+            ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",null,hues,8,false).getImagePlus();
+            dispIpl.setLut(LUTs.Random(true));
+            dispIpl.setPosition(1,1,1);
+            dispIpl.updateChannelAndDraw();
+            dispIpl.show();
+        }
 
         return true;
 
