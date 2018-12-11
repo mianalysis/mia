@@ -26,7 +26,7 @@ Usage
 > - Depending on workflow configuration, a number of controls may be visible
 > - When ready, click "Run" to start the analysis
 > - While processing the status panel will display the number of files completed (batch mode) or a summary of the ongoing task (single file mode)
-> - When finished, "Complete" will be displayed in the status panel.  Output XLSX files will be saved in the input directory.
+> - When finished, "Complete" will be displayed in the status panel.  Output XLS files will be saved in the input directory.
 - To create a new workflow
 > - Select View > Editing mode from the menu bar
 > - Modules are added and removed from the workflow using the "+" and "-" buttons

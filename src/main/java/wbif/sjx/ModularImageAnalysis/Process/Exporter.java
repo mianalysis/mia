@@ -4,8 +4,8 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,7 +33,7 @@ import java.util.*;
  */
 public class Exporter {
     public static final int XML_EXPORT = 0;
-    public static final int XLSX_EXPORT = 1;
+    public static final int XLS_EXPORT = 1;
 
     public enum ExportMode {
         ALL_TOGETHER, GROUP_BY_METADATA,INDIVIDUAL_FILES;
@@ -47,7 +47,7 @@ public class Exporter {
         ALWAYS, IF_FILE_EXISTS, NEVER;
     }
 
-    private int exportFormat = XLSX_EXPORT;
+    private int exportFormat = XLS_EXPORT;
 
     private String exportFilePath;
     private boolean verbose = false;
@@ -82,14 +82,14 @@ public class Exporter {
         if (exportFormat == XML_EXPORT) {
             exportXML(workspaces,analysis);
 
-        } else if (exportFormat == XLSX_EXPORT) {
-            exportXLSX(workspaces,analysis);
+        } else if (exportFormat == XLS_EXPORT) {
+            exportXLS(workspaces,analysis);
 
         }
     }
 
     public void exportResults(Workspace workspace, Analysis analysis) throws IOException {
-        exportXLSX(workspace,analysis);
+        exportXLS(workspace,analysis);
 
     }
 
@@ -330,10 +330,10 @@ public class Exporter {
 
     }
 
-    private void exportXLSX(WorkspaceCollection workspaces, Analysis analysis) throws IOException {
+    private void exportXLS(WorkspaceCollection workspaces, Analysis analysis) throws IOException {
         switch (exportMode) {
             case ALL_TOGETHER:
-                exportXLSX(workspaces,analysis,exportFilePath);
+                exportXLS(workspaces,analysis,exportFilePath);
                 break;
 
             case GROUP_BY_METADATA:
@@ -358,7 +358,7 @@ public class Exporter {
 
                     String name = exportFilePath+"_"+metadataItemForGrouping+"-"+metadataValue;
 
-                    exportXLSX(currentWorkspaces,analysis,name);
+                    exportXLS(currentWorkspaces,analysis,name);
 
                 }
 
@@ -367,7 +367,7 @@ public class Exporter {
         }
     }
 
-    private void exportXLSX(Workspace workspace, Analysis analysis) throws IOException {
+    private void exportXLS(Workspace workspace, Analysis analysis) throws IOException {
         WorkspaceCollection currentWorkspaces = new WorkspaceCollection();
         currentWorkspaces.add(workspace);
 
@@ -375,25 +375,26 @@ public class Exporter {
         String name = FilenameUtils.removeExtension(metadata.getFile().getAbsolutePath());
         name = name +"_S"+metadata.getSeriesNumber();
 
-        exportXLSX(currentWorkspaces,analysis,name);
+        exportXLS(currentWorkspaces,analysis,name);
     }
 
 
-    private void exportXLSX(WorkspaceCollection workspaces, Analysis analysis, String name) throws IOException {
+    private void exportXLS(WorkspaceCollection workspaces, Analysis analysis, String name) throws IOException {
         // Getting modules
         ModuleCollection modules = analysis.getModules();
 
         // Initialising the workbook
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
+//        SXSSFWorkbook workbook = new SXSSFWorkbook();
+        Workbook workbook = new HSSFWorkbook();
 
         // Adding relevant sheets
-        prepareParametersXLSX(workbook,modules);
-        prepareErrorLogXLSX(workbook);
-        if (exportSummary) prepareSummaryXLSX(workbook,workspaces,modules, summaryMode);
-        if (exportIndividualObjects) prepareObjectsXLSX(workbook,workspaces,modules);
+        prepareParametersXLS(workbook,modules);
+        prepareErrorLogXLS(workbook);
+        if (exportSummary) prepareSummaryXLS(workbook,workspaces,modules, summaryMode);
+        if (exportIndividualObjects) prepareObjectsXLS(workbook,workspaces,modules);
 
         // Writing the workbook to file
-        String outPath = name + ".xlsx";
+        String outPath = name + ".xls";
         switch (appendDateTimeMode) {
             case ALWAYS:
                 outPath = appendDateTime(outPath);
@@ -426,10 +427,10 @@ public class Exporter {
     private static String appendDateTime(String inputName) {
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
         String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-        return inputName + "_("+ dateTime + ").xlsx";
+        return inputName + "_("+ dateTime + ").xls";
     }
 
-    private void prepareParametersXLSX(SXSSFWorkbook workbook, ModuleCollection modules) {
+    private void prepareParametersXLS(Workbook workbook, ModuleCollection modules) {
         // Creating a sheet for parameters
         Sheet paramSheet = workbook.createSheet("Parameters");
 
@@ -484,7 +485,7 @@ public class Exporter {
         }
     }
 
-    private void prepareErrorLogXLSX(SXSSFWorkbook workbook) {
+    private void prepareErrorLogXLS(Workbook workbook) {
         // Creating a sheet for parameters
         Sheet errorSheet = workbook.createSheet("Log");
 
@@ -501,8 +502,8 @@ public class Exporter {
         }
     }
 
-    private void prepareSummaryXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
-                                    SummaryMode summaryType) {
+    private void prepareSummaryXLS(Workbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
+                                   SummaryMode summaryType) {
         int headerCol = 0;
 
         // Adding header rows for the metadata sheet.
@@ -917,7 +918,7 @@ public class Exporter {
         }
     }
 
-    private void prepareObjectsXLSX(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
+    private void prepareObjectsXLS(Workbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
 
         // Creating a new sheet for each object.  Each analysed file has its own set of rows (one for each object)
         HashMap<String, Sheet> objectSheets = new HashMap<>();

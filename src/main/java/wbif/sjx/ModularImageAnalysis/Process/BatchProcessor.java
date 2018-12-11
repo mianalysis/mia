@@ -1,4 +1,4 @@
-// TODO: Add methods for XLSX and JSON data export
+// TODO: Add methods for XLS and JSON data export
 
 package wbif.sjx.ModularImageAnalysis.Process;
 

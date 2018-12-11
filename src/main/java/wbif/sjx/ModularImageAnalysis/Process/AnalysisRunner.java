@@ -130,7 +130,7 @@ public class AnalysisRunner {
     public static Exporter initialiseExporter(OutputControl outputControl, String exportName) {
         String exportMode = outputControl.getParameterValue(OutputControl.EXPORT_MODE);
         String metadataItemForGrouping = outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_GROUPING);
-        boolean exportXLSX = outputControl.isEnabled();
+        boolean exportXLS = outputControl.isEnabled();
         boolean exportSummary = outputControl.getParameterValue(OutputControl.EXPORT_SUMMARY);
         String summaryType = outputControl.getParameterValue(OutputControl.SUMMARY_MODE);
         boolean exportIndividualObjects = outputControl.getParameterValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
@@ -144,7 +144,7 @@ public class AnalysisRunner {
         boolean calculateSum = outputControl.getParameterValue(OutputControl.CALCULATE_COUNT_SUM);
 
         // Initialising the exporter (if one was requested)
-        Exporter exporter = exportXLSX ? new Exporter(exportName, Exporter.XLSX_EXPORT) : null;
+        Exporter exporter = exportXLS ? new Exporter(exportName, Exporter.XLS_EXPORT) : null;
         if (exporter != null) {
             exporter.setMetadataItemForGrouping(metadataItemForGrouping);
             exporter.setExportSummary(exportSummary);
