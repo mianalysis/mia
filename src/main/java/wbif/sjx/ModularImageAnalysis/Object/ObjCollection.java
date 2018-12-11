@@ -4,8 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import wbif.sjx.common.MathFunc.CumStat;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;

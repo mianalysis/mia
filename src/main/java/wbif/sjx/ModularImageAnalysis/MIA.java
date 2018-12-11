@@ -54,23 +54,15 @@ public class MIA implements PlugIn {
     public static String slashes = "\\";
     private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
+    private static boolean debug = false;
 
     /*
     Gearing up for the transition from ImagePlus to ImgLib2 formats.  Modules can use this to add compatibility.
      */
     private static final boolean imagePlusMode = true;
 
-    public static void main(String[] args) throws Exception {
-//        MWNumericArray n = null;
-//        Object[] result = null;
-//        Class1 class1 = new Class1();
-//        n = new MWNumericArray(Double.valueOf(5),MWClassID.DOUBLE);
-//        Object[] res = class1.makesqr(1,n);
-//        System.err.println(res[0]);
-//        System.err.println(n);
-//
-//        MWNumericArray res1 = (MWNumericArray) res[0];
-//        System.err.println(res1.numberOfDimensions());
+    public static void main(String[] args) throws Exception {// The following works, but loads the entire video to RAM without an apparent way to prevent this
+        debug = true;
 
         // Setting the file path slashes depending on the operating system
         if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
@@ -97,7 +89,7 @@ public class MIA implements PlugIn {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
                 new ImageJ();
-                new GUI(true);
+                new GUI();
 
             } else {
                 String filepath = args[0];
@@ -118,6 +110,8 @@ public class MIA implements PlugIn {
 
     @Override
     public void run(String s) {
+        debug = false;
+
         // Setting the file path slashes depending on the operating system
         if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
         else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";
@@ -167,7 +161,7 @@ public class MIA implements PlugIn {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            new GUI(false);
+            new GUI();
         } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace(System.err);
         }
@@ -228,5 +222,13 @@ public class MIA implements PlugIn {
 
     public static String getVersion() {
         return version;
+    }
+
+    public static boolean isDebug() {
+        return debug;
+    }
+
+    public static void setDebug(boolean debug) {
+        MIA.debug = debug;
     }
 }

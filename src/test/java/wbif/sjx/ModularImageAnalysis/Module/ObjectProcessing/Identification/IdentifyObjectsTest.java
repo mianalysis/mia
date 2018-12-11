@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -14,6 +15,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 
 import java.net.URLDecoder;
 
@@ -168,6 +170,7 @@ public class IdentifyObjectsTest {
         // Checking the number of detected objects
         assertEquals(33,actualObjects.size());
 
+        int count = 0;
         for (Obj object:actualObjects.values()) {
             // Identifying the matching object.  If this is null, one isn't found
             Obj expectedObject = expectedObjects.getByEquals(object);

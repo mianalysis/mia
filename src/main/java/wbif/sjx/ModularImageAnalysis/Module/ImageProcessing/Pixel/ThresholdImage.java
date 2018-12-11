@@ -232,7 +232,7 @@ public class ThresholdImage extends Module {
 
         // Image must be 8-bit
         if (!thresholdType.equals(ThresholdTypes.MANUAL) && inputImagePlus.getBitDepth() != 8) {
-            IntensityMinMax.run(inputImagePlus, true);
+            IntensityMinMax.run(inputImagePlus, true, 0, IntensityMinMax.PROCESS_PRECISE);
             IJ.run(inputImagePlus, "8-bit", null);
         }
 

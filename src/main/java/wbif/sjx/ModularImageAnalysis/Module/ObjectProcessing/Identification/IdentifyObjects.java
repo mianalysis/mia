@@ -66,10 +66,12 @@ public class IdentifyObjects extends Module {
             } else {
                 currStack = SubHyperstackMaker.makeSubhyperstack(inputImagePlus, "1-" +
                         inputImagePlus.getNChannels(), "1-" + inputImagePlus.getNSlices(), t + "-" + t);
+                currStack.setCalibration(inputImagePlus.getCalibration());
             }
             currStack.updateChannelAndDraw();
 
             if (whiteBackground) InvertIntensity.process(currStack);
+
 
             // Applying connected components labelling
             FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity);

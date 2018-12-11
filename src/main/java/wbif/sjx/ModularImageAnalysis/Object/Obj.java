@@ -11,7 +11,7 @@ import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import java.util.*;
 
 /**

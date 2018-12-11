@@ -12,7 +12,7 @@ import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 
 public class CreateObjectDensityMap extends Module {

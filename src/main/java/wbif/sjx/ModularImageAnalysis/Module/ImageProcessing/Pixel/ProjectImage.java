@@ -23,7 +23,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 /**
  * Created by sc13967 on 04/05/2017.

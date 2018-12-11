@@ -8,7 +8,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
