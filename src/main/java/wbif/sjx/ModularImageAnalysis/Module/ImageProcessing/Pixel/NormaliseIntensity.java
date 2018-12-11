@@ -9,7 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 /**
  * Created by sc13967 on 10/08/2017.

@@ -5,7 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.common.MathFunc.CumStat;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Random;

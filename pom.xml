@@ -2,13 +2,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.scijava</groupId>
+        <artifactId>pom-scijava</artifactId>
+        <version>24.0.0</version>
+        <relativePath />
+    </parent>
+
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.7.19-SNAPSHOT</version>
+    <version>0.7.19</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>https://github.com/SJCross/ModularImageAnalysis</url>
     <inceptionYear>2017</inceptionYear>
+    <description>Image/object analysis using modularised components</description>
     <organization>
         <name>University of Bristol</name>
     </organization>
@@ -55,7 +63,28 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <myscope>compile</myscope>
+        <license.licenseName>GNU General Public License v3+</license.licenseName>
+        <license.copyrightOwners>Stephen Cross</license.copyrightOwners>
     </properties>
+
+    <mailingLists>
+        <mailingList>
+            <name>ImageJ Forum</name>
+            <archive>http://forum.imagej.net/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <scm>
+        <connection>scm:git:git://github.com/SJCross/ModularImageAnalysis</connection>
+        <developerConnection>scm:git:git@github.com:SJCross/ModularImageAnalysis</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/SJCross/ModularImageAnalysis</url>
+    </scm>
+
+    <ciManagement>
+        <system>Travis</system>
+        <url>https://travis-ci.org/</url>
+    </ciManagement>
 
     <repositories>
         <repository>
@@ -89,6 +118,20 @@
             <version>2.9</version>
             <type>maven-plugin</type>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.maven.reporting</groupId>
+                    <artifactId>maven-reporting-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.jcraft</groupId>
+                    <artifactId>jsch.agentproxy.connector-factory</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -98,106 +141,62 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>3.16</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.6.1</version>
-            <scope>${myscope}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>ome</groupId>
-            <artifactId>bio-formats_plugins</artifactId>
-            <version>5.8.2</version>
-            <scope>${myscope}</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.xmlbeans</groupId>
+                    <artifactId>xmlbeans</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>ij</artifactId>
-            <version>1.52d</version>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej-updater</artifactId>
-            <version>0.9.2</version>
-            <scope>${myscope}</scope>
-        </dependency>
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ui-swing</artifactId>
-            <version>0.21.2</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ops</artifactId>
-            <version>0.43.0</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
-            <artifactId>Fiji_Plugins</artifactId>
-            <version>3.1.1</version>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.scif</groupId>
-            <artifactId>scifio</artifactId>
-            <version>0.33.0</version>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>Auto_Threshold</artifactId>
-            <version>1.16.4</version>
+            <artifactId>Auto_Local_Threshold</artifactId>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>TrackMate_</artifactId>
-            <version>3.5.1</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>bUnwarpJ_</artifactId>
-            <version>2.6.9</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>Colour_Deconvolution</artifactId>
-            <version>3.0.2</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>CorrectBleach_</artifactId>
-            <version>2.0.2</version>
-            <scope>${myscope}</scope>
-        </dependency>
-        <dependency>
-            <groupId>mpicbg</groupId>
-            <artifactId>mpicbg</artifactId>
-            <version>1.1.1</version>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>Trainable_Segmentation</artifactId>
-            <version>3.2.26</version>
+            <scope>${myscope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>mpicbg</groupId>
+            <artifactId>mpicbg</artifactId>
+            <version>1.1.1</version>
             <scope>${myscope}</scope>
         </dependency>
 
@@ -237,10 +236,10 @@
         <dependency>
             <!--<groupId>wbif.sjx</groupId>-->
             <!--<artifactId>Common</artifactId>-->
-            <!--<version>1.4.22</version>-->
+            <!--<version>1.4.23</version>-->
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.4.22</version>
+            <version>v1.4.23</version>
         </dependency>
     </dependencies>
 
@@ -276,18 +275,18 @@
                             <minimizeJar>true</minimizeJar>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <filters>
-                                <filter>
-                                    <artifact>org.apache.poi</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apache.xmlbeans</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
+                                <!--<filter>-->
+                                <!--<artifact>org.apache.poi</artifact>-->
+                                <!--<includes>-->
+                                <!--<include>**</include>-->
+                                <!--</includes>-->
+                                <!--</filter>-->
+                                <!--<filter>-->
+                                <!--<artifact>org.apache.xmlbeans</artifact>-->
+                                <!--<includes>-->
+                                <!--<include>**</include>-->
+                                <!--</includes>-->
+                                <!--</filter>-->
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
@@ -299,12 +298,12 @@
                             </filters>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                <manifestEntries>
-                                    <Main-Class>wbif.sjx.ModularImageAnalysis.MIA</Main-Class>
-                                    <Specification-Title>${project.artifactId}</Specification-Title>
-                                    <Specification-Version>${project.version}</Specification-Version>
-                                </manifestEntries>
-                            </transformer>
+                                    <manifestEntries>
+                                        <Main-Class>wbif.sjx.ModularImageAnalysis.MIA</Main-Class>
+                                        <Specification-Title>${project.artifactId}</Specification-Title>
+                                        <Specification-Version>${project.version}</Specification-Version>
+                                    </manifestEntries>
+                                </transformer>
                             </transformers>
                         </configuration>
                     </execution>

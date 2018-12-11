@@ -3,6 +3,8 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
+import com.drew.lang.annotations.NotNull;
+import com.drew.lang.annotations.Nullable;
 import ij.ImagePlus;
 import ij.gui.*;
 import ij.plugin.Duplicator;
@@ -14,8 +16,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.ModularImageAnalysis.Process.LabelFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -374,7 +374,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Float> hues, @Nullable HashMap<Integer,String> labels) {
+    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, @Nullable HashMap<Integer,String> labels) {
         String positionMode = parameters.getValue(POSITION_MODE);
         double lineWidth = parameters.getValue(LINE_WIDTH);
         int labelSize = parameters.getValue(LABEL_SIZE);

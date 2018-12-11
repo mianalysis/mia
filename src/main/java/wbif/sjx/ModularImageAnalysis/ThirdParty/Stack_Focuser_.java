@@ -6,7 +6,7 @@ import ij.plugin.filter.PlugInFilter;
 import ij.plugin.filter.RankFilters;
 import ij.process.*;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 
 

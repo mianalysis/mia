@@ -12,7 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.ThirdParty.Stack_Focuser_;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 public class FocusStack extends Module {
     public static final String INPUT_IMAGE = "Input image";

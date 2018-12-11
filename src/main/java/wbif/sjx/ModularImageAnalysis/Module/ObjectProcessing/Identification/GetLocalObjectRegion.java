@@ -5,7 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 
 
 /**

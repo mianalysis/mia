@@ -36,7 +36,7 @@ import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;

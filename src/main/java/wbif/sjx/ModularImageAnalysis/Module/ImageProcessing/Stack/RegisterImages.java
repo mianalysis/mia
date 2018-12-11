@@ -19,7 +19,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
-import javax.annotation.Nullable;
+import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Vector;
