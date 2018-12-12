@@ -4,13 +4,10 @@
 
 package wbif.sjx.ModularImageAnalysis;
 
-import com.mathworks.toolbox.javabuilder.MWClassID;
-import com.mathworks.toolbox.javabuilder.MWNumericArray;
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.PlugIn;
-import makesqr.Class1;
 import net.imagej.ui.swing.updater.ResolveDependencies;
 import net.imagej.updater.*;
 import net.imagej.updater.util.*;
@@ -73,6 +70,7 @@ public class MIA implements PlugIn {
         try {
             FileReader reader = new FileReader("pom.xml");
             Model model = new MavenXpp3Reader().read(reader);
+            reader.close();
             version = new MavenProject(model).getVersion();
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
@@ -95,8 +93,9 @@ public class MIA implements PlugIn {
                 String filepath = args[0];
 
                 InputStream inputStream = new FileInputStream(filepath);
-
                 Analysis analysis = AnalysisReader.loadAnalysis(inputStream);
+                inputStream.close();
+
                 AnalysisRunner.startAnalysis(analysis);
 
             }
