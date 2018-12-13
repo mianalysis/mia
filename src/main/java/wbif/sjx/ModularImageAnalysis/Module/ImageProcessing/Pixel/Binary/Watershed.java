@@ -1,14 +1,21 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 
+import com.drew.lang.annotations.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.plugin.Duplicator;
-import ij.process.ImageProcessor;
+import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.BinaryImages;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Watershed extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -38,89 +45,68 @@ public class Watershed extends Module {
 
     }
 
-
-    public void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) {
+    public void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) throws InterruptedException {
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
-        if (markerIpl != null) {
-            markerIpl = new Duplicator().run(markerIpl);
-            IJ.run(markerIpl, "Invert", "stack");
-        }
+        if (markerIpl != null) IJ.run(markerIpl, "Invert", "stack");
+
+        int nThreads = Prefs.getThreads();
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         int nFrames = maskIpl.getNFrames();
+        AtomicInteger count = new AtomicInteger();
         for (int t = 1; t <= nFrames; t++) {
-            // Getting maskIpl for this timepoint
-            ImagePlus timepointMaskIpl = getTimepoint(maskIpl,t);
-            ImagePlus timepointIntensityIpl = getTimepoint(intensityIpl,t);
+            int finalT = t;
 
-            if (markerIpl == null) {
-                timepointMaskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensityIpl.getStack(), timepointMaskIpl.getStack(), dynamic, connectivity, false));
+            Runnable task = () -> {
+                // Getting maskIpl for this timepoint
+                ImagePlus timepointMaskIpl = getSetTimepoint(maskIpl, finalT, null);
+                ImagePlus timepointIntensityIpl = getSetTimepoint(intensityIpl, finalT, null);
 
-            } else {
-                ImagePlus timepointMarkerIpl = getTimepoint(markerIpl,t);
-                timepointMarkerIpl = BinaryImages.componentsLabeling(timepointMarkerIpl, connectivity, 32);
-                timepointMaskIpl.setStack(inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensityIpl, timepointMarkerIpl, timepointMaskIpl, connectivity, true, false).getStack());
+                if (markerIpl== null) {
+                    timepointMaskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensityIpl.getStack(), timepointMaskIpl.getStack(), dynamic, connectivity, false));
 
-            }
-
-            // The image produced by MorphoLibJ's watershed function is labelled.  Converting to binary and back to 8-bit.
-            IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
-            IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
-            IJ.run(timepointMaskIpl, "Invert LUT", "");
-            IJ.run(timepointMaskIpl, "8-bit", null);
-
-            //  Replacing the maskIpl intensity
-            overwriteTimepoint(maskIpl,timepointMaskIpl,t);
-
-            writeMessage("Processed "+t+" of "+nFrames+" frames");
-
-        }
-    }
-
-    private static ImagePlus getTimepoint(ImagePlus inputImagePlus, int timepoint) {
-        ImagePlus outputImagePlus = IJ.createImage("Output",inputImagePlus.getWidth(),inputImagePlus.getHeight(),inputImagePlus.getNSlices(),inputImagePlus.getBitDepth());
-
-        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-            inputImagePlus.setPosition(1,z,timepoint);
-            outputImagePlus.setPosition(z);
-
-            ImageProcessor inputImageProcessor = inputImagePlus.getProcessor();
-            ImageProcessor outputImageProcessor = outputImagePlus.getProcessor();
-
-            for (int y=0;y<inputImagePlus.getHeight();y++) {
-                for (int x = 0; x < inputImagePlus.getWidth(); x++) {
-                    outputImageProcessor.set(x,y,inputImageProcessor.get(x,y));
+                } else {
+                    ImagePlus timepointMarkerIpl = getSetTimepoint(markerIpl, finalT, null);
+                    timepointMarkerIpl = BinaryImages.componentsLabeling(timepointMarkerIpl, connectivity, 32);
+                    ImagePlus output = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensityIpl, timepointMarkerIpl, timepointMaskIpl, connectivity, true, false);
+                    timepointMaskIpl.setStack(output.getStack());
                 }
-            }
+
+                // The image produced by MorphoLibJ's watershed function is labelled.  Converting to binary and back to 8-bit.
+                IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
+                IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
+                IJ.run(timepointMaskIpl, "Invert LUT", "");
+                IJ.run(timepointMaskIpl, "8-bit", null);
+
+                //  Replacing the maskIpl intensity
+                getSetTimepoint(maskIpl, finalT, timepointMaskIpl);
+
+                writeMessage("Processed " + (count.incrementAndGet()) + " of " + nFrames + " frames");
+
+            };
+            pool.submit(task);
         }
 
-        inputImagePlus.setPosition(1,1,1);
-        outputImagePlus.setPosition(1);
-
-        return outputImagePlus;
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 
-    private static  void overwriteTimepoint(ImagePlus inputImagePlus, ImagePlus timepointImagePlus, int timepoint) {
-        for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-            inputImagePlus.setPosition(1,z,timepoint);
-            timepointImagePlus.setPosition(z);
-
-            ImageProcessor inputImageProcessor = inputImagePlus.getProcessor();
-            ImageProcessor timepointImageProcessor = timepointImagePlus.getProcessor();
-
-            for (int y=0;y<inputImagePlus.getHeight();y++) {
-                for (int x = 0; x < inputImagePlus.getWidth(); x++) {
-                    inputImageProcessor.set(x,y,timepointImageProcessor.get(x,y));
-                }
+    synchronized private static ImagePlus getSetTimepoint(ImagePlus inputImagePlus, int timepoint, @Nullable ImagePlus timepointToPut) {
+        int nSlices = inputImagePlus.getNSlices();
+        if (timepointToPut == null) {
+            // Get mode
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, 1 + "-" + 1, "1-" + nSlices, timepoint + "-" + timepoint);
+        } else {
+            for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+                inputImagePlus.setPosition(1,z,timepoint);
+                timepointToPut.setPosition(z);
+                inputImagePlus.setProcessor(timepointToPut.getProcessor());
             }
-
+            return null;
         }
-
-        inputImagePlus.setPosition(1,1,1);
-        timepointImagePlus.setPosition(1);
-
     }
 
 
@@ -177,7 +163,11 @@ public class Watershed extends Module {
 
         }
 
-        process(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity);
+        try {
+            process(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
