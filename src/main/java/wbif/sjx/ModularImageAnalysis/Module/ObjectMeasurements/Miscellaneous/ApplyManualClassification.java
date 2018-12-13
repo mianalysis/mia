@@ -72,6 +72,8 @@ public class ApplyManualClassification extends Module {
                 }
             }
 
+            bufferedReader.close();
+
             // Removing objects that don't have an assigned class (first removing the parent-child relationships).
             // Otherwise, the class measurement is set to Double.NaN
             if (parameters.getValue(REMOVE_MISSING)) {

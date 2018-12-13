@@ -343,6 +343,7 @@ public class BatchProcessor extends FileCrawler {
                         if (useFilter3 &!test3.test(name)) continue;
                         namesAndNumbers.put(seriesNumber+1,name);
                     }
+                    reader.close();
                     break;
 
                 case InputControl.SeriesModes.SERIES_LIST:
@@ -367,6 +368,8 @@ public class BatchProcessor extends FileCrawler {
                         int seriesNumber = Integer.parseInt(list.get(i))-1;
                         namesAndNumbers.put(seriesNumber+1,meta.getImageName(seriesNumber));
                     }
+
+                    reader.close();
 
                     break;
 
