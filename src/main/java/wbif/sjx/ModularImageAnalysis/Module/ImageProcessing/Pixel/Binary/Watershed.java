@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 import com.drew.lang.annotations.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
@@ -54,39 +55,43 @@ public class Watershed extends Module {
         int nThreads = Prefs.getThreads();
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
+        int nChannels = maskIpl.getNChannels();
         int nFrames = maskIpl.getNFrames();
+        int nTotal = nChannels*nFrames;
         AtomicInteger count = new AtomicInteger();
-        for (int t = 1; t <= nFrames; t++) {
-            int finalT = t;
 
-            Runnable task = () -> {
-                // Getting maskIpl for this timepoint
-                ImagePlus timepointMaskIpl = getSetTimepoint(maskIpl, finalT, null);
-                ImagePlus timepointIntensityIpl = getSetTimepoint(intensityIpl, finalT, null);
+        for (int c = 1; c <= nChannels; c++) {
+            for (int t = 1; t <= nFrames; t++) {
+                int finalT = t;
+                int finalC = c;
 
-                if (markerIpl== null) {
-                    timepointMaskIpl.setStack(ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensityIpl.getStack(), timepointMaskIpl.getStack(), dynamic, connectivity, false));
+                Runnable task = () -> {
+                    // Getting maskIpl for this timepoint
+                    ImageStack timepointMask = getSetStack(maskIpl, finalT, finalC, null);
+                    ImageStack timepointIntensity = getSetStack(intensityIpl, finalT, finalC, null);
 
-                } else {
-                    ImagePlus timepointMarkerIpl = getSetTimepoint(markerIpl, finalT, null);
-                    timepointMarkerIpl = BinaryImages.componentsLabeling(timepointMarkerIpl, connectivity, 32);
-                    ImagePlus output = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensityIpl, timepointMarkerIpl, timepointMaskIpl, connectivity, true, false);
-                    timepointMaskIpl.setStack(output.getStack());
-                }
+                    if (markerIpl == null) {
+                        timepointMask = ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensity, timepointMask, dynamic, connectivity, false);
+                    } else {
+                        ImageStack timepointMarker = getSetStack(markerIpl, finalT, finalC, null);
+                        timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
+                        timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity, timepointMarker, timepointMask, connectivity, true, false);
+                    }
 
-                // The image produced by MorphoLibJ's watershed function is labelled.  Converting to binary and back to 8-bit.
-                IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
-                IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
-                IJ.run(timepointMaskIpl, "Invert LUT", "");
-                IJ.run(timepointMaskIpl, "8-bit", null);
+                    // The image produced by MorphoLibJ's watershed function is labelled.  Converting to binary and back to 8-bit.
+                    ImagePlus timepointMaskIpl = new ImagePlus("Timepoint mask",timepointMask);
+                    IJ.setRawThreshold(timepointMaskIpl, 0, 0, null);
+                    IJ.run(timepointMaskIpl, "Convert to Mask", "method=Default background=Light");
+                    IJ.run(timepointMaskIpl, "Invert LUT", "");
+                    IJ.run(timepointMaskIpl, "8-bit", null);
 
-                //  Replacing the maskIpl intensity
-                getSetTimepoint(maskIpl, finalT, timepointMaskIpl);
+                    //  Replacing the maskIpl intensity
+                    getSetStack(maskIpl, finalT, finalC, timepointMaskIpl.getStack());
+                    writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks");
 
-                writeMessage("Processed " + (count.incrementAndGet()) + " of " + nFrames + " frames");
-
-            };
-            pool.submit(task);
+                };
+                pool.submit(task);
+            }
         }
 
         pool.shutdown();
@@ -94,16 +99,15 @@ public class Watershed extends Module {
 
     }
 
-    synchronized private static ImagePlus getSetTimepoint(ImagePlus inputImagePlus, int timepoint, @Nullable ImagePlus timepointToPut) {
+    synchronized private static ImageStack getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, @Nullable ImageStack toPut) {
         int nSlices = inputImagePlus.getNSlices();
-        if (timepointToPut == null) {
+        if (toPut == null) {
             // Get mode
-            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, 1 + "-" + 1, "1-" + nSlices, timepoint + "-" + timepoint);
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, "1-" + nSlices, timepoint + "-" + timepoint).getStack();
         } else {
             for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
-                inputImagePlus.setPosition(1,z,timepoint);
-                timepointToPut.setPosition(z);
-                inputImagePlus.setProcessor(timepointToPut.getProcessor());
+                inputImagePlus.setPosition(channel,z,timepoint);
+                inputImagePlus.setProcessor(toPut.getProcessor(z));
             }
             return null;
         }

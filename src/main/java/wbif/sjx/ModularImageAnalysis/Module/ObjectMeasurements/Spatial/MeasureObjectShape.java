@@ -34,9 +34,8 @@ public class MeasureObjectShape extends Module {
     }
 
 
-    /**
+    /*
      * Calculates the maximum distance between any two points of the
-     * @return
      */
     public double calculateMaximumPointPointDistance(Obj object) {
         double[] x = object.getX(true);

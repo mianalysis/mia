@@ -264,10 +264,8 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    /**
-     * Iterprets inputs from InputControl and assigns the appropriate filters
-     * @param filenameFilterType
-     * @param filenameFilter
+    /*
+     * Interprets inputs from InputControl and assigns the appropriate filters
      */
     public void addFilenameFilter(String filenameFilterType, String filenameFilter, String filenameSource) {
         addFileCondition(getFilenameFilter(filenameFilterType,filenameFilter,filenameSource));

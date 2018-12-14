@@ -34,10 +34,9 @@ public class Workspace {
         objects.put(object.getName(), object);
     }
 
-    /**
+    /*
      * Adds the provided Obj to the relevant ObjCollection.
      * If there isn't already such a collection, one is created.
-     * @param obj
      */
     public void addObject(Obj obj) {
         String objectName = obj.getName();
@@ -111,9 +110,8 @@ public class Workspace {
 
     }
 
-    /**
+    /*
      * Creates a structure containing new Workspaces, each of which represent a different time point
-     * @return
      */
     public HashMap<Integer,Workspace> getSingleTimepointWorkspaces() {
         HashMap<Integer,Workspace> workspaces = new HashMap<>();

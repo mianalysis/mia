@@ -12,10 +12,8 @@ public class WorkspaceCollection extends LinkedHashSet<Workspace> {
 
     // PUBLIC METHODS
 
-    /**
+    /*
      * Creates a new workspace and adds it to the collection
-     * @param currentFile
-     * @return
      */
     public Workspace getNewWorkspace(File currentFile, int series) {
         Workspace workspace =  new Workspace(++maxID, currentFile, series);
