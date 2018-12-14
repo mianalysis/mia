@@ -90,11 +90,8 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    /**
+    /*
      * Returns an ArrayList of all parameters of a specific type
-     * @param type
-     * @param cutoffModule
-     * @return
      */
     public LinkedHashSet<Parameter> getParametersMatchingType(int type, Module cutoffModule) {
         LinkedHashSet<Parameter> parameters = new LinkedHashSet<>();

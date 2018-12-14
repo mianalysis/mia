@@ -94,13 +94,9 @@ public class MeasureObjectCurvature extends Module {
 
     }
 
-    /**
+    /*
      * Checks if the longest path (skeleton backbone) needs to be inverted to have the first point closer to the
      * reference than the last point.
-     * @param longestPath
-     * @param xRef
-     * @param yRef
-     * @return
      */
     public static boolean testForPathInversion(LinkedHashSet<Vertex> longestPath, double xRef, double yRef) {
         Point<Integer> referencePoint = new Point<Integer>((int) xRef,(int) yRef, 0);

@@ -115,11 +115,8 @@ public class MeasureIntensityDistribution extends Module {
         return "INT_DISTR // "+objectsName+"_"+measurement;
     }
 
-    /**
+    /*
      * Calculates the bin centroids for the distance measurements from the maximum range in the distance map.
-     * @param distanceMap
-     * @param nRadialSamples
-     * @return
      */
     public static double[] getDistanceBins(Image distanceMap, int nRadialSamples) {
         // Getting the maximum distance measurement
@@ -137,12 +134,8 @@ public class MeasureIntensityDistribution extends Module {
 
     }
 
-    /**
+    /*
      * Calculates the bin centroids for the distance measurements from provided range values.
-     * @param nRadialSamples
-     * @param minDistance
-     * @param maxDistance
-     * @return
      */
     public static double[] getDistanceBins(int nRadialSamples, double minDistance, double maxDistance) {
         double[] distanceBins = new double[nRadialSamples];
@@ -369,6 +362,7 @@ public class MeasureIntensityDistribution extends Module {
             FileOutputStream outputStream = new FileOutputStream(path);
             workbook.write(outputStream);
             workbook.close();
+            outputStream.close();
         } catch(FileNotFoundException e) {
             try {
                 ZonedDateTime zonedDateTime = ZonedDateTime.now();
@@ -380,6 +374,7 @@ public class MeasureIntensityDistribution extends Module {
                 outputStream = new FileOutputStream(newOutPath);
                 workbook.write(outputStream);
                 workbook.close();
+                outputStream.close();
 
                 System.err.println("Target file ("+new File(path).getName()+") inaccessible");
                 System.err.println("Saved to alternative file ("+new File(newOutPath).getName()+")");

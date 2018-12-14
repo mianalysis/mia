@@ -1,20 +1,29 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 
+import com.drew.lang.annotations.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
+import ij.Prefs;
 import ij.plugin.Duplicator;
+import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Created by sc13967 on 07/03/2018.
  */
 public class ExtendedMinima extends Module {
     public static final String INPUT_IMAGE = "Input image";
-    public static final String APPLY_TO_INPUT = "Apply to input image";
+    public static final String APPLY_TO_INPUT = "Apply to input";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
@@ -26,6 +35,68 @@ public class ExtendedMinima extends Module {
 
         String[] ALL = new String[]{SIX,TWENTYSIX};
 
+    }
+
+    public Image process(Image inputImage, String outputImageName, int dynamic, int connectivity) throws InterruptedException {
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        int width = inputIpl.getWidth();
+        int height = inputIpl.getHeight();
+        int nChannels = inputIpl.getNChannels();
+        int nSlices = inputIpl.getNSlices();
+        int nFrames = inputIpl.getNFrames();
+
+        // Creating output image
+        ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,nChannels,nSlices,nFrames,8);
+
+        int nThreads = Prefs.getThreads();
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        int nTotal = nChannels*nFrames;
+        AtomicInteger count = new AtomicInteger();
+
+        for (int c = 1; c <= nChannels; c++) {
+            for (int t = 1; t <= nFrames; t++) {
+                int finalT = t;
+                int finalC = c;
+
+                Runnable task = () -> {
+                    // Getting maskIpl for this timepoint
+                    ImageStack timepoint = getSetStack(inputIpl, finalT, finalC, null);
+                    timepoint = MinimaAndMaxima3D.extendedMinima(timepoint, dynamic, connectivity);
+
+                    //  Replacing the maskIpl intensity
+                    getSetStack(outputIpl, finalT, finalC, timepoint);
+
+                    writeMessage("Processed " + (count.incrementAndGet()) + " of " + nTotal + " stacks");
+
+                };
+                pool.submit(task);
+            }
+        }
+
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+        // MorphoLibJ gives white objects on a black background.  Inverting this to match the logic of ImageJ
+        IJ.run(outputIpl,"Invert","stack");
+
+        return new Image(outputImageName,outputIpl);
+
+    }
+
+    synchronized private static ImageStack getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, @Nullable ImageStack toPut) {
+        int nSlices = inputImagePlus.getNSlices();
+        if (toPut == null) {
+            // Get mode
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, "1-" + nSlices, timepoint + "-" + timepoint).getStack();
+        } else {
+            for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
+                inputImagePlus.setPosition(channel,z,timepoint);
+                inputImagePlus.setProcessor(toPut.getProcessor(z));
+            }
+
+            return null;
+        }
     }
 
 
@@ -49,7 +120,6 @@ public class ExtendedMinima extends Module {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
-        ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
@@ -57,25 +127,24 @@ public class ExtendedMinima extends Module {
         int dynamic = parameters.getValue(DYNAMIC);
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY_3D));
 
-        // If applying to a new image, the input image is duplicated
-        if (!applyToInput) {inputImagePlus = new Duplicator().run(inputImagePlus);}
-
         // Getting region minima
-        inputImagePlus.setStack(MinimaAndMaxima3D.extendedMinima(inputImagePlus.getStack(),dynamic,connectivity));
-        inputImagePlus.setPosition(1,1,1);
-
-        // MorphoLibJ gives white objects on a black background.  Inverting this to match the logic of ImageJ
-        IJ.run(inputImagePlus,"Invert","stack");
+        Image outputImage;
+        try {
+            outputImage = process(inputImage,outputImageName,dynamic,connectivity);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {
             writeMessage("Adding image ("+outputImageName+") to workspace");
-            Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) showImage(outputImage);
         } else {
-            if (showOutput) showImage(inputImage);
+            inputImage.setImagePlus(outputImage.getImagePlus());
         }
+
+        if (showOutput) showImage(outputImage);
 
         return true;
 

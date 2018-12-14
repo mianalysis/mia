@@ -188,6 +188,7 @@ public class MetadataExtractor extends Module {
                 String[] split = line.split(",");
                 referenceValues.put(split[0], split[1]);
             }
+            bufferedReader.close();
 
             if (metadata.containsKey(metadataItemToMatch)) {
                 return referenceValues.get(metadata.get(metadataItemToMatch).toString());

@@ -87,11 +87,9 @@ public class RelateObjects extends Module {
         }
     }
 
-    /**
+    /*
      * Iterates over each testObject, calculating getting the smallest distance to a parentObject.  If this is smaller
      * than linkingDistance the link is assigned.
-     * @param parentObjects
-     * @param childObjects
      */
     public void proximity(ObjCollection parentObjects, ObjCollection childObjects) {
         boolean linkInSameFrame = parameters.getValue(LINK_IN_SAME_FRAME);

@@ -73,20 +73,18 @@ public abstract class Module implements Serializable {
 
     }
 
-    /**
+    /*
      * Get a ParameterCollection of all the possible parameters this class requires (not all may be used).  This returns
      * the ParameterCollection, rather than just setting the local variable directly, which helps ensure the correct
      * operation is included in the method.
-     * @return
      */
     protected abstract void initialiseParameters();
 
-    /**
+    /*
      * Return a ParameterCollection of the currently active parameters.  This is run each time a parameter is changed.
      * For example, if "Export XML" is set to "false" a sub-parameter specifying the measurements to export won't be
      * included in the ParameterCollection.  A separate rendering class will take this ParameterCollection and generate
      * an appropriate GUI panel.
-     * @return
      */
     public abstract ParameterCollection updateAndGetParameters();
 
@@ -104,9 +102,8 @@ public abstract class Module implements Serializable {
         return objectMeasurementReferences.getOrPut(name);
     }
 
-    /**
+    /*
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
-     * @return
      */
     public abstract void addRelationships(RelationshipCollection relationships);
 

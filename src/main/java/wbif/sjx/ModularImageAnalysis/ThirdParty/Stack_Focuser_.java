@@ -10,7 +10,7 @@ import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 
 
-/**
+/*
  * A modified copy of Stack_Focuser_.java plugin, created by Mikahil Umorin.
  * Downloaded from https://imagej.nih.gov/ij/plugins/download/Stack_Focuser_.java on 06-June-2018.
  *
@@ -72,7 +72,7 @@ import java.awt.*;
  */
 public class Stack_Focuser_ implements PlugInFilter
 {
-    /**
+    /*
      * ImageStacl object of the original image
      */
     private ImageStack i_stack;
@@ -83,59 +83,59 @@ public class Stack_Focuser_ implements PlugInFilter
     public static final int FLOAT=2;
     public static final int RGB=3;
 
-    /**
+    /*
      * Focusing kernel size, implies square kernel
      */
     protected int k_size;
 
-    /**
+    /*
      * Index of the image type, {@link #BYTE}, {@link #SHORT}, {@link #FLOAT}, {@link #RGB}
      */
     protected int type;
 
-    /**
+    /*
      * Width of the original image
      */
     protected int o_width;
 
-    /**
+    /*
      * Height of the original image
      */
     protected int o_height;
 
 
-    /**
+    /*
      * Number of slices in the original stack
      */
     protected int n_slices;
 
-    /**
+    /*
      * Total number of pixels in the original image,  = {@link #o_height} x {@link #o_width}
      */
     protected int o_dim;
 
-    /**
+    /*
      * Rectangle object for image's ROI where to perform focusing. If ROI is not set,
      * focusing is performed on the whole image.
      */
     private Rectangle r;
 
-    /**
+    /*
      * Width of ROI
      */
     protected int n_width;
 
-    /**
+    /*
      * Height of ROI
      */
     protected int n_height;
 
-    /**
+    /*
      * Total number of pixels in ROI, = {@link #n_height } x {@link #n_width}
      */
     protected int n_dim;
 
-    /**
+    /*
      * Filename of the original image
      */
     private String o_title;
@@ -151,7 +151,7 @@ public class Stack_Focuser_ implements PlugInFilter
     private static final int redMask = 0xff0000, greenMask = 0x00ff00, blueMask = 0x0000ff;
     private static final int redShift = 16, greenShift = 8, blueShift = 0;
 
-    /**
+    /*
      * Setup routine. Checks for any initialization parameters.
      * @param arg Initialization string. either empty or should contain parameter values in
      * the form "name=value" space-separated list. Avaliable parameters are "ksize" -- kernel size,
@@ -323,9 +323,8 @@ public class Stack_Focuser_ implements PlugInFilter
         }
     }
 
-    /**
+    /*
      * Focuses an RGB stack. All colors are focused independently.
-     * @param rgb_stack
      */
     public void focusRGBStack (ImageStack rgb_stack) {
 //        IJ.showStatus("Processing RGB stack");
@@ -394,10 +393,9 @@ public class Stack_Focuser_ implements PlugInFilter
         // height_ip.copyBits(hs_image.getProcessor(), 0, 0, Blitter.COPY);
     }
 
-    /**
+    /*
      * Focuses an RGB stack when all three color come from the same objects/structures.
      * Uses GREEN as the focusing color.
-     * @param rgb_stack
      */
     public void focusRGBStackOne (ImageStack rgb_stack) {
 //        IJ.showStatus("Processing RGB stack");
@@ -451,10 +449,8 @@ public class Stack_Focuser_ implements PlugInFilter
         // height_ip.copyBits(hs_image.getProcessor(), 0, 0, Blitter.COPY);
     }
 
-    /**
+    /*
      * Focuses a grey-color stack, i.e. 8-bit integer, 16-bit integer, and 32-bit float.
-     * @param g_stack
-     * @param stackType
      */
     public ImageProcessor focusGreyStack(ImageStack g_stack, int stackType)
     {
@@ -474,11 +470,9 @@ public class Stack_Focuser_ implements PlugInFilter
         }
     }
 
-    /**
+    /*
      * Create a stack for max in the neighbourhood.
      * match input stack and the new one slice by slice.
-     * @param g_stack
-     * @param stackType
      */
     private ImageStack makeMaxStack(ImageStack g_stack, int stackType){
         ImageProcessor i_ip, dfloat_ip;
@@ -523,10 +517,8 @@ public class Stack_Focuser_ implements PlugInFilter
         return m_stack;
     }
 
-    /**
+    /*
      * Create an ImageProcessor containing the height map
-     * @param m_stack
-     * @return
      */
     private ImageProcessor createHeightMap(ImageStack m_stack) {
         ImageProcessor height_ip = new ShortProcessor(n_width, n_height);
@@ -561,22 +553,16 @@ public class Stack_Focuser_ implements PlugInFilter
 
     }
 
-    /**
+    /*
      * Apply median filter to the provided height map image
-     * @param height_ip
-     * @param r
      */
     private void smoothHeightMap(ImageProcessor height_ip, int r) {
        new RankFilters().rank(height_ip,r,RankFilters.MEDIAN);
     }
 
-    /**
+    /*
      * By comparing max values for the same point in different slices we decide which
      * original slice to use to paste into the new image at that location.
-     *
-     * @param g_stack
-     * @param m_stack
-     * @param stackType
      */
     private ImageProcessor pasteGreyImage(ImageStack g_stack, ImageStack m_stack, int stackType) {
         ImageProcessor f_ip = null;
@@ -665,12 +651,9 @@ public class Stack_Focuser_ implements PlugInFilter
         return f_ip;
     }
 
-    /**
+    /*
      * Copy from input stack to the newer one slice by slice and
      * convert to floating point grayscale to avoid precision loss later
-     *
-     * @param ip
-     * @param stackType
      */
     private float[] convertGreyToFloat(ImageProcessor ip, int stackType) {
         int o_offset, o_i, ii;
@@ -750,16 +733,10 @@ public class Stack_Focuser_ implements PlugInFilter
         }
     }
 
-    /**
+    /*
      * Returns maximum pixel value (for grey scale only) in the neighbourhood centered
      * at (center_x, center_y) and of height and with = size_y x size_x.
      * size>1; odd and even do not matter, i.e. size=2 is same as size=3
-     * @param ip_
-     * @param center_x
-     * @param center_y
-     * @param size_x
-     * @param size_y
-     * @return
      */
     private float findMaxInNeigh(ImageProcessor ip_, int center_x, int center_y, int size_x, int size_y)
     {

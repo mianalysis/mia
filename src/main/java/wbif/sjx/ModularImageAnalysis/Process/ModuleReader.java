@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
@@ -20,6 +21,7 @@ public class ModuleReader {
                 if (url.getPath().contains("plugins")) builder.addUrls(url);
             }
         }
+
         return new Reflections(builder).getSubTypesOf(Module.class);
 
     }

@@ -33,6 +33,7 @@ public class TrackObjects extends Module {
     public static final String MAXIMUM_LINKING_DISTANCE = "Maximum linking distance (px)";
     public static final String USE_VOLUME = "Use volume (minimise volume change)";
     public static final String VOLUME_WEIGHTING = "Volume weighting";
+    public static final String MAXIMUM_VOLUME_CHANGE = "Maximum volume change (px^3)";
     public static final String DIRECTION_WEIGHTING_MODE = "Direction weighting mode";
     public static final String PREFERRED_DIRECTION = "Preferred direction (-180 to 180 degs)";
     public static final String DIRECTION_TOLERANCE = "Direction tolerance";
@@ -40,6 +41,7 @@ public class TrackObjects extends Module {
     public static final String USE_MEASUREMENT = "Use measurement (minimise change)";
     public static final String MEASUREMENT = "Measurement";
     public static final String MEASUREMENT_WEIGHTING = "Measurement weighting";
+    public static final String MAXIMUM_MEASUREMENT_CHANGE = "Maximum measurement change";
     public static final String MINIMUM_OVERLAP = "Minimum overlap";
     public static final String MAXIMUM_MISSING_FRAMES = "Maximum number of missing frames";
     public static final String IDENTIFY_LEADING_POINT = "Identify leading point";
@@ -105,13 +107,17 @@ public class TrackObjects extends Module {
     public double[][] calculateCostMatrix(ArrayList<Obj> prevObjects, ArrayList<Obj> currObjects, @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
         boolean useVolume = parameters.getValue(USE_VOLUME);
         double volumeWeighting = parameters.getValue(VOLUME_WEIGHTING);
+        double maxVolumeChange = parameters.getValue(MAXIMUM_VOLUME_CHANGE);
         String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE);
         double preferredDirection = parameters.getValue(PREFERRED_DIRECTION);
         double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE);
         double directionWeighting = parameters.getValue(DIRECTION_WEIGHTING);
         boolean useMeasurement = parameters.getValue(USE_MEASUREMENT);
-        String measurement = parameters.getValue(MEASUREMENT);
+        String measurementName = parameters.getValue(MEASUREMENT);
         double measurementWeighting = parameters.getValue(MEASUREMENT_WEIGHTING);
+        double maxMeasurementChange = parameters.getValue(MAXIMUM_MEASUREMENT_CHANGE);
+        double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
+        double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
 
         String linkingMethod = parameters.getValue(LINKING_METHOD);
 
@@ -129,7 +135,6 @@ public class TrackObjects extends Module {
                     case LinkingMethods.CENTROID:
                         spatialCost = getCentroidSeparationCost(prevObj, currObj);
                         break;
-
                     case LinkingMethods.ABSOLUTE_OVERLAP:
                         float overlap = getAbsoluteOverlap(prevObjects.get(prev), currObjects.get(curr), spatialLimits);
                         spatialCost = overlap == 0 ? Float.MAX_VALUE : 1/overlap;
@@ -138,22 +143,45 @@ public class TrackObjects extends Module {
 
                 // Calculating additional costs
                 double volumeCost = useVolume ? getVolumeCost(prevObj, currObj) : 0;
-                double measurementCost = useMeasurement ? getMeasurementCost(prevObj,currObj,measurement) : 0;
+                double measurementCost = useMeasurement ? getMeasurementCost(prevObj,currObj,measurementName) : 0;
                 double directionCost = 0;
                 switch (directionWeightingMode) {
                     case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
                         directionCost = getAbsoluteOrientationCost(prevObj,currObj,preferredDirection);
-                        if (!testDirectionTolerance(directionCost,directionTolerance)) directionCost = Float.MAX_VALUE;
                         break;
-
                     case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
                         directionCost = getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
-                        if (!testDirectionTolerance(directionCost,directionTolerance)) directionCost = Float.MAX_VALUE;
                         break;
                 }
 
-                boolean linkValid = testLinkValidity(prevObj,currObj,inputObjects,spatialLimits);
+                // Testing spatial validity
+                boolean linkValid = true;
+                switch (linkingMethod) {
+                    case LinkingMethods.ABSOLUTE_OVERLAP:
+                        linkValid = testOverlapValidity(prevObj,currObj,minOverlap,spatialLimits);
+                        break;
+                    case LinkingMethods.CENTROID:
+                        linkValid = testSeparationValidity(prevObj,currObj,maxDist);
+                        break;
+                }
 
+                // Testing volume change
+                if (linkValid && useVolume) linkValid = testVolumeValidity(prevObj,currObj,maxVolumeChange);
+
+                // Testing measurement change
+                if (linkValid && useMeasurement) linkValid = testMeasurementValidity(prevObj,currObj,measurementName,maxMeasurementChange);
+
+                // Testing orientation
+                switch (directionWeightingMode) {
+                    case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
+                        linkValid = testDirectionTolerance(directionCost,directionTolerance);
+                        break;
+                    case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
+                        linkValid = testDirectionTolerance(directionCost,directionTolerance);
+                        break;
+                }
+
+                // Assigning costs if the link is valid (set to Double.NaN otherwise)
                 cost[curr][prev] = linkValid ? (spatialCost + volumeCost*volumeWeighting +
                         directionCost*directionWeighting + measurementCost*measurementWeighting) : Double.MAX_VALUE;
 
@@ -161,47 +189,6 @@ public class TrackObjects extends Module {
         }
 
         return cost;
-
-    }
-
-    public boolean testLinkValidity(Obj prevObj, Obj currObj, @Nullable ObjCollection inputObjects, @Nullable int[][] spatialLimits) {
-        String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
-        String linkingMethod = parameters.getValue(LINKING_METHOD);
-        double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
-        double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
-        String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE);
-        double preferredDirection = parameters.getValue(PREFERRED_DIRECTION);
-        double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE);
-
-        // Checking they are within the user-specified maximum distance.  If not, no link is made.
-        boolean allow = true;
-        switch (linkingMethod) {
-            case LinkingMethods.CENTROID:
-                double dist = getCentroidSeparationCost(prevObj,currObj);
-                allow = dist <= maxDist;
-                break;
-            case LinkingMethods.ABSOLUTE_OVERLAP:
-                float overlap = getAbsoluteOverlap(prevObj,currObj,spatialLimits);
-                allow = overlap != 0 && overlap >= minOverlap;
-                break;
-        }
-
-        // If it's failed here, return false
-        if (!allow) return false;
-
-        // Checking additional costs
-        switch (directionWeightingMode) {
-            case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
-                double directionCost = getAbsoluteOrientationCost(prevObj,currObj,preferredDirection);
-                allow = testDirectionTolerance(directionCost,directionTolerance);
-                break;
-            case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
-                directionCost = getPreviousStepDirectionCost(prevObj,currObj,inputObjects);
-                allow = testDirectionTolerance(directionCost,directionTolerance);
-                break;
-        }
-
-        return allow;
 
     }
 
@@ -252,24 +239,28 @@ public class TrackObjects extends Module {
         double prevVol = prevObj.getNVoxels();
         double currVol = currObj.getNVoxels();
 
-        if (currObj.is2D()) {
-            prevVol = Math.sqrt(prevVol);
-            currVol = Math.sqrt(currVol);
-        } else {
-            prevVol = Math.cbrt(prevVol);
-            currVol = Math.cbrt(currVol);
-        }
+//        if (currObj.is2D()) {
+//            prevVol = Math.sqrt(prevVol);
+//            currVol = Math.sqrt(currVol);
+//        } else {
+//            prevVol = Math.cbrt(prevVol);
+//            currVol = Math.cbrt(currVol);
+//        }
 
-        return (prevVol-currVol);
+        return Math.abs(prevVol-currVol);
 
     }
 
-    public static double getMeasurementCost(Obj prevObj, Obj currObj, String measurement) {
-        // Calculating measurement weighting
-        double prevMeas = prevObj.getMeasurement(measurement).getValue();
-        double currMeas = currObj.getMeasurement(measurement).getValue();
+    public static double getMeasurementCost(Obj prevObj, Obj currObj, String measurementName) {
 
-        return (prevMeas-currMeas);
+        Measurement currMeasurement = currObj.getMeasurement(measurementName);
+        Measurement prevMeasurement = prevObj.getMeasurement(measurementName);
+
+        if (currMeasurement == null || prevMeasurement == null) return Double.NaN;
+        double currMeasurementValue = currMeasurement.getValue();
+        double prevMeasurementValue = prevMeasurement.getValue();
+
+        return Math.abs(prevMeasurementValue - currMeasurementValue);
 
     }
 
@@ -327,9 +318,28 @@ public class TrackObjects extends Module {
         return Math.abs(Math.toDegrees(directionCost)) <= directionTolerance;
     }
 
-    public void linkObjects(Obj prevObj, Obj currObj) {
-        String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
+    public static boolean testSeparationValidity(Obj prevObj, Obj currObj, double maxDist) {
+        double dist = getCentroidSeparationCost(prevObj,currObj);
+        return dist <= maxDist;
+    }
 
+    public static boolean testOverlapValidity(Obj prevObj, Obj currObj, double minOverlap, int[][] spatialLimits) {
+        double overlap = getAbsoluteOverlap(prevObj,currObj,spatialLimits);
+        return overlap != 0 && overlap >= minOverlap;
+
+    }
+
+    public static boolean testVolumeValidity(Obj prevObj, Obj currObj, double maxVolumeChange) {
+        double volumeChange = getVolumeCost(prevObj,currObj);
+        return volumeChange <= maxVolumeChange;
+    }
+
+    public static boolean testMeasurementValidity(Obj prevObj, Obj currObj, String measurementName, double maxMeasurementChange) {
+        double measurementChange = getMeasurementCost(prevObj,currObj,measurementName);
+        return measurementChange <= maxMeasurementChange;
+    }
+
+    public static void linkObjects(Obj prevObj, Obj currObj, String trackObjectsName) {
         // Getting the track object from the previous-frame object
         Obj track = prevObj.getParent(trackObjectsName);
 
@@ -343,7 +353,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public void createNewTrack(Obj currObj, ObjCollection trackObjects) {
+    public static void createNewTrack(Obj currObj, ObjCollection trackObjects) {
         String trackObjectsName = trackObjects.getName();
         double dppXY = currObj.getDistPerPxXY();
         double dppZ = currObj.getDistPerPxZ();
@@ -388,9 +398,7 @@ public class TrackObjects extends Module {
 
     }
 
-    public void identifyLeading(ObjCollection objects) {
-        String orientationMode = parameters.getValue(ORIENTATION_MODE);
-
+    public static void identifyLeading(ObjCollection objects, String orientationMode) {
         for (Obj obj:objects.values()) {
             double angle = getInstantaneousOrientationRads(obj,objects,orientationMode);
 
@@ -440,8 +448,7 @@ public class TrackObjects extends Module {
         }
     }
 
-    public void showObjects(ObjCollection spotObjects, String trackObjectsName) {
-        String colourMode = ObjCollection.ColourModes.PARENT_ID;
+    public static void showObjects(ObjCollection spotObjects, String trackObjectsName, String colourMode) {
         HashMap<Integer, Float> hues = ColourFactory.getParentIDHues(spotObjects,trackObjectsName,true);
 
         // Creating a parent-ID encoded image of the objects
@@ -476,8 +483,15 @@ public class TrackObjects extends Module {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
+        String linkingMethod = parameters.getValue(LINKING_METHOD);
+        double minOverlap = parameters.getValue(MINIMUM_OVERLAP);
+        double maxDist = parameters.getValue(MAXIMUM_LINKING_DISTANCE);
         int maxMissingFrames = parameters.getValue(MAXIMUM_MISSING_FRAMES);
         boolean identifyLeading = parameters.getValue(IDENTIFY_LEADING_POINT);
+        String directionWeightingMode = parameters.getValue(DIRECTION_WEIGHTING_MODE);
+        double preferredDirection = parameters.getValue(PREFERRED_DIRECTION);
+        double directionTolerance = parameters.getValue(DIRECTION_TOLERANCE);
+        String orientationMode = parameters.getValue(ORIENTATION_MODE);
 
         // Getting objects
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
@@ -535,29 +549,54 @@ public class TrackObjects extends Module {
                     Obj currObj = nPObjects[1].get(curr);
 
                     // Checking if the previous and current objects can be linked
-                    boolean successfulLink = false;
-                    if (assignment[curr] != -1) {
-                        // Checking if the link is within the user-defined limits (max linking distance, etc.)
+                    boolean successfulLink = true;
+                    if (assignment[curr] != -1 && cost[curr][assignment[curr]] != Double.MAX_VALUE) {
                         Obj prevObj = nPObjects[0].get(assignment[curr]);
-                        successfulLink = testLinkValidity(prevObj,currObj,inputObjects,spatialLimits);
-                    }
 
-                    // Creating new links and tracks where appropriate
-                    if (successfulLink) {
-                        Obj prevObj = nPObjects[0].get(assignment[curr]);
-                        linkObjects(prevObj,currObj);
-                    } else if (t1==t2-1-maxMissingFrames) {
-                        createNewTrack(currObj,trackObjects);
+//                        // Checking if the link is within the user-defined limits (max linking distance, overlap, etc.)
+//                        switch (linkingMethod) {
+//                            case LinkingMethods.CENTROID:
+//                                successfulLink = testSeparationValidity(prevObj, currObj, maxDist);
+//                                break;
+//                            case LinkingMethods.ABSOLUTE_OVERLAP:
+//                                successfulLink = testOverlapValidity(prevObj, currObj, minOverlap, spatialLimits);
+//                                break;
+//                        }
+//
+//                        // Testing volume
+//                        if ()
+//
+//                        // Testing direction
+//                        switch (directionWeightingMode) {
+//                            case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
+//                                double directionCost = getAbsoluteOrientationCost(prevObj, currObj, preferredDirection);
+//                                if (successfulLink)
+//                                    successfulLink = testDirectionTolerance(directionCost, directionTolerance);
+//                                break;
+//                            case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
+//                                directionCost = getPreviousStepDirectionCost(prevObj, currObj, inputObjects);
+//                                if (successfulLink)
+//                                    successfulLink = testDirectionTolerance(directionCost, directionTolerance);
+//                                break;
+//                        }
+
+                        // Creating new links and tracks where appropriate
+//                        if (successfulLink) {
+                        linkObjects(prevObj, currObj, trackObjectsName);
+                    } else if (t1 == t2 - 1 - maxMissingFrames) {
+                        createNewTrack(currObj, trackObjects);
+//                        }
                     }
                 }
             }
         }
 
         // Determining the leading point in the object (to next object)
-        if (identifyLeading) identifyLeading(inputObjects);
+        if (identifyLeading) identifyLeading(inputObjects,orientationMode);
 
         // If selected, showing an overlay of the tracked objects
-        if (showOutput) showObjects(inputObjects,trackObjectsName);
+        String colourMode = ObjCollection.ColourModes.PARENT_ID;
+        if (showOutput) showObjects(inputObjects,trackObjectsName,colourMode);
 
         // Adding track objects to the workspace
         writeMessage("Assigned "+trackObjects.size()+" tracks");
@@ -575,6 +614,7 @@ public class TrackObjects extends Module {
         parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
         parameters.add(new Parameter(USE_VOLUME,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(VOLUME_WEIGHTING, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(MAXIMUM_VOLUME_CHANGE, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(DIRECTION_WEIGHTING_MODE,Parameter.CHOICE_ARRAY,DirectionWeightingModes.NONE,DirectionWeightingModes.ALL));
         parameters.add(new Parameter(PREFERRED_DIRECTION, Parameter.DOUBLE,0.0));
         parameters.add(new Parameter(DIRECTION_TOLERANCE, Parameter.DOUBLE,180.0));
@@ -582,6 +622,7 @@ public class TrackObjects extends Module {
         parameters.add(new Parameter(USE_MEASUREMENT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
         parameters.add(new Parameter(MEASUREMENT_WEIGHTING, Parameter.DOUBLE,1.0));
+        parameters.add(new Parameter(MAXIMUM_MEASUREMENT_CHANGE, Parameter.DOUBLE,1.0));
         parameters.add(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
         parameters.add(new Parameter(IDENTIFY_LEADING_POINT,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(ORIENTATION_MODE,Parameter.CHOICE_ARRAY,OrientationModes.RELATIVE_TO_BOTH,OrientationModes.ALL));
@@ -609,6 +650,7 @@ public class TrackObjects extends Module {
         returnedParamters.add(parameters.getParameter(USE_VOLUME));
         if (returnedParamters.getValue(USE_VOLUME)) {
             returnedParamters.add(parameters.getParameter(VOLUME_WEIGHTING));
+            returnedParamters.add(parameters.getParameter(MAXIMUM_VOLUME_CHANGE));
         }
 
         returnedParamters.add(parameters.getParameter(DIRECTION_WEIGHTING_MODE));
@@ -629,6 +671,7 @@ public class TrackObjects extends Module {
         if (returnedParamters.getValue(USE_MEASUREMENT)) {
             returnedParamters.add(parameters.getParameter(MEASUREMENT));
             returnedParamters.add(parameters.getParameter(MEASUREMENT_WEIGHTING));
+            returnedParamters.add(parameters.getParameter(MAXIMUM_MEASUREMENT_CHANGE));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
             parameters.updateValueSource(MEASUREMENT,inputObjectsName);

@@ -185,10 +185,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
 
     }
 
-    /**
+    /*
      * Returns the Obj with coordinates matching the Obj passed as an argument.  Useful for unit tests.
-     * @param referenceObj
-     * @return
      */
     public Obj getByEquals(Obj referenceObj) {
         for (Obj testObj:values()) {

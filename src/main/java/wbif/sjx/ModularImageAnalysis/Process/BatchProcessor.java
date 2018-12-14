@@ -264,10 +264,8 @@ public class BatchProcessor extends FileCrawler {
 
     }
 
-    /**
-     * Iterprets inputs from InputControl and assigns the appropriate filters
-     * @param filenameFilterType
-     * @param filenameFilter
+    /*
+     * Interprets inputs from InputControl and assigns the appropriate filters
      */
     public void addFilenameFilter(String filenameFilterType, String filenameFilter, String filenameSource) {
         addFileCondition(getFilenameFilter(filenameFilterType,filenameFilter,filenameSource));
@@ -343,6 +341,7 @@ public class BatchProcessor extends FileCrawler {
                         if (useFilter3 &!test3.test(name)) continue;
                         namesAndNumbers.put(seriesNumber+1,name);
                     }
+                    reader.close();
                     break;
 
                 case InputControl.SeriesModes.SERIES_LIST:
@@ -367,6 +366,8 @@ public class BatchProcessor extends FileCrawler {
                         int seriesNumber = Integer.parseInt(list.get(i))-1;
                         namesAndNumbers.put(seriesNumber+1,meta.getImageName(seriesNumber));
                     }
+
+                    reader.close();
 
                     break;
 

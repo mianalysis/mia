@@ -457,7 +457,7 @@ public class FilterObjects extends Module {
         final String referenceMeasurementName;
         final double referenceMultiplier;
 
-        /**
+        /*
          * Constructing a fixed- or image-value type
          * @param value
          */
@@ -470,12 +470,8 @@ public class FilterObjects extends Module {
 
         }
 
-        /**
+        /*
          * Constructing a parent-reference type
-         * @param referenceType
-         * @param referenceName
-         * @param referenceMeasurementName
-         * @param referenceMultiplier
          */
         public MeasRef(String referenceType, String referenceName, String referenceMeasurementName, double referenceMultiplier) {
             this.referenceType = referenceType;

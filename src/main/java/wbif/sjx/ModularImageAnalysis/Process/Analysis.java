@@ -30,15 +30,14 @@ public class Analysis implements Serializable {
 
     // PUBLIC METHODS
 
-    /**
+    /*
      * Initialisation method is where workspace is populated with modules and module-specific parameters.
      */
     public void initialise() {}
 
-    /**
+    /*
      * The method that gets called by the BatchProcessor.  This shouldn't have any user interaction elements
      * @param workspace Workspace containing stores for images and objects
-     * @return
      */
     public boolean execute(Workspace workspace) {
         // Running through modules
