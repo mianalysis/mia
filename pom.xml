@@ -151,6 +151,19 @@
                 </exclusion>
             </exclusions>
         </dependency>
+             
+        <dependency>
+            <groupId>ome</groupId>
+            <artifactId>bio-formats_plugins</artifactId>
+            <version>5.8.2</version>
+            <scope>${myscope}</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.xmlbeans</groupId>
+                    <artifactId>xmlbeans</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>net.imagej</groupId>
