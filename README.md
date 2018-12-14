@@ -61,5 +61,4 @@ Plugins bundled with MIA:
 - [BoneJ legacy plugins](https://github.com/mdoube/BoneJ)
 - [Stack Focuser](https://imagej.nih.gov/ij/plugins/stack-focuser.html)
 
-
 A list of bundled dependencies along with their respective licenses can be found [here](https://cdn.staticaly.com/gh/SJCross/ModularImageAnalysis/908a49be/target/site/dependencies.html).
