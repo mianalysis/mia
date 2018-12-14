@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ExtendedMinima extends Module {
     public static final String INPUT_IMAGE = "Input image";
-    public static final String APPLY_TO_INPUT = "Apply to input";
+    public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
