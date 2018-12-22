@@ -118,19 +118,19 @@ public class ImageSaver extends Module {
                 StringBuilder sb = new StringBuilder();
                 File parentFile = rootFile.getParentFile();
                 for (int i=0;i<fileDepth;i++) {
-                    sb.insert(0,parentFile.getName()+MIA.slashes);
+                    sb.insert(0,parentFile.getName()+MIA.getSlashes());
                     parentFile = parentFile.getParentFile();
                 }
 
-                new File(mirroredDirectoryRoot+ MIA.slashes +sb).mkdirs();
+                new File(mirroredDirectoryRoot+ MIA.getSlashes() +sb).mkdirs();
 
-                path = mirroredDirectoryRoot+ MIA.slashes +sb+FilenameUtils.removeExtension(rootFile.getName());
+                path = mirroredDirectoryRoot+ MIA.getSlashes() +sb+FilenameUtils.removeExtension(rootFile.getName());
                 break;
 
             case SaveLocations.SAVE_WITH_INPUT:
             default:
                 rootFile = workspace.getMetadata().getFile();
-                path = rootFile.getParent()+ MIA.slashes +FilenameUtils.removeExtension(rootFile.getName());
+                path = rootFile.getParent()+ MIA.getSlashes() +FilenameUtils.removeExtension(rootFile.getName());
                 break;
 
             case SaveLocations.SPECIFIC_LOCATION:

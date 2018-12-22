@@ -452,7 +452,7 @@ public class MeasureIntensityDistribution extends Module {
                 switch (saveProfileMode) {
                     case SaveProfileModes.INDIVIDUAL_FILES:
                         File rootFile = workspace.getMetadata().getFile();
-                        String path = rootFile.getParent()+ MIA.slashes +FilenameUtils.removeExtension(rootFile.getName());
+                        String path = rootFile.getParent()+ MIA.getSlashes() +FilenameUtils.removeExtension(rootFile.getName());
                         path = path + "_S" + workspace.getMetadata().getSeriesNumber()  + profileFileSuffix+ ".xls";
                         writeResultsFile(path,distanceBins,cumStats);
                         break;

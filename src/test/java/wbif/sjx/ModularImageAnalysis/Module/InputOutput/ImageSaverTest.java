@@ -92,7 +92,7 @@ public class ImageSaverTest {
         imageSaver.updateParameterValue(ImageSaver.INPUT_IMAGE,"Test_image");
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SPECIFIC_LOCATION);
         imageSaver.updateParameterValue(ImageSaver.MIRROR_DIRECTORY_ROOT,"");
-        imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_PATH,temporaryFolder.getRoot().getAbsolutePath()+MIA.slashes+"TestFile.tif");
+        imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_PATH,temporaryFolder.getRoot().getAbsolutePath()+MIA.getSlashes()+"TestFile.tif");
         imageSaver.updateParameterValue(ImageSaver.SAVE_SUFFIX,"_test2");
         imageSaver.updateParameterValue(ImageSaver.FLATTEN_OVERLAY,false);
 

@@ -319,7 +319,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         DecimalFormat df = new DecimalFormat(stringBuilder.toString());
 
         // Getting fragments of the filepath
-        String rootPath = rootFile.getParent()+MIA.slashes;
+        String rootPath = rootFile.getParent()+MIA.getSlashes();
         String rootName = rootFile.getName();
         String startingNumber = df.format(startingIndex);
         int numStart = FilenameUtils.removeExtension(rootName).length()-numberOfZeroes;
@@ -396,7 +396,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         // Constructing a new name using the same name format
         String comment = metadata.getComment();
-        String filename = metadata.getFile().getParent()+MIA.slashes+IncuCyteShortFilenameExtractor
+        String filename = metadata.getFile().getParent()+MIA.getSlashes()+IncuCyteShortFilenameExtractor
                 .generate(comment,metadata.getWell(),metadata.getAsString(HCMetadata.FIELD),metadata.getExt());
 
         return getBFImage(filename,seriesNumber,dimRanges,crop,true);

@@ -48,7 +48,6 @@ import java.util.*;
  */
 public class MIA implements PlugIn {
     private static final ErrorLog errorLog = new ErrorLog();
-    public static String slashes = "\\";
     private static ArrayList<String> pluginPackageNames = new ArrayList<>();
     private static String version = "";
     private static boolean debug = false;
@@ -60,11 +59,6 @@ public class MIA implements PlugIn {
 
     public static void main(String[] args) throws Exception {// The following works, but loads the entire video to RAM without an apparent way to prevent this
         debug = true;
-
-        // Setting the file path slashes depending on the operating system
-        if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
-        else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";
-        else if (SystemUtils.IS_OS_LINUX) slashes = "/";
 
         // Determining the version number from the pom file
         try {
@@ -110,11 +104,6 @@ public class MIA implements PlugIn {
     @Override
     public void run(String s) {
         debug = false;
-
-        // Setting the file path slashes depending on the operating system
-        if (SystemUtils.IS_OS_WINDOWS) slashes = "\\";
-        else if (SystemUtils.IS_OS_MAC_OSX) slashes = "/";
-        else if (SystemUtils.IS_OS_LINUX) slashes = "/";
 
         // Determining the version number from the pom file
         try {
@@ -229,5 +218,15 @@ public class MIA implements PlugIn {
 
     public static void setDebug(boolean debug) {
         MIA.debug = debug;
+    }
+
+    public static String getSlashes() {
+        // Setting the file path slashes depending on the operating system
+        if (SystemUtils.IS_OS_WINDOWS) return  "\\";
+        else if (SystemUtils.IS_OS_MAC_OSX) return  "/";
+        else if (SystemUtils.IS_OS_LINUX) return  "/";
+
+        return "\\";
+
     }
 }
