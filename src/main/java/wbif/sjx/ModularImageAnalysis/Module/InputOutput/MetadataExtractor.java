@@ -294,7 +294,7 @@ public class MetadataExtractor extends Module {
                         switch (inputSource) {
                             case InputSources.FILE_IN_INPUT_FOLDER:
                                 metadataSourcePath = workspace.getMetadata().getFile().getParentFile().getPath();
-                                metadataSourcePath = metadataSourcePath + MIA.slashes + metadataFileName;
+                                metadataSourcePath = metadataSourcePath + MIA.getSlashes() + metadataFileName;
                                 break;
                             case InputSources.STATIC_FILE:
                                 metadataSourcePath = metadataFilePath;

@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.CropImage;
@@ -15,12 +16,17 @@ import java.net.URLDecoder;
 import static org.junit.Assert.*;
 
 /**
- * Created by steph on 29/08/2017.
+ * Created by Stephen on 29/08/2017.
  */
 public class ImageLoaderTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
+    }
+
+    @Before
+    public void setupTest() {
+        Units.setUnits(Units.SpatialUnits.MICROMETRE);
     }
 
     @Test

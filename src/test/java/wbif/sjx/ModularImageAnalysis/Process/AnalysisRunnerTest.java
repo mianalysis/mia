@@ -96,7 +96,7 @@ public class AnalysisRunnerTest {
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
         File folder = temporaryFolder.newFolder("test folder");
-        String path = folder.getAbsolutePath() + MIA.slashes + "fake file.tif";
+        String path = folder.getAbsolutePath() + MIA.getSlashes() + "fake file.tif";
 
         boolean actual = AnalysisRunner.checkInputFileValidity(path);
 
@@ -110,7 +110,7 @@ public class AnalysisRunnerTest {
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
         File folder = temporaryFolder.newFolder("test folder");
-        String path = folder.getParent() + MIA.slashes + "test fake folder" + MIA.slashes;
+        String path = folder.getParent() + MIA.getSlashes() + "test fake folder" + MIA.getSlashes();
 
         boolean actual = AnalysisRunner.checkInputFileValidity(path);
 
@@ -161,7 +161,7 @@ public class AnalysisRunnerTest {
         File file = temporaryFolder.newFile("fake file.tif");
 
         String actual = AnalysisRunner.getExportName(inputControl,file);
-        String expected = file.getParent()+ MIA.slashes + "fake file_S3";
+        String expected = file.getParent()+ MIA.getSlashes() + "fake file_S3";
 
         assertEquals(expected,actual);
 
@@ -179,7 +179,7 @@ public class AnalysisRunnerTest {
         File file = temporaryFolder.newFile("fake file.tif");
 
         String actual = AnalysisRunner.getExportName(inputControl,file);
-        String expected = file.getParent()+ MIA.slashes + "fake file";
+        String expected = file.getParent()+ MIA.getSlashes() + "fake file";
 
         assertEquals(expected,actual);
 
@@ -198,7 +198,7 @@ public class AnalysisRunnerTest {
         File folder = temporaryFolder.newFolder("test folder");
 
         String actual = AnalysisRunner.getExportName(inputControl,folder);
-        String expected = folder+MIA.slashes+folder.getName()+"_S3";
+        String expected = folder+MIA.getSlashes()+folder.getName()+"_S3";
 
         assertEquals(expected,actual);
 
@@ -217,7 +217,7 @@ public class AnalysisRunnerTest {
         File folder = temporaryFolder.newFolder("test folder");
 
         String actual = AnalysisRunner.getExportName(inputControl,folder);
-        String expected = folder+MIA.slashes+folder.getName();
+        String expected = folder+MIA.getSlashes()+folder.getName();
 
         assertEquals(expected,actual);
 

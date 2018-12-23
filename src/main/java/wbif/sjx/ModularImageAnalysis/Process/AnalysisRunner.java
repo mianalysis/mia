@@ -90,11 +90,11 @@ public class AnalysisRunner {
         } else if (inputFile.isDirectory()) {
             switch (seriesMode) {
                 case InputControl.SeriesModes.ALL_SERIES:
-                    return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName();
+                    return inputFile.getAbsolutePath() + MIA.getSlashes() + inputFile.getName();
                 case InputControl.SeriesModes.SERIES_LIST:
-                    return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName() + "_S" + seriesList.replace(" ","");
+                    return inputFile.getAbsolutePath() + MIA.getSlashes() + inputFile.getName() + "_S" + seriesList.replace(" ","");
                 case InputControl.SeriesModes.SINGLE_SERIES:
-                    return inputFile.getAbsolutePath() + MIA.slashes + inputFile.getName() + "_S" + seriesNumber;
+                    return inputFile.getAbsolutePath() + MIA.getSlashes() + inputFile.getName() + "_S" + seriesNumber;
             }
         }
 

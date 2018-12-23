@@ -191,10 +191,8 @@ public class MeasureImageIntensityTest {
         assertEquals(126.10, image.getMeasurement(MeasureImageIntensity.Measurements.MEAN).getValue(),tolerance);
         assertEquals(0, image.getMeasurement(MeasureImageIntensity.Measurements.MIN).getValue(),tolerance);
         assertEquals(255, image.getMeasurement(MeasureImageIntensity.Measurements.MAX).getValue(),tolerance);
-
-        // Note: the IntensityCalculator will only measure intensity for the currently-selected channel
-        assertEquals(73.50, image.getMeasurement(MeasureImageIntensity.Measurements.STDEV).getValue(),tolerance);
-        assertEquals(29440126d, image.getMeasurement(MeasureImageIntensity.Measurements.SUM).getValue(),tolerance);
+        assertEquals(72.92, image.getMeasurement(MeasureImageIntensity.Measurements.STDEV).getValue(),tolerance);
+        assertEquals(58880064, image.getMeasurement(MeasureImageIntensity.Measurements.SUM).getValue(),tolerance);
 
     }
 }
