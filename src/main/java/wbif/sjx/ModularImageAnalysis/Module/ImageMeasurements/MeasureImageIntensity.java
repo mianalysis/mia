@@ -54,7 +54,7 @@ public class MeasureImageIntensity extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         // Running measurement
-        CumStat cs = IntensityCalculator.calculate(inputImagePlus);
+        CumStat cs = IntensityCalculator.calculate(inputImagePlus.getImageStack());
 
         // Adding measurements to image
         if (parameters.getValue(MEASURE_MEAN))
