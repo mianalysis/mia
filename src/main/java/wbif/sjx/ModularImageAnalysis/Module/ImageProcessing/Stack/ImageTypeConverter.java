@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.process.StackStatistics;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -99,7 +100,8 @@ public class ImageTypeConverter extends Module {
                 break;
 
             case 32:
-                imagePlus.setDisplayRange(imagePlus.getStatistics().min,imagePlus.getStatistics().max);
+                StackStatistics stackStatistics = new StackStatistics(imagePlus);
+                imagePlus.setDisplayRange(stackStatistics.min,stackStatistics.max);
                 break;
         }
     }
@@ -132,7 +134,8 @@ public class ImageTypeConverter extends Module {
      * @param imagePlus
      */
     static void applyFilledRange(ImagePlus imagePlus) {
-       imagePlus.setDisplayRange(imagePlus.getStatistics().min,imagePlus.getStatistics().max);
+        StackStatistics stackStatistics = new StackStatistics(imagePlus);
+       imagePlus.setDisplayRange(stackStatistics.min,stackStatistics.max);
     }
 
     @Override

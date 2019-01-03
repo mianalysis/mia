@@ -4,7 +4,10 @@ import bunwarpj.Param;
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.Prefs;
+import ij.plugin.SubHyperstackMaker;
+import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -15,6 +18,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class UnwarpImages extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -37,6 +43,7 @@ public class UnwarpImages extends Module {
     public static final String IMAGE_WEIGHT = "Image weight";
     public static final String CONSISTENCY_WEIGHT = "Consistency weight";
     public static final String STOP_THRESHOLD = "Stop threshold";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
 
     public interface RelativeModes {
@@ -145,8 +152,8 @@ public class UnwarpImages extends Module {
 
     }
 
-    public static void applyTransformation(Image inputImage, Transformation transformation) {
-        String tempPath = null;
+    public void applyTransformation(Image inputImage, Transformation transformation, boolean multithread) throws InterruptedException {
+        final String tempPath;
         try {
             File tempFile = File.createTempFile("unwarp",".tmp");
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile));
@@ -157,26 +164,51 @@ public class UnwarpImages extends Module {
 
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
-
-        if (tempPath == null) return;
 
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
+        int nChannels = inputIpl.getNChannels();
+        int nSlices = inputIpl.getNSlices();
+        int nFrames = inputIpl.getNFrames();
 
-        for (int c=1;c<=inputIpl.getNChannels();c++) {
-            for (int z=1;z<=inputIpl.getNSlices();z++) {
-                for (int t=1;t<=inputIpl.getNFrames();t++) {
-                    inputIpl.setPosition(c, z, t);
-                    ImagePlus slice = new ImagePlus("Slice", inputIpl.getProcessor().duplicate());
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
-                    bUnwarpJ_.applyTransformToSource(tempPath, slice, slice);
-                    ImageTypeConverter.applyConversion(slice, 8, ImageTypeConverter.ScalingModes.CLIP);
+        for (int c=1;c<=nChannels;c++) {
+            for (int z=1;z<=nSlices;z++) {
+                for (int t=1;t<=nFrames;t++) {
+                    int finalC = c;
+                    int finalZ = z;
+                    int finalT = t;
 
-                    inputIpl.setProcessor(slice.getProcessor());
+                    Runnable task = () -> {
+                        ImagePlus slice = getSetStack(inputIpl, finalT, finalC, finalZ, null);
+                        bUnwarpJ_.applyTransformToSource(tempPath, slice, slice);
+                        ImageTypeConverter.applyConversion(slice, 8, ImageTypeConverter.ScalingModes.CLIP);
 
+                        getSetStack(inputIpl, finalT, finalC, finalZ, slice.getProcessor());
+
+                    };
+                    pool.submit(task);
                 }
             }
+        }
+
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+    }
+
+    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice, @Nullable ImageProcessor toPut) {
+        if (toPut == null) {
+            // Get mode
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, slice + "-" + slice, timepoint + "-" + timepoint);
+        } else {
+            inputImagePlus.setPosition(channel,slice,timepoint);
+            inputImagePlus.setProcessor(toPut);
+            return null;
         }
     }
 
@@ -193,7 +225,7 @@ public class UnwarpImages extends Module {
         }
     }
 
-    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, @Nullable Image reference, @Nullable Image externalSource) {
+    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) throws InterruptedException {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -248,26 +280,26 @@ public class UnwarpImages extends Module {
                     break;
             }
 
-            // Applying the transformation to the whole stack.
-            // All channels should move in the same way, so are processed with the same transformation.
-            for (int tt = t; tt <= t2; tt++) {
-                for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
-                    warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                    applyTransformation(warped, transformation);
-                    replaceStack(inputImage, warped, c, tt);
-                }
-            }
-
-            // Need to apply the warp to an external image
-            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME) && externalSource != null) {
+                // Applying the transformation to the whole stack.
+                // All channels should move in the same way, so are processed with the same transformation.
                 for (int tt = t; tt <= t2; tt++) {
-                    for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
-                        warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                        applyTransformation(warped, transformation);
-                        replaceStack(source, warped, c, tt);
+                    for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
+                        warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
+                        applyTransformation(warped, transformation, multithread);
+                        replaceStack(inputImage, warped, c, tt);
                     }
                 }
-            }
+
+                // Need to apply the warp to an external image
+                if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME) && externalSource != null) {
+                    for (int tt = t; tt <= t2; tt++) {
+                        for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
+                            warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
+                            applyTransformation(warped, transformation, multithread);
+                            replaceStack(source, warped, c, tt);
+                        }
+                    }
+                }
         }
     }
 
@@ -304,6 +336,7 @@ public class UnwarpImages extends Module {
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         String registrationMode = parameters.getValue(REGISTRATION_MODE);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
@@ -329,7 +362,13 @@ public class UnwarpImages extends Module {
 
         Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
         Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
-        process(inputImage,calculationChannel,relativeMode,param,correctionInterval,reference,externalSource);
+
+        try {
+            process(inputImage, calculationChannel, relativeMode, param, correctionInterval, multithread, reference, externalSource);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
@@ -361,6 +400,7 @@ public class UnwarpImages extends Module {
         parameters.add(new Parameter(IMAGE_WEIGHT, Parameter.DOUBLE,1d));
         parameters.add(new Parameter(CONSISTENCY_WEIGHT, Parameter.DOUBLE,10d));
         parameters.add(new Parameter(STOP_THRESHOLD, Parameter.DOUBLE,0.01));
+        parameters.add(new Parameter(ENABLE_MULTITHREADING,Parameter.BOOLEAN,true));
 
     }
 
@@ -414,6 +454,7 @@ public class UnwarpImages extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(STOP_THRESHOLD));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 

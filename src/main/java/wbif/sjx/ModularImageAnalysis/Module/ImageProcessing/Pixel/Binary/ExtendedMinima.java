@@ -27,6 +27,7 @@ public class ExtendedMinima extends Module {
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY_3D = "Connectivity (3D)";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
 
     public interface Connectivity {
@@ -37,7 +38,7 @@ public class ExtendedMinima extends Module {
 
     }
 
-    public Image process(Image inputImage, String outputImageName, int dynamic, int connectivity) throws InterruptedException {
+    public Image process(Image inputImage, String outputImageName, int dynamic, int connectivity, boolean multithread) throws InterruptedException {
         ImagePlus inputIpl = inputImage.getImagePlus();
         int width = inputIpl.getWidth();
         int height = inputIpl.getHeight();
@@ -48,7 +49,7 @@ public class ExtendedMinima extends Module {
         // Creating output image
         ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,nChannels,nSlices,nFrames,8);
 
-        int nThreads = Prefs.getThreads();
+        int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         int nTotal = nChannels*nFrames;
@@ -62,6 +63,7 @@ public class ExtendedMinima extends Module {
                 Runnable task = () -> {
                     // Getting maskIpl for this timepoint
                     ImageStack timepoint = getSetStack(inputIpl, finalT, finalC, null);
+                    if (timepoint == null) return;
                     timepoint = MinimaAndMaxima3D.extendedMinima(timepoint, dynamic, connectivity);
 
                     //  Replacing the maskIpl intensity
@@ -126,11 +128,12 @@ public class ExtendedMinima extends Module {
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         int dynamic = parameters.getValue(DYNAMIC);
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY_3D));
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Getting region minima
         Image outputImage;
         try {
-            outputImage = process(inputImage,outputImageName,dynamic,connectivity);
+            outputImage = process(inputImage,outputImageName,dynamic,connectivity, multithread);
         } catch (InterruptedException e) {
             e.printStackTrace();
             return false;
@@ -157,6 +160,7 @@ public class ExtendedMinima extends Module {
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
         parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY, Connectivity.SIX, Connectivity.ALL));
+        parameters.add(new Parameter(ENABLE_MULTITHREADING, Parameter.BOOLEAN, true));
 
     }
 
@@ -172,6 +176,7 @@ public class ExtendedMinima extends Module {
 
         returnedParameters.add(parameters.getParameter(DYNAMIC));
         returnedParameters.add(parameters.getParameter(CONNECTIVITY_3D));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 

@@ -4,6 +4,7 @@ import bunwarpj.bUnwarpJ_;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import mpicbg.ij.FeatureTransform;
 import mpicbg.ij.InverseTransformMapping;
@@ -23,6 +24,10 @@ import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RegisterImages extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -45,6 +50,7 @@ public class RegisterImages extends Module {
     public static final String ROD = "Closest/next closest ratio";
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
 
     public interface RelativeModes {
@@ -83,7 +89,7 @@ public class RegisterImages extends Module {
     }
 
 
-    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, @Nullable Image reference, @Nullable Image externalSource) {
+    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) throws InterruptedException {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -157,7 +163,7 @@ public class RegisterImages extends Module {
             for (int tt = t; tt <= t2; tt++) {
                 for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
                     warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                    applyTransformation(warped, mapping);
+                    applyTransformation(warped, mapping,multithread);
                     replaceStack(inputImage, warped, c, tt);
                 }
             }
@@ -167,7 +173,7 @@ public class RegisterImages extends Module {
                 for (int tt = t; tt <= t2; tt++) {
                     for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
                         warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                        applyTransformation(warped, mapping);
+                        applyTransformation(warped, mapping,multithread);
                         replaceStack(source, warped, c, tt);
                     }
                 }
@@ -274,25 +280,53 @@ public class RegisterImages extends Module {
 
     }
 
-    public static void applyTransformation(Image inputImage, Mapping mapping) {
+    public static void applyTransformation(Image inputImage, Mapping mapping, boolean multithread) throws InterruptedException {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
+        int nChannels = inputIpl.getNChannels();
+        int nSlices = inputIpl.getNSlices();
+        int nFrames = inputIpl.getNFrames();
 
-        for (int c=1;c<=inputIpl.getNChannels();c++) {
-            for (int z=1;z<=inputIpl.getNSlices();z++) {
-                for (int t=1;t<=inputIpl.getNFrames();t++) {
-                    inputIpl.setPosition(c, z, t);
-                    ImageProcessor originalSlice = inputIpl.getProcessor();
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
-                    originalSlice.setInterpolationMethod(ImageProcessor.BILINEAR);
-                    ImageProcessor alignedSlice = originalSlice.createProcessor(originalSlice.getWidth(), originalSlice.getHeight());
-                    alignedSlice.setMinAndMax(originalSlice.getMin(), originalSlice.getMax());
-                    mapping.mapInterpolated(originalSlice, alignedSlice);
+        int nTotal = nChannels*nFrames;
+        AtomicInteger count = new AtomicInteger();
 
-                    inputIpl.setProcessor(alignedSlice);
+        for (int c=1;c<=nChannels;c++) {
+            for (int z=1;z<=nSlices;z++) {
+                for (int t=1;t<=nFrames;t++) {
+                    int finalC = c;
+                    int finalZ = z;
+                    int finalT = t;
 
+                    Runnable task = () -> {
+                        ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
+
+                        slice.setInterpolationMethod(ImageProcessor.BILINEAR);
+                        ImageProcessor alignedSlice = slice.createProcessor(slice.getWidth(), slice.getHeight());
+                        alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
+                        mapping.mapInterpolated(slice, alignedSlice);
+
+                        getSetStack(inputIpl, finalT, finalC, finalZ, slice);
+
+                    };
+                    pool.submit(task);
                 }
             }
+        }
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+    }
+
+    synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice, @Nullable ImageProcessor toPut) {
+        if (toPut == null) {
+            // Get mode
+            return SubHyperstackMaker.makeSubhyperstack(inputImagePlus, channel + "-" + channel, slice + "-" + slice, timepoint + "-" + timepoint);
+        } else {
+            inputImagePlus.setPosition(channel,slice,timepoint);
+            inputImagePlus.setProcessor(toPut);
+            return null;
         }
     }
 
@@ -344,6 +378,7 @@ public class RegisterImages extends Module {
         double rod = parameters.getValue(ROD);
         double maxEpsilon = parameters.getValue(MAX_EPSILON);
         double minInlierRatio = parameters.getValue(MIN_INLIER_RATIO);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
@@ -351,7 +386,6 @@ public class RegisterImages extends Module {
         if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
 
         // Setting up the parameters
-
         Param param = new Param();
         param.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
         param.initialSigma = (float) initialSigma;
@@ -366,7 +400,13 @@ public class RegisterImages extends Module {
 
         Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
         Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
-        process(inputImage,calculationChannel,relativeMode,param,correctionInterval,reference,externalSource);
+
+        try {
+            process(inputImage, calculationChannel, relativeMode, param, correctionInterval, multithread, reference, externalSource);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
@@ -398,6 +438,7 @@ public class RegisterImages extends Module {
         parameters.add(new Parameter(ROD, Parameter.DOUBLE,0.92));
         parameters.add(new Parameter(MAX_EPSILON, Parameter.DOUBLE,25.0));
         parameters.add(new Parameter(MIN_INLIER_RATIO, Parameter.DOUBLE,0.05));
+        parameters.add(new Parameter(ENABLE_MULTITHREADING, Parameter.BOOLEAN, true));
 
     }
 
@@ -444,6 +485,7 @@ public class RegisterImages extends Module {
         returnedParameters.add(parameters.getParameter(ROD));
         returnedParameters.add(parameters.getParameter(MAX_EPSILON));
         returnedParameters.add(parameters.getParameter(MIN_INLIER_RATIO));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 
