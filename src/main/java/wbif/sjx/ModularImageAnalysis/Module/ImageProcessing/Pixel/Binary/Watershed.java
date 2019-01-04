@@ -29,6 +29,7 @@ public class Watershed extends Module {
     public static final String DYNAMIC = "Dynamic";
     public static final String CONNECTIVITY = "Connectivity";
     public static final String MATCH_Z_TO_X= "Match Z to XY";
+    public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
     public interface IntensityModes {
         String DISTANCE = "Distance";
@@ -46,13 +47,13 @@ public class Watershed extends Module {
 
     }
 
-    public void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity) throws InterruptedException {
+    public void process(ImagePlus intensityIpl, ImagePlus markerIpl, ImagePlus maskIpl, int dynamic, int connectivity, boolean multithread) throws InterruptedException {
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
         if (markerIpl != null) IJ.run(markerIpl, "Invert", "stack");
 
-        int nThreads = Prefs.getThreads();
+        int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         int nChannels = maskIpl.getNChannels();
@@ -146,6 +147,7 @@ public class Watershed extends Module {
         int dynamic = parameters.getValue(DYNAMIC);
         int connectivity = Integer.parseInt(parameters.getValue(CONNECTIVITY));
         boolean matchZToXY = parameters.getValue(MATCH_Z_TO_X);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // If applying to a new image, the input image is duplicated
         if (!applyToInput) inputImagePlus = new Duplicator().run(inputImagePlus);
@@ -168,7 +170,7 @@ public class Watershed extends Module {
         }
 
         try {
-            process(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity);
+            process(intensityIpl,markerIpl,inputImagePlus,dynamic,connectivity,multithread);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -201,6 +203,7 @@ public class Watershed extends Module {
         parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
         parameters.add(new Parameter(CONNECTIVITY, Parameter.CHOICE_ARRAY,Connectivity.SIX,Connectivity.ALL));
         parameters.add(new Parameter(MATCH_Z_TO_X, Parameter.BOOLEAN, true));
+        parameters.add(new Parameter(ENABLE_MULTITHREADING, Parameter.BOOLEAN, true));
 
     }
 
@@ -232,6 +235,7 @@ public class Watershed extends Module {
                 break;
         }
         returnedParameters.add(parameters.getParameter(CONNECTIVITY));
+        returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
 

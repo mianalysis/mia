@@ -199,7 +199,7 @@ public class RelateObjects extends Module {
 
             ImagePlus distIpl = DistanceMap.getDistanceMap(parentImage.getImagePlus(),true);
 
-            Image projectedImage = new ProjectImage().projectImageInZ(new Image("Dist", distIpl), "Projected", ProjectImage.ProjectionModes.MAX);
+            Image projectedImage = ProjectImage.projectImageInZ(new Image("Dist", distIpl), "Projected", ProjectImage.ProjectionModes.MAX);
             double maxDist = projectedImage.getImagePlus().getStatistics().max;
 
             parentObject.addMeasurement(new Measurement("MAX_DIST",maxDist));

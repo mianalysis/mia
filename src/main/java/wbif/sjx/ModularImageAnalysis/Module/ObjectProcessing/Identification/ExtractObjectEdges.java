@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.process.StackStatistics;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -67,7 +68,8 @@ public class ExtractObjectEdges extends Module {
 
         // If percentage is being used, calculate the current value for edgeDistance
         if (edgeMode.equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
-            double maxDist = iplObj.getStatistics().max;
+            StackStatistics stackStatistics = new StackStatistics(iplObj);
+            double maxDist = stackStatistics.max;
             edgeDistance = (edgePercentage/100)*maxDist;
         }
 
@@ -127,9 +129,9 @@ public class ExtractObjectEdges extends Module {
 
         // If percentage is being used, calculate the current value for edgeDistance
         if (edgeMode.equals(EdgeModes.PERCENTAGE_FROM_EDGE)) {
-            double maxDist = iplObj.getStatistics().max;
+            StackStatistics stackStatistics = new StackStatistics(iplObj);
+            double maxDist = stackStatistics.max;
             edgeDistance = (edgePercentage/100)*maxDist;
-
         }
 
         // Adding pixel intensities to CumStat
