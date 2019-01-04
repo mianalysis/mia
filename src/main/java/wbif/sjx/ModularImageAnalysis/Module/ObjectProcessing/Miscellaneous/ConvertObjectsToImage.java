@@ -81,9 +81,11 @@ public class ConvertObjectsToImage extends Module {
             // Generating colours for each object
             HashMap<Integer, Float> hues = null;
             boolean nanBackground = false;
+            int bitDepth = 8;
             switch (colourMode) {
                 case ColourModes.ID:
                     hues = ColourFactory.getIDHues(inputObjects,false);
+                    bitDepth = 32;
                     break;
                 case ColourModes.RANDOM_COLOUR:
                     hues = ColourFactory.getRandomHues(inputObjects);
@@ -91,12 +93,15 @@ public class ConvertObjectsToImage extends Module {
                 case ColourModes.MEASUREMENT_VALUE:
                     nanBackground = true;
                     hues = ColourFactory.getMeasurementValueHues(inputObjects,measurementForColour,false);
+                    bitDepth = 32;
                     break;
                 case ColourModes.PARENT_ID:
                     hues = ColourFactory.getParentIDHues(inputObjects,parentForColour,false);
+                    bitDepth = 32;
                     break;
                 case ColourModes.PARENT_MEASUREMENT_VALUE:
                     hues = ColourFactory.getParentMeasurementValueHues(inputObjects,parentForColour,measurementForColour,false);
+                    bitDepth = 32;
                     break;
                 case ColourModes.SINGLE_COLOUR:
                 default:
@@ -104,7 +109,7 @@ public class ConvertObjectsToImage extends Module {
                     break;
             }
 
-            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage, hues, 32, nanBackground);
+            Image outputImage = inputObjects.convertObjectsToImage(outputImageName, templateImage, hues, bitDepth, nanBackground);
 
             // Applying spatial calibration from template image
             Calibration calibration = templateImage.getImagePlus().getCalibration();
