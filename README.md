@@ -29,7 +29,7 @@ Usage
 > - While processing the status panel will display the number of files completed (batch mode) or a summary of the ongoing task (single file mode)
 > - When finished, "Complete" will be displayed in the status panel.  Output XLS files will be saved in the input directory.
 - To create a new workflow
-> - Select View > Editing mode from the menu bar
+> - Select View > "Switch to editing view" from the menu bar
 > - Modules are added and removed from the workflow using the "+" and "-" buttons
 > - Module order can be shifted with the arrow buttons
 > - Selecting a module will display its relevant parameters in the right panel
