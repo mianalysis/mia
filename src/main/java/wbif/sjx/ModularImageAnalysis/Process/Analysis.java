@@ -59,7 +59,7 @@ public class Analysis implements Serializable {
             }
 
             // Updating progress bar
-            double percentageComplete = ((double) (count++))/((double) total)*100;
+            double percentageComplete = ((double) (++count))/((double) total)*100;
             ProgressMonitor.setWorkspaceProgress(workspace,percentageComplete);
             double overallPercentageComplete = ProgressMonitor.getOverallProgress();
             GUI.setProgress((int) Math.round(overallPercentageComplete));

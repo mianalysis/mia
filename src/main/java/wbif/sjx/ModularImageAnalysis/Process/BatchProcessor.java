@@ -63,9 +63,6 @@ public class BatchProcessor extends FileCrawler {
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
 
-        // If no analysis has been specified, skip this method
-        if (analysis == null) return;
-
         // The protocol to run will depend on if a single file or a folder was selected
         if (rootFolder.getFolderAsFile().isFile()) {
             runSingle(workspaces, analysis);
@@ -162,7 +159,6 @@ public class BatchProcessor extends FileCrawler {
                         System.out.println(string);
 
                         if (continuousExport && nComplete % saveNFiles == 0) exporter.exportResults(workspaces, analysis);
-
                         if (exportMode.equals(OutputControl.ExportModes.INDIVIDUAL_FILES)) exporter.exportResults(workspace, analysis);
 
                     } catch (IOException e) {
@@ -217,6 +213,9 @@ public class BatchProcessor extends FileCrawler {
             String seriesName = seriesNumbers.get(seriesNumber);
             if (seriesName.equals("")) seriesName = "FILE: "+rootFolder.getFolderAsFile().getName();
             workspace.getMetadata().setSeriesName(seriesName);
+
+            // Adding this Workspace to the Progress monitor
+            ProgressMonitor.setWorkspaceProgress(workspace,0d);
 
             Runnable task = () -> {
                 try {
