@@ -55,6 +55,9 @@ public class ImageTypeConverter extends Module {
     public static void applyConversion(ImagePlus inputImagePlus, int outputBitDepth, String scalingMode) {
         int bitDepth = inputImagePlus.getBitDepth();
 
+        // If the image is already the output bit depth, skip this
+        if (bitDepth == outputBitDepth) return;
+
         switch (scalingMode) {
             case ScalingModes.CLIP:
                 applyClippedRange(inputImagePlus,outputBitDepth);

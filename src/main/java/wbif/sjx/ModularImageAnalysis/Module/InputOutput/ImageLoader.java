@@ -60,6 +60,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String IMPORT_MODE = "Import mode";
     public static final String NUMBER_OF_ZEROES = "Number of zeroes";
     public static final String STARTING_INDEX = "Starting index";
+    public static final String FRAME_INTERVAL = "Frame interval";
     public static final String LIMIT_FRAMES = "Limit frames";
     public static final String FINAL_INDEX = "Final index";
     public static final String NAME_FORMAT = "Name format";
@@ -346,7 +347,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int finalIndex, int[] crop, @Nullable double[] intRange)
+    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int frameInterval, int finalIndex, int[] crop, @Nullable double[] intRange)
             throws ServiceException, DependencyException, FormatException, IOException {
         // Number format
         StringBuilder stringBuilder = new StringBuilder();
@@ -364,9 +365,15 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         // Determining the number of images to load
         int count = 0;
         int idx = startingIndex;
-        while (new File(rootPath+rootName+df.format(idx++)+"."+extension).exists()){
-            count++;
+        while (new File(rootPath+rootName+df.format(idx)+"."+extension).exists()){
+//            if ((idx-startingIndex)%frameInterval == 0) {
+                count++;
+                System.err.println("Loading frame "+idx);
+
+//            }
             if (idx == finalIndex) break;
+
+            idx = idx + frameInterval;
         }
 
         // Determining the dimensions of the input image
@@ -385,7 +392,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         ImagePlus outputIpl = IJ.createImage("Image",width,height,count,bitDepth);
         for (int i = 0;i<count;i++) {
             writeMessage("Loading image "+(i+1)+" of "+count);
-            String currentPath = rootPath+rootName+df.format(i+startingIndex)+"."+extension;
+            String currentPath = rootPath+rootName+df.format(i*frameInterval+startingIndex)+"."+extension;
             ImagePlus tempIpl = getBFImage(currentPath,1,dimRanges,crop,intRange,false);
 
             outputIpl.setPosition(i+1);
@@ -520,6 +527,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String filePath = parameters.getValue(FILE_PATH);
         int numberOfZeroes = parameters.getValue(NUMBER_OF_ZEROES);
         int startingIndex = parameters.getValue(STARTING_INDEX);
+        int frameInterval = parameters.getValue(FRAME_INTERVAL);
         boolean limitFrames = parameters.getValue(LIMIT_FRAMES);
         int finalIndex = parameters.getValue(FINAL_INDEX);
         String nameFormat = parameters.getValue(NAME_FORMAT);
@@ -573,7 +581,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 case ImportModes.IMAGE_SEQUENCE:
                     if (!limitFrames) finalIndex = Integer.MAX_VALUE;
-                    ipl = getImageSequence(workspace.getMetadata().getFile(),numberOfZeroes,startingIndex, finalIndex,crop, intRange);
+                    ipl = getImageSequence(workspace.getMetadata().getFile(),numberOfZeroes,startingIndex,frameInterval,finalIndex,crop, intRange);
                     break;
 
                 case ImportModes.MATCHING_FORMAT:
@@ -679,6 +687,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
         parameters.add(new Parameter(NUMBER_OF_ZEROES,Parameter.INTEGER,4));
         parameters.add(new Parameter(STARTING_INDEX,Parameter.INTEGER,0));
+        parameters.add(new Parameter(FRAME_INTERVAL,Parameter.INTEGER,1));
         parameters.add(new Parameter(LIMIT_FRAMES,Parameter.BOOLEAN,false));
         parameters.add(new Parameter(FINAL_INDEX,Parameter.INTEGER,1));
         parameters.add(new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.HUYGENS,NameFormats.ALL));
@@ -733,6 +742,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             case ImportModes.IMAGE_SEQUENCE:
                 returnedParameters.add(parameters.getParameter(NUMBER_OF_ZEROES));
                 returnedParameters.add(parameters.getParameter(STARTING_INDEX));
+                returnedParameters.add(parameters.getParameter(FRAME_INTERVAL));
                 returnedParameters.add(parameters.getParameter(LIMIT_FRAMES));
                 if (parameters.getValue(LIMIT_FRAMES)) {
                     returnedParameters.add(parameters.getParameter(FINAL_INDEX));
