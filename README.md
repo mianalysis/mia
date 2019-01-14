@@ -11,13 +11,7 @@ Installation
 ------------
 - The latest version of the plugin can be downloaded from the [Releases](https://github.com/SJCross/ModularImageAnalysis/releases) page.
 - Place this .jar file into the /plugins directory of the your Fiji installation.
-- It is necessary to install a couple of other Fiji plugins using the [updater](http://imagej.net/Updater):
-> - In Fiji, go to Help > Update...
-> - Go to "Manage update sites"
-> - Ensure "Biomedgroup" and "IJPB-plugins" are selected, then click "Close"
-> - Select "Apply changes" and restart Fiji when promted
-
-Note: "Biomedgroup" enables the [Ridge Detection](https://github.com/thorstenwagner/ij-ridgedetection) plugin and "IJPB-plugins" enables [MorphoLibJ](https://github.com/ijpb/MorphoLibJ).
+- If the "Biomedgroup" and "IJPB-plugins" plugins aren't already installed, you'll be prompted to download these via an automated installer.
 
 Usage
 -----
