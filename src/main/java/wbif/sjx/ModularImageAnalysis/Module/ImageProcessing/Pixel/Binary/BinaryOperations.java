@@ -75,7 +75,7 @@ public class BinaryOperations extends Module {
 
 
     public static void applyStockBinaryTransform(ImagePlus ipl, String operationMode, int numIterations) {
-        // Applying process to stack
+        // Applying processAutomatic to stack
         switch (operationMode) {
             case OperationModes.DILATE_2D:
                 IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Dilate stack");

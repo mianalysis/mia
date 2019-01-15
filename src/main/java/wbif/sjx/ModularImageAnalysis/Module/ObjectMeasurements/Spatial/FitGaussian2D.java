@@ -1,4 +1,4 @@
-// TODO: Show original and fit PSFs - maybe as a mosaic - to demonstrate the process is working correctly
+// TODO: Show original and fit PSFs - maybe as a mosaic - to demonstrate the processAutomatic is working correctly
 
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import ij.ImagePlus;

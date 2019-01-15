@@ -4,6 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Roi;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
@@ -38,6 +39,8 @@ import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
 
 import com.drew.lang.annotations.Nullable;
+
+import java.awt.*;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -74,7 +77,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String SLICES = "Slices";
     public static final String FRAMES = "Frames";
     public static final String CHANNEL = "Channel";
-    public static final String CROP_IMAGE = "Crop image";
+    public static final String CROP_MODE = "Crop mode";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
@@ -128,12 +132,30 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    public interface CropModes {
+        String NONE = "None";
+        String FIXED = "Fixed";
+        String FROM_REFERENCE = "From reference";
+
+        String[] ALL = new String[]{NONE,FIXED,FROM_REFERENCE};
+
+    }
+
     public interface OutputBitDepths {
         String EIGHT = "8";
         String SIXTEEN = "16";
         String THIRTY_TWO = "32";
 
         String[] ALL = new String[]{EIGHT,SIXTEEN,THIRTY_TWO};
+
+    }
+
+
+    public interface Measurements {
+        String ROI_LEFT = "IMAGE_LOADING // ROI_LEFT (PX)";
+        String ROI_TOP = "IMAGE_LOADING // ROI_TOP (PX)";
+        String ROI_WIDTH = "IMAGE_LOADING // ROI_WIDTH (PX)";
+        String ROI_HEIGHT = "IMAGE_LOADING // ROI_HEIGHT (PX)";
 
     }
 
@@ -366,13 +388,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int count = 0;
         int idx = startingIndex;
         while (new File(rootPath+rootName+df.format(idx)+"."+extension).exists()){
-//            if ((idx-startingIndex)%frameInterval == 0) {
-                count++;
-                System.err.println("Loading frame "+idx);
-
-//            }
-            if (idx == finalIndex) break;
-
+            if (idx > finalIndex) break;
+            count++;
             idx = idx + frameInterval;
         }
 
@@ -500,6 +517,22 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    private void addCropMeasurements(Image image, int[] crop) {
+        image.addMeasurement(new Measurement(Measurements.ROI_LEFT,crop[0]));
+        image.addMeasurement(new Measurement(Measurements.ROI_TOP,crop[1]));
+        image.addMeasurement(new Measurement(Measurements.ROI_WIDTH,crop[2]));
+        image.addMeasurement(new Measurement(Measurements.ROI_HEIGHT,crop[3]));
+    }
+
+    private void addCropMeasurements(ObjCollection objects, int[] crop) {
+        for (Obj obj:objects.values()) {
+            obj.addMeasurement(new Measurement(Measurements.ROI_LEFT, crop[0]));
+            obj.addMeasurement(new Measurement(Measurements.ROI_TOP, crop[1]));
+            obj.addMeasurement(new Measurement(Measurements.ROI_WIDTH, crop[2]));
+            obj.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
+        }
+    }
+
 
     @Override
     public String getTitle() {
@@ -540,7 +573,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String slices = parameters.getValue(SLICES);
         String frames = parameters.getValue(FRAMES);
         int channel = parameters.getValue(CHANNEL);
-        boolean cropImage = parameters.getValue(CROP_IMAGE);
+        String cropMode = parameters.getValue(CROP_MODE);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         int left = parameters.getValue(LEFT);
         int top = parameters.getValue(TOP);
         int width = parameters.getValue(WIDTH);
@@ -560,7 +594,31 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         String[] dimRanges = new String[]{channels,slices,frames};
 
-        int[] crop = (cropImage) ? new int[]{left,top,width,height} : null;
+        int[] crop = null;
+        switch (cropMode) {
+            case CropModes.FIXED:
+                crop = new int[]{left,top,width,height};
+                break;
+            case CropModes.FROM_REFERENCE:
+                // Displaying the image
+                Image referenceImage = workspace.getImage(referenceImageName);
+                ImagePlus referenceIpl = referenceImage.getImagePlus().duplicate();
+                referenceIpl.show();
+
+                // Asking the user to draw a rectangular ROI
+                IJ.runMacro("waitForUser(getArgument())","Click \"OK\" once ROI selected");
+
+                // Getting the ROI
+                Roi roi = referenceIpl.getRoi();
+                Rectangle bounds = roi.getBounds();
+                crop = new int[]{bounds.x,bounds.y,bounds.width,bounds.height};
+
+                // Closing the reference image
+                referenceIpl.close();
+                break;
+
+        }
+
         double[] intRange = (forceBitDepth) ? new double[]{Double.parseDouble(outputBitDepth),minIntensity,maxIntensity} : null;
 
         ImagePlus ipl = null;
@@ -661,6 +719,13 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 if (showOutput) showImage(outputImage);
 
+                // If a crop was drawn, recording these coordinates as an image measurement
+                switch (cropMode) {
+                    case CropModes.FROM_REFERENCE:
+                        addCropMeasurements(outputImage, crop);
+                        break;
+                }
+
                 break;
 
             case OutputModes.OBJECTS:
@@ -671,6 +736,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 workspace.addObjects(outputObjects);
 
                 if (showOutput) showImage(outputImage);
+                addCropMeasurements(outputObjects, crop);
 
                 break;
         }
@@ -701,7 +767,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         parameters.add(new Parameter(SLICES,Parameter.STRING,"1-end"));
         parameters.add(new Parameter(FRAMES,Parameter.STRING,"1-end"));
         parameters.add(new Parameter(CHANNEL,Parameter.INTEGER,1));
-        parameters.add(new Parameter(CROP_IMAGE, Parameter.BOOLEAN, false));
+        parameters.add(new Parameter(CROP_MODE,Parameter.CHOICE_ARRAY,CropModes.NONE,CropModes.ALL));
+        parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
         parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
         parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));
@@ -785,12 +852,17 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             returnedParameters.add(parameters.getParameter(FRAMES));
         }
 
-        returnedParameters.add(parameters.getParameter(CROP_IMAGE));
-        if (parameters.getValue(CROP_IMAGE)){
-            returnedParameters.add(parameters.getParameter(LEFT));
-            returnedParameters.add(parameters.getParameter(TOP));
-            returnedParameters.add(parameters.getParameter(WIDTH));
-            returnedParameters.add(parameters.getParameter(HEIGHT));
+        returnedParameters.add(parameters.getParameter(CROP_MODE));
+        switch ((String) parameters.getValue(CROP_MODE)) {
+            case CropModes.FIXED:
+                returnedParameters.add(parameters.getParameter(LEFT));
+                returnedParameters.add(parameters.getParameter(TOP));
+                returnedParameters.add(parameters.getParameter(WIDTH));
+                returnedParameters.add(parameters.getParameter(HEIGHT));
+                break;
+            case CropModes.FROM_REFERENCE:
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(SET_CAL));
@@ -821,12 +893,40 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
+        if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.IMAGE)) {
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+
+            switch ((String) parameters.getValue(CROP_MODE)) {
+                case CropModes.FROM_REFERENCE:
+                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_LEFT,outputImageName));
+                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_TOP,outputImageName));
+                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_WIDTH,outputImageName));
+                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_HEIGHT,outputImageName));
+                    break;
+            }
+        }
+
+        return imageMeasurementReferences;
+
     }
 
     @Override
     public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        return null;
+        if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.OBJECTS)) {
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+
+            switch ((String) parameters.getValue(CROP_MODE)) {
+                case CropModes.FROM_REFERENCE:
+                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_LEFT,outputObjectsName));
+                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_TOP,outputObjectsName));
+                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_WIDTH,outputObjectsName));
+                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_HEIGHT,outputObjectsName));
+                    break;
+            }
+        }
+
+        return objectMeasurementReferences;
+
     }
 
     @Override

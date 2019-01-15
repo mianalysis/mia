@@ -152,7 +152,7 @@ public class ExtractSubstack extends Module implements ActionListener {
         while (stringTokenizer.hasMoreTokens()) {
             String token = stringTokenizer.nextToken();
 
-            // If it matches the single range pattern process as a range, otherwise, check if it's a single value.
+            // If it matches the single range pattern processAutomatic as a range, otherwise, check if it's a single value.
             Matcher singleRangeMatcher = singleRangePattern.matcher(token);
             Matcher singleRangeEndMatcher = singleRangeEndPattern.matcher(token);
             Matcher intervalRangeMatcher = intervalRangePattern.matcher(token);

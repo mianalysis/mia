@@ -72,21 +72,21 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
 
-    public static void main(String[] args) {
-        new ImageJ();
-
-        Workspace workspace = new Workspace(0,null,0);
-
-        ImagePlus ipl = IJ.createImage("dfsd",400,300,1,8);
-        Image image = new Image("Im",ipl);
-        workspace.addImage(image);
-
-        ManuallyIdentifyObjects manuallyIdentifyObjects = new ManuallyIdentifyObjects();
-        manuallyIdentifyObjects.updateParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE,"Im");
-        manuallyIdentifyObjects.setShowOutput(true);
-        manuallyIdentifyObjects.run(workspace);
-
-    }
+//    public static void main(String[] args) {
+//        new ImageJ();
+//
+//        Workspace workspace = new Workspace(0,null,0);
+//
+//        ImagePlus ipl = IJ.createImage("dfsd",400,300,1,8);
+//        Image image = new Image("Im",ipl);
+//        workspace.addImage(image);
+//
+//        ManuallyIdentifyObjects manuallyIdentifyObjects = new ManuallyIdentifyObjects();
+//        manuallyIdentifyObjects.updateParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE,"Im");
+//        manuallyIdentifyObjects.setShowOutput(true);
+//        manuallyIdentifyObjects.run(workspace);
+//
+//    }
 
     private void showOptionsPanel() {
         rois = new HashMap<>();
@@ -216,7 +216,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
 
-        // We only want to interpolate in time, so need to process each Z-slice of the stack separately
+        // We only want to interpolate in time, so need to processAutomatic each Z-slice of the stack separately
         for (int z=1;z<=nSlices;z++) {
             // Extracting the slice and interpolating
             ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
@@ -231,7 +231,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
 
-        // We only want to interpolate in z, so need to process each timepoint separately
+        // We only want to interpolate in z, so need to processAutomatic each timepoint separately
         for (int t=1;t<=nFrames;t++) {
             // Extracting the slice and interpolating
             ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", "1-" + nSlices, t + "-" + t);
@@ -292,13 +292,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             overlay = new Overlay();
             displayImagePlus.setOverlay(overlay);
         }
-
-        // Storing the image calibration
-        Calibration calibration = inputImagePlus.getCalibration();
-        dppXY = calibration.getX(1);
-        dppZ = calibration.getZ(1);
-        calibrationUnits = calibration.getUnits();
-        twoD = inputImagePlus.getNSlices()==1;
 
         // Clearing any ROIs stored from previous runs
         rois = new HashMap<>();
@@ -533,7 +526,7 @@ class ObjRoi {
 
     public static Roi duplicateRoi(Roi roi) {
         Roi newRoi;
-        // Need to process Roi depending on its type
+        // Need to processAutomatic Roi depending on its type
         switch (roi.getType()) {
             case Roi.RECTANGLE:
                 newRoi = new Roi(roi.getBounds());

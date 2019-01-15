@@ -127,7 +127,7 @@ public class BatchProcessor extends FileCrawler {
                 fileDepth++;
             }
 
-            // For the current file, determining how many series to process (and which ones)
+            // For the current file, determining how many series to processAutomatic (and which ones)
             TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, next);
 
             // Iterating over all series to analyse, adding each one as a new workspace
@@ -201,7 +201,7 @@ public class BatchProcessor extends FileCrawler {
         // Setting up the ExecutorService, which will manage the threads
         pool = new ThreadPoolExecutor(1,1,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
-        // For the current file, determining how many series to process (and which ones)
+        // For the current file, determining how many series to processAutomatic (and which ones)
         TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
 
         // Only set verbose if a single series is being processed

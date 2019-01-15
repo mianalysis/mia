@@ -1,19 +1,19 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import bunwarpj.bUnwarpJ_;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.gui.*;
+import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
-import mpicbg.ij.FeatureTransform;
 import mpicbg.ij.InverseTransformMapping;
 import mpicbg.ij.Mapping;
 import mpicbg.ij.SIFT;
+import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -21,18 +21,42 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import com.drew.lang.annotations.Nullable;
+
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RegisterImages extends Module {
+public class RegisterImages extends Module implements ActionListener {
+    private JFrame frame;
+    private JTextField objectNumberField;
+    private final JPanel objectsPanel = new JPanel();
+    JScrollPane objectsScrollPane = new JScrollPane(objectsPanel);
+    private final GridBagConstraints objectsC = new GridBagConstraints();
+
+    private ImagePlus displayImagePlus1;
+    private ImagePlus displayImagePlus2;
+    private Overlay overlay1;
+    private Overlay overlay2;
+    private ArrayList<PointPair> pairs;
+
+    private int elementHeight = 40;
+
+    private static final String ADD_PAIR = "Add pair";
+    private static final String FINISH = "Finish";
+
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String ALIGNMENT_MODE = "Alignment mode";
     public static final String RELATIVE_MODE = "Relative mode";
     public static final String ROLLING_CORRECTION = "Rolling correction";
     public static final String CORRECTION_INTERVAL = "Correction interval";
@@ -52,6 +76,14 @@ public class RegisterImages extends Module {
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+
+    public interface AlignmentModes {
+        final String AUTOMATIC = "Automatic (feature extraction)";
+        final String MANUAL = "Manual (landmarks)";
+
+        final String[] ALL = new String[]{AUTOMATIC,MANUAL};
+
+    }
 
     public interface RelativeModes {
         final String FIRST_FRAME = "First frame";
@@ -89,7 +121,85 @@ public class RegisterImages extends Module {
     }
 
 
-    public void process(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) throws InterruptedException {
+    private void showOptionsPanel() {
+        pairs  = new ArrayList<>();
+        frame = new JFrame();
+
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        c.gridheight = 1;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.WEST;
+        c.insets = new Insets(5,5,5,5);
+
+        JLabel headerLabel = new JLabel("<html>Add a point to each image, then select \"Add pair\"" +
+                "<br>(or click \"Finish adding pairs\" at any time).</html>");
+        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+
+        frame.add(headerLabel,c);
+
+        JButton addPairButton = new JButton("Add pair");
+        addPairButton.addActionListener(this);
+        addPairButton.setActionCommand(ADD_PAIR);
+        c.gridy++;
+        c.gridwidth = 1;
+        frame.add(addPairButton,c);
+
+        JButton finishButton = new JButton("Finish adding pairs");
+        finishButton.addActionListener(this);
+        finishButton.setActionCommand(FINISH);
+        c.gridx++;
+        frame.add(finishButton,c);
+
+        // Object number panel
+        objectsC.gridx = 0;
+        objectsC.gridy = 0;
+        objectsC.weightx = 1;
+        objectsC.weighty = 1;
+        objectsC.anchor = GridBagConstraints.NORTHWEST;
+        objectsC.fill = GridBagConstraints.HORIZONTAL;
+        objectsPanel.setLayout(new GridBagLayout());
+
+        objectsScrollPane.setPreferredSize(new Dimension(0,200));
+        objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 2;
+        c.gridheight = 3;
+        c.fill = GridBagConstraints.BOTH;
+        frame.add(objectsScrollPane,c);
+
+        JCheckBox overlayCheck = new JCheckBox("Display overlay");
+        overlayCheck.setSelected(true);
+        overlayCheck.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayImagePlus1.setHideOverlay(!overlayCheck.isSelected());
+                displayImagePlus2.setHideOverlay(!overlayCheck.isSelected());
+            }
+        });
+        c.gridy++;
+        c.gridy++;
+        c.gridy++;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        frame.add(overlayCheck,c);
+
+        frame.pack();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
+        frame.setVisible(true);
+
+    }
+
+    public void processAutomatic(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -117,7 +227,7 @@ public class RegisterImages extends Module {
 
             // If the reference image is the previous frame, calculate this now
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
-                // Can't process if this is the first frame
+                // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
                 reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
@@ -131,23 +241,7 @@ public class RegisterImages extends Module {
             // Calculating the transformation for this image pair
             if (projectedReference == null) return;
 
-//            // If we're using the previous frame we may need to crop out the boundaries
-//            if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
-//                // Getting largest non-black rectangle
-//                Rectangle rectangle = getLargestLimits(projectedReference);
-//
-//                // Cropping references to this rectangle
-//                int top = rectangle.y;
-//                int left = rectangle.x;
-//                int width = rectangle.width;
-//                int height = rectangle.height;
-//
-//                projectedReference = CropImage.cropImage(projectedReference, "ProjectedReference", top, left, width, height);
-//                projectedWarped = CropImage.cropImage(projectedWarped, "ProjectedWarped", top, left, width, height);
-//
-//            }
-
-            Mapping mapping = getTransformation(projectedReference,projectedWarped,param);
+            Mapping mapping = getFeatureTransformation(projectedReference,projectedWarped,param);
 
             int t2 = t;
             switch (relativeMode) {
@@ -163,7 +257,11 @@ public class RegisterImages extends Module {
             for (int tt = t; tt <= t2; tt++) {
                 for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
                     warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                    applyTransformation(warped, mapping,multithread);
+                    try {
+                        applyTransformation(warped, mapping,multithread);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
                     replaceStack(inputImage, warped, c, tt);
                 }
             }
@@ -173,60 +271,99 @@ public class RegisterImages extends Module {
                 for (int tt = t; tt <= t2; tt++) {
                     for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
                         warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                        applyTransformation(warped, mapping,multithread);
+                        try {
+                            applyTransformation(warped, mapping,multithread);
+                        } catch (InterruptedException e) {
+                            return;
+                        }
                         replaceStack(source, warped, c, tt);
                     }
                 }
             }
 
             mapping = null;
-            System.gc();
+
         }
     }
 
-//    public static Rectangle getLargestLimits(Image image) {
-//        ImageProcessor ipr = image.getImagePlus().getProcessor();
-//
-//        int top = 0;
-//        int left = 0;
-//        int width = 0;
-//        int height = 0;
-//        int imWidth = ipr.getWidth();
-//        int imHeight = ipr.getHeight();
-//        int largestArea = 0;
-//
-//        for (int x=0;x<imWidth;x++) {
-//            for (int y=0;y<imHeight;y++) {
-//                for (int xx=(imWidth-1);xx>x;xx--) {
-//                    for (int yy=(imHeight-1);yy>y;yy--) {
-//                        // If this rectangle has a smaller area than the previous best, skip the rest of this loop
-//                        int area = (xx-x)*(yy-y);
-//                        if (area <= largestArea) break;
-//
-//                        // Checking that the corners are non-zero
-//                        if (ipr.get(x,y) == 0) continue;
-//                        if (ipr.get(x,yy) == 0) continue;
-//                        if (ipr.get(xx,y) == 0) continue;
-//                        if (ipr.get(xx,yy) == 0) continue;
-//
-//                        // If we got here, we have the largest current rectangle
-//                        top = y;
-//                        left = x;
-//                        width = (xx-x);
-//                        height = (yy-y);
-//                        largestArea = area;
-//                        break;
-//
-//                    }
-//                }
-//            }
-//        }
-//
-//        return new Rectangle(left,top,width,height);
-//
-//    }
+    public void processManual(Image inputImage, String transformationMode, boolean multithread, Image reference) {
+        // Creating a reference image
+        Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
 
-    public static Mapping getTransformation(Image referenceImage, Image warpedImage, Param param) {
+        // Creating a projection of the main image
+        Image projectedWarped = ProjectImage.projectImageInZ(inputImage, "ProjectedWarped", ProjectImage.ProjectionModes.MAX);
+
+        // Displaying the images and options panel.  While the control is open, do nothing
+        IJ.setTool(Toolbar.POINT);
+
+        displayImagePlus1 = new Duplicator().run(projectedReference.getImagePlus());
+        displayImagePlus1.setTitle("Select points on this image");
+        displayImagePlus1.show();
+        overlay1 = displayImagePlus1.getOverlay();
+        if (overlay1 == null) {
+            overlay1 = new Overlay();
+            displayImagePlus1.setOverlay(overlay1);
+        }
+
+        displayImagePlus2 = new Duplicator().run(projectedWarped.getImagePlus());
+        displayImagePlus2.setTitle("Select points on this image");
+        displayImagePlus2.show();
+        overlay2 = displayImagePlus2.getOverlay();
+        if (overlay2 == null) {
+            overlay2 = new Overlay();
+            displayImagePlus2.setOverlay(overlay2);
+        }
+
+        showOptionsPanel();
+        while (frame != null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Getting transform
+        Mapping mapping = getLandmarkTransformation(pairs,transformationMode);
+
+        // Iterate over each time-step
+        int count = 0;
+        int total = inputImage.getImagePlus().getNFrames();
+        for (int t = 1; t <= inputImage.getImagePlus().getNFrames(); t++) {
+            writeMessage("Processing timepoint "+(++count)+" of "+total);
+
+            // Applying the transformation to the whole stack.
+            // All channels should move in the same way, so are processed with the same transformation.
+            for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
+                Image warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(t));
+                try {
+                    applyTransformation(warped, mapping,multithread);
+                } catch (InterruptedException e) {
+                    return;
+                }
+                replaceStack(inputImage, warped, c, t);
+            }
+
+            mapping = null;
+
+        }
+    }
+
+    private static AbstractAffineModel2D getModel(String transformationMode) {
+        switch (transformationMode) {
+            case TransformationModes.AFFINE:
+                return new AffineModel2D();
+            case TransformationModes.RIGID:
+            default:
+                return new RigidModel2D();
+            case TransformationModes.SIMILARITY:
+                return new SimilarityModel2D();
+            case TransformationModes.TRANSLATION:
+                return new TranslationModel2D();
+        }
+    }
+
+    public static Mapping getFeatureTransformation(Image referenceImage, Image warpedImage, Param param) {
         ImagePlus referenceIpl = referenceImage.getImagePlus();
         ImagePlus warpedIpl = warpedImage.getImagePlus();
 
@@ -241,40 +378,40 @@ public class RegisterImages extends Module {
         ijSIFT.extractFeatures(warpedIpl.getProcessor(),featureList2);
 
         // Running registration
-        AbstractAffineModel2D model;
-        AbstractAffineModel2D< ? > currentModel;
-        switch (param.transformationMode) {
-            case TransformationModes.AFFINE:
-                model = new AffineModel2D();
-                currentModel = new AffineModel2D();
-                break;
-            case TransformationModes.RIGID:
-            default:
-                model = new RigidModel2D();
-                currentModel = new RigidModel2D();
-                break;
-            case TransformationModes.SIMILARITY:
-                model = new SimilarityModel2D();
-                currentModel = new SimilarityModel2D();
-                break;
-            case TransformationModes.TRANSLATION:
-                model = new TranslationModel2D();
-                currentModel = new TranslationModel2D();
-                break;
-        }
+        AbstractAffineModel2D model = getModel(param.transformationMode);
 
         Mapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
         Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2,featureList1,1.5f,null, Float.MAX_VALUE,param.rod);
         Vector<PointMatch> inliers = new Vector<PointMatch>();
 
         try {
-            currentModel.filterRansac(candidates,inliers,1000,param.maxEpsilon,param.minInlierRatio);
+            model.filterRansac(candidates,inliers,1000,param.maxEpsilon,param.minInlierRatio);
         } catch (NotEnoughDataPointsException e) {
             e.printStackTrace();
             return null;
         }
 
-        model.concatenate(currentModel);
+        return mapping;
+
+    }
+
+    public static Mapping getLandmarkTransformation(List<PointPair> pairs, String transformationMode) {
+        // Getting registration model
+        AbstractAffineModel2D model = getModel(transformationMode);
+
+        Mapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
+        final ArrayList< PointMatch > candidates = new ArrayList< PointMatch >();
+
+        for (PointPair pair:pairs) {
+            candidates.addAll(Util.pointRoisToPointMatches(pair.getPoint1(),pair.getPoint2()));
+        }
+
+        try {
+            model.fit(candidates);
+        } catch (NotEnoughDataPointsException | IllDefinedDataPointsException e) {
+            e.printStackTrace();
+            return null;
+        }
 
         return mapping;
 
@@ -308,7 +445,7 @@ public class RegisterImages extends Module {
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
                         mapping.mapInterpolated(slice, alignedSlice);
 
-                        getSetStack(inputIpl, finalT, finalC, finalZ, slice);
+                        getSetStack(inputIpl, finalT, finalC, finalZ, alignedSlice);
 
                     };
                     pool.submit(task);
@@ -367,6 +504,7 @@ public class RegisterImages extends Module {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String alignmentMode = parameters.getValue(ALIGNMENT_MODE);
         String relativeMode = parameters.getValue(RELATIVE_MODE);
         String rollingCorrectionMode = parameters.getValue(ROLLING_CORRECTION);
         int correctionInterval = parameters.getValue(CORRECTION_INTERVAL);
@@ -375,6 +513,7 @@ public class RegisterImages extends Module {
         String externalSourceName = parameters.getValue(EXTERNAL_SOURCE);
         int calculationChannel = parameters.getValue(CALCULATION_CHANNEL);
         double initialSigma = parameters.getValue(INITIAL_SIGMA);
+        String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
         double rod = parameters.getValue(ROD);
         double maxEpsilon = parameters.getValue(MAX_EPSILON);
         double minInlierRatio = parameters.getValue(MIN_INLIER_RATIO);
@@ -382,30 +521,34 @@ public class RegisterImages extends Module {
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
-        // If the rolling correction mode is off, set the interval to -1
-        if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
-
-        // Setting up the parameters
-        Param param = new Param();
-        param.transformationMode = parameters.getValue(TRANSFORMATION_MODE);
-        param.initialSigma = (float) initialSigma;
-        param.steps = parameters.getValue(STEPS);
-        param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
-        param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
-        param.fdSize = parameters.getValue(FD_SIZE);
-        param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
-        param.rod = (float) rod;
-        param.maxEpsilon = (float) maxEpsilon;
-        param.minInlierRatio = (float) minInlierRatio;
-
         Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
-        Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
 
-        try {
-            process(inputImage, calculationChannel, relativeMode, param, correctionInterval, multithread, reference, externalSource);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return false;
+        switch (alignmentMode) {
+            case AlignmentModes.AUTOMATIC:
+                // If the rolling correction mode is off, set the interval to -1
+                if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
+
+                // Setting up the parameters
+                Param param = new Param();
+                param.transformationMode = transformationMode;
+                param.initialSigma = (float) initialSigma;
+                param.steps = parameters.getValue(STEPS);
+                param.minOctaveSize = parameters.getValue(MINIMUM_IMAGE_SIZE);
+                param.maxOctaveSize = parameters.getValue(MAXIMUM_IMAGE_SIZE);
+                param.fdSize = parameters.getValue(FD_SIZE);
+                param.fdBins = parameters.getValue(FD_ORIENTATION_BINS);
+                param.rod = (float) rod;
+                param.maxEpsilon = (float) maxEpsilon;
+                param.minInlierRatio = (float) minInlierRatio;
+
+                Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
+
+                processAutomatic(inputImage, calculationChannel, relativeMode, param, correctionInterval, multithread, reference, externalSource);
+                break;
+
+            case AlignmentModes.MANUAL:
+                processManual(inputImage,transformationMode,multithread,reference);
+                break;
         }
 
         // Dealing with module outputs
@@ -421,6 +564,7 @@ public class RegisterImages extends Module {
         parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
         parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
         parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new Parameter(ALIGNMENT_MODE,Parameter.CHOICE_ARRAY,AlignmentModes.AUTOMATIC,AlignmentModes.ALL));
         parameters.add(new Parameter(RELATIVE_MODE,Parameter.CHOICE_ARRAY,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
         parameters.add(new Parameter(ROLLING_CORRECTION,Parameter.CHOICE_ARRAY,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
         parameters.add(new Parameter(CORRECTION_INTERVAL, Parameter.INTEGER,1));
@@ -451,40 +595,51 @@ public class RegisterImages extends Module {
             returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         }
 
-        returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
-        switch ((String) parameters.getValue(RELATIVE_MODE)) {
-            case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
-                returnedParameters.add(parameters.getParameter(ROLLING_CORRECTION));
-                switch ((String) parameters.getValue(ROLLING_CORRECTION)) {
-                    case UnwarpImages.RollingCorrectionModes.EVERY_NTH_FRAME:
-                        returnedParameters.add(parameters.getParameter(CORRECTION_INTERVAL));
+        returnedParameters.add(parameters.getParameter(ALIGNMENT_MODE));
+        switch ((String) parameters.getValue(ALIGNMENT_MODE)) {
+            case AlignmentModes.AUTOMATIC:
+                returnedParameters.add(parameters.getParameter(RELATIVE_MODE));
+                switch ((String) parameters.getValue(RELATIVE_MODE)) {
+                    case UnwarpImages.RelativeModes.PREVIOUS_FRAME:
+                        returnedParameters.add(parameters.getParameter(ROLLING_CORRECTION));
+                        switch ((String) parameters.getValue(ROLLING_CORRECTION)) {
+                            case UnwarpImages.RollingCorrectionModes.EVERY_NTH_FRAME:
+                                returnedParameters.add(parameters.getParameter(CORRECTION_INTERVAL));
+                                break;
+                        }
+                        break;
+
+                    case UnwarpImages.RelativeModes.SPECIFIC_IMAGE:
+                        returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
                         break;
                 }
+
+                returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
+                switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
+                    case UnwarpImages.CalculationSources.EXTERNAL:
+                        returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
+                        break;
+                }
+
+                returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
+                returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
+                returnedParameters.add(parameters.getParameter(INITIAL_SIGMA));
+                returnedParameters.add(parameters.getParameter(STEPS));
+                returnedParameters.add(parameters.getParameter(MINIMUM_IMAGE_SIZE));
+                returnedParameters.add(parameters.getParameter(MAXIMUM_IMAGE_SIZE));
+                returnedParameters.add(parameters.getParameter(FD_SIZE));
+                returnedParameters.add(parameters.getParameter(FD_ORIENTATION_BINS));
+                returnedParameters.add(parameters.getParameter(ROD));
+                returnedParameters.add(parameters.getParameter(MAX_EPSILON));
+                returnedParameters.add(parameters.getParameter(MIN_INLIER_RATIO));
                 break;
 
-            case UnwarpImages.RelativeModes.SPECIFIC_IMAGE:
+            case AlignmentModes.MANUAL:
                 returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(CALCULATION_SOURCE));
-        switch ((String) parameters.getValue(CALCULATION_SOURCE)) {
-            case UnwarpImages.CalculationSources.EXTERNAL:
-                returnedParameters.add(parameters.getParameter(EXTERNAL_SOURCE));
-                break;
-        }
-
-        returnedParameters.add(parameters.getParameter(CALCULATION_CHANNEL));
-        returnedParameters.add(parameters.getParameter(TRANSFORMATION_MODE));
-        returnedParameters.add(parameters.getParameter(INITIAL_SIGMA));
-        returnedParameters.add(parameters.getParameter(STEPS));
-        returnedParameters.add(parameters.getParameter(MINIMUM_IMAGE_SIZE));
-        returnedParameters.add(parameters.getParameter(MAXIMUM_IMAGE_SIZE));
-        returnedParameters.add(parameters.getParameter(FD_SIZE));
-        returnedParameters.add(parameters.getParameter(FD_ORIENTATION_BINS));
-        returnedParameters.add(parameters.getParameter(ROD));
-        returnedParameters.add(parameters.getParameter(MAX_EPSILON));
-        returnedParameters.add(parameters.getParameter(MIN_INLIER_RATIO));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
@@ -511,6 +666,47 @@ public class RegisterImages extends Module {
 
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case (ADD_PAIR):
+                addNewPair();
+                break;
+
+            case (FINISH):
+                frame.dispose();
+                frame = null;
+                displayImagePlus1.close();
+                displayImagePlus2.close();
+
+                break;
+        }
+    }
+
+    public void addNewPair() {
+        Roi roi1 = displayImagePlus1.getRoi();
+        double[] centroid1 = roi1.getContourCentroid();
+        PointRoi point1 = new PointRoi(centroid1[0],centroid1[1]);
+        displayImagePlus1.deleteRoi();
+
+        Roi roi2 = displayImagePlus2.getRoi();
+        double[] centroid2 = roi2.getContourCentroid();
+        PointRoi point2 = new PointRoi(centroid2[0],centroid2[1]);
+        displayImagePlus2.deleteRoi();
+
+        pairs.add(new PointPair(point1,point2));
+
+    }
+
+    public void addToOverlay(PointPair pair) {
+        overlay1.add(pair.getPoint1());
+        displayImagePlus1.updateAndDraw();
+
+        overlay2.add(pair.getPoint2());
+        displayImagePlus2.updateAndDraw();
+
+    }
+
 
     private class Param extends FloatArray2DSIFT.Param {
         String transformationMode = TransformationModes.RIGID;
@@ -520,4 +716,22 @@ public class RegisterImages extends Module {
 
     }
 
+    private class PointPair {
+        private PointRoi p1;
+        private PointRoi p2;
+
+        PointPair(PointRoi p1, PointRoi p2) {
+            this.p1 = p1;
+            this.p2 = p2;
+        }
+
+        PointRoi getPoint1() {
+            return p1;
+        }
+
+        PointRoi getPoint2() {
+            return p2;
+        }
+    }
 }
+

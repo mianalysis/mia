@@ -8,7 +8,7 @@
 //import ij.gui.Roi;
 //import ij.measure.Calibration;
 //import ij.plugin.Duplicator;
-//import ij.process.ImageProcessor;
+//import ij.processAutomatic.ImageProcessor;
 //import wbif.sjx.ModularImageAnalysis.Exceptions.GenericMIAException;
 //import wbif.sjx.ModularImageAnalysis.Module.Module;
 //import wbif.sjx.ModularImageAnalysis.Module.PackageNames;

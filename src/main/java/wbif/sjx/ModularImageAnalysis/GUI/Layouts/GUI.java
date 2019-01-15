@@ -87,7 +87,7 @@ public class GUI {
         }
         initialised = true;
 
-        // Starting this process, as it takes longest
+        // Starting this processAutomatic, as it takes longest
         new Thread(GUI::listAvailableModules).start();
 
         analysis.getInputControl().initialiseParameters();

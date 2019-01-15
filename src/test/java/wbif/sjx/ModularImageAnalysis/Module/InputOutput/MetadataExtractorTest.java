@@ -24,7 +24,7 @@ public class MetadataExtractorTest {
 
     @Test
     public void testRunKeywordMatching() throws IOException {
-        // Creating the fake file to process
+        // Creating the fake file to processAutomatic
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
         File testFile = temporaryFolder.newFile("Test filename with k2 keyword.tif");
@@ -51,7 +51,7 @@ public class MetadataExtractorTest {
 
     @Test
     public void testRunKeywordMatchingWithGaps() throws IOException {
-        // Creating the fake file to process
+        // Creating the fake file to processAutomatic
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
         File testFile = temporaryFolder.newFile("Test filename with gaps keyword.tif");
@@ -78,7 +78,7 @@ public class MetadataExtractorTest {
 
     @Test
     public void testRunKeywordMatchingWithSymbols() throws IOException {
-        // Creating the fake file to process
+        // Creating the fake file to processAutomatic
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
         File testFile = temporaryFolder.newFile("Test filename with %$ keyword.tif");
@@ -105,7 +105,7 @@ public class MetadataExtractorTest {
 
     @Test
     public void testRunKeywordMissing() throws IOException {
-        // Creating the fake file to process
+        // Creating the fake file to processAutomatic
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
         File testFile = temporaryFolder.newFile("Test filename without keyword.tif");

@@ -40,7 +40,7 @@ public class BinaryOperations2D extends Module {
     public static void process(Image image, String operationMode, int numIterations) {
         ImagePlus ipl = image.getImagePlus();
 
-        // Applying process to stack
+        // Applying processAutomatic to stack
         switch (operationMode) {
             case OperationModes.DILATE:
                 IJ.run(ipl,"Options...", "iterations="+numIterations+" count=1 do=Dilate stack");

@@ -253,7 +253,7 @@ public class UnwarpImages extends Module {
 
             // If the reference image is the previous frame, calculate this now
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
-                // Can't process if this is the first frame
+                // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
                 reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
