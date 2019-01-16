@@ -72,22 +72,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
 
-//    public static void main(String[] args) {
-//        new ImageJ();
-//
-//        Workspace workspace = new Workspace(0,null,0);
-//
-//        ImagePlus ipl = IJ.createImage("dfsd",400,300,1,8);
-//        Image image = new Image("Im",ipl);
-//        workspace.addImage(image);
-//
-//        ManuallyIdentifyObjects manuallyIdentifyObjects = new ManuallyIdentifyObjects();
-//        manuallyIdentifyObjects.updateParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE,"Im");
-//        manuallyIdentifyObjects.setShowOutput(true);
-//        manuallyIdentifyObjects.run(workspace);
-//
-//    }
-
     private void showOptionsPanel() {
         rois = new HashMap<>();
         maxID = 0;

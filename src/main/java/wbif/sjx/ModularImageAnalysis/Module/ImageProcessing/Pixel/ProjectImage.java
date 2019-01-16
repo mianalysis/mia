@@ -75,6 +75,9 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     public static Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
         // If the input image is multi-channel, but with 1 slice it will try and project the channels
+        System.err.println(inputImage.getImagePlus().getNSlices());
+        System.err.println(inputImage.getImagePlus().getNChannels());
+        System.err.println(inputImage.getImagePlus().getNFrames());
         if (inputImage.getImagePlus().getNChannels() > 1 && inputImage.getImagePlus().getNSlices() == 1) {
             return new Image(outputImageName,inputImage.getImagePlus().duplicate());
         }

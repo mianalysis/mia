@@ -235,12 +235,12 @@
         </dependency>
 
         <dependency>
-            <!--<groupId>wbif.sjx</groupId>-->
-            <!--<artifactId>Common</artifactId>-->
-            <!--<version>1.4.23</version>-->
-            <groupId>com.github.SJCross</groupId>
+            <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.4.23</version>
+            <version>1.4.24-SNAPSHOT</version>
+            <!--<groupId>com.github.SJCross</groupId>-->
+            <!--<artifactId>Common</artifactId>-->
+            <!--<version>v1.4.2</version>-->
         </dependency>
     </dependencies>
 

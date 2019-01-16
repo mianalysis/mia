@@ -14,6 +14,7 @@ import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -21,26 +22,23 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import com.drew.lang.annotations.Nullable;
+import wbif.sjx.common.MathFunc.CumStat;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.awt.geom.AffineTransform;
+import java.util.*;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.DoubleStream;
 
 public class RegisterImages extends Module implements ActionListener {
     private JFrame frame;
-    private JTextField objectNumberField;
-    private final JPanel objectsPanel = new JPanel();
-    JScrollPane objectsScrollPane = new JScrollPane(objectsPanel);
-    private final GridBagConstraints objectsC = new GridBagConstraints();
 
     private ImagePlus displayImagePlus1;
     private ImagePlus displayImagePlus2;
@@ -121,6 +119,17 @@ public class RegisterImages extends Module implements ActionListener {
     }
 
 
+    public interface Measurements {
+        String TRANSLATE_X = "REGISTER // TRANSLATE_X";
+        String TRANSLATE_Y = "REGISTER // TRANSLATE_Y";
+        String SCALE_X = "REGISTER // SCALE_X";
+        String SCALE_Y = "REGISTER // SCALE_Y";
+        String SHEAR_X = "REGISTER // SHEAR_X";
+        String SHEAR_Y = "REGISTER // SHEAR_Y";
+
+    }
+
+
     private void showOptionsPanel() {
         pairs  = new ArrayList<>();
         frame = new JFrame();
@@ -131,7 +140,7 @@ public class RegisterImages extends Module implements ActionListener {
         c.gridy = 0;
         c.gridwidth = 2;
         c.gridheight = 1;
-        c.weightx = 1;
+        c.weightx = 0.5;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
         c.insets = new Insets(5,5,5,5);
@@ -154,43 +163,6 @@ public class RegisterImages extends Module implements ActionListener {
         finishButton.setActionCommand(FINISH);
         c.gridx++;
         frame.add(finishButton,c);
-
-        // Object number panel
-        objectsC.gridx = 0;
-        objectsC.gridy = 0;
-        objectsC.weightx = 1;
-        objectsC.weighty = 1;
-        objectsC.anchor = GridBagConstraints.NORTHWEST;
-        objectsC.fill = GridBagConstraints.HORIZONTAL;
-        objectsPanel.setLayout(new GridBagLayout());
-
-        objectsScrollPane.setPreferredSize(new Dimension(0,200));
-        objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-
-        c.gridx = 0;
-        c.gridy++;
-        c.gridwidth = 2;
-        c.gridheight = 3;
-        c.fill = GridBagConstraints.BOTH;
-        frame.add(objectsScrollPane,c);
-
-        JCheckBox overlayCheck = new JCheckBox("Display overlay");
-        overlayCheck.setSelected(true);
-        overlayCheck.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayImagePlus1.setHideOverlay(!overlayCheck.isSelected());
-                displayImagePlus2.setHideOverlay(!overlayCheck.isSelected());
-            }
-        });
-        c.gridy++;
-        c.gridy++;
-        c.gridy++;
-        c.gridwidth = 1;
-        c.gridheight = 1;
-        frame.add(overlayCheck,c);
 
         frame.pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -258,7 +230,7 @@ public class RegisterImages extends Module implements ActionListener {
                 for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
                     warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
                     try {
-                        applyTransformation(warped, mapping,multithread);
+                        applyTransformation(warped,projectedReference,mapping,multithread);
                     } catch (InterruptedException e) {
                         return;
                     }
@@ -272,7 +244,7 @@ public class RegisterImages extends Module implements ActionListener {
                     for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
                         warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
                         try {
-                            applyTransformation(warped, mapping,multithread);
+                            applyTransformation(warped,projectedReference,mapping,multithread);
                         } catch (InterruptedException e) {
                             return;
                         }
@@ -296,7 +268,7 @@ public class RegisterImages extends Module implements ActionListener {
         // Displaying the images and options panel.  While the control is open, do nothing
         IJ.setTool(Toolbar.POINT);
 
-        displayImagePlus1 = new Duplicator().run(projectedReference.getImagePlus());
+        displayImagePlus1 = new Duplicator().run(projectedWarped.getImagePlus());
         displayImagePlus1.setTitle("Select points on this image");
         displayImagePlus1.show();
         overlay1 = displayImagePlus1.getOverlay();
@@ -305,7 +277,7 @@ public class RegisterImages extends Module implements ActionListener {
             displayImagePlus1.setOverlay(overlay1);
         }
 
-        displayImagePlus2 = new Duplicator().run(projectedWarped.getImagePlus());
+        displayImagePlus2 = new Duplicator().run(projectedReference.getImagePlus());
         displayImagePlus2.setTitle("Select points on this image");
         displayImagePlus2.show();
         overlay2 = displayImagePlus2.getOverlay();
@@ -324,7 +296,9 @@ public class RegisterImages extends Module implements ActionListener {
         }
 
         // Getting transform
-        Mapping mapping = getLandmarkTransformation(pairs,transformationMode);
+        Object[] output = getLandmarkTransformation(pairs,transformationMode);
+        InverseTransformMapping mapping = (InverseTransformMapping) output[0];
+        AbstractAffineModel2D model = (AbstractAffineModel2D) output[1];
 
         // Iterate over each time-step
         int count = 0;
@@ -337,7 +311,7 @@ public class RegisterImages extends Module implements ActionListener {
             for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
                 Image warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(t));
                 try {
-                    applyTransformation(warped, mapping,multithread);
+                    applyTransformation(warped,projectedReference,mapping,multithread);
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -347,6 +321,9 @@ public class RegisterImages extends Module implements ActionListener {
             mapping = null;
 
         }
+
+        addManualMeasurements(inputImage,model);
+
     }
 
     private static AbstractAffineModel2D getModel(String transformationMode) {
@@ -363,7 +340,7 @@ public class RegisterImages extends Module implements ActionListener {
         }
     }
 
-    public static Mapping getFeatureTransformation(Image referenceImage, Image warpedImage, Param param) {
+    public static InverseTransformMapping getFeatureTransformation(Image referenceImage, Image warpedImage, Param param) {
         ImagePlus referenceIpl = referenceImage.getImagePlus();
         ImagePlus warpedIpl = warpedImage.getImagePlus();
 
@@ -380,7 +357,7 @@ public class RegisterImages extends Module implements ActionListener {
         // Running registration
         AbstractAffineModel2D model = getModel(param.transformationMode);
 
-        Mapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
+        InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
         Vector<PointMatch> candidates = FloatArray2DSIFT.createMatches(featureList2,featureList1,1.5f,null, Float.MAX_VALUE,param.rod);
         Vector<PointMatch> inliers = new Vector<PointMatch>();
 
@@ -395,11 +372,11 @@ public class RegisterImages extends Module implements ActionListener {
 
     }
 
-    public static Mapping getLandmarkTransformation(List<PointPair> pairs, String transformationMode) {
+    public static Object[] getLandmarkTransformation(List<PointPair> pairs, String transformationMode) {
         // Getting registration model
         AbstractAffineModel2D model = getModel(transformationMode);
 
-        Mapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
+        InverseTransformMapping mapping = new InverseTransformMapping<AbstractAffineModel2D<?>>(model);
         final ArrayList< PointMatch > candidates = new ArrayList< PointMatch >();
 
         for (PointPair pair:pairs) {
@@ -413,16 +390,19 @@ public class RegisterImages extends Module implements ActionListener {
             return null;
         }
 
-        return mapping;
+        return new Object[]{mapping,model};
 
     }
 
-    public static void applyTransformation(Image inputImage, Mapping mapping, boolean multithread) throws InterruptedException {
+    public static void applyTransformation(Image inputImage, Image referenceImage, Mapping mapping, boolean multithread) throws InterruptedException {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
+
+        // Getting reference ImageProcessor.  The output image will be the same size as this.
+        ImageProcessor referenceIpr = referenceImage.getImagePlus().getProcessor();
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
@@ -441,7 +421,7 @@ public class RegisterImages extends Module implements ActionListener {
                         ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
 
                         slice.setInterpolationMethod(ImageProcessor.BILINEAR);
-                        ImageProcessor alignedSlice = slice.createProcessor(slice.getWidth(), slice.getHeight());
+                        ImageProcessor alignedSlice = slice.createProcessor(referenceIpr.getWidth(), referenceIpr.getHeight());
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
                         mapping.mapInterpolated(slice, alignedSlice);
 
@@ -478,6 +458,18 @@ public class RegisterImages extends Module implements ActionListener {
             inputImagePlus.setProcessor(newStackImagePlus.getProcessor());
 
         }
+    }
+
+    static void addManualMeasurements(Image image, AbstractAffineModel2D model) {
+        AffineTransform transform = model.createAffine();
+
+        image.addMeasurement(new Measurement(Measurements.TRANSLATE_X,transform.getTranslateX()));
+        image.addMeasurement(new Measurement(Measurements.TRANSLATE_Y,transform.getTranslateY()));
+        image.addMeasurement(new Measurement(Measurements.SCALE_X,transform.getScaleX()));
+        image.addMeasurement(new Measurement(Measurements.SCALE_Y,transform.getScaleY()));
+        image.addMeasurement(new Measurement(Measurements.SHEAR_X,transform.getShearX()));
+        image.addMeasurement(new Measurement(Measurements.SHEAR_Y,transform.getShearY()));
+
     }
 
     @Override
@@ -521,10 +513,10 @@ public class RegisterImages extends Module implements ActionListener {
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
-        Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
-
         switch (alignmentMode) {
             case AlignmentModes.AUTOMATIC:
+                Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
+
                 // If the rolling correction mode is off, set the interval to -1
                 if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
 
@@ -547,6 +539,7 @@ public class RegisterImages extends Module implements ActionListener {
                 break;
 
             case AlignmentModes.MANUAL:
+                reference = workspace.getImage(referenceImageName);
                 processManual(inputImage,transformationMode,multithread,reference);
                 break;
         }
@@ -648,7 +641,20 @@ public class RegisterImages extends Module implements ActionListener {
 
     @Override
     public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
+        if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+
+            imageMeasurementReferences.add(new MeasurementReference(Measurements.TRANSLATE_X,outputImageName));
+            imageMeasurementReferences.add(new MeasurementReference(Measurements.TRANSLATE_Y,outputImageName));
+            imageMeasurementReferences.add(new MeasurementReference(Measurements.SCALE_X,outputImageName));
+            imageMeasurementReferences.add(new MeasurementReference(Measurements.SCALE_Y,outputImageName));
+            imageMeasurementReferences.add(new MeasurementReference(Measurements.SHEAR_X,outputImageName));
+            imageMeasurementReferences.add(new MeasurementReference(Measurements.SHEAR_Y,outputImageName));
+
+        }
+
+        return imageMeasurementReferences;
+
     }
 
     @Override
@@ -674,35 +680,69 @@ public class RegisterImages extends Module implements ActionListener {
                 break;
 
             case (FINISH):
-                frame.dispose();
-                frame = null;
-                displayImagePlus1.close();
-                displayImagePlus2.close();
-
+                finishAdding();
                 break;
         }
     }
 
     public void addNewPair() {
         Roi roi1 = displayImagePlus1.getRoi();
-        double[] centroid1 = roi1.getContourCentroid();
-        PointRoi point1 = new PointRoi(centroid1[0],centroid1[1]);
+        Roi roi2 = displayImagePlus2.getRoi();
+
+        if (roi1 == null || roi2 == null) {
+            IJ.error("Select a single point in each image");
+            return;
+        }
+
+        float[] centroidX1 = roi1.getFloatPolygon().xpoints;
+        float[] centroidY1 = roi1.getFloatPolygon().ypoints;
+        double x1 = new CumStat(centroidX1).getMean();
+        double y1 = new CumStat(centroidY1).getMean();
+        PointRoi point1 = new PointRoi(x1,y1);
         displayImagePlus1.deleteRoi();
 
-        Roi roi2 = displayImagePlus2.getRoi();
-        double[] centroid2 = roi2.getContourCentroid();
-        PointRoi point2 = new PointRoi(centroid2[0],centroid2[1]);
+        float[] centroidX2 = roi2.getFloatPolygon().xpoints;
+        float[] centroidY2 = roi2.getFloatPolygon().ypoints;
+        double x2 = new CumStat(centroidX2).getMean();
+        double y2 = new CumStat(centroidY2).getMean();
+
+        PointRoi point2 = new PointRoi(x2,y2);
         displayImagePlus2.deleteRoi();
 
-        pairs.add(new PointPair(point1,point2));
+        PointPair pair = new PointPair(point1,point2);
+        pairs.add(pair);
+        addToOverlay(pair);
+
+    }
+
+    public void finishAdding() {
+        if (pairs.size() < 2) {
+            IJ.error("Select at least two pairs");
+            return;
+        }
+
+        // Closing the image, so the analysis can proceed
+        frame.dispose();
+        frame = null;
+        displayImagePlus1.close();
+        displayImagePlus2.close();
 
     }
 
     public void addToOverlay(PointPair pair) {
-        overlay1.add(pair.getPoint1());
-        displayImagePlus1.updateAndDraw();
+        PointRoi point1 = pair.getPoint1();
+        point1.setPointType(PointRoi.NORMAL);
+        point1.setSize(2);
+        point1.setStrokeColor(Color.RED);
+        overlay1.add(point1);
 
-        overlay2.add(pair.getPoint2());
+        PointRoi point2 = pair.getPoint2();
+        point2.setPointType(PointRoi.NORMAL);
+        point2.setSize(2);
+        point2.setStrokeColor(Color.RED);
+        overlay2.add(point2);
+
+        displayImagePlus1.updateAndDraw();
         displayImagePlus2.updateAndDraw();
 
     }
