@@ -11,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ public class ExpandShrinkObjects extends Module {
     }
 
 
-    public static Obj processObject(Obj inputObject, Image templateImage, String method, int radiusChangePx) {
+    public static Obj processObject(Obj inputObject, Image templateImage, String method, int radiusChangePx) throws IntegerOverflowException {
         ImagePlus templateImagePlus = templateImage.getImagePlus();
 
         // Convert each object to an image, do the dilation/erosion, then convert back to an object
@@ -133,7 +134,12 @@ public class ExpandShrinkObjects extends Module {
             Obj inputObject = iterator.next();
             writeMessage("Processing object " + (count++) + " of " + total);
 
-            Obj newObject = processObject(inputObject,templateImage,method,radiusChangePx);
+            Obj newObject = null;
+            try {
+                newObject = processObject(inputObject,templateImage,method,radiusChangePx);
+            } catch (IntegerOverflowException e) {
+                return false;
+            }
 
             // During object shrinking it's possible the object will disappear entirely
             if (newObject == null) {

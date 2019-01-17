@@ -8,6 +8,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetL
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 /**
  * Takes a set of objects and measures intensity texture values on a provided image.  Measurements are stored with the
@@ -52,7 +53,7 @@ public class MeasureObjectTexture extends Module {
 
     }
 
-    ObjCollection getLocalObjectRegion(ObjCollection objects, double radius, boolean calibrated, ImagePlus inputImagePlus) {
+    ObjCollection getLocalObjectRegion(ObjCollection objects, double radius, boolean calibrated, ImagePlus inputImagePlus) throws IntegerOverflowException {
         // Getting local object region
         objects = new GetLocalObjectRegion().getLocalRegions(objects,objects.getName(),inputImagePlus,false,"",radius,calibrated);
 
@@ -147,7 +148,13 @@ public class MeasureObjectTexture extends Module {
         if (calibratedOffset) convertCalibratedOffsets(offs,inputObjects.getFirst());
 
         // If a centroid region is being used calculate the local region and reassign that to inputObjects reference
-        if (centroidMeasurement) inputObjects = getLocalObjectRegion(inputObjects,radius,calibrated,inputImagePlus);
+        if (centroidMeasurement) {
+            try {
+                inputObjects = getLocalObjectRegion(inputObjects,radius,calibrated,inputImagePlus);
+            } catch (IntegerOverflowException e) {
+                return false;
+            }
+        }
 
         // Initialising the texture calculator
         TextureCalculator textureCalculator = new TextureCalculator((int) offs[0], (int) offs[1], (int) offs[2]);

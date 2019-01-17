@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.Extr
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.EllipseCalculator;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume;
 
 /**
@@ -52,7 +53,7 @@ public class FitEllipse extends Module {
     }
 
 
-    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, double maxAxisLength, String fittingMode) {
+    public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage, double maxAxisLength, String fittingMode) throws IntegerOverflowException {
         EllipseCalculator calculator = null;
         switch (fittingMode) {
             case FitEllipsoid.FittingModes.FIT_TO_WHOLE:
@@ -201,7 +202,11 @@ public class FitEllipse extends Module {
         int count = 0;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            processObject(inputObject,outputObjects,objectOutputMode,templateImage,maxAxisLength,fittingMode);
+            try {
+                processObject(inputObject,outputObjects,objectOutputMode,templateImage,maxAxisLength,fittingMode);
+            } catch (IntegerOverflowException e) {
+                return false;
+            }
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 

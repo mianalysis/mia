@@ -13,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -53,7 +54,7 @@ public class RidgeDetection extends Module {
 
     public ObjCollection process(Image inputImage, String outputObjectsName, String contourContrast, double sigma,
                                  double upperThreshold, double lowerThreshold, double minLength, double maxLength,
-                                 boolean linkContours, boolean estimateWidth) {
+                                 boolean linkContours, boolean estimateWidth) throws IntegerOverflowException {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         // Storing the image calibration
@@ -242,8 +243,13 @@ public class RidgeDetection extends Module {
         }
 
         // Running on the present image
-        ObjCollection outputObjects = process(inputImage,outputObjectsName,contourContrast,sigma,upperThreshold,
-                lowerThreshold,minLength,maxLength,linkContours,estimateWidth);
+        ObjCollection outputObjects = null;
+        try {
+            outputObjects = process(inputImage,outputObjectsName,contourContrast,sigma,upperThreshold,
+                    lowerThreshold,minLength,maxLength,linkContours,estimateWidth);
+        } catch (IntegerOverflowException e) {
+            return false;
+        }
 
         workspace.addObjects(outputObjects);
 

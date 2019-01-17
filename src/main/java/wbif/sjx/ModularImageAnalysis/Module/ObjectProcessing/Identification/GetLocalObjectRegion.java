@@ -6,6 +6,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import com.drew.lang.annotations.Nullable;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 
 /**
@@ -21,7 +22,7 @@ public class GetLocalObjectRegion extends Module {
     public static final String MEASUREMENT_NAME = "Measurement name";
 
 
-    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, @Nullable ImagePlus referenceImage, double radius, boolean calibrated) {
+    public static Obj getLocalRegion(Obj inputObject, String outputObjectsName, @Nullable ImagePlus referenceImage, double radius, boolean calibrated) throws IntegerOverflowException {
         // If no reference image is supplied, it's possible to have negative coordinates
         int xMin, xMax, yMin, yMax, zMin, zMax;
         if (referenceImage == null) {
@@ -119,7 +120,7 @@ public class GetLocalObjectRegion extends Module {
 
     }
 
-    public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, boolean useMeasurement, String measurementName, double radius, boolean calibrated) {
+    public ObjCollection getLocalRegions(ObjCollection inputObjects, String outputObjectsName, ImagePlus referenceImage, boolean useMeasurement, String measurementName, double radius, boolean calibrated) throws IntegerOverflowException {
         // Creating store for output objects
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
@@ -173,7 +174,12 @@ public class GetLocalObjectRegion extends Module {
         ImagePlus referenceImage = workspace.getImage(inputImageName).getImagePlus();
 
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
-        ObjCollection outputObjects = getLocalRegions(inputObjects,outputObjectsName,referenceImage,useMeasurement,measurementName,radius,calibrated);
+        ObjCollection outputObjects = null;
+        try {
+            outputObjects = getLocalRegions(inputObjects,outputObjectsName,referenceImage,useMeasurement,measurementName,radius,calibrated);
+        } catch (IntegerOverflowException e) {
+            return false;
+        }
 
         // Adding output objects to workspace
         workspace.addObjects(outputObjects);

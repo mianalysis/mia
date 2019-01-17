@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.ModularImageAnalysis.Process.LabelFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public class ObjCollectionTest {
     }
 
     @Test
-    public void testGetSpatialLimits() {
+    public void testGetSpatialLimits() throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -166,7 +167,7 @@ public class ObjCollectionTest {
     }
 
     @Test
-    public void testGetByEquals() {
+    public void testGetByEquals() throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;

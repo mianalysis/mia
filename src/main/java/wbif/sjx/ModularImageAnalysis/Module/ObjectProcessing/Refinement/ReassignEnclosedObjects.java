@@ -6,13 +6,14 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensit
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 
 public class ReassignEnclosedObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String TEMPLATE_IMAGE = "Template image";
 
-    public void testEncloses(ObjCollection objects, Image templateImage) {
+    public void testEncloses(ObjCollection objects, Image templateImage) throws IntegerOverflowException {
         int count = 0;
         int total = objects.size();
 
@@ -87,7 +88,11 @@ public class ReassignEnclosedObjects extends Module {
         String templateImageName = parameters.getValue(TEMPLATE_IMAGE);
         Image templateImage = workspace.getImage(templateImageName);
 
-        testEncloses(inputObjects, templateImage);
+        try {
+            testEncloses(inputObjects, templateImage);
+        } catch (IntegerOverflowException e) {
+            return false;
+        }
 
         return true;
 

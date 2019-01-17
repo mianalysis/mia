@@ -4,6 +4,7 @@ import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +17,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testGetNearestNeighbour() {
+    public void testGetNearestNeighbour() throws IntegerOverflowException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -51,7 +52,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testGetNearestNeighbourOverlapping() {
+    public void testGetNearestNeighbourOverlapping() throws IntegerOverflowException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -90,7 +91,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testGetNearestNeighbourLinkingDistanceNNFound() {
+    public void testGetNearestNeighbourLinkingDistanceNNFound() throws IntegerOverflowException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -125,7 +126,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testGetNearestNeighbourLinkingDistanceNNNotFound() {
+    public void testGetNearestNeighbourLinkingDistanceNNNotFound() throws IntegerOverflowException {
         // Setting object parameters
         String inputObjectsName = "Test_objects";
         double dppXY = 0.02;
@@ -160,7 +161,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunWithinSameSet() {
+    public void testRunWithinSameSet() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -224,7 +225,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunWithinSameSetMaxDistAllPass() {
+    public void testRunWithinSameSetMaxDistAllPass() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -309,7 +310,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunWithinSameSetMaxDistSomeFail() {
+    public void testRunWithinSameSetMaxDistSomeFail() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -394,7 +395,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunWithinSameSetMaxDistCalibratedSomeFail() {
+    public void testRunWithinSameSetMaxDistCalibratedSomeFail() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -479,7 +480,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunWithinSameSetWithinParent() {
+    public void testRunWithinSameSetWithinParent() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -563,7 +564,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunWithinSameSetWithinParentMaxDistSomeFail() {
+    public void testRunWithinSameSetWithinParentMaxDistSomeFail() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -647,7 +648,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunDifferentSets() {
+    public void testRunDifferentSets() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -722,7 +723,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunDifferentSetsMaxDistSomePass() {
+    public void testRunDifferentSetsMaxDistSomePass() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -797,7 +798,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunDifferentSetsWithinParent() {
+    public void testRunDifferentSetsWithinParent() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -897,7 +898,7 @@ public class CalculateNearestNeighbourTest {
     }
 
     @Test
-    public void testRunDifferentSetsWithinParentMaxDistSomeFail() {
+    public void testRunDifferentSetsWithinParentMaxDistSomeFail() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 

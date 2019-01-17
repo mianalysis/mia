@@ -7,6 +7,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.Extr
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume;
 
 /**
@@ -65,7 +66,7 @@ public class FitEllipsoid extends Module {
 
 
     public void processObject(Obj inputObject, ObjCollection outputObjects, String objectOutputMode, Image templateImage,
-                              String fittingMode, boolean useIntensityWeighting, double maxAxisLength) {
+                              String fittingMode, boolean useIntensityWeighting, double maxAxisLength) throws IntegerOverflowException {
         ImagePlus templateImagePlus = templateImage.getImagePlus();
         templateImagePlus.setPosition(1,1,inputObject.getT());
         ImageStack imageStack = templateImagePlus.getStack();
@@ -215,7 +216,11 @@ public class FitEllipsoid extends Module {
         int count = 0;
         int nTotal = inputObjects.size();
         for (Obj inputObject:inputObjects.values()) {
-            processObject(inputObject,outputObjects,objectOutputMode,templateImage,fittingMode,useIntensityWeighting,maxAxisLength);
+            try {
+                processObject(inputObject,outputObjects,objectOutputMode,templateImage,fittingMode,useIntensityWeighting,maxAxisLength);
+            } catch (IntegerOverflowException e) {
+                return false;
+            }
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 

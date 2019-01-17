@@ -8,6 +8,7 @@ import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Spots3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import static org.junit.Assert.*;
 
@@ -23,7 +24,7 @@ public class GetLocalObjectRegionTest {
     }
 
     @Test @Ignore
-    public void testRun() {
+    public void testRun() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 

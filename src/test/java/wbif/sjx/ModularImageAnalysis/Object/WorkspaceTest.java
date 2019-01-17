@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.HashMap;
 
@@ -100,7 +101,7 @@ public class WorkspaceTest {
     }
 
     @Test
-    public void testClearAllObjectsDoRetainMeasurements() {
+    public void testClearAllObjectsDoRetainMeasurements() throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -165,7 +166,7 @@ public class WorkspaceTest {
     }
 
     @Test
-    public void testClearAllObjectsDontRetainMeasurements() {
+    public void testClearAllObjectsDontRetainMeasurements() throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;

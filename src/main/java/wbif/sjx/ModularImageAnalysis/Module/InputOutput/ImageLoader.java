@@ -33,6 +33,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
@@ -730,7 +731,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
             case OutputModes.OBJECTS:
                 outputImage = new Image(outputObjectsName, ipl);
-                ObjCollection outputObjects = outputImage.convertImageToObjects(outputObjectsName);
+                ObjCollection outputObjects = null;
+                try {
+                    outputObjects = outputImage.convertImageToObjects(outputObjectsName);
+                } catch (IntegerOverflowException e) {
+                    return false;
+                }
 
                 writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
                 workspace.addObjects(outputObjects);

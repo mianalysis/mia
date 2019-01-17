@@ -4,6 +4,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ProjectObjects;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.ArrayList;
 
@@ -112,7 +113,11 @@ public class MeasureObjectShape extends Module {
             // If necessary analyses are included
             Obj projectedObject = null;
             if (measureProjectedArea || measureProjectedDiameter || measureProjectedPerimeter) {
-                projectedObject = ProjectObjects.createProjection(inputObject, "Projected",inputObject.is2D());
+                try {
+                    projectedObject = ProjectObjects.createProjection(inputObject, "Projected",inputObject.is2D());
+                } catch (IntegerOverflowException e) {
+                    return false;
+                }
             }
 
             // Adding the projected-object area measurements

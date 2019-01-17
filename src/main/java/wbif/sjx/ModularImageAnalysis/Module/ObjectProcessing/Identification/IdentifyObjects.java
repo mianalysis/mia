@@ -13,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class IdentifyObjects extends Module {
     }
 
 
-    private ObjCollection importFromImage(Image inputImage) {
+    private ObjCollection importFromImage(Image inputImage) throws IntegerOverflowException {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
@@ -124,7 +125,12 @@ public class IdentifyObjects extends Module {
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        ObjCollection outputObjects = importFromImage(inputImage);
+        ObjCollection outputObjects = null;
+        try {
+            outputObjects = importFromImage(inputImage);
+        } catch (IntegerOverflowException e) {
+            return false;
+        }
 
         writeMessage(outputObjects.size()+" objects detected");
 

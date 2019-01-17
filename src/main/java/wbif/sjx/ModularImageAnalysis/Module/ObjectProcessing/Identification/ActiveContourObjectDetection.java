@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.ActiveContour.ContourInitialiser;
 import wbif.sjx.common.Process.ActiveContour.Energies.BendingEnergy;
 import wbif.sjx.common.Process.ActiveContour.Energies.ElasticEnergy;
@@ -163,14 +164,18 @@ public class ActiveContourObjectDetection extends Module {
 
             // If the input objects are to be transformed, taking the new pixel coordinates and applying them to
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.
-            if (updateInputObjects) {
-                inputObject.clearPoints();
-                inputObject.addPointsFromRoi(newRoi,z);
-            } else {
-                Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
-                outputObject.setT(inputObject.getT());
-                outputObject.addPointsFromRoi(newRoi,z);
-                outputObjects.add(outputObject);
+            try {
+                if (updateInputObjects) {
+                    inputObject.clearPoints();
+                    inputObject.addPointsFromRoi(newRoi,z);
+                } else {
+                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
+                    outputObject.setT(inputObject.getT());
+                    outputObject.addPointsFromRoi(newRoi,z);
+                    outputObjects.add(outputObject);
+                }
+            } catch (IntegerOverflowException e) {
+                return false;
             }
         }
 

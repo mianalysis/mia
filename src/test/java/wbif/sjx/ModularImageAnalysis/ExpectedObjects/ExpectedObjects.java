@@ -4,6 +4,7 @@ import util.opencsv.CSVReader;
 import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -30,7 +31,7 @@ public abstract class ExpectedObjects {
 
     public abstract HashMap<Integer,HashMap<String,Double>> getMeasurements();
 
-    public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) {
+    public ObjCollection getObjects(String objectName, Mode mode, double dppXY, double dppZ, String calibratedUnits, boolean includeMeasurements) throws IntegerOverflowException {
         // Initialising object store
         ObjCollection testObjects = new ObjCollection(objectName);
 

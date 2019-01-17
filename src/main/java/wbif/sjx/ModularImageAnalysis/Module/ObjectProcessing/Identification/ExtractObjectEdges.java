@@ -8,6 +8,7 @@ import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.ArrayList;
 
@@ -32,7 +33,7 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    public static Obj getObjectEdge(Obj inputObject, ObjCollection edgeObjects, String edgeMode, double edgeDistance, double edgePercentage) {
+    public static Obj getObjectEdge(Obj inputObject, ObjCollection edgeObjects, String edgeMode, double edgeDistance, double edgePercentage) throws IntegerOverflowException {
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
         String calibratedUnits = inputObject.getCalibratedUnits();
@@ -92,7 +93,7 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    public static Obj getInterior(Obj inputObject, ObjCollection interiorObjects, String edgeMode, double edgeDistance, double edgePercentage) {
+    public static Obj getInterior(Obj inputObject, ObjCollection interiorObjects, String edgeMode, double edgeDistance, double edgePercentage) throws IntegerOverflowException {
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
         String calibratedUnits = inputObject.getCalibratedUnits();
@@ -198,24 +199,28 @@ public class ExtractObjectEdges extends Module {
             outputInteriorObjects = new ObjCollection(outputInteriorObjectName);
         }
 
-        for (Obj inputObject:inputObjects.values()) {
-            if (createEdgeObjects) {
-                Obj outputEdgeObject = getObjectEdge(inputObject,outputEdgeObjects,edgeMode,edgeDistance,edgePercentage);
-                if (outputEdgeObject != null) {
-                    outputEdgeObjects.add(outputEdgeObject);
-                    outputEdgeObject.addParent(inputObject);
-                    inputObject.addChild(outputEdgeObject);
+        try {
+            for (Obj inputObject : inputObjects.values()) {
+                if (createEdgeObjects) {
+                    Obj outputEdgeObject = getObjectEdge(inputObject, outputEdgeObjects, edgeMode, edgeDistance, edgePercentage);
+                    if (outputEdgeObject != null) {
+                        outputEdgeObjects.add(outputEdgeObject);
+                        outputEdgeObject.addParent(inputObject);
+                        inputObject.addChild(outputEdgeObject);
+                    }
                 }
-            }
 
-            if (createInteriorObjects) {
-                Obj outputInteriorObject = getInterior(inputObject,outputInteriorObjects,edgeMode,edgeDistance,edgePercentage);
-                if (outputInteriorObject != null) {
-                    outputInteriorObjects.add(outputInteriorObject);
-                    outputInteriorObject.addParent(inputObject);
-                    inputObject.addChild(outputInteriorObject);
+                if (createInteriorObjects) {
+                    Obj outputInteriorObject = getInterior(inputObject, outputInteriorObjects, edgeMode, edgeDistance, edgePercentage);
+                    if (outputInteriorObject != null) {
+                        outputInteriorObjects.add(outputInteriorObject);
+                        outputInteriorObject.addParent(inputObject);
+                        inputObject.addChild(outputInteriorObject);
+                    }
                 }
             }
+        } catch (IntegerOverflowException e) {
+            return false;
         }
 
         if (createEdgeObjects) workspace.addObjects(outputEdgeObjects);

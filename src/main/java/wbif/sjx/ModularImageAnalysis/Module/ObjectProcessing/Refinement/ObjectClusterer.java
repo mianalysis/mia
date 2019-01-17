@@ -18,6 +18,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 
 import java.awt.*;
@@ -97,7 +98,7 @@ public class ObjectClusterer extends Module {
 
     }
 
-    public void applyClusterVolume(Obj outputObject, ObjCollection childObjects, double eps) {
+    public void applyClusterVolume(Obj outputObject, ObjCollection childObjects, double eps) throws IntegerOverflowException {
         ObjCollection children = outputObject.getChildren(childObjects.getName());
 
         // Initial pass, adding all coordinates to cluster object
@@ -202,7 +203,11 @@ public class ObjectClusterer extends Module {
         // Adding measurement to each cluster and adding coordinates to clusters
         if (applyVolume) {
             for (Obj outputObject : outputObjects.values()) {
-                applyClusterVolume(outputObject, inputObjects, eps);
+                try {
+                    applyClusterVolume(outputObject, inputObjects, eps);
+                } catch (IntegerOverflowException e) {
+                    return false;
+                }
             }
         }
 

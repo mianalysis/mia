@@ -9,6 +9,8 @@ import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.common.Exceptions.LongOverflowException;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,7 +25,7 @@ public class FillHolesByVolume extends Module {
     public static final String MAXIMUM_VOLUME = "Maximum size";
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
-    public void process(ImagePlus ipl, double minVolume, double maxVolume, boolean calibratedUnits) {
+    public void process(ImagePlus ipl, double minVolume, double maxVolume, boolean calibratedUnits) throws LongOverflowException {
         // If the units are calibrated, converting them to pixels
         if (calibratedUnits) {
             double dppXY = ipl.getCalibration().pixelWidth;
@@ -54,13 +56,14 @@ public class FillHolesByVolume extends Module {
                 ImageStack labelIst = ffcl3D.computeLabels(currStack.getStack());
 
                 // Counting the number of instances of each label
-                HashMap<Integer,Integer> labels = new HashMap<>();
+                HashMap<Integer,Long> labels = new HashMap<>();
                 for (int x=0;x<labelIst.getWidth();x++) {
                     for (int y=0;y<labelIst.getHeight();y++) {
                         for (int z=0;z<labelIst.getSize();z++) {
                             int label = (int) labelIst.getVoxel(x,y,z);
-                            labels.putIfAbsent(label,0);
+                            labels.putIfAbsent(label,0l);
                             labels.put(label,labels.get(label)+1);
+                            if (labels.get(label) == Long.MAX_VALUE) throw new LongOverflowException("Too many pixels (Long overflow).");
                         }
                     }
                 }
@@ -69,7 +72,7 @@ public class FillHolesByVolume extends Module {
                 Iterator<Integer> iterator = labels.keySet().iterator();
                 while (iterator.hasNext()) {
                     int label = iterator.next();
-                    int nPixels = labels.get(label);
+                    long nPixels = labels.get(label);
                     if (nPixels >= minVolume && nPixels <= maxVolume) iterator.remove();
                 }
 
@@ -124,7 +127,11 @@ public class FillHolesByVolume extends Module {
 
         if (!useMinVolume) minVolume = -Float.MAX_VALUE;
         if (!useMaxVolume) maxVolume = Float.MAX_VALUE;
-        process(inputImagePlus,minVolume,maxVolume,calibratedUnits);
+        try {
+            process(inputImagePlus,minVolume,maxVolume,calibratedUnits);
+        } catch (LongOverflowException e) {
+            return false;
+        }
 
         // If the image is being saved as a new image, adding it to the workspace
         if (!applyToInput) {

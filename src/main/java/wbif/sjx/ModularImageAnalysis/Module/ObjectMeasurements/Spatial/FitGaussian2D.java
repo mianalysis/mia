@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
 
 import java.util.Iterator;
@@ -291,7 +292,11 @@ public class FitGaussian2D extends Module {
         count = 0;
         startingNumber = inputObjects.size();
         if (applyVolume) {
-            new GetLocalObjectRegion().getLocalRegions(inputObjects,"SpotVolume",inputImagePlus,true,Measurements.SIGMA_X_PX,0,false);
+            try {
+                new GetLocalObjectRegion().getLocalRegions(inputObjects,"SpotVolume",inputImagePlus,true,Measurements.SIGMA_X_PX,0,false);
+            } catch (IntegerOverflowException e) {
+                return false;
+            }
 
             // Replacing spot volumes with explicit volume
             for (Obj spotObject:inputObjects.values()) {

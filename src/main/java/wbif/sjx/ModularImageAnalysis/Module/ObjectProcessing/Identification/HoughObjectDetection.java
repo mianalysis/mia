@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.ModularImageAnalysis.Process.LabelFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
@@ -139,7 +140,11 @@ public class HoughObjectDetection extends Module {
                             int idx = indexer.getIndex(new int[]{xx[i] + x, yy[i] + y});
                             if (idx == -1) continue;
 
-                            outputObject.addCoord(xx[i] + x, yy[i] + y, z);
+                            try {
+                                outputObject.addCoord(xx[i] + x, yy[i] + y, z);
+                            } catch (IntegerOverflowException e) {
+                                return false;
+                            }
 
                         }
 

@@ -4,6 +4,7 @@ import util.opencsv.CSVReader;
 import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Track;
 
 import java.io.BufferedReader;
@@ -39,7 +40,7 @@ public class Tracks3D {
      * @param calibratedUnits
      * @return
      */
-    public ObjCollection getObjects(String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) {
+    public ObjCollection getObjects(String tracksName, String spotsName, double dppXY, double dppZ, String calibratedUnits) throws IntegerOverflowException {
         // Initialising object store
         ObjCollection trackObjects = new ObjCollection(tracksName);
 

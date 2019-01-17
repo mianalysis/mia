@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -63,7 +64,12 @@ public class ConvertObjectsToImage extends Module {
 
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-            ObjCollection objects = inputImage.convertImageToObjects(outputObjectsName);
+            ObjCollection objects = null;
+            try {
+                objects = inputImage.convertImageToObjects(outputObjectsName);
+            } catch (IntegerOverflowException e) {
+                return false;
+            }
 
             workspace.addObjects(objects);
 

@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.LinkedHashMap;
 
@@ -323,7 +324,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testHashCodeSameObject() {
+    public void testHashCodeSameObject() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
@@ -339,7 +340,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testHashCodeDifferentOrder() {
+    public void testHashCodeDifferentOrder() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
@@ -355,7 +356,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testHashCodeDifferentNames() {
+    public void testHashCodeDifferentNames() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
@@ -371,7 +372,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testHashCodeDifferentTimepoint() {
+    public void testHashCodeDifferentTimepoint() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,1,1);
@@ -387,7 +388,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testHashCodeDifferentCoordinates() {
+    public void testHashCodeDifferentCoordinates() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
@@ -403,7 +404,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testHashCodeMissingCoordinates() {
+    public void testHashCodeMissingCoordinates() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
@@ -418,7 +419,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testEqualsSameObject() {
+    public void testEqualsSameObject() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
@@ -435,7 +436,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testEqualsDifferentOrder() {
+    public void testEqualsDifferentOrder() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
@@ -452,7 +453,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testEqualsDifferentNames() {
+    public void testEqualsDifferentNames() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
@@ -469,7 +470,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testEqualsDifferentTimepoint() {
+    public void testEqualsDifferentTimepoint() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,1,1);
@@ -486,7 +487,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testEqualsDifferentCoordinates() {
+    public void testEqualsDifferentCoordinates() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);
@@ -503,7 +504,7 @@ public class ObjTest {
     }
 
     @Test
-    public void testEqualsMissingCoordinates() {
+    public void testEqualsMissingCoordinates() throws IntegerOverflowException {
         Obj obj1 = new Obj("Obj1",1,2.0,1.0,"PX",false);
         obj1.setT(1);
         obj1.addCoord(1,3,4);

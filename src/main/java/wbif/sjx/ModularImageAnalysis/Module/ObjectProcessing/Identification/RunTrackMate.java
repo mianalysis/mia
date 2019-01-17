@@ -18,6 +18,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
@@ -97,7 +98,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection getSpots(Model model, Calibration calibration, boolean is2D) {
+    public ObjCollection getSpots(Model model, Calibration calibration, boolean is2D) throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
         // Getting trackObjects and adding them to the output trackObjects
@@ -131,7 +132,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection[] getSpotsAndTracks(Model model, Calibration calibration, boolean is2D) {
+    public ObjCollection[] getSpotsAndTracks(Model model, Calibration calibration, boolean is2D) throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
 
@@ -203,7 +204,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public void estimateSpotSize(ObjCollection spotObjects, ImagePlus ipl) {
+    public void estimateSpotSize(ObjCollection spotObjects, ImagePlus ipl) throws IntegerOverflowException {
         ObjCollection volumeObjects = new GetLocalObjectRegion().getLocalRegions(spotObjects, "SpotVolume",ipl,true,Measurements.RADIUS_PX,0,false);
 
         // Replacing spot volumes with explicit volume
@@ -291,32 +292,36 @@ public class RunTrackMate extends Module {
         ipl = inputImage.getImagePlus();
 
         ObjCollection spotObjects;
-        if (doTracking) {
-            writeMessage("Running detection and tracking");
-            if (!trackmate.process()) System.err.println(trackmate.getErrorMessage());
+        try {
+            if (doTracking) {
+                writeMessage("Running detection and tracking");
+                if (!trackmate.process()) System.err.println(trackmate.getErrorMessage());
 
-            ObjCollection[] spotsAndTracks = getSpotsAndTracks(model,calibration,ipl.getNSlices()==1);
-            spotObjects = spotsAndTracks[0];
-            ObjCollection trackObjects = spotsAndTracks[1];
+                ObjCollection[] spotsAndTracks = getSpotsAndTracks(model, calibration, ipl.getNSlices() == 1);
+                spotObjects = spotsAndTracks[0];
+                ObjCollection trackObjects = spotsAndTracks[1];
 
-            if (estimateSize) estimateSpotSize(spotObjects,ipl);
+                if (estimateSize) estimateSpotSize(spotObjects, ipl);
 
-            // Adding objects to the workspace
-            workspace.addObjects(spotObjects);
-            workspace.addObjects(trackObjects);
+                // Adding objects to the workspace
+                workspace.addObjects(spotObjects);
+                workspace.addObjects(trackObjects);
 
-        } else {
-            writeMessage("Running detection only");
-            if (!trackmate.checkInput()) System.err.println(trackmate.getErrorMessage());
-            if (!trackmate.execDetection()) System.err.println(trackmate.getErrorMessage());
-            if (!trackmate.computeSpotFeatures(false)) System.err.println(trackmate.getErrorMessage());
+            } else {
+                writeMessage("Running detection only");
+                if (!trackmate.checkInput()) System.err.println(trackmate.getErrorMessage());
+                if (!trackmate.execDetection()) System.err.println(trackmate.getErrorMessage());
+                if (!trackmate.computeSpotFeatures(false)) System.err.println(trackmate.getErrorMessage());
 
-            spotObjects = getSpots(model,calibration,ipl.getNSlices()==1);
+                spotObjects = getSpots(model, calibration, ipl.getNSlices() == 1);
 
-            if (estimateSize) estimateSpotSize(spotObjects,ipl);
+                if (estimateSize) estimateSpotSize(spotObjects, ipl);
 
-            workspace.addObjects(spotObjects);
+                workspace.addObjects(spotObjects);
 
+            }
+        } catch (IntegerOverflowException e) {
+            return false;
         }
 
         // Displaying objects (if selected)

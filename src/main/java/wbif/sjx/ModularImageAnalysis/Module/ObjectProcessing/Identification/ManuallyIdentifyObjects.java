@@ -17,6 +17,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
@@ -49,6 +50,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private double dppZ;
     private String calibrationUnits;
     private boolean twoD;
+    private boolean overflow = false;
 
     private int elementHeight = 40;
 
@@ -168,7 +170,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode) {
+    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode) throws IntegerOverflowException {
         // Create a binary image of the objects
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(outputObjects,ColourFactory.SingleColours.WHITE);
         Image binaryImage = outputObjects.convertObjectsToImage("Binary",templateImage,hues,8,false);
@@ -298,12 +300,19 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             }
         }
 
+        // If more pixels than Integer.MAX_VALUE were assigned, return false (IntegerOverflowException).
+        if (overflow) return false;
+
         // If necessary, apply interpolation
         switch (interpolationMode) {
             case InterpolationModes.SPATIAL:
             case InterpolationModes.TEMPORAL:
             case InterpolationModes.SPATIAL_AND_TEMPORAL:
-                outputObjects = applyInterpolation(outputObjects, inputImage, interpolationMode);
+                try {
+                    outputObjects = applyInterpolation(outputObjects, inputImage, interpolationMode);
+                } catch (IntegerOverflowException e) {
+                    return false;
+                }
                 break;
         }
 
@@ -368,7 +377,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 break;
 
             case (FINISH):
-                processObjects();
+                try {
+                    processObjects();
+                } catch (IntegerOverflowException e1) {
+                    overflow = true;
+                }
                 frame.dispose();
                 frame = null;
                 displayImagePlus.close();
@@ -422,7 +435,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public void processObjects() {
+    public void processObjects() throws IntegerOverflowException {
         // Processing each list of Rois, then converting them to objects
         for (int ID:rois.keySet()) {
             ArrayList<ObjRoi> currentRois = rois.get(ID);

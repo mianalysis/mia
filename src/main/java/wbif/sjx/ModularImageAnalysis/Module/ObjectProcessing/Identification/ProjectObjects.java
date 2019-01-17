@@ -7,6 +7,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class ProjectObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public static Obj createProjection(Obj inputObject, String outputObjectsName, boolean is2D) {
+    public static Obj createProjection(Obj inputObject, String outputObjectsName, boolean is2D) throws IntegerOverflowException {
         ArrayList<Integer> x = inputObject.getXCoords();
         ArrayList<Integer> y = inputObject.getYCoords();
 
@@ -83,7 +84,12 @@ public class ProjectObjects extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         for (Obj inputObject:inputObjects.values()) {
-            Obj outputObject = createProjection(inputObject,outputObjectsName, inputObject.is2D());
+            Obj outputObject = null;
+            try {
+                outputObject = createProjection(inputObject,outputObjectsName, inputObject.is2D());
+            } catch (IntegerOverflowException e) {
+                return false;
+            }
             outputObjects.put(outputObject.getID(),outputObject);
         }
 

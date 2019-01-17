@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import static org.junit.Assert.*;
 
@@ -25,7 +26,7 @@ public class MergeObjectsTest {
     }
 
     @Test
-    public void testRunWithObjectDeletion() {
+    public void testRunWithObjectDeletion() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 
@@ -71,7 +72,7 @@ public class MergeObjectsTest {
     }
 
     @Test
-    public void testRunWithoutObjectDeletion() {
+    public void testRunWithoutObjectDeletion() throws IntegerOverflowException {
         // Creating a new workspace
         Workspace workspace = new Workspace(0,null,1);
 

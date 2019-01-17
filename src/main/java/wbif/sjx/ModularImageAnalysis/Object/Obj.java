@@ -8,6 +8,7 @@ import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 
@@ -291,7 +292,7 @@ public class Obj extends Volume {
 
     }
 
-    public void addPointsFromRoi(Roi roi, int z) {
+    public void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException {
         for (java.awt.Point point:roi.getContainedPoints()) {
             addCoord((int) point.getX(),(int) point.getY(),z);
         }
