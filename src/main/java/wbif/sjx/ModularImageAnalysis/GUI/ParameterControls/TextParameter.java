@@ -23,9 +23,8 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
         control = new JTextField();
 
-        String name = parameter.getValueAsString();
         control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        control.setText(name);
+        control.setText(parameter.getValueAsString());
         control.addFocusListener(this);
 
     }
@@ -37,9 +36,9 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
-        String text = control.getText();
+        parameter.setValueFromString(control.getText());
 
-        parameter.setValueFromString(text);
+        updateControl();
 
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx - 1);
@@ -49,12 +48,12 @@ public class TextParameter extends ParameterControl implements FocusListener {
     }
 
     @Override
-    public JComponent getControl() {
+    public JComponent getComponent() {
         return control;
     }
 
     @Override
     public void updateControl() {
-
+        control.setText(parameter.getValueAsString());
     }
 }

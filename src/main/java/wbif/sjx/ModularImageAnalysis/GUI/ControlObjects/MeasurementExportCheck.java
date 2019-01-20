@@ -2,9 +2,10 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementReference;
-import wbif.sjx.ModularImageAnalysis.Object.MeasurementReferenceCollection;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRefCollection;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
-import wbif.sjx.ModularImageAnalysis.Object.ParameterOld;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputObjectsP;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -66,15 +67,15 @@ public class MeasurementExportCheck extends JCheckBox implements ActionListener 
             case ALL_MEASUREMENTS:
                 ModuleCollection modules = GUI.getModules();
 
-                for (ParameterOld objectName:modules.getAvailableObjects(null)) {
-                    MeasurementReferenceCollection measurementReferences = modules.getObjectMeasurementReferences(objectName.getValue());
+                for (OutputObjectsP objectName:modules.getAvailableObjects(null)) {
+                    MeasurementRefCollection measurementReferences = modules.getObjectMeasurementReferences(objectName.getObjectsName());
                     for (MeasurementReference measurementReference:measurementReferences.values()) {
                         setStates(measurementReference);
                     }
                 }
 
-                for (ParameterOld imageName:modules.getAvailableImages(null)) {
-                    MeasurementReferenceCollection measurementReferences = modules.getImageMeasurementReferences(imageName.getValue());
+                for (OutputImageP imageName:modules.getAvailableImages(null)) {
+                    MeasurementRefCollection measurementReferences = modules.getImageMeasurementRefs(imageName.getImageName());
                     for (MeasurementReference measurementReference:measurementReferences.values()) {
                         setStates(measurementReference);
                     }

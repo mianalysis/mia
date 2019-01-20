@@ -1,9 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageParam;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
 
 import java.util.LinkedHashSet;
 
@@ -14,8 +13,8 @@ public abstract class ImageNamesType extends ChoiceType {
 
     @Override
     public String[] getChoices() {
-        LinkedHashSet<OutputImageParam> images = GUI.getModules().getAvailableImages(module);
-        return (String[]) images.stream().map(OutputImageParam::getImageName).toArray();
+        LinkedHashSet<OutputImageP> images = GUI.getModules().getAvailableImages(module);
+        return images.stream().map(OutputImageP::getImageName).toArray(String[]::new);
 
     }
 }

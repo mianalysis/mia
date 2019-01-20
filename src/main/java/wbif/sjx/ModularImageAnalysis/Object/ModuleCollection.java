@@ -16,18 +16,18 @@ import java.util.LinkedHashSet;
  * Created by sc13967 on 03/05/2017.
  */
 public class ModuleCollection extends ArrayList<Module> implements Serializable {
-    public MeasurementReferenceCollection getImageMeasurementReferences(String imageName) {
-        return getImageMeasurementReferences(imageName,null);
+    public MeasurementRefCollection getImageMeasurementRefs(String imageName) {
+        return getImageMeasurementRefs(imageName,null);
     }
 
-    public MeasurementReferenceCollection getImageMeasurementReferences(String imageName, Module cutoffModule) {
-        MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
+    public MeasurementRefCollection getImageMeasurementRefs(String imageName, Module cutoffModule) {
+        MeasurementRefCollection measurementReferences = new MeasurementRefCollection();
 
         // Iterating over all modules, collecting any measurements for the current image
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
-            MeasurementReferenceCollection currentMeasurementReferences = module.updateAndGetImageMeasurementReferences();
+            MeasurementRefCollection currentMeasurementReferences = module.updateAndGetImageMeasurementReferences();
 
             if (currentMeasurementReferences == null) continue;
 
@@ -44,19 +44,19 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public MeasurementReferenceCollection getObjectMeasurementReferences(String objectName) {
+    public MeasurementRefCollection getObjectMeasurementReferences(String objectName) {
         return getObjectMeasurementReferences(objectName,null);
 
     }
 
-    public MeasurementReferenceCollection getObjectMeasurementReferences(String objectName, Module cutoffModule) {
-        MeasurementReferenceCollection measurementReferences = new MeasurementReferenceCollection();
+    public MeasurementRefCollection getObjectMeasurementReferences(String objectName, Module cutoffModule) {
+        MeasurementRefCollection measurementReferences = new MeasurementRefCollection();
 
         // Iterating over all modules, collecting any measurements for the current objects
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
-            MeasurementReferenceCollection currentMeasurementReferences =
+            MeasurementRefCollection currentMeasurementReferences =
                     module.updateAndGetObjectMeasurementReferences();
             if (currentMeasurementReferences == null) continue;
 
@@ -73,21 +73,21 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public MetadataReferenceCollection getMetadataReferences(Module cutoffModule) {
-        MetadataReferenceCollection metadataReferences = new MetadataReferenceCollection();
+    public MetadataRefCollection getMetadataReferences(Module cutoffModule) {
+        MetadataRefCollection metadataRefs = new MetadataRefCollection();
 
         // Iterating over all modules, collecting any measurements for the current objects
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
-            MetadataReferenceCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
+            MetadataRefCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
             if (currentMetadataReferences == null) continue;
 
-            metadataReferences.putAll(currentMetadataReferences);
+            metadataRefs.putAll(currentMetadataReferences);
 
         }
 
-        return metadataReferences;
+        return metadataRefs;
 
     }
 
@@ -123,37 +123,37 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         return getParametersMatchingType(type,null);
     }
 
-    public LinkedHashSet<OutputObjectsParam> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
+    public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
         // Getting a list of available images
-        LinkedHashSet<OutputObjectsParam> objects = getParametersMatchingType(OutputObjectsParam.class,cutoffModule);
+        LinkedHashSet<OutputObjectsP> objects = getParametersMatchingType(OutputObjectsP.class,cutoffModule);
 
         if (!ignoreRemoved) return objects;
 
         // Removing any objects which have since been removed from the workspace
-        LinkedHashSet<RemovedObjects> removedObjects = getParametersMatchingType(RemovedObjects.class,cutoffModule);
-        for (Parameter removedObject:removedObjects) objects.remove(removedObject);
+        LinkedHashSet<RemovedObjectsP> removedObjectParams = getParametersMatchingType(RemovedObjectsP.class,cutoffModule);
+        for (Parameter removedObject: removedObjectParams) objects.remove(removedObject);
 
         return objects;
 
     }
 
-    public LinkedHashSet<OutputObjectsParam> getAvailableObjects(Module cutoffModule) {
+    public LinkedHashSet<OutputObjectsP> getAvailableObjects(Module cutoffModule) {
         return getAvailableObjects(cutoffModule,true);
     }
 
-    public LinkedHashSet<OutputImageParam> getAvailableImages(Module cutoffModule) {
+    public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule) {
         return getAvailableImages(cutoffModule,true);
     }
 
-    public LinkedHashSet<OutputImageParam> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
+    public LinkedHashSet<OutputImageP> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
         // Getting a list of available images
-        LinkedHashSet<OutputImageParam> images = getParametersMatchingType(OutputImageParam.class,cutoffModule);
+        LinkedHashSet<OutputImageP> images = getParametersMatchingType(OutputImageP.class,cutoffModule);
 
         if (!ignoreRemoved) return images;
 
         // Removing any objects which have since been removed from the workspace
-        LinkedHashSet<RemovedImageParam> removedImageParams = getParametersMatchingType(RemovedImageParam.class,cutoffModule);
-        for (Parameter removedImage: removedImageParams) images.remove(removedImage);
+        LinkedHashSet<RemovedImageP> removedImagePS = getParametersMatchingType(RemovedImageP.class,cutoffModule);
+        for (Parameter removedImage: removedImagePS) images.remove(removedImage);
 
         return images;
 

@@ -1,15 +1,14 @@
 package wbif.sjx.ModularImageAnalysis.Module;
 
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageParam;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageParam;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.DoubleP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
 
 public class TestModule extends Module {
     private String INPUT_IMAGE = "Input image";
     private String OUTPUT_IMAGE = "Output image";
     private String FILTER_RADIUS = "Filter radius";
-
-    InputImageParam inputImageParam = new InputImageParam(INPUT_IMAGE,null);
 
 
     @Override
@@ -34,9 +33,9 @@ public class TestModule extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageParam(INPUT_IMAGE,null));
-        parameters.add(new OutputImageParam(OUTPUT_IMAGE,null));
-        parameters.add(new Num<Double>(FILTER_RADIUS,1d));
+        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
+        parameters.add(new DoubleP(FILTER_RADIUS,this,1d));
 
     }
 
@@ -46,17 +45,17 @@ public class TestModule extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

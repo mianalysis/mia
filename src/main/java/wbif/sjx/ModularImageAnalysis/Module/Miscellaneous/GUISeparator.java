@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Miscellaneous;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanParam;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 
 /**
  * Created by sc13967 on 14/03/2018.
@@ -38,9 +38,9 @@ public class GUISeparator extends Module{
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new BooleanParam(SHOW_BASIC,true));
-        parameters.add(new BooleanParam(EXPANDED_BASIC,true));
-        parameters.add(new BooleanParam(EXPANDED_EDITING,true));
+        parameters.add(new BooleanP(SHOW_BASIC,this,true));
+        parameters.add(new BooleanP(EXPANDED_BASIC,this,true));
+        parameters.add(new BooleanP(EXPANDED_EDITING,this,true));
     }
 
     @Override
@@ -49,17 +49,17 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

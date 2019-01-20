@@ -7,7 +7,6 @@ import java.awt.*;
 import java.util.List;
 
 public class WiderDropDownCombo extends JComboBox {
-
     private String type;
     private boolean layingOut = false;
     private int widestLengh = 0;
@@ -30,7 +29,6 @@ public class WiderDropDownCombo extends JComboBox {
     public void setWide(boolean wide) {
         this.wide = wide;
         widestLengh = getWidestItemWidth();
-
     }
 
     public Dimension getSize() {

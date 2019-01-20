@@ -176,7 +176,7 @@
 //        this.valueSource = valueSource;
 //    }
 //
-//    public <T> T getValue() {
+//    public <T> T getDoubleValue() {
 //        return (T) value;
 //
 //    }

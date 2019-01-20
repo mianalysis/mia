@@ -9,10 +9,16 @@ public abstract class TextType extends Parameter {
         super(name, module);
     }
 
-    public abstract void setValueFromString(String text);
+    public abstract void setValueFromString(String value);
 
     @Override
     protected ParameterControl initialiseControl() {
         return new TextParameter(this);
+    }
+
+    @Override
+    public boolean verify() {
+        // It doesn't matter what this output is, so the test always passes.
+        return true;
     }
 }

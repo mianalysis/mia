@@ -19,7 +19,10 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
     public ChoiceArrayParameter(ChoiceType parameter) {
         this.parameter = parameter;
 
-        control = new WiderDropDownCombo(parameter.getChoices());
+        // Choices may have not been initialised when this first runs, so a blank list is created
+        String[] choices = parameter.getChoices();
+        if (choices == null) choices = new String[]{""};
+        control = new WiderDropDownCombo(choices);
 
         control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         control.setSelectedItem(parameter.getChoice());
@@ -45,7 +48,7 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
     }
 
     @Override
-    public JComponent getControl() {
+    public JComponent getComponent() {
         return control;
     }
 

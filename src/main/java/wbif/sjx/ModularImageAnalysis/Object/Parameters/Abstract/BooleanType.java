@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.BooleanParameter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 
 public abstract class BooleanType extends Parameter {
     private boolean selected = false;
@@ -20,13 +21,32 @@ public abstract class BooleanType extends Parameter {
         this.selected = selected;
     }
 
+    public void flipBoolean() {
+        selected = !selected;
+    }
+
     @Override
     public String getValueAsString() {
         return Boolean.toString(isSelected());
     }
 
+    public void setValueFromString(String value) {
+        selected = Boolean.parseBoolean(value);
+    }
+
     @Override
     protected ParameterControl initialiseControl() {
         return new BooleanParameter(this);
+    }
+
+    @Override
+    public <T> T getValue() {
+        return (T) (Boolean) selected;
+    }
+
+    @Override
+    public boolean verify() {
+        // It doesn't matter what state a boolean is in, so this always returns true
+        return true;
     }
 }

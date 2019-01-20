@@ -11,15 +11,21 @@ public class ParameterCollection extends LinkedHashSet<Parameter> {
 
     // PUBLIC METHODS
 
-    public Parameter getParameter(String name) {
+    public <T extends Parameter> T getParameter(String name) {
         for (Parameter parameter:this) {
-            if (parameter.getName().equals(name)) return parameter;
+            System.err.println("Para "+parameter.getName()+"_____"+name);
+            if (parameter.getName().equals(name)) return (T) parameter;
+            System.err.println("    Still here");
         }
         return null;
     }
 
-//    public <T> T getValue(String name) {
-//        return get(name).getValue();
+    public <T> T getValue(String name) {
+        return getParameter(name).getValue();
+    }
+
+//    public <T> T getDoubleValue(String name) {
+//        return get(name).getDoubleValue();
 //
 //    }
 //

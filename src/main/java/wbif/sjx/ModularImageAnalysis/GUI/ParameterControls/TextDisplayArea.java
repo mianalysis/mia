@@ -1,38 +1,52 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
-import wbif.sjx.ModularImageAnalysis.Object.ParameterOld;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class TextDisplayArea extends JPanel {
-    private ParameterOld parameter;
+public class TextDisplayArea extends ParameterControl {
+    private TextType parameter;
+    private JPanel control;
+    private JTextArea textArea;
 
-    public TextDisplayArea(ParameterOld parameter) {
+    public TextDisplayArea(TextType parameter) {
         this.parameter = parameter;
 
-        setLayout(new GridBagLayout());
+        control = new JPanel();
+
+        control.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        JTextArea textArea = new JTextArea();
+        textArea = new JTextArea();
         textArea.setEditable(false);
-        String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
-        textArea.setText(name);
+        textArea.setText(parameter.getValueAsString());
         textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 
         JScrollPane objectsScrollPane = new JScrollPane(textArea);
-        setPreferredSize(new Dimension(0,150));
+        control.setPreferredSize(new Dimension(0,150));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        add(objectsScrollPane,c);
+        control.add(objectsScrollPane,c);
 
     }
 
-    public ParameterOld getParameter() {
+    public TextType getParameter() {
         return parameter;
+    }
+
+    @Override
+    public JComponent getComponent() {
+        return control;
+    }
+
+    @Override
+    public void updateControl() {
+        textArea.setText(parameter.getValueAsString());
     }
 }

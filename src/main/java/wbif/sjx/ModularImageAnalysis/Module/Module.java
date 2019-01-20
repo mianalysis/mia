@@ -19,8 +19,8 @@ import java.io.Serializable;
  */
 public abstract class Module implements Serializable {
     protected ParameterCollection parameters = new ParameterCollection();
-    protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
-    protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
+    protected MeasurementRefCollection imageMeasurementReferences = new MeasurementRefCollection();
+    protected MeasurementRefCollection objectMeasurementReferences = new MeasurementRefCollection();
 
     private static boolean verbose = false;
     private String nickname;
@@ -88,11 +88,11 @@ public abstract class Module implements Serializable {
      */
     public abstract ParameterCollection updateAndGetParameters();
 
-    public abstract MeasurementReferenceCollection updateAndGetImageMeasurementReferences();
+    public abstract MeasurementRefCollection updateAndGetImageMeasurementReferences();
 
-    public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
+    public abstract MeasurementRefCollection updateAndGetObjectMeasurementReferences();
 
-    public abstract MetadataReferenceCollection updateAndGetMetadataReferences();
+    public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
     public MeasurementReference getImageMeasurementReference(String name) {
         return imageMeasurementReferences.getOrPut(name);
@@ -107,29 +107,17 @@ public abstract class Module implements Serializable {
      */
     public abstract void addRelationships(RelationshipCollection relationships);
 
-    public Parameter getParameter(String name) {
+    public <T extends Parameter> T getParameter(String name) {
         return parameters.getParameter(name);
     }
 
-//    public Module updateParameterValue(ParameterNames name, Object value) {
-//        parameters.updateValue(name,value);
-//        return this;
-//
-//    }
-//
-//    public <T> T getParameterValue(String name) {
-//        return parameters.getParameter(name).getValue();
-//
-//    }
-//
-//    public int getParameterType(String name) {
-//        return parameters.get(name).getType();
-//
-//    }
-//
-//    public void setParameterVisibility(ParameterNames name, boolean visible) {
-//        parameters.updateVisible(name,visible);
-//    }
+    public <T> T getParameterValue(String name) {
+        return parameters.getParameter(name).getValue();
+    }
+
+    public void setParameterVisibility(String name, boolean visible) {
+        parameters.updateVisible(name,visible);
+    }
 
     public ParameterCollection getAllParameters() {
         return parameters;

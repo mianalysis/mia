@@ -8,7 +8,7 @@ import javax.swing.*;
 public abstract class Parameter {
     protected final String name;
     protected final Module module;
-    private final ParameterControl control;
+    private ParameterControl control;
     private boolean visible = false;
     private boolean valid = true;
 
@@ -19,8 +19,6 @@ public abstract class Parameter {
         this.name = name;
         this.module = module;
 
-        this.control = initialiseControl();
-
     }
 
 
@@ -28,7 +26,11 @@ public abstract class Parameter {
 
     protected abstract ParameterControl initialiseControl();
 
+    public abstract <T> T getValue();
+
     public abstract String getValueAsString();
+
+    public abstract boolean verify();
 
 
     // PUBLIC METHODS
@@ -49,6 +51,7 @@ public abstract class Parameter {
     }
 
     public ParameterControl getControl() {
+        if (control == null) control = initialiseControl();
         return control;
     }
 

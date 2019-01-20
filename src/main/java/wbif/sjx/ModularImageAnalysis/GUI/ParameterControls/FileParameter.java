@@ -47,7 +47,7 @@ public class FileParameter extends ParameterControl implements ActionListener {
     }
 
     @Override
-    public JComponent getControl() {
+    public JComponent getComponent() {
         return control;
     }
 
