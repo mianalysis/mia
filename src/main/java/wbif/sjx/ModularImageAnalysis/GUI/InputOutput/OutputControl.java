@@ -2,6 +2,9 @@ package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceParam;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.MetadataItemParam;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanParam;
 
 /**
  * Created by Stephen on 29/07/2017.
@@ -74,22 +77,22 @@ public class OutputControl extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new Parameter(EXPORT_MODE,Parameter.CHOICE_ARRAY,ExportModes.ALL_TOGETHER,ExportModes.ALL));
-        parameters.add(new Parameter(METADATA_ITEM_FOR_GROUPING,Parameter.METADATA_ITEM,""));
-        parameters.add(new Parameter(EXPORT_SUMMARY,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(SUMMARY_MODE,Parameter.CHOICE_ARRAY,SummaryModes.ONE_AVERAGE_PER_FILE,SummaryModes.ALL));
-        parameters.add(new Parameter(SHOW_OBJECT_COUNTS,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(SHOW_NUMBER_OF_CHILDREN,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_COUNT_MEAN,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_COUNT_MIN,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_COUNT_MAX,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_COUNT_STD,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_COUNT_SUM,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(EXPORT_INDIVIDUAL_OBJECTS,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CONTINUOUS_DATA_EXPORT,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SAVE_EVERY_N,Parameter.INTEGER,10));
-        parameters.add(new Parameter(APPEND_DATETIME_MODE, Parameter.CHOICE_ARRAY, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
-        parameters.add(new Parameter(SELECT_MEASUREMENTS,Parameter.BOOLEAN,false));
+        parameters.add(new ChoiceParam(EXPORT_MODE,this,ExportModes.ALL_TOGETHER,ExportModes.ALL));
+        parameters.add(new MetadataItemParam(METADATA_ITEM_FOR_GROUPING,this,""));
+        parameters.add(new BooleanParam(EXPORT_SUMMARY,this,true));
+        parameters.add(new ChoiceParam(SUMMARY_MODE,this,SummaryModes.ONE_AVERAGE_PER_FILE,SummaryModes.ALL));
+        parameters.add(new BooleanParam(SHOW_OBJECT_COUNTS,this,true));
+        parameters.add(new BooleanParam(SHOW_NUMBER_OF_CHILDREN,this,true));
+        parameters.add(new BooleanParam(CALCULATE_COUNT_MEAN,this,true));
+        parameters.add(new BooleanParam(CALCULATE_COUNT_MIN,this,true));
+        parameters.add(new BooleanParam(CALCULATE_COUNT_MAX,this,true));
+        parameters.add(new BooleanParam(CALCULATE_COUNT_STD,this,true));
+        parameters.add(new BooleanParam(CALCULATE_COUNT_SUM,this,true));
+        parameters.add(new BooleanParam(EXPORT_INDIVIDUAL_OBJECTS,this,true));
+        parameters.add(new BooleanParam(CONTINUOUS_DATA_EXPORT,this,false));
+        parameters.add(new Num<Integer>(SAVE_EVERY_N,this,10));
+        parameters.add(new ChoiceParam(APPEND_DATETIME_MODE,this,AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
+        parameters.add(new BooleanParam(SELECT_MEASUREMENTS,this,false));
 
     }
 
@@ -97,20 +100,24 @@ public class OutputControl extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.add(parameters.getParameter(EXPORT_MODE));
-        switch ((String) parameters.getValue(EXPORT_MODE)) {
+        ChoiceParam exportMode = (ChoiceParam) parameters.getParameter(EXPORT_MODE);
+        returnedParameters.add(exportMode);
+        switch (exportMode.getChoice()) {
             case ExportModes.GROUP_BY_METADATA:
                 returnedParameters.add(parameters.getParameter(METADATA_ITEM_FOR_GROUPING));
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(EXPORT_SUMMARY));
-        if (parameters.getValue(EXPORT_SUMMARY)) {
+        BooleanParam exportSummary = (BooleanParam) parameters.getParameter(EXPORT_SUMMARY);
+        returnedParameters.add(exportSummary);
+        if (exportSummary.isSelected()) {
             returnedParameters.add(parameters.getParameter(SUMMARY_MODE));
             returnedParameters.add(parameters.getParameter(SHOW_OBJECT_COUNTS));
             returnedParameters.add(parameters.getParameter(SHOW_NUMBER_OF_CHILDREN));
 
-            if (parameters.getValue(SHOW_NUMBER_OF_CHILDREN)) {
+            BooleanParam showNumberOfChildren = (BooleanParam) parameters.getParameter(SHOW_NUMBER_OF_CHILDREN);
+            returnedParameters.add(showNumberOfChildren);
+            if (showNumberOfChildren.isSelected()) {
                 returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_MEAN));
                 returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_MIN));
                 returnedParameters.add(parameters.getParameter(CALCULATE_COUNT_MAX));
@@ -120,8 +127,10 @@ public class OutputControl extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(EXPORT_INDIVIDUAL_OBJECTS));
-        returnedParameters.add(parameters.getParameter(CONTINUOUS_DATA_EXPORT));
-        if (parameters.getValue(CONTINUOUS_DATA_EXPORT)) {
+
+        BooleanParam continuousDataExport = (BooleanParam) parameters.getParameter(CONTINUOUS_DATA_EXPORT);
+        returnedParameters.add(continuousDataExport);
+        if (continuousDataExport.isSelected()) {
             returnedParameters.add(parameters.getParameter(SAVE_EVERY_N));
         }
 

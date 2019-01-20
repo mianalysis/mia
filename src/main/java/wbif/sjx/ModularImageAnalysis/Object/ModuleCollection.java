@@ -5,10 +5,11 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 /**
@@ -91,10 +92,10 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     }
 
     /*
-     * Returns an ArrayList of all parameters of a specific type
+     * Returns an LinkedHashSet of all parameters of a specific type
      */
-    public LinkedHashSet<Parameter> getParametersMatchingType(int type, Module cutoffModule) {
-        LinkedHashSet<Parameter> parameters = new LinkedHashSet<>();
+    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type, Module cutoffModule) {
+        LinkedHashSet<T> parameters = new LinkedHashSet<>();
 
         for (Module module:this) {
             // If the current module is the cutoff the loop terminates.  This prevents the system offering measurements
@@ -106,9 +107,9 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
             // Running through all parameters, adding all images to the list
             ParameterCollection currParameters = module.updateAndGetParameters();
             if (currParameters != null) {
-                for (Parameter currParameter : currParameters.values()) {
-                    if (currParameter.getType() == type) {
-                        parameters.add(currParameter);
+                for (Parameter currParameter : currParameters) {
+                    if (type.isInstance(currParameter)) {
+                        parameters.add((T) currParameter);
                     }
                 }
             }
@@ -118,54 +119,41 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public LinkedHashSet<Parameter> getParametersMatchingType(int type) {
+    public <T extends Parameter> LinkedHashSet<T> getParametersMatchingType(Class<T> type) {
         return getParametersMatchingType(type,null);
-
     }
 
-    public LinkedHashSet<Parameter> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
+    public LinkedHashSet<OutputObjectsParam> getAvailableObjects(Module cutoffModule, boolean ignoreRemoved) {
         // Getting a list of available images
-        LinkedHashSet<Parameter> objects = getParametersMatchingType(Parameter.OUTPUT_OBJECTS,cutoffModule);
+        LinkedHashSet<OutputObjectsParam> objects = getParametersMatchingType(OutputObjectsParam.class,cutoffModule);
 
         if (!ignoreRemoved) return objects;
 
         // Removing any objects which have since been removed from the workspace
-        LinkedHashSet<Parameter> removedObjects = getParametersMatchingType(Parameter.REMOVED_OBJECTS,cutoffModule);
-        Iterator<Parameter> iterator = objects.iterator();
-        while (iterator.hasNext()) {
-            Parameter object = iterator.next();
-            for (Parameter removedObject : removedObjects) {
-                if (object.getValue().equals(removedObject.getValue())) iterator.remove();
-            }
-        }
+        LinkedHashSet<RemovedObjects> removedObjects = getParametersMatchingType(RemovedObjects.class,cutoffModule);
+        for (Parameter removedObject:removedObjects) objects.remove(removedObject);
 
         return objects;
 
     }
 
-    public LinkedHashSet<Parameter> getAvailableObjects(Module cutoffModule) {
+    public LinkedHashSet<OutputObjectsParam> getAvailableObjects(Module cutoffModule) {
         return getAvailableObjects(cutoffModule,true);
     }
 
-    public LinkedHashSet<Parameter> getAvailableImages(Module cutoffModule) {
+    public LinkedHashSet<OutputImageParam> getAvailableImages(Module cutoffModule) {
         return getAvailableImages(cutoffModule,true);
     }
 
-    public LinkedHashSet<Parameter> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
+    public LinkedHashSet<OutputImageParam> getAvailableImages(Module cutoffModule, boolean ignoreRemoved) {
         // Getting a list of available images
-        LinkedHashSet<Parameter> images = getParametersMatchingType(Parameter.OUTPUT_IMAGE,cutoffModule);
+        LinkedHashSet<OutputImageParam> images = getParametersMatchingType(OutputImageParam.class,cutoffModule);
 
         if (!ignoreRemoved) return images;
 
         // Removing any objects which have since been removed from the workspace
-        LinkedHashSet<Parameter> removedImages = getParametersMatchingType(Parameter.REMOVED_IMAGE,cutoffModule);
-        Iterator<Parameter> iterator = images.iterator();
-        while (iterator.hasNext()) {
-            Parameter image = iterator.next();
-            for (Parameter removedImage : removedImages) {
-                if (image.getValue().equals(removedImage.getValue())) iterator.remove();
-            }
-        }
+        LinkedHashSet<RemovedImageParam> removedImageParams = getParametersMatchingType(RemovedImageParam.class,cutoffModule);
+        for (Parameter removedImage: removedImageParams) images.remove(removedImage);
 
         return images;
 

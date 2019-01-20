@@ -1,9 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import org.apache.commons.io.FilenameUtils;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
@@ -17,7 +14,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.*;
-import java.net.URL;
 import java.util.Set;
 
 /**
@@ -190,34 +186,34 @@ public class AnalysisReader {
                 int parameterType = module.getParameterType(parameterName);
 
                 switch (parameterType) {
-                    case Parameter.INPUT_IMAGE:
-                    case Parameter.OUTPUT_IMAGE:
-                    case Parameter.INPUT_OBJECTS:
-                    case Parameter.OUTPUT_OBJECTS:
-                    case Parameter.REMOVED_IMAGE:
-                    case Parameter.REMOVED_OBJECTS:
-                    case Parameter.STRING:
-                    case Parameter.CHOICE_ARRAY:
-                    case Parameter.FILE_PATH:
-                    case Parameter.FOLDER_PATH:
-                        case Parameter.FILE_FOLDER_PATH:
-                    case Parameter.IMAGE_MEASUREMENT:
-                    case Parameter.OBJECT_MEASUREMENT:
-                    case Parameter.CHILD_OBJECTS:
-                    case Parameter.PARENT_OBJECTS:
-                    case Parameter.METADATA_ITEM:
+                    case ParameterOld.INPUT_IMAGE:
+                    case ParameterOld.OUTPUT_IMAGE:
+                    case ParameterOld.INPUT_OBJECTS:
+                    case ParameterOld.OUTPUT_OBJECTS:
+                    case ParameterOld.REMOVED_IMAGE:
+                    case ParameterOld.REMOVED_OBJECTS:
+                    case ParameterOld.STRING:
+                    case ParameterOld.CHOICE_ARRAY:
+                    case ParameterOld.FILE_PATH:
+                    case ParameterOld.FOLDER_PATH:
+                        case ParameterOld.FILE_FOLDER_PATH:
+                    case ParameterOld.IMAGE_MEASUREMENT:
+                    case ParameterOld.OBJECT_MEASUREMENT:
+                    case ParameterOld.CHILD_OBJECTS:
+                    case ParameterOld.PARENT_OBJECTS:
+                    case ParameterOld.METADATA_ITEM:
                         module.updateParameterValue(parameterName, parameterValue);
                         break;
 
-                    case Parameter.INTEGER:
+                    case ParameterOld.INTEGER:
                         module.updateParameterValue(parameterName, Integer.parseInt(parameterValue));
                         break;
 
-                    case Parameter.DOUBLE:
+                    case ParameterOld.DOUBLE:
                         module.updateParameterValue(parameterName, Double.parseDouble(parameterValue));
                         break;
 
-                    case Parameter.BOOLEAN:
+                    case ParameterOld.BOOLEAN:
                         module.updateParameterValue(parameterName, Boolean.parseBoolean(parameterValue));
                         break;
 

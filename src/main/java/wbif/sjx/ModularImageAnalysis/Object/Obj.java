@@ -6,7 +6,6 @@ import ij.gui.Roi;
 import ij.macro.Tokenizer;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.*;
@@ -16,7 +15,7 @@ import com.drew.lang.annotations.Nullable;
 import java.util.*;
 
 /**
- * Created by steph on 30/04/2017.
+ * Created by Stephen on 30/04/2017.
  */
 public class Obj extends Volume {
     private String name;

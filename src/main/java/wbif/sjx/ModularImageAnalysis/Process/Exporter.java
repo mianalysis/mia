@@ -12,6 +12,8 @@ import org.w3c.dom.Element;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
 
@@ -264,20 +266,20 @@ public class Exporter {
         // Adding parameters from this module
         Element parametersElement = doc.createElement("PARAMETERS");
 
-        LinkedHashMap<String,Parameter> parameters = module.getAllParameters();
-        for (Parameter currParam:parameters.values()) {
+        ParameterCollection parameters = module.getAllParameters();
+        for (Parameter currParam:parameters) {
             // Adding the name and value of the current parameter
             Element parameterElement =  doc.createElement("PARAMETER");
 
             Attr nameAttr = doc.createAttribute("NAME");
-            nameAttr.appendChild(doc.createTextNode(currParam.getName()));
+            nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
             parameterElement.setAttributeNode(nameAttr);
 
             Attr valueAttr = doc.createAttribute("VALUE");
-            if (currParam.getValue() == null) {
+            if (currParam.getValueAsString() == null) {
                 valueAttr.appendChild(doc.createTextNode(""));
             } else {
-                valueAttr.appendChild(doc.createTextNode(currParam.getValue().toString()));
+                valueAttr.appendChild(doc.createTextNode(currParam.getValueAsString()));
             }
             parameterElement.setAttributeNode(valueAttr);
 
@@ -285,12 +287,16 @@ public class Exporter {
             visibleAttr.appendChild(doc.createTextNode(Boolean.toString(currParam.isVisible())));
             parameterElement.setAttributeNode(visibleAttr);
 
-            if (currParam.getType() == Parameter.CHILD_OBJECTS | currParam.getType() == Parameter.PARENT_OBJECTS) {
-                if (currParam.getValueSource() != null) {
-                    Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
-                    valueSourceAttr.appendChild(doc.createTextNode(currParam.getValueSource().toString()));
-                    parameterElement.setAttributeNode(valueSourceAttr);
-                }
+            if (currParam.getClass().isInstance(ChildObjects.class) && ((ChildObjects) currParam).getParentObjectsName() != null) {
+                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+                valueSourceAttr.appendChild(doc.createTextNode(((ChildObjects) currParam).getParentObjectsName()));
+                parameterElement.setAttributeNode(valueSourceAttr);
+            }
+
+            if (currParam.getClass().isInstance(ParentObjectsParam.class) && ((ParentObjectsParam) currParam).getChildObjectsName() != null) {
+                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+                valueSourceAttr.appendChild(doc.createTextNode(((ParentObjectsParam) currParam).getChildObjectsName()));
+                parameterElement.setAttributeNode(valueSourceAttr);
             }
 
             parametersElement.appendChild(parameterElement);
@@ -464,19 +470,19 @@ public class Exporter {
 
         // Adding a new parameter to each row
         for (Module module:modules) {
-            LinkedHashMap<String,Parameter> parameters = module.updateAndGetParameters();
+            ParameterCollection parameters = module.updateAndGetParameters();
 
             paramRow++;
 
-            for (Parameter currParam : parameters.values()) {
+            for (Parameter currParam : parameters) {
                 paramCol = 0;
                 row = paramSheet.createRow(paramRow++);
 
                 nameValueCell = row.createCell(paramCol++);
-                nameValueCell.setCellValue(currParam.getName());
+                nameValueCell.setCellValue(currParam.getNameAsString());
 
                 valueValueCell = row.createCell(paramCol++);
-                valueValueCell.setCellValue(currParam.getValue().toString());
+                valueValueCell.setCellValue(currParam.getValueAsString());
 
                 moduleValueCell = row.createCell(paramCol);
                 moduleValueCell.setCellValue(module.getClass().getSimpleName());
@@ -533,10 +539,10 @@ public class Exporter {
         }
 
         // Adding image headers
-        LinkedHashSet<Parameter> availableImages = modules.getAvailableImages(null,true);
+        LinkedHashSet<OutputImageParam> availableImages = modules.getAvailableImages(null,true);
         if (availableImages != null) {
-            for (Parameter availableImage : availableImages) {
-                String availableImageName = availableImage.getValue();
+            for (OutputImageParam availableImage : availableImages) {
+                String availableImageName = availableImage.getImageName();
 
                 MeasurementReferenceCollection availableMeasurements = modules.getImageMeasurementReferences(availableImageName);
 
@@ -557,10 +563,10 @@ public class Exporter {
         }
 
         // Adding object headers
-        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,true);
+        LinkedHashSet<OutputObjectsParam> availableObjects = modules.getAvailableObjects(null,true);
         if (availableObjects != null) {
-            for (Parameter availableObject:availableObjects) {
-                String availableObjectName = availableObject.getValue();
+            for (OutputObjectsParam availableObject:availableObjects) {
+                String availableObjectName = availableObject.getObjectsName();
 
                 Cell summaryHeaderCell; String summaryDataName;
 
@@ -569,7 +575,7 @@ public class Exporter {
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                     summaryDataName = getObjectString(availableObjectName, "", "NUMBER");
                     summaryHeaderCell.setCellValue(summaryDataName);
-                    addComment(summaryHeaderCell,"Number of \""+availableObjectName+"\" objects.");
+                    addComment(summaryHeaderCell,"Num of \""+availableObjectName+"\" objects.");
                     colNumbers.put(summaryDataName, headerCol++);
                 }
 
@@ -937,11 +943,12 @@ public class Exporter {
         String[] metadataNames = null;
 
         // Using the first workspace in the WorkspaceCollection to initialise column headers
-        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,true);
+        LinkedHashSet<OutputObjectsParam> availableObjects = modules.getAvailableObjects(null,true);
         if (availableObjects == null) return;
 
-        for (Parameter availableObject:availableObjects) {
-            String objectName = availableObject.getValue();
+        for (OutputObjectsParam availableObject:availableObjects) {
+            String objectName = availableObject.getObjectsName();
+
             // Creating relevant sheet prefixed with "OBJ"
             objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
 

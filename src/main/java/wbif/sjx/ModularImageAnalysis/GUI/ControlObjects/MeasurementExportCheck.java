@@ -4,12 +4,11 @@ import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementReference;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementReferenceCollection;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.ParameterOld;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedHashSet;
 
 /**
  * Created by Stephen Cross on 02/12/2017.
@@ -67,14 +66,14 @@ public class MeasurementExportCheck extends JCheckBox implements ActionListener 
             case ALL_MEASUREMENTS:
                 ModuleCollection modules = GUI.getModules();
 
-                for (Parameter objectName:modules.getAvailableObjects(null)) {
+                for (ParameterOld objectName:modules.getAvailableObjects(null)) {
                     MeasurementReferenceCollection measurementReferences = modules.getObjectMeasurementReferences(objectName.getValue());
                     for (MeasurementReference measurementReference:measurementReferences.values()) {
                         setStates(measurementReference);
                     }
                 }
 
-                for (Parameter imageName:modules.getAvailableImages(null)) {
+                for (ParameterOld imageName:modules.getAvailableImages(null)) {
                     MeasurementReferenceCollection measurementReferences = modules.getImageMeasurementReferences(imageName.getValue());
                     for (MeasurementReference measurementReference:measurementReferences.values()) {
                         setStates(measurementReference);

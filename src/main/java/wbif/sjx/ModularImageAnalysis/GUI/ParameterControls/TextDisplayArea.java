@@ -1,16 +1,14 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
-import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.ParameterOld;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class TextDisplayArea extends JPanel {
-    private Parameter parameter;
+    private ParameterOld parameter;
 
-    public TextDisplayArea(Parameter parameter) {
+    public TextDisplayArea(ParameterOld parameter) {
         this.parameter = parameter;
 
         setLayout(new GridBagLayout());
@@ -34,7 +32,7 @@ public class TextDisplayArea extends JPanel {
 
     }
 
-    public Parameter getParameter() {
+    public ParameterOld getParameter() {
         return parameter;
     }
 }

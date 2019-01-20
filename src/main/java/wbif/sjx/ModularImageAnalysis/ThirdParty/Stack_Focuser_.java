@@ -105,7 +105,7 @@ public class Stack_Focuser_ implements PlugInFilter
 
 
     /*
-     * Number of slices in the original stack
+     * Num of slices in the original stack
      */
     protected int n_slices;
 

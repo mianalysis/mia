@@ -8,7 +8,7 @@ import ij.plugin.Duplicator;
 import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
@@ -107,26 +107,29 @@ public abstract class Module implements Serializable {
      */
     public abstract void addRelationships(RelationshipCollection relationships);
 
-    public Module updateParameterValue(String name, Object value) {
-        parameters.updateValue(name,value);
-        return this;
-
+    public Parameter getParameter(String name) {
+        return parameters.getParameter(name);
     }
 
-    public <T> T getParameterValue(String name) {
-        return parameters.getParameter(name).getValue();
-
-    }
-
-    public int getParameterType(String name) {
-        return parameters.get(name).getType();
-
-    }
-
-    public void setParameterVisibility(String name, boolean visible) {
-        parameters.updateVisible(name,visible);
-
-    }
+//    public Module updateParameterValue(ParameterNames name, Object value) {
+//        parameters.updateValue(name,value);
+//        return this;
+//
+//    }
+//
+//    public <T> T getParameterValue(String name) {
+//        return parameters.getParameter(name).getValue();
+//
+//    }
+//
+//    public int getParameterType(String name) {
+//        return parameters.get(name).getType();
+//
+//    }
+//
+//    public void setParameterVisibility(ParameterNames name, boolean visible) {
+//        parameters.updateVisible(name,visible);
+//    }
 
     public ParameterCollection getAllParameters() {
         return parameters;

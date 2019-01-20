@@ -1,9 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.ChoiceType;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,40 +12,46 @@ import java.awt.event.ActionListener;
 /**
  * Created by sc13967 on 22/05/2017.
  */
-public class ChoiceArrayParameter extends WiderDropDownCombo implements ActionListener {
-    private Module module;
-    private Parameter parameter;
+public class ChoiceArrayParameter extends ParameterControl implements ActionListener {
+    private ChoiceType parameter;
+    private WiderDropDownCombo control;
 
-    public ChoiceArrayParameter(Module module, Parameter parameter, String[] choices) {
-        super(choices);
-
-        this.module = module;
+    public ChoiceArrayParameter(ChoiceType parameter) {
         this.parameter = parameter;
 
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        setSelectedItem(parameter.getValue());
-        addActionListener(this);
-        setWide(true);
+        control = new WiderDropDownCombo(parameter.getChoices());
+
+        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        control.setSelectedItem(parameter.getChoice());
+        control.addActionListener(this);
+        control.setWide(true);
 
     }
 
-    public Module getModule() {
-        return module;
-    }
-
-    public Parameter getParameter() {
+    public ChoiceType getParameter() {
         return parameter;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        parameter.setValue(getSelectedItem());
+        parameter.setChoice((String) control.getSelectedItem());
 
-        int idx = GUI.getModules().indexOf(module);
+        int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateTestFile();
         GUI.updateModules(true);
 
+    }
+
+    @Override
+    public JComponent getControl() {
+        return control;
+    }
+
+    @Override
+    public void updateControl() {
+        DefaultComboBoxModel model = new DefaultComboBoxModel(parameter.getChoices());
+        control.setModel(model);
     }
 }

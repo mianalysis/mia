@@ -5,9 +5,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import org.apache.commons.io.output.TeeOutputStream;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
@@ -16,6 +13,10 @@ import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageParam;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputObjectsParam;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanParam;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisTester;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
@@ -28,7 +29,6 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -662,7 +662,7 @@ public class GUI {
 
             JPanel modulePanel = null;
             if (module.getClass().isInstance(new GUISeparator())) {
-                expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING);
+                expanded = ((BooleanParam) module.getParameter(GUISeparator.EXPANDED_EDITING)).isSelected();
                 modulePanel = componentFactory.createEditingSeparator(module, group, activeModule, moduleButtonWidth - 25);
             } else {
                 if (!expanded) continue;
@@ -723,9 +723,7 @@ public class GUI {
         c.gridwidth = 1;
         c.insets = new Insets(2, 5, 0, 0);
         if (activeModule.updateAndGetParameters() != null) {
-            Iterator<Parameter> iterator = activeModule.updateAndGetParameters().values().iterator();
-            while (iterator.hasNext()) {
-                Parameter parameter = iterator.next();
+            for (Parameter parameter : activeModule.updateAndGetParameters()) {
                 c.insets = new Insets(2, 5, 0, 0);
                 c.gridx = 0;
                 c.gridy++;
@@ -736,10 +734,10 @@ public class GUI {
 
                 c.insets = new Insets(2, 5, 0, 5);
                 c.gridx++;
-                c.weightx=0;
+                c.weightx = 0;
                 c.anchor = GridBagConstraints.EAST;
                 VisibleCheck visibleCheck = new VisibleCheck(parameter);
-                visibleCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
+                visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
                 paramsPanel.add(visibleCheck, c);
 
             }
@@ -748,7 +746,7 @@ public class GUI {
         // If selected, adding the measurement selector for output control
         if (activeModule.getClass().isInstance(new OutputControl())
                 && analysis.getOutputControl().isEnabled()
-                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
+                && ((BooleanParam) analysis.getOutputControl().getParameter(OutputControl.SELECT_MEASUREMENTS)).isSelected()) {
 
             // Creating global controls for the different statistics
             JPanel measurementHeader = componentFactory.createMeasurementHeader("Global control",null);
@@ -764,9 +762,9 @@ public class GUI {
             c.anchor = GridBagConstraints.EAST;
             paramsPanel.add(currentMeasurementPanel,c);
 
-            LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);
-            for (Parameter imageNameParameter:imageNameParameters) {
-                String imageName = imageNameParameter.getValue();
+            LinkedHashSet<OutputImageParam> imageNameParameters = getModules().getParametersMatchingType(OutputImageParam.class);
+            for (OutputImageParam imageNameParameter:imageNameParameters) {
+                String imageName = imageNameParameter.getImageName();
                 MeasurementReferenceCollection measurementReferences = getModules().getImageMeasurementReferences(imageName);
 
                 if (measurementReferences.size() == 0) continue;
@@ -790,9 +788,9 @@ public class GUI {
                 }
             }
 
-            LinkedHashSet<Parameter> objectNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_OBJECTS);
-            for (Parameter objectNameParameter:objectNameParameters) {
-                String objectName = objectNameParameter.getValue();
+            LinkedHashSet<OutputObjectsParam> objectNameParameters = getModules().getParametersMatchingType(OutputObjectsParam.class);
+            for (OutputObjectsParam objectNameParameter:objectNameParameters) {
+                String objectName = objectNameParameter.getObjectsName();
                 MeasurementReferenceCollection measurementReferences = getModules().getObjectMeasurementReferences(objectName);
 
                 if (measurementReferences.size() == 0) continue;
@@ -880,7 +878,7 @@ public class GUI {
         basicModulesPanel.removeAll();
 
         // Only modules below an expanded GUISeparator should be displayed
-        boolean expanded = loadSeparator.getParameterValue(GUISeparator.EXPANDED_BASIC);
+        boolean expanded = ((BooleanParam) loadSeparator.getParameter(GUISeparator.EXPANDED_BASIC)).isSelected();
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
