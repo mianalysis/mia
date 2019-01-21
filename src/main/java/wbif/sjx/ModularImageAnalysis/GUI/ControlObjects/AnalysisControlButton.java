@@ -38,7 +38,6 @@ public class AnalysisControlButton extends JButton implements ActionListener {
         try {
             switch (getText()) {
                 case LOAD_ANALYSIS:
-                    System.err.println("LOADINGGGGGGG");
                     Analysis newAnalysis = AnalysisReader.loadAnalysis();
                     if (newAnalysis == null) return;
                     GUI.setAnalysis(newAnalysis);

@@ -5,10 +5,8 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
-import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -156,9 +154,9 @@ public class ExtendedMinima extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new IntegerP(DYNAMIC, this,1));
         parameters.add(new ChoiceP(CONNECTIVITY_3D, this, Connectivity.SIX, Connectivity.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));

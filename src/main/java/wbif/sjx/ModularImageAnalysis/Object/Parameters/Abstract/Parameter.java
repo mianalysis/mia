@@ -18,7 +18,6 @@ public abstract class Parameter {
     public Parameter(String name, Module module) {
         this.name = name;
         this.module = module;
-
     }
 
 
@@ -27,6 +26,8 @@ public abstract class Parameter {
     protected abstract ParameterControl initialiseControl();
 
     public abstract <T> T getValue();
+
+    public abstract <T> void setValue(T value);
 
     public abstract String getValueAsString();
 

@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemovedImageP;
 
 /**
@@ -41,7 +42,7 @@ public class RemoveImage extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new RemovedImageP(INPUT_IMAGE,this,""));
+        parameters.add(new RemovedImageP(INPUT_IMAGE,this));
 
     }
 

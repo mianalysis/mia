@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
 /**
  * Created by sc13967 on 19/06/2017.
@@ -78,9 +79,9 @@ public class ConvertStackToTimeseries extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
 
     }
 

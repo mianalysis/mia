@@ -151,12 +151,12 @@ public class ImageSaver extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
-        parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this,""));
-        parameters.add(new FolderPathP(SAVE_FILE_PATH,this,""));
+        parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this));
+        parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
-        parameters.add(new StringP(SAVE_SUFFIX, this,""));
+        parameters.add(new StringP(SAVE_SUFFIX, this));
         parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false));
 
     }

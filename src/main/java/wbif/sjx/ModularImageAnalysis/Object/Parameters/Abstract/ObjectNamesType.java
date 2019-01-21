@@ -13,8 +13,7 @@ public abstract class ObjectNamesType extends ChoiceType {
 
     @Override
     public String[] getChoices() {
-        LinkedHashSet<OutputObjectsP> images = GUI.getModules().getAvailableObjects(module);
-        return (String[]) images.stream().map(OutputObjectsP::getObjectsName).toArray();
-
+        LinkedHashSet<OutputObjectsP> objects = GUI.getModules().getAvailableObjects(module);
+        return objects.stream().map(OutputObjectsP::getObjectsName).toArray(String[]::new);
     }
 }

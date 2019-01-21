@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import jogamp.graph.font.typecast.ot.table.ID;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -325,18 +324,18 @@ public class MetadataExtractor extends Module {
         parameters.add(new ChoiceP(EXTRACTOR_MODE,this,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
         parameters.add(new ChoiceP(FILENAME_EXTRACTOR, this,FilenameExtractors.GENERIC,FilenameExtractors.ALL));
         parameters.add(new ChoiceP(FOLDERNAME_EXTRACTOR, this,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
-        parameters.add(new StringP(PATTERN,this,""));
-        parameters.add(new StringP(GROUPS,this,""));
+        parameters.add(new StringP(PATTERN,this));
+        parameters.add(new StringP(GROUPS,this));
         parameters.add(new BooleanP(SHOW_TEST,this,false));
-        parameters.add(new StringP(EXAMPLE_STRING,this,""));
-        parameters.add(new TextDisplayP(IDENTIFIED_GROUPS,this,""));
-        parameters.add(new StringP(KEYWORD_LIST,this,""));
+        parameters.add(new StringP(EXAMPLE_STRING,this));
+        parameters.add(new TextDisplayP(IDENTIFIED_GROUPS,this));
+        parameters.add(new StringP(KEYWORD_LIST,this));
         parameters.add(new ChoiceP(KEYWORD_SOURCE, this,KeywordSources.FILENAME,KeywordSources.ALL));
         parameters.add(new ChoiceP(METADATA_FILE_EXTRACTOR,this,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
         parameters.add(new ChoiceP(INPUT_SOURCE,this,InputSources.FILE_IN_INPUT_FOLDER,InputSources.ALL));
-        parameters.add(new FilePathP(METADATA_FILE,this,""));
-        parameters.add(new StringP(METADATA_FILE_NAME,this,""));
-        parameters.add(new MetadataItemP(METADATA_ITEM_TO_MATCH,this,""));
+        parameters.add(new FilePathP(METADATA_FILE,this));
+        parameters.add(new StringP(METADATA_FILE_NAME,this));
+        parameters.add(new MetadataItemP(METADATA_ITEM_TO_MATCH,this));
 
     }
 

@@ -1,24 +1,25 @@
-package wbif.sjx.ModularImageAnalysis.Module;
+package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
+import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.DoubleP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemovedObjectsP;
 
-public class TestModule extends Module {
-    private String INPUT_IMAGE = "Input image";
-    private String OUTPUT_IMAGE = "Output image";
-    private String FILTER_RADIUS = "Filter radius";
-
+/**
+ * Created by sc13967 on 07/02/2018.
+ */
+public class RemoveObjects extends Module {
+    public static final String INPUT_OBJECTS = "Input objects";
 
     @Override
     public String getTitle() {
-        return null;
+        return "Remove objects";
     }
 
     @Override
     public String getPackageName() {
-        return null;
+        return PackageNames.OBJECT_PROCESSING_REFINEMENT;
     }
 
     @Override
@@ -28,14 +29,17 @@ public class TestModule extends Module {
 
     @Override
     protected boolean run(Workspace workspace) {
-        return false;
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
+        workspace.removeObject(inputObjectsName);
+
+        return true;
+
     }
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
-        parameters.add(new DoubleP(FILTER_RADIUS,this,1d));
+        parameters.add(new RemovedObjectsP(INPUT_OBJECTS,this));
 
     }
 

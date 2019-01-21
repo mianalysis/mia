@@ -13,14 +13,17 @@ import javax.annotation.Nonnull;
 import java.util.LinkedHashSet;
 
 public class ChildObjectsP extends ChoiceType {
-    private String parentObjectsName;
+    private String parentObjectsName = "";
     private WiderDropDownCombo control;
+
+    public ChildObjectsP(String name, Module module) {
+        super(name, module);
+    }
 
     public ChildObjectsP(String name, Module module, @Nonnull String choice, @Nonnull String parentObjectsName) {
         super(name, module);
         this.choice = choice;
         this.parentObjectsName = parentObjectsName;
-
     }
 
     public String getParentObjectsName() {

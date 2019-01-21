@@ -190,11 +190,11 @@ public class NormaliseIntensity extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(REGION_MODE,this,RegionModes.ENTIRE_IMAGE,RegionModes.ALL));
-        parameters.add(new InputObjectsP(INPUT_OBJECTS,this,""));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         parameters.add(new ChoiceP(CALCULATION_MODE,this,CalculationModes.FAST,CalculationModes.ALL));
         parameters.add(new DoubleP(CLIP_FRACTION,this,0d));
 

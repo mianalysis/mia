@@ -10,10 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.InterpolateZAx
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputObjectsP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 public class DistanceMap extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -89,8 +86,8 @@ public class DistanceMap extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this,""));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
 
     }

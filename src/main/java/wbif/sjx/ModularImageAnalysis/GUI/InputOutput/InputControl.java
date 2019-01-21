@@ -98,31 +98,31 @@ public class InputControl extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new FileFolderPathP(INPUT_PATH,this,""));
+        parameters.add(new FileFolderPathP(INPUT_PATH,this));
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1));
         parameters.add(new StringP(FILE_EXTENSION,this,"tif"));
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL));
         parameters.add(new StringP(SERIES_LIST,this,"1"));
         parameters.add(new IntegerP(SERIES_NUMBER,this,1));
         parameters.add(new BooleanP(USE_SERIESNAME_FILTER_1,this,false));
-        parameters.add(new StringP(SERIESNAME_FILTER_1,this,""));
+        parameters.add(new StringP(SERIESNAME_FILTER_1,this));
         parameters.add(new ChoiceP(SERIESNAME_FILTER_TYPE_1,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new BooleanP(USE_SERIESNAME_FILTER_2,this,false));
-        parameters.add(new StringP(SERIESNAME_FILTER_2,this,""));
+        parameters.add(new StringP(SERIESNAME_FILTER_2,this));
         parameters.add(new ChoiceP(SERIESNAME_FILTER_TYPE_2,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new BooleanP(USE_SERIESNAME_FILTER_3,this,false));
-        parameters.add(new StringP(SERIESNAME_FILTER_3,this,""));
+        parameters.add(new StringP(SERIESNAME_FILTER_3,this));
         parameters.add(new ChoiceP(SERIESNAME_FILTER_TYPE_3,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new BooleanP(USE_FILENAME_FILTER_1,this,false));
-        parameters.add(new StringP(FILENAME_FILTER_1,this,""));
+        parameters.add(new StringP(FILENAME_FILTER_1,this));
         parameters.add(new ChoiceP(FILENAME_FILTER_SOURCE_1,this,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
         parameters.add(new ChoiceP(FILENAME_FILTER_TYPE_1,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new BooleanP(USE_FILENAME_FILTER_2,this,false));
-        parameters.add(new StringP(FILENAME_FILTER_2,this,""));
+        parameters.add(new StringP(FILENAME_FILTER_2,this));
         parameters.add(new ChoiceP(FILENAME_FILTER_SOURCE_2,this,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
         parameters.add(new ChoiceP(FILENAME_FILTER_TYPE_2,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new BooleanP(USE_FILENAME_FILTER_3,this,false));
-        parameters.add(new StringP(FILENAME_FILTER_3,this,""));
+        parameters.add(new StringP(FILENAME_FILTER_3,this));
         parameters.add(new ChoiceP(FILENAME_FILTER_SOURCE_3,this,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
         parameters.add(new ChoiceP(FILENAME_FILTER_TYPE_3,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
         parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL));

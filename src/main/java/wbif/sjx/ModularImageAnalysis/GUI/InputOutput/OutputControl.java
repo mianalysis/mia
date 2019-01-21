@@ -2,10 +2,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.MetadataItemP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 /**
  * Created by Stephen on 29/07/2017.
@@ -79,7 +76,7 @@ public class OutputControl extends Module {
     @Override
     public void initialiseParameters() {
         parameters.add(new ChoiceP(EXPORT_MODE,this,ExportModes.ALL_TOGETHER,ExportModes.ALL));
-        parameters.add(new MetadataItemP(METADATA_ITEM_FOR_GROUPING,this,""));
+        parameters.add(new MetadataItemP(METADATA_ITEM_FOR_GROUPING,this));
         parameters.add(new BooleanP(EXPORT_SUMMARY,this,true));
         parameters.add(new ChoiceP(SUMMARY_MODE,this,SummaryModes.ONE_AVERAGE_PER_FILE,SummaryModes.ALL));
         parameters.add(new BooleanP(SHOW_OBJECT_COUNTS,this,true));

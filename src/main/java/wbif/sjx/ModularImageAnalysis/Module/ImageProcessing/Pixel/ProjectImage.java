@@ -2,28 +2,17 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 //import ij.plugin.ZProjector;
 import ij.plugin.ZProjector;
-import net.imagej.ImgPlus;
-import net.imagej.axis.Axes;
-import net.imagej.ops.Ops;
-import net.imagej.ops.special.computer.UnaryComputerOp;
-import net.imglib2.display.projector.sampler.ProjectedSampler;
-import net.imglib2.display.projector.sampler.SamplingProjector2D;
-import net.imglib2.img.Img;
-import net.imglib2.img.ImgFactory;
-import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
-import com.drew.lang.annotations.Nullable;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
@@ -78,9 +67,6 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     public static Image projectImageInZ(Image inputImage, String outputImageName, String projectionMode) {
         // If the input image is multi-channel, but with 1 slice it will try and project the channels
-        System.err.println(inputImage.getImagePlus().getNSlices());
-        System.err.println(inputImage.getImagePlus().getNChannels());
-        System.err.println(inputImage.getImagePlus().getNFrames());
         if (inputImage.getImagePlus().getNChannels() > 1 && inputImage.getImagePlus().getNSlices() == 1) {
             return new Image(outputImageName,inputImage.getImagePlus().duplicate());
         }
@@ -167,8 +153,8 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this,""));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(PROJECTION_MODE,this,ProjectionModes.AVERAGE,ProjectionModes.ALL));
 
     }

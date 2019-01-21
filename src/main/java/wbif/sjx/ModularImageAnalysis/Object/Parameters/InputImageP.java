@@ -7,10 +7,13 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 
 public class InputImageP extends ImageNamesType {
+    public InputImageP(String name, Module module) {
+        super(name, module);
+    }
+
     public InputImageP(String name, Module module, @Nonnull String imageName) {
         super(name, module);
         this.choice = imageName;
-
     }
 
     public String getImageName() {

@@ -14,7 +14,6 @@ import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
-import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -36,7 +35,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.DoubleStream;
 
 public class RegisterImages extends Module implements ActionListener {
     private JFrame frame;
@@ -555,16 +553,16 @@ public class RegisterImages extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(ALIGNMENT_MODE,this,AlignmentModes.AUTOMATIC,AlignmentModes.ALL));
         parameters.add(new ChoiceP(RELATIVE_MODE,this,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
         parameters.add(new ChoiceP(ROLLING_CORRECTION,this,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
         parameters.add(new IntegerP(CORRECTION_INTERVAL,this,1));
-        parameters.add(new InputImageP(REFERENCE_IMAGE,this,""));
+        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
         parameters.add(new ChoiceP(CALCULATION_SOURCE,this,CalculationSources.INTERNAL,CalculationSources.ALL));
-        parameters.add(new InputImageP(EXTERNAL_SOURCE,this,""));
+        parameters.add(new InputImageP(EXTERNAL_SOURCE,this));
         parameters.add(new IntegerP(CALCULATION_CHANNEL,this,1));
         parameters.add(new ChoiceP(TRANSFORMATION_MODE,this,TransformationModes.RIGID,TransformationModes.ALL));
         parameters.add(new DoubleP(INITIAL_SIGMA,this,1.6));

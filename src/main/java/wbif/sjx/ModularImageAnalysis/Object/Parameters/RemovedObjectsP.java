@@ -8,17 +8,12 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 
 public class RemovedObjectsP extends ObjectNamesType {
-    public RemovedObjectsP(String name, Module module, @Nonnull String objectsName) {
+    public RemovedObjectsP(String name, Module module) {
         super(name,module);
-        this.choice = objectsName;
-
     }
 
-    public String getObjectsName() {
-        return choice;
-    }
-
-    public void setObjectsName(String objectsName) {
-        this.choice = objectsName;
+    public RemovedObjectsP(String name, Module module, @Nonnull String choice) {
+        super(name,module);
+        this.choice = choice;
     }
 }

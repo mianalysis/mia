@@ -17,10 +17,7 @@ import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.DoubleP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -155,9 +152,9 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new DoubleP(X_SHIFT,this,0.0));
         parameters.add(new DoubleP(Y_SHIFT,this,0.0));
         parameters.add(new DoubleP(Z_SHIFT,this,0.0));

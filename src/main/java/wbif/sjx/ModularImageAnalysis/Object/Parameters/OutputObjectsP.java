@@ -6,7 +6,11 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 import javax.annotation.Nonnull;
 
 public class OutputObjectsP extends TextType {
-    private String objectsName;
+    private String objectsName = "";
+
+    public OutputObjectsP(String name, Module module) {
+        super(name,module);
+    }
 
     public OutputObjectsP(String name, Module module, @Nonnull String objectsName) {
         super(name,module);
@@ -24,6 +28,11 @@ public class OutputObjectsP extends TextType {
     @Override
     public <T> T getValue() {
         return (T) objectsName;
+    }
+
+    @Override
+    public <T> void setValue(T value) {
+        objectsName = (String) value;
     }
 
     @Override

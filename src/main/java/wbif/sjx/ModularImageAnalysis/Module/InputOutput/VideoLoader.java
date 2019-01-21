@@ -8,12 +8,9 @@ import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.FilenameUtils;
-import org.bytedeco.javacpp.BytePointer;
-import org.janelia.it.jacs.shared.ffmpeg.FFMPGByteAcceptor;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -21,9 +18,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Object.HCMetadata;
 
-import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -268,14 +263,14 @@ public class VideoLoader extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
         parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.INPUT_FILE_PREFIX,NameFormats.ALL));
-        parameters.add(new StringP(PREFIX,this,""));
-        parameters.add(new StringP(SUFFIX,this,""));
-        parameters.add(new StringP(EXTENSION,this,""));
+        parameters.add(new StringP(PREFIX,this));
+        parameters.add(new StringP(SUFFIX,this));
+        parameters.add(new StringP(EXTENSION,this));
         parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
-        parameters.add(new FilePathP(FILE_PATH, this,""));
+        parameters.add(new FilePathP(FILE_PATH, this));
         parameters.add(new StringP(FRAMES,this,"1-end"));
         parameters.add(new BooleanP(CROP_IMAGE, this, false));
         parameters.add(new IntegerP(LEFT, this,0));

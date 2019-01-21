@@ -45,6 +45,11 @@ public abstract class BooleanType extends Parameter {
     }
 
     @Override
+    public <T> void setValue(T value) {
+        selected = (Boolean) value;
+    }
+
+    @Override
     public boolean verify() {
         // It doesn't matter what state a boolean is in, so this always returns true
         return true;

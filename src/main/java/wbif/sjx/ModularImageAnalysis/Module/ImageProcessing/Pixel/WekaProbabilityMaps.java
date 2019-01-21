@@ -177,12 +177,12 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH,this,OutputBitDepths.THIRTY_TWO,OutputBitDepths.ALL));
         parameters.add(new BooleanP(OUTPUT_SINGLE_CLASS,this,false));
         parameters.add(new IntegerP(OUTPUT_CLASS,this,1));
-        parameters.add(new FilePathP(CLASSIFIER_FILE,this,""));
+        parameters.add(new FilePathP(CLASSIFIER_FILE,this));
         parameters.add(new IntegerP(BLOCK_SIZE,this,1));
 
     }

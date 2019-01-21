@@ -9,29 +9,17 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 
 public class MetadataItemP extends ChoiceType {
-    private String metadataName;
-
-    public MetadataItemP(String name, Module module, @Nonnull String metadataName) {
+    public MetadataItemP(String name, Module module) {
         super(name,module);
-        this.metadataName = metadataName;
-
     }
 
-    public String getMetadataName() {
-        return metadataName;
-    }
-
-    public void setMetadataName(String metadataName) {
-        this.metadataName = metadataName;
+    public MetadataItemP(String name, Module module, @Nonnull String choice) {
+        super(name,module);
+        this.choice = choice;
     }
 
     @Override
     public String[] getChoices() {
         return GUI.getModules().getMetadataReferences(module).getMetadataNames();
-    }
-
-    @Override
-    public String getValueAsString() {
-        return metadataName;
     }
 }

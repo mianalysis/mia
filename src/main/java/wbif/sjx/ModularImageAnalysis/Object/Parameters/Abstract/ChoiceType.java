@@ -5,7 +5,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.ChoiceArrayParameter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 public abstract class ChoiceType extends Parameter {
-    protected String choice;
+    protected String choice = "";
 
     public ChoiceType(String name, Module module) {
         super(name, module);
@@ -34,6 +34,11 @@ public abstract class ChoiceType extends Parameter {
     @Override
     public <T> T getValue() {
         return (T) choice;
+    }
+
+    @Override
+    public <T> void setValue(T value) {
+        choice = (String) value;
     }
 
     @Override

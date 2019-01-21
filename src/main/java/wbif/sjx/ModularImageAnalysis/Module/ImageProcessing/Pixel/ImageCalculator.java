@@ -7,10 +7,7 @@ import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 /**
  * Created by sc13967 on 19/09/2017.
@@ -252,10 +249,10 @@ public class ImageCalculator extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE1,this,""));
-        parameters.add(new InputImageP(INPUT_IMAGE2,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE1,this));
+        parameters.add(new InputImageP(INPUT_IMAGE2,this));
         parameters.add(new ChoiceP(OVERWRITE_MODE,this,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new BooleanP(OUTPUT_32BIT,this,false));
         parameters.add(new ChoiceP(CALCULATION_METHOD,this,CalculationMethods.ADD,CalculationMethods.ALL));
         parameters.add(new BooleanP(SET_NAN_TO_ZERO,this,false));

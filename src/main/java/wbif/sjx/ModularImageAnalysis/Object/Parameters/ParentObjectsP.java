@@ -12,13 +12,16 @@ import javax.swing.*;
 import java.util.LinkedHashSet;
 
 public class ParentObjectsP extends ChoiceType {
-    private String childObjectsName;
+    private String childObjectsName = "";
+
+    public ParentObjectsP(String name, Module module) {
+        super(name,module);
+    }
 
     public ParentObjectsP(String name, Module module, @Nonnull String choice, @Nonnull String childObjectsName) {
         super(name,module);
         this.choice = choice;
         this.childObjectsName = childObjectsName;
-
     }
 
     public String getChildObjectsName() {

@@ -9,11 +9,7 @@ import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.DoubleP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Exceptions.LongOverflowException;
 
 import java.util.HashMap;
@@ -155,9 +151,9 @@ public class FillHolesByVolume extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new BooleanP(USE_MINIMUM_VOLUME, this,true));
         parameters.add(new DoubleP(MINIMUM_VOLUME, this,0d));
         parameters.add(new BooleanP(USE_MAXIMUM_VOLUME, this,true));

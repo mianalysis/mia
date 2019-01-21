@@ -10,6 +10,10 @@ import javax.swing.*;
 import java.io.File;
 
 public class FileFolderPathP extends FileFolderType {
+    public FileFolderPathP(String name, Module module) {
+        super(name,module);
+    }
+
     public FileFolderPathP(String name, Module module, @Nonnull String fileFolderPath) {
         super(name,module,fileFolderPath);
     }
@@ -19,11 +23,6 @@ public class FileFolderPathP extends FileFolderType {
         String fileFolderPath = getPath();
         if (fileFolderPath == null) return false;
         return new File(fileFolderPath).isDirectory();
-    }
-
-    @Override
-    public String getValueAsString() {
-        return getPath();
     }
 
     @Override

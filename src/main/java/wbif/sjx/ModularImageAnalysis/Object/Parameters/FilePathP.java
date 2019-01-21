@@ -9,6 +9,10 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 
 public class FilePathP extends FileFolderType {
+    public FilePathP(String name, Module module) {
+        super(name, module);
+    }
+
     public FilePathP(String name, Module module, @Nonnull String filePath) {
         super(name, module, filePath);
     }
@@ -16,11 +20,6 @@ public class FilePathP extends FileFolderType {
     @Override
     public boolean isDirectory() {
         return false;
-    }
-
-    @Override
-    public String getValueAsString() {
-        return getPath();
     }
 
     @Override

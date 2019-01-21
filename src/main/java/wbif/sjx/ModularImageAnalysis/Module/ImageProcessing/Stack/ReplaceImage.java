@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
 public class ReplaceImage extends Module {
     public static final String INPUT_IMAGE1 = "Input image 1 (to be replaced)";
@@ -44,8 +45,8 @@ public class ReplaceImage extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE1,this,""));
-        parameters.add(new InputImageP(INPUT_IMAGE2,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE1,this));
+        parameters.add(new InputImageP(INPUT_IMAGE2,this));
 
     }
 

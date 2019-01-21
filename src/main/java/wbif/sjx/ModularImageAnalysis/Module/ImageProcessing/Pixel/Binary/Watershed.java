@@ -194,13 +194,13 @@ public class Watershed extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new BooleanP(USE_MARKERS, this,false));
-        parameters.add(new InputImageP(MARKER_IMAGE, this,""));
+        parameters.add(new InputImageP(MARKER_IMAGE, this));
         parameters.add(new ChoiceP(INTENSITY_MODE, this,IntensityModes.DISTANCE,IntensityModes.ALL));
-        parameters.add(new InputImageP(INTENSITY_IMAGE, this,""));
+        parameters.add(new InputImageP(INTENSITY_IMAGE, this));
         parameters.add(new IntegerP(DYNAMIC, this,1));
         parameters.add(new ChoiceP(CONNECTIVITY, this,Connectivity.SIX,Connectivity.ALL));
         parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));

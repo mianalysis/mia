@@ -10,10 +10,7 @@ import ij.process.ShortProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.ThirdParty.Stack_Focuser_;
 
 import com.drew.lang.annotations.Nullable;
@@ -194,14 +191,14 @@ public class FocusStack extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
-        parameters.add(new OutputImageP(OUTPUT_FOCUSED_IMAGE,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_FOCUSED_IMAGE,this));
         parameters.add(new BooleanP(USE_EXISTING_HEIGHT_IMAGE,this,false));
-        parameters.add(new InputImageP(INPUT_HEIGHT_IMAGE,this,""));
+        parameters.add(new InputImageP(INPUT_HEIGHT_IMAGE,this));
         parameters.add(new IntegerP(RANGE,this,11));
         parameters.add(new BooleanP(SMOOTH_HEIGHT_MAP,this,true));
         parameters.add(new BooleanP(ADD_HEIGHT_MAP_TO_WORKSPACE,this,false));
-        parameters.add(new OutputImageP(OUTPUT_HEIGHT_IMAGE,this,""));
+        parameters.add(new OutputImageP(OUTPUT_HEIGHT_IMAGE,this));
         parameters.add(new BooleanP(SHOW_HEIGHT_IMAGE,this,false));
 
     }

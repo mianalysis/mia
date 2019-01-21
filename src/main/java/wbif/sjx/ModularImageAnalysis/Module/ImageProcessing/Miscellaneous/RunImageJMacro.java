@@ -6,11 +6,7 @@ import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.StringP;
-import wbif.sjx.common.Process.IntensityMinMax;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -72,11 +68,11 @@ public class RunImageJMacro extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
-        parameters.add(new StringP(MACRO_TITLE,this,""));
-        parameters.add(new StringP(ARGUMENTS,this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new StringP(MACRO_TITLE,this));
+        parameters.add(new StringP(ARGUMENTS,this));
 
     }
 

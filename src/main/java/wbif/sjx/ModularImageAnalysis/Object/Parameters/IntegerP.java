@@ -34,4 +34,9 @@ public class IntegerP extends TextType {
         return (T) (Integer) value;
     }
 
+    @Override
+    public <T> void setValue(T value) {
+        this.value = (Integer) value;
+    }
+
 }

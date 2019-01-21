@@ -133,12 +133,12 @@ public class ImageMath extends Module {
 
     @Override
     public void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE, this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new ChoiceP(CALCULATION_TYPE,this,CalculationTypes.ADD,CalculationTypes.ALL));
         parameters.add(new ChoiceP(VALUE_SOURCE,this, ValueSources.FIXED, ValueSources.ALL));
-        parameters.add(new ImageMeasurementP(MEASUREMENT,this,"",""));
+        parameters.add(new ImageMeasurementP(MEASUREMENT,this));
         parameters.add(new DoubleP(MATH_VALUE,this,1.0));
 
     }

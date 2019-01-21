@@ -124,11 +124,11 @@ public class PlotKymograph extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(MODE,this,Modes.LINE_AT_OBJECT_CENTROID,Modes.ALL));
-        parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS,this,""));
-        parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this,"",""));
+        parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS,this));
+        parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this));
         parameters.add(new IntegerP(HALF_WIDTH,this,10));
     }
 

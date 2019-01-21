@@ -202,9 +202,9 @@ public class AnalysisReader {
                 } else if (parameter instanceof OutputObjectsP) {
                     ((OutputObjectsP) module.getParameter(parameterName)).setObjectsName(parameterValue);
                 } else if (parameter instanceof RemovedImageP) {
-                    ((RemovedImageP) module.getParameter(parameterName)).setImageName(parameterValue);
+                    ((RemovedImageP) module.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof RemovedObjectsP) {
-                    ((RemovedObjectsP) module.getParameter(parameterName)).setObjectsName(parameterValue);
+                    ((RemovedObjectsP) module.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof StringP) {
                     ((StringP) module.getParameter(parameterName)).setValue(parameterValue);
                 } else if (parameter instanceof IntegerP) {
@@ -234,14 +234,10 @@ public class AnalysisReader {
                 } else if (parameter instanceof FileFolderPathP) {
                     ((FileFolderPathP) module.getParameter(parameterName)).setPath(parameterValue);
                 } else if (parameter instanceof MetadataItemP) {
-                    ((MetadataItemP) module.getParameter(parameterName)).setMetadataName(parameterValue);
+                    ((MetadataItemP) module.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof TextDisplayP) {
                     ((TextDisplayP) module.getParameter(parameterName)).setValue(parameterValue);
-                } else {
-                    System.err.println("NADA");
                 }
-
-                System.err.println(module.getParameter(parameterName).getValue()+"_"+module.getParameter(parameterName).getValueAsString());
 
             } catch (NullPointerException e) {
                 System.err.println("Module \""+module.getTitle()

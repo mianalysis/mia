@@ -10,10 +10,7 @@ import sc.fiji.colourDeconvolution.StainMatrix;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 import java.util.LinkedHashMap;
 
@@ -177,13 +174,13 @@ public class ColourDeconvolution extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(ENABLE_IM1_OUTPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE_1, this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE_1, this));
         parameters.add(new BooleanP(ENABLE_IM2_OUTPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE_2, this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE_2, this));
         parameters.add(new BooleanP(ENABLE_IM3_OUTPUT, this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE_3, this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE_3, this));
         parameters.add(new ChoiceP(STAIN_MODEL, this,StainModels.H_AND_E,StainModels.ALL));
 
     }

@@ -4,7 +4,6 @@ import bunwarpj.Param;
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
@@ -382,15 +381,15 @@ public class UnwarpImages extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,""));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
-        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,""));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new ChoiceP(RELATIVE_MODE,this,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
         parameters.add(new ChoiceP(ROLLING_CORRECTION,this,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
         parameters.add(new IntegerP(CORRECTION_INTERVAL,this,1));
-        parameters.add(new InputImageP(REFERENCE_IMAGE,this,""));
+        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
         parameters.add(new ChoiceP(CALCULATION_SOURCE,this,CalculationSources.INTERNAL,CalculationSources.ALL));
-        parameters.add(new InputImageP(EXTERNAL_SOURCE,this,""));
+        parameters.add(new InputImageP(EXTERNAL_SOURCE,this));
         parameters.add(new IntegerP(CALCULATION_CHANNEL,this,1));
         parameters.add(new ChoiceP(REGISTRATION_MODE,this,RegistrationModes.FAST,RegistrationModes.ALL));
         parameters.add(new IntegerP(SUBSAMPLE_FACTOR,this,0));

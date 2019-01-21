@@ -8,7 +8,11 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 import javax.annotation.Nonnull;
 
 public class TextDisplayP extends TextType {
-    private String value;
+    private String value = "";
+
+    public TextDisplayP(String name, Module module) {
+        super(name, module);
+    }
 
     public TextDisplayP(String name, Module module, @Nonnull String value) {
         super(name, module);
@@ -31,6 +35,11 @@ public class TextDisplayP extends TextType {
     @Override
     public <T> T getValue() {
         return (T) value;
+    }
+
+    @Override
+    public <T> void setValue(T value) {
+        this.value = (String) value;
     }
 
     @Override

@@ -30,4 +30,9 @@ public class DoubleP extends TextType {
         return (T) (Double) value;
     }
 
+    @Override
+    public <T> void setValue(T value) {
+        this.value = (Double) value;
+    }
+
 }

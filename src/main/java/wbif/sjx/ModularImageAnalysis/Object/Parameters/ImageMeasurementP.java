@@ -7,13 +7,16 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.ChoiceType;
 import javax.annotation.Nonnull;
 
 public class ImageMeasurementP extends ChoiceType {
-    private String imageName;
+    private String imageName = "";
+
+    public ImageMeasurementP(String name, Module module) {
+        super(name, module);
+    }
 
     public ImageMeasurementP(String name, Module module, @Nonnull String choice, @Nonnull String imageName) {
         super(name, module);
         this.imageName = imageName;
         this.choice = choice;
-
     }
 
     public String getImageName() {

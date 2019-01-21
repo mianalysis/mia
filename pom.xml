@@ -152,7 +152,6 @@
             </exclusions>
         </dependency>
 
-
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ui-swing</artifactId>

@@ -6,7 +6,11 @@ import javax.annotation.Nonnull;
 import java.io.File;
 
 public abstract class FileFolderType extends Parameter {
-    private String path;
+    private String path = "";
+
+    public FileFolderType(String name, Module module) {
+        super(name, module);
+    }
 
     public FileFolderType(String name, Module module, @Nonnull String path) {
         super(name, module);
@@ -26,6 +30,16 @@ public abstract class FileFolderType extends Parameter {
     @Override
     public <T> T getValue() {
         return (T) path;
+    }
+
+    @Override
+    public <T> void setValue(T value) {
+        path = (String) value;
+    }
+
+    @Override
+    public String getValueAsString() {
+        return null;
     }
 
     @Override
