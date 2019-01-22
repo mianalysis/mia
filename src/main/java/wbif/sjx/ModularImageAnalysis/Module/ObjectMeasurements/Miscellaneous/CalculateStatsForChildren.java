@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
 public class CalculateStatsForChildren extends Module {
@@ -110,15 +111,15 @@ public class CalculateStatsForChildren extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(PARENT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(CHILD_OBJECTS,Parameter.CHILD_OBJECTS,null));
-        parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(CALCULATE_MEAN,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_STD,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_MIN,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_MAX,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(CALCULATE_SUM,Parameter.BOOLEAN,true));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(PARENT_OBJECTS,this));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS,this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
+        parameters.add(new BooleanP(CALCULATE_MEAN,this,true));
+        parameters.add(new BooleanP(CALCULATE_STD,this,true));
+        parameters.add(new BooleanP(CALCULATE_MIN,this,true));
+        parameters.add(new BooleanP(CALCULATE_MAX,this,true));
+        parameters.add(new BooleanP(CALCULATE_SUM,this,true));
 
     }
 
@@ -136,31 +137,31 @@ public class CalculateStatsForChildren extends Module {
         returnedParameters.add(parameters.getParameter(CALCULATE_SUM));
 
         String objectName = parameters.getValue(PARENT_OBJECTS);
-        parameters.updateValueSource(CHILD_OBJECTS, objectName);
+        ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS)).setParentObjectsName(objectName);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
-        parameters.updateValueSource(MEASUREMENT,childObjectsName);
+        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(childObjectsName);
 
         return returnedParameters;
 
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         String parentObjectsName = parameters.getValue(PARENT_OBJECTS);
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String measurementName = parameters.getValue(MEASUREMENT);
 
-        objectMeasurementReferences.setAllCalculated(false);
+        objectMeasurementRefs.setAllCalculated(false);
 
         if (parameters.getValue(CALCULATE_MEAN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MEAN);
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Mean value of measurement, \"" +measurementName+"\", for child objects, \""+
@@ -169,7 +170,7 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_STD)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.STD);
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Standard deviation of measurement, \"" +measurementName+"\", for child objects, \""+
@@ -178,7 +179,7 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_MIN)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MIN);
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Minimum value of measurement, \"" +measurementName+"\", for child objects, \""+
@@ -187,7 +188,7 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_MAX)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.MAX);
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Maximum value of measurement, \"" +measurementName+"\", for child objects, \""+
@@ -196,19 +197,19 @@ public class CalculateStatsForChildren extends Module {
 
         if (parameters.getValue(CALCULATE_SUM)) {
             String name = getFullName(childObjectsName,measurementName,Measurements.SUM);
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(parentObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Summed value of measurement, \"" +measurementName+"\", for child objects, \""+
                     childObjectsName+"\".");
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

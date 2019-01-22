@@ -4,8 +4,8 @@ import wbif.sjx.common.Object.HCMetadata;
 
 import java.util.TreeMap;
 
-public class MetadataReferenceCollection extends TreeMap<String,MetadataReference> {
-    public MetadataReferenceCollection() {
+public class MetadataRefCollection extends TreeMap<String,MetadataReference> {
+    public MetadataRefCollection() {
         add(new MetadataReference(HCMetadata.FILE));
         add(new MetadataReference(HCMetadata.FILENAME));
         add(new MetadataReference(HCMetadata.SERIES_NUMBER));

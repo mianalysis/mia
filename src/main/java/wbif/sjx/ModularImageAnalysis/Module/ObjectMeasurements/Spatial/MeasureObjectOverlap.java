@@ -3,6 +3,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputObjectsP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Object.Point;
 
 import java.util.HashSet;
@@ -111,9 +114,9 @@ public class MeasureObjectOverlap extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(OBJECT_SET_1,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(OBJECT_SET_2,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(LINK_IN_SAME_FRAME,Parameter.BOOLEAN,true));
+        parameters.add(new InputObjectsP(OBJECT_SET_1,this));
+        parameters.add(new InputObjectsP(OBJECT_SET_2,this));
+        parameters.add(new BooleanP(LINK_IN_SAME_FRAME,this,true));
 
     }
 
@@ -124,43 +127,43 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String objects1Name = parameters.getValue(OBJECT_SET_1);
         String objects2Name = parameters.getValue(OBJECT_SET_2);
 
         String name = getFullName(objects2Name, Measurements.OVERLAP_VOX_1);
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(objects1Name);
         reference.setCalculated(true);
 
         name = getFullName(objects2Name, Measurements.OVERLAP_PERCENT_1);
-        reference = objectMeasurementReferences.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(objects1Name);
         reference.setCalculated(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_VOX_2);
-        reference = objectMeasurementReferences.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(objects2Name);
         reference.setCalculated(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_PERCENT_2);
-        reference = objectMeasurementReferences.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(objects2Name);
         reference.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

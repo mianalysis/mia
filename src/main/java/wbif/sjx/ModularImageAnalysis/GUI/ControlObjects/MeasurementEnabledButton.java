@@ -1,10 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
-import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.MeasurementReference;
-import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRef;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,13 +12,13 @@ import java.awt.event.ActionListener;
  * Created by sc13967 on 07/06/2017.
  */
 public class MeasurementEnabledButton extends JButton implements ActionListener {
-    private MeasurementReference measurementReference;
+    private MeasurementRef measurementReference;
     private boolean state = true;
     private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_black_12px.png"), "");
     private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_red_12px.png"), "");
     private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_brightgreen_12px.png"), "");
 
-    public MeasurementEnabledButton(MeasurementReference measurementReference) {
+    public MeasurementEnabledButton(MeasurementRef measurementReference) {
         this.measurementReference = measurementReference;
 
         setFocusPainted(false);
@@ -40,7 +37,7 @@ public class MeasurementEnabledButton extends JButton implements ActionListener 
         else setIcon(blackIcon);
     }
 
-    public MeasurementReference getMeasurementReference() {
+    public MeasurementRef getMeasurementRef() {
         return measurementReference;
     }
 

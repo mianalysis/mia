@@ -15,6 +15,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConve
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Filters.DoG;
 import wbif.sjx.common.Filters.RidgeEnhancement;
 
@@ -391,16 +392,16 @@ public class FilterImage extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(FILTER_MODE, Parameter.CHOICE_ARRAY,FilterModes.DOG2D,FilterModes.ALL));
-        parameters.add(new Parameter(FILTER_RADIUS, Parameter.DOUBLE,2d));
-        parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(ROLLING_METHOD, Parameter.CHOICE_ARRAY,RollingMethods.AVERAGE,RollingMethods.ALL));
-        parameters.add(new Parameter(WINDOW_HALF_WIDTH,Parameter.INTEGER,1));
-        parameters.add(new Parameter(WINDOW_MODE,Parameter.CHOICE_ARRAY,WindowModes.BOTH_SIDES,WindowModes.ALL));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(FILTER_MODE, this,FilterModes.DOG2D,FilterModes.ALL));
+        parameters.add(new DoubleP(FILTER_RADIUS, this,2d));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this,false));
+        parameters.add(new ChoiceP(ROLLING_METHOD, this,RollingMethods.AVERAGE,RollingMethods.ALL));
+        parameters.add(new IntegerP(WINDOW_HALF_WIDTH,this,1));
+        parameters.add(new ChoiceP(WINDOW_MODE,this,WindowModes.BOTH_SIDES,WindowModes.ALL));
 
     }
 
@@ -431,17 +432,17 @@ public class FilterImage extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

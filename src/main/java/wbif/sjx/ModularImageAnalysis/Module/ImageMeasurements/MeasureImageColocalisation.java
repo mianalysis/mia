@@ -5,6 +5,10 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensit
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputObjectsP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -128,10 +132,10 @@ public class MeasureImageColocalisation extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE_1,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INPUT_IMAGE_2,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(MASKING_MODE,Parameter.CHOICE_ARRAY,MaskingModes.NONE,MaskingModes.ALL));
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
+        parameters.add(new InputImageP(INPUT_IMAGE_1,this));
+        parameters.add(new InputImageP(INPUT_IMAGE_2,this));
+        parameters.add(new ChoiceP(MASKING_MODE,this,MaskingModes.NONE,MaskingModes.ALL));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
 
     }
 
@@ -154,28 +158,28 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         String inputImage1Name = parameters.getValue(INPUT_IMAGE_1);
         String inputImage2Name = parameters.getValue(INPUT_IMAGE_2);
 
-        imageMeasurementReferences.setAllCalculated(false);
+        imageMeasurementRefs.setAllCalculated(false);
 
         String name = getFullName(inputImage2Name,Measurements.MEAN_PCC);
-        MeasurementReference reference = imageMeasurementReferences.getOrPut(name);
+        MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImage1Name);
         reference.setCalculated(true);
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

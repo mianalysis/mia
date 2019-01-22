@@ -6,7 +6,7 @@ import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Process.IntensityMinMax;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -68,11 +68,11 @@ public class RunImageJMacro extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(MACRO_TITLE, Parameter.STRING,""));
-        parameters.add(new Parameter(ARGUMENTS, Parameter.STRING,""));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new StringP(MACRO_TITLE,this));
+        parameters.add(new StringP(ARGUMENTS,this));
 
     }
 
@@ -94,17 +94,17 @@ public class RunImageJMacro extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

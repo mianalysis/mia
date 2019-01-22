@@ -254,14 +254,14 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new Parameter(PARENT_OBJECTS,Parameter.PARENT_OBJECTS,null));
-//        parameters.add(new Parameter(INPUT_OBJECTS_2,Parameter.PARENT_OBJECTS,null));
-//        parameters.add(new Parameter(OUTPUT_OBJECTS_NAME,Parameter.OUTPUT_OBJECTS,null));
-//        parameters.add(new Parameter(OVERLAP_MODE,Parameter.CHOICE_ARRAY,OverlapModes.SPATIAL_OVERLAP,OverlapModes.ALL));
-//        parameters.add(new Parameter(MAXIMUM_SEPARATION,Parameter.DOUBLE,1.0));
-//        parameters.add(new Parameter(CALIBRATED_UNITS,Parameter.BOOLEAN,false));
-//        parameters.add(new Parameter(MINIMUM_OVERLAP_PC_1,Parameter.DOUBLE,50.0));
-//        parameters.add(new Parameter(MINIMUM_OVERLAP_PC_2,Parameter.DOUBLE,50.0));
+//        parameters.add(new Parameter(PARENT_OBJECTS,this,null));
+//        parameters.add(new Parameter(INPUT_OBJECTS_2,this,null));
+//        parameters.add(new Parameter(OUTPUT_OBJECTS_NAME,this,null));
+//        parameters.add(new Parameter(OVERLAP_MODE,this,OverlapModes.SPATIAL_OVERLAP,OverlapModes.ALL));
+//        parameters.add(new Parameter(MAXIMUM_SEPARATION,this,1.0));
+//        parameters.add(new Parameter(CALIBRATED_UNITS,this,false));
+//        parameters.add(new Parameter(MINIMUM_OVERLAP_PC_1,this,50.0));
+//        parameters.add(new Parameter(MINIMUM_OVERLAP_PC_2,this,50.0));
 //
 //    }
 //
@@ -290,48 +290,48 @@
 //    }
 //
 //    @Override
-//    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
 //        String inputObjectsName1 = parameters.getValue(PARENT_OBJECTS);
 //        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2);
 //        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
 //
-//        objectMeasurementReferences.setAllCalculated(false);
+//        objectMeasurementRefs.setAllCalculated(false);
 //
 //        String name = getFullName(inputObjectsName1,Measurements.FRACTION_1);
-//        MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+//        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
 //        reference.setImageObjName(outputObjectsName);
 //        reference.setCalculated(true);
 //        reference.setDescription("Fraction of overlap object which is coincident with \""+inputObjectsName1+"\" objects");
 //
 //        name = getFullName(inputObjectsName1,Measurements.N_VOXELS1);
-//        reference = objectMeasurementReferences.getOrPut(name);
+//        reference = objectMeasurementRefs.getOrPut(name);
 //        reference.setImageObjName(outputObjectsName);
 //        reference.setCalculated(true);
 //        reference.setDescription("Number of voxels in overlap object which are coincident with \""+inputObjectsName1+"\" objects");
 //
 //        name = getFullName(inputObjectsName2,Measurements.FRACTION_2);
-//        reference = objectMeasurementReferences.getOrPut(name);
+//        reference = objectMeasurementRefs.getOrPut(name);
 //        reference.setImageObjName(outputObjectsName);
 //        reference.setCalculated(true);
 //        reference.setDescription("Fraction of overlap object which is coincident with \""+inputObjectsName2+"\" objects");
 //
 //        name = getFullName(inputObjectsName2,Measurements.N_VOXELS2);
-//        reference = objectMeasurementReferences.getOrPut(name);
+//        reference = objectMeasurementRefs.getOrPut(name);
 //        reference.setImageObjName(outputObjectsName);
 //        reference.setCalculated(true);
 //        reference.setDescription("Number of voxels in overlap object which are coincident with \""+inputObjectsName2+"\" objects");
 //
-//        return objectMeasurementReferences;
+//        return objectMeasurementRefs;
 //
 //    }
 //
 //    @Override
-//    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+//    public MetadataRefCollection updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //

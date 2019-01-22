@@ -14,10 +14,12 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.ModularImageAnalysis.Process.LabelFactory;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,7 +37,6 @@ public class AddObjectsOverlay extends Module {
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String POSITION_MODE = "Position mode";
-    public static final String SHOW_LABEL = "Show label";
     public static final String LABEL_MODE = "Label mode";
     public static final String DECIMAL_PLACES = "Decimal places";
     public static final String USE_SCIENTIFIC = "Use scientific notation";
@@ -78,10 +79,6 @@ public class AddObjectsOverlay extends Module {
 
 
     public static void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth) {
-        addAllPointsOverlay(object,ipl,colour,lineWidth,"",0);
-    }
-
-    public static void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         // Still need to get mean coords for label
@@ -113,18 +110,9 @@ public class AddObjectsOverlay extends Module {
             ipl.getOverlay().addElement(roi);
 
         }
-
-        if (!label.equals("")) {
-            double[] labelCoords = new double[]{xMean, yMean, z, t};
-            addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
-        }
     }
 
     public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth) {
-        addCentroidOverlay(object,ipl,colour,lineWidth,"",0);
-    }
-
-    public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         double xMean = object.getXMean(true);
@@ -147,18 +135,9 @@ public class AddObjectsOverlay extends Module {
         pointRoi.setStrokeColor(colour);
         pointRoi.setStrokeWidth(lineWidth);
         ipl.getOverlay().addElement(pointRoi);
-
-        if (!label.equals("")) {
-            double[] labelCoords = new double[]{xMean, yMean, z, t};
-            addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
-        }
     }
 
     public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth) {
-        addOutlineOverlay(object,ipl,colour,lineWidth,"",0);
-    }
-
-    public static void addOutlineOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         // Still need to get mean coords for label
@@ -176,30 +155,19 @@ public class AddObjectsOverlay extends Module {
             if (polyRoi == null) continue;
 
             if (ipl.isHyperStack()) {
-//                ipl.setPosition(1,z+1,t);
                 polyRoi.setPosition(1, z+1, t);
             } else {
                 int pos = Math.max(Math.max(1, z+1), t);
-//                ipl.setPosition(pos);
                 polyRoi.setPosition(pos);
             }
 
             polyRoi.setStrokeColor(colour);
             polyRoi.setStrokeWidth(lineWidth);
             ipl.getOverlay().addElement(polyRoi);
-
-            if (!label.equals("")) {
-                double[] labelCoords = new double[]{xMean, yMean, z+1, t};
-                addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
-            }
         }
     }
 
     public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements) {
-        addPositionMeasurementsOverlay(object,ipl,colour,lineWidth,posMeasurements,"",0);
-    }
-
-    public static void addPositionMeasurementsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, String[] posMeasurements, String label, int labelSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         double xMean = object.getMeasurement(posMeasurements[0]).getValue();
@@ -236,14 +204,9 @@ public class AddObjectsOverlay extends Module {
             ovalRoi.setStrokeWidth(lineWidth);
             ipl.getOverlay().addElement(ovalRoi);
         }
-
-        if (!label.equals("")) {
-            double[] labelCoords = new double[]{xMean, yMean, z, t};
-            addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
-        }
     }
 
-    public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, String label, int labelSize, boolean limitHistory, int history) {
+    public static void addTrackOverlay(Obj object, String spotObjectsName, ImagePlus ipl, Color colour, double lineWidth, int history) {
         ObjCollection pointObjects = object.getChildren(spotObjectsName);
 
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
@@ -265,8 +228,7 @@ public class AddObjectsOverlay extends Module {
                 int x2 = (int) Math.round(p2.getXMean(true));
                 int y2 = (int) Math.round(p2.getYMean(true));
 
-                int maxFrame = nFrames;
-                if (limitHistory) maxFrame = Math.min(nFrames,p2.getT()+history);
+                int maxFrame = Math.min(nFrames, Math.min(nFrames,p2.getT()+history));
 
                 for (int t = p2.getT();t<=maxFrame-1;t++) {
                     PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
@@ -284,11 +246,6 @@ public class AddObjectsOverlay extends Module {
                     line.setStrokeColor(colour);
                     ovl.addElement(line);
                 }
-
-                if (!label.equals("")) {
-                    double[] labelCoords = new double[]{x2, y2, 1, p2.getT()+1};
-                    addLabelsOverlay(ipl, label, labelCoords, colour, labelSize);
-                }
             }
 
             p1 = p2;
@@ -296,7 +253,7 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour,   int labelSize) {
+    public static void addLabelsOverlay(ImagePlus ipl, String label, double[] labelCoords, Color colour, int labelSize) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         // Adding text label
@@ -315,12 +272,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public HashMap<Integer,Float> getHues(ObjCollection inputObjects) {
-        String colourMode = parameters.getValue(COLOUR_MODE);
-        String singleColour = parameters.getValue(SINGLE_COLOUR);
-        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
-        String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
-
+    public HashMap<Integer,Float> getHues(ObjCollection inputObjects, String colourMode, String singleColour, String parentObjectsForColourName, String measurementForColour) {
         // Generating colours for each object
         switch (colourMode) {
             case ColourModes.SINGLE_COLOUR:
@@ -339,51 +291,81 @@ public class AddObjectsOverlay extends Module {
         }
     }
 
-    public HashMap<Integer,String> getLabels(ObjCollection inputObjects) {
-        String labelMode = parameters.getValue(LABEL_MODE);
-        int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
-        boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
-        String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
-        String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL);
-
+    public HashMap<Integer,String> getLabels(ObjCollection inputObjects, String labelMode, DecimalFormat df, String parentObjectsForLabelName, String measurementForLabel) {
         switch (labelMode) {
             case LabelModes.ID:
-                return LabelFactory.getIDLabels(inputObjects,decimalPlaces,useScientific);
+                return LabelFactory.getIDLabels(inputObjects,df);
             case LabelModes.MEASUREMENT_VALUE:
-                return LabelFactory.getMeasurementLabels(inputObjects,measurementForLabel,decimalPlaces,useScientific);
+                return LabelFactory.getMeasurementLabels(inputObjects,measurementForLabel,df);
             case LabelModes.PARENT_ID:
-                return LabelFactory.getParentIDLabels(inputObjects,parentObjectsForLabelName,decimalPlaces,useScientific);
+                return LabelFactory.getParentIDLabels(inputObjects,parentObjectsForLabelName,df);
             case LabelModes.PARENT_MEASUREMENT_VALUE:
-                return LabelFactory.getParentMeasurementLabels(inputObjects,parentObjectsForLabelName,measurementForLabel,decimalPlaces,useScientific);
+                return LabelFactory.getParentMeasurementLabels(inputObjects,parentObjectsForLabelName,measurementForLabel,df);
         }
 
         return null;
 
     }
 
-    public String[] getPositionMeasurements() {
-        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
-        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
-        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
-        boolean useRadius = parameters.getValue(USE_RADIUS);
-        String measurementForRadius = parameters.getValue(MEASUREMENT_FOR_RADIUS);
-
-        if (useRadius) {
-            return new String[]{xPosMeas, yPosMeas, zPosMeas, measurementForRadius};
-        } else {
-            return new String[]{xPosMeas, yPosMeas, zPosMeas, ""};
+    public void createAllPointsOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, boolean multithread, double lineWidth) throws InterruptedException {
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
         }
+
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        // Running through each object, adding it to the overlay along with an ID label
+        AtomicInteger count = new AtomicInteger();
+        for (Obj object:inputObjects.values()) {
+            ImagePlus finalIpl = ipl;
+
+            Runnable task = () -> {
+                float hue = hues.get(object.getID());
+                Color colour = ColourFactory.getColour(hue);
+
+                addAllPointsOverlay(object, finalIpl, colour, lineWidth);
+
+                writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+
+            };
+            pool.submit(task);
+        }
+
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
     }
 
-    public void createOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, @Nullable HashMap<Integer,String> labels) throws InterruptedException {
-        String positionMode = parameters.getValue(POSITION_MODE);
-        double lineWidth = parameters.getValue(LINE_WIDTH);
-        int labelSize = parameters.getValue(LABEL_SIZE);
-        String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
-        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
-        int history = parameters.getValue(TRACK_HISTORY);
-        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+    public void createCentroidOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, boolean multithread, double lineWidth) throws InterruptedException {
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
 
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        // Running through each object, adding it to the overlay along with an ID label
+        AtomicInteger count = new AtomicInteger();
+        for (Obj object:inputObjects.values()) {
+            ImagePlus finalIpl = ipl;
+
+            Runnable task = () -> {
+                float hue = hues.get(object.getID());
+                Color colour = ColourFactory.getColour(hue);
+                addCentroidOverlay(object, finalIpl, colour, lineWidth);
+
+                writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+            };
+            pool.submit(task);
+        }
+
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+    }
+
+    public void createLabelOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, @Nullable HashMap<Integer,String> labels, boolean multithread, int labelSize) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -402,37 +384,100 @@ public class AddObjectsOverlay extends Module {
                 Color colour = ColourFactory.getColour(hue);
                 String label = labels == null ? "" : labels.get(object.getID());
 
-                switch (positionMode) {
-                    case PositionModes.ALL_POINTS:
-                        addAllPointsOverlay(object, finalIpl, colour, lineWidth, label, labelSize);
-                        break;
+                double xMean = object.getXMean(true);
+                double yMean = object.getYMean(true);
+                double zMean = object.getZMean(true, false);
+                int z = (int) Math.round(zMean + 1);
+                int t = object.getT() + 1;
 
-                    case PositionModes.CENTROID:
-                        addCentroidOverlay(object, finalIpl, colour, lineWidth, label, labelSize);
-                        break;
+                addLabelsOverlay(finalIpl, label, new double[]{xMean, yMean, z, t}, colour, labelSize);
 
-                    case PositionModes.LABEL_ONLY:
-                        double xMean = object.getXMean(true);
-                        double yMean = object.getYMean(true);
-                        double zMean = object.getZMean(true, false);
-                        int z = (int) Math.round(zMean + 1);
-                        int t = object.getT() + 1;
+                writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+            };
+            pool.submit(task);
+        }
 
-                        addLabelsOverlay(finalIpl, label, new double[]{xMean, yMean, z, t}, colour, labelSize);
-                        break;
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
-                    case PositionModes.OUTLINE:
-                        addOutlineOverlay(object, finalIpl, colour, lineWidth, label, labelSize);
-                        break;
+    }
 
-                    case PositionModes.POSITION_MEASUREMENTS:
-                        String[] posMeasurements = getPositionMeasurements();
-                        addPositionMeasurementsOverlay(object, finalIpl, colour, lineWidth, posMeasurements, label, labelSize);
-                        break;
+    public void createOutlineOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, boolean multithread, double lineWidth) throws InterruptedException {
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
 
-                    case PositionModes.TRACKS:
-                        addTrackOverlay(object, spotObjectsName, finalIpl, colour, lineWidth, label, labelSize, limitHistory, history);
-                }
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        // Running through each object, adding it to the overlay along with an ID label
+        AtomicInteger count = new AtomicInteger();
+        for (Obj object:inputObjects.values()) {
+            ImagePlus finalIpl = ipl;
+
+            Runnable task = () -> {
+                float hue = hues.get(object.getID());
+                Color colour = ColourFactory.getColour(hue);
+
+                addOutlineOverlay(object, finalIpl, colour, lineWidth);
+
+                writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+            };
+            pool.submit(task);
+        }
+
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+    }
+
+    public void createPositionMeasurementsOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, String[] posMeasurements, boolean multithread, double lineWidth) throws InterruptedException {
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
+
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        // Running through each object, adding it to the overlay along with an ID label
+        AtomicInteger count = new AtomicInteger();
+        for (Obj object:inputObjects.values()) {
+            ImagePlus finalIpl = ipl;
+
+            Runnable task = () -> {
+                float hue = hues.get(object.getID());
+                Color colour = ColourFactory.getColour(hue);
+
+                addPositionMeasurementsOverlay(object, finalIpl, colour, lineWidth, posMeasurements);
+
+                writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+            };
+            pool.submit(task);
+        }
+
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+    }
+
+    public void createTracksOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, String spotObjectsName, int history, boolean multithread, double lineWidth) throws InterruptedException {
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
+
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        // Running through each object, adding it to the overlay along with an ID label
+        AtomicInteger count = new AtomicInteger();
+        for (Obj object:inputObjects.values()) {
+            ImagePlus finalIpl = ipl;
+
+            Runnable task = () -> {
+                float hue = hues.get(object.getID());
+                Color colour = ColourFactory.getColour(hue);
+
+                addTrackOverlay(object, spotObjectsName, finalIpl, colour, lineWidth,  history);
 
                 writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
             };
@@ -477,77 +522,114 @@ public class AddObjectsOverlay extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
+        String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
+        String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
+        String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
+        boolean useRadius = parameters.getValue(USE_RADIUS);
+        String measurementForRadius = parameters.getValue(MEASUREMENT_FOR_RADIUS);
+        boolean limitHistory = parameters.getValue(LIMIT_TRACK_HISTORY);
+        int history = parameters.getValue(TRACK_HISTORY);
+
+        // Getting colour settings
+        String colourMode = parameters.getValue(COLOUR_MODE);
+        String singleColour = parameters.getValue(SINGLE_COLOUR);
+        String parentObjectsForColourName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+        String measurementForColour = parameters.getValue(MEASUREMENT_FOR_COLOUR);
+
+        // Getting label settings
+        String labelMode = parameters.getValue(LABEL_MODE);
+        int labelSize = parameters.getValue(LABEL_SIZE);
+        int decimalPlaces = parameters.getValue(DECIMAL_PLACES);
+        boolean useScientific = parameters.getValue(USE_SCIENTIFIC);
+        String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
+        String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL);
+
+        int lineWidth = parameters.getValue(LINE_WIDTH);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+
         // Duplicating the image, so the original isn't altered
         if (!applyToInput) ipl = new Duplicator().run(ipl);
 
         // Generating colours for each object
-        HashMap<Integer,Float> hues= getHues(inputObjects);
-
-        // Generating labels for each object
-        boolean showLabels = positionMode.equals(PositionModes.LABEL_ONLY) || (boolean) parameters.getValue(SHOW_LABEL);
-        HashMap<Integer,String> labels = showLabels ? getLabels(inputObjects) : null;
+        HashMap<Integer,Float> hues= getHues(inputObjects,colourMode,singleColour,parentObjectsForColourName,measurementForColour);
 
         // Adding the overlay element
         try {
-            createOverlay(ipl,inputObjects,hues,labels);
+            switch (positionMode) {
+                case PositionModes.ALL_POINTS:
+                    createAllPointsOverlay(ipl,inputObjects,hues,multithread,lineWidth);
+                    break;
+                case PositionModes.CENTROID:
+                    createCentroidOverlay(ipl,inputObjects,hues,multithread,lineWidth);
+                    break;
+                case PositionModes.LABEL_ONLY:
+                    DecimalFormat df = LabelFactory.getDecimalFormat(decimalPlaces,useScientific);
+                    HashMap<Integer,String> labels = getLabels(inputObjects,labelMode,df,parentObjectsForLabelName,measurementForLabel);
+                    createLabelOverlay(ipl,inputObjects,hues,labels,multithread,labelSize);
+                    break;
+                case PositionModes.OUTLINE:
+                    createOutlineOverlay(ipl,inputObjects,hues,multithread,lineWidth);
+                    break;
+                case PositionModes.POSITION_MEASUREMENTS:
+                    if (!useRadius) measurementForRadius = null;
+                    String[] posMeasurements = new String[]{xPosMeas, yPosMeas, zPosMeas, measurementForRadius};
+                    createPositionMeasurementsOverlay(ipl,inputObjects,hues,posMeasurements,multithread,lineWidth);
+                    break;
+                case PositionModes.TRACKS:
+                    if (!limitHistory) history = Integer.MAX_VALUE;
+                    createTracksOverlay(ipl,inputObjects,hues,spotObjectsName,history,multithread,lineWidth);
+                    break;
+            }
         } catch (InterruptedException e) {
             return false;
         }
 
-        // If necessary, adding output image to workspace
-        if (addOutputToWorkspace) {
-            Image outputImage = new Image(outputImageName,ipl);
-            workspace.addImage(outputImage);
-        }
+        Image outputImage = new Image(outputImageName,ipl);
 
-        // Duplicating the image, then displaying it.  Duplicating prevents the image being removed from the workspace
-        // if it's closed
-        if (showOutput) {
-            ImagePlus dispIpl = new Duplicator().run(ipl);
-            dispIpl.setTitle(outputImageName);
-            dispIpl.setPosition(1,1,1);
-            dispIpl.updateChannelAndDraw();
-            dispIpl.show();
-        }
+        // If necessary, adding output image to workspace.  This also allows us to show it.
+        if (addOutputToWorkspace) workspace.addImage(outputImage);
+        if (showOutput) showImage(outputImage);
 
         return true;
 
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(ADD_OUTPUT_TO_WORKSPACE, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(SHOW_LABEL, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(LABEL_MODE, Parameter.CHOICE_ARRAY, LabelModes.ID, LabelModes.ALL));
-        parameters.add(new Parameter(DECIMAL_PLACES, Parameter.INTEGER,0));
-        parameters.add(new Parameter(USE_SCIENTIFIC,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(LABEL_SIZE, Parameter.INTEGER,8));
-        parameters.add(new Parameter(PARENT_OBJECT_FOR_LABEL, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(MEASUREMENT_FOR_LABEL, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(POSITION_MODE, Parameter.CHOICE_ARRAY, PositionModes.CENTROID, PositionModes.ALL));
-        parameters.add(new Parameter(X_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(Y_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(Z_POSITION_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(USE_RADIUS, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(MEASUREMENT_FOR_RADIUS, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
-        parameters.add(new Parameter(SINGLE_COLOUR,Parameter.CHOICE_ARRAY,SingleColours.WHITE,SingleColours.ALL));
-        parameters.add(new Parameter(MEASUREMENT_FOR_COLOUR, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(SPOT_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
-        parameters.add(new Parameter(LIMIT_TRACK_HISTORY, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(TRACK_HISTORY, Parameter.INTEGER,10));
-        parameters.add(new Parameter(LINE_WIDTH,Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(ENABLE_MULTITHREADING, Parameter.BOOLEAN, true));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(LABEL_MODE, this, LabelModes.ID, LabelModes.ALL));
+        parameters.add(new IntegerP(DECIMAL_PLACES, this,0));
+        parameters.add(new BooleanP(USE_SCIENTIFIC,this,false));
+        parameters.add(new IntegerP(LABEL_SIZE, this,8));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LABEL, this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LABEL, this));
+        parameters.add(new ChoiceP(POSITION_MODE, this, PositionModes.CENTROID, PositionModes.ALL));
+        parameters.add(new ObjectMeasurementP(X_POSITION_MEASUREMENT, this));
+        parameters.add(new ObjectMeasurementP(Y_POSITION_MEASUREMENT, this));
+        parameters.add(new ObjectMeasurementP(Z_POSITION_MEASUREMENT, this));
+        parameters.add(new BooleanP(USE_RADIUS, this,true));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_RADIUS, this));
+        parameters.add(new ChoiceP(COLOUR_MODE, this, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
+        parameters.add(new ChoiceP(SINGLE_COLOUR,this,SingleColours.WHITE,SingleColours.ALL));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR, this));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
+        parameters.add(new ChildObjectsP(SPOT_OBJECTS, this));
+        parameters.add(new BooleanP(LIMIT_TRACK_HISTORY, this,false));
+        parameters.add(new IntegerP(TRACK_HISTORY, this,10));
+        parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -568,15 +650,14 @@ public class AddObjectsOverlay extends Module {
             returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT));
             returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT));
 
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(X_POSITION_MEASUREMENT,inputObjectsName);
-            parameters.updateValueSource(Y_POSITION_MEASUREMENT,inputObjectsName);
-            parameters.updateValueSource(Z_POSITION_MEASUREMENT,inputObjectsName);
+            ((ObjectMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
+            ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
+            ((ObjectMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
 
             returnedParameters.add(parameters.getParameter(USE_RADIUS));
             if (parameters.getValue(USE_RADIUS)) {
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_RADIUS));
-                parameters.updateValueSource(MEASUREMENT_FOR_RADIUS,inputObjectsName);
+                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_RADIUS)).setObjectName(inputObjectsName);
             }
         }
 
@@ -584,12 +665,8 @@ public class AddObjectsOverlay extends Module {
             returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
             returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
 
-            if (parameters.getValue(LIMIT_TRACK_HISTORY)) {
-                returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
-            }
-
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(SPOT_OBJECTS,inputObjectsName);
+            if (parameters.getValue(LIMIT_TRACK_HISTORY)) returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
+            ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
 
         }
 
@@ -602,60 +679,49 @@ public class AddObjectsOverlay extends Module {
             case ColourModes.MEASUREMENT_VALUE:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
                 if (parameters.getValue(INPUT_OBJECTS) != null) {
-                    parameters.updateValueSource(MEASUREMENT_FOR_COLOUR,parameters.getValue(INPUT_OBJECTS));
+                    ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR)).setObjectName(inputObjectsName);
                 }
                 break;
 
             case ColourModes.PARENT_ID:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
                 break;
 
             case ColourModes.PARENT_MEASUREMENT_VALUE:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
 
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
-                String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
-                if (parentObjectsName != null) parameters.updateValueSource(MEASUREMENT_FOR_COLOUR,parentObjectsName);
+                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR)).setObjectName(inputObjectsName);
 
                 break;
         }
 
         returnedParameters.add(parameters.getParameter(LINE_WIDTH));
 
-        if (!parameters.getValue(POSITION_MODE).equals(PositionModes.LABEL_ONLY)) {
-            returnedParameters.add(parameters.getParameter(SHOW_LABEL));
-        }
-
-        if (parameters.getValue(POSITION_MODE).equals(PositionModes.LABEL_ONLY)
-                || (boolean) parameters.getValue(SHOW_LABEL)) {
+        if (parameters.getValue(POSITION_MODE).equals(PositionModes.LABEL_ONLY)) {
             returnedParameters.add(parameters.getParameter(LABEL_MODE));
 
             switch ((String) parameters.getValue(LABEL_MODE)) {
                 case LabelModes.MEASUREMENT_VALUE:
                     returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
-                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(MEASUREMENT_FOR_LABEL,inputObjectsName);
+                    ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL)).setObjectName(inputObjectsName);
                     break;
 
                 case LabelModes.PARENT_ID:
                     returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
-                    inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(PARENT_OBJECT_FOR_LABEL,inputObjectsName);
+                    ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_LABEL)).setChildObjectsName(inputObjectsName);
                     break;
 
                 case LabelModes.PARENT_MEASUREMENT_VALUE:
                     returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LABEL));
-                    inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(PARENT_OBJECT_FOR_LABEL,inputObjectsName);
+                    ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_LABEL)).setChildObjectsName(inputObjectsName);
 
                     returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LABEL));
-                    String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
-                    if (parentObjectsName != null) parameters.updateValueSource(MEASUREMENT_FOR_LABEL,parentObjectsName);
-
+                    if (parentObjectsName != null) {
+                        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_LABEL)).setObjectName(inputObjectsName);
+                    }
             }
 
             returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
@@ -670,17 +736,17 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

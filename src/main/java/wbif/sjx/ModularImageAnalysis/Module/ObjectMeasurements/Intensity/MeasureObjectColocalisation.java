@@ -4,6 +4,9 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputObjectsP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
 
 public class MeasureObjectColocalisation extends Module {
@@ -72,9 +75,9 @@ public class MeasureObjectColocalisation extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(INPUT_IMAGE_1, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INPUT_IMAGE_2, Parameter.INPUT_IMAGE,null));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new InputImageP(INPUT_IMAGE_1, this));
+        parameters.add(new InputImageP(INPUT_IMAGE_2, this));
 
     }
 
@@ -84,20 +87,20 @@ public class MeasureObjectColocalisation extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName1 = parameters.getValue(INPUT_IMAGE_1);
         String inputImageName2 = parameters.getValue(INPUT_IMAGE_2);
 
-        objectMeasurementReferences.setAllCalculated(false);
+        objectMeasurementRefs.setAllCalculated(false);
 
         String name = getFullName(inputImageName1,inputImageName2,Measurements.PCC);
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
         reference.setDescription("Pearson's Correlation Coefficient (PCC) calculated separately for pixels contained " +
@@ -105,12 +108,12 @@ public class MeasureObjectColocalisation extends Module {
                 inputImageName2+"\".  PCC values range from -1 to +1, where -1 corresponds to perfect anti-correlation " +
                 "of signal and +1 to perfect correlation.");
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

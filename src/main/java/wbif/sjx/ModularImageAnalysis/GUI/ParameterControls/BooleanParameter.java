@@ -1,8 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.BooleanType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,35 +12,45 @@ import java.awt.event.ActionListener;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class BooleanParameter extends JCheckBox implements ActionListener {
-    private Module module;
-    private Parameter parameter;
+public class BooleanParameter extends ParameterControl implements ActionListener {
+    private BooleanType parameter;
+    private JCheckBox control;
 
-    public BooleanParameter(Module module, Parameter parameter) {
-        this.module = module;
+    public BooleanParameter(BooleanType parameter) {
         this.parameter = parameter;
 
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        setSelected(parameter.getValue());
-        addActionListener(this);
+        control = new JCheckBox();
+
+        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        control.setSelected(parameter.isSelected());
+        control.addActionListener(this);
+        control.setOpaque(false);
 
     }
 
-    public Module getModule() {
-        return module;
-    }
-
-    public Parameter getParameter() {
+    public BooleanType getParameter() {
         return parameter;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        parameter.setValue(isSelected());
+        parameter.setSelected(control.isSelected());
 
-        int idx = GUI.getModules().indexOf(module);
+        updateControl();
+
+        int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules(true);
+
+    }
+    @Override
+    public JComponent getComponent() {
+        return control;
+    }
+
+    @Override
+    public void updateControl() {
+        control.setSelected(parameter.isSelected());
     }
 }

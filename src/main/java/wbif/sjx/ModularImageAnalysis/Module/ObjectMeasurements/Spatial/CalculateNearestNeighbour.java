@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 /**
  * Created by sc13967 on 22/06/2017.
@@ -163,15 +164,15 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(RELATIONSHIP_MODE, Parameter.CHOICE_ARRAY, RelationshipModes.WITHIN_SAME_SET,RelationshipModes.ALL));
-        parameters.add(new Parameter(NEIGHBOUR_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(CALCULATE_WITHIN_PARENT, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(PARENT_OBJECTS, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(LIMIT_LINKING_DISTANCE, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE, Parameter.DOUBLE,100d));
-        parameters.add(new Parameter(CALIBRATED_DISTANCE, Parameter.BOOLEAN,false));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(RELATIONSHIP_MODE, this, RelationshipModes.WITHIN_SAME_SET,RelationshipModes.ALL));
+        parameters.add(new InputObjectsP(NEIGHBOUR_OBJECTS, this));
+        parameters.add(new BooleanP(CALCULATE_WITHIN_PARENT, this,false));
+        parameters.add(new ParentObjectsP(PARENT_OBJECTS, this));
+        parameters.add(new BooleanP(LIMIT_LINKING_DISTANCE, this,false));
+        parameters.add(new DoubleP(MAXIMUM_LINKING_DISTANCE, this,100d));
+        parameters.add(new BooleanP(CALIBRATED_DISTANCE, this,false));
 
     }
 
@@ -193,8 +194,7 @@ public class CalculateNearestNeighbour extends Module {
             returnedParameters.add(parameters.getParameter(PARENT_OBJECTS));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(PARENT_OBJECTS,inputObjectsName);
-
+            ((ParentObjectsP) parameters.getParameter(PARENT_OBJECTS)).setChildObjectsName(inputObjectsName);
         }
 
         returnedParameters.add(parameters.getParameter(LIMIT_LINKING_DISTANCE));
@@ -208,13 +208,13 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
@@ -231,26 +231,26 @@ public class CalculateNearestNeighbour extends Module {
 
 
         String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
         name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
-        reference = objectMeasurementReferences.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
         name = getFullName(Measurements.NN_ID,neighbourObjectsName);
-        reference = objectMeasurementReferences.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

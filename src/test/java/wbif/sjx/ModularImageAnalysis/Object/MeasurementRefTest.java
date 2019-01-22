@@ -4,10 +4,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class MeasurementReferenceTest {
+public class MeasurementRefTest {
     @Test
     public void testConstructor() {
-        MeasurementReference measurementReference = new MeasurementReference("Test name");
+        MeasurementRef measurementReference = new MeasurementRef("Test name");
 
         assertEquals("Test name",measurementReference.getName());
         assertEquals("",measurementReference.getImageObjName());
@@ -17,7 +17,7 @@ public class MeasurementReferenceTest {
 
     @Test
     public void testToString() {
-        MeasurementReference measurementReference = new MeasurementReference("Test name");
+        MeasurementRef measurementReference = new MeasurementRef("Test name");
 
         String expected = "Measurement reference (Test name)";
         String actual = measurementReference.toString();

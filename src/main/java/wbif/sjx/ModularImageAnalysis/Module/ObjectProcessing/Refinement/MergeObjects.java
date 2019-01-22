@@ -4,6 +4,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class MergeObjects extends Module {
     public static final String INPUT_OBJECTS_1 = "Input objects 1";
     public static final String INPUT_OBJECTS_2 = "Input objects 2";
     public static final String OUTPUT_OBJECTS = "Output objects";
-    public static final String DELETE_INPUTS = "Remove input objects";
+
 
     @Override
     public String getTitle() {
@@ -41,9 +42,6 @@ public class MergeObjects extends Module {
         ObjCollection inputObjects2 = workspace.getObjectSet(inputObjects2Name);
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
-
-        // Getting parameters
-        boolean deleteInputs = parameters.getValue(DELETE_INPUTS);
 
         // Doing object merging
         for (Obj obj1:inputObjects1.values()) {
@@ -77,12 +75,6 @@ public class MergeObjects extends Module {
         // Adding the combined objects to the workspace
         workspace.addObjects(outputObjects);
 
-        // Removing the relevant image from the workspace
-        if (deleteInputs) {
-            workspace.removeObject(inputObjects1Name);
-            workspace.removeObject(inputObjects2Name);
-        }
-
         if (showOutput) {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
             String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
@@ -95,40 +87,29 @@ public class MergeObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS_1,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(INPUT_OBJECTS_2,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(DELETE_INPUTS,Parameter.BOOLEAN,false));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS_1,this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS_2,this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        boolean deleteInputs = parameters.getValue(DELETE_INPUTS);
-
-        if (deleteInputs) {
-            parameters.getParameter(INPUT_OBJECTS_1).setType(Parameter.REMOVED_OBJECTS);
-            parameters.getParameter(INPUT_OBJECTS_2).setType(Parameter.REMOVED_OBJECTS);
-        } else {
-            parameters.getParameter(INPUT_OBJECTS_1).setType(Parameter.INPUT_OBJECTS);
-            parameters.getParameter(INPUT_OBJECTS_2).setType(Parameter.INPUT_OBJECTS);
-        }
-
         return parameters;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

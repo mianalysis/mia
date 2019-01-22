@@ -5,6 +5,7 @@ import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 /**
  * Created by sc13967 on 19/09/2017.
@@ -131,16 +132,14 @@ public class ImageMath extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(
-                new Parameter(CALCULATION_TYPE,Parameter.CHOICE_ARRAY,CalculationTypes.ADD,CalculationTypes.ALL));
-        parameters.add(
-                new Parameter(VALUE_SOURCE,Parameter.CHOICE_ARRAY, ValueSources.FIXED, ValueSources.ALL));
-        parameters.add(new Parameter(MEASUREMENT,Parameter.IMAGE_MEASUREMENT,null));
-        parameters.add(new Parameter(MATH_VALUE,Parameter.DOUBLE,1.0));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(CALCULATION_TYPE,this,CalculationTypes.ADD,CalculationTypes.ALL));
+        parameters.add(new ChoiceP(VALUE_SOURCE,this, ValueSources.FIXED, ValueSources.ALL));
+        parameters.add(new ImageMeasurementP(MEASUREMENT,this));
+        parameters.add(new DoubleP(MATH_VALUE,this,1.0));
 
     }
 
@@ -167,7 +166,8 @@ public class ImageMath extends Module {
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
 
                 if (parameters.getValue(INPUT_IMAGE) != null) {
-                    parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_IMAGE));
+                    ImageMeasurementP measurement = parameters.getParameter(MEASUREMENT);
+                    measurement.setImageName(parameters.getValue(INPUT_IMAGE));
                 }
                 break;
         }
@@ -177,17 +177,17 @@ public class ImageMath extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -19,6 +19,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
@@ -59,7 +60,7 @@ public class BatchProcessor extends FileCrawler {
 
     public void run(Analysis analysis, Exporter exporter) throws IOException, InterruptedException {
         shutdownEarly = false;
-        String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
+        String exportMode = ((ChoiceP) analysis.getOutputControl().getParameter(OutputControl.EXPORT_MODE)).getChoice();
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
 
@@ -95,14 +96,14 @@ public class BatchProcessor extends FileCrawler {
     private void runParallel(WorkspaceCollection workspaces, Analysis analysis, Exporter exporter) throws InterruptedException {
         File next = getNextValidFileInStructure();
 
-        boolean continuousExport = analysis.getOutputControl().getParameterValue(OutputControl.CONTINUOUS_DATA_EXPORT);
-        int saveNFiles = analysis.getOutputControl().getParameterValue(OutputControl.SAVE_EVERY_N);
-        String exportMode = analysis.getOutputControl().getParameterValue(OutputControl.EXPORT_MODE);
+        boolean continuousExport = ((BooleanP) analysis.getOutputControl().getParameter(OutputControl.CONTINUOUS_DATA_EXPORT)).isSelected();
+        int saveNFiles = ((IntegerP) analysis.getOutputControl().getParameter(OutputControl.SAVE_EVERY_N)).getValue();
+        String exportMode = ((ChoiceP) analysis.getOutputControl().getParameter(OutputControl.EXPORT_MODE)).getChoice();
 
         Module.setVerbose(false);
 
         // Set the number of Fiji threads to maximise the number of jobs, so it doesn't clash with MIA multi-threading.
-        int nSimultaneousJobs = analysis.getInputControl().getParameterValue(InputControl.SIMULTANEOUS_JOBS);
+        int nSimultaneousJobs = ((IntegerP) analysis.getInputControl().getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
         if (nSimultaneousJobs != 1) {
             int nThreads = Math.floorDiv(origThreads,nSimultaneousJobs);
             Prefs.setThreads(nThreads);
@@ -300,16 +301,17 @@ public class BatchProcessor extends FileCrawler {
     private TreeMap<Integer,String> getSeriesNumbers(Analysis analysis, File inputFile) {
         try {
             ParameterCollection parameters = analysis.getInputControl().getAllParameters();
-            String seriesMode = parameters.getValue(InputControl.SERIES_MODE);
-            boolean useFilter1 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_1);
-            String filter1 = parameters.getValue(InputControl.SERIESNAME_FILTER_1);
-            String filterType1 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_1);
-            boolean useFilter2 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_2);
-            String filter2 = parameters.getValue(InputControl.SERIESNAME_FILTER_2);
-            String filterType2 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_2);
-            boolean useFilter3 = parameters.getValue(InputControl.USE_SERIESNAME_FILTER_3);
-            String filter3 = parameters.getValue(InputControl.SERIESNAME_FILTER_3);
-            String filterType3 = parameters.getValue(InputControl.SERIESNAME_FILTER_TYPE_3);
+
+            String seriesMode = ((ChoiceP) parameters.getParameter(InputControl.SERIES_MODE)).getChoice();
+            boolean useFilter1 = ((BooleanP) parameters.getParameter(InputControl.USE_SERIESNAME_FILTER_1)).isSelected();
+            String filter1 = ((StringP) parameters.getParameter(InputControl.SERIESNAME_FILTER_1)).getValue();
+            String filterType1 = ((ChoiceP) parameters.getParameter(InputControl.SERIESNAME_FILTER_TYPE_1)).getChoice();
+            boolean useFilter2 = ((BooleanP) parameters.getParameter(InputControl.USE_SERIESNAME_FILTER_2)).isSelected();
+            String filter2 = ((StringP) parameters.getParameter(InputControl.SERIESNAME_FILTER_2)).getValue();
+            String filterType2 = ((ChoiceP) parameters.getParameter(InputControl.SERIESNAME_FILTER_TYPE_2)).getChoice();
+            boolean useFilter3 = ((BooleanP) parameters.getParameter(InputControl.USE_SERIESNAME_FILTER_3)).isSelected();
+            String filter3 = ((StringP) parameters.getParameter(InputControl.SERIESNAME_FILTER_3)).getValue();
+            String filterType3 = ((ChoiceP) parameters.getParameter(InputControl.SERIESNAME_FILTER_TYPE_3)).getChoice();
 
             TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
             switch (seriesMode) {
@@ -345,7 +347,7 @@ public class BatchProcessor extends FileCrawler {
 
                 case InputControl.SeriesModes.SERIES_LIST:
                     // Converting series list to a list of numbers
-                    String seriesList = analysis.getInputControl().getParameterValue(InputControl.SERIES_LIST);
+                    String seriesList = ((StringP) analysis.getInputControl().getParameter(InputControl.SERIES_LIST)).getValue();
                     seriesList = seriesList.replace(" ","");
                     List<String> list = new ArrayList<String>(Arrays.asList(seriesList.split(",")));
 
@@ -371,7 +373,8 @@ public class BatchProcessor extends FileCrawler {
                     break;
 
                 case InputControl.SeriesModes.SINGLE_SERIES:
-                    namesAndNumbers.put(analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER),"");
+                    int seriesNumber = ((IntegerP) analysis.getInputControl().getParameter(InputControl.SERIES_NUMBER)).getValue();
+                    namesAndNumbers.put(seriesNumber,"");
                     break;
             }
 

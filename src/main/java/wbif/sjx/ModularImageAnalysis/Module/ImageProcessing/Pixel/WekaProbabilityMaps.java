@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConve
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 import java.io.File;
 
@@ -176,13 +177,13 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_BIT_DEPTH,Parameter.CHOICE_ARRAY,OutputBitDepths.THIRTY_TWO,OutputBitDepths.ALL));
-        parameters.add(new Parameter(OUTPUT_SINGLE_CLASS,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(OUTPUT_CLASS,Parameter.INTEGER,1));
-        parameters.add(new Parameter(CLASSIFIER_FILE,Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(BLOCK_SIZE,Parameter.INTEGER,1));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH,this,OutputBitDepths.THIRTY_TWO,OutputBitDepths.ALL));
+        parameters.add(new BooleanP(OUTPUT_SINGLE_CLASS,this,false));
+        parameters.add(new IntegerP(OUTPUT_CLASS,this,1));
+        parameters.add(new FilePathP(CLASSIFIER_FILE,this));
+        parameters.add(new IntegerP(BLOCK_SIZE,this,1));
 
     }
 
@@ -207,17 +208,17 @@ public class WekaProbabilityMaps extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

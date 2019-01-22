@@ -11,6 +11,7 @@ import ij.process.AutoThresholder;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -312,26 +313,22 @@ public class ThresholdImage extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(
-                new Parameter(THRESHOLD_TYPE,Parameter.CHOICE_ARRAY,ThresholdTypes.GLOBAL,ThresholdTypes.ALL));
-        parameters.add(
-                new Parameter(GLOBAL_ALGORITHM,Parameter.CHOICE_ARRAY,GlobalAlgorithms.HUANG,GlobalAlgorithms.ALL));
-        parameters.add(
-                new Parameter(LOCAL_ALGORITHM,Parameter.CHOICE_ARRAY,LocalAlgorithms.PHANSALKAR_3D,LocalAlgorithms.ALL));
-        parameters.add(new Parameter(THRESHOLD_MULTIPLIER, Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(USE_LOWER_THRESHOLD_LIMIT, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(LOWER_THRESHOLD_LIMIT, Parameter.DOUBLE, 0.0));
-        parameters.add(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE, 1.0));
-        parameters.add(
-                new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
-        parameters.add(new Parameter(THRESHOLD_VALUE, Parameter.INTEGER, 1));
-        parameters.add(new Parameter(USE_GLOBAL_Z,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(WHITE_BACKGROUND, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(STORE_THRESHOLD_AS_MEASUREMENT, Parameter.BOOLEAN,false));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(THRESHOLD_TYPE,this,ThresholdTypes.GLOBAL,ThresholdTypes.ALL));
+        parameters.add(new ChoiceP(GLOBAL_ALGORITHM,this,GlobalAlgorithms.HUANG,GlobalAlgorithms.ALL));
+        parameters.add(new ChoiceP(LOCAL_ALGORITHM,this,LocalAlgorithms.PHANSALKAR_3D,LocalAlgorithms.ALL));
+        parameters.add(new DoubleP(THRESHOLD_MULTIPLIER, this,1.0));
+        parameters.add(new BooleanP(USE_LOWER_THRESHOLD_LIMIT, this, false));
+        parameters.add(new DoubleP(LOWER_THRESHOLD_LIMIT, this, 0.0));
+        parameters.add(new DoubleP(LOCAL_RADIUS, this, 1.0));
+        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new IntegerP(THRESHOLD_VALUE, this, 1));
+        parameters.add(new BooleanP(USE_GLOBAL_Z,this,false));
+        parameters.add(new BooleanP(WHITE_BACKGROUND, this,true));
+        parameters.add(new BooleanP(STORE_THRESHOLD_AS_MEASUREMENT, this,false));
 
     }
 
@@ -383,8 +380,8 @@ public class ThresholdImage extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        imageMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        imageMeasurementRefs.setAllCalculated(false);
 
         if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)
                 && (boolean) parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT)) {
@@ -392,23 +389,23 @@ public class ThresholdImage extends Module {
             String method = parameters.getValue(GLOBAL_ALGORITHM);
             String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
 
-            MeasurementReference reference = imageMeasurementReferences.getOrPut(measurementName);
+            MeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName);
             reference.setImageObjName(imageName);
             reference.setCalculated(true);
 
         }
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

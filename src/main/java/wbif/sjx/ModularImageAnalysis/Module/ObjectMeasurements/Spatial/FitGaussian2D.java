@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
 
@@ -315,21 +316,21 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(RADIUS_MODE, Parameter.CHOICE_ARRAY,RadiusModes.FIXED_VALUE,RadiusModes.ALL));
-        parameters.add(new Parameter(RADIUS, Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(RADIUS_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null));
-        parameters.add(new Parameter(MEASUREMENT_MULTIPLIER, Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(LIMIT_SIGMA_RANGE, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(MIN_SIGMA, Parameter.DOUBLE,0.25));
-        parameters.add(new Parameter(MAX_SIGMA, Parameter.DOUBLE,4d));
-        parameters.add(new Parameter(FIXED_FITTING_WINDOW,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(WINDOW_SIZE,Parameter.INTEGER,15));
-        parameters.add(new Parameter(MAX_EVALUATIONS, Parameter.INTEGER,1000));
-        parameters.add(new Parameter(REMOVE_UNFIT, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(APPLY_VOLUME,Parameter.BOOLEAN,true));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(RADIUS_MODE, this,RadiusModes.FIXED_VALUE,RadiusModes.ALL));
+        parameters.add(new DoubleP(RADIUS, this,1.0));
+        parameters.add(new ObjectMeasurementP(RADIUS_MEASUREMENT,this));
+        parameters.add(new DoubleP(MEASUREMENT_MULTIPLIER, this,1.0));
+        parameters.add(new BooleanP(LIMIT_SIGMA_RANGE, this,true));
+        parameters.add(new DoubleP(MIN_SIGMA, this,0.25));
+        parameters.add(new DoubleP(MAX_SIGMA, this,4d));
+        parameters.add(new BooleanP(FIXED_FITTING_WINDOW,this,false));
+        parameters.add(new IntegerP(WINDOW_SIZE,this,15));
+        parameters.add(new IntegerP(MAX_EVALUATIONS, this,1000));
+        parameters.add(new BooleanP(REMOVE_UNFIT, this,false));
+        parameters.add(new BooleanP(APPLY_VOLUME,this,true));
 
     }
 
@@ -346,7 +347,7 @@ public class FitGaussian2D extends Module {
         } else if (parameters.getValue(RADIUS_MODE).equals(RadiusModes.MEASUREMENT)) {
             returnedParameters.add(parameters.getParameter(RADIUS_MEASUREMENT));
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(RADIUS_MEASUREMENT,inputObjectsName);
+            ((ObjectMeasurementP) parameters.getParameter(RADIUS_MEASUREMENT)).setObjectName(inputObjectsName);
             returnedParameters.add(parameters.getParameter(MEASUREMENT_MULTIPLIER));
 
         }
@@ -371,90 +372,90 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.X0_PX);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.X0_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.Y0_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Y0_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.Z0_SLICE);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Z0_SLICE);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_X_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_X_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_Y_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_Y_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.SIGMA_MEAN_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.SIGMA_MEAN_PX);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.X0_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.X0_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.Y0_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Y0_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.Z0_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.Z0_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SIGMA_X_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_X_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SIGMA_Y_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_Y_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.SIGMA_MEAN_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.SIGMA_MEAN_CAL));
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.A_0);
+        reference = objectMeasurementRefs.getOrPut(Measurements.A_0);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.A_BG);
+        reference = objectMeasurementRefs.getOrPut(Measurements.A_BG);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.THETA);
+        reference = objectMeasurementRefs.getOrPut(Measurements.THETA);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.ELLIPTICITY);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ELLIPTICITY);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.RESIDUAL);
+        reference = objectMeasurementRefs.getOrPut(Measurements.RESIDUAL);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

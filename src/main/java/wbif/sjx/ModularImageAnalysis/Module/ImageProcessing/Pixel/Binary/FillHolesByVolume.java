@@ -9,7 +9,7 @@ import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.common.Exceptions.IntegerOverflowException;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Exceptions.LongOverflowException;
 
 import java.util.HashMap;
@@ -151,14 +151,14 @@ public class FillHolesByVolume extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(USE_MINIMUM_VOLUME, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(MINIMUM_VOLUME, Parameter.DOUBLE,0d));
-        parameters.add(new Parameter(USE_MAXIMUM_VOLUME, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(MAXIMUM_VOLUME, Parameter.DOUBLE,1000d));
-        parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN, false));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new BooleanP(USE_MINIMUM_VOLUME, this,true));
+        parameters.add(new DoubleP(MINIMUM_VOLUME, this,0d));
+        parameters.add(new BooleanP(USE_MAXIMUM_VOLUME, this,true));
+        parameters.add(new DoubleP(MAXIMUM_VOLUME, this,1000d));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this, false));
 
     }
 
@@ -187,17 +187,17 @@ public class FillHolesByVolume extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

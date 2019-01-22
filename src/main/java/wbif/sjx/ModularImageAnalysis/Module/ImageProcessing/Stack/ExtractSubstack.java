@@ -8,6 +8,8 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import com.drew.lang.annotations.Nullable;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -316,15 +318,15 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(SELECTION_MODE, Parameter.CHOICE_ARRAY, SelectionModes.FIXED, SelectionModes.ALL));
-        parameters.add(new Parameter(CHANNELS,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(SLICES,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(FRAMES,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(ENABLE_CHANNELS_SELECTION,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(ENABLE_SLICES_SELECTION,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(ENABLE_FRAMES_SELECTION,Parameter.BOOLEAN,true));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ChoiceP(SELECTION_MODE,this, SelectionModes.FIXED, SelectionModes.ALL));
+        parameters.add(new StringP(CHANNELS,this,"1-end"));
+        parameters.add(new StringP(SLICES,this,"1-end"));
+        parameters.add(new StringP(FRAMES,this,"1-end"));
+        parameters.add(new BooleanP(ENABLE_CHANNELS_SELECTION,this,true));
+        parameters.add(new BooleanP(ENABLE_SLICES_SELECTION,this,true));
+        parameters.add(new BooleanP(ENABLE_FRAMES_SELECTION,this,true));
 
     }
 
@@ -352,17 +354,17 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

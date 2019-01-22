@@ -15,9 +15,9 @@ import java.io.Serializable;
  *
  */
 public class Analysis implements Serializable {
+    public ModuleCollection modules = new ModuleCollection();
     public InputControl inputControl = new InputControl();
     public OutputControl outputControl = new OutputControl();
-    public ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
 
     // CONSTRUCTOR
@@ -103,12 +103,4 @@ public class Analysis implements Serializable {
         shutdown = true;
 
     }
-
-//    public boolean isUpdateProgressBar() {
-//        return updateProgressBar;
-//    }
-//
-//    public void setUpdateProgressBar(boolean updateProgressBar) {
-//        this.updateProgressBar = updateProgressBar;
-//    }
 }

@@ -8,6 +8,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.ModularImageAnalysis.Process.LabelFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
@@ -16,7 +17,7 @@ import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Process.HoughTransform.Transforms.CircleHoughTransform;
 import wbif.sjx.common.Process.IntensityMinMax;
 
-import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -174,13 +175,16 @@ public class HoughObjectDetection extends Module {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
 
             HashMap<Integer, String> IDs = null;
-            if (showHoughScore) IDs = LabelFactory.getMeasurementLabels(outputObjects,Measurements.SCORE,0,true);
-            String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
+            if (showHoughScore) {
+                DecimalFormat df = LabelFactory.getDecimalFormat(0,true);
+                IDs = LabelFactory.getMeasurementLabels(outputObjects,Measurements.SCORE,df);
+            }
 
-            ((AddObjectsOverlay) new AddObjectsOverlay()
-                    .updateParameterValue(AddObjectsOverlay.POSITION_MODE,positionMode)
-                    .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,labelSize))
-                    .createOverlay(dispIpl,outputObjects,hues,IDs);
+            try {
+                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
@@ -194,17 +198,17 @@ public class HoughObjectDetection extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(MIN_RADIUS,Parameter.INTEGER,10));
-        parameters.add(new Parameter(MAX_RADIUS,Parameter.INTEGER,20));
-        parameters.add(new Parameter(RANDOM_SAMPLING,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SAMPLE_FRACTION,Parameter.DOUBLE,0.5));
-        parameters.add(new Parameter(DETECTION_THRESHOLD,Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(EXCLUSION_RADIUS,Parameter.INTEGER,10));
-        parameters.add(new Parameter(SHOW_TRANSFORM_IMAGE,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SHOW_HOUGH_SCORE,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(LABEL_SIZE,Parameter.INTEGER,12));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new IntegerP(MIN_RADIUS,this,10));
+        parameters.add(new IntegerP(MAX_RADIUS,this,20));
+        parameters.add(new BooleanP(RANDOM_SAMPLING,this,false));
+        parameters.add(new DoubleP(SAMPLE_FRACTION,this,0.5));
+        parameters.add(new DoubleP(DETECTION_THRESHOLD,this,1.0));
+        parameters.add(new IntegerP(EXCLUSION_RADIUS,this,10));
+        parameters.add(new BooleanP(SHOW_TRANSFORM_IMAGE,this,false));
+        parameters.add(new BooleanP(SHOW_HOUGH_SCORE,this,false));
+        parameters.add(new IntegerP(LABEL_SIZE,this,12));
 
     }
 
@@ -237,24 +241,24 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
-        MeasurementReference score = objectMeasurementReferences.getOrPut(Measurements.SCORE);
+        MeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE);
         score.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         score.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

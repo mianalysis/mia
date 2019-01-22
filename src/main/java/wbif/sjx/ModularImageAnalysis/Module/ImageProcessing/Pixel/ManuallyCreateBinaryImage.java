@@ -166,8 +166,8 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
-//        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE, null));
+//        parameters.add(new Parameter(INPUT_IMAGE, this, null));
+//        parameters.add(new Parameter(OUTPUT_IMAGE, this, null));
 //
 //    }
 //
@@ -177,17 +177,17 @@
 //    }
 //
 //    @Override
-//    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+//    public MetadataRefCollection updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //

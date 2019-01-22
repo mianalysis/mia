@@ -3,8 +3,9 @@ package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.FileFolderType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,10 +16,10 @@ import java.io.File;
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class FileParameter extends JButton implements ActionListener {
-    private Module module;
-    private Parameter parameter;
+public class FileParameter extends ParameterControl implements ActionListener {
+    private FileFolderType parameter;
     private String fileType;
+    private JButton control;
 
     public interface FileTypes {
         String FILE_TYPE = "File";
@@ -27,25 +28,33 @@ public class FileParameter extends JButton implements ActionListener {
 
     }
 
-    public FileParameter(Module module, Parameter parameter, String fileType) {
-        this.module = module;
+    public FileParameter(FileFolderType parameter, String fileType) {
         this.parameter = parameter;
         this.fileType = fileType;
 
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        setToolTipText(parameter.getValue());
-        setText(FilenameUtils.getName(parameter.getValue()));
-        addActionListener(this);
-        setFocusPainted(false);
+        control = new JButton();
+
+        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        control.setToolTipText(parameter.getPath());
+        control.setText(FilenameUtils.getName(parameter.getPath()));
+        control.addActionListener(this);
+        control.setFocusPainted(false);
 
     }
 
-    public Module getModule() {
-        return module;
-    }
-
-    public Parameter getParameter() {
+    public FileFolderType getParameter() {
         return parameter;
+    }
+
+    @Override
+    public JComponent getComponent() {
+        return control;
+    }
+
+    @Override
+    public void updateControl() {
+        control.setText(FilenameUtils.getName(parameter.getPath()));
+        control.setToolTipText(parameter.getPath());
     }
 
     @Override
@@ -68,17 +77,17 @@ public class FileParameter extends JButton implements ActionListener {
                 break;
         }
 
-        if (parameter.getValue() != null) {
-            fileChooser.setCurrentDirectory(new File((String) parameter.getValue()));
+        if (parameter.getPath() != null) {
+            fileChooser.setCurrentDirectory(new File((String) parameter.getPath()));
         }
         fileChooser.showDialog(null,"Open");
 
         if (fileChooser.getSelectedFile() == null) return;
 
-        parameter.setValue(fileChooser.getSelectedFile().getAbsolutePath());
-        setText(FilenameUtils.getName(parameter.getValue()));
-        setToolTipText(parameter.getValue());
+        parameter.setPath(fileChooser.getSelectedFile().getAbsolutePath());
+        updateControl();
 
+        Module module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 

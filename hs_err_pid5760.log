@@ -8,7 +8,7 @@
 # Problematic frame:
 # C  [msvcr100.dll+0x3c220]
 #
-# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+# Failed to write core dump. Minidumps are not selected by default on client versions of Windows
 #
 # If you would like to submit a bug report, please visit:
 #   http://bugreport.java.com/bugreport/crash.jsp
@@ -109,7 +109,7 @@ Other Threads:
   0x0000000017668000 VMThread [stack: 0x0000000018720000,0x0000000018820000] [id=6224]
   0x0000000019874800 WatcherThread [stack: 0x0000000019e10000,0x0000000019f10000] [id=17768]
 
-VM state:not at safepoint (normal execution)
+VM selected:not at safepoint (normal execution)
 
 VM Mutex/Monitor currently owned by a thread: None
 
@@ -134,7 +134,7 @@ Polling page: 0x0000000000850000
 CodeCache: size=245760Kb used=12992Kb max_used=13006Kb free=232767Kb
  bounds [0x0000000002b80000, 0x0000000003850000, 0x0000000011b80000]
  total_blobs=4618 nmethods=3993 adapters=534
- compilation: enabled
+ compilation: selected
 
 Compilation events (10 events):
 Event: 170.052 Thread 0x00000000197a6000 4619       3       java.lang.invoke.MethodTypeForm::canonicalizeAll (66 bytes)

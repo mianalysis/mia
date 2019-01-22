@@ -2,8 +2,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-
-import java.io.File;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 /**
  * Created by Stephen on 29/07/2017.
@@ -38,7 +37,8 @@ public class InputControl extends Module {
     public static final String FILENAME_FILTER_TYPE_3 = "Filter type 3";
     public static final String SPATIAL_UNITS = "Spatial units";
 
-    public interface InputModes {
+
+    public static interface InputModes {
         String SINGLE_FILE = "Single file";
         String BATCH = "Batch";
 
@@ -46,7 +46,7 @@ public class InputControl extends Module {
 
     }
 
-    public interface SeriesModes {
+    public static interface SeriesModes {
         String ALL_SERIES = "All series";
         String SERIES_LIST = "Series list (comma separated)";
         String SINGLE_SERIES = "Single series";
@@ -55,7 +55,7 @@ public class InputControl extends Module {
 
     }
 
-    public interface FilenameFilterSource {
+    public static interface FilenameFilterSource {
         String FILENAME = "Filename";
         String FILEPATH = "Filepath";
 
@@ -63,7 +63,7 @@ public class InputControl extends Module {
 
     }
 
-    public interface FilterTypes {
+    public static interface FilterTypes {
         String INCLUDE_MATCHES_PARTIALLY = "Matches partially (include)";
         String INCLUDE_MATCHES_COMPLETELY = "Matches completely (include)";
         String EXCLUDE_MATCHES_PARTIALLY = "Matches partially (exclude)";
@@ -73,7 +73,8 @@ public class InputControl extends Module {
 
     }
 
-    public interface SpatialUnits extends Units.SpatialUnits{}
+    public static interface SpatialUnits extends Units.SpatialUnits{}
+
 
     @Override
     public String getTitle() {
@@ -96,35 +97,35 @@ public class InputControl extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_PATH, Parameter.FILE_FOLDER_PATH,null));
-        parameters.add(new Parameter(SIMULTANEOUS_JOBS,Parameter.INTEGER,1));
-        parameters.add(new Parameter(FILE_EXTENSION, Parameter.STRING,"tif"));
-        parameters.add(new Parameter(SERIES_MODE,Parameter.CHOICE_ARRAY,SeriesModes.ALL_SERIES,SeriesModes.ALL));
-        parameters.add(new Parameter(SERIES_LIST,Parameter.STRING,"1"));
-        parameters.add(new Parameter(SERIES_NUMBER,Parameter.INTEGER,1));
-        parameters.add(new Parameter(USE_SERIESNAME_FILTER_1,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SERIESNAME_FILTER_1,Parameter.STRING,""));
-        parameters.add(new Parameter(SERIESNAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new Parameter(USE_SERIESNAME_FILTER_2,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SERIESNAME_FILTER_2,Parameter.STRING,""));
-        parameters.add(new Parameter(SERIESNAME_FILTER_TYPE_2,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new Parameter(USE_SERIESNAME_FILTER_3,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SERIESNAME_FILTER_3,Parameter.STRING,""));
-        parameters.add(new Parameter(SERIESNAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new Parameter(USE_FILENAME_FILTER_1,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(FILENAME_FILTER_1,Parameter.STRING,""));
-        parameters.add(new Parameter(FILENAME_FILTER_SOURCE_1,Parameter.CHOICE_ARRAY,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
-        parameters.add(new Parameter(FILENAME_FILTER_TYPE_1,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new Parameter(USE_FILENAME_FILTER_2,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(FILENAME_FILTER_2,Parameter.STRING,""));
-        parameters.add(new Parameter(FILENAME_FILTER_SOURCE_2,Parameter.CHOICE_ARRAY,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
-        parameters.add(new Parameter(FILENAME_FILTER_TYPE_2,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new Parameter(USE_FILENAME_FILTER_3,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(FILENAME_FILTER_3,Parameter.STRING,""));
-        parameters.add(new Parameter(FILENAME_FILTER_SOURCE_3,Parameter.CHOICE_ARRAY,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
-        parameters.add(new Parameter(FILENAME_FILTER_TYPE_3,Parameter.CHOICE_ARRAY,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new Parameter(SPATIAL_UNITS,Parameter.CHOICE_ARRAY,SpatialUnits.MICROMETRE,SpatialUnits.ALL));
+    protected void initialiseParameters() {
+        parameters.add(new FileFolderPathP(INPUT_PATH,this));
+        parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1));
+        parameters.add(new StringP(FILE_EXTENSION,this,"tif"));
+        parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL));
+        parameters.add(new StringP(SERIES_LIST,this,"1"));
+        parameters.add(new IntegerP(SERIES_NUMBER,this,1));
+        parameters.add(new BooleanP(USE_SERIESNAME_FILTER_1,this,false));
+        parameters.add(new StringP(SERIESNAME_FILTER_1,this));
+        parameters.add(new ChoiceP(SERIESNAME_FILTER_TYPE_1,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new BooleanP(USE_SERIESNAME_FILTER_2,this,false));
+        parameters.add(new StringP(SERIESNAME_FILTER_2,this));
+        parameters.add(new ChoiceP(SERIESNAME_FILTER_TYPE_2,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new BooleanP(USE_SERIESNAME_FILTER_3,this,false));
+        parameters.add(new StringP(SERIESNAME_FILTER_3,this));
+        parameters.add(new ChoiceP(SERIESNAME_FILTER_TYPE_3,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new BooleanP(USE_FILENAME_FILTER_1,this,false));
+        parameters.add(new StringP(FILENAME_FILTER_1,this));
+        parameters.add(new ChoiceP(FILENAME_FILTER_SOURCE_1,this,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
+        parameters.add(new ChoiceP(FILENAME_FILTER_TYPE_1,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new BooleanP(USE_FILENAME_FILTER_2,this,false));
+        parameters.add(new StringP(FILENAME_FILTER_2,this));
+        parameters.add(new ChoiceP(FILENAME_FILTER_SOURCE_2,this,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
+        parameters.add(new ChoiceP(FILENAME_FILTER_TYPE_2,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new BooleanP(USE_FILENAME_FILTER_3,this,false));
+        parameters.add(new StringP(FILENAME_FILTER_3,this));
+        parameters.add(new ChoiceP(FILENAME_FILTER_SOURCE_3,this,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
+        parameters.add(new ChoiceP(FILENAME_FILTER_TYPE_3,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL));
 
     }
 
@@ -132,30 +133,33 @@ public class InputControl extends Module {
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.add(parameters.getParameter(INPUT_PATH));
-        if (parameters.getValue(INPUT_PATH) != null) {
-            if (new File((String) parameters.getValue(INPUT_PATH)).isDirectory()) {
-                returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
-            }
+        FileFolderPathP inputPath = (FileFolderPathP) parameters.getParameter(INPUT_PATH);
+        returnedParameters.add(inputPath);
+        if (inputPath.getPath() != null && inputPath.isDirectory()) {
+            returnedParameters.add(parameters.getParameter(FILE_EXTENSION));
         }
 
-        returnedParameters.add(parameters.getParameter(SERIES_MODE));
-        switch ((String) parameters.getValue(SERIES_MODE)) {
+        ChoiceP seriesMode = (ChoiceP) parameters.getParameter(SERIES_MODE);
+        returnedParameters.add(seriesMode);
+        switch (seriesMode.getChoice()) {
             case SeriesModes.ALL_SERIES:
-                returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_1));
-                if (parameters.getValue(USE_SERIESNAME_FILTER_1)) {
+                BooleanP useSeriesNameFilter1 = (BooleanP) parameters.getParameter(USE_SERIESNAME_FILTER_1);
+                returnedParameters.add(useSeriesNameFilter1);
+                if (useSeriesNameFilter1.isSelected()) {
                     returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_1));
                     returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_1));
                 }
 
-                returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_2));
-                if (parameters.getValue(USE_SERIESNAME_FILTER_2)) {
+                BooleanP useSeriesNameFilter2 = (BooleanP) parameters.getParameter(USE_SERIESNAME_FILTER_2);
+                returnedParameters.add(useSeriesNameFilter2);
+                if (useSeriesNameFilter2.isSelected()) {
                     returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_2));
                     returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_2));
                 }
 
-                returnedParameters.add(parameters.getParameter(USE_SERIESNAME_FILTER_3));
-                if (parameters.getValue(USE_SERIESNAME_FILTER_3)) {
+                BooleanP useSeriesNameFilter3 = (BooleanP) parameters.getParameter(USE_SERIESNAME_FILTER_3);
+                returnedParameters.add(useSeriesNameFilter3);
+                if (useSeriesNameFilter3.isSelected()) {
                     returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_3));
                     returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_3));
                 }
@@ -168,22 +172,25 @@ public class InputControl extends Module {
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_1));
-        if (returnedParameters.getValue(USE_FILENAME_FILTER_1)) {
+        BooleanP useFilenameFilter1 = (BooleanP) parameters.getParameter(USE_FILENAME_FILTER_1);
+        returnedParameters.add(useFilenameFilter1);
+        if (useFilenameFilter1.isSelected()) {
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_1));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_SOURCE_1));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_1));
         }
 
-        returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_2));
-        if (returnedParameters.getValue(USE_FILENAME_FILTER_2)) {
+        BooleanP useFilenameFilter2 = (BooleanP) parameters.getParameter(USE_FILENAME_FILTER_2);
+        returnedParameters.add(useFilenameFilter2);
+        if (useFilenameFilter2.isSelected()) {
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_2));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_SOURCE_2));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_2));
         }
 
-        returnedParameters.add(parameters.getParameter(USE_FILENAME_FILTER_3));
-        if (returnedParameters.getValue(USE_FILENAME_FILTER_3)) {
+        BooleanP useFilenameFilter3 = (BooleanP) parameters.getParameter(USE_FILENAME_FILTER_3);
+        returnedParameters.add(useFilenameFilter3);
+        if (useFilenameFilter3.isSelected()) {
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_3));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_SOURCE_3));
             returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_3));
@@ -197,17 +204,17 @@ public class InputControl extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

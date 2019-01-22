@@ -4,6 +4,8 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
 public class ReplaceImage extends Module {
     public static final String INPUT_IMAGE1 = "Input image 1 (to be replaced)";
@@ -43,8 +45,8 @@ public class ReplaceImage extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE1,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INPUT_IMAGE2,Parameter.INPUT_IMAGE,null));
+        parameters.add(new InputImageP(INPUT_IMAGE1,this));
+        parameters.add(new InputImageP(INPUT_IMAGE2,this));
 
     }
 
@@ -54,17 +56,17 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -5,6 +5,7 @@ import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Analysis.PeriodogramCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -199,23 +200,23 @@ public class CalculateMeasurementPeriodogram extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(TRACK_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(SPOT_OBJECTS,Parameter.CHILD_OBJECTS,null));
-        parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(REPORTING_MODE,Parameter.CHOICE_ARRAY,ReportingModes.KEY_FREQUENCIES,ReportingModes.ALL));
-        parameters.add(new Parameter(NUMBER_OF_PEAKS_TO_REPORT,Parameter.INTEGER,3));
-        parameters.add(new Parameter(NUMBER_OF_BINS,Parameter.INTEGER,256));
-        parameters.add(new Parameter(MISSING_POINT_HANDLING,Parameter.CHOICE_ARRAY,MissingPointModes.SKIP_MEASUREMENT,MissingPointModes.ALL));
+        parameters.add(new InputObjectsP(TRACK_OBJECTS,this));
+        parameters.add(new ChildObjectsP(SPOT_OBJECTS,this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
+        parameters.add(new ChoiceP(REPORTING_MODE,this,ReportingModes.KEY_FREQUENCIES,ReportingModes.ALL));
+        parameters.add(new IntegerP(NUMBER_OF_PEAKS_TO_REPORT,this,3));
+        parameters.add(new IntegerP(NUMBER_OF_BINS,this,256));
+        parameters.add(new ChoiceP(MISSING_POINT_HANDLING,this,MissingPointModes.SKIP_MEASUREMENT,MissingPointModes.ALL));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
-        parameters.updateValueSource(SPOT_OBJECTS,trackObjectsName);
+        ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(trackObjectsName);
 
         String spotObjectsName = parameters.getValue(SPOT_OBJECTS);
-        parameters.updateValueSource(MEASUREMENT,spotObjectsName);
+        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(spotObjectsName);
 
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(TRACK_OBJECTS));
@@ -241,13 +242,13 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
@@ -257,12 +258,12 @@ public class CalculateMeasurementPeriodogram extends Module {
                 int numberOfPeaks = parameters.getValue(NUMBER_OF_PEAKS_TO_REPORT);
                 for (int i = 0; i < numberOfPeaks; i++) {
                     String name = getKeyFrequenciesFullName(measurement, Measurements.FREQUENCY, i + 1);
-                    MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setCalculated(true);
 
                     name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i + 1);
-                    reference = objectMeasurementReferences.getOrPut(name);
+                    reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setCalculated(true);
 
@@ -274,19 +275,19 @@ public class CalculateMeasurementPeriodogram extends Module {
                 double[] freq = PeriodogramCalculator.calculateFrequency(1,numberOfBins);
                 for (int i=0;i<numberOfBins;i++) {
                     String name = getWholeSpectrumFullName(measurement, freq[i]);
-                    MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setCalculated(true);
                 }
                 break;
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

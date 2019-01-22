@@ -6,6 +6,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import com.drew.lang.annotations.Nullable;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 
@@ -190,19 +191,21 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE, null));
-        parameters.add(new Parameter(LOCAL_RADIUS, Parameter.DOUBLE,10.0));
-        parameters.add(new Parameter(CALIBRATED_RADIUS, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(USE_MEASUREMENT, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(MEASUREMENT_NAME, Parameter.OBJECT_MEASUREMENT,null,null));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
+        parameters.add(new DoubleP(LOCAL_RADIUS, this,10.0));
+        parameters.add(new BooleanP(CALIBRATED_RADIUS, this,false));
+        parameters.add(new BooleanP(USE_MEASUREMENT, this,false));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT_NAME, this));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
@@ -212,11 +215,9 @@ public class GetLocalObjectRegion extends Module {
 
         if (parameters.getValue(USE_MEASUREMENT)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT_NAME));
-            String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(MEASUREMENT_NAME,inputObjectsName);
+            ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_NAME)).setObjectName(inputObjectsName);
         } else {
             returnedParameters.add(parameters.getParameter(LOCAL_RADIUS));
-
         }
 
         returnedParameters.add(parameters.getParameter(CALIBRATED_RADIUS));
@@ -226,17 +227,17 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

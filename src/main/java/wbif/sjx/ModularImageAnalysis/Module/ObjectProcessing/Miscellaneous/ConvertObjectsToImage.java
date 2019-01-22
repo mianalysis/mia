@@ -8,6 +8,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
@@ -157,21 +158,24 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(CONVERSION_MODE, Parameter.CHOICE_ARRAY,ConversionModes.OBJECTS_TO_IMAGE,ConversionModes.ALL));
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(TEMPLATE_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(COLOUR_MODE, Parameter.CHOICE_ARRAY,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
-        parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(PARENT_OBJECT_FOR_COLOUR, Parameter.PARENT_OBJECTS,null,null));
+    protected void initialiseParameters() {
+        parameters.add(new ChoiceP(CONVERSION_MODE, this,ConversionModes.OBJECTS_TO_IMAGE,ConversionModes.ALL));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+        parameters.add(new InputImageP(TEMPLATE_IMAGE, this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(COLOUR_MODE, this,ColourModes.SINGLE_COLOUR,ColourModes.ALL));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
+
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(CONVERSION_MODE));
 
@@ -189,24 +193,23 @@ public class ConvertObjectsToImage extends Module {
                 case ColourModes.MEASUREMENT_VALUE:
                     returnedParameters.add(parameters.getParameter(MEASUREMENT));
                     if (parameters.getValue(INPUT_OBJECTS) != null) {
-                        parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
+                        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
                     }
                     break;
 
                 case ColourModes.PARENT_ID:
                     returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                    String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+                    ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
                     break;
 
                 case ColourModes.PARENT_MEASUREMENT_VALUE:
                     returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_COLOUR));
-                    inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                    parameters.updateValueSource(PARENT_OBJECT_FOR_COLOUR,inputObjectsName);
+                    ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
 
-                    String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
                     returnedParameters.add(parameters.getParameter(MEASUREMENT));
-                    if (parentObjectsName != null) parameters.updateValueSource(MEASUREMENT,parentObjectsName);
+                    if (parentObjectsName != null) {
+                        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(parentObjectsName);
+                    }
 
                     break;
             }
@@ -216,17 +219,17 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

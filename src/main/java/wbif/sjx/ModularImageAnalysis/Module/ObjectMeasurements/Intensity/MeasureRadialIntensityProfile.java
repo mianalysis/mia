@@ -9,6 +9,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.CreateDistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.Point;
 
@@ -191,15 +192,15 @@ public class MeasureRadialIntensityProfile extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.DISTANCE_FROM_CENTROID,ReferenceModes.ALL));
-        parameters.add(new Parameter(DISTANCE_MAP_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(MASKING_MODE,Parameter.CHOICE_ARRAY,MaskingModes.INSIDE_ONLY,MaskingModes.ALL));
-        parameters.add(new Parameter(NUMBER_OF_RADIAL_SAMPLES,Parameter.INTEGER,10));
-        parameters.add(new Parameter(RANGE_MODE,Parameter.CHOICE_ARRAY,RangeModes.AUTOMATIC_RANGE,RangeModes.ALL));
-        parameters.add(new Parameter(MIN_DISTANCE,Parameter.DOUBLE,0d));
-        parameters.add(new Parameter(MAX_DISTANCE,Parameter.DOUBLE,1d));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new ChoiceP(REFERENCE_MODE,this,ReferenceModes.DISTANCE_FROM_CENTROID,ReferenceModes.ALL));
+        parameters.add(new InputImageP(DISTANCE_MAP_IMAGE,this));
+        parameters.add(new ChoiceP(MASKING_MODE,this,MaskingModes.INSIDE_ONLY,MaskingModes.ALL));
+        parameters.add(new IntegerP(NUMBER_OF_RADIAL_SAMPLES,this,10));
+        parameters.add(new ChoiceP(RANGE_MODE,this,RangeModes.AUTOMATIC_RANGE,RangeModes.ALL));
+        parameters.add(new DoubleP(MIN_DISTANCE,this,0d));
+        parameters.add(new DoubleP(MAX_DISTANCE,this,1d));
 
     }
 
@@ -233,17 +234,17 @@ public class MeasureRadialIntensityProfile extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

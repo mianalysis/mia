@@ -50,9 +50,9 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new Parameter(INPUT_STATIC_IMAGE,Parameter.INPUT_IMAGE,null));
-//        parameters.add(new Parameter(INPUT_MOVING_IMAGE,Parameter.INPUT_IMAGE,null));
-//        parameters.add(new Parameter(ALIGNMENT_MODE,Parameter.CHOICE_ARRAY,AlignmentModes.MANUAL_AFFINE,AlignmentModes.ALL));
+//        parameters.add(new Parameter(INPUT_STATIC_IMAGE,this,null));
+//        parameters.add(new Parameter(INPUT_MOVING_IMAGE,this,null));
+//        parameters.add(new Parameter(ALIGNMENT_MODE,this,AlignmentModes.MANUAL_AFFINE,AlignmentModes.ALL));
 //
 //    }
 //
@@ -62,17 +62,17 @@
 //    }
 //
 //    @Override
-//    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+//    public MetadataRefCollection updateAndGetMetadataReferences() {
 //        return null;
 //    }
 //

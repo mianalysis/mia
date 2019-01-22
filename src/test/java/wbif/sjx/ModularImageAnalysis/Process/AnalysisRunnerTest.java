@@ -34,7 +34,6 @@ public class AnalysisRunnerTest {
         String path = file.getAbsolutePath();
 
         InputControl inputControl = new InputControl();
-        inputControl.initialiseParameters();
         inputControl.updateParameterValue(InputControl.INPUT_PATH,path);
 
         File actual = AnalysisRunner.getInputFile(inputControl);
@@ -49,7 +48,6 @@ public class AnalysisRunnerTest {
     @Test
     public void testGetInputFileSingleFileMissing() throws Exception {
         InputControl inputControl = new InputControl();
-        inputControl.initialiseParameters();
         inputControl.updateParameterValue(InputControl.INPUT_PATH,"");
 
         File actual = AnalysisRunner.getInputFile(inputControl);
@@ -67,7 +65,6 @@ public class AnalysisRunnerTest {
         String path = folder.getAbsolutePath();
 
         InputControl inputControl = new InputControl();
-        inputControl.initialiseParameters();
         inputControl.updateParameterValue(InputControl.INPUT_PATH,path);
 
         File actual = AnalysisRunner.getInputFile(inputControl);
@@ -152,7 +149,7 @@ public class AnalysisRunnerTest {
     @Test
     public void testGetExportNameSingleFileSingleSeries() throws Exception {
         InputControl inputControl = new InputControl();
-        inputControl.initialiseParameters();
+        
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SINGLE_SERIES);
         inputControl.updateParameterValue(InputControl.SERIES_NUMBER,3);
 
@@ -170,7 +167,7 @@ public class AnalysisRunnerTest {
     @Test
     public void testGetExportNameSingleFileAllSeries() throws Exception {
         InputControl inputControl = new InputControl();
-        inputControl.initialiseParameters();
+        
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
         inputControl.updateParameterValue(InputControl.SERIES_NUMBER,3);
 
@@ -188,7 +185,7 @@ public class AnalysisRunnerTest {
     @Test
     public void testGetExportNameBatchSingleSeries() throws Exception {
         InputControl inputControl = new InputControl();
-        inputControl.initialiseParameters();
+        
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SINGLE_SERIES);
         inputControl.updateParameterValue(InputControl.SERIES_NUMBER,3);
 
@@ -207,7 +204,7 @@ public class AnalysisRunnerTest {
     @Test
     public void testGetExportNameBatchAllSeries() throws Exception {
         InputControl inputControl = new InputControl();
-        inputControl.initialiseParameters();
+        
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
         inputControl.updateParameterValue(InputControl.SERIES_NUMBER,3);
 

@@ -28,11 +28,11 @@ import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
@@ -44,7 +44,6 @@ import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -752,42 +751,42 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.IMAGE, OutputModes.ALL));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
-        parameters.add(new Parameter(NUMBER_OF_ZEROES,Parameter.INTEGER,4));
-        parameters.add(new Parameter(STARTING_INDEX,Parameter.INTEGER,0));
-        parameters.add(new Parameter(FRAME_INTERVAL,Parameter.INTEGER,1));
-        parameters.add(new Parameter(LIMIT_FRAMES,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(FINAL_INDEX,Parameter.INTEGER,1));
-        parameters.add(new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.HUYGENS,NameFormats.ALL));
-        parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
-        parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
-        parameters.add(new Parameter(SUFFIX,Parameter.STRING,""));
-        parameters.add(new Parameter(EXTENSION,Parameter.STRING,""));
-        parameters.add(new Parameter(INCLUDE_SERIES_NUMBER,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(CHANNELS,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(SLICES,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(FRAMES,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(CHANNEL,Parameter.INTEGER,1));
-        parameters.add(new Parameter(CROP_MODE,Parameter.CHOICE_ARRAY,CropModes.NONE,CropModes.ALL));
-        parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
-        parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
-        parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));
-        parameters.add(new Parameter(HEIGHT, Parameter.INTEGER,512));
-        parameters.add(new Parameter(SET_CAL, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(XY_CAL, Parameter.DOUBLE, 1d));
-        parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1d));
-        parameters.add(new Parameter(FORCE_BIT_DEPTH, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(OUTPUT_BIT_DEPTH,Parameter.CHOICE_ARRAY,OutputBitDepths.EIGHT,OutputBitDepths.ALL));
-        parameters.add(new Parameter(MIN_INPUT_INTENSITY, Parameter.DOUBLE, 0d));
-        parameters.add(new Parameter(MAX_INPUT_INTENSITY, Parameter.DOUBLE, 1d));
-        parameters.add(new Parameter(USE_IMAGEJ_READER, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(THREE_D_MODE,Parameter.CHOICE_ARRAY,ThreeDModes.ZSTACK,ThreeDModes.ALL));
+    protected void initialiseParameters() {
+        parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.IMAGE, OutputModes.ALL));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
+        parameters.add(new IntegerP(NUMBER_OF_ZEROES,this,4));
+        parameters.add(new IntegerP(STARTING_INDEX,this,0));
+        parameters.add(new IntegerP(FRAME_INTERVAL,this,1));
+        parameters.add(new BooleanP(LIMIT_FRAMES,this,false));
+        parameters.add(new IntegerP(FINAL_INDEX,this,1));
+        parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.HUYGENS,NameFormats.ALL));
+        parameters.add(new StringP(COMMENT,this));
+        parameters.add(new StringP(PREFIX,this));
+        parameters.add(new StringP(SUFFIX,this));
+        parameters.add(new StringP(EXTENSION,this));
+        parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
+        parameters.add(new FilePathP(FILE_PATH, this));
+        parameters.add(new StringP(CHANNELS,this,"1-end"));
+        parameters.add(new StringP(SLICES,this,"1-end"));
+        parameters.add(new StringP(FRAMES,this,"1-end"));
+        parameters.add(new IntegerP(CHANNEL,this,1));
+        parameters.add(new ChoiceP(CROP_MODE,this,CropModes.NONE,CropModes.ALL));
+        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
+        parameters.add(new IntegerP(LEFT, this,0));
+        parameters.add(new IntegerP(TOP, this,0));
+        parameters.add(new IntegerP(WIDTH, this,512));
+        parameters.add(new IntegerP(HEIGHT, this,512));
+        parameters.add(new BooleanP(SET_CAL, this, false));
+        parameters.add(new DoubleP(XY_CAL, this, 1d));
+        parameters.add(new DoubleP(Z_CAL, this, 1d));
+        parameters.add(new BooleanP(FORCE_BIT_DEPTH, this, false));
+        parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH,this,OutputBitDepths.EIGHT,OutputBitDepths.ALL));
+        parameters.add(new DoubleP(MIN_INPUT_INTENSITY, this, 0d));
+        parameters.add(new DoubleP(MAX_INPUT_INTENSITY, this, 1d));
+        parameters.add(new BooleanP(USE_IMAGEJ_READER, this,false));
+        parameters.add(new ChoiceP(THREE_D_MODE,this,ThreeDModes.ZSTACK,ThreeDModes.ALL));
 
     }
 
@@ -898,45 +897,45 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.IMAGE)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
             switch ((String) parameters.getValue(CROP_MODE)) {
                 case CropModes.FROM_REFERENCE:
-                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_LEFT,outputImageName));
-                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_TOP,outputImageName));
-                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_WIDTH,outputImageName));
-                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_HEIGHT,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputImageName));
                     break;
             }
         }
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.OBJECTS)) {
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
             switch ((String) parameters.getValue(CROP_MODE)) {
                 case CropModes.FROM_REFERENCE:
-                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_LEFT,outputObjectsName));
-                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_TOP,outputObjectsName));
-                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_WIDTH,outputObjectsName));
-                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_HEIGHT,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputObjectsName));
                     break;
             }
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

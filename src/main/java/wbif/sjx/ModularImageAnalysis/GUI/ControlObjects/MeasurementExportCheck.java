@@ -1,15 +1,15 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Object.MeasurementReference;
-import wbif.sjx.ModularImageAnalysis.Object.MeasurementReferenceCollection;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRef;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRefCollection;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputObjectsP;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedHashSet;
 
 /**
  * Created by Stephen Cross on 02/12/2017.
@@ -19,12 +19,12 @@ public class MeasurementExportCheck extends JCheckBox implements ActionListener 
     public enum Type {SINGLE_MEASUREMENT, ALL_MEASUREMENTS};
 
 
-    private MeasurementReference measurementReference;
+    private MeasurementRef measurementReference;
     private Statistic statistic;
     private Type type;
 
 
-    public MeasurementExportCheck(MeasurementReference measurementReference, Statistic statistic, Type type) {
+    public MeasurementExportCheck(MeasurementRef measurementReference, Statistic statistic, Type type) {
         this.measurementReference = measurementReference;
         this.statistic = statistic;
         this.type = type;
@@ -35,7 +35,7 @@ public class MeasurementExportCheck extends JCheckBox implements ActionListener 
 
     }
 
-    private void setStates(MeasurementReference measurementReference) {
+    private void setStates(MeasurementRef measurementReference) {
         switch (statistic) {
             case INDIVIDUAL:
                 measurementReference.setExportIndividual(isSelected());
@@ -67,16 +67,16 @@ public class MeasurementExportCheck extends JCheckBox implements ActionListener 
             case ALL_MEASUREMENTS:
                 ModuleCollection modules = GUI.getModules();
 
-                for (Parameter objectName:modules.getAvailableObjects(null)) {
-                    MeasurementReferenceCollection measurementReferences = modules.getObjectMeasurementReferences(objectName.getValue());
-                    for (MeasurementReference measurementReference:measurementReferences.values()) {
+                for (OutputObjectsP objectName:modules.getAvailableObjects(null)) {
+                    MeasurementRefCollection measurementReferences = modules.getObjectMeasurementRefs(objectName.getObjectsName());
+                    for (MeasurementRef measurementReference:measurementReferences.values()) {
                         setStates(measurementReference);
                     }
                 }
 
-                for (Parameter imageName:modules.getAvailableImages(null)) {
-                    MeasurementReferenceCollection measurementReferences = modules.getImageMeasurementReferences(imageName.getValue());
-                    for (MeasurementReference measurementReference:measurementReferences.values()) {
+                for (OutputImageP imageName:modules.getAvailableImages(null)) {
+                    MeasurementRefCollection measurementReferences = modules.getImageMeasurementRefs(imageName.getImageName());
+                    for (MeasurementRef measurementReference:measurementReferences.values()) {
                         setStates(measurementReference);
                     }
                 }

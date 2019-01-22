@@ -4,6 +4,9 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ProjectObjects;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputObjectsP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.ArrayList;
@@ -155,12 +158,12 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(MEASURE_VOLUME, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_PROJECTED_AREA, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(MEASURE_PROJECTED_DIA, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(MEASURE_PROJECTED_PERIM, Parameter.BOOLEAN, false));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new BooleanP(MEASURE_VOLUME, this, true));
+        parameters.add(new BooleanP(MEASURE_PROJECTED_AREA, this, false));
+        parameters.add(new BooleanP(MEASURE_PROJECTED_DIA, this, false));
+        parameters.add(new BooleanP(MEASURE_PROJECTED_PERIM, this, false));
 
     }
 
@@ -170,32 +173,32 @@ public class MeasureObjectShape extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         if (parameters.getValue(MEASURE_VOLUME)) {
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.N_VOXELS);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.N_VOXELS);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Number of voxels (3D pixels) in the object, \""+inputObjectsName+"\".  Note: " +
                     "This doesn't take spatial scaling of XY and Z into account, so isn't a good measure of true " +
                     "object volume.");
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.VOLUME_PX);
+            reference = objectMeasurementRefs.getOrPut(Measurements.VOLUME_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
                     "Z into account (i.e. converts object height from slice units to pixel units.  Measured in pixel " +
                     "units.");
 
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.VOLUME_CAL));
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.VOLUME_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Volume of the object, \""+inputObjectsName+"\".  Takes spatial scaling of XY vs " +
@@ -204,13 +207,13 @@ public class MeasureObjectShape extends Module {
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_AREA)) {
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_AREA_PX);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_AREA_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
                     "in pixel units.");
 
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_AREA_CAL));
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_AREA_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Area of the 2D Z-projection of the object, \""+inputObjectsName+"\".  Measured " +
@@ -218,13 +221,13 @@ public class MeasureObjectShape extends Module {
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_DIA)) {
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_DIA_PX);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_DIA_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
                     + inputObjectsName+"\".  Measured in pixel units.");
 
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_DIA_CAL));
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_DIA_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Longest distance between any two points of the 2D Z-projection of the object, \""
@@ -233,20 +236,20 @@ public class MeasureObjectShape extends Module {
         }
 
         if (parameters.getValue(MEASURE_PROJECTED_PERIM)) {
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.PROJ_PERIM_PX);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.PROJ_PERIM_PX);
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Measured in pixel units.");
 
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_PERIM_CAL));
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_PERIM_CAL));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Perimeter of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
                     "Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                     "units.");
 
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.PROJ_CIRCULARITY));
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.PROJ_CIRCULARITY));
             reference.setCalculated(true);
             reference.setImageObjName(inputObjectsName);
             reference.setDescription("Circularity of the 2D Z-projection of the object, \"" + inputObjectsName+"\".  " +
@@ -254,12 +257,12 @@ public class MeasureObjectShape extends Module {
 
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

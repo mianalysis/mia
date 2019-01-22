@@ -7,6 +7,7 @@ import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 public class PlotKymograph extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -123,12 +124,12 @@ public class PlotKymograph extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(MODE,Parameter.CHOICE_ARRAY,Modes.LINE_AT_OBJECT_CENTROID,Modes.ALL));
-        parameters.add(new Parameter(INPUT_TRACK_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(INPUT_SPOT_OBJECTS,Parameter.CHILD_OBJECTS,null));
-        parameters.add(new Parameter(HALF_WIDTH,Parameter.INTEGER,10));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ChoiceP(MODE,this,Modes.LINE_AT_OBJECT_CENTROID,Modes.ALL));
+        parameters.add(new InputObjectsP(INPUT_TRACK_OBJECTS,this));
+        parameters.add(new ChildObjectsP(INPUT_SPOT_OBJECTS,this));
+        parameters.add(new IntegerP(HALF_WIDTH,this,10));
     }
 
     @Override
@@ -142,7 +143,8 @@ public class PlotKymograph extends Module {
         switch ((String) parameters.getValue(MODE)) {
             case Modes.LINE_AT_OBJECT_CENTROID:
                 String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
-                parameters.updateValueSource(INPUT_SPOT_OBJECTS,inputTrackObjectsName);
+                ChildObjectsP spotObjects = parameters.getParameter(INPUT_SPOT_OBJECTS);
+                spotObjects.setParentObjectsName(inputTrackObjectsName);
 
                 returnedParameters.add(parameters.getParameter(INPUT_TRACK_OBJECTS));
                 returnedParameters.add(parameters.getParameter(INPUT_SPOT_OBJECTS));
@@ -156,17 +158,17 @@ public class PlotKymograph extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

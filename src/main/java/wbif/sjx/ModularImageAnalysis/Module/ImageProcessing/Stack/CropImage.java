@@ -14,6 +14,7 @@ import net.imglib2.view.Views;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 public class CropImage < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -111,13 +112,13 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
-        parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
-        parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));
-        parameters.add(new Parameter(HEIGHT, Parameter.INTEGER,512));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,false));
+        parameters.add(new IntegerP(LEFT,this,0));
+        parameters.add(new IntegerP(TOP,this,0));
+        parameters.add(new IntegerP(WIDTH,this,512));
+        parameters.add(new IntegerP(HEIGHT,this,512));
     }
 
     @Override
@@ -141,17 +142,17 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

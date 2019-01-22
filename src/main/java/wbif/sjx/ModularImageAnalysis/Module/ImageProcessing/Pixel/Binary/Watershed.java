@@ -12,6 +12,7 @@ import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -193,17 +194,17 @@ public class Watershed extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(USE_MARKERS, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(MARKER_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INTENSITY_MODE, Parameter.CHOICE_ARRAY,IntensityModes.DISTANCE,IntensityModes.ALL));
-        parameters.add(new Parameter(INTENSITY_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
-        parameters.add(new Parameter(CONNECTIVITY, Parameter.CHOICE_ARRAY,Connectivity.SIX,Connectivity.ALL));
-        parameters.add(new Parameter(MATCH_Z_TO_X, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(ENABLE_MULTITHREADING, Parameter.BOOLEAN, true));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new BooleanP(USE_MARKERS, this,false));
+        parameters.add(new InputImageP(MARKER_IMAGE, this));
+        parameters.add(new ChoiceP(INTENSITY_MODE, this,IntensityModes.DISTANCE,IntensityModes.ALL));
+        parameters.add(new InputImageP(INTENSITY_IMAGE, this));
+        parameters.add(new IntegerP(DYNAMIC, this,1));
+        parameters.add(new ChoiceP(CONNECTIVITY, this,Connectivity.SIX,Connectivity.ALL));
+        parameters.add(new BooleanP(MATCH_Z_TO_X, this, true));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
 
@@ -242,17 +243,17 @@ public class Watershed extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

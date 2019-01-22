@@ -12,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.CumStat;
@@ -264,13 +265,12 @@ public class RidgeDetection extends Module {
             // Creating the overlay
             String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-            String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
 
-            ((AddObjectsOverlay) new AddObjectsOverlay()
-                    .updateParameterValue(AddObjectsOverlay.POSITION_MODE,positionMode)
-                    .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8)
-                    .updateParameterValue(AddObjectsOverlay.LINE_WIDTH,0.25))
-                    .createOverlay(dispIpl,outputObjects,hues,null);
+            try {
+                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             // Displaying the overlay
             dispIpl.setPosition(1,1,1);
@@ -284,18 +284,18 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE, null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS, null));
-        parameters.add(new Parameter(LOWER_THRESHOLD,Parameter.DOUBLE, 0.5));
-        parameters.add(new Parameter(UPPER_THRESHOLD,Parameter.DOUBLE, 0.85));
-        parameters.add(new Parameter(SIGMA,Parameter.DOUBLE, 3d));
-        parameters.add(new Parameter(CALIBRATED_UNITS,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(ESTIMATE_WIDTH,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(CONTOUR_CONTRAST,Parameter.CHOICE_ARRAY,ContourContrast.DARK_LINE,ContourContrast.ALL));
-        parameters.add(new Parameter(MIN_LENGTH,Parameter.DOUBLE, 0d));
-        parameters.add(new Parameter(MAX_LENGTH,Parameter.DOUBLE, 0d));
-        parameters.add(new Parameter(LINK_CONTOURS,Parameter.BOOLEAN, false));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new DoubleP(LOWER_THRESHOLD,this, 0.5));
+        parameters.add(new DoubleP(UPPER_THRESHOLD,this, 0.85));
+        parameters.add(new DoubleP(SIGMA,this, 3d));
+        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
+        parameters.add(new BooleanP(ESTIMATE_WIDTH,this,false));
+        parameters.add(new ChoiceP(CONTOUR_CONTRAST,this,ContourContrast.DARK_LINE,ContourContrast.ALL));
+        parameters.add(new DoubleP(MIN_LENGTH,this, 0d));
+        parameters.add(new DoubleP(MAX_LENGTH,this, 0d));
+        parameters.add(new BooleanP(LINK_CONTOURS,this, false));
 
     }
 
@@ -305,50 +305,50 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.LENGTH_PX);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
         reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         reference.setCalculated(true);
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in pixel " +
                 "units.");
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.LENGTH_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.LENGTH_CAL));
         reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         reference.setCalculated(true);
         reference.setDescription("Length of detected, \""+outputObjectsName+"\" ridge object.  Measured in calibrated " +
                 "("+Units.getOMEUnits().getSymbol()+") units.");
 
         if (parameters.getValue(ESTIMATE_WIDTH)) {
-            reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
+            reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_HALFWIDTH_PX);
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setCalculated(true);
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in pixel units.");
 
-            reference = objectMeasurementReferences.getOrPut(Measurements.STDEV_HALFWIDTH_PX);
+            reference = objectMeasurementRefs.getOrPut(Measurements.STDEV_HALFWIDTH_PX);
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setCalculated(true);
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
                     "ridge object.  Half width is from the central (backbone) of the ridge to the edge.  Measured in " +
                     "pixel units.");
 
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_HALFWIDTH_CAL));
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_HALFWIDTH_CAL));
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setCalculated(true);
             reference.setDescription("Mean half width of detected, \""+outputObjectsName+"\" ridge object.  Half width" +
                     "is from the central (backbone) of the ridge to the edge.  Measured in calibrated " +
                     "("+Units.getOMEUnits().getSymbol()+") units.");
 
-            reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.STDEV_HALFWIDTH_CAL));
+            reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STDEV_HALFWIDTH_CAL));
             reference.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
             reference.setCalculated(true);
             reference.setDescription("Standard deviation of the half width of detected, \""+outputObjectsName+"\" " +
@@ -356,12 +356,12 @@ public class RidgeDetection extends Module {
                     "calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

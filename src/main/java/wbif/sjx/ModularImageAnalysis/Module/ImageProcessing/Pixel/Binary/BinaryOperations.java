@@ -20,6 +20,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.InterpolateZAx
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 /**
@@ -402,20 +403,19 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(
-                new Parameter(OPERATION_MODE, Parameter.CHOICE_ARRAY,OperationModes.DILATE_2D,OperationModes.ALL));
-        parameters.add(new Parameter(NUM_ITERATIONS, Parameter.INTEGER,1));
-        parameters.add(new Parameter(USE_MARKERS, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(MARKER_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INTENSITY_MODE, Parameter.CHOICE_ARRAY,IntensityModes.DISTANCE,IntensityModes.ALL));
-        parameters.add(new Parameter(INTENSITY_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
-        parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY,Connectivity3D.SIX,Connectivity3D.ALL));
-        parameters.add(new Parameter(MATCH_Z_TO_X, Parameter.BOOLEAN, true));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ChoiceP(OPERATION_MODE,this,OperationModes.DILATE_2D,OperationModes.ALL));
+        parameters.add(new IntegerP(NUM_ITERATIONS,this,1));
+        parameters.add(new BooleanP(USE_MARKERS,this,false));
+        parameters.add(new InputImageP(MARKER_IMAGE,this));
+        parameters.add(new ChoiceP(INTENSITY_MODE,this,IntensityModes.DISTANCE,IntensityModes.ALL));
+        parameters.add(new InputImageP(INTENSITY_IMAGE,this));
+        parameters.add(new IntegerP(DYNAMIC,this,1));
+        parameters.add(new ChoiceP(CONNECTIVITY_3D,this,Connectivity3D.SIX,Connectivity3D.ALL));
+        parameters.add(new BooleanP(MATCH_Z_TO_X,this,true));
 
     }
 
@@ -469,17 +469,17 @@ public class BinaryOperations extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

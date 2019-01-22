@@ -1,9 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Object.Point;
 
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class MeasureRelativeOrientation extends Module {
     }
 
 
-    String getMeasurementReference() {
+    String getMeasurementRef() {
         String reference = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
             case ReferenceModes.IMAGE_CENTRE:
@@ -260,7 +260,7 @@ public class MeasureRelativeOrientation extends Module {
         String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
 
         // Getting measurement reference name
-        String measurementReference = getMeasurementReference();
+        String measurementReference = getMeasurementRef();
 
         // Get reference point as Point for each frame the input images are present for (frame number as HashMap key)
         HashMap<Integer,Point<Double>> referencePoints = null;
@@ -297,15 +297,15 @@ public class MeasureRelativeOrientation extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(ORIENTATION_MODE,Parameter.CHOICE_ARRAY,OrientationModes.X_Y_PLANE,OrientationModes.ALL));
-        parameters.add(new Parameter(ORIENTATION_IN_X_Y_MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null));
-        parameters.add(new Parameter(ORIENTATION_IN_XY_Z_MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null));
-        parameters.add(new Parameter(MEASUREMENT_RANGE,Parameter.CHOICE_ARRAY,MeasurementRanges.ZERO_NINETY,MeasurementRanges.ALL));
-        parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.IMAGE_CENTRE,ReferenceModes.ALL));
-        parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(REFERENCE_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(OBJECT_CHOICE_MODE,Parameter.CHOICE_ARRAY,ObjectChoiceModes.LARGEST_OBJECT,ObjectChoiceModes.ALL));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new ChoiceP(ORIENTATION_MODE,this,OrientationModes.X_Y_PLANE,OrientationModes.ALL));
+        parameters.add(new ObjectMeasurementP(ORIENTATION_IN_X_Y_MEASUREMENT,this));
+        parameters.add(new ObjectMeasurementP(ORIENTATION_IN_XY_Z_MEASUREMENT,this));
+        parameters.add(new ChoiceP(MEASUREMENT_RANGE,this,MeasurementRanges.ZERO_NINETY,MeasurementRanges.ALL));
+        parameters.add(new ChoiceP(REFERENCE_MODE,this,ReferenceModes.IMAGE_CENTRE,ReferenceModes.ALL));
+        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
+        parameters.add(new InputObjectsP(REFERENCE_OBJECTS,this));
+        parameters.add(new ChoiceP(OBJECT_CHOICE_MODE,this,ObjectChoiceModes.LARGEST_OBJECT,ObjectChoiceModes.ALL));
 
     }
 
@@ -333,8 +333,8 @@ public class MeasureRelativeOrientation extends Module {
         }
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        parameters.updateValueSource(ORIENTATION_IN_X_Y_MEASUREMENT,inputObjectsName);
-        parameters.updateValueSource(ORIENTATION_IN_XY_Z_MEASUREMENT,inputObjectsName);
+        ((ObjectMeasurementP) parameters.getParameter(ORIENTATION_IN_X_Y_MEASUREMENT)).setObjectName(inputObjectsName);
+        ((ObjectMeasurementP) parameters.getParameter(ORIENTATION_IN_XY_Z_MEASUREMENT)).setObjectName(inputObjectsName);
 
         returnedParameters.add(parameters.getParameter(MEASUREMENT_RANGE));
 
@@ -355,17 +355,17 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);
 
-        String reference = getMeasurementReference();
+        String reference = getMeasurementRef();
         String referenceDescription = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
             case ReferenceModes.IMAGE_CENTRE:
@@ -383,7 +383,7 @@ public class MeasureRelativeOrientation extends Module {
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
             case OrientationModes.X_Y_PLANE:
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,reference);
-                MeasurementReference measurementReference = objectMeasurementReferences.getOrPut(measurementName);
+                MeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
                 measurementReference.setImageObjName(inputObjectsName);
                 measurementReference.setCalculated(true);
 
@@ -393,12 +393,12 @@ public class MeasureRelativeOrientation extends Module {
                 break;
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

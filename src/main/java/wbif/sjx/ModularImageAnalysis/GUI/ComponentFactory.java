@@ -4,16 +4,18 @@ import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.TextDisplayP;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.*;
 
 /**
  * Created by sc13967 on 23/06/2017.
@@ -52,104 +54,18 @@ public class ComponentFactory {
             parameterName.setForeground(Color.RED);
         }
 
-        JComponent parameterControl = null;
-
-        switch (parameter.getType()) {
-            case Parameter.INPUT_IMAGE:
-            case Parameter.REMOVED_IMAGE:
-                LinkedHashSet<Parameter> images = modules.getAvailableImages(module);
-
-                // Adding any output images to the list
-                String[] names = new String[images.size()];
-                int i = 0;
-                for (Parameter image:images) names[i++] = image.getValue();
-
-                parameterControl = new ChoiceArrayParameter(module,parameter,names);
-                break;
-
-            case Parameter.INPUT_OBJECTS:
-            case Parameter.REMOVED_OBJECTS:
-                LinkedHashSet<Parameter> objects = modules.getAvailableObjects(module);
-
-                // Adding any output images to the list
-                names = new String[objects.size()];
-                i = 0;
-                for (Parameter object:objects) names[i++] = object.getValue();
-
-                parameterControl = new ChoiceArrayParameter(module,parameter,names);
-                break;
-
-            case Parameter.INTEGER:
-            case Parameter.DOUBLE:
-            case Parameter.STRING:
-            case Parameter.OUTPUT_IMAGE:
-            case Parameter.OUTPUT_OBJECTS:
-                parameterControl = new TextParameter(module, parameter);
-                break;
-
-            case Parameter.BOOLEAN:
-                parameterControl = new BooleanParameter(module,parameter);
-                parameterControl.setOpaque(false);
-                break;
-
-            case Parameter.FILE_PATH:
-                parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.FILE_TYPE);
-                break;
-
-            case Parameter.FOLDER_PATH:
-                parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.FOLDER_TYPE);
-                break;
-
-            case Parameter.FILE_FOLDER_PATH:
-                parameterControl = new FileParameter(module, parameter, FileParameter.FileTypes.EITHER_TYPE);
-                break;
-
-            case Parameter.CHOICE_ARRAY:
-                String[] valueSource = parameter.getValueSource();
-                parameterControl = new ChoiceArrayParameter(module, parameter, valueSource);
-                break;
-
-            case Parameter.IMAGE_MEASUREMENT:
-                String[] measurementChoices = modules.getImageMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
-                parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
-                break;
-
-            case Parameter.OBJECT_MEASUREMENT:
-                measurementChoices = modules.getObjectMeasurementReferences((String) parameter.getValueSource(),module).getMeasurementNames();
-                parameterControl = new ChoiceArrayParameter(module, parameter, measurementChoices);
-                break;
-
-            case Parameter.CHILD_OBJECTS:
-                RelationshipCollection relationships = modules.getRelationships(module);
-                String[] relationshipChoices = relationships.getChildNames(parameter.getValueSource(),true);
-                parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
-                break;
-
-            case Parameter.PARENT_OBJECTS:
-                relationships = GUI.getModules().getRelationships(module);
-                relationshipChoices = relationships.getParentNames(parameter.getValueSource(),true);
-                parameterControl = new ChoiceArrayParameter(module,parameter,relationshipChoices);
-                break;
-
-            case Parameter.METADATA_ITEM:
-                String[] metadataChoices = modules.getMetadataReferences(module).getMetadataNames();
-                parameterControl = new ChoiceArrayParameter(module,parameter,metadataChoices);
-                break;
-
-            case Parameter.TEXT_DISPLAY:
-                parameterControl = new TextDisplayArea(parameter);
-                break;
-        }
+        ParameterControl parameterControl = parameter.getControl();
+        JComponent parameterComponent = parameterControl.getComponent();
 
         // Adding the input component
         c.gridx++;
         c.weightx=1;
         c.anchor = GridBagConstraints.EAST;
-        if (parameterControl != null) {
-            String value = parameter.toString();
-            parameterControl.setToolTipText(value == null ? "" : value);
-            if (parameter.getType() != Parameter.TEXT_DISPLAY) parameterControl.setPreferredSize(new Dimension(0,elementHeight));
-            paramPanel.add(parameterControl, c);
+        if (parameterComponent != null) {
+            String value = parameter.getValueAsString();
+            parameterComponent.setToolTipText(value == null ? "" : value);
+            if (!parameter.getClass().isInstance(TextDisplayP.class)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
+            paramPanel.add(parameterComponent, c);
         }
 
         return paramPanel;
@@ -333,7 +249,8 @@ public class ComponentFactory {
         c.anchor = GridBagConstraints.EAST;
 
         JLabel leftArrowLabel = new JLabel();
-        if (module.getParameterValue(GUISeparator.EXPANDED_BASIC)) {
+        BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
+        if (expandedBasic.isSelected()) {
             leftArrowLabel.setIcon(downArrow);
         } else {
             leftArrowLabel.setIcon(rightArrow);
@@ -363,7 +280,7 @@ public class ComponentFactory {
         panel.add(separatorRight,c);
 
         JLabel rightArrowLabel = new JLabel();
-        if (module.getParameterValue(GUISeparator.EXPANDED_BASIC)) {
+        if (expandedBasic.isSelected()) {
             rightArrowLabel.setIcon(downArrow);
         } else {
             rightArrowLabel.setIcon(leftArrow);
@@ -384,8 +301,8 @@ public class ComponentFactory {
         panel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                boolean expanded = module.getParameterValue(GUISeparator.EXPANDED_BASIC);
-                module.updateParameterValue(GUISeparator.EXPANDED_BASIC,!expanded);
+                BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
+                expandedBasic.flipBoolean();
                 GUI.updateModules(true);
             }
 
@@ -417,7 +334,7 @@ public class ComponentFactory {
     public JPanel createBasicModuleControl(Module module, int panelWidth) {
         // Only displaying the module title if it has at least one visible parameter
         boolean hasVisibleParameters = false;
-        for (Parameter parameter : module.updateAndGetParameters().values()) {
+        for (Parameter parameter : module.updateAndGetParameters()) {
             if (parameter.isVisible()) hasVisibleParameters = true;
         }
         if (!hasVisibleParameters &! module.canBeDisabled()) return null;
@@ -439,7 +356,7 @@ public class ComponentFactory {
         if (!module.isRunnable()) return modulePanel;
 
         c.insets = new Insets(0,35,0,0);
-        for (Parameter parameter : module.updateAndGetParameters().values()) {
+        for (Parameter parameter : module.updateAndGetParameters()) {
             if (parameter.isVisible()) {
                 JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module);
 
@@ -455,8 +372,8 @@ public class ComponentFactory {
 
     private JPanel createMeasurementExportLabels() {
         ParameterCollection outputParamters = GUI.getAnalysis().getOutputControl().updateAndGetParameters();
-        boolean exportIndividual = outputParamters.getValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-        boolean exportSummary = outputParamters.getValue(OutputControl.EXPORT_SUMMARY);
+        BooleanP exportIndividual = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
+        BooleanP exportSummary = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_SUMMARY);
 
         JPanel labelPanel = new JPanel(new GridBagLayout());
         labelPanel.setPreferredSize(new Dimension(200,25));
@@ -470,42 +387,42 @@ public class ComponentFactory {
         JLabel exportLabel = new JLabel("Ind");
         exportLabel.setPreferredSize(new Dimension(40,25));
         exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportIndividual);
+        exportLabel.setEnabled(exportIndividual.isSelected());
         c.gridx++;
         labelPanel.add(exportLabel, c);
 
         exportLabel = new JLabel("Mean");
         exportLabel.setPreferredSize(new Dimension(40,25));
         exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary);
+        exportLabel.setEnabled(exportSummary.isSelected());
         c.gridx++;
         labelPanel.add(exportLabel, c);
 
         exportLabel = new JLabel("Min");
         exportLabel.setPreferredSize(new Dimension(40,25));
         exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary);
+        exportLabel.setEnabled(exportSummary.isSelected());
         c.gridx++;
         labelPanel.add(exportLabel, c);
 
         exportLabel = new JLabel("Max");
         exportLabel.setPreferredSize(new Dimension(40,25));
         exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary);
+        exportLabel.setEnabled(exportSummary.isSelected());
         c.gridx++;
         labelPanel.add(exportLabel, c);
 
         exportLabel = new JLabel("Sum");
         exportLabel.setPreferredSize(new Dimension(40,25));
         exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary);
+        exportLabel.setEnabled(exportSummary.isSelected());
         c.gridx++;
         labelPanel.add(exportLabel, c);
 
         exportLabel = new JLabel("Std");
         exportLabel.setPreferredSize(new Dimension(40,25));
         exportLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        exportLabel.setEnabled(exportSummary);
+        exportLabel.setEnabled(exportSummary.isSelected());
         c.gridx++;
         labelPanel.add(exportLabel, c);
 
@@ -513,10 +430,10 @@ public class ComponentFactory {
 
     }
 
-    private JPanel createMeasurementExportControls(MeasurementReference measurement, MeasurementExportCheck.Type type) {
+    private JPanel createMeasurementExportControls(MeasurementRef measurement, MeasurementExportCheck.Type type) {
         ParameterCollection outputParamters = GUI.getAnalysis().getOutputControl().updateAndGetParameters();
-        boolean exportIndividual = outputParamters.getValue(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
-        boolean exportSummary = outputParamters.getValue(OutputControl.EXPORT_SUMMARY);
+        BooleanP exportIndividual = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
+        BooleanP exportSummary = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_SUMMARY);
 
         JPanel controlPanel = new JPanel(new GridBagLayout());
         controlPanel.setPreferredSize(new Dimension(200,25));
@@ -531,7 +448,7 @@ public class ComponentFactory {
         MeasurementExportCheck exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportIndividual());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportIndividual && measurement.isExportGlobal());
+        exportCheck.setEnabled(exportIndividual.isSelected() && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -539,7 +456,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportMean());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
+        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -547,7 +464,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportMin());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
+        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -555,7 +472,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportMax());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
+        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -563,7 +480,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportSum());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
+        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -571,7 +488,7 @@ public class ComponentFactory {
         exportCheck = new MeasurementExportCheck(measurement,statistic,type);
         exportCheck.setSelected(measurement.isExportStd());
         exportCheck.setPreferredSize(new Dimension(40,25));
-        exportCheck.setEnabled(exportSummary && measurement.isExportGlobal());
+        exportCheck.setEnabled(exportSummary.isSelected() && measurement.isExportGlobal());
         c.gridx++;
         controlPanel.add(exportCheck, c);
 
@@ -579,7 +496,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createGlobalMeasurementControl(MeasurementReference measurement) {
+    public JPanel createGlobalMeasurementControl(MeasurementRef measurement) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -609,7 +526,7 @@ public class ComponentFactory {
         return measurementPanel;
     }
 
-    public JPanel createMeasurementHeader(String name, MeasurementReferenceCollection measurementReferences) {
+    public JPanel createMeasurementHeader(String name, MeasurementRefCollection measurementReferences) {
         JPanel headerPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -658,7 +575,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createMeasurementControl(MeasurementReference measurement) {
+    public JPanel createMeasurementControl(MeasurementRef measurement) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();

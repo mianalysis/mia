@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -30,7 +31,8 @@ public class LabelFactoryTest {
         obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
         collection.add(obj);
 
-        HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,2,true);
+        DecimalFormat df = LabelFactory.getDecimalFormat(2,true);
+        HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,df);
 
         assertEquals(3,actual.size());
         assertEquals("0.00E0",actual.get(0));
@@ -59,7 +61,8 @@ public class LabelFactoryTest {
         obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
         collection.add(obj);
 
-        HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,0,false);
+        DecimalFormat df = LabelFactory.getDecimalFormat(0,false);
+        HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,df);
 
         assertEquals(3,actual.size());
         assertEquals("0",actual.get(0));
@@ -87,7 +90,8 @@ public class LabelFactoryTest {
         obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
         collection.add(obj);
 
-        HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,1,false);
+        DecimalFormat df = LabelFactory.getDecimalFormat(1,false);
+        HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,df);
 
         assertEquals(3,actual.size());
         assertEquals("0.0",actual.get(0));
@@ -116,7 +120,8 @@ public class LabelFactoryTest {
         obj = new Obj("Obj",2,dppXY,dppZ,calibratedUnits,false);
         collection.add(obj);
 
-        HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,2,false);
+        DecimalFormat df = LabelFactory.getDecimalFormat(2,false);
+        HashMap<Integer, String> actual = LabelFactory.getIDLabels(collection,df);
 
         assertEquals(3,actual.size());
         assertEquals("0.00",actual.get(0));
@@ -149,7 +154,8 @@ public class LabelFactoryTest {
         obj.addParent(parent);
         collection.add(obj);
 
-        HashMap<Integer, String> actual = LabelFactory.getParentIDLabels(collection,"Parent",0,false);
+        DecimalFormat df = LabelFactory.getDecimalFormat(0,false);
+        HashMap<Integer, String> actual = LabelFactory.getParentIDLabels(collection,"Parent",df);
 
         assertEquals(3,actual.size());
         assertEquals("6",actual.get(0));
@@ -183,7 +189,8 @@ public class LabelFactoryTest {
         obj.addMeasurement(meas);
         collection.add(obj);
 
-        HashMap<Integer, String> actual = LabelFactory.getMeasurementLabels(collection,"Meas",2,false);
+        DecimalFormat df = LabelFactory.getDecimalFormat(2,false);
+        HashMap<Integer, String> actual = LabelFactory.getMeasurementLabels(collection,"Meas",df);
 
         assertEquals(3,actual.size());
         assertEquals("3.20",actual.get(0));

@@ -3,6 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemovedObjectsP;
 
 /**
  * Created by sc13967 on 07/02/2018.
@@ -37,7 +39,7 @@ public class RemoveObjects extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.REMOVED_OBJECTS,null));
+        parameters.add(new RemovedObjectsP(INPUT_OBJECTS,this));
 
     }
 
@@ -47,17 +49,17 @@ public class RemoveObjects extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

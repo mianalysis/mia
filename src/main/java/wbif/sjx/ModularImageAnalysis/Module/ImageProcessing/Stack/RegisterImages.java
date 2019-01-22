@@ -14,7 +14,6 @@ import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
-import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -22,6 +21,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import com.drew.lang.annotations.Nullable;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import javax.swing.*;
@@ -35,7 +35,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.DoubleStream;
 
 public class RegisterImages extends Module implements ActionListener {
     private JFrame frame;
@@ -554,28 +553,28 @@ public class RegisterImages extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(ALIGNMENT_MODE,Parameter.CHOICE_ARRAY,AlignmentModes.AUTOMATIC,AlignmentModes.ALL));
-        parameters.add(new Parameter(RELATIVE_MODE,Parameter.CHOICE_ARRAY,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
-        parameters.add(new Parameter(ROLLING_CORRECTION,Parameter.CHOICE_ARRAY,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
-        parameters.add(new Parameter(CORRECTION_INTERVAL, Parameter.INTEGER,1));
-        parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(CALCULATION_SOURCE,Parameter.CHOICE_ARRAY,CalculationSources.INTERNAL,CalculationSources.ALL));
-        parameters.add(new Parameter(EXTERNAL_SOURCE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(CALCULATION_CHANNEL, Parameter.INTEGER,1));
-        parameters.add(new Parameter(TRANSFORMATION_MODE,Parameter.CHOICE_ARRAY,TransformationModes.RIGID,TransformationModes.ALL));
-        parameters.add(new Parameter(INITIAL_SIGMA, Parameter.DOUBLE,1.6));
-        parameters.add(new Parameter(STEPS, Parameter.INTEGER,3));
-        parameters.add(new Parameter(MINIMUM_IMAGE_SIZE, Parameter.INTEGER,64));
-        parameters.add(new Parameter(MAXIMUM_IMAGE_SIZE, Parameter.INTEGER,1024));
-        parameters.add(new Parameter(FD_SIZE, Parameter.INTEGER,4));
-        parameters.add(new Parameter(FD_ORIENTATION_BINS, Parameter.INTEGER,8));
-        parameters.add(new Parameter(ROD, Parameter.DOUBLE,0.92));
-        parameters.add(new Parameter(MAX_EPSILON, Parameter.DOUBLE,25.0));
-        parameters.add(new Parameter(MIN_INLIER_RATIO, Parameter.DOUBLE,0.05));
-        parameters.add(new Parameter(ENABLE_MULTITHREADING, Parameter.BOOLEAN, true));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ChoiceP(ALIGNMENT_MODE,this,AlignmentModes.AUTOMATIC,AlignmentModes.ALL));
+        parameters.add(new ChoiceP(RELATIVE_MODE,this,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
+        parameters.add(new ChoiceP(ROLLING_CORRECTION,this,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
+        parameters.add(new IntegerP(CORRECTION_INTERVAL,this,1));
+        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
+        parameters.add(new ChoiceP(CALCULATION_SOURCE,this,CalculationSources.INTERNAL,CalculationSources.ALL));
+        parameters.add(new InputImageP(EXTERNAL_SOURCE,this));
+        parameters.add(new IntegerP(CALCULATION_CHANNEL,this,1));
+        parameters.add(new ChoiceP(TRANSFORMATION_MODE,this,TransformationModes.RIGID,TransformationModes.ALL));
+        parameters.add(new DoubleP(INITIAL_SIGMA,this,1.6));
+        parameters.add(new IntegerP(STEPS,this,3));
+        parameters.add(new IntegerP(MINIMUM_IMAGE_SIZE,this,64));
+        parameters.add(new IntegerP(MAXIMUM_IMAGE_SIZE,this,1024));
+        parameters.add(new IntegerP(FD_SIZE,this,4));
+        parameters.add(new IntegerP(FD_ORIENTATION_BINS,this,8));
+        parameters.add(new DoubleP(ROD,this,0.92));
+        parameters.add(new DoubleP(MAX_EPSILON,this,25.0));
+        parameters.add(new DoubleP(MIN_INLIER_RATIO,this,0.05));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
 
     }
 
@@ -640,30 +639,30 @@ public class RegisterImages extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.TRANSLATE_X,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.TRANSLATE_Y,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.SCALE_X,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.SCALE_Y,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.SHEAR_X,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.SHEAR_Y,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_X,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_Y,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_X,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_Y,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_X,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_Y,outputImageName));
 
         }
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
