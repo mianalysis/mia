@@ -30,6 +30,6 @@ public class ObjectMeasurementP extends ChoiceType {
 
     @Override
     public String[] getChoices() {
-        return GUI.getModules().getObjectMeasurementReferences(objectName,module).getMeasurementNames();
+        return GUI.getModules().getObjectMeasurementRefs(objectName,module).getMeasurementNames();
     }
 }

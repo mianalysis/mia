@@ -38,7 +38,7 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new BooleanP(SHOW_BASIC,this,true));
         parameters.add(new BooleanP(EXPANDED_BASIC,this,true));
         parameters.add(new BooleanP(EXPANDED_EDITING,this,true));
@@ -50,12 +50,12 @@ public class GUISeparator extends Module{
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

@@ -313,7 +313,7 @@ public class ThresholdImage extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
@@ -380,8 +380,8 @@ public class ThresholdImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
-        imageMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        imageMeasurementRefs.setAllCalculated(false);
 
         if (parameters.getValue(THRESHOLD_TYPE).equals(ThresholdTypes.GLOBAL)
                 && (boolean) parameters.getValue(STORE_THRESHOLD_AS_MEASUREMENT)) {
@@ -389,18 +389,18 @@ public class ThresholdImage extends Module {
             String method = parameters.getValue(GLOBAL_ALGORITHM);
             String measurementName = getFullName(Measurements.GLOBAL_VALUE,method);
 
-            MeasurementReference reference = imageMeasurementReferences.getOrPut(measurementName);
+            MeasurementRef reference = imageMeasurementRefs.getOrPut(measurementName);
             reference.setImageObjName(imageName);
             reference.setCalculated(true);
 
         }
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

@@ -639,25 +639,25 @@ public class RegisterImages extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         if (parameters.getValue(ALIGNMENT_MODE).equals(AlignmentModes.MANUAL)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.TRANSLATE_X,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.TRANSLATE_Y,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.SCALE_X,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.SCALE_Y,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.SHEAR_X,outputImageName));
-            imageMeasurementReferences.add(new MeasurementReference(Measurements.SHEAR_Y,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_X,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.TRANSLATE_Y,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_X,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.SCALE_Y,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_X,outputImageName));
+            imageMeasurementRefs.add(new MeasurementRef(Measurements.SHEAR_Y,outputImageName));
 
         }
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

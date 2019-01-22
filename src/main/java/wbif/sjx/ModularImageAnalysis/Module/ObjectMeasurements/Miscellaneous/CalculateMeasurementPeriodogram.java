@@ -242,13 +242,13 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
@@ -258,12 +258,12 @@ public class CalculateMeasurementPeriodogram extends Module {
                 int numberOfPeaks = parameters.getValue(NUMBER_OF_PEAKS_TO_REPORT);
                 for (int i = 0; i < numberOfPeaks; i++) {
                     String name = getKeyFrequenciesFullName(measurement, Measurements.FREQUENCY, i + 1);
-                    MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setCalculated(true);
 
                     name = getKeyFrequenciesFullName(measurement, Measurements.POWER, i + 1);
-                    reference = objectMeasurementReferences.getOrPut(name);
+                    reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setCalculated(true);
 
@@ -275,14 +275,14 @@ public class CalculateMeasurementPeriodogram extends Module {
                 double[] freq = PeriodogramCalculator.calculateFrequency(1,numberOfBins);
                 for (int i=0;i<numberOfBins;i++) {
                     String name = getWholeSpectrumFullName(measurement, freq[i]);
-                    MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+                    MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
                     reference.setImageObjName(inputObjectsName);
                     reference.setCalculated(true);
                 }
                 break;
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

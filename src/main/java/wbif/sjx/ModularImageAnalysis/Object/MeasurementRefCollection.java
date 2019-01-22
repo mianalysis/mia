@@ -1,9 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
-public class MeasurementRefCollection extends TreeMap<String,MeasurementReference> {
+public class MeasurementRefCollection extends TreeMap<String,MeasurementRef> {
     public void updateImageObjectName(String measurementName, String imageObjectName) {
         get(measurementName).setImageObjName(imageObjectName);
     }
@@ -13,17 +12,17 @@ public class MeasurementRefCollection extends TreeMap<String,MeasurementReferenc
     }
 
     public void setAllCalculated(boolean calculated) {
-        for (MeasurementReference measurementReference:values()) {
+        for (MeasurementRef measurementReference:values()) {
             measurementReference.setCalculated(calculated);
         }
     }
 
-    public void add(MeasurementReference measurementReference) {
+    public void add(MeasurementRef measurementReference) {
         put(measurementReference.getName(),measurementReference);
     }
 
-    public MeasurementReference getOrPut(Object key) {
-        putIfAbsent((String) key,new MeasurementReference((String) key));
+    public MeasurementRef getOrPut(Object key) {
+        putIfAbsent((String) key,new MeasurementRef((String) key));
         return super.get(key);
     }
 }

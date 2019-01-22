@@ -158,7 +158,7 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new ChoiceP(CONVERSION_MODE, this,ConversionModes.OBJECTS_TO_IMAGE,ConversionModes.ALL));
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
@@ -219,12 +219,12 @@ public class ConvertObjectsToImage extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

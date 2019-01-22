@@ -241,7 +241,7 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new OutputObjectsP(CLUSTER_OBJECTS, this));
         parameters.add(new BooleanP(APPLY_VOLUME, this, false));
@@ -278,12 +278,12 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

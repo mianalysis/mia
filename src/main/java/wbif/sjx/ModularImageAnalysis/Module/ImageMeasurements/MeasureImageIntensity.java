@@ -76,7 +76,7 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(MEASURE_MEAN, this, true));
         parameters.add(new BooleanP(MEASURE_MIN, this, true));
@@ -92,37 +92,37 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        imageMeasurementReferences.setAllCalculated(false);
+        imageMeasurementRefs.setAllCalculated(false);
 
-        MeasurementReference mean = imageMeasurementReferences.getOrPut(Measurements.MEAN);
+        MeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
         mean.setImageObjName(inputImageName);
         mean.setCalculated(parameters.getValue(MEASURE_MEAN));
 
-        MeasurementReference min = imageMeasurementReferences.getOrPut(Measurements.MIN);
+        MeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
         min.setImageObjName(inputImageName);
         min.setCalculated(parameters.getValue(MEASURE_MIN));
 
-        MeasurementReference max = imageMeasurementReferences.getOrPut(Measurements.MAX);
+        MeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX);
         max.setImageObjName(inputImageName);
         max.setCalculated(parameters.getValue(MEASURE_MAX));
 
-        MeasurementReference stdev = imageMeasurementReferences.getOrPut(Measurements.STDEV);
+        MeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV);
         stdev.setImageObjName(inputImageName);
         stdev.setCalculated(parameters.getValue(MEASURE_STDEV));
 
-        MeasurementReference sum = imageMeasurementReferences.getOrPut(Measurements.SUM);
+        MeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM);
         sum.setImageObjName(inputImageName);
         sum.setCalculated(parameters.getValue(MEASURE_SUM));
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

@@ -107,7 +107,7 @@ public class ApplyManualClassification extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new FilePathP(CLASSIFICATION_FILE, this));
         parameters.add(new BooleanP(REMOVE_MISSING, this,false));
@@ -127,19 +127,19 @@ public class ApplyManualClassification extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
-        MeasurementReference classMeas = objectMeasurementReferences.getOrPut(Measurements.CLASS);
+        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
         classMeas.setImageObjName(parameters.getValue(INPUT_OBJECTS));
         classMeas.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

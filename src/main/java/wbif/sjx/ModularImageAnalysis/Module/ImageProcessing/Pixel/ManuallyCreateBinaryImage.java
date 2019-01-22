@@ -177,12 +177,12 @@
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
 //        return null;
 //    }
 //

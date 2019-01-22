@@ -97,7 +97,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new FileFolderPathP(INPUT_PATH,this));
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1));
         parameters.add(new StringP(FILE_EXTENSION,this,"tif"));
@@ -204,12 +204,12 @@ public class InputControl extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

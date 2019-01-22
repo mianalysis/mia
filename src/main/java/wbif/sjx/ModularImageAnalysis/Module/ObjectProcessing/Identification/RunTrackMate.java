@@ -336,7 +336,7 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this));
         parameters.add(new BooleanP(CALIBRATED_UNITS, this,false));
@@ -382,33 +382,33 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.RADIUS_PX);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
         reference.setImageObjName(outputSpotObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.RADIUS_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
         reference.setImageObjName(outputSpotObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
         reference.setImageObjName(outputSpotObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
         reference.setImageObjName(outputSpotObjectsName);
         reference.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

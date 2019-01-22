@@ -127,7 +127,7 @@ public class BinaryOperations2D extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
@@ -163,12 +163,12 @@ public class BinaryOperations2D extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

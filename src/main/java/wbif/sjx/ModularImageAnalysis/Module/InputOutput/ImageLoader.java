@@ -751,7 +751,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.IMAGE, OutputModes.ALL));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
         parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
@@ -897,40 +897,40 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.IMAGE)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
             switch ((String) parameters.getValue(CROP_MODE)) {
                 case CropModes.FROM_REFERENCE:
-                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_LEFT,outputImageName));
-                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_TOP,outputImageName));
-                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_WIDTH,outputImageName));
-                    imageMeasurementReferences.add(new MeasurementReference(Measurements.ROI_HEIGHT,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputImageName));
                     break;
             }
         }
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.OBJECTS)) {
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
             switch ((String) parameters.getValue(CROP_MODE)) {
                 case CropModes.FROM_REFERENCE:
-                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_LEFT,outputObjectsName));
-                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_TOP,outputObjectsName));
-                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_WIDTH,outputObjectsName));
-                    objectMeasurementReferences.add(new MeasurementReference(Measurements.ROI_HEIGHT,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputObjectsName));
                     break;
             }
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

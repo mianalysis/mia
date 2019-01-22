@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Object.MeasurementReference;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRef;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementRefCollection;
 
 import javax.swing.*;
@@ -33,7 +33,7 @@ public class DisableMeasurementsButton extends JButton implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (MeasurementReference measurementReference:measurementReferences.values()) {
+        for (MeasurementRef measurementReference:measurementReferences.values()) {
             measurementReference.setExportGlobal(false);
         }
 

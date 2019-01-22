@@ -62,7 +62,7 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new IntegerP(CHANNEL_TO_EXTRACT,this,1));
@@ -75,12 +75,12 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

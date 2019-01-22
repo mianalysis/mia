@@ -320,7 +320,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new ChoiceP(EXTRACTOR_MODE,this,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
         parameters.add(new ChoiceP(FILENAME_EXTRACTOR, this,FilenameExtractors.GENERIC,FilenameExtractors.ALL));
         parameters.add(new ChoiceP(FOLDERNAME_EXTRACTOR, this,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
@@ -422,12 +422,12 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

@@ -172,7 +172,7 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(POINT_MEASUREMENT, this,false));
@@ -207,13 +207,13 @@ public class MeasureObjectTexture extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
@@ -224,26 +224,26 @@ public class MeasureObjectTexture extends Module {
         double[] offs = new double[]{xOffsIn,yOffsIn,zOffsIn};
 
         String name = getFullName(inputImageName,Measurements.ASM,offs,calibratedOffset);
-        MeasurementReference asm = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef asm = objectMeasurementRefs.getOrPut(name);
         asm.setImageObjName(inputObjectsName);
         asm.setCalculated(true);
 
         name = getFullName(inputImageName,Measurements.CONTRAST,offs,calibratedOffset);
-        MeasurementReference contrast = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef contrast = objectMeasurementRefs.getOrPut(name);
         contrast.setImageObjName(inputObjectsName);
         contrast.setCalculated(true);
 
         name = getFullName(inputImageName,Measurements.CORRELATION,offs,calibratedOffset);
-        MeasurementReference correlation = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef correlation = objectMeasurementRefs.getOrPut(name);
         correlation.setImageObjName(inputObjectsName);
         correlation.setCalculated(true);
 
         name = getFullName(inputImageName,Measurements.ENTROPY,offs,calibratedOffset);
-        MeasurementReference entropy = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef entropy = objectMeasurementRefs.getOrPut(name);
         entropy.setImageObjName(inputObjectsName);
         entropy.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

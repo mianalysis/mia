@@ -62,7 +62,7 @@ public class MeasureRelativeOrientation extends Module {
     }
 
 
-    String getMeasurementReference() {
+    String getMeasurementRef() {
         String reference = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
             case ReferenceModes.IMAGE_CENTRE:
@@ -260,7 +260,7 @@ public class MeasureRelativeOrientation extends Module {
         String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
 
         // Getting measurement reference name
-        String measurementReference = getMeasurementReference();
+        String measurementReference = getMeasurementRef();
 
         // Get reference point as Point for each frame the input images are present for (frame number as HashMap key)
         HashMap<Integer,Point<Double>> referencePoints = null;
@@ -355,17 +355,17 @@ public class MeasureRelativeOrientation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);
 
-        String reference = getMeasurementReference();
+        String reference = getMeasurementRef();
         String referenceDescription = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
             case ReferenceModes.IMAGE_CENTRE:
@@ -383,7 +383,7 @@ public class MeasureRelativeOrientation extends Module {
         switch ((String) parameters.getValue(ORIENTATION_MODE)) {
             case OrientationModes.X_Y_PLANE:
                 String measurementName = getFullName(Measurements.X_Y_REL_ORIENTATION,reference);
-                MeasurementReference measurementReference = objectMeasurementReferences.getOrPut(measurementName);
+                MeasurementRef measurementReference = objectMeasurementRefs.getOrPut(measurementName);
                 measurementReference.setImageObjName(inputObjectsName);
                 measurementReference.setCalculated(true);
 
@@ -393,7 +393,7 @@ public class MeasureRelativeOrientation extends Module {
                 break;
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

@@ -540,7 +540,7 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new ChoiceP(MEASUREMENT_TYPE, this,MeasurementTypes.DISTANCE_PROFILE, MeasurementTypes.ALL));
         parameters.add(new InputImageP(DISTANCE_MAP_IMAGE,this));
@@ -602,65 +602,65 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
-        imageMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        imageMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
                 String name = getFullName(inputObjectsName, Measurements.N_PX_INRANGE);
-                MeasurementReference reference = imageMeasurementReferences.getOrPut(name);
+                MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
                 name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 break;
         }
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

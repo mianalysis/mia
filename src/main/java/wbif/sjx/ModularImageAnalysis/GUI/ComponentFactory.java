@@ -430,7 +430,7 @@ public class ComponentFactory {
 
     }
 
-    private JPanel createMeasurementExportControls(MeasurementReference measurement, MeasurementExportCheck.Type type) {
+    private JPanel createMeasurementExportControls(MeasurementRef measurement, MeasurementExportCheck.Type type) {
         ParameterCollection outputParamters = GUI.getAnalysis().getOutputControl().updateAndGetParameters();
         BooleanP exportIndividual = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_INDIVIDUAL_OBJECTS);
         BooleanP exportSummary = (BooleanP) outputParamters.getParameter(OutputControl.EXPORT_SUMMARY);
@@ -496,7 +496,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createGlobalMeasurementControl(MeasurementReference measurement) {
+    public JPanel createGlobalMeasurementControl(MeasurementRef measurement) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -575,7 +575,7 @@ public class ComponentFactory {
 
     }
 
-    public JPanel createMeasurementControl(MeasurementReference measurement) {
+    public JPanel createMeasurementControl(MeasurementRef measurement) {
         JPanel measurementPanel = new JPanel(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();

@@ -607,7 +607,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
         parameters.add(new OutputObjectsP(TRACK_OBJECTS,this));
         parameters.add(new ChoiceP(LINKING_METHOD,this,LinkingMethods.CENTROID,LinkingMethods.ALL));
@@ -690,22 +690,22 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference trackPrevID = objectMeasurementReferences.getOrPut(Measurements.TRACK_PREV_ID);
-        MeasurementReference trackNextID = objectMeasurementReferences.getOrPut(Measurements.TRACK_NEXT_ID);
-        MeasurementReference angleMeasurement = objectMeasurementReferences.getOrPut(Measurements.ORIENTATION);
-        MeasurementReference leadingXPx= objectMeasurementReferences.getOrPut(Measurements.LEADING_X_PX);
-        MeasurementReference leadingYPx= objectMeasurementReferences.getOrPut(Measurements.LEADING_Y_PX);
-        MeasurementReference leadingZPx= objectMeasurementReferences.getOrPut(Measurements.LEADING_Z_PX);
+        MeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
+        MeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID);
+        MeasurementRef angleMeasurement = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION);
+        MeasurementRef leadingXPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_X_PX);
+        MeasurementRef leadingYPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Y_PX);
+        MeasurementRef leadingZPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Z_PX);
 
         trackPrevID.setImageObjName(inputObjectsName);
         trackNextID.setImageObjName(inputObjectsName);
@@ -731,7 +731,7 @@ public class TrackObjects extends Module {
             leadingZPx.setCalculated(false);
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
-import ij.IJ;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -110,7 +109,7 @@ public class AnalysisReader {
                             break;
 
                         case "MEASUREMENTS":
-                            populateModuleMeasurementReferences(moduleChildNodes.item(j), module);
+                            populateModuleMeasurementRefs(moduleChildNodes.item(j), module);
                             break;
                     }
                 }
@@ -178,21 +177,16 @@ public class AnalysisReader {
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
             NamedNodeMap parameterAttributes = parameterNode.getAttributes();
+
             String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
             String parameterValue = parameterAttributes.getNamedItem("VALUE").getNodeValue();
-
             String parameterValueSource = "";
             if (parameterAttributes.getNamedItem("VALUESOURCE") != null) {
                 parameterValueSource = parameterAttributes.getNamedItem("VALUESOURCE").getNodeValue();
             }
 
-            boolean parameterVisible = false;
-            if (parameterAttributes.getNamedItem("VISIBLE") != null) {
-                parameterVisible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
-            }
-
             try {
-            Parameter parameter = module.getParameter(parameterName);
+                Parameter parameter = module.getParameter(parameterName);
                 if (parameter instanceof InputImageP) {
                     ((InputImageP) module.getParameter(parameterName)).setImageName(parameterValue);
                 } else if (parameter instanceof OutputImageP) {
@@ -239,6 +233,11 @@ public class AnalysisReader {
                     ((TextDisplayP) module.getParameter(parameterName)).setValue(parameterValue);
                 }
 
+                if (parameterAttributes.getNamedItem("VISIBLE") != null) {
+                    boolean visible = Boolean.parseBoolean(parameterAttributes.getNamedItem("VISIBLE").getNodeValue());
+                    parameter.setVisible(visible);
+                }
+
             } catch (NullPointerException e) {
                 System.err.println("Module \""+module.getTitle()
                         +"\" parameter \""+parameterName + "\" ("+parameterValue+") not set");
@@ -247,7 +246,7 @@ public class AnalysisReader {
         }
     }
 
-    public static void populateModuleMeasurementReferences(Node moduleNode, Module module) {
+    public static void populateModuleMeasurementRefs(Node moduleNode, Module module) {
         NodeList referenceNodes = moduleNode.getChildNodes();
 
         // Iterating over all references of this type
@@ -260,14 +259,14 @@ public class AnalysisReader {
             String type = attributes.getNamedItem("TYPE").getNodeValue();
 
             // Acquiring the relevant reference
-            MeasurementReference measurementReference = null;
+            MeasurementRef measurementReference = null;
             switch (type) {
                 case "IMAGE":
-                    measurementReference = module.getImageMeasurementReference(measurementName);
+                    measurementReference = module.getImageMeasurementRef(measurementName);
                     break;
 
                 case "OBJECTS":
-                    measurementReference = module.getObjectMeasurementReference(measurementName);
+                    measurementReference = module.getObjectMeasurementRef(measurementName);
                     break;
 
             }

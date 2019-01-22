@@ -158,23 +158,23 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         String inputImage1Name = parameters.getValue(INPUT_IMAGE_1);
         String inputImage2Name = parameters.getValue(INPUT_IMAGE_2);
 
-        imageMeasurementReferences.setAllCalculated(false);
+        imageMeasurementRefs.setAllCalculated(false);
 
         String name = getFullName(inputImage2Name,Measurements.MEAN_PCC);
-        MeasurementReference reference = imageMeasurementReferences.getOrPut(name);
+        MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputImage1Name);
         reference.setCalculated(true);
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

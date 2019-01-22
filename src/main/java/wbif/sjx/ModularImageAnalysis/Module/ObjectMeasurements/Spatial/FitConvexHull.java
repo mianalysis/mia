@@ -198,41 +198,41 @@
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-//        objectMeasurementReferences.setAllCalculated(false);
+//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//        objectMeasurementRefs.setAllCalculated(false);
 //
 //        String inputObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
 //
-//        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.HULL_VOLUME_PX);
+//        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.HULL_VOLUME_PX);
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_VOLUME_CAL));
+//        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.HULL_VOLUME_CAL));
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Measurements.HULL_SURFACE_AREA_PX);
+//        reference = objectMeasurementRefs.getOrPut(Measurements.HULL_SURFACE_AREA_PX);
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_SURFACE_AREA_CAL));
+//        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.HULL_SURFACE_AREA_CAL));
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Measurements.SPHERICITY);
+//        reference = objectMeasurementRefs.getOrPut(Measurements.SPHERICITY);
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Measurements.SOLIDITY);
+//        reference = objectMeasurementRefs.getOrPut(Measurements.SOLIDITY);
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        return objectMeasurementReferences;
+//        return objectMeasurementRefs;
 //
 //    }
 //

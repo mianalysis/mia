@@ -290,43 +290,43 @@
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
 //        String inputObjectsName1 = parameters.getValue(PARENT_OBJECTS);
 //        String inputObjectsName2 = parameters.getValue(INPUT_OBJECTS_2);
 //        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS_NAME);
 //
-//        objectMeasurementReferences.setAllCalculated(false);
+//        objectMeasurementRefs.setAllCalculated(false);
 //
 //        String name = getFullName(inputObjectsName1,Measurements.FRACTION_1);
-//        MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+//        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
 //        reference.setImageObjName(outputObjectsName);
 //        reference.setCalculated(true);
 //        reference.setDescription("Fraction of overlap object which is coincident with \""+inputObjectsName1+"\" objects");
 //
 //        name = getFullName(inputObjectsName1,Measurements.N_VOXELS1);
-//        reference = objectMeasurementReferences.getOrPut(name);
+//        reference = objectMeasurementRefs.getOrPut(name);
 //        reference.setImageObjName(outputObjectsName);
 //        reference.setCalculated(true);
 //        reference.setDescription("Number of voxels in overlap object which are coincident with \""+inputObjectsName1+"\" objects");
 //
 //        name = getFullName(inputObjectsName2,Measurements.FRACTION_2);
-//        reference = objectMeasurementReferences.getOrPut(name);
+//        reference = objectMeasurementRefs.getOrPut(name);
 //        reference.setImageObjName(outputObjectsName);
 //        reference.setCalculated(true);
 //        reference.setDescription("Fraction of overlap object which is coincident with \""+inputObjectsName2+"\" objects");
 //
 //        name = getFullName(inputObjectsName2,Measurements.N_VOXELS2);
-//        reference = objectMeasurementReferences.getOrPut(name);
+//        reference = objectMeasurementRefs.getOrPut(name);
 //        reference.setImageObjName(outputObjectsName);
 //        reference.setCalculated(true);
 //        reference.setDescription("Number of voxels in overlap object which are coincident with \""+inputObjectsName2+"\" objects");
 //
-//        return objectMeasurementReferences;
+//        return objectMeasurementRefs;
 //
 //    }
 //

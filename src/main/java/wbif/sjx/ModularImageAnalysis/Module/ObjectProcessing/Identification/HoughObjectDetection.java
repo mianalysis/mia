@@ -241,19 +241,19 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
-        MeasurementReference score = objectMeasurementReferences.getOrPut(Measurements.SCORE);
+        MeasurementRef score = objectMeasurementRefs.getOrPut(Measurements.SCORE);
         score.setImageObjName(parameters.getValue(OUTPUT_OBJECTS));
         score.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

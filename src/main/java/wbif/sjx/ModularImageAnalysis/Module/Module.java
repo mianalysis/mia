@@ -20,8 +20,8 @@ import java.io.Serializable;
  */
 public abstract class Module implements Serializable {
     protected ParameterCollection parameters = new ParameterCollection();
-    protected MeasurementRefCollection imageMeasurementReferences = new MeasurementRefCollection();
-    protected MeasurementRefCollection objectMeasurementReferences = new MeasurementRefCollection();
+    protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
+    protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
 
     private static boolean verbose = false;
     private String nickname;
@@ -89,18 +89,18 @@ public abstract class Module implements Serializable {
      */
     public abstract ParameterCollection updateAndGetParameters();
 
-    public abstract MeasurementRefCollection updateAndGetImageMeasurementReferences();
+    public abstract MeasurementRefCollection updateAndGetImageMeasurementRefs();
 
-    public abstract MeasurementRefCollection updateAndGetObjectMeasurementReferences();
+    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs();
 
     public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
-    public MeasurementReference getImageMeasurementReference(String name) {
-        return imageMeasurementReferences.getOrPut(name);
+    public MeasurementRef getImageMeasurementRef(String name) {
+        return imageMeasurementRefs.getOrPut(name);
     }
 
-    public MeasurementReference getObjectMeasurementReference(String name) {
-        return objectMeasurementReferences.getOrPut(name);
+    public MeasurementRef getObjectMeasurementRef(String name) {
+        return objectMeasurementRefs.getOrPut(name);
     }
 
     /*
@@ -110,6 +110,12 @@ public abstract class Module implements Serializable {
 
     public <T extends Parameter> T getParameter(String name) {
         return parameters.getParameter(name);
+    }
+
+    public Module updateParameterValue(String name, Object value) {
+        parameters.updateValue(name,value);
+        return this;
+
     }
 
     public <T> T getParameterValue(String name) {

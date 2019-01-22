@@ -84,23 +84,23 @@ public class BinObjectsByMeasurement extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
 
         String name = getFullName(measurement);
-        MeasurementReference binMeasurement = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
         binMeasurement.setImageObjName(inputObjectsName);
         binMeasurement.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

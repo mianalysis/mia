@@ -164,7 +164,7 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new ChoiceP(RELATIONSHIP_MODE, this, RelationshipModes.WITHIN_SAME_SET,RelationshipModes.ALL));
         parameters.add(new InputObjectsP(NEIGHBOUR_OBJECTS, this));
@@ -208,13 +208,13 @@ public class CalculateNearestNeighbour extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String relationshipMode = parameters.getValue(RELATIONSHIP_MODE);
@@ -231,21 +231,21 @@ public class CalculateNearestNeighbour extends Module {
 
 
         String name = getFullName(Units.replace(Measurements.NN_DISTANCE_CAL),neighbourObjectsName);
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
         name = getFullName(Measurements.NN_DISTANCE_PX,neighbourObjectsName);
-        reference = objectMeasurementReferences.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
         name = getFullName(Measurements.NN_ID,neighbourObjectsName);
-        reference = objectMeasurementReferences.getOrPut(name);
+        reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(inputObjectsName);
         reference.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

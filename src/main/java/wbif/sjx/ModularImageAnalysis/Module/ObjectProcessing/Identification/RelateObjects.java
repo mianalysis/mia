@@ -457,7 +457,7 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputObjectsP(PARENT_OBJECTS, this));
         parameters.add(new InputObjectsP(CHILD_OBJECTS, this));
         parameters.add(new ChoiceP(RELATE_MODE, this,RelateModes.MATCHING_IDS,RelateModes.ALL));
@@ -526,62 +526,62 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String childObjectsName = parameters.getValue(CHILD_OBJECTS);
         String parentObjectName = parameters.getValue(PARENT_OBJECTS);
 
-        if (parentObjectName == null || childObjectsName == null) return objectMeasurementReferences;
+        if (parentObjectName == null || childObjectsName == null) return objectMeasurementRefs;
 
         String measurementName = getFullName(Measurements.DIST_SURFACE_PX,parentObjectName);
-        MeasurementReference distSurfPx = objectMeasurementReferences.getOrPut(measurementName);
+        MeasurementRef distSurfPx = objectMeasurementRefs.getOrPut(measurementName);
         distSurfPx.setDescription("Shortest distance between the surface of this object and that of the closest \""
                 + parentObjectName+"\" object.  Negative values indicate this object is inside the relevant \""
                 +parentObjectName+"\" object. Measured in pixel units.");
 
         measurementName = getFullName(Measurements.DIST_SURFACE_CAL,parentObjectName);
-        MeasurementReference distSurfCal = objectMeasurementReferences.getOrPut(measurementName);
+        MeasurementRef distSurfCal = objectMeasurementRefs.getOrPut(measurementName);
         distSurfCal.setDescription("Shortest distance between the surface of this object and that of the closest \""
                 + parentObjectName+"\" object.  Negative values indicate this object is inside the relevant \""
                 +parentObjectName+"\" object. Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
         measurementName = getFullName(Measurements.DIST_CENTROID_PX,parentObjectName);
-        MeasurementReference distCentPx = objectMeasurementReferences.getOrPut(measurementName);
+        MeasurementRef distCentPx = objectMeasurementRefs.getOrPut(measurementName);
         distCentPx.setDescription("Distance between the centroid of this object and that of the closest \""
                 + parentObjectName+"\"object.  Measured in pixel units.");
 
         measurementName = getFullName(Measurements.DIST_CENTROID_CAL,parentObjectName);
-        MeasurementReference distCentCal = objectMeasurementReferences.getOrPut(measurementName);
+        MeasurementRef distCentCal = objectMeasurementRefs.getOrPut(measurementName);
         distCentCal.setDescription("Distance between the centroid of this object and that of the closest \""
                 + parentObjectName+"\"object.  Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_PX,parentObjectName);
-        MeasurementReference distCentSurfPx = objectMeasurementReferences.getOrPut(measurementName);
+        MeasurementRef distCentSurfPx = objectMeasurementRefs.getOrPut(measurementName);
         distCentSurfPx.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Negative values indicate this object is inside the " +
                 "relevant \""+parentObjectName+"\" object. Measured in pixel units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_CAL,parentObjectName);
-        MeasurementReference distCentSurfCal = objectMeasurementReferences.getOrPut(measurementName);
+        MeasurementRef distCentSurfCal = objectMeasurementRefs.getOrPut(measurementName);
         distCentSurfCal.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Negative values indicate this object is inside the " +
                 "relevant \""+parentObjectName+"\" object. Measured in calibrated ("+Units.getOMEUnits().getSymbol()+") " +
                 "units.");
 
         measurementName = getFullName(Measurements.DIST_CENT_SURF_FRAC,parentObjectName);
-        MeasurementReference distCentSurfFrac = objectMeasurementReferences.getOrPut(measurementName);
+        MeasurementRef distCentSurfFrac = objectMeasurementRefs.getOrPut(measurementName);
         distCentSurfFrac.setDescription("Shortest distance between the centroid of this object and the surface of the " +
                 "closest \""+ parentObjectName+"\" object.  Calculated as a fraction of the furthest possible distance " +
                 "to the \""+parentObjectName+"\" surface.");
 
         measurementName = getFullName(Measurements.OVERLAP_PC,parentObjectName);
-        MeasurementReference overlapPercentage  = objectMeasurementReferences.getOrPut(measurementName);
+        MeasurementRef overlapPercentage  = objectMeasurementRefs.getOrPut(measurementName);
         overlapPercentage.setDescription("Percentage of pixels that overlap with the \""+ parentObjectName+"\" object "+
                 "with which it has the largest overlap.");
 
@@ -632,7 +632,7 @@ public class RelateObjects extends Module {
                 break;
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 

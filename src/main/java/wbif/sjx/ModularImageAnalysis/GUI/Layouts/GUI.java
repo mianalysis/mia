@@ -74,7 +74,7 @@ public class GUI {
     private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
     private static final ModuleButton inputButton = new ModuleButton(analysis.getInputControl());
     private static final ModuleButton outputButton = new ModuleButton(analysis.getOutputControl());
-    private static final MeasurementReference globalMeasurementReference = new MeasurementReference("Global");
+    private static final MeasurementRef globalMeasurementRef = new MeasurementRef("Global");
 
 
     public GUI() throws InstantiationException, IllegalAccessException {
@@ -88,8 +88,6 @@ public class GUI {
         // Starting this processAutomatic, as it takes longest
         new Thread(GUI::listAvailableModules).start();
 
-        analysis.getInputControl().initialiseParameters();
-        loadSeparator.initialiseParameters();
         loadSeparator.setNickname("File loading");
         componentFactory = new ComponentFactory(elementHeight);
 
@@ -755,7 +753,7 @@ public class GUI {
             c.anchor = GridBagConstraints.WEST;
             paramsPanel.add(measurementHeader,c);
 
-            JPanel currentMeasurementPanel = componentFactory.createGlobalMeasurementControl(globalMeasurementReference);
+            JPanel currentMeasurementPanel = componentFactory.createGlobalMeasurementControl(globalMeasurementRef);
             c.gridy++;
             c.anchor = GridBagConstraints.EAST;
             paramsPanel.add(currentMeasurementPanel,c);
@@ -774,7 +772,7 @@ public class GUI {
                 paramsPanel.add(measurementHeader,c);
 
                 // Iterating over the measurements for the current image, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences.values()) {
+                for (MeasurementRef measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -789,7 +787,7 @@ public class GUI {
             LinkedHashSet<OutputObjectsP> objectNameParameters = getModules().getParametersMatchingType(OutputObjectsP.class);
             for (OutputObjectsP objectNameParameter:objectNameParameters) {
                 String objectName = objectNameParameter.getObjectsName();
-                MeasurementRefCollection measurementReferences = getModules().getObjectMeasurementReferences(objectName);
+                MeasurementRefCollection measurementReferences = getModules().getObjectMeasurementRefs(objectName);
 
                 if (measurementReferences.size() == 0) continue;
 
@@ -800,7 +798,7 @@ public class GUI {
                 paramsPanel.add(measurementHeader,c);
 
                 // Iterating over the measurements for the current object, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences.values()) {
+                for (MeasurementRef measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -1244,7 +1242,7 @@ public class GUI {
         return testWorkspace;
     }
 
-    public static MeasurementReference getGlobalMeasurementReference() {
-        return globalMeasurementReference;
+    public static MeasurementRef getGlobalMeasurementRef() {
+        return globalMeasurementRef;
     }
 }

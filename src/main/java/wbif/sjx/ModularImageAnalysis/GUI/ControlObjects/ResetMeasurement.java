@@ -1,8 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.MeasurementReference;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRef;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,11 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ResetMeasurement extends JButton implements ActionListener {
-    private MeasurementReference measurementReference;
+    private MeasurementRef measurementReference;
 
     private static final ImageIcon refreshIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/refresh_black_12px.png"), "");
 
-    public ResetMeasurement(MeasurementReference measurementReference) {
+    public ResetMeasurement(MeasurementRef measurementReference) {
         this.measurementReference = measurementReference;
 
         setMargin(new Insets(0,0,0,0));

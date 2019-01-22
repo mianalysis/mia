@@ -74,7 +74,7 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new ChoiceP(EXPORT_MODE,this,ExportModes.ALL_TOGETHER,ExportModes.ALL));
         parameters.add(new MetadataItemP(METADATA_ITEM_FOR_GROUPING,this));
         parameters.add(new BooleanP(EXPORT_SUMMARY,this,true));
@@ -141,12 +141,12 @@ public class OutputControl extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 

@@ -27,11 +27,11 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
-            MeasurementRefCollection currentMeasurementReferences = module.updateAndGetImageMeasurementReferences();
+            MeasurementRefCollection currentMeasurementRefs = module.updateAndGetImageMeasurementRefs();
 
-            if (currentMeasurementReferences == null) continue;
+            if (currentMeasurementRefs == null) continue;
 
-            for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
+            for (MeasurementRef measurementReference:currentMeasurementRefs.values()) {
                 if (measurementReference.getImageObjName() == null) continue;
                 if (measurementReference.getImageObjName().equals(imageName)
                         & measurementReference.isCalculated())
@@ -44,23 +44,23 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
     }
 
-    public MeasurementRefCollection getObjectMeasurementReferences(String objectName) {
-        return getObjectMeasurementReferences(objectName,null);
+    public MeasurementRefCollection getObjectMeasurementRefs(String objectName) {
+        return getObjectMeasurementRefs(objectName,null);
 
     }
 
-    public MeasurementRefCollection getObjectMeasurementReferences(String objectName, Module cutoffModule) {
+    public MeasurementRefCollection getObjectMeasurementRefs(String objectName, Module cutoffModule) {
         MeasurementRefCollection measurementReferences = new MeasurementRefCollection();
 
         // Iterating over all modules, collecting any measurements for the current objects
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
-            MeasurementRefCollection currentMeasurementReferences =
-                    module.updateAndGetObjectMeasurementReferences();
-            if (currentMeasurementReferences == null) continue;
+            MeasurementRefCollection currentMeasurementRefs =
+                    module.updateAndGetObjectMeasurementRefs();
+            if (currentMeasurementRefs == null) continue;
 
-            for (MeasurementReference measurementReference:currentMeasurementReferences.values()) {
+            for (MeasurementRef measurementReference:currentMeasurementRefs.values()) {
                 if (measurementReference.getImageObjName() == null) continue;
                 if (measurementReference.getImageObjName().equals(objectName)
                         & measurementReference.isCalculated())
@@ -106,11 +106,9 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
             // Running through all parameters, adding all images to the list
             ParameterCollection currParameters = module.updateAndGetParameters();
-            if (currParameters != null) {
-                for (Parameter currParameter : currParameters) {
-                    if (type.isInstance(currParameter)) {
-                        parameters.add((T) currParameter);
-                    }
+            for (Parameter currParameter : currParameters) {
+                if (type.isInstance(currParameter)) {
+                    parameters.add((T) currParameter);
                 }
             }
         }

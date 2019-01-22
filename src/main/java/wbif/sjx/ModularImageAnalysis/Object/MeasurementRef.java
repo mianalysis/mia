@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Object;
 /**
  * Created by sc13967 on 01/12/2017.
  */
-public class MeasurementReference extends Reference {
+public class MeasurementRef extends Reference {
     private boolean calculated = true;
     private String imageObjName = "";
     private String description = "";
@@ -17,12 +17,12 @@ public class MeasurementReference extends Reference {
     private boolean exportStd = true;
 
 
-    public MeasurementReference(String name) {
+    public MeasurementRef(String name) {
         super(name);
         this.nickname = name;
     }
 
-    public MeasurementReference(String name, String imageObjName) {
+    public MeasurementRef(String name, String imageObjName) {
         super(name);
         this.imageObjName = imageObjName;
         this.nickname = name;
@@ -37,7 +37,7 @@ public class MeasurementReference extends Reference {
         return calculated;
     }
 
-    public MeasurementReference setCalculated(boolean calculated) {
+    public MeasurementRef setCalculated(boolean calculated) {
         this.calculated = calculated;
         return this;
     }
@@ -54,7 +54,7 @@ public class MeasurementReference extends Reference {
         return exportIndividual;
     }
 
-    public MeasurementReference setExportIndividual(boolean exportIndividual) {
+    public MeasurementRef setExportIndividual(boolean exportIndividual) {
         this.exportIndividual = exportIndividual;
         return this;
     }
@@ -63,7 +63,7 @@ public class MeasurementReference extends Reference {
         return exportMean;
     }
 
-    public MeasurementReference setExportMean(boolean exportMean) {
+    public MeasurementRef setExportMean(boolean exportMean) {
         this.exportMean = exportMean;
         return this;
     }
@@ -72,7 +72,7 @@ public class MeasurementReference extends Reference {
         return exportMin;
     }
 
-    public MeasurementReference setExportMin(boolean exportMin) {
+    public MeasurementRef setExportMin(boolean exportMin) {
         this.exportMin = exportMin;
         return this;
     }
@@ -81,7 +81,7 @@ public class MeasurementReference extends Reference {
         return exportMax;
     }
 
-    public MeasurementReference setExportMax(boolean exportMax) {
+    public MeasurementRef setExportMax(boolean exportMax) {
         this.exportMax = exportMax;
         return this;
     }
@@ -90,7 +90,7 @@ public class MeasurementReference extends Reference {
         return exportSum;
     }
 
-    public MeasurementReference setExportSum(boolean exportSum) {
+    public MeasurementRef setExportSum(boolean exportSum) {
         this.exportSum = exportSum;
         return this;
     }
@@ -99,7 +99,7 @@ public class MeasurementReference extends Reference {
         return exportStd;
     }
 
-    public MeasurementReference setExportStd(boolean exportStd) {
+    public MeasurementRef setExportStd(boolean exportStd) {
         this.exportStd = exportStd;
         return this;
     }
@@ -108,7 +108,7 @@ public class MeasurementReference extends Reference {
         return imageObjName;
     }
 
-    public MeasurementReference setImageObjName(String imageObjName) {
+    public MeasurementRef setImageObjName(String imageObjName) {
         this.imageObjName = imageObjName;
         return this;
 

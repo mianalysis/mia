@@ -248,7 +248,7 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
+    protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE1,this));
         parameters.add(new InputImageP(INPUT_IMAGE2,this));
         parameters.add(new ChoiceP(OVERWRITE_MODE,this,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
@@ -280,12 +280,12 @@ public class ImageCalculator extends Module {
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementRefCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
