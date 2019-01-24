@@ -39,7 +39,7 @@ public abstract class FileFolderType extends Parameter {
 
     @Override
     public String getValueAsString() {
-        return null;
+        return path;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import ij.IJ;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
@@ -35,13 +34,11 @@ public class EvalButton extends JButton implements ActionListener {
         setName("EvalButton");
         setToolTipText("Evaluate module");
         addActionListener(this);
-        updateColour();
-
-        setEnabled(module.isEnabled() && module.isRunnable());
+        updateState();
 
     }
 
-    public void updateColour() {
+    public void updateState() {
         int idx = GUI.getModules().indexOf(module);
 
         // If the module is being currently evaluated
@@ -68,6 +65,9 @@ public class EvalButton extends JButton implements ActionListener {
                 setRolloverIcon(redOpenIcon);
             }
         }
+
+        setEnabled(module.isEnabled() && module.isRunnable());
+
     }
 
 

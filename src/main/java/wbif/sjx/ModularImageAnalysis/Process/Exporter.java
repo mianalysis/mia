@@ -384,7 +384,6 @@ public class Exporter {
         exportXLS(currentWorkspaces,analysis,name);
     }
 
-
     private void exportXLS(WorkspaceCollection workspaces, Analysis analysis, String name) throws IOException {
         // Getting modules
         ModuleCollection modules = analysis.getModules();

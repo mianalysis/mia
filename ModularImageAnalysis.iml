@@ -14,8 +14,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: ome:bio-formats_plugins:5.8.2" level="project" />
     <orderEntry type="library" name="Maven: ch.systems.cisd:jhdf5:14.12.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:Fiji_Plugins:3.1.1" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:Fiji_Plugins:3.1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.maven.plugins:maven-project-info-reports-plugin:maven-plugin:2.9" level="project" />
@@ -143,20 +141,24 @@
     <orderEntry type="library" name="Maven: gov.nist.math:jama:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:Auto_Local_Threshold:1.10.0" level="project" />
     <orderEntry type="library" name="Maven: net.imagej:ij:1.52i" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:TrackMate_:3.8.0" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:3D_Viewer:4.0.2" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:bUnwarpJ_:2.6.9" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:Colocalisation_Analysis:3.0.5" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:fiji-lib:2.1.2" level="project" />
     <orderEntry type="library" name="Maven: net.imagej:ij1-patcher:0.12.9" level="project" />
-    <orderEntry type="library" name="Maven: net.imglib2:imglib2-algorithm-gpl:0.2.3" level="project" />
     <orderEntry type="library" name="Maven: net.imglib2:imglib2-ij:2.0.0-beta-44" level="project" />
     <orderEntry type="library" name="Maven: net.imglib2:imglib2-cache:1.0.0-beta-11" level="project" />
     <orderEntry type="library" name="Maven: com.github.ben-manes.caffeine:caffeine:2.4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:itextpdf:5.5.13" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:Colour_Deconvolution:3.0.2" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:CorrectBleach_:2.0.2" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:TrackMate_:3.8.0" level="project" />
+    <orderEntry type="library" name="Maven: sc.fiji:3D_Viewer:4.0.2" level="project" />
+    <orderEntry type="library" name="Maven: net.imglib2:imglib2-algorithm-gpl:0.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.scijava:j3dcore:1.6.0-scijava-2" level="project" />
     <orderEntry type="library" name="Maven: org.jogamp.gluegen:gluegen-rt:2.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.jogamp.jogl:jogl-all:2.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.scijava:j3dutils:1.6.0-scijava-2" level="project" />
     <orderEntry type="library" name="Maven: org.scijava:vecmath:1.6.0-scijava-2" level="project" />
-    <orderEntry type="library" name="Maven: com.itextpdf:itextpdf:5.5.13" level="project" />
     <orderEntry type="library" name="Maven: net.sf.jgrapht:jgrapht:0.8.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-dom:1.10" level="project" />
     <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-css:1.10" level="project" />
@@ -171,9 +173,6 @@
     <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-awt-util:1.10" level="project" />
     <orderEntry type="library" name="Maven: org.jdom:jdom2:2.0.6" level="project" />
     <orderEntry type="library" name="Maven: org.tinyjee.jgraphx:jgraphx:3.4.1.3" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:bUnwarpJ_:2.6.9" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:Colour_Deconvolution:3.0.2" level="project" />
-    <orderEntry type="library" name="Maven: sc.fiji:CorrectBleach_:2.0.2" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:Trainable_Segmentation:3.2.29" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:Anisotropic_Diffusion_2D:2.0.1" level="project" />
     <orderEntry type="library" name="Maven: sc.fiji:VIB-lib:2.2.0" level="project" />

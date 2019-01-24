@@ -36,12 +36,12 @@ public class BooleanParameter extends ParameterControl implements ActionListener
     public void actionPerformed(ActionEvent e) {
         parameter.setSelected(control.isSelected());
 
-        updateControl();
-
         int idx = GUI.getModules().indexOf(parameter.getModule());
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules(true);
+
+        updateControl();
 
     }
     @Override

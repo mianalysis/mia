@@ -32,11 +32,11 @@ public class ShowOutputButton extends JButton implements ActionListener {
         setMargin(new Insets(0,0,0,0));
         setName("Show output");
         setToolTipText("Show output from module");
-        setIcon();
+        updateState();
 
     }
 
-    public void setIcon() {
+    public void updateState() {
         if ((state && module.isEnabled()) && module.isRunnable()) setIcon(blackOpenIcon);
         else if ((state && module.isEnabled()) &! module.isRunnable()) setIcon(redOpenIcon);
         else if (state &! module.isEnabled()) setIcon(greyOpenIcon);
@@ -56,7 +56,7 @@ public class ShowOutputButton extends JButton implements ActionListener {
         // Invert state
         state = !state;
 
-        setIcon();
+        updateState();
         module.setShowOutput(state);
 
     }

@@ -169,12 +169,12 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
-            <artifactId>TrackMate_</artifactId>
+            <artifactId>bUnwarpJ_</artifactId>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
-            <artifactId>bUnwarpJ_</artifactId>
+            <artifactId>Colocalisation_Analysis</artifactId>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
@@ -185,6 +185,11 @@
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>CorrectBleach_</artifactId>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>TrackMate_</artifactId>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>

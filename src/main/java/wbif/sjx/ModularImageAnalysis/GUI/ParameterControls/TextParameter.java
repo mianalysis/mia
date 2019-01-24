@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Stephen on 20/05/2017.
@@ -38,12 +39,12 @@ public class TextParameter extends ParameterControl implements FocusListener {
     public void focusLost(FocusEvent e) {
         parameter.setValueFromString(control.getText());
 
-        updateControl();
-
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx - 1);
 
         GUI.updateModules(true);
+
+        updateControl();
 
     }
 

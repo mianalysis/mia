@@ -852,19 +852,21 @@ public class GUI {
 
     }
 
-    private static void updateEvalButtonStates() {
-        if (basicGUI) {
-            for (Component component : basicModulesScrollPane.getComponents()) {
-                if (component.getClass() == EvalButton.class) {
-                    ((EvalButton) component).updateColour();
-
-                }
-            }
-        } else {
-            for (Component component : modulesScrollPane.getComponents()) {
-                if (component.getClass() == EvalButton.class) {
-                    ((EvalButton) component).updateColour();
-
+    private static void updateButtonStates() {
+        if (!basicGUI) {
+            for (Component panel : modulesPanel.getComponents()) {
+                if (panel.getClass() == JPanel.class) {
+                    for (Component component: ((JPanel) panel).getComponents()) {
+                        if (component.getClass() == ModuleEnabledButton.class) {
+                            ((ModuleEnabledButton) component).updateState();
+                        } else if (component.getClass() == ShowOutputButton.class) {
+                            ((ShowOutputButton) component).updateState();
+                        } else if (component.getClass() == ModuleButton.class) {
+                            ((ModuleButton) component).updateState();
+                        } else if (component.getClass() == EvalButton.class) {
+                            ((EvalButton) component).updateState();
+                        }
+                    }
                 }
             }
         }
@@ -1102,14 +1104,12 @@ public class GUI {
 
         boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
-        inputButton.setColour();
+        inputButton.updateState();
         runnable = AnalysisTester.testModule(analysis.getOutputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
-        outputButton.setColour();
+        outputButton.updateState();
 
-
-        populateModuleList();
-        updateEvalButtonStates();
+        updateButtonStates();
 
         if (basicGUI) populateBasicModules();
         else populateModuleParameters();

@@ -85,7 +85,6 @@ public class FileParameter extends ParameterControl implements ActionListener {
         if (fileChooser.getSelectedFile() == null) return;
 
         parameter.setPath(fileChooser.getSelectedFile().getAbsolutePath());
-        updateControl();
 
         Module module = parameter.getModule();
         int idx = GUI.getModules().indexOf(module);
@@ -93,6 +92,8 @@ public class FileParameter extends ParameterControl implements ActionListener {
 
         if (module.getClass().isInstance(new InputControl())) GUI.updateTestFile();
         GUI.updateModules(true);
+
+        updateControl();
 
     }
 }
