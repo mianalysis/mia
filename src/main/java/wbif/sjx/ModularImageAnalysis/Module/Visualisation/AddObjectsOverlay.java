@@ -333,6 +333,7 @@ public class AddObjectsOverlay extends Module {
             pool.submit(task);
         }
 
+        pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
@@ -361,6 +362,7 @@ public class AddObjectsOverlay extends Module {
             pool.submit(task);
         }
 
+        pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
@@ -397,6 +399,7 @@ public class AddObjectsOverlay extends Module {
             pool.submit(task);
         }
 
+        pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
@@ -426,6 +429,7 @@ public class AddObjectsOverlay extends Module {
             pool.submit(task);
         }
 
+        pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
@@ -455,6 +459,7 @@ public class AddObjectsOverlay extends Module {
             pool.submit(task);
         }
 
+        pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
@@ -484,6 +489,7 @@ public class AddObjectsOverlay extends Module {
             pool.submit(task);
         }
 
+        pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }

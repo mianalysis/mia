@@ -15,7 +15,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  * Created by Stephen on 20/05/2017.
  */
 public class TextParameter extends ParameterControl implements FocusListener {
-    private Module module;
     private TextType parameter;
     private JTextField control;
 
@@ -39,8 +38,8 @@ public class TextParameter extends ParameterControl implements FocusListener {
     public void focusLost(FocusEvent e) {
         parameter.setValueFromString(control.getText());
 
-        int idx = GUI.getModules().indexOf(module);
-        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx - 1);
+        int idx = GUI.getModules().indexOf(parameter.getModule());
+        if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules(true);
 
