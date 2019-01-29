@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
@@ -31,7 +32,9 @@ public class ModuleButton extends JToggleButton implements ActionListener {
     // PUBLIC METHODS
 
     public void updateState() {
-        if (module.isEnabled() && module.isRunnable()) {
+        if (module.getClass() == GUISeparator.class) {
+            setForeground(Color.BLUE);
+        } else if (module.isEnabled() && module.isRunnable()) {
             setForeground(Color.BLACK);
         } else if (module.isEnabled() &! module.isRunnable()) {
             setForeground(Color.RED);

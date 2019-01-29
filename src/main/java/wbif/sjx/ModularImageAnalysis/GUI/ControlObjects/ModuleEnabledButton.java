@@ -15,15 +15,12 @@ import java.awt.event.ActionListener;
  */
 public class ModuleEnabledButton extends JButton implements ActionListener {
     private Module module;
-    private boolean state = true;
     private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_black_12px.png"), "");
     private static final ImageIcon redIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_red_12px.png"), "");
     private static final ImageIcon greenIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/power_brightgreen_12px.png"), "");
 
     public ModuleEnabledButton(Module module) {
         this.module = module;
-
-        state = module.isEnabled();
 
         setFocusPainted(false);
         setSelected(false);
@@ -37,8 +34,9 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
-        if (state && module.isRunnable()) setIcon(greenIcon);
-        else if (state &! module.isRunnable()) setIcon(redIcon);
+        System.out.println(module.getNickname()+"_"+module.isEnabled()+"_"+module.isRunnable());
+        if (module.isEnabled() && module.isRunnable()) setIcon(greenIcon);
+        else if (module.isEnabled() &! module.isRunnable()) setIcon(redIcon);
         else setIcon(blackIcon);
     }
 
@@ -49,10 +47,9 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // Invert state
-        state = !state;
+        module.setEnabled(!module.isEnabled());
 
         updateState();
-        module.setEnabled(state);
 
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
@@ -65,7 +62,7 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
                 if (currentModule.getClass().isInstance(new GUISeparator())) {
                     break;
                 } else {
-                    currentModule.setEnabled(state);
+                    currentModule.setEnabled(module.isEnabled());
                 }
             }
         }

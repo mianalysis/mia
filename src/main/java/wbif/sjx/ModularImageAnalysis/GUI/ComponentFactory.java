@@ -145,7 +145,6 @@ public class ComponentFactory {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         ModuleButton button = new ModuleButton(module);
         button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
-        button.setForeground(Color.BLUE);
         group.add(button);
         if (activeModule != null) {
             if (module == activeModule) button.setSelected(true);
