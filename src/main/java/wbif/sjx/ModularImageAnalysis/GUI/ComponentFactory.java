@@ -18,7 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * Created by sc13967 on 23/06/2017.
+ * Created by Stephen on 23/06/2017.
  */
 public class ComponentFactory {
     private int elementHeight;
@@ -55,6 +55,7 @@ public class ComponentFactory {
         }
 
         ParameterControl parameterControl = parameter.getControl();
+        parameterControl.updateControl();
         JComponent parameterComponent = parameterControl.getComponent();
 
         // Adding the input component
@@ -145,7 +146,6 @@ public class ComponentFactory {
         c.anchor = GridBagConstraints.FIRST_LINE_START;
         ModuleButton button = new ModuleButton(module);
         button.setPreferredSize(new Dimension(panelWidth-3*elementHeight+6,elementHeight));
-        button.setForeground(Color.BLUE);
         group.add(button);
         if (activeModule != null) {
             if (module == activeModule) button.setSelected(true);

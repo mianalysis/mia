@@ -544,7 +544,7 @@ public class AddObjectsOverlay extends Module {
         String parentObjectsForLabelName = parameters.getValue(PARENT_OBJECT_FOR_LABEL);
         String measurementForLabel = parameters.getValue(MEASUREMENT_FOR_LABEL);
 
-        int lineWidth = parameters.getValue(LINE_WIDTH);
+        double lineWidth = parameters.getValue(LINE_WIDTH);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         // Duplicating the image, so the original isn't altered

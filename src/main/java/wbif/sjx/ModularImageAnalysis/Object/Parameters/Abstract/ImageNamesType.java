@@ -15,6 +15,5 @@ public abstract class ImageNamesType extends ChoiceType {
     public String[] getChoices() {
         LinkedHashSet<OutputImageP> images = GUI.getModules().getAvailableImages(module);
         return images.stream().map(OutputImageP::getImageName).toArray(String[]::new);
-
     }
 }

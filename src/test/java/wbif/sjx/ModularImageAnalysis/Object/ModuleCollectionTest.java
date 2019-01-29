@@ -5,6 +5,9 @@ import net.imglib2.type.numeric.RealType;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureImageIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureImageTexture;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.FilterImage;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.RemoveImage;
+import wbif.sjx.ModularImageAnalysis.Module.InputOutput.ImageLoader;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureObjectTexture;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.MeasureObjectCentroid;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial.MeasureObjectShape;
@@ -12,12 +15,41 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.Trac
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement.ObjectClusterer;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
 
 import java.util.LinkedHashSet;
 
 import static org.junit.Assert.*;
 
 public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
+    @Test
+    public void testGetAvailableImages() {
+        // Creating a ModuleCollection to hold the Modules
+        ModuleCollection modules = new ModuleCollection();
+
+        String im1Name = "Im 1";
+        String im2Name = "New_image";
+
+        // Populating some modules (no need to populate all parameters as these should be initialised)
+        ImageLoader imageLoader= new ImageLoader();
+        imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,im1Name);
+        modules.add(imageLoader);
+
+        FilterImage filterImage = new FilterImage();
+        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,im1Name);
+        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
+        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,im2Name);
+        modules.add(filterImage);
+
+        RemoveImage removeImage = new RemoveImage();
+        removeImage.updateParameterValue(RemoveImage.INPUT_IMAGE,im1Name);
+        modules.add(removeImage);
+
+        LinkedHashSet<OutputImageP> availableImages = modules.getAvailableImages(null);
+
+        assertEquals(1,availableImages.size());
+
+    }
 
     @Test
     public void testGetImageMeasurementRefsNoCutoff() {
