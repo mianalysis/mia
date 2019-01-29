@@ -5,8 +5,11 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputObjectsP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputObjectsP;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
 import java.util.ArrayList;
@@ -19,7 +22,7 @@ public class ProjectObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String OUTPUT_OBJECTS = "Output objects";
 
-    public static Obj createProjection(Obj inputObject, String outputObjectsName, boolean is2D) {
+    public static Obj createProjection(Obj inputObject, String outputObjectsName, boolean is2D) throws IntegerOverflowException {
         ArrayList<Integer> x = inputObject.getXCoords();
         ArrayList<Integer> y = inputObject.getYCoords();
 
@@ -83,7 +86,12 @@ public class ProjectObjects extends Module {
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
 
         for (Obj inputObject:inputObjects.values()) {
-            Obj outputObject = createProjection(inputObject,outputObjectsName, inputObject.is2D());
+            Obj outputObject = null;
+            try {
+                outputObject = createProjection(inputObject,outputObjectsName, inputObject.is2D());
+            } catch (IntegerOverflowException e) {
+                return false;
+            }
             outputObjects.put(outputObject.getID(),outputObject);
         }
 
@@ -105,9 +113,9 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
 
     }
 
@@ -117,17 +125,17 @@ public class ProjectObjects extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

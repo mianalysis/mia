@@ -17,10 +17,11 @@ import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetL
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -97,7 +98,7 @@ public class ObjectClusterer extends Module {
 
     }
 
-    public void applyClusterVolume(Obj outputObject, ObjCollection childObjects, double eps) {
+    public void applyClusterVolume(Obj outputObject, ObjCollection childObjects, double eps) throws IntegerOverflowException {
         ObjCollection children = outputObject.getChildren(childObjects.getName());
 
         // Initial pass, adding all coordinates to cluster object
@@ -202,7 +203,11 @@ public class ObjectClusterer extends Module {
         // Adding measurement to each cluster and adding coordinates to clusters
         if (applyVolume) {
             for (Obj outputObject : outputObjects.values()) {
-                applyClusterVolume(outputObject, inputObjects, eps);
+                try {
+                    applyClusterVolume(outputObject, inputObjects, eps);
+                } catch (IntegerOverflowException e) {
+                    return false;
+                }
             }
         }
 
@@ -216,17 +221,15 @@ public class ObjectClusterer extends Module {
             int[] temporalLimits = inputObjects.getTemporalLimits();
             ImagePlus dispIpl = IJ.createHyperStack(outputObjectsName,spatialLimits[0][1],spatialLimits[1][1],1,spatialLimits[2][1],temporalLimits[1],8);
 
-            // Initialising the overlay module
-            AddObjectsOverlay addObjectsOverlay = new AddObjectsOverlay();
-            addObjectsOverlay.updateParameterValue(AddObjectsOverlay.POSITION_MODE,AddObjectsOverlay.PositionModes.OUTLINE)
-                    .updateParameterValue(AddObjectsOverlay.LINE_WIDTH,0.5)
-                    .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8);
-
             // Generating colours
             HashMap<Integer,Float> hues = ColourFactory.getParentIDHues(inputObjects,outputObjectsName,true);
 
             // Adding overlay and displaying image
-            addObjectsOverlay.createOverlay(dispIpl,inputObjects,hues,null);
+            try {
+                new AddObjectsOverlay().createOutlineOverlay(dispIpl,inputObjects,hues,false,0.2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             dispIpl.setPosition(1,1,1);
             dispIpl.updateChannelAndDraw();
             dispIpl.show();
@@ -238,15 +241,15 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(CLUSTER_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(APPLY_VOLUME, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(CLUSTERING_ALGORITHM, Parameter.CHOICE_ARRAY,ClusteringAlgorithms.DBSCAN,ClusteringAlgorithms.ALL));
-        parameters.add(new Parameter(K_CLUSTERS, Parameter.INTEGER,100));
-        parameters.add(new Parameter(MAX_ITERATIONS, Parameter.INTEGER,10000));
-        parameters.add(new Parameter(EPS, Parameter.DOUBLE,10.0));
-        parameters.add(new Parameter(MIN_POINTS, Parameter.INTEGER,5));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new OutputObjectsP(CLUSTER_OBJECTS, this));
+        parameters.add(new BooleanP(APPLY_VOLUME, this, false));
+        parameters.add(new ChoiceP(CLUSTERING_ALGORITHM, this,ClusteringAlgorithms.DBSCAN,ClusteringAlgorithms.ALL));
+        parameters.add(new IntegerP(K_CLUSTERS, this,100));
+        parameters.add(new IntegerP(MAX_ITERATIONS, this,10000));
+        parameters.add(new DoubleP(EPS, this,10.0));
+        parameters.add(new IntegerP(MIN_POINTS, this,5));
 
     }
 
@@ -275,17 +278,17 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

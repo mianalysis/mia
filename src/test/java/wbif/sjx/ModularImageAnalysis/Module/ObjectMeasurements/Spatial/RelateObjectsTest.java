@@ -55,7 +55,6 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.MATCHING_IDS);
@@ -121,7 +120,6 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -207,7 +205,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,inputObjectsName);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,inputSpotsName);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -294,7 +292,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -339,7 +337,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -396,7 +394,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -458,7 +456,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -504,7 +502,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -550,7 +548,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -596,7 +594,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -653,7 +651,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -715,7 +713,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -761,7 +759,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);
@@ -807,7 +805,7 @@ public class RelateObjectsTest {
 
         // Initialising RelateObjects
         RelateObjects relateObjects = new RelateObjects();
-        relateObjects.initialiseParameters();
+        
         relateObjects.updateParameterValue(RelateObjects.PARENT_OBJECTS,proxObj1Name);
         relateObjects.updateParameterValue(RelateObjects.CHILD_OBJECTS,proxObj2Name);
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.PROXIMITY);

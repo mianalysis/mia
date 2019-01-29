@@ -5,6 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 
@@ -333,28 +334,30 @@ public class FilterObjects extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(MOVE_FILTERED,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(OUTPUT_FILTERED_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(FILTER_METHOD, Parameter.CHOICE_ARRAY,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
-        parameters.add(new Parameter(REFERENCE_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INCLUDE_Z_POSITION,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(MEASUREMENT, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(CHILD_OBJECTS, Parameter.CHILD_OBJECTS,null,null));
-        parameters.add(new Parameter(REFERENCE_MODE, Parameter.CHOICE_ARRAY, ReferenceModes.FIXED_VALUE,ReferenceModes.ALL));
-        parameters.add(new Parameter(REFERENCE_VALUE, Parameter.DOUBLE,1d));
-        parameters.add(new Parameter(REFERENCE_VAL_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(REFERENCE_IMAGE_MEASUREMENT, Parameter.IMAGE_MEASUREMENT,"",""));
-        parameters.add(new Parameter(REFERENCE_VAL_PARENT_OBJECT, Parameter.PARENT_OBJECTS,null,null));
-        parameters.add(new Parameter(REFERENCE_OBJECT_MEASUREMENT, Parameter.OBJECT_MEASUREMENT,"",""));
-        parameters.add(new Parameter(REFERENCE_MULTIPLIER, Parameter.DOUBLE, 1d));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new BooleanP(MOVE_FILTERED,this,false));
+        parameters.add(new OutputObjectsP(OUTPUT_FILTERED_OBJECTS, this));
+        parameters.add(new ChoiceP(FILTER_METHOD, this,FilterMethods.REMOVE_ON_IMAGE_EDGE_2D,FilterMethods.ALL));
+        parameters.add(new InputImageP(REFERENCE_IMAGE, this));
+        parameters.add(new BooleanP(INCLUDE_Z_POSITION,this,false));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT, this));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT, this));
+        parameters.add(new ChildObjectsP(CHILD_OBJECTS, this));
+        parameters.add(new ChoiceP(REFERENCE_MODE, this, ReferenceModes.FIXED_VALUE,ReferenceModes.ALL));
+        parameters.add(new DoubleP(REFERENCE_VALUE, this,1d));
+        parameters.add(new InputImageP(REFERENCE_VAL_IMAGE, this));
+        parameters.add(new ImageMeasurementP(REFERENCE_IMAGE_MEASUREMENT, this));
+        parameters.add(new ParentObjectsP(REFERENCE_VAL_PARENT_OBJECT, this));
+        parameters.add(new ObjectMeasurementP(REFERENCE_OBJECT_MEASUREMENT, this));
+        parameters.add(new DoubleP(REFERENCE_MULTIPLIER, this, 1d));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+
         ParameterCollection returnedParameters = new ParameterCollection();
         returnedParameters.add(parameters.getParameter(INPUT_OBJECTS));
         returnedParameters.add(parameters.getParameter(MOVE_FILTERED));
@@ -368,8 +371,7 @@ public class FilterObjects extends Module {
             case FilterMethods.MISSING_MEASUREMENTS:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
                 if (parameters.getValue(INPUT_OBJECTS) != null) {
-                    parameters.updateValueSource(MEASUREMENT,parameters.getValue(INPUT_OBJECTS));
-
+                    ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
                 }
                 break;
 
@@ -381,8 +383,7 @@ public class FilterObjects extends Module {
             case FilterMethods.NO_PARENT:
             case FilterMethods.WITH_PARENT:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
-                String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                parameters.updateValueSource(PARENT_OBJECT,inputObjectsName);
+                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
                 break;
 
             case FilterMethods.MIN_NUMBER_OF_CHILDREN:
@@ -391,13 +392,13 @@ public class FilterObjects extends Module {
                 returnedParameters.add(parameters.getParameter(REFERENCE_VALUE));
 
                 inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-                parameters.updateValueSource(CHILD_OBJECTS,inputObjectsName);
+                ((ChildObjectsP) parameters.getParameter(CHILD_OBJECTS)).setParentObjectsName(inputObjectsName);
                 break;
 
             case FilterMethods.MEASUREMENTS_SMALLER_THAN:
             case FilterMethods.MEASUREMENTS_LARGER_THAN:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
-                parameters.updateValueSource(MEASUREMENT, parameters.getValue(INPUT_OBJECTS));
+                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
 
                 returnedParameters.add(parameters.getParameter(REFERENCE_MODE));
                 switch ((String) parameters.getValue(REFERENCE_MODE)) {
@@ -409,15 +410,17 @@ public class FilterObjects extends Module {
                         returnedParameters.add(parameters.getParameter(REFERENCE_VAL_IMAGE));
                         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
                         returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
-                        parameters.updateValueSource(REFERENCE_IMAGE_MEASUREMENT,parameters.getValue(REFERENCE_VAL_IMAGE));
+                        String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE);
+                        ((ImageMeasurementP) parameters.getParameter(MEASUREMENT)).setImageName(referenceValueImageName);
                         break;
 
                     case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
                         returnedParameters.add(parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT));
                         returnedParameters.add(parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT));
                         returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
-                        parameters.updateValueSource(REFERENCE_VAL_PARENT_OBJECT,parameters.getValue(INPUT_OBJECTS));
-                        parameters.updateValueSource(REFERENCE_OBJECT_MEASUREMENT,parameters.getValue(REFERENCE_VAL_PARENT_OBJECT));
+                        String referenceValueParentObjectsName = parameters.getValue(REFERENCE_VAL_PARENT_OBJECT);
+                        ((ParentObjectsP) parameters.getParameter(REFERENCE_VAL_PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
+                        ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT)).setObjectName(referenceValueParentObjectsName);
                         break;
                 }
 
@@ -430,17 +433,17 @@ public class FilterObjects extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

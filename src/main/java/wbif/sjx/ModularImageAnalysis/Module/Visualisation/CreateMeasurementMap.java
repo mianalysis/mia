@@ -9,6 +9,7 @@ import org.apache.commons.math3.analysis.function.Gaussian;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
@@ -324,16 +325,16 @@ public class CreateMeasurementMap extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(TEMPLATE_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(MEASUREMENT_MODE,Parameter.CHOICE_ARRAY,MeasurementModes.MEASUREMENT,MeasurementModes.ALL));
-        parameters.add(new Parameter(STATISTIC,Parameter.CHOICE_ARRAY,Statistics.MEAN,Statistics.ALL));
-        parameters.add(new Parameter(PARENT_OBJECT,Parameter.PARENT_OBJECTS,null));
-        parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null));
-        parameters.add(new Parameter(RANGE,Parameter.INTEGER,3));
-        parameters.add(new Parameter(AVERAGE_SLICES,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(AVERAGE_TIME,Parameter.BOOLEAN,true));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new InputImageP(TEMPLATE_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ChoiceP(MEASUREMENT_MODE,this,MeasurementModes.MEASUREMENT,MeasurementModes.ALL));
+        parameters.add(new ChoiceP(STATISTIC,this,Statistics.MEAN,Statistics.ALL));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT,this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
+        parameters.add(new IntegerP(RANGE,this,3));
+        parameters.add(new BooleanP(AVERAGE_SLICES,this,true));
+        parameters.add(new BooleanP(AVERAGE_TIME,this,true));
 
     }
 
@@ -352,9 +353,7 @@ public class CreateMeasurementMap extends Module {
             case MeasurementModes.MEASUREMENT:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
                 returnedParameters.add(parameters.getParameter(STATISTIC));
-
-                parameters.updateValueSource(MEASUREMENT,inputObjectsName);
-
+                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
                 break;
 
             case MeasurementModes.PARENT_MEASUREMENT:
@@ -362,9 +361,9 @@ public class CreateMeasurementMap extends Module {
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
                 returnedParameters.add(parameters.getParameter(STATISTIC));
 
-                parameters.updateValueSource(PARENT_OBJECT,inputObjectsName);
-                parameters.updateValueSource(MEASUREMENT,parameters.getValue(PARENT_OBJECT));
-
+                ((ParentObjectsP) parameters.getParameter(MEASUREMENT)).setChildObjectsName(inputObjectsName);
+                String parentObjectsName = parameters.getValue(PARENT_OBJECT);
+                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(parentObjectsName);
                 break;
         }
 
@@ -377,17 +376,17 @@ public class CreateMeasurementMap extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -3,6 +3,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.FilePathP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputObjectsP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -103,10 +107,10 @@ public class ApplyManualClassification extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(CLASSIFICATION_FILE, Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(REMOVE_MISSING, Parameter.BOOLEAN,false));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new FilePathP(CLASSIFICATION_FILE, this));
+        parameters.add(new BooleanP(REMOVE_MISSING, this,false));
 
     }
 
@@ -123,24 +127,24 @@ public class ApplyManualClassification extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
-        MeasurementReference classMeas = objectMeasurementReferences.getOrPut(Measurements.CLASS);
+        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
         classMeas.setImageObjName(parameters.getValue(INPUT_OBJECTS));
         classMeas.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

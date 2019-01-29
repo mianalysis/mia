@@ -3,6 +3,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.DoubleP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
@@ -81,11 +85,11 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(X_OFFSET, Parameter.DOUBLE,1));
-        parameters.add(new Parameter(Y_OFFSET, Parameter.DOUBLE,0));
-        parameters.add(new Parameter(Z_OFFSET, Parameter.INTEGER,0));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new DoubleP(X_OFFSET, this,1));
+        parameters.add(new DoubleP(Y_OFFSET, this,0));
+        parameters.add(new IntegerP(Z_OFFSET, this,0));
 
     }
 
@@ -95,38 +99,38 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        imageMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        imageMeasurementRefs.setAllCalculated(false);
 
         String imageName = parameters.getValue(INPUT_IMAGE);
 
-        MeasurementReference asm = imageMeasurementReferences.getOrPut(Measurements.ASM);
+        MeasurementRef asm = imageMeasurementRefs.getOrPut(Measurements.ASM);
         asm.setImageObjName(imageName);
         asm.setCalculated(true);
 
-        MeasurementReference contrast = imageMeasurementReferences.getOrPut(Measurements.CONTRAST);
+        MeasurementRef contrast = imageMeasurementRefs.getOrPut(Measurements.CONTRAST);
         contrast.setImageObjName(imageName);
         contrast.setCalculated(true);
 
-        MeasurementReference correlation = imageMeasurementReferences.getOrPut(Measurements.CORRELATION);
+        MeasurementRef correlation = imageMeasurementRefs.getOrPut(Measurements.CORRELATION);
         correlation.setImageObjName(imageName);
         correlation.setCalculated(true);
 
-        MeasurementReference entropy = imageMeasurementReferences.getOrPut(Measurements.ENTROPY);
+        MeasurementRef entropy = imageMeasurementRefs.getOrPut(Measurements.ENTROPY);
         entropy.setImageObjName(imageName);
         entropy.setCalculated(true);
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

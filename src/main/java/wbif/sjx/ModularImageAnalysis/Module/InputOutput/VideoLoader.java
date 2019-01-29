@@ -8,21 +8,17 @@ import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import org.apache.commons.io.FilenameUtils;
-import org.bytedeco.javacpp.BytePointer;
-import org.janelia.it.jacs.shared.ffmpeg.FFMPGByteAcceptor;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Object.HCMetadata;
 
-import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -267,23 +263,23 @@ public class VideoLoader extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
-        parameters.add(new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.INPUT_FILE_PREFIX,NameFormats.ALL));
-        parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
-        parameters.add(new Parameter(SUFFIX,Parameter.STRING,""));
-        parameters.add(new Parameter(EXTENSION,Parameter.STRING,""));
-        parameters.add(new Parameter(INCLUDE_SERIES_NUMBER,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(FRAMES,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(CROP_IMAGE, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
-        parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
-        parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));
-        parameters.add(new Parameter(HEIGHT, Parameter.INTEGER,512));
-        parameters.add(new Parameter(SET_CAL, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(XY_CAL, Parameter.DOUBLE, 1.0));
-        parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
+        parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.INPUT_FILE_PREFIX,NameFormats.ALL));
+        parameters.add(new StringP(PREFIX,this));
+        parameters.add(new StringP(SUFFIX,this));
+        parameters.add(new StringP(EXTENSION,this));
+        parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
+        parameters.add(new FilePathP(FILE_PATH, this));
+        parameters.add(new StringP(FRAMES,this,"1-end"));
+        parameters.add(new BooleanP(CROP_IMAGE, this, false));
+        parameters.add(new IntegerP(LEFT, this,0));
+        parameters.add(new IntegerP(TOP, this,0));
+        parameters.add(new IntegerP(WIDTH, this,512));
+        parameters.add(new IntegerP(HEIGHT, this,512));
+        parameters.add(new BooleanP(SET_CAL, this, false));
+        parameters.add(new DoubleP(XY_CAL, this, 1.0));
+        parameters.add(new DoubleP(Z_CAL, this, 1.0));
 
     }
 
@@ -341,17 +337,17 @@ public class VideoLoader extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

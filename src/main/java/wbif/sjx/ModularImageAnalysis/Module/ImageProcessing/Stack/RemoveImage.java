@@ -3,6 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemovedImageP;
 
 /**
  * Created by sc13967 on 30/06/2017.
@@ -39,8 +41,8 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.REMOVED_IMAGE,null));
+    protected void initialiseParameters() {
+        parameters.add(new RemovedImageP(INPUT_IMAGE,this));
 
     }
 
@@ -51,17 +53,17 @@ public class RemoveImage extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

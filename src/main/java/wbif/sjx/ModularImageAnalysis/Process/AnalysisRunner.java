@@ -5,6 +5,10 @@ import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.MIA;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.FileFolderPathP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.StringP;
 import wbif.sjx.ModularImageAnalysis.Object.ProgressMonitor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
@@ -31,8 +35,9 @@ public class AnalysisRunner {
         Exporter exporter = initialiseExporter(outputControl,exportName);
 
         // Initialising BatchProcessor
+        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
         batchProcessor = new BatchProcessor(inputFile);
-        batchProcessor.setnThreads(inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS));
+        batchProcessor.setnThreads(nThreads);
         addFilenameFilters(inputControl);
 
         // Resetting progress monitor
@@ -49,7 +54,7 @@ public class AnalysisRunner {
     }
 
     public static File getInputFile(InputControl inputControl) {
-        String inputPath = inputControl.getParameterValue(InputControl.INPUT_PATH);
+        String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
 
         if (!checkInputFileValidity(inputPath)) return null;
         return new File(inputPath);
@@ -74,9 +79,9 @@ public class AnalysisRunner {
     }
 
     public static String getExportName(InputControl inputControl, File inputFile) {
-        String seriesMode = inputControl.getParameterValue(InputControl.SERIES_MODE);
-        String seriesList = inputControl.getParameterValue(InputControl.SERIES_LIST);
-        int seriesNumber = inputControl.getParameterValue(InputControl.SERIES_NUMBER);
+        String seriesMode = ((ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE)).getChoice();
+        String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getValue();
+        int seriesNumber = ((IntegerP) inputControl.getParameter(InputControl.SERIES_NUMBER)).getValue();
 
         if (inputFile.isFile()) {
             switch (seriesMode) {

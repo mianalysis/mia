@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,11 +26,11 @@ public class VisibleCheck extends JButton implements ActionListener {
         setMargin(new Insets(0,0,0,0));
         setName("Show parameter");
         setToolTipText("Show parameter on basic GUI");
-        setIcon();
+        updateIcon();
 
     }
 
-    public void setIcon() {
+    public void updateIcon() {
         if (parameter.isVisible()) setIcon(openIcon);
         else setIcon(closedIcon);
     }
@@ -42,7 +42,7 @@ public class VisibleCheck extends JButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         parameter.setVisible(!parameter.isVisible());
-        setIcon();
+        updateIcon();
 
     }
 }

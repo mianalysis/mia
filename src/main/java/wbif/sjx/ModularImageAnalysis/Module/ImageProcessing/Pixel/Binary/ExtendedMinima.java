@@ -5,13 +5,12 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
-import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -155,12 +154,12 @@ public class ExtendedMinima extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(DYNAMIC, Parameter.INTEGER,1));
-        parameters.add(new Parameter(CONNECTIVITY_3D, Parameter.CHOICE_ARRAY, Connectivity.SIX, Connectivity.ALL));
-        parameters.add(new Parameter(ENABLE_MULTITHREADING, Parameter.BOOLEAN, true));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new IntegerP(DYNAMIC, this,1));
+        parameters.add(new ChoiceP(CONNECTIVITY_3D, this, Connectivity.SIX, Connectivity.ALL));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
     }
 
@@ -183,17 +182,17 @@ public class ExtendedMinima extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

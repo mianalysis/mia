@@ -14,6 +14,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConve
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.Point;
 
@@ -272,14 +273,14 @@ public class CreateDistanceMap extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.DISTANCE_FROM_CENTROID,ReferenceModes.ALL));
-        parameters.add(new Parameter(INVERT_MAP_WITHIN_OBJECTS,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(MASKING_MODE,Parameter.CHOICE_ARRAY,MaskingModes.INSIDE_AND_OUTSIDE,MaskingModes.ALL));
-        parameters.add(new Parameter(NORMALISE_MAP_PER_OBJECT,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ChoiceP(REFERENCE_MODE,this,ReferenceModes.DISTANCE_FROM_CENTROID,ReferenceModes.ALL));
+        parameters.add(new BooleanP(INVERT_MAP_WITHIN_OBJECTS,this,true));
+        parameters.add(new ChoiceP(MASKING_MODE,this,MaskingModes.INSIDE_AND_OUTSIDE,MaskingModes.ALL));
+        parameters.add(new BooleanP(NORMALISE_MAP_PER_OBJECT,this,false));
+        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
 
     }
 
@@ -316,17 +317,17 @@ public class CreateDistanceMap extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -6,6 +6,10 @@ import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
 /**
  * Created by sc13967 on 08/05/2017.
@@ -18,7 +22,6 @@ public class ChannelExtractor extends Module {
     @Override
     public String getTitle() {
         return "Channel extractor";
-
     }
 
     @Override
@@ -59,10 +62,10 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(CHANNEL_TO_EXTRACT, Parameter.INTEGER,1));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new IntegerP(CHANNEL_TO_EXTRACT,this,1));
 
     }
 
@@ -72,17 +75,17 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

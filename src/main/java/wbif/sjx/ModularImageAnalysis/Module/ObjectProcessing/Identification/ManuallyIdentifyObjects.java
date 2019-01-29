@@ -1,22 +1,22 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.*;
-import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
-import ij.process.StackStatistics;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputObjectsP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
@@ -49,6 +49,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private double dppZ;
     private String calibrationUnits;
     private boolean twoD;
+    private boolean overflow = false;
 
     private int elementHeight = 40;
 
@@ -71,22 +72,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-
-    public static void main(String[] args) {
-        new ImageJ();
-
-        Workspace workspace = new Workspace(0,null,0);
-
-        ImagePlus ipl = IJ.createImage("dfsd",400,300,1,8);
-        Image image = new Image("Im",ipl);
-        workspace.addImage(image);
-
-        ManuallyIdentifyObjects manuallyIdentifyObjects = new ManuallyIdentifyObjects();
-        manuallyIdentifyObjects.updateParameterValue(ManuallyIdentifyObjects.INPUT_IMAGE,"Im");
-        manuallyIdentifyObjects.setShowOutput(true);
-        manuallyIdentifyObjects.run(workspace);
-
-    }
 
     private void showOptionsPanel() {
         rois = new HashMap<>();
@@ -184,7 +169,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode) {
+    public ObjCollection applyInterpolation(ObjCollection outputObjects, Image templateImage, String interpolationMode) throws IntegerOverflowException {
         // Create a binary image of the objects
         HashMap<Integer, Float> hues = ColourFactory.getSingleColourHues(outputObjects,ColourFactory.SingleColours.WHITE);
         Image binaryImage = outputObjects.convertObjectsToImage("Binary",templateImage,hues,8,false);
@@ -216,7 +201,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
 
-        // We only want to interpolate in time, so need to process each Z-slice of the stack separately
+        // We only want to interpolate in time, so need to processAutomatic each Z-slice of the stack separately
         for (int z=1;z<=nSlices;z++) {
             // Extracting the slice and interpolating
             ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", z + "-" + z, "1-" + nFrames);
@@ -231,7 +216,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         BinaryInterpolator binaryInterpolator = new BinaryInterpolator();
 
-        // We only want to interpolate in z, so need to process each timepoint separately
+        // We only want to interpolate in z, so need to processAutomatic each timepoint separately
         for (int t=1;t<=nFrames;t++) {
             // Extracting the slice and interpolating
             ImagePlus sliceIpl = SubHyperstackMaker.makeSubhyperstack(binaryIpl, "1-1", "1-" + nSlices, t + "-" + t);
@@ -293,13 +278,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             displayImagePlus.setOverlay(overlay);
         }
 
-        // Storing the image calibration
-        Calibration calibration = inputImagePlus.getCalibration();
-        dppXY = calibration.getX(1);
-        dppZ = calibration.getZ(1);
-        calibrationUnits = calibration.getUnits();
-        twoD = inputImagePlus.getNSlices()==1;
-
         // Clearing any ROIs stored from previous runs
         rois = new HashMap<>();
         objectsPanel.removeAll();
@@ -321,12 +299,19 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             }
         }
 
+        // If more pixels than Integer.MAX_VALUE were assigned, return false (IntegerOverflowException).
+        if (overflow) return false;
+
         // If necessary, apply interpolation
         switch (interpolationMode) {
             case InterpolationModes.SPATIAL:
             case InterpolationModes.TEMPORAL:
             case InterpolationModes.SPATIAL_AND_TEMPORAL:
-                outputObjects = applyInterpolation(outputObjects, inputImage, interpolationMode);
+                try {
+                    outputObjects = applyInterpolation(outputObjects, inputImage, interpolationMode);
+                } catch (IntegerOverflowException e) {
+                    return false;
+                }
                 break;
         }
 
@@ -348,9 +333,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE, null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS, Parameter.OUTPUT_OBJECTS, null));
-        parameters.add(new Parameter(INTERPOLATION_MODE,Parameter.CHOICE_ARRAY,InterpolationModes.NONE,InterpolationModes.ALL));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS, this));
+        parameters.add(new ChoiceP(INTERPOLATION_MODE,this,InterpolationModes.NONE,InterpolationModes.ALL));
 
     }
 
@@ -360,17 +345,17 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
@@ -391,7 +376,11 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 break;
 
             case (FINISH):
-                processObjects();
+                try {
+                    processObjects();
+                } catch (IntegerOverflowException e1) {
+                    overflow = true;
+                }
                 frame.dispose();
                 frame = null;
                 displayImagePlus.close();
@@ -445,7 +434,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public void processObjects() {
+    public void processObjects() throws IntegerOverflowException {
         // Processing each list of Rois, then converting them to objects
         for (int ID:rois.keySet()) {
             ArrayList<ObjRoi> currentRois = rois.get(ID);
@@ -533,7 +522,7 @@ class ObjRoi {
 
     public static Roi duplicateRoi(Roi roi) {
         Roi newRoi;
-        // Need to process Roi depending on its type
+        // Need to processAutomatic Roi depending on its type
         switch (roi.getType()) {
             case Roi.RECTANGLE:
                 newRoi = new Roi(roi.getBounds());

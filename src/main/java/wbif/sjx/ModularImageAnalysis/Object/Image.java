@@ -13,6 +13,7 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
 
@@ -44,12 +45,12 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
-    public ObjCollection convertImageToObjects(String outputObjectsName) {
+    public ObjCollection convertImageToObjects(String outputObjectsName) throws IntegerOverflowException {
         return convertImageToObjects(outputObjectsName,false);
 
     }
 
-    public ObjCollection convertImageToObjects(String outputObjectsName, boolean singleObject) {
+    public ObjCollection convertImageToObjects(String outputObjectsName, boolean singleObject) throws IntegerOverflowException {
         // Need to get coordinates and convert to a HCObject
         ObjCollection outputObjects = new ObjCollection(outputObjectsName); //Local ArrayList of objects
 

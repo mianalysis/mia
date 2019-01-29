@@ -4,6 +4,7 @@ import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.MetadataExtractors.*;
 import wbif.sjx.common.Object.HCMetadata;
 
@@ -319,22 +320,22 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(EXTRACTOR_MODE,Parameter.CHOICE_ARRAY,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
-        parameters.add(new Parameter(FILENAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FilenameExtractors.GENERIC,FilenameExtractors.ALL));
-        parameters.add(new Parameter(FOLDERNAME_EXTRACTOR, Parameter.CHOICE_ARRAY,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
-        parameters.add(new Parameter(PATTERN,Parameter.STRING,""));
-        parameters.add(new Parameter(GROUPS,Parameter.STRING,""));
-        parameters.add(new Parameter(SHOW_TEST,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(EXAMPLE_STRING,Parameter.STRING,""));
-        parameters.add(new Parameter(IDENTIFIED_GROUPS,Parameter.TEXT_DISPLAY,""));
-        parameters.add(new Parameter(KEYWORD_LIST,Parameter.STRING,""));
-        parameters.add(new Parameter(KEYWORD_SOURCE, Parameter.CHOICE_ARRAY,KeywordSources.FILENAME,KeywordSources.ALL));
-        parameters.add(new Parameter(METADATA_FILE_EXTRACTOR,Parameter.CHOICE_ARRAY,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
-        parameters.add(new Parameter(INPUT_SOURCE,Parameter.CHOICE_ARRAY,InputSources.FILE_IN_INPUT_FOLDER,InputSources.ALL));
-        parameters.add(new Parameter(METADATA_FILE,Parameter.FILE_PATH,""));
-        parameters.add(new Parameter(METADATA_FILE_NAME,Parameter.STRING,""));
-        parameters.add(new Parameter(METADATA_ITEM_TO_MATCH,Parameter.METADATA_ITEM,null));
+    protected void initialiseParameters() {
+        parameters.add(new ChoiceP(EXTRACTOR_MODE,this,ExtractorModes.FILENAME_MODE,ExtractorModes.ALL));
+        parameters.add(new ChoiceP(FILENAME_EXTRACTOR, this,FilenameExtractors.GENERIC,FilenameExtractors.ALL));
+        parameters.add(new ChoiceP(FOLDERNAME_EXTRACTOR, this,FoldernameExtractors.NONE,FoldernameExtractors.ALL));
+        parameters.add(new StringP(PATTERN,this));
+        parameters.add(new StringP(GROUPS,this));
+        parameters.add(new BooleanP(SHOW_TEST,this,false));
+        parameters.add(new StringP(EXAMPLE_STRING,this));
+        parameters.add(new TextDisplayP(IDENTIFIED_GROUPS,this));
+        parameters.add(new StringP(KEYWORD_LIST,this));
+        parameters.add(new ChoiceP(KEYWORD_SOURCE, this,KeywordSources.FILENAME,KeywordSources.ALL));
+        parameters.add(new ChoiceP(METADATA_FILE_EXTRACTOR,this,MetadataFileExtractors.NONE,MetadataFileExtractors.ALL));
+        parameters.add(new ChoiceP(INPUT_SOURCE,this,InputSources.FILE_IN_INPUT_FOLDER,InputSources.ALL));
+        parameters.add(new FilePathP(METADATA_FILE,this));
+        parameters.add(new StringP(METADATA_FILE_NAME,this));
+        parameters.add(new MetadataItemP(METADATA_ITEM_TO_MATCH,this));
 
     }
 
@@ -361,7 +362,8 @@ public class MetadataExtractor extends Module {
                             String groups = parameters.getValue(GROUPS);
                             String exampleString = parameters.getValue(EXAMPLE_STRING);
                             String groupsString = getTestString(pattern,groups,exampleString);
-                            parameters.updateValue(IDENTIFIED_GROUPS,groupsString);
+                            TextDisplayP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
+                            identifiedGroups.setValue(groupsString);
 
                         }
                         break;
@@ -405,7 +407,8 @@ public class MetadataExtractor extends Module {
                             String groups = parameters.getValue(GROUPS);
                             String exampleString = parameters.getValue(EXAMPLE_STRING);
                             String groupsString = getTestString(pattern,groups,exampleString);
-                            parameters.updateValue(IDENTIFIED_GROUPS,groupsString);
+                            TextDisplayP identifiedGroups = parameters.getParameter(IDENTIFIED_GROUPS);
+                            identifiedGroups.setValue(groupsString);
 
                         }
                         break;
@@ -419,18 +422,18 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
-        MetadataReferenceCollection metadataReferences = new MetadataReferenceCollection();
+    public MetadataRefCollection updateAndGetMetadataReferences() {
+        MetadataRefCollection metadataReferences = new MetadataRefCollection();
 
         switch((String) parameters.getValue(EXTRACTOR_MODE)) {
             case ExtractorModes.FILENAME_MODE:

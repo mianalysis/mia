@@ -7,6 +7,7 @@ import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.io.File;
@@ -149,14 +150,14 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(SAVE_LOCATION, Parameter.CHOICE_ARRAY,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
-        parameters.add(new Parameter(MIRROR_DIRECTORY_ROOT, Parameter.FOLDER_PATH,""));
-        parameters.add(new Parameter(SAVE_FILE_PATH, Parameter.FOLDER_PATH,""));
-        parameters.add(new Parameter(APPEND_DATETIME_MODE, Parameter.CHOICE_ARRAY, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
-        parameters.add(new Parameter(SAVE_SUFFIX, Parameter.STRING,""));
-        parameters.add(new Parameter(FLATTEN_OVERLAY, Parameter.BOOLEAN,false));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
+        parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this));
+        parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
+        parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
+        parameters.add(new StringP(SAVE_SUFFIX, this));
+        parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false));
 
     }
 
@@ -187,17 +188,17 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

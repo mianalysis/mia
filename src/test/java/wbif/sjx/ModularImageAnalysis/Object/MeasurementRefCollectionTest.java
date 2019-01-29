@@ -4,17 +4,17 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class MeasurementReferenceCollectionTest {
+public class MeasurementRefCollectionTest {
     @Test
     public void get() {
         // Creating some measurements
-        MeasurementReference ref1 = new MeasurementReference("Ref 1");
-        MeasurementReference ref2 = new MeasurementReference("Second ref");
-        MeasurementReference ref3 = new MeasurementReference("Ref 3");
-        MeasurementReference ref4 = new MeasurementReference("One more");
+        MeasurementRef ref1 = new MeasurementRef("Ref 1");
+        MeasurementRef ref2 = new MeasurementRef("Second ref");
+        MeasurementRef ref3 = new MeasurementRef("Ref 3");
+        MeasurementRef ref4 = new MeasurementRef("One more");
 
         // Populating the collection
-        MeasurementReferenceCollection collection = new MeasurementReferenceCollection();
+        MeasurementRefCollection collection = new MeasurementRefCollection();
         collection.add(ref1);
         collection.add(ref2);
         collection.add(ref3);
@@ -33,13 +33,13 @@ public class MeasurementReferenceCollectionTest {
     @Test
     public void updateImageObjectName() {
         // Creating some measurements
-        MeasurementReference ref1 = new MeasurementReference("Ref 1");
-        MeasurementReference ref2 = new MeasurementReference("Second ref");
-        MeasurementReference ref3 = new MeasurementReference("Ref 3");
-        MeasurementReference ref4 = new MeasurementReference("One more");
+        MeasurementRef ref1 = new MeasurementRef("Ref 1");
+        MeasurementRef ref2 = new MeasurementRef("Second ref");
+        MeasurementRef ref3 = new MeasurementRef("Ref 3");
+        MeasurementRef ref4 = new MeasurementRef("One more");
 
         // Populating the collection
-        MeasurementReferenceCollection collection = new MeasurementReferenceCollection();
+        MeasurementRefCollection collection = new MeasurementRefCollection();
         collection.add(ref1);
         collection.add(ref2);
         collection.add(ref3);

@@ -6,6 +6,7 @@ import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
 
@@ -188,14 +189,14 @@ public class NormaliseIntensity extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(REGION_MODE,Parameter.CHOICE_ARRAY,RegionModes.ENTIRE_IMAGE,RegionModes.ALL));
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(CALCULATION_MODE,Parameter.CHOICE_ARRAY,CalculationModes.FAST,CalculationModes.ALL));
-        parameters.add(new Parameter(CLIP_FRACTION,Parameter.DOUBLE,0d));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new ChoiceP(REGION_MODE,this,RegionModes.ENTIRE_IMAGE,RegionModes.ALL));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new ChoiceP(CALCULATION_MODE,this,CalculationModes.FAST,CalculationModes.ALL));
+        parameters.add(new DoubleP(CLIP_FRACTION,this,0d));
 
     }
 
@@ -224,17 +225,17 @@ public class NormaliseIntensity extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

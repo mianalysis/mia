@@ -12,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.LUTs;
@@ -606,26 +607,26 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(TRACK_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(LINKING_METHOD,Parameter.CHOICE_ARRAY,LinkingMethods.CENTROID,LinkingMethods.ALL));
-        parameters.add(new Parameter(MINIMUM_OVERLAP,Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(MAXIMUM_LINKING_DISTANCE,Parameter.DOUBLE,20.0));
-        parameters.add(new Parameter(USE_VOLUME,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(VOLUME_WEIGHTING, Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(MAXIMUM_VOLUME_CHANGE, Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(DIRECTION_WEIGHTING_MODE,Parameter.CHOICE_ARRAY,DirectionWeightingModes.NONE,DirectionWeightingModes.ALL));
-        parameters.add(new Parameter(PREFERRED_DIRECTION, Parameter.DOUBLE,0.0));
-        parameters.add(new Parameter(DIRECTION_TOLERANCE, Parameter.DOUBLE,180.0));
-        parameters.add(new Parameter(DIRECTION_WEIGHTING, Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(USE_MEASUREMENT,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(MEASUREMENT_WEIGHTING, Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(MAXIMUM_MEASUREMENT_CHANGE, Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(MAXIMUM_MISSING_FRAMES,Parameter.INTEGER,0));
-        parameters.add(new Parameter(IDENTIFY_LEADING_POINT,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(ORIENTATION_MODE,Parameter.CHOICE_ARRAY,OrientationModes.RELATIVE_TO_BOTH,OrientationModes.ALL));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new OutputObjectsP(TRACK_OBJECTS,this));
+        parameters.add(new ChoiceP(LINKING_METHOD,this,LinkingMethods.CENTROID,LinkingMethods.ALL));
+        parameters.add(new DoubleP(MINIMUM_OVERLAP,this,1.0));
+        parameters.add(new DoubleP(MAXIMUM_LINKING_DISTANCE,this,20.0));
+        parameters.add(new BooleanP(USE_VOLUME,this,false));
+        parameters.add(new DoubleP(VOLUME_WEIGHTING, this,1.0));
+        parameters.add(new DoubleP(MAXIMUM_VOLUME_CHANGE, this,1.0));
+        parameters.add(new ChoiceP(DIRECTION_WEIGHTING_MODE,this,DirectionWeightingModes.NONE,DirectionWeightingModes.ALL));
+        parameters.add(new DoubleP(PREFERRED_DIRECTION, this,0.0));
+        parameters.add(new DoubleP(DIRECTION_TOLERANCE, this,180.0));
+        parameters.add(new DoubleP(DIRECTION_WEIGHTING, this,1.0));
+        parameters.add(new BooleanP(USE_MEASUREMENT,this,false));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
+        parameters.add(new DoubleP(MEASUREMENT_WEIGHTING, this,1.0));
+        parameters.add(new DoubleP(MAXIMUM_MEASUREMENT_CHANGE, this,1.0));
+        parameters.add(new IntegerP(MAXIMUM_MISSING_FRAMES,this,0));
+        parameters.add(new BooleanP(IDENTIFY_LEADING_POINT,this,false));
+        parameters.add(new ChoiceP(ORIENTATION_MODE,this,OrientationModes.RELATIVE_TO_BOTH,OrientationModes.ALL));
 
     }
 
@@ -674,7 +675,7 @@ public class TrackObjects extends Module {
             returnedParamters.add(parameters.getParameter(MAXIMUM_MEASUREMENT_CHANGE));
 
             String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-            parameters.updateValueSource(MEASUREMENT,inputObjectsName);
+            ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
         }
 
         returnedParamters.add(parameters.getParameter(MAXIMUM_MISSING_FRAMES));
@@ -689,22 +690,22 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference trackPrevID = objectMeasurementReferences.getOrPut(Measurements.TRACK_PREV_ID);
-        MeasurementReference trackNextID = objectMeasurementReferences.getOrPut(Measurements.TRACK_NEXT_ID);
-        MeasurementReference angleMeasurement = objectMeasurementReferences.getOrPut(Measurements.ORIENTATION);
-        MeasurementReference leadingXPx= objectMeasurementReferences.getOrPut(Measurements.LEADING_X_PX);
-        MeasurementReference leadingYPx= objectMeasurementReferences.getOrPut(Measurements.LEADING_Y_PX);
-        MeasurementReference leadingZPx= objectMeasurementReferences.getOrPut(Measurements.LEADING_Z_PX);
+        MeasurementRef trackPrevID = objectMeasurementRefs.getOrPut(Measurements.TRACK_PREV_ID);
+        MeasurementRef trackNextID = objectMeasurementRefs.getOrPut(Measurements.TRACK_NEXT_ID);
+        MeasurementRef angleMeasurement = objectMeasurementRefs.getOrPut(Measurements.ORIENTATION);
+        MeasurementRef leadingXPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_X_PX);
+        MeasurementRef leadingYPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Y_PX);
+        MeasurementRef leadingZPx= objectMeasurementRefs.getOrPut(Measurements.LEADING_Z_PX);
 
         trackPrevID.setImageObjName(inputObjectsName);
         trackNextID.setImageObjName(inputObjectsName);
@@ -730,12 +731,12 @@ public class TrackObjects extends Module {
             leadingZPx.setCalculated(false);
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

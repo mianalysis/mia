@@ -6,9 +6,12 @@ import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import trainableSegmentation.WekaSegmentation;
+import trainableSegmentation.Weka_Segmentation;
+import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 import java.io.File;
 
@@ -18,17 +21,34 @@ import java.io.File;
 public class WekaProbabilityMaps extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
+    public static final String OUTPUT_SINGLE_CLASS = "Output single class";
+    public static final String OUTPUT_CLASS = "Output class";
     public static final String CLASSIFIER_FILE = "Classifier file path";
     public static final String BLOCK_SIZE = "Block size (simultaneous slices)";
 
 
-    public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName, String classifierFilePath, int blockSize) {
+    public interface OutputBitDepths {
+        String EIGHT = "8";
+        String SIXTEEN = "16";
+        String THIRTY_TWO = "32";
+
+        String[] ALL = new String[]{EIGHT,SIXTEEN,THIRTY_TWO};
+
+    }
+
+
+    public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName, String classifierFilePath, int blockSize, int bitDepth) {
+        return calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath,blockSize,bitDepth,-1);
+    }
+
+    public ImagePlus calculateProbabilityMaps(ImagePlus inputImagePlus, String outputImageName, String classifierFilePath, int blockSize, int bitDepth, int outputClass) {
         WekaSegmentation wekaSegmentation = new WekaSegmentation();
 
         // Checking classifier can be loaded
         if (!new File(classifierFilePath).exists()) {
             System.err.println("Can't find classifier ("+classifierFilePath+")");
-            Thread.currentThread().interrupt();
+            return null;
         }
 
         writeMessage("Loading classifier");
@@ -42,10 +62,11 @@ public class WekaProbabilityMaps extends Module {
         int nSlices = inputImagePlus.getNSlices();
         int nFrames = inputImagePlus.getNFrames();
         int nClasses = wekaSegmentation.getNumOfClasses();
+        int nOutputClasses = outputClass == -1 ? wekaSegmentation.getNumOfClasses() : 1;
         int nBlocks = (int) Math.ceil((double) nSlices/(double) blockSize);
 
         // Creating the new image
-        ImagePlus probabilityMaps = IJ.createHyperStack(outputImageName,width,height,nChannels*nClasses,nSlices,nFrames,32);
+        ImagePlus probabilityMaps = IJ.createHyperStack(outputImageName,width,height,nChannels*nOutputClasses,nSlices,nFrames,bitDepth);
         probabilityMaps.setCalibration(inputImagePlus.getCalibration());
 
         writeMessage("Calculating probabilities");
@@ -63,10 +84,21 @@ public class WekaProbabilityMaps extends Module {
                     wekaSegmentation.applyClassifier(true);
                     iplSingle = wekaSegmentation.getClassifiedImage();
 
-                    for (int cl = 1; cl <= nClasses; cl++) {
-                        for (int z = 1; z <= (endingBlock-startingBlock+1); z++) {
-                            iplSingle.setPosition(nClasses * (z - 1) + cl);
-                            probabilityMaps.setPosition((nClasses * (c - 1) + cl), startingBlock+z-1, t);
+                    // Converting probability image to specified bit depth (it will be 32-bit by default)
+                    ImageTypeConverter.applyConversion(iplSingle,bitDepth,ImageTypeConverter.ScalingModes.SCALE);
+
+                    // If outputting all channels
+                    for (int cl = 1; cl <= nOutputClasses; cl++) {
+                        for (int z = 1; z <= (endingBlock - startingBlock + 1); z++) {
+                            if (outputClass == -1) {
+                                // If outputting all classes
+                                iplSingle.setPosition(nOutputClasses * (z - 1) + cl);
+                                probabilityMaps.setPosition((nOutputClasses * (c - 1) + cl), startingBlock + z - 1, t);
+                            } else {
+                                // If outputting a single class
+                                iplSingle.setPosition(nClasses * (z - 1) + outputClass);
+                                probabilityMaps.setPosition(1, startingBlock + z - 1, t);
+                            }
 
                             ImageProcessor iprSingle = iplSingle.getProcessor();
                             ImageProcessor iprProbability = probabilityMaps.getProcessor();
@@ -86,9 +118,14 @@ public class WekaProbabilityMaps extends Module {
             }
         }
 
+        // Clearing the segmentation model from memory
+//        wekaSegmentation.shutDownNow();
+        wekaSegmentation = null;
+
         return probabilityMaps;
 
     }
+
 
     @Override
     public String getTitle() {
@@ -115,11 +152,23 @@ public class WekaProbabilityMaps extends Module {
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH);
+        boolean outputSingleClass = parameters.getValue(OUTPUT_SINGLE_CLASS);
+        int outputClass = parameters.getValue(OUTPUT_CLASS);
         String classifierFilePath = parameters.getValue(CLASSIFIER_FILE);
         int blockSize = parameters.getValue(BLOCK_SIZE);
 
+        // Converting the bit depth to an integer
+        int bitDepth = Integer.parseInt(outputBitDepth);
+
+        // If all channels are to be output, set output channel to -1
+        if (!outputSingleClass) outputClass = -1;
+
         // Running the classifier on each individual stack
-        ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath,blockSize);
+        ImagePlus probabilityMaps = calculateProbabilityMaps(inputImagePlus,outputImageName,classifierFilePath,blockSize,bitDepth,outputClass);
+
+        // If the classification failed, a null object is returned
+        if (probabilityMaps == null) return false;
 
         // Adding the probability maps to the Workspace
         Image probabilityImage = new Image(outputImageName,probabilityMaps);
@@ -133,30 +182,48 @@ public class WekaProbabilityMaps extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(CLASSIFIER_FILE,Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(BLOCK_SIZE,Parameter.INTEGER,1));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH,this,OutputBitDepths.THIRTY_TWO,OutputBitDepths.ALL));
+        parameters.add(new BooleanP(OUTPUT_SINGLE_CLASS,this,false));
+        parameters.add(new IntegerP(OUTPUT_CLASS,this,1));
+        parameters.add(new FilePathP(CLASSIFIER_FILE,this));
+        parameters.add(new IntegerP(BLOCK_SIZE,this,1));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        return parameters;
+        ParameterCollection returnedParameters = new ParameterCollection();
+
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
+
+        returnedParameters.add(parameters.getParameter(OUTPUT_SINGLE_CLASS));
+        if (parameters.getValue(OUTPUT_SINGLE_CLASS)) {
+            returnedParameters.add(parameters.getParameter(OUTPUT_CLASS));
+        }
+
+        returnedParameters.add(parameters.getParameter(CLASSIFIER_FILE));
+        returnedParameters.add(parameters.getParameter(BLOCK_SIZE));
+
+        return returnedParameters;
+
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

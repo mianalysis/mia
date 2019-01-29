@@ -6,6 +6,10 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Object.LUTs;
 
 import java.awt.*;
@@ -118,10 +122,10 @@ public class SetLookupTable extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(LOOKUP_TABLE,Parameter.CHOICE_ARRAY,LookupTables.GREY,LookupTables.ALL));
-        parameters.add(new Parameter(CHANNEL_MODE,Parameter.CHOICE_ARRAY,ChannelModes.ALL_CHANNELS,ChannelModes.ALL));
-        parameters.add(new Parameter(CHANNEL,Parameter.INTEGER,1));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new ChoiceP(LOOKUP_TABLE,this,LookupTables.GREY,LookupTables.ALL));
+        parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.ALL_CHANNELS,ChannelModes.ALL));
+        parameters.add(new IntegerP(CHANNEL,this,1));
 
     }
 
@@ -144,17 +148,17 @@ public class SetLookupTable extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

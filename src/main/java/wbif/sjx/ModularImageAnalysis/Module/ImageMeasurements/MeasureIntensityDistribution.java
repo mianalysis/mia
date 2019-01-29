@@ -17,10 +17,10 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculato
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity.MeasureRadialIntensityProfile;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -540,21 +540,21 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(MEASUREMENT_TYPE, Parameter.CHOICE_ARRAY,MeasurementTypes.DISTANCE_PROFILE, MeasurementTypes.ALL));
-        parameters.add(new Parameter(DISTANCE_MAP_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(NUMBER_OF_RADIAL_SAMPLES,Parameter.INTEGER,10));
-        parameters.add(new Parameter(RANGE_MODE,Parameter.CHOICE_ARRAY,RangeModes.AUTOMATIC_RANGE,RangeModes.ALL));
-        parameters.add(new Parameter(MIN_DISTANCE,Parameter.DOUBLE,0d));
-        parameters.add(new Parameter(MAX_DISTANCE,Parameter.DOUBLE,1d));
-        parameters.add(new Parameter(SAVE_PROFILE_MODE,Parameter.CHOICE_ARRAY,SaveProfileModes.DONT_SAVE,SaveProfileModes.ALL));
-        parameters.add(new Parameter(PROFILE_FILE_SUFFIX,Parameter.STRING,""));
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(PROXIMAL_DISTANCE, Parameter.DOUBLE,2d));
-        parameters.add(new Parameter(SPATIAL_UNITS, Parameter.CHOICE_ARRAY, SpatialUnits.PIXELS, SpatialUnits.ALL));
-        parameters.add(new Parameter(IGNORE_ON_OBJECTS, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(EDGE_DISTANCE_MODE,Parameter.CHOICE_ARRAY, EdgeDistanceModes.INSIDE_AND_OUTSIDE, EdgeDistanceModes.ALL));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new ChoiceP(MEASUREMENT_TYPE, this,MeasurementTypes.DISTANCE_PROFILE, MeasurementTypes.ALL));
+        parameters.add(new InputImageP(DISTANCE_MAP_IMAGE,this));
+        parameters.add(new IntegerP(NUMBER_OF_RADIAL_SAMPLES,this,10));
+        parameters.add(new ChoiceP(RANGE_MODE,this,RangeModes.AUTOMATIC_RANGE,RangeModes.ALL));
+        parameters.add(new DoubleP(MIN_DISTANCE,this,0d));
+        parameters.add(new DoubleP(MAX_DISTANCE,this,1d));
+        parameters.add(new ChoiceP(SAVE_PROFILE_MODE,this,SaveProfileModes.DONT_SAVE,SaveProfileModes.ALL));
+        parameters.add(new StringP(PROFILE_FILE_SUFFIX,this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new DoubleP(PROXIMAL_DISTANCE, this,2d));
+        parameters.add(new ChoiceP(SPATIAL_UNITS, this, SpatialUnits.PIXELS, SpatialUnits.ALL));
+        parameters.add(new BooleanP(IGNORE_ON_OBJECTS, this, false));
+        parameters.add(new ChoiceP(EDGE_DISTANCE_MODE,this, EdgeDistanceModes.INSIDE_AND_OUTSIDE, EdgeDistanceModes.ALL));
 
     }
 
@@ -602,70 +602,70 @@ public class MeasureIntensityDistribution extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        imageMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        imageMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
                 String name = getFullName(inputObjectsName, Measurements.N_PX_INRANGE);
-                MeasurementReference reference = imageMeasurementReferences.getOrPut(name);
+                MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 break;
 
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
                 name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
-                reference = imageMeasurementReferences.getOrPut(name);
+                reference = imageMeasurementRefs.getOrPut(name);
                 reference.setCalculated(true);
 
                 break;
         }
 
-        return imageMeasurementReferences;
+        return imageMeasurementRefs;
 
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 public class BinObjectsByMeasurement extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -66,45 +67,45 @@ public class BinObjectsByMeasurement extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(MEASUREMENT,Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(SMALLEST_BIN_CENTRE,Parameter.DOUBLE,0d));
-        parameters.add(new Parameter(LARGEST_BIN_CENTRE,Parameter.DOUBLE,1d));
-        parameters.add(new Parameter(NUMBER_OF_BINS,Parameter.INTEGER,1));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT,this));
+        parameters.add(new DoubleP(SMALLEST_BIN_CENTRE,this,0d));
+        parameters.add(new DoubleP(LARGEST_BIN_CENTRE,this,1d));
+        parameters.add(new IntegerP(NUMBER_OF_BINS,this,1));
 
     }
 
     @Override
     public ParameterCollection updateAndGetParameters() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
-        parameters.updateValueSource(MEASUREMENT,inputObjectsName);
+        ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
 
         return parameters;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String measurement = parameters.getValue(MEASUREMENT);
 
         String name = getFullName(measurement);
-        MeasurementReference binMeasurement = objectMeasurementReferences.getOrPut(name);
+        MeasurementRef binMeasurement = objectMeasurementRefs.getOrPut(name);
         binMeasurement.setImageObjName(inputObjectsName);
         binMeasurement.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

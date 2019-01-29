@@ -11,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Units;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.Arrays;
 
@@ -26,7 +27,7 @@ public class FitLongestChordTest {
     }
 
     @Test
-    public void testProcessObjectHorizontalCylinderR22() {
+    public void testProcessObjectHorizontalCylinderR22() throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -94,7 +95,7 @@ public class FitLongestChordTest {
     }
 
     @Test
-    public void testProcessObjectVerticalCylinderR5() {
+    public void testProcessObjectVerticalCylinderR5() throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;

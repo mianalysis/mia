@@ -6,6 +6,7 @@ import ij.gui.Plot;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.awt.*;
@@ -165,14 +166,14 @@ public class PlotMeasurementsScatter extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(EXCLUDE_NAN, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(MEASUREMENT1, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(MEASUREMENT2, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(INCLUDE_COLOUR, Parameter.BOOLEAN,false,null));
-        parameters.add(new Parameter(MEASUREMENT3, Parameter.OBJECT_MEASUREMENT,null,null));
-        parameters.add(new Parameter(COLOURMAP, Parameter.CHOICE_ARRAY,ColourMaps.RED_TO_BLUE,ColourMaps.ALL));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new BooleanP(EXCLUDE_NAN, this,true));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT1, this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT2, this));
+        parameters.add(new BooleanP(INCLUDE_COLOUR, this,false));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT3, this));
+        parameters.add(new ChoiceP(COLOURMAP, this,ColourMaps.RED_TO_BLUE,ColourMaps.ALL));
 
     }
 
@@ -186,29 +187,14 @@ public class PlotMeasurementsScatter extends Module {
 
         // Updating measurements with measurement choices from currently-selected object
         String objectName = parameters.getValue(INPUT_OBJECTS);
-        if (objectName != null) {
-            parameters.updateValueSource(MEASUREMENT1, objectName);
-            parameters.updateValueSource(MEASUREMENT2, objectName);
-
-        } else {
-            parameters.updateValueSource(MEASUREMENT1, null);
-            parameters.updateValueSource(MEASUREMENT2, null);
-
-        }
+            ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT1)).setObjectName(objectName);
+            ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT2)).setObjectName(objectName);
 
         returnedParameters.add(parameters.getParameter(INCLUDE_COLOUR));
         if (parameters.getValue(INCLUDE_COLOUR)) {
             returnedParameters.add(parameters.getParameter(MEASUREMENT3));
             returnedParameters.add(parameters.getParameter(COLOURMAP));
-
-            if (objectName != null) {
-                parameters.updateValueSource(MEASUREMENT3, objectName);
-
-            } else {
-                parameters.updateValueSource(MEASUREMENT3, null);
-
-            }
-
+            ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT3)).setObjectName(objectName);
         }
 
         return returnedParameters;
@@ -216,17 +202,17 @@ public class PlotMeasurementsScatter extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

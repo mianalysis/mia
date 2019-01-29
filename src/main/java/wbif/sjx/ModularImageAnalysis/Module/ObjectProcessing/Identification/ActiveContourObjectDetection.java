@@ -9,7 +9,9 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.ActiveContour.ContourInitialiser;
 import wbif.sjx.common.Process.ActiveContour.Energies.BendingEnergy;
 import wbif.sjx.common.Process.ActiveContour.Energies.ElasticEnergy;
@@ -163,14 +165,18 @@ public class ActiveContourObjectDetection extends Module {
 
             // If the input objects are to be transformed, taking the new pixel coordinates and applying them to
             // the input object.  Otherwise, the new object is added to the nascent ObjCollection.
-            if (updateInputObjects) {
-                inputObject.clearPoints();
-                inputObject.addPointsFromRoi(newRoi,z);
-            } else {
-                Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
-                outputObject.setT(inputObject.getT());
-                outputObject.addPointsFromRoi(newRoi,z);
-                outputObjects.add(outputObject);
+            try {
+                if (updateInputObjects) {
+                    inputObject.clearPoints();
+                    inputObject.addPointsFromRoi(newRoi,z);
+                } else {
+                    Obj outputObject = new Obj(outputObjectsName,outputObjects.getNextID(),dppXY,dppZ,calibrationUnits,inputObject.is2D());
+                    outputObject.setT(inputObject.getT());
+                    outputObject.addPointsFromRoi(newRoi,z);
+                    outputObjects.add(outputObject);
+                }
+            } catch (IntegerOverflowException e) {
+                return false;
             }
         }
 
@@ -180,19 +186,17 @@ public class ActiveContourObjectDetection extends Module {
         if (showOutput) {
             // Removing old overlay
             dispIpl.setOverlay(null);
-            String positionMode = AddObjectsOverlay.PositionModes.OUTLINE;
-            String colourMode = ObjCollection.ColourModes.RANDOM_COLOUR;
-
-            AddObjectsOverlay addObjectsOverlay = ((AddObjectsOverlay) new AddObjectsOverlay()
-                    .updateParameterValue(AddObjectsOverlay.POSITION_MODE,positionMode)
-                    .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8));
-
-            if (updateInputObjects) {
-                HashMap<Integer,Float> hues = ColourFactory.getRandomHues(inputObjects);
-                addObjectsOverlay.createOverlay(dispIpl,inputObjects,hues,null);
-            } else {
-                HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-                addObjectsOverlay.createOverlay(dispIpl,outputObjects,hues,null);
+            AddObjectsOverlay addObjectsOverlay = new AddObjectsOverlay();
+            try {
+                if (updateInputObjects) {
+                    HashMap<Integer, Float> hues = ColourFactory.getRandomHues(inputObjects);
+                    addObjectsOverlay.createOutlineOverlay(dispIpl, inputObjects, hues, false, 0.5);
+                } else {
+                    HashMap<Integer, Float> hues = ColourFactory.getRandomHues(outputObjects);
+                    addObjectsOverlay.createOutlineOverlay(dispIpl, outputObjects, hues, false, 0.5);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             dispIpl.setPosition(1,1,1);
@@ -209,17 +213,17 @@ public class ActiveContourObjectDetection extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(INPUT_OBJECTS,Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(UPDATE_INPUT_OBJECTS,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(NODE_DENSITY,Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(ELASTIC_ENERGY,Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(BENDING_ENERGY,Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(IMAGE_PATH_ENERGY,Parameter.DOUBLE,1.0));
-        parameters.add(new Parameter(SEARCH_RADIUS,Parameter.INTEGER,1));
-        parameters.add(new Parameter(NUMBER_OF_ITERATIONS,Parameter.INTEGER,1000));
-        parameters.add(new Parameter(SHOW_CONTOURS_REALTIME,Parameter.BOOLEAN,false));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new BooleanP(UPDATE_INPUT_OBJECTS,this,true));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new DoubleP(NODE_DENSITY,this,1.0));
+        parameters.add(new DoubleP(ELASTIC_ENERGY,this,1.0));
+        parameters.add(new DoubleP(BENDING_ENERGY,this,1.0));
+        parameters.add(new DoubleP(IMAGE_PATH_ENERGY,this,1.0));
+        parameters.add(new IntegerP(SEARCH_RADIUS,this,1));
+        parameters.add(new IntegerP(NUMBER_OF_ITERATIONS,this,1000));
+        parameters.add(new BooleanP(SHOW_CONTOURS_REALTIME,this,false));
 
     }
 
@@ -248,17 +252,17 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

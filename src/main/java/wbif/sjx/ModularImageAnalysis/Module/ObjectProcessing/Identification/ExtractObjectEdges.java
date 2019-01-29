@@ -8,6 +8,8 @@ import inra.ijpb.binary.distmap.DistanceTransform3DShort;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import java.util.ArrayList;
 
@@ -32,7 +34,7 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    public static Obj getObjectEdge(Obj inputObject, ObjCollection edgeObjects, String edgeMode, double edgeDistance, double edgePercentage) {
+    public static Obj getObjectEdge(Obj inputObject, ObjCollection edgeObjects, String edgeMode, double edgeDistance, double edgePercentage) throws IntegerOverflowException {
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
         String calibratedUnits = inputObject.getCalibratedUnits();
@@ -92,7 +94,7 @@ public class ExtractObjectEdges extends Module {
 
     }
 
-    public static Obj getInterior(Obj inputObject, ObjCollection interiorObjects, String edgeMode, double edgeDistance, double edgePercentage) {
+    public static Obj getInterior(Obj inputObject, ObjCollection interiorObjects, String edgeMode, double edgeDistance, double edgePercentage) throws IntegerOverflowException {
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
         String calibratedUnits = inputObject.getCalibratedUnits();
@@ -198,24 +200,28 @@ public class ExtractObjectEdges extends Module {
             outputInteriorObjects = new ObjCollection(outputInteriorObjectName);
         }
 
-        for (Obj inputObject:inputObjects.values()) {
-            if (createEdgeObjects) {
-                Obj outputEdgeObject = getObjectEdge(inputObject,outputEdgeObjects,edgeMode,edgeDistance,edgePercentage);
-                if (outputEdgeObject != null) {
-                    outputEdgeObjects.add(outputEdgeObject);
-                    outputEdgeObject.addParent(inputObject);
-                    inputObject.addChild(outputEdgeObject);
+        try {
+            for (Obj inputObject : inputObjects.values()) {
+                if (createEdgeObjects) {
+                    Obj outputEdgeObject = getObjectEdge(inputObject, outputEdgeObjects, edgeMode, edgeDistance, edgePercentage);
+                    if (outputEdgeObject != null) {
+                        outputEdgeObjects.add(outputEdgeObject);
+                        outputEdgeObject.addParent(inputObject);
+                        inputObject.addChild(outputEdgeObject);
+                    }
                 }
-            }
 
-            if (createInteriorObjects) {
-                Obj outputInteriorObject = getInterior(inputObject,outputInteriorObjects,edgeMode,edgeDistance,edgePercentage);
-                if (outputInteriorObject != null) {
-                    outputInteriorObjects.add(outputInteriorObject);
-                    outputInteriorObject.addParent(inputObject);
-                    inputObject.addChild(outputInteriorObject);
+                if (createInteriorObjects) {
+                    Obj outputInteriorObject = getInterior(inputObject, outputInteriorObjects, edgeMode, edgeDistance, edgePercentage);
+                    if (outputInteriorObject != null) {
+                        outputInteriorObjects.add(outputInteriorObject);
+                        outputInteriorObject.addParent(inputObject);
+                        inputObject.addChild(outputInteriorObject);
+                    }
                 }
             }
+        } catch (IntegerOverflowException e) {
+            return false;
         }
 
         if (createEdgeObjects) workspace.addObjects(outputEdgeObjects);
@@ -226,15 +232,15 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(CREATE_EDGE_OBJECTS, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(OUTPUT_EDGE_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(CREATE_INTERIOR_OBJECTS, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(OUTPUT_INTERIOR_OBJECTS, Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(EDGE_MODE, Parameter.CHOICE_ARRAY, EdgeModes.DISTANCE_FROM_EDGE, EdgeModes.ALL));
-        parameters.add(new Parameter(EDGE_DISTANCE, Parameter.DOUBLE, 1.0));
-        parameters.add(new Parameter(EDGE_PERCENTAGE, Parameter.DOUBLE, 1.0));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new BooleanP(CREATE_EDGE_OBJECTS, this, true));
+        parameters.add(new OutputObjectsP(OUTPUT_EDGE_OBJECTS, this));
+        parameters.add(new BooleanP(CREATE_INTERIOR_OBJECTS, this, true));
+        parameters.add(new OutputObjectsP(OUTPUT_INTERIOR_OBJECTS, this));
+        parameters.add(new ChoiceP(EDGE_MODE, this, EdgeModes.DISTANCE_FROM_EDGE, EdgeModes.ALL));
+        parameters.add(new DoubleP(EDGE_DISTANCE, this, 1.0));
+        parameters.add(new DoubleP(EDGE_PERCENTAGE, this, 1.0));
 
     }
 
@@ -268,17 +274,17 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

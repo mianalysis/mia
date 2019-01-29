@@ -1,38 +1,33 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Stephen on 20/05/2017.
  */
-public class TextParameter extends JTextField implements FocusListener {
+public class TextParameter extends ParameterControl implements FocusListener {
     private Module module;
-    private Parameter parameter;
+    private TextType parameter;
+    private JTextField control;
 
-    public TextParameter(Module module, Parameter parameter) {
-        this.module = module;
+    public TextParameter(TextType parameter) {
         this.parameter = parameter;
 
-        String name = parameter.getValue() == null ? "" : parameter.getValue().toString();
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        setText(name);
-        addFocusListener(this);
+        control = new JTextField();
 
-    }
+        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        control.setText(parameter.getValueAsString());
+        control.addFocusListener(this);
 
-    public Module getModule() {
-        return module;
-    }
-
-    public Parameter getParameter() {
-        return parameter;
     }
 
     @Override
@@ -42,26 +37,24 @@ public class TextParameter extends JTextField implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
-        String text = getText();
-
-        if (parameter.getType() == Parameter.OUTPUT_IMAGE | parameter.getType() == Parameter.OUTPUT_OBJECTS) {
-            parameter.setValue(text);
-
-        } else if (parameter.getType() == Parameter.INTEGER) {
-            parameter.setValue(Integer.valueOf(text));
-
-        } else if (parameter.getType() == Parameter.DOUBLE) {
-            parameter.setValue(Double.valueOf(text));
-
-        } else if (parameter.getType() == Parameter.STRING) {
-            parameter.setValue(text);
-
-        }
+        parameter.setValueFromString(control.getText());
 
         int idx = GUI.getModules().indexOf(module);
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx - 1);
 
         GUI.updateModules(true);
 
+        updateControl();
+
+    }
+
+    @Override
+    public JComponent getComponent() {
+        return control;
+    }
+
+    @Override
+    public void updateControl() {
+        control.setText(parameter.getValueAsString());
     }
 }

@@ -6,7 +6,6 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
-import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
@@ -16,9 +15,9 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensit
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Analysis.IntensityCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
-import wbif.sjx.common.Object.Point;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -302,22 +301,22 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(MEASURE_MEAN, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_MIN, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_MAX, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_STDEV, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_SUM, Parameter.BOOLEAN, true));
-        parameters.add(new Parameter(MEASURE_WEIGHTED_CENTRE, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(MEASURE_WEIGHTED_EDGE_DISTANCE, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(EDGE_DISTANCE_MODE,Parameter.CHOICE_ARRAY,EdgeDistanceModes.INSIDE_AND_OUTSIDE,EdgeDistanceModes.ALL));
-        parameters.add(new Parameter(MEASURE_EDGE_INTENSITY_PROFILE,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(MINIMUM_DISTANCE,Parameter.DOUBLE,0d));
-        parameters.add(new Parameter(MAXIMUM_DISTANCE,Parameter.DOUBLE,1d));
-        parameters.add(new Parameter(CALIBRATED_DISTANCES, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(NUMBER_OF_MEASUREMENTS,Parameter.INTEGER,10));
+    protected void initialiseParameters() {
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(MEASURE_MEAN, this, true));
+        parameters.add(new BooleanP(MEASURE_MIN, this, true));
+        parameters.add(new BooleanP(MEASURE_MAX, this, true));
+        parameters.add(new BooleanP(MEASURE_STDEV, this, true));
+        parameters.add(new BooleanP(MEASURE_SUM, this, true));
+        parameters.add(new BooleanP(MEASURE_WEIGHTED_CENTRE, this, false));
+        parameters.add(new BooleanP(MEASURE_WEIGHTED_EDGE_DISTANCE, this, false));
+        parameters.add(new ChoiceP(EDGE_DISTANCE_MODE,this,EdgeDistanceModes.INSIDE_AND_OUTSIDE,EdgeDistanceModes.ALL));
+        parameters.add(new BooleanP(MEASURE_EDGE_INTENSITY_PROFILE,this,false));
+        parameters.add(new DoubleP(MINIMUM_DISTANCE,this,0d));
+        parameters.add(new DoubleP(MAXIMUM_DISTANCE,this,1d));
+        parameters.add(new BooleanP(CALIBRATED_DISTANCES, this,false));
+        parameters.add(new IntegerP(NUMBER_OF_MEASUREMENTS,this,10));
 
     }
 
@@ -352,20 +351,20 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(INPUT_IMAGE);
 
-        objectMeasurementReferences.setAllCalculated(false);
+        objectMeasurementRefs.setAllCalculated(false);
 
         if (parameters.getValue(MEASURE_MEAN)) {
             String name = getFullName(inputImageName,Measurements.MEAN);
-            MeasurementReference mean = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef mean = objectMeasurementRefs.getOrPut(name);
             mean.setImageObjName(inputObjectsName);
             mean.setCalculated(true);
             mean.setDescription("Mean intensity of pixels from the image \""+inputImageName+"\" contained within each" +
@@ -374,7 +373,7 @@ public class MeasureObjectIntensity extends Module {
 
         if (parameters.getValue(MEASURE_MIN)) {
             String name = getFullName(inputImageName,Measurements.MIN);
-            MeasurementReference min = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef min = objectMeasurementRefs.getOrPut(name);
             min.setImageObjName(inputObjectsName);
             min.setCalculated(true);
             min.setDescription("Minimum intensity of pixels from the image \""+inputImageName+"\" contained within each" +
@@ -383,7 +382,7 @@ public class MeasureObjectIntensity extends Module {
 
         if (parameters.getValue(MEASURE_MAX)) {
             String name = getFullName(inputImageName,Measurements.MAX);
-            MeasurementReference max = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef max = objectMeasurementRefs.getOrPut(name);
             max.setImageObjName(inputObjectsName);
             max.setCalculated(true);
             max.setDescription("Maximum intensity of pixels from the image \""+inputImageName+"\" contained within each" +
@@ -392,7 +391,7 @@ public class MeasureObjectIntensity extends Module {
 
         if (parameters.getValue(MEASURE_STDEV)) {
             String name = getFullName(inputImageName,Measurements.STDEV);
-            MeasurementReference stdev = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef stdev = objectMeasurementRefs.getOrPut(name);
             stdev.setImageObjName(inputObjectsName);
             stdev.setCalculated(true);
             stdev.setDescription("Standard deviation of intensity of pixels from the image \""+inputImageName+"\" " +
@@ -401,7 +400,7 @@ public class MeasureObjectIntensity extends Module {
 
         if (parameters.getValue(MEASURE_SUM)) {
             String name = getFullName(inputImageName,Measurements.SUM);
-            MeasurementReference sum = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef sum = objectMeasurementRefs.getOrPut(name);
             sum.setImageObjName(inputObjectsName);
             sum.setCalculated(true);
             sum.setDescription("Sum intensity of pixels from the image \""+inputImageName+"\" contained within each" +
@@ -410,14 +409,14 @@ public class MeasureObjectIntensity extends Module {
 
         if (parameters.getValue(MEASURE_WEIGHTED_CENTRE)) {
             String name = getFullName(inputImageName, Measurements.X_CENT_MEAN);
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Mean intensity weighted x-position for each \""+inputObjectsName+"\" object, " +
                     "with weighting coming from the image \""+inputImageName+"\".  Measured in pixel units.");
 
             name = getFullName(inputImageName, Measurements.X_CENT_STDEV);
-            reference = objectMeasurementReferences.getOrPut(name);
+            reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Standard deviation of intensity weighted x-position for each \""
@@ -425,14 +424,14 @@ public class MeasureObjectIntensity extends Module {
                     "Measured in pixel units.");
 
             name = getFullName(inputImageName, Measurements.Y_CENT_MEAN);
-            reference = objectMeasurementReferences.getOrPut(name);
+            reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Mean intensity weighted y-position for each \""+inputObjectsName+"\" object, " +
                     "with weighting coming from the image \""+inputImageName+"\".  Measured in pixel units.");
 
             name = getFullName(inputImageName, Measurements.Y_CENT_STDEV);
-            reference = objectMeasurementReferences.getOrPut(name);
+            reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Standard deviation of intensity weighted y-position for each \""
@@ -440,14 +439,14 @@ public class MeasureObjectIntensity extends Module {
                     "Measured in pixel units.");
 
             name = getFullName(inputImageName, Measurements.Z_CENT_MEAN);
-            reference = objectMeasurementReferences.getOrPut(name);
+            reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Mean intensity weighted z-position for each \""+inputObjectsName+"\" object, " +
                     "with weighting coming from the image \""+inputImageName+"\".  Measured in slice units.");
 
             name = getFullName(inputImageName, Measurements.Z_CENT_STDEV);
-            reference = objectMeasurementReferences.getOrPut(name);
+            reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Standard deviation of intensity weighted z-position for each \""
@@ -458,7 +457,7 @@ public class MeasureObjectIntensity extends Module {
 
         if (parameters.getValue(MEASURE_WEIGHTED_EDGE_DISTANCE)) {
             String name = getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_PX);
-            MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+            MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Mean intensity-weighted distance of all signal in the image, \""+inputImageName
@@ -466,7 +465,7 @@ public class MeasureObjectIntensity extends Module {
                     "regions of the image get closer to the input objects.  Measured in pixel units.");
 
             name = Units.replace(getFullName(inputImageName, Measurements.MEAN_EDGE_DISTANCE_CAL));
-            reference = objectMeasurementReferences.getOrPut(name);
+            reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Mean intensity-weighted distance of all signal in the image, \""+inputImageName
@@ -475,7 +474,7 @@ public class MeasureObjectIntensity extends Module {
                     +Units.getOMEUnits().getSymbol()+") units.");
 
             name = getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_PX);
-            reference = objectMeasurementReferences.getOrPut(name);
+            reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Standard deviation intensity-weighted distance of all signal in the image, \""
@@ -483,7 +482,7 @@ public class MeasureObjectIntensity extends Module {
                     "the brightest regions of the image get closer to the input objects.  Measured in pixel units.");
 
             name = Units.replace(getFullName(inputImageName, Measurements.STD_EDGE_DISTANCE_CAL));
-            reference = objectMeasurementReferences.getOrPut(name);
+            reference = objectMeasurementRefs.getOrPut(name);
             reference.setImageObjName(inputObjectsName);
             reference.setCalculated(true);
             reference.setDescription("Standard deviation intensity-weighted distance of all signal in the image, \""
@@ -500,7 +499,7 @@ public class MeasureObjectIntensity extends Module {
             double[] bins = getProfileBins(minDist,maxDist,nMeasurements);
             String units = parameters.getValue(CALIBRATED_DISTANCES) ? Units.getOMEUnits().getSymbol() : "PX";
 
-            // Bin names must be in alphabetical order (for the MeasurementReferenceCollection TreeMap)
+            // Bin names must be in alphabetical order (for the MeasurementRefCollection TreeMap)
             int nDigits = (int) Math.log10(bins.length)+1;
             StringBuilder stringBuilder = new StringBuilder();
             for (int i=0;i<nDigits;i++) stringBuilder.append("0");
@@ -514,7 +513,7 @@ public class MeasureObjectIntensity extends Module {
                         +"_("+decFormat.format(bins[i])+units+")";
 
                 String name = getFullName(inputImageName,profileMeasName);
-                MeasurementReference reference = objectMeasurementReferences.getOrPut(name);
+                MeasurementRef reference = objectMeasurementRefs.getOrPut(name);
                 reference.setImageObjName(inputObjectsName);
                 reference.setCalculated(true);
 
@@ -527,12 +526,12 @@ public class MeasureObjectIntensity extends Module {
             }
         }
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

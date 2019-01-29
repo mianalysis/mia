@@ -10,6 +10,7 @@ import ij.process.ShortProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.ThirdParty.Stack_Focuser_;
 
 import com.drew.lang.annotations.Nullable;
@@ -190,15 +191,15 @@ public class FocusStack extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_FOCUSED_IMAGE,Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(USE_EXISTING_HEIGHT_IMAGE,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(INPUT_HEIGHT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(RANGE,Parameter.INTEGER,11));
-        parameters.add(new Parameter(SMOOTH_HEIGHT_MAP,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(ADD_HEIGHT_MAP_TO_WORKSPACE,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(OUTPUT_HEIGHT_IMAGE,Parameter.OUTPUT_IMAGE,""));
-        parameters.add(new Parameter(SHOW_HEIGHT_IMAGE,Parameter.BOOLEAN,false));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputImageP(OUTPUT_FOCUSED_IMAGE,this));
+        parameters.add(new BooleanP(USE_EXISTING_HEIGHT_IMAGE,this,false));
+        parameters.add(new InputImageP(INPUT_HEIGHT_IMAGE,this));
+        parameters.add(new IntegerP(RANGE,this,11));
+        parameters.add(new BooleanP(SMOOTH_HEIGHT_MAP,this,true));
+        parameters.add(new BooleanP(ADD_HEIGHT_MAP_TO_WORKSPACE,this,false));
+        parameters.add(new OutputImageP(OUTPUT_HEIGHT_IMAGE,this));
+        parameters.add(new BooleanP(SHOW_HEIGHT_IMAGE,this,false));
 
     }
 
@@ -229,17 +230,17 @@ public class FocusStack extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

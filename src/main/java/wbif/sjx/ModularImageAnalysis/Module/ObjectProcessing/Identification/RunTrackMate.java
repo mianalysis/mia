@@ -17,10 +17,11 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Process.IntensityMinMax;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -97,7 +98,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection getSpots(Model model, Calibration calibration, boolean is2D) {
+    public ObjCollection getSpots(Model model, Calibration calibration, boolean is2D) throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
         // Getting trackObjects and adding them to the output trackObjects
@@ -131,7 +132,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public ObjCollection[] getSpotsAndTracks(Model model, Calibration calibration, boolean is2D) {
+    public ObjCollection[] getSpotsAndTracks(Model model, Calibration calibration, boolean is2D) throws IntegerOverflowException {
         String spotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
         String trackObjectsName = parameters.getValue(OUTPUT_TRACK_OBJECTS);
 
@@ -203,7 +204,7 @@ public class RunTrackMate extends Module {
 
     }
 
-    public void estimateSpotSize(ObjCollection spotObjects, ImagePlus ipl) {
+    public void estimateSpotSize(ObjCollection spotObjects, ImagePlus ipl) throws IntegerOverflowException {
         ObjCollection volumeObjects = new GetLocalObjectRegion().getLocalRegions(spotObjects, "SpotVolume",ipl,true,Measurements.RADIUS_PX,0,false);
 
         // Replacing spot volumes with explicit volume
@@ -232,10 +233,11 @@ public class RunTrackMate extends Module {
         IntensityMinMax.run(ipl,true);
 
         // Adding the overlay
-        ((AddObjectsOverlay) new AddObjectsOverlay()
-                .updateParameterValue(AddObjectsOverlay.POSITION_MODE,AddObjectsOverlay.PositionModes.CENTROID)
-                .updateParameterValue(AddObjectsOverlay.LABEL_SIZE,8))
-                .createOverlay(ipl,spotObjects,hues,null);
+        try {
+            new AddObjectsOverlay().createCentroidOverlay(ipl,spotObjects,hues,false,0.2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // Displaying the overlay
         ipl.show();
@@ -291,32 +293,36 @@ public class RunTrackMate extends Module {
         ipl = inputImage.getImagePlus();
 
         ObjCollection spotObjects;
-        if (doTracking) {
-            writeMessage("Running detection and tracking");
-            if (!trackmate.process()) System.err.println(trackmate.getErrorMessage());
+        try {
+            if (doTracking) {
+                writeMessage("Running detection and tracking");
+                if (!trackmate.process()) System.err.println(trackmate.getErrorMessage());
 
-            ObjCollection[] spotsAndTracks = getSpotsAndTracks(model,calibration,ipl.getNSlices()==1);
-            spotObjects = spotsAndTracks[0];
-            ObjCollection trackObjects = spotsAndTracks[1];
+                ObjCollection[] spotsAndTracks = getSpotsAndTracks(model, calibration, ipl.getNSlices() == 1);
+                spotObjects = spotsAndTracks[0];
+                ObjCollection trackObjects = spotsAndTracks[1];
 
-            if (estimateSize) estimateSpotSize(spotObjects,ipl);
+                if (estimateSize) estimateSpotSize(spotObjects, ipl);
 
-            // Adding objects to the workspace
-            workspace.addObjects(spotObjects);
-            workspace.addObjects(trackObjects);
+                // Adding objects to the workspace
+                workspace.addObjects(spotObjects);
+                workspace.addObjects(trackObjects);
 
-        } else {
-            writeMessage("Running detection only");
-            if (!trackmate.checkInput()) System.err.println(trackmate.getErrorMessage());
-            if (!trackmate.execDetection()) System.err.println(trackmate.getErrorMessage());
-            if (!trackmate.computeSpotFeatures(false)) System.err.println(trackmate.getErrorMessage());
+            } else {
+                writeMessage("Running detection only");
+                if (!trackmate.checkInput()) System.err.println(trackmate.getErrorMessage());
+                if (!trackmate.execDetection()) System.err.println(trackmate.getErrorMessage());
+                if (!trackmate.computeSpotFeatures(false)) System.err.println(trackmate.getErrorMessage());
 
-            spotObjects = getSpots(model,calibration,ipl.getNSlices()==1);
+                spotObjects = getSpots(model, calibration, ipl.getNSlices() == 1);
 
-            if (estimateSize) estimateSpotSize(spotObjects,ipl);
+                if (estimateSize) estimateSpotSize(spotObjects, ipl);
 
-            workspace.addObjects(spotObjects);
+                workspace.addObjects(spotObjects);
 
+            }
+        } catch (IntegerOverflowException e) {
+            return false;
         }
 
         // Displaying objects (if selected)
@@ -330,24 +336,21 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_SPOT_OBJECTS, Parameter.OUTPUT_OBJECTS,""));
-
-        parameters.add(new Parameter(CALIBRATED_UNITS, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(DO_SUBPIXEL_LOCALIZATION, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(DO_MEDIAN_FILTERING, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(RADIUS, Parameter.DOUBLE,2.0));
-        parameters.add(new Parameter(THRESHOLD, Parameter.DOUBLE,5000.0));
-        parameters.add(new Parameter(NORMALISE_INTENSITY, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(ESTIMATE_SIZE, Parameter.BOOLEAN,false));
-
-        parameters.add(new Parameter(DO_TRACKING, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(LINKING_MAX_DISTANCE, Parameter.DOUBLE,2.0));
-        parameters.add(new Parameter(GAP_CLOSING_MAX_DISTANCE, Parameter.DOUBLE,2.0));
-        parameters.add(new Parameter(MAX_FRAME_GAP, Parameter.INTEGER,3));
-
-        parameters.add(new Parameter(OUTPUT_TRACK_OBJECTS, Parameter.OUTPUT_OBJECTS,""));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new OutputObjectsP(OUTPUT_SPOT_OBJECTS, this));
+        parameters.add(new BooleanP(CALIBRATED_UNITS, this,false));
+        parameters.add(new BooleanP(DO_SUBPIXEL_LOCALIZATION, this,true));
+        parameters.add(new BooleanP(DO_MEDIAN_FILTERING, this,false));
+        parameters.add(new DoubleP(RADIUS, this,2.0));
+        parameters.add(new DoubleP(THRESHOLD, this,5000.0));
+        parameters.add(new BooleanP(NORMALISE_INTENSITY, this,false));
+        parameters.add(new BooleanP(ESTIMATE_SIZE, this,false));
+        parameters.add(new BooleanP(DO_TRACKING, this,true));
+        parameters.add(new DoubleP(LINKING_MAX_DISTANCE, this,2.0));
+        parameters.add(new DoubleP(GAP_CLOSING_MAX_DISTANCE, this,2.0));
+        parameters.add(new IntegerP(MAX_FRAME_GAP, this,3));
+        parameters.add(new OutputObjectsP(OUTPUT_TRACK_OBJECTS, this));
 
     }
 
@@ -379,38 +382,38 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String outputSpotObjectsName = parameters.getValue(OUTPUT_SPOT_OBJECTS);
 
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.RADIUS_PX);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.RADIUS_PX);
         reference.setImageObjName(outputSpotObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.RADIUS_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.RADIUS_CAL));
         reference.setImageObjName(outputSpotObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.ESTIMATED_DIAMETER_PX);
         reference.setImageObjName(outputSpotObjectsName);
         reference.setCalculated(true);
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.ESTIMATED_DIAMETER_CAL));
         reference.setImageObjName(outputSpotObjectsName);
         reference.setCalculated(true);
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

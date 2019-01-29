@@ -15,9 +15,9 @@ import java.io.Serializable;
  *
  */
 public class Analysis implements Serializable {
+    public ModuleCollection modules = new ModuleCollection();
     public InputControl inputControl = new InputControl();
     public OutputControl outputControl = new OutputControl();
-    public ModuleCollection modules = new ModuleCollection();
     private boolean shutdown = false;
 
     // CONSTRUCTOR
@@ -59,7 +59,7 @@ public class Analysis implements Serializable {
             }
 
             // Updating progress bar
-            double percentageComplete = ((double) (count++))/((double) total)*100;
+            double percentageComplete = ((double) (++count))/((double) total)*100;
             ProgressMonitor.setWorkspaceProgress(workspace,percentageComplete);
             double overallPercentageComplete = ProgressMonitor.getOverallProgress();
             GUI.setProgress((int) Math.round(overallPercentageComplete));
@@ -103,12 +103,4 @@ public class Analysis implements Serializable {
         shutdown = true;
 
     }
-
-//    public boolean isUpdateProgressBar() {
-//        return updateProgressBar;
-//    }
-//
-//    public void setUpdateProgressBar(boolean updateProgressBar) {
-//        this.updateProgressBar = updateProgressBar;
-//    }
 }

@@ -7,6 +7,7 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Analysis.LongestChordCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 
@@ -152,12 +153,12 @@ public class FitLongestChord extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_OBJECTS, Parameter.INPUT_OBJECTS,null));
-        parameters.add(new Parameter(ADD_ENDPOINTS_AS_OVERLAY, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(ADD_OUTPUT_TO_WORKSPACE, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
+        parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
+        parameters.add(new BooleanP(ADD_ENDPOINTS_AS_OVERLAY, this,false));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
+        parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
 
     }
 
@@ -185,113 +186,113 @@ public class FitLongestChord extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        objectMeasurementReferences.setAllCalculated(false);
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
-        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.LENGTH_PX);
+        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.LENGTH_PX);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Length of the longest chord (the vector passing between the two points on the " +
                 "\""+inputObjectsName+"\" object surface with the greatest spacing).  Measured in pixel units.");
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.LENGTH_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.LENGTH_CAL));
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Length of the longest chord (the vector passing between the two points on the " +
                 "\""+inputObjectsName+"\" object surface with the greatest spacing).  Measured in calibrated ("
                 +Units.getOMEUnits().getSymbol()+") units.");
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.X1_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.X1_PX);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("X-coordinate for one end of the longest chord fit to the object \""
                 +inputObjectsName+"\" .  Measured in pixel units.");
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.Y1_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Y1_PX);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Y-coordinate for one end of the longest chord fit to the object \""
                 +inputObjectsName+"\" .  Measured in pixel units.");
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.Z1_SLICE);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Z1_SLICE);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Z-coordinate for one end of the longest chord fit to the object \""
                 +inputObjectsName+"\" .  Measured in pixel units.");
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.X2_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.X2_PX);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("X-coordinate for one end of the longest chord fit to the object \""
                 +inputObjectsName+"\" .  Measured in pixel units.");
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.Y2_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Y2_PX);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Y-coordinate for one end of the longest chord fit to the object \""
                 +inputObjectsName+"\" .  Measured in pixel units.");
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.Z2_SLICE);
+        reference = objectMeasurementRefs.getOrPut(Measurements.Z2_SLICE);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Z-coordinate for one end of the longest chord fit to the object \""
                 +inputObjectsName+"\" .  Measured in pixel units.");
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.MEAN_SURF_DIST_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.MEAN_SURF_DIST_PX);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Mean distance of all points on the \""+inputObjectsName+"\" object surface to the " +
                 "respective closest point on the longest chord.  Measured in pixel units (i.e. Z-coordinates are " +
                 "converted to pixel units prior to calculation).");
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MEAN_SURF_DIST_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MEAN_SURF_DIST_CAL));
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Mean distance of all points on the \""+inputObjectsName+"\" object surface to the " +
                 "respective closest point on the longest chord.  Measured in calibrated ("
                 +Units.getOMEUnits().getSymbol()+") units.");
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.STD_SURF_DIST_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.STD_SURF_DIST_PX);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Standard deviation distance of all points on the\""+inputObjectsName+"\"object " +
                 "surface to the respective closest point on the longest chord.  Measured in pixel units (i.e. " +
                 "Z-coordinates are converted to pixel units prior to calculation).");
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.STD_SURF_DIST_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.STD_SURF_DIST_CAL));
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Standard deviation distance of all points on the \""+inputObjectsName+"\" object " +
                 "surface to the respective closest point on the longest chord.  Measured in calibrated ("
                 +Units.getOMEUnits().getSymbol()+") units.");
 
-        reference = objectMeasurementReferences.getOrPut(Measurements.MAX_SURF_DIST_PX);
+        reference = objectMeasurementRefs.getOrPut(Measurements.MAX_SURF_DIST_PX);
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Maximum distance of all points on the \""+inputObjectsName+"\" object surface to the " +
                 "respective closest point on the longest chord.  Measured in pixel units (i.e. Z-coordinates are " +
                 "converted to pixel units prior to calculation).");
 
-        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.MAX_SURF_DIST_CAL));
+        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.MAX_SURF_DIST_CAL));
         reference.setCalculated(true);
         reference.setImageObjName(inputObjectsName);
         reference.setDescription("Maximum distance of all points on the \""+inputObjectsName+"\" object surface to the " +
                 "respective closest point on the longest chord.  Measured in calibrated ("
                 +Units.getOMEUnits().getSymbol()+") units.");
 
-        return objectMeasurementReferences;
+        return objectMeasurementRefs;
 
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

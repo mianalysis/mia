@@ -8,7 +8,8 @@ import ij.plugin.Duplicator;
 import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.common.Object.LUTs;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
@@ -19,8 +20,8 @@ import java.io.Serializable;
  */
 public abstract class Module implements Serializable {
     protected ParameterCollection parameters = new ParameterCollection();
-    protected MeasurementReferenceCollection imageMeasurementReferences = new MeasurementReferenceCollection();
-    protected MeasurementReferenceCollection objectMeasurementReferences = new MeasurementReferenceCollection();
+    protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
+    protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
 
     private static boolean verbose = false;
     private String nickname;
@@ -88,24 +89,28 @@ public abstract class Module implements Serializable {
      */
     public abstract ParameterCollection updateAndGetParameters();
 
-    public abstract MeasurementReferenceCollection updateAndGetImageMeasurementReferences();
+    public abstract MeasurementRefCollection updateAndGetImageMeasurementRefs();
 
-    public abstract MeasurementReferenceCollection updateAndGetObjectMeasurementReferences();
+    public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs();
 
-    public abstract MetadataReferenceCollection updateAndGetMetadataReferences();
+    public abstract MetadataRefCollection updateAndGetMetadataReferences();
 
-    public MeasurementReference getImageMeasurementReference(String name) {
-        return imageMeasurementReferences.getOrPut(name);
+    public MeasurementRef getImageMeasurementRef(String name) {
+        return imageMeasurementRefs.getOrPut(name);
     }
 
-    public MeasurementReference getObjectMeasurementReference(String name) {
-        return objectMeasurementReferences.getOrPut(name);
+    public MeasurementRef getObjectMeasurementRef(String name) {
+        return objectMeasurementRefs.getOrPut(name);
     }
 
     /*
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
      */
     public abstract void addRelationships(RelationshipCollection relationships);
+
+    public <T extends Parameter> T getParameter(String name) {
+        return parameters.getParameter(name);
+    }
 
     public Module updateParameterValue(String name, Object value) {
         parameters.updateValue(name,value);
@@ -115,17 +120,10 @@ public abstract class Module implements Serializable {
 
     public <T> T getParameterValue(String name) {
         return parameters.getParameter(name).getValue();
-
-    }
-
-    public int getParameterType(String name) {
-        return parameters.get(name).getType();
-
     }
 
     public void setParameterVisibility(String name, boolean visible) {
         parameters.updateVisible(name,visible);
-
     }
 
     public ParameterCollection getAllParameters() {

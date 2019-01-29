@@ -6,8 +6,8 @@ import ij.gui.Roi;
 import ij.macro.Tokenizer;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
 
@@ -15,7 +15,7 @@ import com.drew.lang.annotations.Nullable;
 import java.util.*;
 
 /**
- * Created by steph on 30/04/2017.
+ * Created by Stephen on 30/04/2017.
  */
 public class Obj extends Volume {
     private String name;
@@ -291,7 +291,7 @@ public class Obj extends Volume {
 
     }
 
-    public void addPointsFromRoi(Roi roi, int z) {
+    public void addPointsFromRoi(Roi roi, int z) throws IntegerOverflowException {
         for (java.awt.Point point:roi.getContainedPoints()) {
             addCoord((int) point.getX(),(int) point.getY(),z);
         }

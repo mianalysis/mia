@@ -5,9 +5,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import org.apache.commons.io.output.TeeOutputStream;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import wbif.sjx.ModularImageAnalysis.GUI.*;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
@@ -16,6 +13,8 @@ import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisTester;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
@@ -28,7 +27,6 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -76,7 +74,7 @@ public class GUI {
     private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
     private static final ModuleButton inputButton = new ModuleButton(analysis.getInputControl());
     private static final ModuleButton outputButton = new ModuleButton(analysis.getOutputControl());
-    private static final MeasurementReference globalMeasurementReference = new MeasurementReference("Global");
+    private static final MeasurementRef globalMeasurementRef = new MeasurementRef("Global");
 
 
     public GUI() throws InstantiationException, IllegalAccessException {
@@ -87,11 +85,9 @@ public class GUI {
         }
         initialised = true;
 
-        // Starting this process, as it takes longest
+        // Starting this processAutomatic, as it takes longest
         new Thread(GUI::listAvailableModules).start();
 
-        analysis.getInputControl().initialiseParameters();
-        loadSeparator.initialiseParameters();
         loadSeparator.setNickname("File loading");
         componentFactory = new ComponentFactory(elementHeight);
 
@@ -662,7 +658,7 @@ public class GUI {
 
             JPanel modulePanel = null;
             if (module.getClass().isInstance(new GUISeparator())) {
-                expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING);
+                expanded = ((BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING)).isSelected();
                 modulePanel = componentFactory.createEditingSeparator(module, group, activeModule, moduleButtonWidth - 25);
             } else {
                 if (!expanded) continue;
@@ -723,9 +719,7 @@ public class GUI {
         c.gridwidth = 1;
         c.insets = new Insets(2, 5, 0, 0);
         if (activeModule.updateAndGetParameters() != null) {
-            Iterator<Parameter> iterator = activeModule.updateAndGetParameters().values().iterator();
-            while (iterator.hasNext()) {
-                Parameter parameter = iterator.next();
+            for (Parameter parameter : activeModule.updateAndGetParameters()) {
                 c.insets = new Insets(2, 5, 0, 0);
                 c.gridx = 0;
                 c.gridy++;
@@ -736,10 +730,10 @@ public class GUI {
 
                 c.insets = new Insets(2, 5, 0, 5);
                 c.gridx++;
-                c.weightx=0;
+                c.weightx = 0;
                 c.anchor = GridBagConstraints.EAST;
                 VisibleCheck visibleCheck = new VisibleCheck(parameter);
-                visibleCheck.setPreferredSize(new Dimension(elementHeight,elementHeight));
+                visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
                 paramsPanel.add(visibleCheck, c);
 
             }
@@ -748,7 +742,7 @@ public class GUI {
         // If selected, adding the measurement selector for output control
         if (activeModule.getClass().isInstance(new OutputControl())
                 && analysis.getOutputControl().isEnabled()
-                && (boolean) analysis.getOutputControl().getParameterValue(OutputControl.SELECT_MEASUREMENTS)) {
+                && ((BooleanP) analysis.getOutputControl().getParameter(OutputControl.SELECT_MEASUREMENTS)).isSelected()) {
 
             // Creating global controls for the different statistics
             JPanel measurementHeader = componentFactory.createMeasurementHeader("Global control",null);
@@ -759,15 +753,15 @@ public class GUI {
             c.anchor = GridBagConstraints.WEST;
             paramsPanel.add(measurementHeader,c);
 
-            JPanel currentMeasurementPanel = componentFactory.createGlobalMeasurementControl(globalMeasurementReference);
+            JPanel currentMeasurementPanel = componentFactory.createGlobalMeasurementControl(globalMeasurementRef);
             c.gridy++;
             c.anchor = GridBagConstraints.EAST;
             paramsPanel.add(currentMeasurementPanel,c);
 
-            LinkedHashSet<Parameter> imageNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_IMAGE);
-            for (Parameter imageNameParameter:imageNameParameters) {
-                String imageName = imageNameParameter.getValue();
-                MeasurementReferenceCollection measurementReferences = getModules().getImageMeasurementReferences(imageName);
+            LinkedHashSet<OutputImageP> imageNameParameters = getModules().getParametersMatchingType(OutputImageP.class);
+            for (OutputImageP imageNameParameter:imageNameParameters) {
+                String imageName = imageNameParameter.getImageName();
+                MeasurementRefCollection measurementReferences = getModules().getImageMeasurementRefs(imageName);
 
                 if (measurementReferences.size() == 0) continue;
 
@@ -778,7 +772,7 @@ public class GUI {
                 paramsPanel.add(measurementHeader,c);
 
                 // Iterating over the measurements for the current image, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences.values()) {
+                for (MeasurementRef measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -790,10 +784,10 @@ public class GUI {
                 }
             }
 
-            LinkedHashSet<Parameter> objectNameParameters = getModules().getParametersMatchingType(Parameter.OUTPUT_OBJECTS);
-            for (Parameter objectNameParameter:objectNameParameters) {
-                String objectName = objectNameParameter.getValue();
-                MeasurementReferenceCollection measurementReferences = getModules().getObjectMeasurementReferences(objectName);
+            LinkedHashSet<OutputObjectsP> objectNameParameters = getModules().getParametersMatchingType(OutputObjectsP.class);
+            for (OutputObjectsP objectNameParameter:objectNameParameters) {
+                String objectName = objectNameParameter.getObjectsName();
+                MeasurementRefCollection measurementReferences = getModules().getObjectMeasurementRefs(objectName);
 
                 if (measurementReferences.size() == 0) continue;
 
@@ -804,7 +798,7 @@ public class GUI {
                 paramsPanel.add(measurementHeader,c);
 
                 // Iterating over the measurements for the current object, adding a control for each
-                for (MeasurementReference measurementReference:measurementReferences.values()) {
+                for (MeasurementRef measurementReference:measurementReferences.values()) {
                     if (!measurementReference.isCalculated()) continue;
 
                     // Adding measurement control
@@ -858,19 +852,21 @@ public class GUI {
 
     }
 
-    private static void updateEvalButtonStates() {
-        if (basicGUI) {
-            for (Component component : basicModulesScrollPane.getComponents()) {
-                if (component.getClass() == EvalButton.class) {
-                    ((EvalButton) component).updateColour();
-
-                }
-            }
-        } else {
-            for (Component component : modulesScrollPane.getComponents()) {
-                if (component.getClass() == EvalButton.class) {
-                    ((EvalButton) component).updateColour();
-
+    private static void updateButtonStates() {
+        if (!basicGUI) {
+            for (Component panel : modulesPanel.getComponents()) {
+                if (panel.getClass() == JPanel.class) {
+                    for (Component component: ((JPanel) panel).getComponents()) {
+                        if (component.getClass() == ModuleEnabledButton.class) {
+                            ((ModuleEnabledButton) component).updateState();
+                        } else if (component.getClass() == ShowOutputButton.class) {
+                            ((ShowOutputButton) component).updateState();
+                        } else if (component.getClass() == ModuleButton.class) {
+                            ((ModuleButton) component).updateState();
+                        } else if (component.getClass() == EvalButton.class) {
+                            ((EvalButton) component).updateState();
+                        }
+                    }
                 }
             }
         }
@@ -880,7 +876,7 @@ public class GUI {
         basicModulesPanel.removeAll();
 
         // Only modules below an expanded GUISeparator should be displayed
-        boolean expanded = loadSeparator.getParameterValue(GUISeparator.EXPANDED_BASIC);
+        BooleanP expanded = ((BooleanP) loadSeparator.getParameter(GUISeparator.EXPANDED_BASIC));
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -897,7 +893,7 @@ public class GUI {
         basicModulesPanel.add(componentFactory.createBasicSeparator(loadSeparator,basicFrameWidth-80),c);
 
         // Adding input control options
-        if (expanded) {
+        if (expanded.isSelected()) {
             c.gridy++;
             JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(), basicFrameWidth - 80);
             if (inputPanel != null) basicModulesPanel.add(inputPanel, c);
@@ -909,17 +905,19 @@ public class GUI {
             // If the module is the special-case GUISeparator, create this module, then return
             JPanel modulePanel = null;
             if (module.getClass().isInstance(new GUISeparator())) {
-                // Not all GUI separators are show on the basic panel
-                if (!(boolean) module.getParameterValue(GUISeparator.SHOW_BASIC)) continue;
+                // Not all GUI separators are shown on the basic panel
+                BooleanP showBasic = (BooleanP) module.getParameter(GUISeparator.SHOW_BASIC);
+                if (!showBasic.isSelected()) continue;
 
                 // Adding a blank space before the next separator
-                if (expanded) {
+                if (expanded.isSelected()) {
                     JPanel blankPanel = new JPanel();
                     blankPanel.setPreferredSize(new Dimension(10, 10));
                     c.gridy++;
                     basicModulesPanel.add(blankPanel, c);
                 }
-                expanded = module.getParameterValue(GUISeparator.EXPANDED_BASIC);
+
+                expanded = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
                 modulePanel = componentFactory.createBasicSeparator(module, basicFrameWidth-80);
             } else {
                 if (module.isRunnable()) {
@@ -927,14 +925,14 @@ public class GUI {
                 }
             }
 
-            if (modulePanel!=null && (expanded || module.getClass().isInstance(new GUISeparator()))) {
+            if (modulePanel!=null && (expanded.isSelected() || module.getClass().isInstance(new GUISeparator()))) {
                 c.gridy++;
                 basicModulesPanel.add(modulePanel,c);
             }
         }
 
         JPanel outputPanel =componentFactory.createBasicModuleControl(analysis.getOutputControl(),basicFrameWidth-80);
-        if (outputPanel != null && expanded) {
+        if (outputPanel != null && expanded.isSelected()) {
             c.gridy++;
             basicModulesPanel.add(outputPanel,c);
         }
@@ -1106,14 +1104,12 @@ public class GUI {
 
         boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
-        inputButton.setColour();
+        inputButton.updateState();
         runnable = AnalysisTester.testModule(analysis.getOutputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
-        outputButton.setColour();
+        outputButton.updateState();
 
-
-        populateModuleList();
-        updateEvalButtonStates();
+        updateButtonStates();
 
         if (basicGUI) populateBasicModules();
         else populateModuleParameters();
@@ -1123,23 +1119,23 @@ public class GUI {
     public static void updateTestFile() {
         // Ensuring the input file specified in the InputControl is active in the test workspace
         InputControl inputControl = getAnalysis().getInputControl();
-        String inputPath = inputControl.getParameterValue(InputControl.INPUT_PATH);
-        String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
-        int nThreads = inputControl.getParameterValue(InputControl.SIMULTANEOUS_JOBS);
-        boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
-        String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
-        String filenameFilterSource1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_1);
-        String filenameFilterType1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_1);
-        boolean useFilenameFilter2 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_2);
-        String filenameFilter2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_2);
-        String filenameFilterSource2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_2);
-        String filenameFilterType2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_2);
-        boolean useFilenameFilter3 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_3);
-        String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
-        String filenameFilterSource3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_3);
-        String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
+        String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
+        String extension = ((StringP) inputControl.getParameter(InputControl.FILE_EXTENSION)).getValue();
+        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
+        boolean useFilenameFilter1 = ((BooleanP) inputControl.getParameter(InputControl.USE_FILENAME_FILTER_1)).isSelected();
+        String filenameFilter1 = ((StringP) inputControl.getParameter(InputControl.FILENAME_FILTER_1)).getValue();
+        String filenameFilterSource1 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_SOURCE_1)).getChoice();
+        String filenameFilterType1 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_TYPE_1)).getChoice();
+        boolean useFilenameFilter2 = ((BooleanP) inputControl.getParameter(InputControl.USE_FILENAME_FILTER_2)).isSelected();
+        String filenameFilter2 = ((StringP) inputControl.getParameter(InputControl.FILENAME_FILTER_2)).getValue();;
+        String filenameFilterSource2 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_SOURCE_2)).getChoice();
+        String filenameFilterType2 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_TYPE_2)).getChoice();
+        boolean useFilenameFilter3 = ((BooleanP) inputControl.getParameter(InputControl.USE_FILENAME_FILTER_3)).isSelected();
+        String filenameFilter3 = ((StringP) inputControl.getParameter(InputControl.FILENAME_FILTER_3)).getValue();;
+        String filenameFilterSource3 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_SOURCE_3)).getChoice();
+        String filenameFilterType3 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_TYPE_3)).getChoice();
 
-        Units.setUnits(inputControl.getParameterValue(InputControl.SPATIAL_UNITS));
+        Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
 
         if (inputPath == null) return;
 
@@ -1181,14 +1177,15 @@ public class GUI {
 
         }
 
-        switch ((String) analysis.getInputControl().getParameterValue(InputControl.SERIES_MODE)) {
+        ChoiceP seriesMode = (ChoiceP) analysis.getInputControl().getParameter(InputControl.SERIES_MODE);
+        switch (seriesMode.getChoice()) {
             case InputControl.SeriesModes.ALL_SERIES:
                 getTestWorkspace().getMetadata().setSeriesNumber(1);
                 getTestWorkspace().getMetadata().setSeriesName("");
                 break;
 
             case InputControl.SeriesModes.SINGLE_SERIES:
-                int seriesNumber = analysis.getInputControl().getParameterValue(InputControl.SERIES_NUMBER);
+                int seriesNumber = ((IntegerP) analysis.getInputControl().getParameter(InputControl.SERIES_NUMBER)).getValue();
                 getTestWorkspace().getMetadata().setSeriesNumber(seriesNumber);
                 getTestWorkspace().getMetadata().setSeriesName("");
         }
@@ -1245,7 +1242,7 @@ public class GUI {
         return testWorkspace;
     }
 
-    public static MeasurementReference getGlobalMeasurementReference() {
-        return globalMeasurementReference;
+    public static MeasurementRef getGlobalMeasurementRef() {
+        return globalMeasurementRef;
     }
 }

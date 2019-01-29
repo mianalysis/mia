@@ -4,6 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.gui.Roi;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
@@ -31,15 +32,18 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.NameExtractor;
 import wbif.sjx.common.Object.HCMetadata;
 
 import com.drew.lang.annotations.Nullable;
+
+import java.awt.*;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -59,6 +63,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String IMPORT_MODE = "Import mode";
     public static final String NUMBER_OF_ZEROES = "Number of zeroes";
     public static final String STARTING_INDEX = "Starting index";
+    public static final String FRAME_INTERVAL = "Frame interval";
     public static final String LIMIT_FRAMES = "Limit frames";
     public static final String FINAL_INDEX = "Final index";
     public static final String NAME_FORMAT = "Name format";
@@ -72,7 +77,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String SLICES = "Slices";
     public static final String FRAMES = "Frames";
     public static final String CHANNEL = "Channel";
-    public static final String CROP_IMAGE = "Crop image";
+    public static final String CROP_MODE = "Crop mode";
+    public static final String REFERENCE_IMAGE = "Reference image";
     public static final String LEFT = "Left coordinate";
     public static final String TOP = "Top coordinate";
     public static final String WIDTH = "Width";
@@ -80,6 +86,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public static final String SET_CAL = "Set manual spatial calibration";
     public static final String XY_CAL = "XY calibration (dist/px)";
     public static final String Z_CAL = "Z calibration (dist/px)";
+    public static final String FORCE_BIT_DEPTH = "Force bit depth";
+    public static final String OUTPUT_BIT_DEPTH = "Output bit depth";
+    public static final String MIN_INPUT_INTENSITY = "Minimum input intensity";
+    public static final String MAX_INPUT_INTENSITY = "Maximum input intensity";
     public static final String USE_IMAGEJ_READER = "Use ImageJ reader";
     public static final String THREE_D_MODE = "Load 3D stacks as";
 
@@ -122,6 +132,33 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
+    public interface CropModes {
+        String NONE = "None";
+        String FIXED = "Fixed";
+        String FROM_REFERENCE = "From reference";
+
+        String[] ALL = new String[]{NONE,FIXED,FROM_REFERENCE};
+
+    }
+
+    public interface OutputBitDepths {
+        String EIGHT = "8";
+        String SIXTEEN = "16";
+        String THIRTY_TWO = "32";
+
+        String[] ALL = new String[]{EIGHT,SIXTEEN,THIRTY_TWO};
+
+    }
+
+
+    public interface Measurements {
+        String ROI_LEFT = "IMAGE_LOADING // ROI_LEFT (PX)";
+        String ROI_TOP = "IMAGE_LOADING // ROI_TOP (PX)";
+        String ROI_WIDTH = "IMAGE_LOADING // ROI_WIDTH (PX)";
+        String ROI_HEIGHT = "IMAGE_LOADING // ROI_HEIGHT (PX)";
+
+    }
+
 //    public Img<T> getImg(String path, int seriesNumber,int[][] dimRanges, boolean verbose) throws IOException, io.scif.FormatException {
 //        File file = new File(path);
 //
@@ -148,7 +185,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 //    }
 
 
-    public ImagePlus getBFImage(String path, int seriesNumber, @Nullable String[] dimRanges, @Nullable int[] crop, boolean localVerbose)
+    public ImagePlus getBFImage(String path, int seriesNumber, @Nullable String[] dimRanges, @Nullable int[] crop, @Nullable double[] intRange, boolean localVerbose)
             throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
@@ -186,6 +223,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         int sizeT = reader.getSizeT();
         int sizeZ = reader.getSizeZ();
         int bitDepth = reader.getBitsPerPixel();
+
+        // If a specific bit depth is to be used
+        if (intRange != null) {
+            bitDepth = (int) intRange[0];
+        }
 
         if (crop != null) {
             left = crop[0];
@@ -225,6 +267,22 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 //                    byte[][] lutt = reader.get8BitLookupTable();
 //                    LUT lut = new LUT(lutt[0],lutt[1],lutt[2]);
 //                    ip.setLut(lut);
+
+                    // If forcing bit depth
+                    if (intRange != null) {
+                        ip.setMinAndMax(intRange[1],intRange[2]);
+                        switch (bitDepth) {
+                            case 8:
+                                ip = ip.convertToByte(true);
+                                break;
+                            case 16:
+                                ip = ip.convertToShort(true);
+                                break;
+                            case 32:
+                                ip = ip.convertToFloat();
+                                break;
+                        }
+                    }
 
                     ipl.setPosition(countC,countZ,countT);
                     ipl.setProcessor(ip);
@@ -311,7 +369,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int finalIndex, int[] crop)
+    public ImagePlus getImageSequence(File rootFile, int numberOfZeroes, int startingIndex, int frameInterval, int finalIndex, int[] crop, @Nullable double[] intRange)
             throws ServiceException, DependencyException, FormatException, IOException {
         // Number format
         StringBuilder stringBuilder = new StringBuilder();
@@ -329,14 +387,15 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         // Determining the number of images to load
         int count = 0;
         int idx = startingIndex;
-        while (new File(rootPath+rootName+df.format(idx++)+"."+extension).exists()){
+        while (new File(rootPath+rootName+df.format(idx)+"."+extension).exists()){
+            if (idx > finalIndex) break;
             count++;
-            if (idx == finalIndex) break;
+            idx = idx + frameInterval;
         }
 
         // Determining the dimensions of the input image
         String[] dimRanges = new String[]{"1","1","1"};
-        ImagePlus rootIpl = getBFImage(rootFile.getAbsolutePath(),1,dimRanges,crop,false);
+        ImagePlus rootIpl = getBFImage(rootFile.getAbsolutePath(),1,dimRanges,crop,intRange,false);
         int width = rootIpl.getWidth();
         int height = rootIpl.getHeight();
         int bitDepth = rootIpl.getBitDepth();
@@ -350,8 +409,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         ImagePlus outputIpl = IJ.createImage("Image",width,height,count,bitDepth);
         for (int i = 0;i<count;i++) {
             writeMessage("Loading image "+(i+1)+" of "+count);
-            String currentPath = rootPath+rootName+df.format(i+startingIndex)+"."+extension;
-            ImagePlus tempIpl = getBFImage(currentPath,1,dimRanges,crop,false);
+            String currentPath = rootPath+rootName+df.format(i*frameInterval+startingIndex)+"."+extension;
+            ImagePlus tempIpl = getBFImage(currentPath,1,dimRanges,crop,intRange,false);
 
             outputIpl.setPosition(i+1);
             outputIpl.setProcessor(tempIpl.getProcessor());
@@ -366,7 +425,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    public ImagePlus getHuygensImage(HCMetadata metadata, String[] dimRanges, int[] crop)
+    public ImagePlus getHuygensImage(HCMetadata metadata, String[] dimRanges, int[] crop, @Nullable double[] intRange)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -380,7 +439,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             String comment = metadata.getComment();
             String filename = path+matcher.group(1)+"_ch"+comment+"."+extension;
 
-            return getBFImage(filename,1,dimRanges,crop,true);
+            return getBFImage(filename,1,dimRanges,crop,intRange,true);
 
         }
 
@@ -388,7 +447,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    private ImagePlus getIncucyteShortNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop)
+    private ImagePlus getIncucyteShortNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop, @Nullable double[] intRange)
             throws ServiceException, DependencyException, FormatException, IOException {
         // First, running metadata extraction on the input file
         NameExtractor filenameExtractor = new IncuCyteShortFilenameExtractor();
@@ -399,11 +458,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String filename = metadata.getFile().getParent()+MIA.getSlashes()+IncuCyteShortFilenameExtractor
                 .generate(comment,metadata.getWell(),metadata.getAsString(HCMetadata.FIELD),metadata.getExt());
 
-        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
+        return getBFImage(filename,seriesNumber,dimRanges,crop,intRange,true);
 
     }
 
-    private ImagePlus getYokogawaNameImage(File templateFile, int seriesNumber, int[] crop)
+    private ImagePlus getYokogawaNameImage(File templateFile, int seriesNumber, int[] crop, @Nullable double[] intRange)
             throws ServiceException, DependencyException, FormatException, IOException {
         // Creating metadata object
         HCMetadata metadata = new HCMetadata();
@@ -428,11 +487,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         File[] listOfFiles = parentFile.listFiles(filter);
         String[] dimRanges = new String[]{"1","1","1"};
-        return getBFImage(listOfFiles[0].getAbsolutePath(),seriesNumber,dimRanges,crop,true);
+        return getBFImage(listOfFiles[0].getAbsolutePath(),seriesNumber,dimRanges,crop,intRange,true);
 
     }
 
-    private ImagePlus getPrefixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop, boolean includeSeries, String ext)
+    private ImagePlus getPrefixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop, @Nullable double[] intRange, boolean includeSeries, String ext)
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -441,11 +500,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String series = includeSeries ? "_S"+metadata.getSeriesNumber() : "";
         String filename = path+comment+name+series+"."+ext;
 
-        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
+        return getBFImage(filename,seriesNumber,dimRanges,crop,intRange,true);
 
     }
 
-    private ImagePlus getSuffixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop, boolean includeSeries, String ext )
+    private ImagePlus getSuffixNameImage(HCMetadata metadata, int seriesNumber, String[] dimRanges, int[] crop, @Nullable double[] intRange, boolean includeSeries, String ext )
             throws ServiceException, DependencyException, FormatException, IOException {
         String absolutePath = metadata.getFile().getAbsolutePath();
         String path = FilenameUtils.getFullPath(absolutePath);
@@ -454,8 +513,24 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String series = includeSeries ? "_S"+metadata.getSeriesNumber() : "";
         String filename = path+name+series+comment+"."+ext;
 
-        return getBFImage(filename,seriesNumber,dimRanges,crop,true);
+        return getBFImage(filename,seriesNumber,dimRanges,crop,intRange,true);
 
+    }
+
+    private void addCropMeasurements(Image image, int[] crop) {
+        image.addMeasurement(new Measurement(Measurements.ROI_LEFT,crop[0]));
+        image.addMeasurement(new Measurement(Measurements.ROI_TOP,crop[1]));
+        image.addMeasurement(new Measurement(Measurements.ROI_WIDTH,crop[2]));
+        image.addMeasurement(new Measurement(Measurements.ROI_HEIGHT,crop[3]));
+    }
+
+    private void addCropMeasurements(ObjCollection objects, int[] crop) {
+        for (Obj obj:objects.values()) {
+            obj.addMeasurement(new Measurement(Measurements.ROI_LEFT, crop[0]));
+            obj.addMeasurement(new Measurement(Measurements.ROI_TOP, crop[1]));
+            obj.addMeasurement(new Measurement(Measurements.ROI_WIDTH, crop[2]));
+            obj.addMeasurement(new Measurement(Measurements.ROI_HEIGHT, crop[3]));
+        }
     }
 
 
@@ -485,6 +560,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String filePath = parameters.getValue(FILE_PATH);
         int numberOfZeroes = parameters.getValue(NUMBER_OF_ZEROES);
         int startingIndex = parameters.getValue(STARTING_INDEX);
+        int frameInterval = parameters.getValue(FRAME_INTERVAL);
         boolean limitFrames = parameters.getValue(LIMIT_FRAMES);
         int finalIndex = parameters.getValue(FINAL_INDEX);
         String nameFormat = parameters.getValue(NAME_FORMAT);
@@ -497,7 +573,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String slices = parameters.getValue(SLICES);
         String frames = parameters.getValue(FRAMES);
         int channel = parameters.getValue(CHANNEL);
-        boolean cropImage = parameters.getValue(CROP_IMAGE);
+        String cropMode = parameters.getValue(CROP_MODE);
+        String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         int left = parameters.getValue(LEFT);
         int top = parameters.getValue(TOP);
         int width = parameters.getValue(WIDTH);
@@ -505,6 +582,10 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         boolean setCalibration = parameters.getValue(SET_CAL);
         double xyCal = parameters.getValue(XY_CAL);
         double zCal = parameters.getValue(Z_CAL);
+        boolean forceBitDepth = parameters.getValue(FORCE_BIT_DEPTH);
+        String outputBitDepth = parameters.getValue(OUTPUT_BIT_DEPTH);
+        double minIntensity = parameters.getValue(MIN_INPUT_INTENSITY);
+        double maxIntensity = parameters.getValue(MAX_INPUT_INTENSITY);
         boolean useImageJReader = parameters.getValue(USE_IMAGEJ_READER);
         String threeDMode = parameters.getValue(THREE_D_MODE);
 
@@ -514,7 +595,31 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String[] dimRanges = new String[]{channels,slices,frames};
 
         int[] crop = null;
-        if (cropImage) crop = new int[]{left,top,width,height};
+        switch (cropMode) {
+            case CropModes.FIXED:
+                crop = new int[]{left,top,width,height};
+                break;
+            case CropModes.FROM_REFERENCE:
+                // Displaying the image
+                Image referenceImage = workspace.getImage(referenceImageName);
+                ImagePlus referenceIpl = referenceImage.getImagePlus().duplicate();
+                referenceIpl.show();
+
+                // Asking the user to draw a rectangular ROI
+                IJ.runMacro("waitForUser(getArgument())","Click \"OK\" once ROI selected");
+
+                // Getting the ROI
+                Roi roi = referenceIpl.getRoi();
+                Rectangle bounds = roi.getBounds();
+                crop = new int[]{bounds.x,bounds.y,bounds.width,bounds.height};
+
+                // Closing the reference image
+                referenceIpl.close();
+                break;
+
+        }
+
+        double[] intRange = (forceBitDepth) ? new double[]{Double.parseDouble(outputBitDepth),minIntensity,maxIntensity} : null;
 
         ImagePlus ipl = null;
         try {
@@ -524,7 +629,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     if (useImageJReader) {
                         ipl = IJ.openImage(file.getAbsolutePath());
                     } else {
-                        ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, true);
+                        ipl = getBFImage(file.getAbsolutePath(), seriesNumber, dimRanges, crop, intRange, true);
                     }
                     break;
 
@@ -534,7 +639,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 case ImportModes.IMAGE_SEQUENCE:
                     if (!limitFrames) finalIndex = Integer.MAX_VALUE;
-                    ipl = getImageSequence(workspace.getMetadata().getFile(),numberOfZeroes,startingIndex, finalIndex,crop);
+                    ipl = getImageSequence(workspace.getMetadata().getFile(),numberOfZeroes,startingIndex,frameInterval,finalIndex,crop, intRange);
                     break;
 
                 case ImportModes.MATCHING_FORMAT:
@@ -542,29 +647,29 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                         case NameFormats.HUYGENS:
                             HCMetadata metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(comment);
-                            ipl = getHuygensImage(metadata,dimRanges,crop);
+                            ipl = getHuygensImage(metadata,dimRanges,crop, intRange);
                             break;
 
                         case NameFormats.INCUCYTE_SHORT:
                             metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(comment);
-                            ipl = getIncucyteShortNameImage(metadata, seriesNumber, dimRanges,crop);
+                            ipl = getIncucyteShortNameImage(metadata, seriesNumber, dimRanges,crop, intRange);
                             break;
 
                         case NameFormats.YOKOGAWA:
-                            ipl = getYokogawaNameImage(workspace.getMetadata().getFile(), seriesNumber, crop);
+                            ipl = getYokogawaNameImage(workspace.getMetadata().getFile(), seriesNumber, crop, intRange);
                             break;
 
                         case NameFormats.INPUT_FILE_PREFIX:
                             metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(prefix);
-                            ipl = getPrefixNameImage(metadata, seriesNumber, dimRanges, crop, includeSeriesNumber,ext);
+                            ipl = getPrefixNameImage(metadata, seriesNumber, dimRanges, crop, intRange, includeSeriesNumber,ext);
                             break;
 
                         case NameFormats.INPUT_FILE_SUFFIX:
                             metadata = (HCMetadata) workspace.getMetadata().clone();
                             metadata.setComment(suffix);
-                            ipl = getSuffixNameImage(metadata, seriesNumber, dimRanges, crop, includeSeriesNumber,ext);
+                            ipl = getSuffixNameImage(metadata, seriesNumber, dimRanges, crop, intRange, includeSeriesNumber,ext);
                             break;
                     }
                     break;
@@ -573,7 +678,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     if (useImageJReader) {
                         ipl = IJ.openImage(filePath);
                     } else {
-                        ipl = getBFImage(filePath, 1, dimRanges, crop, true);
+                        ipl = getBFImage(filePath, 1, dimRanges, crop, intRange, true);
                     }
                     break;
             }
@@ -614,16 +719,29 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 if (showOutput) showImage(outputImage);
 
+                // If a crop was drawn, recording these coordinates as an image measurement
+                switch (cropMode) {
+                    case CropModes.FROM_REFERENCE:
+                        addCropMeasurements(outputImage, crop);
+                        break;
+                }
+
                 break;
 
             case OutputModes.OBJECTS:
                 outputImage = new Image(outputObjectsName, ipl);
-                ObjCollection outputObjects = outputImage.convertImageToObjects(outputObjectsName);
+                ObjCollection outputObjects = null;
+                try {
+                    outputObjects = outputImage.convertImageToObjects(outputObjectsName);
+                } catch (IntegerOverflowException e) {
+                    return false;
+                }
 
                 writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
                 workspace.addObjects(outputObjects);
 
                 if (showOutput) showImage(outputImage);
+                addCropMeasurements(outputObjects, crop);
 
                 break;
         }
@@ -633,36 +751,42 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(OUTPUT_MODE,Parameter.CHOICE_ARRAY, OutputModes.IMAGE, OutputModes.ALL));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(IMPORT_MODE, Parameter.CHOICE_ARRAY,ImportModes.CURRENT_FILE,ImportModes.ALL));
-        parameters.add(new Parameter(NUMBER_OF_ZEROES,Parameter.INTEGER,4));
-        parameters.add(new Parameter(STARTING_INDEX,Parameter.INTEGER,0));
-        parameters.add(new Parameter(LIMIT_FRAMES,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(FINAL_INDEX,Parameter.INTEGER,1));
-        parameters.add(new Parameter(NAME_FORMAT,Parameter.CHOICE_ARRAY,NameFormats.HUYGENS,NameFormats.ALL));
-        parameters.add(new Parameter(COMMENT,Parameter.STRING,""));
-        parameters.add(new Parameter(PREFIX,Parameter.STRING,""));
-        parameters.add(new Parameter(SUFFIX,Parameter.STRING,""));
-        parameters.add(new Parameter(EXTENSION,Parameter.STRING,""));
-        parameters.add(new Parameter(INCLUDE_SERIES_NUMBER,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(FILE_PATH, Parameter.FILE_PATH,null));
-        parameters.add(new Parameter(CHANNELS,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(SLICES,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(FRAMES,Parameter.STRING,"1-end"));
-        parameters.add(new Parameter(CHANNEL,Parameter.INTEGER,1));
-        parameters.add(new Parameter(CROP_IMAGE, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(LEFT, Parameter.INTEGER,0));
-        parameters.add(new Parameter(TOP, Parameter.INTEGER,0));
-        parameters.add(new Parameter(WIDTH, Parameter.INTEGER,512));
-        parameters.add(new Parameter(HEIGHT, Parameter.INTEGER,512));
-        parameters.add(new Parameter(SET_CAL, Parameter.BOOLEAN, false));
-        parameters.add(new Parameter(XY_CAL, Parameter.DOUBLE, 1.0));
-        parameters.add(new Parameter(Z_CAL, Parameter.DOUBLE, 1.0));
-        parameters.add(new Parameter(USE_IMAGEJ_READER, Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(THREE_D_MODE,Parameter.CHOICE_ARRAY,ThreeDModes.ZSTACK,ThreeDModes.ALL));
+    protected void initialiseParameters() {
+        parameters.add(new ChoiceP(OUTPUT_MODE,this, OutputModes.IMAGE, OutputModes.ALL));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new ChoiceP(IMPORT_MODE, this,ImportModes.CURRENT_FILE,ImportModes.ALL));
+        parameters.add(new IntegerP(NUMBER_OF_ZEROES,this,4));
+        parameters.add(new IntegerP(STARTING_INDEX,this,0));
+        parameters.add(new IntegerP(FRAME_INTERVAL,this,1));
+        parameters.add(new BooleanP(LIMIT_FRAMES,this,false));
+        parameters.add(new IntegerP(FINAL_INDEX,this,1));
+        parameters.add(new ChoiceP(NAME_FORMAT,this,NameFormats.HUYGENS,NameFormats.ALL));
+        parameters.add(new StringP(COMMENT,this));
+        parameters.add(new StringP(PREFIX,this));
+        parameters.add(new StringP(SUFFIX,this));
+        parameters.add(new StringP(EXTENSION,this));
+        parameters.add(new BooleanP(INCLUDE_SERIES_NUMBER,this,true));
+        parameters.add(new FilePathP(FILE_PATH, this));
+        parameters.add(new StringP(CHANNELS,this,"1-end"));
+        parameters.add(new StringP(SLICES,this,"1-end"));
+        parameters.add(new StringP(FRAMES,this,"1-end"));
+        parameters.add(new IntegerP(CHANNEL,this,1));
+        parameters.add(new ChoiceP(CROP_MODE,this,CropModes.NONE,CropModes.ALL));
+        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
+        parameters.add(new IntegerP(LEFT, this,0));
+        parameters.add(new IntegerP(TOP, this,0));
+        parameters.add(new IntegerP(WIDTH, this,512));
+        parameters.add(new IntegerP(HEIGHT, this,512));
+        parameters.add(new BooleanP(SET_CAL, this, false));
+        parameters.add(new DoubleP(XY_CAL, this, 1d));
+        parameters.add(new DoubleP(Z_CAL, this, 1d));
+        parameters.add(new BooleanP(FORCE_BIT_DEPTH, this, false));
+        parameters.add(new ChoiceP(OUTPUT_BIT_DEPTH,this,OutputBitDepths.EIGHT,OutputBitDepths.ALL));
+        parameters.add(new DoubleP(MIN_INPUT_INTENSITY, this, 0d));
+        parameters.add(new DoubleP(MAX_INPUT_INTENSITY, this, 1d));
+        parameters.add(new BooleanP(USE_IMAGEJ_READER, this,false));
+        parameters.add(new ChoiceP(THREE_D_MODE,this,ThreeDModes.ZSTACK,ThreeDModes.ALL));
 
     }
 
@@ -690,6 +814,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             case ImportModes.IMAGE_SEQUENCE:
                 returnedParameters.add(parameters.getParameter(NUMBER_OF_ZEROES));
                 returnedParameters.add(parameters.getParameter(STARTING_INDEX));
+                returnedParameters.add(parameters.getParameter(FRAME_INTERVAL));
                 returnedParameters.add(parameters.getParameter(LIMIT_FRAMES));
                 if (parameters.getValue(LIMIT_FRAMES)) {
                     returnedParameters.add(parameters.getParameter(FINAL_INDEX));
@@ -732,18 +857,32 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             returnedParameters.add(parameters.getParameter(FRAMES));
         }
 
-        returnedParameters.add(parameters.getParameter(CROP_IMAGE));
-        if (parameters.getValue(CROP_IMAGE)){
-            returnedParameters.add(parameters.getParameter(LEFT));
-            returnedParameters.add(parameters.getParameter(TOP));
-            returnedParameters.add(parameters.getParameter(WIDTH));
-            returnedParameters.add(parameters.getParameter(HEIGHT));
+        returnedParameters.add(parameters.getParameter(CROP_MODE));
+        switch ((String) parameters.getValue(CROP_MODE)) {
+            case CropModes.FIXED:
+                returnedParameters.add(parameters.getParameter(LEFT));
+                returnedParameters.add(parameters.getParameter(TOP));
+                returnedParameters.add(parameters.getParameter(WIDTH));
+                returnedParameters.add(parameters.getParameter(HEIGHT));
+                break;
+            case CropModes.FROM_REFERENCE:
+                returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(SET_CAL));
         if (parameters.getValue(SET_CAL)) {
             returnedParameters.add(parameters.getParameter(XY_CAL));
             returnedParameters.add(parameters.getParameter(Z_CAL));
+        }
+
+        returnedParameters.add(parameters.getParameter(FORCE_BIT_DEPTH));
+        if (parameters.getValue(FORCE_BIT_DEPTH)) {
+            returnedParameters.add(parameters.getParameter(OUTPUT_BIT_DEPTH));
+            if (!parameters.getValue(OUTPUT_BIT_DEPTH).equals(OutputBitDepths.THIRTY_TWO)) {
+                returnedParameters.add(parameters.getParameter(MIN_INPUT_INTENSITY));
+                returnedParameters.add(parameters.getParameter(MAX_INPUT_INTENSITY));
+            }
         }
 
         if (parameters.getValue(IMPORT_MODE).equals(ImportModes.CURRENT_FILE)
@@ -758,17 +897,45 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
-        return null;
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.IMAGE)) {
+            String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+
+            switch ((String) parameters.getValue(CROP_MODE)) {
+                case CropModes.FROM_REFERENCE:
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputImageName));
+                    imageMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputImageName));
+                    break;
+            }
+        }
+
+        return imageMeasurementRefs;
+
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-        return null;
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.OBJECTS)) {
+            String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+
+            switch ((String) parameters.getValue(CROP_MODE)) {
+                case CropModes.FROM_REFERENCE:
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_LEFT,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_TOP,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_WIDTH,outputObjectsName));
+                    objectMeasurementRefs.add(new MeasurementRef(Measurements.ROI_HEIGHT,outputObjectsName));
+                    break;
+            }
+        }
+
+        return objectMeasurementRefs;
+
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

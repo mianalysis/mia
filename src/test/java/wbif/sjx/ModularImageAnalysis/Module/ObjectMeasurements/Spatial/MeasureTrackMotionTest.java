@@ -8,6 +8,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Units;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Timepoint;
 import wbif.sjx.common.Object.Track;
 
@@ -32,7 +33,7 @@ public class MeasureTrackMotionTest {
     }
 
     @Test
-    public void testCreateTrack() {
+    public void testCreateTrack() throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;
@@ -57,7 +58,7 @@ public class MeasureTrackMotionTest {
     }
 
     @Test
-    public void testCreateAverageTrack() {
+    public void testCreateAverageTrack() throws IntegerOverflowException {
         // Setting calibration parameters
         double dppXY = 0.02;
         double dppZ = 0.1;

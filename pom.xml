@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.7.22</version>
+    <version>0.8.0</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>https://github.com/SJCross/ModularImageAnalysis</url>
@@ -59,7 +59,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dependency.locations.enabled>false</dependency.locations.enabled>
+        <dependency.locations.selected>false</dependency.locations.selected>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <myscope>compile</myscope>
@@ -152,7 +152,6 @@
             </exclusions>
         </dependency>
 
-
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-ui-swing</artifactId>
@@ -170,12 +169,12 @@
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
-            <artifactId>TrackMate_</artifactId>
+            <artifactId>bUnwarpJ_</artifactId>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
             <groupId>sc.fiji</groupId>
-            <artifactId>bUnwarpJ_</artifactId>
+            <artifactId>Colocalisation_Analysis</artifactId>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
@@ -186,6 +185,11 @@
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>CorrectBleach_</artifactId>
+            <scope>${myscope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>sc.fiji</groupId>
+            <artifactId>TrackMate_</artifactId>
             <scope>${myscope}</scope>
         </dependency>
         <dependency>
@@ -237,10 +241,10 @@
         <dependency>
             <!--<groupId>wbif.sjx</groupId>-->
             <!--<artifactId>Common</artifactId>-->
-            <!--<version>1.4.23</version>-->
+            <!--<version>1.4.24</version>-->
             <groupId>com.github.SJCross</groupId>
             <artifactId>Common</artifactId>
-            <version>v1.4.23</version>
+            <version>v1.4.24</version>
         </dependency>
     </dependencies>
 

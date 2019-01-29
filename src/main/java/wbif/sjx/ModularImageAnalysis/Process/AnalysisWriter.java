@@ -49,6 +49,7 @@ public class AnalysisWriter {
         transformer.transform(source, result);
 
         System.out.println("File saved ("+ FilenameUtils.getName(outputFileName)+")");
+
     }
 
     public static void saveAnalysis(Analysis analysis) throws IOException, ParserConfigurationException, TransformerException {

@@ -17,6 +17,7 @@ import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -151,13 +152,13 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(X_SHIFT,Parameter.DOUBLE,0.0));
-        parameters.add(new Parameter(Y_SHIFT,Parameter.DOUBLE,0.0));
-        parameters.add(new Parameter(Z_SHIFT,Parameter.DOUBLE,0.0));
-        parameters.add(new Parameter(CALIBRATED_UNITS,Parameter.BOOLEAN,false));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new DoubleP(X_SHIFT,this,0.0));
+        parameters.add(new DoubleP(Y_SHIFT,this,0.0));
+        parameters.add(new DoubleP(Z_SHIFT,this,0.0));
+        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false));
 
     }
 
@@ -181,17 +182,17 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

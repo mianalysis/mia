@@ -30,13 +30,13 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
         setMargin(new Insets(0,0,0,0));
         setName("ModuleEnabled");
         setToolTipText("Enable/disable module");
-        setIcon();
+        updateState();
 
         addActionListener(this);
 
     }
 
-    public void setIcon() {
+    public void updateState() {
         if (state && module.isRunnable()) setIcon(greenIcon);
         else if (state &! module.isRunnable()) setIcon(redIcon);
         else setIcon(blackIcon);
@@ -51,7 +51,7 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
         // Invert state
         state = !state;
 
-        setIcon();
+        updateState();
         module.setEnabled(state);
 
         int idx = GUI.getModules().indexOf(module);

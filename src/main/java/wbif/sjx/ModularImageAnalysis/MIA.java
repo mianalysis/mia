@@ -24,7 +24,6 @@ import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.InputOutput.VideoLoader;
 import wbif.sjx.ModularImageAnalysis.Object.ErrorLog;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Process.Analysis;

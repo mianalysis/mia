@@ -3,6 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
 /**
  * Created by sc13967 on 03/05/2017.
@@ -43,8 +45,8 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(DISPLAY_IMAGE, Parameter.INPUT_IMAGE,null));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(DISPLAY_IMAGE, this));
 
     }
 
@@ -54,17 +56,17 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

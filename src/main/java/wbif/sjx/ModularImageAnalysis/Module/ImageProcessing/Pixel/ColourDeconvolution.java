@@ -10,6 +10,7 @@ import sc.fiji.colourDeconvolution.StainMatrix;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 import java.util.LinkedHashMap;
 
@@ -173,14 +174,14 @@ public class ColourDeconvolution extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE, Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(ENABLE_IM1_OUTPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE_1, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(ENABLE_IM2_OUTPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE_2, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(ENABLE_IM3_OUTPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE_3, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(STAIN_MODEL, Parameter.CHOICE_ARRAY,StainModels.H_AND_E,StainModels.ALL));
+        parameters.add(new InputImageP(INPUT_IMAGE, this));
+        parameters.add(new BooleanP(ENABLE_IM1_OUTPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE_1, this));
+        parameters.add(new BooleanP(ENABLE_IM2_OUTPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE_2, this));
+        parameters.add(new BooleanP(ENABLE_IM3_OUTPUT, this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE_3, this));
+        parameters.add(new ChoiceP(STAIN_MODEL, this,StainModels.H_AND_E,StainModels.ALL));
 
     }
 
@@ -206,17 +207,17 @@ public class ColourDeconvolution extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

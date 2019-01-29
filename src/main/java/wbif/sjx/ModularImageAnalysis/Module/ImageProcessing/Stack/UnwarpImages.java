@@ -4,7 +4,6 @@ import bunwarpj.Param;
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
-import ij.ImageStack;
 import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
@@ -14,6 +13,8 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import com.drew.lang.annotations.Nullable;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -253,7 +254,7 @@ public class UnwarpImages extends Module {
 
             // If the reference image is the previous frame, calculate this now
             if (relativeMode.equals(RelativeModes.PREVIOUS_FRAME)) {
-                // Can't process if this is the first frame
+                // Can't processAutomatic if this is the first frame
                 if (t == 1) continue;
 
                 reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", String.valueOf(t - 1));
@@ -380,27 +381,27 @@ public class UnwarpImages extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(APPLY_TO_INPUT, Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(OUTPUT_IMAGE, Parameter.OUTPUT_IMAGE,null));
-        parameters.add(new Parameter(RELATIVE_MODE,Parameter.CHOICE_ARRAY,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
-        parameters.add(new Parameter(ROLLING_CORRECTION,Parameter.CHOICE_ARRAY,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
-        parameters.add(new Parameter(CORRECTION_INTERVAL, Parameter.INTEGER,1));
-        parameters.add(new Parameter(REFERENCE_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(CALCULATION_SOURCE,Parameter.CHOICE_ARRAY,CalculationSources.INTERNAL,CalculationSources.ALL));
-        parameters.add(new Parameter(EXTERNAL_SOURCE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(CALCULATION_CHANNEL, Parameter.INTEGER,1));
-        parameters.add(new Parameter(REGISTRATION_MODE,Parameter.CHOICE_ARRAY,RegistrationModes.FAST,RegistrationModes.ALL));
-        parameters.add(new Parameter(SUBSAMPLE_FACTOR,Parameter.INTEGER,0));
-        parameters.add(new Parameter(INITIAL_DEFORMATION_MODE,Parameter.CHOICE_ARRAY,InitialDeformationModes.VERY_COARSE,InitialDeformationModes.ALL));
-        parameters.add(new Parameter(FINAL_DEFORMATION_MODE,Parameter.CHOICE_ARRAY,FinalDeformationModes.FINE,FinalDeformationModes.ALL));
-        parameters.add(new Parameter(DIVERGENCE_WEIGHT, Parameter.DOUBLE,0d));
-        parameters.add(new Parameter(CURL_WEIGHT, Parameter.DOUBLE,0d));
-        parameters.add(new Parameter(LANDMARK_WEIGHT, Parameter.DOUBLE,0d));
-        parameters.add(new Parameter(IMAGE_WEIGHT, Parameter.DOUBLE,1d));
-        parameters.add(new Parameter(CONSISTENCY_WEIGHT, Parameter.DOUBLE,10d));
-        parameters.add(new Parameter(STOP_THRESHOLD, Parameter.DOUBLE,0.01));
-        parameters.add(new Parameter(ENABLE_MULTITHREADING,Parameter.BOOLEAN,true));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new BooleanP(APPLY_TO_INPUT,this,true));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new ChoiceP(RELATIVE_MODE,this,RelativeModes.FIRST_FRAME,RelativeModes.ALL));
+        parameters.add(new ChoiceP(ROLLING_CORRECTION,this,RollingCorrectionModes.NONE,RollingCorrectionModes.ALL));
+        parameters.add(new IntegerP(CORRECTION_INTERVAL,this,1));
+        parameters.add(new InputImageP(REFERENCE_IMAGE,this));
+        parameters.add(new ChoiceP(CALCULATION_SOURCE,this,CalculationSources.INTERNAL,CalculationSources.ALL));
+        parameters.add(new InputImageP(EXTERNAL_SOURCE,this));
+        parameters.add(new IntegerP(CALCULATION_CHANNEL,this,1));
+        parameters.add(new ChoiceP(REGISTRATION_MODE,this,RegistrationModes.FAST,RegistrationModes.ALL));
+        parameters.add(new IntegerP(SUBSAMPLE_FACTOR,this,0));
+        parameters.add(new ChoiceP(INITIAL_DEFORMATION_MODE,this,InitialDeformationModes.VERY_COARSE,InitialDeformationModes.ALL));
+        parameters.add(new ChoiceP(FINAL_DEFORMATION_MODE,this,FinalDeformationModes.FINE,FinalDeformationModes.ALL));
+        parameters.add(new DoubleP(DIVERGENCE_WEIGHT,this,0d));
+        parameters.add(new DoubleP(CURL_WEIGHT,this,0d));
+        parameters.add(new DoubleP(LANDMARK_WEIGHT,this,0d));
+        parameters.add(new DoubleP(IMAGE_WEIGHT,this,1d));
+        parameters.add(new DoubleP(CONSISTENCY_WEIGHT,this,10d));
+        parameters.add(new DoubleP(STOP_THRESHOLD,this,0.01));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
 
     }
 
@@ -461,17 +462,17 @@ public class UnwarpImages extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

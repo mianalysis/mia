@@ -8,11 +8,12 @@ import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class IdentifyObjects extends Module {
     }
 
 
-    private ObjCollection importFromImage(Image inputImage) {
+    private ObjCollection importFromImage(Image inputImage) throws IntegerOverflowException {
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
         boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
         boolean singleObject = parameters.getValue(SINGLE_OBJECT);
@@ -124,7 +125,12 @@ public class IdentifyObjects extends Module {
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 
-        ObjCollection outputObjects = importFromImage(inputImage);
+        ObjCollection outputObjects = null;
+        try {
+            outputObjects = importFromImage(inputImage);
+        } catch (IntegerOverflowException e) {
+            return false;
+        }
 
         writeMessage(outputObjects.size()+" objects detected");
 
@@ -135,7 +141,6 @@ public class IdentifyObjects extends Module {
         // Showing objects
         if (showOutput) {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
-            String mode = ConvertObjectsToImage.ColourModes.RANDOM_COLOUR;
             ImagePlus dispIpl = outputObjects.convertObjectsToImage("Objects",inputImage,hues,8,false).getImagePlus();
             dispIpl.setLut(LUTs.Random(true));
             dispIpl.setPosition(1,1,1);
@@ -148,12 +153,12 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public void initialiseParameters() {
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,null));
-        parameters.add(new Parameter(WHITE_BACKGROUND,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(SINGLE_OBJECT,Parameter.BOOLEAN,false));
-        parameters.add(new Parameter(CONNECTIVITY, Parameter.CHOICE_ARRAY, Connectivity.TWENTYSIX, Connectivity.ALL));
+    protected void initialiseParameters() {
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new OutputObjectsP(OUTPUT_OBJECTS,this));
+        parameters.add(new BooleanP(WHITE_BACKGROUND,this,true));
+        parameters.add(new BooleanP(SINGLE_OBJECT,this,false));
+        parameters.add(new ChoiceP(CONNECTIVITY, this, Connectivity.TWENTYSIX, Connectivity.ALL));
 
     }
 
@@ -163,17 +168,17 @@ public class IdentifyObjects extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

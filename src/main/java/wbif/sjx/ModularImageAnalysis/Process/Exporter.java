@@ -12,6 +12,8 @@ import org.w3c.dom.Element;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
 
@@ -243,11 +245,11 @@ public class Exporter {
             // Adding references from this module
             Element measurementsElement = doc.createElement("MEASUREMENTS");
 
-            MeasurementReferenceCollection imageReferences = module.updateAndGetImageMeasurementReferences();
-            prepareMeasurementReferencesXML(doc, measurementsElement,imageReferences,"IMAGE");
+            MeasurementRefCollection imageReferences = module.updateAndGetImageMeasurementRefs();
+            prepareMeasurementRefsXML(doc, measurementsElement,imageReferences,"IMAGE");
 
-            MeasurementReferenceCollection objectReferences = module.updateAndGetObjectMeasurementReferences();
-            prepareMeasurementReferencesXML(doc, measurementsElement,objectReferences,"OBJECTS");
+            MeasurementRefCollection objectReferences = module.updateAndGetObjectMeasurementRefs();
+            prepareMeasurementRefsXML(doc, measurementsElement,objectReferences,"OBJECTS");
 
             moduleElement.appendChild(measurementsElement);
 
@@ -264,20 +266,20 @@ public class Exporter {
         // Adding parameters from this module
         Element parametersElement = doc.createElement("PARAMETERS");
 
-        LinkedHashMap<String,Parameter> parameters = module.getAllParameters();
-        for (Parameter currParam:parameters.values()) {
+        ParameterCollection parameters = module.getAllParameters();
+        for (Parameter currParam:parameters) {
             // Adding the name and value of the current parameter
             Element parameterElement =  doc.createElement("PARAMETER");
 
             Attr nameAttr = doc.createAttribute("NAME");
-            nameAttr.appendChild(doc.createTextNode(currParam.getName()));
+            nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
             parameterElement.setAttributeNode(nameAttr);
 
             Attr valueAttr = doc.createAttribute("VALUE");
-            if (currParam.getValue() == null) {
+            if (currParam.getValueAsString() == null) {
                 valueAttr.appendChild(doc.createTextNode(""));
             } else {
-                valueAttr.appendChild(doc.createTextNode(currParam.getValue().toString()));
+                valueAttr.appendChild(doc.createTextNode(currParam.getValueAsString()));
             }
             parameterElement.setAttributeNode(valueAttr);
 
@@ -285,12 +287,16 @@ public class Exporter {
             visibleAttr.appendChild(doc.createTextNode(Boolean.toString(currParam.isVisible())));
             parameterElement.setAttributeNode(visibleAttr);
 
-            if (currParam.getType() == Parameter.CHILD_OBJECTS | currParam.getType() == Parameter.PARENT_OBJECTS) {
-                if (currParam.getValueSource() != null) {
-                    Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
-                    valueSourceAttr.appendChild(doc.createTextNode(currParam.getValueSource().toString()));
-                    parameterElement.setAttributeNode(valueSourceAttr);
-                }
+            if (currParam.getClass().isInstance(ChildObjectsP.class) && ((ChildObjectsP) currParam).getParentObjectsName() != null) {
+                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+                valueSourceAttr.appendChild(doc.createTextNode(((ChildObjectsP) currParam).getParentObjectsName()));
+                parameterElement.setAttributeNode(valueSourceAttr);
+            }
+
+            if (currParam.getClass().isInstance(ParentObjectsP.class) && ((ParentObjectsP) currParam).getChildObjectsName() != null) {
+                Attr valueSourceAttr = doc.createAttribute("VALUESOURCE");
+                valueSourceAttr.appendChild(doc.createTextNode(((ParentObjectsP) currParam).getChildObjectsName()));
+                parameterElement.setAttributeNode(valueSourceAttr);
             }
 
             parametersElement.appendChild(parameterElement);
@@ -301,10 +307,10 @@ public class Exporter {
 
     }
 
-    public static Element prepareMeasurementReferencesXML(Document doc, Element measurementReferencesElement, MeasurementReferenceCollection measurementReferences, String type) {
+    public static Element prepareMeasurementRefsXML(Document doc, Element measurementReferencesElement, MeasurementRefCollection measurementReferences, String type) {
         if (measurementReferences == null) return measurementReferencesElement;
 
-        for (MeasurementReference measurementReference:measurementReferences.values()) {
+        for (MeasurementRef measurementReference:measurementReferences.values()) {
             // Don't export any measurements that aren't calculated
             if (!measurementReference.isCalculated()) continue;
 
@@ -377,7 +383,6 @@ public class Exporter {
 
         exportXLS(currentWorkspaces,analysis,name);
     }
-
 
     private void exportXLS(WorkspaceCollection workspaces, Analysis analysis, String name) throws IOException {
         // Getting modules
@@ -464,19 +469,19 @@ public class Exporter {
 
         // Adding a new parameter to each row
         for (Module module:modules) {
-            LinkedHashMap<String,Parameter> parameters = module.updateAndGetParameters();
+            ParameterCollection parameters = module.updateAndGetParameters();
 
             paramRow++;
 
-            for (Parameter currParam : parameters.values()) {
+            for (Parameter currParam : parameters) {
                 paramCol = 0;
                 row = paramSheet.createRow(paramRow++);
 
                 nameValueCell = row.createCell(paramCol++);
-                nameValueCell.setCellValue(currParam.getName());
+                nameValueCell.setCellValue(currParam.getNameAsString());
 
                 valueValueCell = row.createCell(paramCol++);
-                valueValueCell.setCellValue(currParam.getValue().toString());
+                valueValueCell.setCellValue(currParam.getValueAsString());
 
                 moduleValueCell = row.createCell(paramCol);
                 moduleValueCell.setCellValue(module.getClass().getSimpleName());
@@ -533,15 +538,15 @@ public class Exporter {
         }
 
         // Adding image headers
-        LinkedHashSet<Parameter> availableImages = modules.getAvailableImages(null,true);
+        LinkedHashSet<OutputImageP> availableImages = modules.getAvailableImages(null,true);
         if (availableImages != null) {
-            for (Parameter availableImage : availableImages) {
-                String availableImageName = availableImage.getValue();
+            for (OutputImageP availableImage : availableImages) {
+                String availableImageName = availableImage.getImageName();
 
-                MeasurementReferenceCollection availableMeasurements = modules.getImageMeasurementReferences(availableImageName);
+                MeasurementRefCollection availableMeasurements = modules.getImageMeasurementRefs(availableImageName);
 
                 // Running through all the image measurement values, adding them as new columns
-                for (MeasurementReference imageMeasurement:availableMeasurements.values()) {
+                for (MeasurementRef imageMeasurement:availableMeasurements.values()) {
                     if (!imageMeasurement.isCalculated()) continue;
                     if (!imageMeasurement.isExportIndividual()) continue;
                     if (!imageMeasurement.isExportGlobal()) continue;
@@ -557,10 +562,10 @@ public class Exporter {
         }
 
         // Adding object headers
-        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,true);
+        LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null,true);
         if (availableObjects != null) {
-            for (Parameter availableObject:availableObjects) {
-                String availableObjectName = availableObject.getValue();
+            for (OutputObjectsP availableObject:availableObjects) {
+                String availableObjectName = availableObject.getObjectsName();
 
                 Cell summaryHeaderCell; String summaryDataName;
 
@@ -569,7 +574,7 @@ public class Exporter {
                     summaryHeaderCell = summaryHeaderRow.createCell(headerCol);
                     summaryDataName = getObjectString(availableObjectName, "", "NUMBER");
                     summaryHeaderCell.setCellValue(summaryDataName);
-                    addComment(summaryHeaderCell,"Number of \""+availableObjectName+"\" objects.");
+                    addComment(summaryHeaderCell,"Num of \""+availableObjectName+"\" objects.");
                     colNumbers.put(summaryDataName, headerCol++);
                 }
 
@@ -618,13 +623,13 @@ public class Exporter {
                     }
                 }
 
-                MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(availableObjectName);
+                MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(availableObjectName);
 
                 // If the current object hasn't got any assigned measurements, skip it
-                if (objectMeasurementReferences == null) continue;
+                if (objectMeasurementRefs == null) continue;
 
                 // Running through all the object measurement values, adding them as new columns
-                for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
+                for (MeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                     if (!objectMeasurement.isCalculated()) continue;
                     if (!objectMeasurement.isExportIndividual()) continue;
                     if (!objectMeasurement.isExportGlobal()) continue;
@@ -714,7 +719,7 @@ public class Exporter {
 
     }
 
-    private void addSummaryComment(Cell cell, MeasurementReference measurement, String calculation) {
+    private void addSummaryComment(Cell cell, MeasurementRef measurement, String calculation) {
         String text = "";
         switch (summaryMode) {
             case PER_FILE:
@@ -757,13 +762,13 @@ public class Exporter {
         for (Image image:images.values()) {
             String imageName = image.getName();
 
-            MeasurementReferenceCollection imageMeasurementReferences = modules.getImageMeasurementReferences(imageName);
+            MeasurementRefCollection imageMeasurementRefs = modules.getImageMeasurementRefs(imageName);
 
             // If the current object hasn't got any assigned measurements, skip it
-            if (imageMeasurementReferences == null) continue;
+            if (imageMeasurementRefs == null) continue;
 
             // Running through all the object measurement values, adding them as new columns
-            for (MeasurementReference imageMeasurement : imageMeasurementReferences.values()) {
+            for (MeasurementRef imageMeasurement : imageMeasurementRefs.values()) {
                 if (!imageMeasurement.isCalculated()) continue;
                 if (!imageMeasurement.isExportIndividual()) continue;
                 if (!imageMeasurement.isExportGlobal()) continue;
@@ -852,13 +857,13 @@ public class Exporter {
                 }
             }
 
-            MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(objSetName);
+            MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objSetName);
 
             // If the current object hasn't got any assigned measurements, skip it
-            if (objectMeasurementReferences == null) continue;
+            if (objectMeasurementRefs == null) continue;
 
             // Running through all the object measurement values, adding them as new columns
-            for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
+            for (MeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                 if (!objectMeasurement.isCalculated()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;
@@ -937,11 +942,12 @@ public class Exporter {
         String[] metadataNames = null;
 
         // Using the first workspace in the WorkspaceCollection to initialise column headers
-        LinkedHashSet<Parameter> availableObjects = modules.getAvailableObjects(null,true);
+        LinkedHashSet<OutputObjectsP> availableObjects = modules.getAvailableObjects(null,true);
         if (availableObjects == null) return;
 
-        for (Parameter availableObject:availableObjects) {
-            String objectName = availableObject.getValue();
+        for (OutputObjectsP availableObject:availableObjects) {
+            String objectName = availableObject.getObjectsName();
+
             // Creating relevant sheet prefixed with "OBJ"
             objectSheets.put(objectName, workbook.createSheet("OBJ_" + objectName));
 
@@ -996,13 +1002,13 @@ public class Exporter {
             Cell timepointHeaderCell = objectHeaderRow.createCell(col++);
             timepointHeaderCell.setCellValue("TIMEPOINT");
 
-            MeasurementReferenceCollection objectMeasurementReferences = modules.getObjectMeasurementReferences(objectName);
+            MeasurementRefCollection objectMeasurementRefs = modules.getObjectMeasurementRefs(objectName);
 
             // If the current object hasn't got any assigned measurements, skip it
-            if (objectMeasurementReferences == null) continue;
+            if (objectMeasurementRefs == null) continue;
 
             // Running through all the object measurement values, adding them as new columns
-            for (MeasurementReference objectMeasurement : objectMeasurementReferences.values()) {
+            for (MeasurementRef objectMeasurement : objectMeasurementRefs.values()) {
                 if (!objectMeasurement.isCalculated()) continue;
                 if (!objectMeasurement.isExportIndividual()) continue;
                 if (!objectMeasurement.isExportGlobal()) continue;

@@ -171,10 +171,10 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new Parameter(INPUT_TRACK_OBJECTS,Parameter.PARENT_OBJECTS,null));
-//        parameters.add(new Parameter(OBJECT_OUTPUT_MODE,Parameter.CHOICE_ARRAY,OutputModes.DO_NOT_STORE,OutputModes.ALL));
-//        parameters.add(new Parameter(OUTPUT_OBJECTS,Parameter.OUTPUT_OBJECTS,""));
-//        parameters.add(new Parameter(FITTING_MODE,Parameter.CHOICE_ARRAY,FittingModes.CENTROIDS,FittingModes.ALL));
+//        parameters.add(new Parameter(INPUT_TRACK_OBJECTS,this,null));
+//        parameters.add(new Parameter(OBJECT_OUTPUT_MODE,this,OutputModes.DO_NOT_STORE,OutputModes.ALL));
+//        parameters.add(new Parameter(OUTPUT_OBJECTS,this,""));
+//        parameters.add(new Parameter(FITTING_MODE,this,FittingModes.CENTROIDS,FittingModes.ALL));
 //
 //    }
 //
@@ -198,41 +198,41 @@
 //    }
 //
 //    @Override
-//    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+//    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
 //        return null;
 //    }
 //
 //    @Override
-//    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
-//        objectMeasurementReferences.setAllCalculated(false);
+//    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+//        objectMeasurementRefs.setAllCalculated(false);
 //
 //        String inputObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
 //
-//        MeasurementReference reference = objectMeasurementReferences.getOrPut(Measurements.HULL_VOLUME_PX);
+//        MeasurementRef reference = objectMeasurementRefs.getOrPut(Measurements.HULL_VOLUME_PX);
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_VOLUME_CAL));
+//        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.HULL_VOLUME_CAL));
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Measurements.HULL_SURFACE_AREA_PX);
+//        reference = objectMeasurementRefs.getOrPut(Measurements.HULL_SURFACE_AREA_PX);
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Units.replace(Measurements.HULL_SURFACE_AREA_CAL));
+//        reference = objectMeasurementRefs.getOrPut(Units.replace(Measurements.HULL_SURFACE_AREA_CAL));
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Measurements.SPHERICITY);
+//        reference = objectMeasurementRefs.getOrPut(Measurements.SPHERICITY);
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        reference = objectMeasurementReferences.getOrPut(Measurements.SOLIDITY);
+//        reference = objectMeasurementRefs.getOrPut(Measurements.SOLIDITY);
 //        reference.setCalculated(true);
 //        reference.setImageObjName(inputObjectsName);
 //
-//        return objectMeasurementReferences;
+//        return objectMeasurementRefs;
 //
 //    }
 //

@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +36,8 @@ public class SeparatorButton extends JButton implements ActionListener {
     }
 
     public void setIcon() {
-        if (module.getParameterValue(GUISeparator.EXPANDED_EDITING)) {
+        BooleanP expandedEditing = (BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING);
+        if (expandedEditing.isSelected()) {
             setIcon(expandedIcon);
         } else {
             if (left) setIcon(collapsedLeftIcon);
@@ -49,9 +51,10 @@ public class SeparatorButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean expanded = module.getParameterValue(GUISeparator.EXPANDED_EDITING);
-        module.updateParameterValue(GUISeparator.EXPANDED_EDITING,!expanded);
+        ((BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING)).flipBoolean();
+
         GUI.populateModuleList();
         GUI.populateModuleParameters();
+
     }
 }
