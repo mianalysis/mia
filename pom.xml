@@ -11,7 +11,7 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.7.23-SNAPSHOT</version>
+    <version>0.8.0</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
     <url>https://github.com/SJCross/ModularImageAnalysis</url>
@@ -239,12 +239,12 @@
         </dependency>
 
         <dependency>
-            <groupId>wbif.sjx</groupId>
-            <artifactId>Common</artifactId>
-            <version>1.4.24-SNAPSHOT</version>
-            <!--<groupId>com.github.SJCross</groupId>-->
+            <!--<groupId>wbif.sjx</groupId>-->
             <!--<artifactId>Common</artifactId>-->
-            <!--<version>v1.4.2</version>-->
+            <!--<version>1.4.24</version>-->
+            <groupId>com.github.SJCross</groupId>
+            <artifactId>Common</artifactId>
+            <version>v1.4.24</version>
         </dependency>
     </dependencies>
 
