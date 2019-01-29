@@ -34,7 +34,6 @@ public class ModuleEnabledButton extends JButton implements ActionListener {
     }
 
     public void updateState() {
-        System.out.println(module.getNickname()+"_"+module.isEnabled()+"_"+module.isRunnable());
         if (module.isEnabled() && module.isRunnable()) setIcon(greenIcon);
         else if (module.isEnabled() &! module.isRunnable()) setIcon(redIcon);
         else setIcon(blackIcon);

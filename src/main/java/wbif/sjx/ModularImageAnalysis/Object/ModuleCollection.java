@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 /**
@@ -129,7 +130,10 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
         // Removing any objects which have since been removed from the workspace
         LinkedHashSet<RemovedObjectsP> removedObjectParams = getParametersMatchingType(RemovedObjectsP.class,cutoffModule);
-        for (Parameter removedObject: removedObjectParams) objects.remove(removedObject);
+        for (Parameter removedObject: removedObjectParams) {
+            String removeObjectName = removedObject.getValueAsString();
+            objects.removeIf(outputImageP -> outputImageP.getObjectsName().equals(removeObjectName));
+        }
 
         return objects;
 
@@ -151,7 +155,10 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
 
         // Removing any objects which have since been removed from the workspace
         LinkedHashSet<RemovedImageP> removedImagePS = getParametersMatchingType(RemovedImageP.class,cutoffModule);
-        for (Parameter removedImage: removedImagePS) images.remove(removedImage);
+        for (Parameter removedImage: removedImagePS) {
+            String removeImageName = removedImage.getValueAsString();
+            images.removeIf(outputImageP -> outputImageP.getImageName().equals(removeImageName));
+        }
 
         return images;
 

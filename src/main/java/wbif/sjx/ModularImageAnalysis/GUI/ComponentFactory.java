@@ -18,7 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * Created by sc13967 on 23/06/2017.
+ * Created by Stephen on 23/06/2017.
  */
 public class ComponentFactory {
     private int elementHeight;
@@ -55,6 +55,7 @@ public class ComponentFactory {
         }
 
         ParameterControl parameterControl = parameter.getControl();
+        parameterControl.updateControl();
         JComponent parameterComponent = parameterControl.getComponent();
 
         // Adding the input component
