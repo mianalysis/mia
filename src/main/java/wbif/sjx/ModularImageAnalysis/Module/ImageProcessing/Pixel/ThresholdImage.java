@@ -97,8 +97,8 @@ public class ThresholdImage extends Module {
 
     public int runGlobalThresholdOnStack(ImagePlus inputImagePlus, String algorithm, double thrMult,
                                          boolean useLowerLim, double lowerLim) {
-        // Compiling stack histogram
-        int[] histogram = null;
+        // Compiling stack histogram.  This is stored as long to prevent the Integer overflowing.
+        long[] histogram = null;
         int count = 0;
         int total = inputImagePlus.getNChannels()*inputImagePlus.getNSlices()*inputImagePlus.getNFrames();
         for (int z = 1; z <= inputImagePlus.getNSlices(); z++) {
@@ -106,17 +106,29 @@ public class ThresholdImage extends Module {
                 for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
                     writeMessage("Processing image " + (++count) + " of " + total);
                     inputImagePlus.setPosition(c, z, t);
-                    if (histogram == null) {
-                        histogram = inputImagePlus.getProcessor().getHistogram();
-                    } else {
-                        int[] tempHist = inputImagePlus.getProcessor().getHistogram();
-                        for (int i=0;i<histogram.length;i++) histogram[i] = histogram[i] + tempHist[i];
-                    }
+
+                    int[] tempHist = inputImagePlus.getProcessor().getHistogram();
+
+                    if (histogram == null) histogram = new long[tempHist.length];
+                    for (int i=0;i<histogram.length;i++) histogram[i] = histogram[i] + tempHist[i];
+
                 }
             }
         }
 
-        int threshold = new AutoThresholder().getThreshold(algorithm,histogram);
+        if (histogram == null) return 0;
+
+        // Calculating the maximum value in any bin
+        long maxVal = Long.MIN_VALUE;
+        for (long val:histogram) maxVal = Math.max(maxVal,val);
+        if (maxVal <= Integer.MAX_VALUE) maxVal = Integer.MAX_VALUE;
+
+        // Normalising histogram, so it will fit in an int[]
+        int[] normHist = new int[histogram.length];
+        for (int i=0;i<histogram.length;i++) normHist[i] = (int) Math.round(Integer.MAX_VALUE*((double) histogram[i])/((double) maxVal));
+
+        // Applying the threshold
+        int threshold = new AutoThresholder().getThreshold(algorithm,normHist);
 
         // Applying limits, where applicable
         if (useLowerLim && threshold < lowerLim) threshold = (int) Math.round(lowerLim);

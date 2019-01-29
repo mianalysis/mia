@@ -59,7 +59,7 @@ public class ThresholdImageTest {
         thresholdImage.updateParameterValue(ThresholdImage.USE_LOWER_THRESHOLD_LIMIT,false);
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
-        // Running ThresholdImageg
+        // Running ThresholdImage
         thresholdImage.run(workspace);
 
         // Checking the images in the workspace
