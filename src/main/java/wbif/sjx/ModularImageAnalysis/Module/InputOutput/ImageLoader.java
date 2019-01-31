@@ -741,7 +741,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 workspace.addObjects(outputObjects);
 
                 if (showOutput) showImage(outputImage);
-                addCropMeasurements(outputObjects, crop);
+                switch (cropMode) {
+                    case CropModes.FROM_REFERENCE:
+                        addCropMeasurements(outputObjects, crop);
+                        break;
+                }
 
                 break;
         }

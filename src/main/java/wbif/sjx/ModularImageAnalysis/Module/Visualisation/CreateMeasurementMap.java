@@ -361,7 +361,7 @@ public class CreateMeasurementMap extends Module {
                 returnedParameters.add(parameters.getParameter(MEASUREMENT));
                 returnedParameters.add(parameters.getParameter(STATISTIC));
 
-                ((ParentObjectsP) parameters.getParameter(MEASUREMENT)).setChildObjectsName(inputObjectsName);
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
                 String parentObjectsName = parameters.getValue(PARENT_OBJECT);
                 ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(parentObjectsName);
                 break;
