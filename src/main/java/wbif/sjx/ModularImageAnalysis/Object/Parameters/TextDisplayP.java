@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Object.Parameters;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.TextDisplayArea;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 
 import javax.annotation.Nonnull;
@@ -55,5 +56,10 @@ public class TextDisplayP extends TextType {
     @Override
     public boolean verify() {
         return !value.equals("");
+    }
+
+    @Override
+    public <T extends Parameter> T duplicate() {
+        return (T) new TextDisplayP(name,module,value);
     }
 }

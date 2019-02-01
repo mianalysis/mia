@@ -17,4 +17,9 @@ public class RemovedImageP extends ImageNamesType {
         super(name,module);
         this.choice = choice;
     }
+
+    @Override
+    public <T extends Parameter> T duplicate() {
+        return (T) new RemovedImageP(name,module,choice);
+    }
 }

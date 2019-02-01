@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import com.drew.lang.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**

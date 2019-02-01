@@ -33,6 +33,8 @@ public abstract class Parameter {
 
     public abstract boolean verify();
 
+    public abstract <T extends Parameter> T duplicate();
+
 
     // PUBLIC METHODS
 

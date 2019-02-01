@@ -26,6 +26,11 @@ public class ChildObjectsP extends ChoiceType {
         this.parentObjectsName = parentObjectsName;
     }
 
+    @Override
+    public <T extends Parameter> T duplicate() {
+        return (T) new ChildObjectsP(name,module,getChoice(),parentObjectsName);
+    }
+
     public String getParentObjectsName() {
         return parentObjectsName;
     }

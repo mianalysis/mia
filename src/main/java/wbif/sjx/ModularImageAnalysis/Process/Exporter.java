@@ -239,7 +239,7 @@ public class Exporter {
             notesAttr.appendChild(doc.createTextNode(module.getNotes()));
             moduleElement.setAttributeNode(notesAttr);
 
-            Element parametersElement = prepareParametersXML(doc,module);
+            Element parametersElement = prepareParametersXML(doc,module.getAllParameters());
             moduleElement.appendChild(parametersElement);
 
             // Adding references from this module
@@ -262,12 +262,30 @@ public class Exporter {
 
     }
 
-    public static Element prepareParametersXML(Document doc, Module module) {
+    public static Element prepareParametersXML(Document doc, ParameterCollection parameters) {
         // Adding parameters from this module
         Element parametersElement = doc.createElement("PARAMETERS");
 
-        ParameterCollection parameters = module.getAllParameters();
         for (Parameter currParam:parameters) {
+            // ParameterGroups are treated differently
+            if (currParam.getClass() == ParameterGroup.class) {
+                LinkedHashSet<ParameterCollection> collections = ((ParameterGroup) currParam).getCollections();
+                Element collectionsElement = doc.createElement("COLLECTIONS");
+
+                Attr nameAttr = doc.createAttribute("NAME");
+                nameAttr.appendChild(doc.createTextNode(currParam.getNameAsString()));
+                collectionsElement.setAttributeNode(nameAttr);
+
+                for (ParameterCollection collection:collections) {
+                    Element collectionElement = doc.createElement("COLLECTION");
+
+                    collectionElement.appendChild(prepareParametersXML(doc,collection));
+                    collectionsElement.appendChild(collectionElement);
+                }
+                parametersElement.appendChild(collectionsElement);
+                continue;
+            } else if (currParam.getClass() == RemoveParameters.class) continue;
+
             // Adding the name and value of the current parameter
             Element parameterElement =  doc.createElement("PARAMETER");
 

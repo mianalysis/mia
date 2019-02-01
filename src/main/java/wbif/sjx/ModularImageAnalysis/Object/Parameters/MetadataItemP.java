@@ -22,4 +22,9 @@ public class MetadataItemP extends ChoiceType {
     public String[] getChoices() {
         return GUI.getModules().getMetadataReferences(module).getMetadataNames();
     }
+
+    @Override
+    public <T extends Parameter> T duplicate() {
+        return (T) new MetadataItemP(name,module,choice);
+    }
 }

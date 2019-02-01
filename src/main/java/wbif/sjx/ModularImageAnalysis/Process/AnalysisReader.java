@@ -104,7 +104,7 @@ public class AnalysisReader {
                 for (int j=0;j<moduleChildNodes.getLength();j++) {
                     switch (moduleChildNodes.item(j).getNodeName()) {
                         case "PARAMETERS":
-                            populateModuleParameters(moduleChildNodes.item(j), module);
+                            populateModuleParameters(moduleChildNodes.item(j), module.getAllParameters());
                             foundParameters = true;
                             break;
 
@@ -115,7 +115,7 @@ public class AnalysisReader {
                 }
 
                 // Old file formats had parameters loose within MODULE
-                if (!foundParameters) populateModuleParameters(moduleNode, module);
+                if (!foundParameters) populateModuleParameters(moduleNode, module.getAllParameters());
 
                 return module;
 
@@ -172,10 +172,16 @@ public class AnalysisReader {
         }
     }
 
-    public static void populateModuleParameters(Node moduleNode, Module module) {
+    public static void populateModuleParameters(Node moduleNode, ParameterCollection parameters) {
         NodeList parameterNodes = moduleNode.getChildNodes();
         for (int j = 0; j < parameterNodes.getLength(); j++) {
             Node parameterNode = parameterNodes.item(j);
+
+            if (parameterNode.getNodeName().equals("COLLECTIONS")) {
+                populateModuleParameterGroups(parameterNode,parameters);
+                continue;
+            }
+
             NamedNodeMap parameterAttributes = parameterNode.getAttributes();
 
             String parameterName = parameterAttributes.getNamedItem("NAME").getNodeValue();
@@ -186,51 +192,51 @@ public class AnalysisReader {
             }
 
             try {
-                Parameter parameter = module.getParameter(parameterName);
+                Parameter parameter = parameters.getParameter(parameterName);
                 if (parameter instanceof InputImageP) {
-                    ((InputImageP) module.getParameter(parameterName)).setImageName(parameterValue);
+                    ((InputImageP) parameters.getParameter(parameterName)).setImageName(parameterValue);
                 } else if (parameter instanceof OutputImageP) {
-                    ((OutputImageP) module.getParameter(parameterName)).setImageName(parameterValue);
+                    ((OutputImageP) parameters.getParameter(parameterName)).setImageName(parameterValue);
                 } else if (parameter instanceof InputObjectsP) {
-                    ((InputObjectsP) module.getParameter(parameterName)).setChoice(parameterValue);
+                    ((InputObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof OutputObjectsP) {
-                    ((OutputObjectsP) module.getParameter(parameterName)).setObjectsName(parameterValue);
+                    ((OutputObjectsP) parameters.getParameter(parameterName)).setObjectsName(parameterValue);
                 } else if (parameter instanceof RemovedImageP) {
-                    ((RemovedImageP) module.getParameter(parameterName)).setChoice(parameterValue);
+                    ((RemovedImageP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof RemovedObjectsP) {
-                    ((RemovedObjectsP) module.getParameter(parameterName)).setChoice(parameterValue);
+                    ((RemovedObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof StringP) {
-                    ((StringP) module.getParameter(parameterName)).setValue(parameterValue);
+                    ((StringP) parameters.getParameter(parameterName)).setValue(parameterValue);
                 } else if (parameter instanceof IntegerP) {
-                    ((IntegerP) module.getParameter(parameterName)).setValueFromString(parameterValue);
+                    ((IntegerP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
                 } else if (parameter instanceof DoubleP) {
-                    ((DoubleP) module.getParameter(parameterName)).setValueFromString(parameterValue);
+                    ((DoubleP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
                 } else if (parameter instanceof BooleanP) {
-                    ((BooleanP) module.getParameter(parameterName)).setValueFromString(parameterValue);
+                    ((BooleanP) parameters.getParameter(parameterName)).setValueFromString(parameterValue);
                 } else if (parameter instanceof ChoiceP) {
-                    ((ChoiceP) module.getParameter(parameterName)).setChoice(parameterValue);
+                    ((ChoiceP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof ChildObjectsP) {
-                    ((ChildObjectsP) module.getParameter(parameterName)).setChoice(parameterValue);
-                    ((ChildObjectsP) module.getParameter(parameterName)).setParentObjectsName(parameterValueSource);
+                    ((ChildObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
+                    ((ChildObjectsP) parameters.getParameter(parameterName)).setParentObjectsName(parameterValueSource);
                 } else if (parameter instanceof ParentObjectsP) {
-                    ((ParentObjectsP) module.getParameter(parameterName)).setChoice(parameterValue);
-                    ((ParentObjectsP) module.getParameter(parameterName)).setChildObjectsName(parameterValueSource);
+                    ((ParentObjectsP) parameters.getParameter(parameterName)).setChoice(parameterValue);
+                    ((ParentObjectsP) parameters.getParameter(parameterName)).setChildObjectsName(parameterValueSource);
                 } else if (parameter instanceof ImageMeasurementP) {
-                    ((ImageMeasurementP) module.getParameter(parameterName)).setChoice(parameterValue);
-                    ((ImageMeasurementP) module.getParameter(parameterName)).setImageName(parameterValueSource);
+                    ((ImageMeasurementP) parameters.getParameter(parameterName)).setChoice(parameterValue);
+                    ((ImageMeasurementP) parameters.getParameter(parameterName)).setImageName(parameterValueSource);
                 } else if (parameter instanceof ObjectMeasurementP) {
-                    ((ObjectMeasurementP) module.getParameter(parameterName)).setChoice(parameterValue);
-                    ((ObjectMeasurementP) module.getParameter(parameterName)).setObjectName(parameterValueSource);
+                    ((ObjectMeasurementP) parameters.getParameter(parameterName)).setChoice(parameterValue);
+                    ((ObjectMeasurementP) parameters.getParameter(parameterName)).setObjectName(parameterValueSource);
                 } else if (parameter instanceof FilePathP) {
-                    ((FilePathP) module.getParameter(parameterName)).setPath(parameterValue);
+                    ((FilePathP) parameters.getParameter(parameterName)).setPath(parameterValue);
                 } else if (parameter instanceof FolderPathP) {
-                    ((FolderPathP) module.getParameter(parameterName)).setPath(parameterValue);
+                    ((FolderPathP) parameters.getParameter(parameterName)).setPath(parameterValue);
                 } else if (parameter instanceof FileFolderPathP) {
-                    ((FileFolderPathP) module.getParameter(parameterName)).setPath(parameterValue);
+                    ((FileFolderPathP) parameters.getParameter(parameterName)).setPath(parameterValue);
                 } else if (parameter instanceof MetadataItemP) {
-                    ((MetadataItemP) module.getParameter(parameterName)).setChoice(parameterValue);
+                    ((MetadataItemP) parameters.getParameter(parameterName)).setChoice(parameterValue);
                 } else if (parameter instanceof TextDisplayP) {
-                    ((TextDisplayP) module.getParameter(parameterName)).setValue(parameterValue);
+                    ((TextDisplayP) parameters.getParameter(parameterName)).setValue(parameterValue);
                 }
 
                 if (parameterAttributes.getNamedItem("VISIBLE") != null) {
@@ -239,8 +245,7 @@ public class AnalysisReader {
                 }
 
             } catch (NullPointerException e) {
-                System.err.println("Module \""+module.getTitle()
-                        +"\" parameter \""+parameterName + "\" ("+parameterValue+") not set");
+                System.err.println("Parameter \""+parameterName + "\" ("+parameterValue+") not set");
 
             }
         }
@@ -320,6 +325,24 @@ public class AnalysisReader {
                 exportStd = Boolean.parseBoolean(attributes.getNamedItem("EXPORT_STD").getNodeValue());
             }
             measurementReference.setExportStd(exportStd);
+
+        }
+    }
+
+    public static void populateModuleParameterGroups(Node parameterNode, ParameterCollection parameters) {
+        NodeList collectionNodes = parameterNode.getChildNodes();
+        String groupName = parameterNode.getAttributes().getNamedItem("NAME").getNodeValue();
+
+        // Loading the ParameterGroup and clearing all previously-initialised parameters
+        ParameterGroup group = parameters.getParameter(groupName);
+        group.removeAllParameters();
+
+        for (int j = 0; j < collectionNodes.getLength(); j++) {
+            ParameterCollection newParameters = group.addParameters();
+
+            Node collectionNode = collectionNodes.item(j);
+            Node newParametersNode = collectionNode.getChildNodes().item(0);
+            populateModuleParameters(newParametersNode,newParameters);
 
         }
     }

@@ -16,4 +16,9 @@ public class RemovedObjectsP extends ObjectNamesType {
         super(name,module);
         this.choice = choice;
     }
+
+    @Override
+    public <T extends Parameter> T duplicate() {
+        return (T) new RemovedObjectsP(name,module,choice);
+    }
 }

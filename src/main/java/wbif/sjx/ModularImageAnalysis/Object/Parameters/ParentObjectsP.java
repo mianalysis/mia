@@ -39,6 +39,10 @@ public class ParentObjectsP extends ChoiceType {
         ModuleCollection modules = GUI.getModules();
         RelationshipCollection relationships = modules.getRelationships(module);
         return relationships.getParentNames(childObjectsName,true);
+    }
 
+    @Override
+    public <T extends Parameter> T duplicate() {
+        return (T) new ParentObjectsP(name,module,choice,childObjectsName);
     }
 }

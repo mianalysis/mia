@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterGroup;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.TextDisplayP;
 
 import javax.swing.*;
@@ -41,6 +42,10 @@ public class ComponentFactory {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(2,5,0,0);
 
+        ParameterControl parameterControl = parameter.getControl();
+        parameterControl.updateControl();
+        JComponent parameterComponent = parameterControl.getComponent();
+
         JLabel parameterName = new JLabel(parameter.getName());
         parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         parameterName.setPreferredSize(new Dimension(0,elementHeight));
@@ -53,10 +58,6 @@ public class ComponentFactory {
         } else {
             parameterName.setForeground(Color.RED);
         }
-
-        ParameterControl parameterControl = parameter.getControl();
-        parameterControl.updateControl();
-        JComponent parameterComponent = parameterControl.getComponent();
 
         // Adding the input component
         c.gridx++;
@@ -357,12 +358,14 @@ public class ComponentFactory {
 
         c.insets = new Insets(0,35,0,0);
         for (Parameter parameter : module.updateAndGetParameters()) {
-            if (parameter.isVisible()) {
-                JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module);
+            if (parameter.getClass() == ParameterGroup.class) {
 
-                c.gridy++;
-                modulePanel.add(paramPanel, c);
-
+            } else {
+                if (parameter.isVisible()) {
+                    JPanel paramPanel = createParameterControl(parameter, GUI.getModules(), module);
+                    c.gridy++;
+                    modulePanel.add(paramPanel, c);
+                }
             }
         }
 

@@ -689,6 +689,38 @@ public class GUI {
 
     }
 
+    public static void addAdvancedParameterControl(Parameter parameter, GridBagConstraints c) {
+        c.insets = new Insets(2, 5, 0, 0);
+        c.gridx = 0;
+        c.gridy++;
+        c.weightx = 1;
+        c.anchor = GridBagConstraints.WEST;
+        JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule);
+        paramsPanel.add(paramPanel, c);
+
+        c.insets = new Insets(2, 5, 0, 5);
+        c.gridx++;
+        c.weightx = 0;
+        c.anchor = GridBagConstraints.EAST;
+        VisibleCheck visibleCheck = new VisibleCheck(parameter);
+        visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
+        paramsPanel.add(visibleCheck, c);
+
+    }
+
+    public static void addAdvancedParameterGroup(ParameterGroup group, GridBagConstraints c) {
+        // Iterating over each collection of Parameters.  After adding each one, a remove button is included
+        LinkedHashSet<ParameterCollection> collections = group.getCollections();
+
+        for (ParameterCollection collection:collections) {
+            // Adding the individual parameters
+            for (Parameter parameter:collection) addAdvancedParameterControl(parameter,c);
+        }
+
+        // Adding an add button
+        addAdvancedParameterControl(group,c);
+    }
+
     public static void populateModuleParameters() {
         paramsPanel.removeAll();
 
@@ -720,22 +752,11 @@ public class GUI {
         c.insets = new Insets(2, 5, 0, 0);
         if (activeModule.updateAndGetParameters() != null) {
             for (Parameter parameter : activeModule.updateAndGetParameters()) {
-                c.insets = new Insets(2, 5, 0, 0);
-                c.gridx = 0;
-                c.gridy++;
-                c.weightx = 1;
-                c.anchor = GridBagConstraints.WEST;
-                JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule);
-                paramsPanel.add(paramPanel, c);
-
-                c.insets = new Insets(2, 5, 0, 5);
-                c.gridx++;
-                c.weightx = 0;
-                c.anchor = GridBagConstraints.EAST;
-                VisibleCheck visibleCheck = new VisibleCheck(parameter);
-                visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
-                paramsPanel.add(visibleCheck, c);
-
+                if (parameter.getClass() == ParameterGroup.class) {
+                    addAdvancedParameterGroup((ParameterGroup) parameter,c);
+                } else {
+                    addAdvancedParameterControl(parameter,c);
+                }
             }
         }
 
