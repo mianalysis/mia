@@ -25,7 +25,7 @@ public class RemoveParametersButton extends ParameterControl implements ActionLi
         // Iterate over parameters in collection
 
 
-        control = new JButton("Remove parameters");
+        control = new JButton("Remove");
         control.addActionListener(this);
 
     }

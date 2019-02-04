@@ -1,8 +1,31 @@
 package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
+import loci.common.DebugTools;
+import loci.common.services.DependencyException;
+import loci.common.services.ServiceException;
+import loci.common.services.ServiceFactory;
+import loci.formats.ChannelSeparator;
+import loci.formats.FormatException;
+import loci.formats.meta.MetadataStore;
+import loci.formats.ome.OMEXMLMetadata;
+import loci.formats.services.OMEXMLService;
+import loci.plugins.util.ImageProcessorReader;
+import loci.plugins.util.LociPrefs;
+import ome.xml.meta.IMetadata;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.ModularImageAnalysis.Process.Analysis;
+import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
+import wbif.sjx.common.FileConditions.ExtensionMatchesString;
+import wbif.sjx.common.FileConditions.FileCondition;
+import wbif.sjx.common.FileConditions.NameContainsString;
+import wbif.sjx.common.FileConditions.ParentContainsString;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by Stephen on 29/07/2017.
@@ -14,27 +37,10 @@ public class InputControl extends Module {
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_LIST = "Series list";
     public static final String SERIES_NUMBER = "Series number";
-    public static final String USE_SERIESNAME_FILTER_1 = "Use seriesname filter 1";
-    public static final String SERIESNAME_FILTER_1 = "Seriesname filter 1";
-    public static final String SERIESNAME_FILTER_TYPE_1 = "Seriesname filter type 1";
-    public static final String USE_SERIESNAME_FILTER_2 = "Use seriesname filter 2";
-    public static final String SERIESNAME_FILTER_2 = "Seriesname filter 2";
-    public static final String SERIESNAME_FILTER_TYPE_2 = "Seriesname filter type 2";
-    public static final String USE_SERIESNAME_FILTER_3 = "Use seriesname filter 3";
-    public static final String SERIESNAME_FILTER_3 = "Seriesname filter 3";
-    public static final String SERIESNAME_FILTER_TYPE_3 = "Seriesname filter type 3";
-    public static final String USE_FILENAME_FILTER_1 = "Use filename filter 1";
-    public static final String FILENAME_FILTER_1 = "Filename filter 1";
-    public static final String FILENAME_FILTER_SOURCE_1 = "Filename filter source 1";
-    public static final String FILENAME_FILTER_TYPE_1 = "Filter type 1";
-    public static final String USE_FILENAME_FILTER_2 = "Use filename filter 2";
-    public static final String FILENAME_FILTER_2 = "Filename filter 2";
-    public static final String FILENAME_FILTER_SOURCE_2 = "Filename filter source 2";
-    public static final String FILENAME_FILTER_TYPE_2 = "Filter type 2";
-    public static final String USE_FILENAME_FILTER_3 = "Use filename filter 3";
-    public static final String FILENAME_FILTER_3 = "Filename filter 3";
-    public static final String FILENAME_FILTER_SOURCE_3 = "Filename filter source 3";
-    public static final String FILENAME_FILTER_TYPE_3 = "Filter type 3";
+    public static final String ADD_FILTER = "Add filter";
+    public static final String FILTER_SOURCE = "Filter source";
+    public static final String FILTER_VALUE = "Filter value";
+    public static final String FILTER_TYPE = "Filter type";
     public static final String SPATIAL_UNITS = "Spatial units";
 
 
@@ -55,11 +61,12 @@ public class InputControl extends Module {
 
     }
 
-    public static interface FilenameFilterSource {
+    public static interface FilterSources {
         String FILENAME = "Filename";
         String FILEPATH = "Filepath";
+        String SERIESNAME = "Seriesname";
 
-        String[] ALL = new String[]{FILENAME,FILEPATH};
+        String[] ALL = new String[]{FILENAME,FILEPATH,SERIESNAME};
 
     }
 
@@ -75,6 +82,167 @@ public class InputControl extends Module {
 
     public static interface SpatialUnits extends Units.SpatialUnits{}
 
+
+    public void addFilenameExtensionFilter(BatchProcessor batchProcessor) {
+        String extension = parameters.getValue(FILE_EXTENSION);
+
+        // Adding extension filter
+        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
+
+    }
+
+    public void addFilenameFilters(BatchProcessor batchProcessor) {
+        // Getting filters
+        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);
+
+        // Iterating over each filter
+        for (ParameterCollection collection:collections) {
+            // If this filter is a filename filter type, add it to the BatchProcessor
+            String filterSource = collection.getValue(FILTER_SOURCE);
+            String filterValue = collection.getValue(FILTER_VALUE);
+            String filterType = collection.getValue(FILTER_TYPE);
+
+            switch (filterSource) {
+                case FilterSources.FILENAME:
+                case FilterSources.FILEPATH:
+                    batchProcessor.addFileCondition(getFilenameFilter(filterType,filterValue,filterSource));
+                    break;
+            }
+        }
+    }
+
+    private static FileCondition getFilenameFilter(String filterType, String filterValue, String filterSource) {
+        int fileCondition;
+        switch (filterType) {
+            case FilterTypes.INCLUDE_MATCHES_PARTIALLY:
+            default:
+                fileCondition = FileCondition.INC_PARTIAL;
+                break;
+            case FilterTypes.INCLUDE_MATCHES_COMPLETELY:
+                fileCondition = FileCondition.INC_COMPLETE;
+                break;
+            case FilterTypes.EXCLUDE_MATCHES_PARTIALLY:
+                fileCondition = FileCondition.EXC_PARTIAL;
+                break;
+            case FilterTypes.EXCLUDE_MATCHES_COMPLETELY:
+                fileCondition = FileCondition.EXC_COMPLETE;
+                break;
+        }
+
+        switch (filterSource) {
+            case FilterSources.FILENAME:
+            default:
+                return new NameContainsString(filterValue, fileCondition);
+            case FilterSources.FILEPATH:
+                return new ParentContainsString(filterValue, fileCondition);
+        }
+    }
+
+    public TreeMap<Integer,String> getSeriesNumbers(File inputFile) {
+        try {
+            switch ((String) parameters.getValue(SERIES_MODE)) {
+                case SeriesModes.ALL_SERIES:
+                    return getAllSeriesNumbers(inputFile);
+
+                case InputControl.SeriesModes.SERIES_LIST:
+                    return getSeriesListNumbers(inputFile);
+                    
+                case InputControl.SeriesModes.SINGLE_SERIES:
+                    TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
+                    int seriesNumber = getParameterValue(SERIES_NUMBER);
+                    namesAndNumbers.put(seriesNumber,"");
+                    return namesAndNumbers;
+            }
+        } catch (DependencyException | FormatException | ServiceException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    private TreeMap<Integer,String> getAllSeriesNumbers(File inputFile) throws DependencyException, ServiceException, IOException, FormatException {
+        // Using BioFormats to get the number of series
+        DebugTools.enableLogging("off");
+        DebugTools.setRootLevel("off");
+
+        // Initialising file reader
+        ServiceFactory factory = new ServiceFactory();
+        OMEXMLService service = factory.getInstance(OMEXMLService.class);
+        IMetadata meta = service.createOMEXMLMetadata();
+        ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+        reader.setMetadataStore((MetadataStore) meta);
+        reader.setGroupFiles(false);
+        reader.setId(inputFile.getAbsolutePath());
+
+        // Creating a Collection of seriesname filters
+        HashSet<FileCondition> filters = new HashSet<>();
+        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_FILTER);
+        for (ParameterCollection collection:collections) {
+            // If this filter is a filename filter type, add it to the BatchProcessor
+            String filterSource = collection.getValue(FILTER_SOURCE);
+            String filterValue = collection.getValue(FILTER_VALUE);
+            String filterType = collection.getValue(FILTER_TYPE);
+
+            switch (filterSource) {
+                case FilterSources.SERIESNAME:
+                    filters.add(getFilenameFilter(filterType,filterValue,filterSource));
+                    break;
+            }
+        }
+
+        TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
+        for (int seriesNumber=0;seriesNumber<reader.getSeriesCount();seriesNumber++) {
+            String name = meta.getImageName(seriesNumber);
+
+            boolean pass = true;
+            for (FileCondition filter:filters) {
+                if (name!= null && filter.test(new File(name))) {
+                    pass = false;
+                    break;
+                }
+            }
+
+            if (pass)namesAndNumbers.put(seriesNumber+1,name);
+
+        }
+
+        reader.close();
+
+        return namesAndNumbers;
+
+    }
+
+    private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws DependencyException, ServiceException, IOException, FormatException {
+        TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
+
+        // Converting series list to a list of numbers
+        String seriesList = getParameterValue(SERIES_LIST);
+        seriesList = seriesList.replace(" ","");
+        List<String> list = new ArrayList<String>(Arrays.asList(seriesList.split(",")));
+
+        // Using BioFormats to get the number of series
+        DebugTools.enableLogging("off");
+        DebugTools.setRootLevel("off");
+
+        ServiceFactory factory = new ServiceFactory();
+        OMEXMLService service = factory.getInstance(OMEXMLService.class);
+        OMEXMLMetadata meta = service.createOMEXMLMetadata();
+        ImageProcessorReader reader = new ImageProcessorReader(new ChannelSeparator(LociPrefs.makeImageReader()));
+        reader.setMetadataStore((MetadataStore) meta);
+        reader.setGroupFiles(false);
+        reader.setId(inputFile.getAbsolutePath());
+
+        for (int i=0;i<list.size();i++) {
+            int seriesNumber = Integer.parseInt(list.get(i))-1;
+            namesAndNumbers.put(seriesNumber+1,meta.getImageName(seriesNumber));
+        }
+
+        reader.close();
+
+        return namesAndNumbers;
+
+    }
 
     @Override
     public String getTitle() {
@@ -104,27 +272,13 @@ public class InputControl extends Module {
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL));
         parameters.add(new StringP(SERIES_LIST,this,"1"));
         parameters.add(new IntegerP(SERIES_NUMBER,this,1));
-        parameters.add(new BooleanP(USE_SERIESNAME_FILTER_1,this,false));
-        parameters.add(new StringP(SERIESNAME_FILTER_1,this));
-        parameters.add(new ChoiceP(SERIESNAME_FILTER_TYPE_1,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new BooleanP(USE_SERIESNAME_FILTER_2,this,false));
-        parameters.add(new StringP(SERIESNAME_FILTER_2,this));
-        parameters.add(new ChoiceP(SERIESNAME_FILTER_TYPE_2,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new BooleanP(USE_SERIESNAME_FILTER_3,this,false));
-        parameters.add(new StringP(SERIESNAME_FILTER_3,this));
-        parameters.add(new ChoiceP(SERIESNAME_FILTER_TYPE_3,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new BooleanP(USE_FILENAME_FILTER_1,this,false));
-        parameters.add(new StringP(FILENAME_FILTER_1,this));
-        parameters.add(new ChoiceP(FILENAME_FILTER_SOURCE_1,this,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
-        parameters.add(new ChoiceP(FILENAME_FILTER_TYPE_1,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new BooleanP(USE_FILENAME_FILTER_2,this,false));
-        parameters.add(new StringP(FILENAME_FILTER_2,this));
-        parameters.add(new ChoiceP(FILENAME_FILTER_SOURCE_2,this,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
-        parameters.add(new ChoiceP(FILENAME_FILTER_TYPE_2,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
-        parameters.add(new BooleanP(USE_FILENAME_FILTER_3,this,false));
-        parameters.add(new StringP(FILENAME_FILTER_3,this));
-        parameters.add(new ChoiceP(FILENAME_FILTER_SOURCE_3,this,FilenameFilterSource.FILENAME,FilenameFilterSource.ALL));
-        parameters.add(new ChoiceP(FILENAME_FILTER_TYPE_3,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+
+        ParameterCollection collection = new ParameterCollection();
+        collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.FILENAME,FilterSources.ALL));
+        collection.add(new StringP(FILTER_VALUE,this,""));
+        collection.add(new ChoiceP(FILTER_TYPE,this,FilterTypes.INCLUDE_MATCHES_PARTIALLY,FilterTypes.ALL));
+        parameters.add(new ParameterGroup(ADD_FILTER,this,collection));
+
         parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL));
 
     }
@@ -142,28 +296,6 @@ public class InputControl extends Module {
         ChoiceP seriesMode = (ChoiceP) parameters.getParameter(SERIES_MODE);
         returnedParameters.add(seriesMode);
         switch (seriesMode.getChoice()) {
-            case SeriesModes.ALL_SERIES:
-                BooleanP useSeriesNameFilter1 = (BooleanP) parameters.getParameter(USE_SERIESNAME_FILTER_1);
-                returnedParameters.add(useSeriesNameFilter1);
-                if (useSeriesNameFilter1.isSelected()) {
-                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_1));
-                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_1));
-                }
-
-                BooleanP useSeriesNameFilter2 = (BooleanP) parameters.getParameter(USE_SERIESNAME_FILTER_2);
-                returnedParameters.add(useSeriesNameFilter2);
-                if (useSeriesNameFilter2.isSelected()) {
-                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_2));
-                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_2));
-                }
-
-                BooleanP useSeriesNameFilter3 = (BooleanP) parameters.getParameter(USE_SERIESNAME_FILTER_3);
-                returnedParameters.add(useSeriesNameFilter3);
-                if (useSeriesNameFilter3.isSelected()) {
-                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_3));
-                    returnedParameters.add(parameters.getParameter(SERIESNAME_FILTER_TYPE_3));
-                }
-                break;
             case SeriesModes.SERIES_LIST:
                 returnedParameters.add(parameters.getParameter(SERIES_LIST));
                 break;
@@ -172,30 +304,7 @@ public class InputControl extends Module {
                 break;
         }
 
-        BooleanP useFilenameFilter1 = (BooleanP) parameters.getParameter(USE_FILENAME_FILTER_1);
-        returnedParameters.add(useFilenameFilter1);
-        if (useFilenameFilter1.isSelected()) {
-            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_1));
-            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_SOURCE_1));
-            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_1));
-        }
-
-        BooleanP useFilenameFilter2 = (BooleanP) parameters.getParameter(USE_FILENAME_FILTER_2);
-        returnedParameters.add(useFilenameFilter2);
-        if (useFilenameFilter2.isSelected()) {
-            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_2));
-            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_SOURCE_2));
-            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_2));
-        }
-
-        BooleanP useFilenameFilter3 = (BooleanP) parameters.getParameter(USE_FILENAME_FILTER_3);
-        returnedParameters.add(useFilenameFilter3);
-        if (useFilenameFilter3.isSelected()) {
-            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_3));
-            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_SOURCE_3));
-            returnedParameters.add(parameters.getParameter(FILENAME_FILTER_TYPE_3));
-        }
-
+        returnedParameters.add(parameters.getParameter(ADD_FILTER));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
 

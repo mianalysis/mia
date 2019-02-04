@@ -38,7 +38,9 @@ public class AnalysisRunner {
         int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
         batchProcessor = new BatchProcessor(inputFile);
         batchProcessor.setnThreads(nThreads);
-        addFilenameFilters(inputControl);
+
+        inputControl.addFilenameExtensionFilter(batchProcessor);
+        inputControl.addFilenameFilters(batchProcessor);
 
         // Resetting progress monitor
         ProgressMonitor.resetProgress();
@@ -104,31 +106,6 @@ public class AnalysisRunner {
         }
 
         return "";
-
-    }
-
-    public static void addFilenameFilters(InputControl inputControl) {
-        String extension = inputControl.getParameterValue(InputControl.FILE_EXTENSION);
-        boolean useFilenameFilter1 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_1);
-        String filenameFilter1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_1);
-        String filenameFilterSource1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_1);
-        String filenameFilterType1 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_1);
-        boolean useFilenameFilter2 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_2);
-        String filenameFilter2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_2);
-        String filenameFilterSource2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_2);
-        String filenameFilterType2 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_2);
-        boolean useFilenameFilter3 = inputControl.getParameterValue(InputControl.USE_FILENAME_FILTER_3);
-        String filenameFilter3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_3);
-        String filenameFilterSource3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_SOURCE_3);
-        String filenameFilterType3 = inputControl.getParameterValue(InputControl.FILENAME_FILTER_TYPE_3);
-
-        // Adding extension filter
-        batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
-
-        // Adding filename filters
-        if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1,filenameFilter1,filenameFilterSource1);
-        if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2,filenameFilter2,filenameFilterSource2);
-        if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3,filenameFilter3,filenameFilterSource3);
 
     }
 

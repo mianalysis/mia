@@ -25,7 +25,7 @@ public class AddParametersButton extends ParameterControl implements ActionListe
         // Iterate over parameters in collection
 
 
-        control = new JButton("Add parameters");
+        control = new JButton("Add");
         control.addActionListener(this);
 
     }

@@ -1141,21 +1141,7 @@ public class GUI {
         // Ensuring the input file specified in the InputControl is active in the test workspace
         InputControl inputControl = getAnalysis().getInputControl();
         String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
-        String extension = ((StringP) inputControl.getParameter(InputControl.FILE_EXTENSION)).getValue();
         int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
-        boolean useFilenameFilter1 = ((BooleanP) inputControl.getParameter(InputControl.USE_FILENAME_FILTER_1)).isSelected();
-        String filenameFilter1 = ((StringP) inputControl.getParameter(InputControl.FILENAME_FILTER_1)).getValue();
-        String filenameFilterSource1 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_SOURCE_1)).getChoice();
-        String filenameFilterType1 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_TYPE_1)).getChoice();
-        boolean useFilenameFilter2 = ((BooleanP) inputControl.getParameter(InputControl.USE_FILENAME_FILTER_2)).isSelected();
-        String filenameFilter2 = ((StringP) inputControl.getParameter(InputControl.FILENAME_FILTER_2)).getValue();;
-        String filenameFilterSource2 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_SOURCE_2)).getChoice();
-        String filenameFilterType2 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_TYPE_2)).getChoice();
-        boolean useFilenameFilter3 = ((BooleanP) inputControl.getParameter(InputControl.USE_FILENAME_FILTER_3)).isSelected();
-        String filenameFilter3 = ((StringP) inputControl.getParameter(InputControl.FILENAME_FILTER_3)).getValue();;
-        String filenameFilterSource3 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_SOURCE_3)).getChoice();
-        String filenameFilterType3 = ((ChoiceP) inputControl.getParameter(InputControl.FILENAME_FILTER_TYPE_3)).getChoice();
-
         Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
 
         if (inputPath == null) return;
@@ -1167,13 +1153,9 @@ public class GUI {
             BatchProcessor batchProcessor = new BatchProcessor(new File(inputPath));
             batchProcessor.setnThreads(nThreads);
 
-            // Adding extension filter
-            batchProcessor.addFileCondition(new ExtensionMatchesString(new String[]{extension}));
-
             // Adding filename filters
-            if (useFilenameFilter1) batchProcessor.addFilenameFilter(filenameFilterType1, filenameFilter1, filenameFilterSource1);
-            if (useFilenameFilter2) batchProcessor.addFilenameFilter(filenameFilterType2, filenameFilter2, filenameFilterSource2);
-            if (useFilenameFilter3) batchProcessor.addFilenameFilter(filenameFilterType3, filenameFilter3, filenameFilterSource3);
+            inputControl.addFilenameExtensionFilter(batchProcessor);
+            inputControl.addFilenameFilters(batchProcessor);
 
             // Running the analysis
             File nextFile = batchProcessor.getNextValidFileInStructure();
