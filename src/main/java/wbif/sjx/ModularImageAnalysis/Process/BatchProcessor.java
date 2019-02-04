@@ -129,7 +129,7 @@ public class BatchProcessor extends FileCrawler {
             }
 
             // For the current file, determining how many series to processAutomatic (and which ones)
-            TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, next);
+            TreeMap<Integer,String> seriesNumbers = analysis.getInputControl().getSeriesNumbers(next);
 
             // Iterating over all series to analyse, adding each one as a new workspace
             for (int seriesNumber:seriesNumbers.keySet()) {
@@ -203,7 +203,7 @@ public class BatchProcessor extends FileCrawler {
         pool = new ThreadPoolExecutor(1,1,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         // For the current file, determining how many series to processAutomatic (and which ones)
-        TreeMap<Integer,String> seriesNumbers = getSeriesNumbers(analysis, rootFolder.getFolderAsFile());
+        TreeMap<Integer,String> seriesNumbers = analysis.getInputControl().getSeriesNumbers(rootFolder.getFolderAsFile());
 
         // Only set verbose if a single series is being processed
         Module.setVerbose(seriesNumbers.size() == 1);

@@ -368,7 +368,7 @@ public class MeasureIntensityDistribution extends Module {
                 ZonedDateTime zonedDateTime = ZonedDateTime.now();
                 String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
                 String rootPath = FilenameUtils.removeExtension(path);
-                String newOutPath = rootPath + "_("+ dateTime + ").xls";
+                String newOutPath = rootPath + "_("+ dateTime + ").xlsx";
                 FileOutputStream outputStream = null;
 
                 outputStream = new FileOutputStream(newOutPath);
@@ -453,7 +453,7 @@ public class MeasureIntensityDistribution extends Module {
                     case SaveProfileModes.INDIVIDUAL_FILES:
                         File rootFile = workspace.getMetadata().getFile();
                         String path = rootFile.getParent()+ MIA.getSlashes() +FilenameUtils.removeExtension(rootFile.getName());
-                        path = path + "_S" + workspace.getMetadata().getSeriesNumber()  + profileFileSuffix+ ".xls";
+                        path = path + "_S" + workspace.getMetadata().getSeriesNumber()  + profileFileSuffix+ ".xlsx";
                         writeResultsFile(path,distanceBins,cumStats);
                         break;
                 }

@@ -19,30 +19,28 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculato
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 22/02/2018.
  */
 public class MergeChannels< T extends RealType< T > & NativeType< T >> extends Module {
-    public static final String INPUT_IMAGE1 = "Input image 1";
-    public static final String INPUT_IMAGE2 = "Input image 2";
+    public static final String ADD_INPUT_IMAGE = "Add image";
+    public static final String INPUT_IMAGE = "Input image";
     public static final String OVERWRITE_MODE = "Overwrite mode";
     public static final String OUTPUT_IMAGE = "Output image";
+    public static final String IMAGE_INDEX_TO_OVERWRITE = "Image index to overwrite (>= 1)";
 
 
     public interface OverwriteModes {
         String CREATE_NEW = "Create new image";
-        String OVERWRITE_IMAGE1 = "Overwrite image 1";
-        String OVERWRITE_IMAGE2 = "Overwrite image 2";
+        String OVERWRITE_IMAGE = "Overwrite image";
 
-        String[] ALL = new String[]{CREATE_NEW,OVERWRITE_IMAGE1,OVERWRITE_IMAGE2};
+        String[] ALL = new String[]{CREATE_NEW,OVERWRITE_IMAGE};
 
     }
 
@@ -52,6 +50,19 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 //        ImgPlus<T> img2 = inputImage2.getImgPlus();
 //
 //    }
+
+    public Image combineImages(Image[] inputImages, String outputImageName) {
+        // Processing first two images
+        Image outputImage = combineImages(inputImages[0],inputImages[1],outputImageName);
+
+        // Appending any additional images
+        for (int i=2;i<inputImages.length;i++) {
+            outputImage = combineImages(outputImage,inputImages[i],outputImageName);
+        }
+
+        return outputImage;
+
+    }
 
     public Image combineImages(Image inputImage1, Image inputImage2, String outputImageName) {
         ImgPlus<T> img1 = inputImage1.getImgPlus();
@@ -225,33 +236,34 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     @Override
     protected boolean run(Workspace workspace) {
         // Getting parameters
-        String inputImage1Name = parameters.getValue(INPUT_IMAGE1);
-        String inputImage2Name = parameters.getValue(INPUT_IMAGE2);
         String overwriteMode = parameters.getValue(OVERWRITE_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
-        Image inputImage1 = workspace.getImage(inputImage1Name);
-        Image inputImage2 = workspace.getImage(inputImage2Name);
+        // Creating a collection of images
+        LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
+        Image[] inputImages = new Image[collections.size()];
+        int i=0;
+        for (ParameterCollection collection:collections) {
+            inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
+        }
 
         // Ensuring the two image types are the same.  If they're not, they're set to the highest common type
 //        forceSameType(inputImage1,inputImage2);
 
-        Image mergedImage = combineImages(inputImage1,inputImage2,outputImageName);
+        Image mergedImage = combineImages(inputImages,outputImageName);
 
         // If the image is being saved as a new image, adding it to the workspace
         switch (overwriteMode) {
-            case ImageCalculator.OverwriteModes.CREATE_NEW:
+            case OverwriteModes.CREATE_NEW:
                 Image outputImage = new Image(outputImageName,mergedImage.getImagePlus());
                 workspace.addImage(outputImage);
                 break;
 
-            case ImageCalculator.OverwriteModes.OVERWRITE_IMAGE1:
-                inputImage1.setImagePlus(mergedImage.getImagePlus());
+            case OverwriteModes.OVERWRITE_IMAGE:
+                int idx = parameters.getValue(IMAGE_INDEX_TO_OVERWRITE);
+                inputImages[i-1].setImagePlus(mergedImage.getImagePlus());
                 break;
 
-            case ImageCalculator.OverwriteModes.OVERWRITE_IMAGE2:
-                inputImage2.setImagePlus(mergedImage.getImagePlus());
-                break;
         }
 
         if (showOutput) showImage(mergedImage);
@@ -262,10 +274,13 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE1,this));
-        parameters.add(new InputImageP(INPUT_IMAGE2,this));
+        ParameterCollection collection = new ParameterCollection();
+        collection.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new ParameterGroup(ADD_INPUT_IMAGE,this,collection,2));
+
         parameters.add(new ChoiceP(OVERWRITE_MODE,this,OverwriteModes.CREATE_NEW,OverwriteModes.ALL));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
+        parameters.add(new IntegerP(IMAGE_INDEX_TO_OVERWRITE,this,1));
 
     }
 
@@ -273,17 +288,20 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     public ParameterCollection updateAndGetParameters() {
         ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParameters.add(parameters.getParameter(INPUT_IMAGE1));
-        returnedParameters.add(parameters.getParameter(INPUT_IMAGE2));
-        returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
+        returnedParameters.add(parameters.getParameter(ADD_INPUT_IMAGE));
 
+        returnedParameters.add(parameters.getParameter(OVERWRITE_MODE));
         switch ((String) parameters.getValue(OVERWRITE_MODE)) {
             case OverwriteModes.CREATE_NEW:
                 returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
                 break;
+            case OverwriteModes.OVERWRITE_IMAGE:
+                returnedParameters.add(parameters.getParameter(IMAGE_INDEX_TO_OVERWRITE));
+                break;
         }
 
         return returnedParameters;
+
     }
 
     @Override

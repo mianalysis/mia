@@ -6,6 +6,7 @@ package wbif.sjx.ModularImageAnalysis.Process;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -407,8 +408,7 @@ public class Exporter {
         ModuleCollection modules = analysis.getModules();
 
         // Initialising the workbook
-//        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        Workbook workbook = new HSSFWorkbook();
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
 
         // Adding relevant sheets
         prepareParametersXLS(workbook,modules);
@@ -417,7 +417,7 @@ public class Exporter {
         if (exportIndividualObjects) prepareObjectsXLS(workbook,workspaces,modules);
 
         // Writing the workbook to file
-        String outPath = name + ".xls";
+        String outPath = name + ".xlsx";
         switch (appendDateTimeMode) {
             case ALWAYS:
                 outPath = appendDateTime(outPath);
@@ -450,7 +450,7 @@ public class Exporter {
     private static String appendDateTime(String inputName) {
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
         String dateTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-        return inputName + "_("+ dateTime + ").xls";
+        return inputName + "_("+ dateTime + ").xlsx";
     }
 
     private void prepareParametersXLS(Workbook workbook, ModuleCollection modules) {

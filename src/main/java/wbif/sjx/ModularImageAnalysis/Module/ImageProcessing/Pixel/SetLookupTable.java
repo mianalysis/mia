@@ -42,6 +42,30 @@ public class SetLookupTable extends Module {
 
     }
 
+
+    public static LUT getLUT(String lookupTableName) {
+        switch (lookupTableName) {
+            case LookupTables.GREY:
+            default:
+                return LUT.createLutFromColor(Color.WHITE);
+            case LookupTables.RED:
+                return LUT.createLutFromColor(Color.RED);
+            case LookupTables.GREEN:
+                return LUT.createLutFromColor(Color.GREEN);
+            case LookupTables.BLUE:
+                return LUT.createLutFromColor(Color.BLUE);
+            case LookupTables.CYAN:
+                return LUT.createLutFromColor(Color.CYAN);
+            case LookupTables.MAGNETA:
+                return LUT.createLutFromColor(Color.MAGENTA);
+            case LookupTables.YELLOW:
+                return LUT.createLutFromColor(Color.YELLOW);
+            case LookupTables.FIRE:
+                return LUTs.BlackFire();
+        }
+    }
+
+
     @Override
     public String getTitle() {
         return "Set lookup table";
@@ -67,42 +91,7 @@ public class SetLookupTable extends Module {
         String lookupTableName = parameters.getValue(LOOKUP_TABLE);
         String channelMode = parameters.getValue(CHANNEL_MODE);
         int channel = parameters.getValue(CHANNEL);
-
-        LUT lut;
-        switch (lookupTableName) {
-            case LookupTables.GREY:
-            default:
-                lut = LUT.createLutFromColor(Color.WHITE);
-                break;
-
-            case LookupTables.RED:
-                lut = LUT.createLutFromColor(Color.RED);
-                break;
-
-            case LookupTables.GREEN:
-                lut = LUT.createLutFromColor(Color.GREEN);
-                break;
-
-            case LookupTables.BLUE:
-                lut = LUT.createLutFromColor(Color.BLUE);
-                break;
-
-            case LookupTables.CYAN:
-                lut = LUT.createLutFromColor(Color.CYAN);
-                break;
-
-            case LookupTables.MAGNETA:
-                lut = LUT.createLutFromColor(Color.MAGENTA);
-                break;
-
-            case LookupTables.YELLOW:
-                lut = LUT.createLutFromColor(Color.YELLOW);
-                break;
-
-            case LookupTables.FIRE:
-                lut = LUTs.BlackFire();
-                break;
-        }
+        LUT lut = getLUT(lookupTableName);
 
         switch (channelMode) {
             case ChannelModes.ALL_CHANNELS:
