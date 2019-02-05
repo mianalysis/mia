@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.awt.*;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -23,6 +24,9 @@ import java.io.IOException;
  */
 public class AnalysisWriter {
     public static void saveAnalysis(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
+        // Updating the analysis filename
+        analysis.setAnalysisFilename(new File(outputFileName).getName());
+
         // Creating a module collection holding the input and output
         ModuleCollection inOutModules = new ModuleCollection();
         inOutModules.add(analysis.getInputControl());
@@ -62,6 +66,10 @@ public class AnalysisWriter {
         if (fileDialog.getFiles().length==0) return;
 
         String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
+
+        // Updating the analysis filename
+        analysis.setAnalysisFilename(fileDialog.getFiles()[0].getName());
+
         if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
             outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
         }

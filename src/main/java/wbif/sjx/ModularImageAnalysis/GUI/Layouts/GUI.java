@@ -712,13 +712,36 @@ public class GUI {
         // Iterating over each collection of Parameters.  After adding each one, a remove button is included
         LinkedHashSet<ParameterCollection> collections = group.getCollections();
 
+        JSeparator separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0,15));
+        separator.setForeground(paramsPanel.getBackground());
+        separator.setBackground(paramsPanel.getBackground());
+        c.gridy++;
+        paramsPanel.add(separator, c);
+
         for (ParameterCollection collection:collections) {
             // Adding the individual parameters
             for (Parameter parameter:collection) addAdvancedParameterControl(parameter,c);
+
+            separator = new JSeparator();
+            separator.setPreferredSize(new Dimension(0,15));
+            separator.setForeground(paramsPanel.getBackground());
+            separator.setBackground(paramsPanel.getBackground());
+            c.gridy++;
+            paramsPanel.add(separator, c);
+
         }
 
         // Adding an add button
         addAdvancedParameterControl(group,c);
+
+        separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0,15));
+        separator.setForeground(paramsPanel.getBackground());
+        separator.setBackground(paramsPanel.getBackground());
+        c.gridy++;
+        paramsPanel.add(separator, c);
+
     }
 
     public static void populateModuleParameters() {
@@ -890,6 +913,12 @@ public class GUI {
                     }
                 }
             }
+        }
+    }
+
+    public static void updateModuleParameters(Module module) {
+        for (Parameter parameter:module.updateAndGetParameters()) {
+            parameter.getControl().updateControl();
         }
     }
 

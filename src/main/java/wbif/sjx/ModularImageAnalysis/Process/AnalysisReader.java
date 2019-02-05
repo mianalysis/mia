@@ -32,6 +32,7 @@ public class AnalysisReader {
 
         FileInputStream fileInputStream = new FileInputStream(fileDialog.getFiles()[0]);
         Analysis analysis = loadAnalysis(fileInputStream);
+        analysis.setAnalysisFilename(fileDialog.getFiles()[0].getName());
         fileInputStream.close();
 
         System.out.println("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");

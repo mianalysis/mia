@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -46,6 +47,8 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
         GUI.updateTestFile();
         GUI.updateModules(true);
 
+        updateControl();
+
     }
 
     @Override
@@ -57,12 +60,18 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
     public void updateControl() {
         String[] choices = parameter.getChoices();
         if (choices == null) choices = new String[]{""};
-        control = new WiderDropDownCombo(choices);
 
-        control.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        control.setSelectedItem(parameter.getChoice());
-        control.addActionListener(this);
-        control.setWide(true);
+        // Getting previously-selected item
+        String selected = (String) control.getSelectedItem();
+
+        // Creating a new model
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel(choices);
+        model.setSelectedItem(selected);
+
+        // Updating the control
+        control.setModel(model);
+        control.repaint();
+        control.revalidate();
 
     }
 }

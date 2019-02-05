@@ -22,7 +22,9 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 
 import com.drew.lang.annotations.Nullable;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.ModularImageAnalysis.Process.PointPairSelector;
 import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.ModularImageAnalysis.Process.PointPairSelector.PointPair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,20 +38,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RegisterImages extends Module implements ActionListener {
-    private JFrame frame;
-
-    private ImagePlus displayImagePlus1;
-    private ImagePlus displayImagePlus2;
-    private Overlay overlay1;
-    private Overlay overlay2;
-    private ArrayList<PointPair> pairs;
-
-    private int elementHeight = 40;
-
-    private static final String ADD_PAIR = "Add pair";
-    private static final String FINISH = "Finish";
-
+public class RegisterImages extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -128,47 +117,6 @@ public class RegisterImages extends Module implements ActionListener {
 
     }
 
-
-    private void showOptionsPanel() {
-        pairs  = new ArrayList<>();
-        frame = new JFrame();
-
-        frame.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
-        c.gridheight = 1;
-        c.weightx = 0.5;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(5,5,5,5);
-
-        JLabel headerLabel = new JLabel("<html>Add a point to each image, then select \"Add pair\"" +
-                "<br>(or click \"Finish adding pairs\" at any time).</html>");
-        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
-
-        frame.add(headerLabel,c);
-
-        JButton addPairButton = new JButton("Add pair");
-        addPairButton.addActionListener(this);
-        addPairButton.setActionCommand(ADD_PAIR);
-        c.gridy++;
-        c.gridwidth = 1;
-        frame.add(addPairButton,c);
-
-        JButton finishButton = new JButton("Finish adding pairs");
-        finishButton.addActionListener(this);
-        finishButton.setActionCommand(FINISH);
-        c.gridx++;
-        frame.add(finishButton,c);
-
-        frame.pack();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
-        frame.setVisible(true);
-
-    }
 
     public void processAutomatic(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) {
         // Creating a reference image
@@ -267,32 +215,9 @@ public class RegisterImages extends Module implements ActionListener {
         // Displaying the images and options panel.  While the control is open, do nothing
         IJ.setTool(Toolbar.POINT);
 
-        displayImagePlus1 = new Duplicator().run(projectedWarped.getImagePlus());
-        displayImagePlus1.setTitle("Select points on this image");
-        displayImagePlus1.show();
-        overlay1 = displayImagePlus1.getOverlay();
-        if (overlay1 == null) {
-            overlay1 = new Overlay();
-            displayImagePlus1.setOverlay(overlay1);
-        }
-
-        displayImagePlus2 = new Duplicator().run(projectedReference.getImagePlus());
-        displayImagePlus2.setTitle("Select points on this image");
-        displayImagePlus2.show();
-        overlay2 = displayImagePlus2.getOverlay();
-        if (overlay2 == null) {
-            overlay2 = new Overlay();
-            displayImagePlus2.setOverlay(overlay2);
-        }
-
-        showOptionsPanel();
-        while (frame != null) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        ImagePlus ipl1 = new Duplicator().run(projectedWarped.getImagePlus());
+        ImagePlus ipl2 = new Duplicator().run(projectedReference.getImagePlus());
+        ArrayList<PointPair> pairs = new PointPairSelector().getPointPairs(ipl1,ipl2);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs,transformationMode);
@@ -671,82 +596,6 @@ public class RegisterImages extends Module implements ActionListener {
 
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case (ADD_PAIR):
-                addNewPair();
-                break;
-
-            case (FINISH):
-                finishAdding();
-                break;
-        }
-    }
-
-    public void addNewPair() {
-        Roi roi1 = displayImagePlus1.getRoi();
-        Roi roi2 = displayImagePlus2.getRoi();
-
-        if (roi1 == null || roi2 == null) {
-            IJ.error("Select a single point in each image");
-            return;
-        }
-
-        float[] centroidX1 = roi1.getFloatPolygon().xpoints;
-        float[] centroidY1 = roi1.getFloatPolygon().ypoints;
-        double x1 = new CumStat(centroidX1).getMean();
-        double y1 = new CumStat(centroidY1).getMean();
-        PointRoi point1 = new PointRoi(x1,y1);
-        displayImagePlus1.deleteRoi();
-
-        float[] centroidX2 = roi2.getFloatPolygon().xpoints;
-        float[] centroidY2 = roi2.getFloatPolygon().ypoints;
-        double x2 = new CumStat(centroidX2).getMean();
-        double y2 = new CumStat(centroidY2).getMean();
-
-        PointRoi point2 = new PointRoi(x2,y2);
-        displayImagePlus2.deleteRoi();
-
-        PointPair pair = new PointPair(point1,point2);
-        pairs.add(pair);
-        addToOverlay(pair);
-
-    }
-
-    public void finishAdding() {
-        if (pairs.size() < 2) {
-            IJ.error("Select at least two pairs");
-            return;
-        }
-
-        // Closing the image, so the analysis can proceed
-        frame.dispose();
-        frame = null;
-        displayImagePlus1.close();
-        displayImagePlus2.close();
-
-    }
-
-    public void addToOverlay(PointPair pair) {
-        PointRoi point1 = pair.getPoint1();
-        point1.setPointType(PointRoi.NORMAL);
-        point1.setSize(2);
-        point1.setStrokeColor(Color.RED);
-        overlay1.add(point1);
-
-        PointRoi point2 = pair.getPoint2();
-        point2.setPointType(PointRoi.NORMAL);
-        point2.setSize(2);
-        point2.setStrokeColor(Color.RED);
-        overlay2.add(point2);
-
-        displayImagePlus1.updateAndDraw();
-        displayImagePlus2.updateAndDraw();
-
-    }
-
-
     private class Param extends FloatArray2DSIFT.Param {
         String transformationMode = TransformationModes.RIGID;
         float rod = 0.92f;
@@ -755,22 +604,5 @@ public class RegisterImages extends Module implements ActionListener {
 
     }
 
-    private class PointPair {
-        private PointRoi p1;
-        private PointRoi p2;
-
-        PointPair(PointRoi p1, PointRoi p2) {
-            this.p1 = p1;
-            this.p2 = p2;
-        }
-
-        PointRoi getPoint1() {
-            return p1;
-        }
-
-        PointRoi getPoint2() {
-            return p2;
-        }
-    }
 }
 

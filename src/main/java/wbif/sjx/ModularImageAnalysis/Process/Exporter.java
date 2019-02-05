@@ -408,10 +408,11 @@ public class Exporter {
         ModuleCollection modules = analysis.getModules();
 
         // Initialising the workbook
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
+//        SXSSFWorkbook workbook = new SXSSFWorkbook();
+        HSSFWorkbook workbook = new HSSFWorkbook();
 
         // Adding relevant sheets
-        prepareParametersXLS(workbook,modules);
+        prepareParametersXLS(workbook,analysis);
         prepareErrorLogXLS(workbook);
         if (exportSummary) prepareSummaryXLS(workbook,workspaces,modules, summaryMode);
         if (exportIndividualObjects) prepareObjectsXLS(workbook,workspaces,modules);
@@ -453,7 +454,9 @@ public class Exporter {
         return inputName + "_("+ dateTime + ").xlsx";
     }
 
-    private void prepareParametersXLS(Workbook workbook, ModuleCollection modules) {
+    private void prepareParametersXLS(Workbook workbook, Analysis analysis) {
+        ModuleCollection modules = analysis.getModules();
+
         // Creating a sheet for parameters
         Sheet paramSheet = workbook.createSheet("Parameters");
 
@@ -484,6 +487,20 @@ public class Exporter {
 
         Cell moduleValueCell = row.createCell(paramCol);
         moduleValueCell.setCellValue("");
+
+        // Adding information about the system used
+        paramCol = 0;
+        row = paramSheet.createRow(paramRow++);
+
+        nameValueCell = row.createCell(paramCol++);
+        nameValueCell.setCellValue("WORKFLOW FILENAME");
+
+        valueValueCell = row.createCell(paramCol++);
+        valueValueCell.setCellValue(analysis.getAnalysisFilename());
+
+        moduleValueCell = row.createCell(paramCol);
+        moduleValueCell.setCellValue("");
+
 
         // Adding a new parameter to each row
         for (Module module:modules) {
