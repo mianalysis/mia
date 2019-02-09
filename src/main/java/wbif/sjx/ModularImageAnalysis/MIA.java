@@ -16,6 +16,11 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
+import org.apache.poi.POIXMLDocument;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.avutil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -56,7 +61,7 @@ public class MIA implements PlugIn {
      */
     private static final boolean imagePlusMode = true;
 
-    public static void main(String[] args) throws Exception {// The following works, but loads the entire video to RAM without an apparent way to prevent this
+    public static void main(String[] args) throws Exception {
         debug = true;
 
         // Determining the version number from the pom file

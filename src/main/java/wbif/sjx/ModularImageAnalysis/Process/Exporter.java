@@ -408,8 +408,8 @@ public class Exporter {
         ModuleCollection modules = analysis.getModules();
 
         // Initialising the workbook
-//        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        HSSFWorkbook workbook = new HSSFWorkbook();
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
+//        HSSFWorkbook workbook = new HSSFWorkbook();
 
         // Adding relevant sheets
         prepareParametersXLS(workbook,analysis);
@@ -454,7 +454,7 @@ public class Exporter {
         return inputName + "_("+ dateTime + ").xlsx";
     }
 
-    private void prepareParametersXLS(Workbook workbook, Analysis analysis) {
+    private void prepareParametersXLS(SXSSFWorkbook workbook, Analysis analysis) {
         ModuleCollection modules = analysis.getModules();
 
         // Creating a sheet for parameters
@@ -525,7 +525,7 @@ public class Exporter {
         }
     }
 
-    private void prepareErrorLogXLS(Workbook workbook) {
+    private void prepareErrorLogXLS(SXSSFWorkbook workbook) {
         // Creating a sheet for parameters
         Sheet errorSheet = workbook.createSheet("Log");
 
@@ -542,7 +542,7 @@ public class Exporter {
         }
     }
 
-    private void prepareSummaryXLS(Workbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
+    private void prepareSummaryXLS(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
                                    SummaryMode summaryType) {
         int headerCol = 0;
 
@@ -958,7 +958,7 @@ public class Exporter {
         }
     }
 
-    private void prepareObjectsXLS(Workbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
+    private void prepareObjectsXLS(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
 
         // Creating a new sheet for each object.  Each analysed file has its own set of rows (one for each object)
         HashMap<String, Sheet> objectSheets = new HashMap<>();
