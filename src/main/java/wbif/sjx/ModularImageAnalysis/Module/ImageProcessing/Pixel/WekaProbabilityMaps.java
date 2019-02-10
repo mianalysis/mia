@@ -3,12 +3,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.macro.MacroExtension;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import trainableSegmentation.WekaSegmentation;
-import trainableSegmentation.Weka_Segmentation;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ImageTypeConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -16,7 +13,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 22/03/2018.
@@ -235,8 +231,4 @@ public class WekaProbabilityMaps extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

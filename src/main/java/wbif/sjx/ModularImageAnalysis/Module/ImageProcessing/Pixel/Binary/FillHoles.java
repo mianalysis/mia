@@ -2,12 +2,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.morphology.GeodesicReconstruction3D;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -16,8 +14,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
-
-import java.util.ArrayList;
 
 public class FillHoles extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -149,8 +145,4 @@ public class FillHoles extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

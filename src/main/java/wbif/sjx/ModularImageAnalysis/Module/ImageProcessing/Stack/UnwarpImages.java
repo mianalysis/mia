@@ -7,11 +7,9 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.PointRoi;
-import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -562,8 +560,4 @@ public class UnwarpImages extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

@@ -1,15 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import ij.macro.MacroExtension;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
-import wbif.sjx.ModularImageAnalysis.Macro.Visualisation.ShowImageMacro;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
-
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 03/05/2017.
@@ -80,13 +75,4 @@ public class ShowImage extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        ArrayList<MacroOperation> macroOperations = new ArrayList<>();
-
-        macroOperations.add(new ShowImageMacro(handler));
-
-        return macroOperations;
-
-    }
 }

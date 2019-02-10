@@ -4,10 +4,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
-import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -16,7 +14,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MathFunc.GaussianDistribution2D;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import static wbif.sjx.common.MathFunc.GaussianFitter.fitGaussian2D;
@@ -467,10 +464,6 @@ public class FitGaussian2D extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }
 
 //when signax_0:sigmay_o is >1.5, delete spot... i - 1 ;

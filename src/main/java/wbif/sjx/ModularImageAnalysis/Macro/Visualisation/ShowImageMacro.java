@@ -7,7 +7,17 @@ import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 public class ShowImageMacro extends MacroOperation {
     public ShowImageMacro(MacroExtension theHandler) {
-        super("MIA_ShowImage", new int[]{ARG_STRING}, theHandler);
+        super(theHandler);
+    }
+
+    @Override
+    public String getName() {
+        return "MIA_ShowImage";
+    }
+
+    @Override
+    public int[] getArgumentTypes() {
+        return new int[]{ARG_STRING};
     }
 
     @Override
@@ -20,6 +30,11 @@ public class ShowImageMacro extends MacroOperation {
 
         showImage.run(workspace);
 
+    }
+
+    @Override
+    public String getArgumentsDescription() {
+        return "String imageName";
     }
 
     @Override

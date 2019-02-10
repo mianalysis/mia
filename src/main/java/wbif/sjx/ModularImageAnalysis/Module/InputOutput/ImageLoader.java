@@ -5,7 +5,6 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
-import ij.macro.MacroExtension;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
@@ -28,14 +27,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.ModularImageAnalysis.MIA;
-import wbif.sjx.ModularImageAnalysis.Macro.InputOutput.LoadImageFromImageJMacro;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
@@ -47,7 +44,6 @@ import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 import java.io.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -952,15 +948,6 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        ArrayList<MacroOperation> macroOperations = new ArrayList<>();
-
-        macroOperations.add(new LoadImageFromImageJMacro(handler));
-
-        return macroOperations;
-
-    }
 }
 
 // when dataisgood, Gemma = given food

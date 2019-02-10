@@ -1,8 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
-import ij.macro.MacroExtension;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.DoubleP;
@@ -11,8 +9,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-
-import java.util.ArrayList;
 
 /**
  * Created by Stephen on 09/05/2017.
@@ -143,8 +139,4 @@ public class MeasureImageTexture extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

@@ -1,17 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
-import ij.macro.MacroExtension;
 import ij.plugin.Resizer;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
-
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 23/03/2018.
@@ -103,8 +99,4 @@ public class InterpolateZAxis extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

@@ -6,18 +6,14 @@ import fiji.threshold.Auto_Local_Threshold;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
-import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.process.AutoThresholder;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Filters.AutoLocalThreshold3D;
 import wbif.sjx.common.Process.IntensityMinMax;
-
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -430,8 +426,4 @@ public class ThresholdImage extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

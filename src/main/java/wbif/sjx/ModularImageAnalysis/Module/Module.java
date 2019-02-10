@@ -21,7 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module implements Serializable {
+public abstract class Module {
     protected ParameterCollection parameters = new ParameterCollection();
     protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
     protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
@@ -110,8 +110,6 @@ public abstract class Module implements Serializable {
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
      */
     public abstract void addRelationships(RelationshipCollection relationships);
-
-    public abstract ArrayList<MacroOperation> getMacroOperations(MacroExtension handler);
 
     public <T extends Parameter> T getParameter(String name) {
         return parameters.getParameter(name);

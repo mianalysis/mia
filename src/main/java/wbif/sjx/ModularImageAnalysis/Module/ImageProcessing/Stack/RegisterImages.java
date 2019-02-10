@@ -4,7 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.*;
-import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
@@ -15,7 +14,6 @@ import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -25,13 +23,8 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import com.drew.lang.annotations.Nullable;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.PointPairSelector;
-import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.ModularImageAnalysis.Process.PointPairSelector.PointPair;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.util.*;
 import java.util.List;
@@ -596,11 +589,6 @@ public class RegisterImages extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
-    }
-
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
     }
 
     private class Param extends FloatArray2DSIFT.Param {

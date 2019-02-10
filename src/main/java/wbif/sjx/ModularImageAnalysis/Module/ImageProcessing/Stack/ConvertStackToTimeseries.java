@@ -2,10 +2,8 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import fiji.stacks.Hyperstack_rearranger;
 import ij.ImagePlus;
-import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -13,8 +11,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
-
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 19/06/2017.
@@ -123,8 +119,4 @@ public class ConvertStackToTimeseries extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

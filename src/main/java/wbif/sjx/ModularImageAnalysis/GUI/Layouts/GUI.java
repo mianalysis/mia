@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.MIA;
+import wbif.sjx.ModularImageAnalysis.Process.ClassHunter;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -18,7 +19,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
-import wbif.sjx.ModularImageAnalysis.Process.ModuleReader;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -1005,7 +1005,7 @@ public class GUI {
             addModuleButton.setEnabled(false);
             addModuleButton.setToolTipText("Loading modules");
 
-            Set<Class<? extends Module>> availableModules = ModuleReader.getModules(MIA.isDebug());
+            Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
             // Creating an alphabetically-ordered list of all modules
             TreeMap<String, Class> modules = new TreeMap<>();

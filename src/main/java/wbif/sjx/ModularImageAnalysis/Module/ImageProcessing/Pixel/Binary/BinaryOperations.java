@@ -5,7 +5,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.macro.MacroExtension;
 import ij.plugin.*;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.BinaryImages;
@@ -16,7 +15,6 @@ import inra.ijpb.morphology.Strel3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
 import inra.ijpb.watershed.ExtendedMinimaWatershed;
 import inra.ijpb.watershed.Watershed;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -24,8 +22,6 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Process.IntensityMinMax;
-
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -492,8 +488,4 @@ public class BinaryOperations extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

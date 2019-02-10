@@ -2,10 +2,8 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.macro.MacroExtension;
 import ij.measure.Calibration;
 import ij.process.ImageProcessor;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -16,8 +14,6 @@ import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.Object.Point;
 
 import com.drew.lang.annotations.Nullable;
-
-import java.util.ArrayList;
 
 
 public class CreateObjectDensityMap extends Module {
@@ -173,8 +169,4 @@ public class CreateObjectDensityMap extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

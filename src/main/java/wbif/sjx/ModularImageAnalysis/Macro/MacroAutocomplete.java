@@ -14,11 +14,9 @@ public class MacroAutocomplete implements MacroExtensionAutoCompletionPlugin {
     @Override
     public List<BasicCompletion> getCompletions(CompletionProvider completionProvider) {
         ArrayList<BasicCompletion> completions = new ArrayList<>();
-        System.err.println("Loading anns");
-        ArrayList<MacroOperation> macroOperations = MacroHandler.getMacroOperations();
+        ArrayList<MacroOperation> macroOperations = new MacroHandler().getMacroOperations();
         for (MacroOperation macroOperation:macroOperations) {
-            String command = "Ext."+macroOperation.getName();
-                System.err.println("    Command "+command);
+            String command = "Ext."+macroOperation.getName()+" ("+macroOperation.getArgumentsDescription()+")";
             String description = macroOperation.getDescription();
 
             completions.add(new BasicCompletion(completionProvider,command,null,description));

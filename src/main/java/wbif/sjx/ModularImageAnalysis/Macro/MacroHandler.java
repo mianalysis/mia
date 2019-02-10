@@ -2,18 +2,18 @@ package wbif.sjx.ModularImageAnalysis.Macro;
 
 import ij.macro.ExtensionDescriptor;
 import ij.macro.MacroExtension;
-import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
-import wbif.sjx.ModularImageAnalysis.Process.ModuleReader;
+import wbif.sjx.ModularImageAnalysis.Process.ClassHunter;
 
+import javax.crypto.Mac;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 
 public class MacroHandler implements MacroExtension {
-    private static ArrayList<MacroOperation> macroOperations = new ArrayList<>();
+    private static ArrayList<MacroOperation> macroOperations = null;
     private static Workspace workspace;
 
 
@@ -24,7 +24,7 @@ public class MacroHandler implements MacroExtension {
             e.printStackTrace();
         }
 
-        this.macroOperations= initialiseMacroOperations();
+        if (macroOperations == null) this.macroOperations = initialiseMacroOperations();
 
     }
 
@@ -56,16 +56,15 @@ public class MacroHandler implements MacroExtension {
     }
 
     private ArrayList<MacroOperation> initialiseMacroOperations() {
-        // Using Reflections to get all Modules
-        Set<Class<? extends Module>> modules = ModuleReader.getModules(false);
+        // Using Reflections to get all MacroOperations
+        Set<Class<? extends MacroOperation>> clazzes= new ClassHunter<MacroOperation>().getClasses(MacroOperation.class,false);
 
         // Iterating over each Module, adding MacroOperations to an ArrayList
         ArrayList<MacroOperation> macroOperations = new ArrayList<>();
-        for (Class<? extends Module> module : modules) {
+        for (Class<? extends MacroOperation> clazz:clazzes) {
             try {
-                ArrayList<MacroOperation> currentOperations = ((Module) ((Class) module).newInstance()).getMacroOperations(this);
-                if (currentOperations != null) macroOperations.addAll(currentOperations);
-            } catch (InstantiationException | IllegalAccessException e) {
+                macroOperations.add(clazz.getDeclaredConstructor(MacroExtension.class).newInstance(this));
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
@@ -82,7 +81,7 @@ public class MacroHandler implements MacroExtension {
         MacroHandler.workspace = workspace;
     }
 
-    public static ArrayList<MacroOperation> getMacroOperations() {
+    public ArrayList<MacroOperation> getMacroOperations() {
         return macroOperations;
     }
 }

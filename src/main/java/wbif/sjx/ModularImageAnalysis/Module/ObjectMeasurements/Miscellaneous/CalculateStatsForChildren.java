@@ -1,14 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 
-import ij.macro.MacroExtension;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.MathFunc.CumStat;
-
-import java.util.ArrayList;
 
 public class CalculateStatsForChildren extends Module {
     public static final String PARENT_OBJECTS = "Parent objects";
@@ -222,8 +218,4 @@ public class CalculateStatsForChildren extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

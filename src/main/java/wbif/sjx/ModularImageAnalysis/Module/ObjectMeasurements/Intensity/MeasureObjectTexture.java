@@ -2,9 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.macro.MacroExtension;
 import ij.plugin.SubHyperstackMaker;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -12,8 +10,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Analysis.TextureCalculator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-
-import java.util.ArrayList;
 
 /**
  * Takes a set of objects and measures intensity texture values on a provided image.  Measurements are stored with the
@@ -261,8 +257,4 @@ public class MeasureObjectTexture extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

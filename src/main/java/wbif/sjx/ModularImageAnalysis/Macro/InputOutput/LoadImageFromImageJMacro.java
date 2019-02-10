@@ -7,8 +7,17 @@ import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 public class LoadImageFromImageJMacro extends MacroOperation {
     public LoadImageFromImageJMacro(MacroExtension theHandler) {
-        super("MIA_LoadImageFromImageJ", new int[]{ARG_STRING}, theHandler);
+        super(theHandler);
+    }
 
+    @Override
+    public String getName() {
+        return "MIA_LoadImageFromImageJ";
+    }
+
+    @Override
+    public int[] getArgumentTypes() {
+        return new int[]{ARG_STRING};
     }
 
     @Override
@@ -56,6 +65,11 @@ public class LoadImageFromImageJMacro extends MacroOperation {
         // Running Module
         imageLoader.run(workspace);
 
+    }
+
+    @Override
+    public String getArgumentsDescription() {
+        return "String imageName";
     }
 
     @Override

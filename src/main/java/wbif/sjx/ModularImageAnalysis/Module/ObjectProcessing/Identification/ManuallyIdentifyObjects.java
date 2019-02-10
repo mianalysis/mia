@@ -3,12 +3,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.*;
-import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
 import ij.process.LUT;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -364,11 +362,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
-    }
-
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
     }
 
     @Override

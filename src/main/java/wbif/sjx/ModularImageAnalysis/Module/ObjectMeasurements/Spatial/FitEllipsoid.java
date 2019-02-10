@@ -2,8 +2,6 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import ij.ImagePlus;
 import ij.ImageStack;
-import ij.macro.MacroExtension;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.ExtractObjectEdges;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -12,8 +10,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Analysis.EllipsoidCalculator;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Volume;
-
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 19/06/2018.
@@ -377,8 +373,4 @@ public class FitEllipsoid extends Module {
         }
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }

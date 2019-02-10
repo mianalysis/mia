@@ -19,6 +19,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ErrorLog;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisReader;
@@ -48,8 +49,6 @@ public class MIA implements PlugIn {
     private static final boolean imagePlusMode = true;
 
     public static void main(String[] args) throws Exception {
-        Functions.registerExtensions(new MacroHandler());
-
         debug = true;
 
         // Determining the version number from the pom file

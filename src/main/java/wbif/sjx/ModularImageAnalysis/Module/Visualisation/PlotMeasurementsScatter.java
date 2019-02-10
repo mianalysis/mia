@@ -3,8 +3,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import ij.gui.Plot;
-import ij.macro.MacroExtension;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -12,7 +10,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 19/05/2017.
@@ -224,8 +221,4 @@ public class PlotMeasurementsScatter extends Module {
 
     }
 
-    @Override
-    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
-        return null;
-    }
 }
