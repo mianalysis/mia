@@ -3,26 +3,13 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import ij.Prefs;
-import loci.common.DebugTools;
-import loci.common.services.DependencyException;
-import loci.common.services.ServiceException;
-import loci.common.services.ServiceFactory;
-import loci.formats.ChannelSeparator;
-import loci.formats.FormatException;
-import loci.formats.meta.MetadataStore;
-import loci.formats.services.OMEXMLService;
-import loci.plugins.util.ImageProcessorReader;
-import loci.plugins.util.LociPrefs;
-import ome.xml.meta.IMetadata;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
-import wbif.sjx.common.FileConditions.FileCondition;
-import wbif.sjx.common.FileConditions.NameContainsString;
-import wbif.sjx.common.FileConditions.ParentContainsString;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;

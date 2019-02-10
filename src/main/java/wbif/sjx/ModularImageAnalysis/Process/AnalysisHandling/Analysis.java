@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Process;
+package wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling;
 
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;

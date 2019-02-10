@@ -4,8 +4,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.macro.MacroExtension;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements.MeasureIntensityDistribution;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
@@ -538,5 +540,10 @@ public class MeasureObjectIntensity extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

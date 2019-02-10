@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Process;
+package wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling;
 
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.*;
@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.ModularImageAnalysis.Process.ModuleReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

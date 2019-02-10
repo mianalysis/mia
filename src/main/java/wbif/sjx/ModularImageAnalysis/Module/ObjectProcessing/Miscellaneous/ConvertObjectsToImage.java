@@ -2,8 +2,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -14,6 +16,7 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -238,4 +241,8 @@ public class ConvertObjectsToImage extends Module {
 
     }
 
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
+    }
 }

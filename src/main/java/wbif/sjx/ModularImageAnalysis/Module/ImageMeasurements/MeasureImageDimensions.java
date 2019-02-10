@@ -1,11 +1,15 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+
+import java.util.ArrayList;
 
 public class MeasureImageDimensions extends Module {
     public final static String INPUT_IMAGE = "Input image";
@@ -143,4 +147,8 @@ public class MeasureImageDimensions extends Module {
 
     }
 
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
+    }
 }

@@ -3,9 +3,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -16,6 +18,7 @@ import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -185,5 +188,10 @@ public class IdentifyObjects extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

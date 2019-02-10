@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 import com.drew.lang.annotations.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.measure.Calibration;
 import ij.plugin.CompositeConverter;
 import ij.process.ByteProcessor;
@@ -10,6 +11,7 @@ import ij.process.ImageProcessor;
 import org.apache.commons.io.FilenameUtils;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -18,6 +20,7 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Object.HCMetadata;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -354,5 +357,10 @@ public class VideoLoader extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

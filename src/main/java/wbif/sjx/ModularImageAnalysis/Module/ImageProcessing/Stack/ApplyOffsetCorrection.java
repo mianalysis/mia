@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
@@ -14,10 +15,13 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
 import wbif.sjx.ModularImageAnalysis.MIA;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+
+import java.util.ArrayList;
 
 public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -199,5 +203,10 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

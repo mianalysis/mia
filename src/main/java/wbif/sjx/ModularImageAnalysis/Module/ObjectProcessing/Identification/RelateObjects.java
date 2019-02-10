@@ -1,6 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
@@ -9,6 +11,8 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Object.Point;
+
+import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 04/05/2017.
@@ -645,5 +649,10 @@ public class RelateObjects extends Module {
     public void addRelationships(RelationshipCollection relationships) {
         relationships.addRelationship(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS));
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

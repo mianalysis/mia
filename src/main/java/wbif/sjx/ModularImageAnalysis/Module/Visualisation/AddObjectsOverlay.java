@@ -8,8 +8,10 @@ import com.drew.lang.annotations.Nullable;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.*;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -20,6 +22,7 @@ import wbif.sjx.ModularImageAnalysis.Process.LabelFactory;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -759,5 +762,10 @@ public class AddObjectsOverlay extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

@@ -1,8 +1,12 @@
 package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
+import ij.macro.MacroExtension;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+
+import java.util.ArrayList;
 
 /**
  * Created by Stephen on 29/07/2017.
@@ -158,6 +162,11 @@ public class OutputControl extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }
 

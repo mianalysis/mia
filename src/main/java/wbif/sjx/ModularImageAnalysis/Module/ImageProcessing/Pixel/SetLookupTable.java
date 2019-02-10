@@ -1,7 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.CompositeImage;
+import ij.macro.MacroExtension;
 import ij.process.LUT;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -13,6 +15,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Object.LUTs;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class SetLookupTable extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -154,5 +157,10 @@ public class SetLookupTable extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

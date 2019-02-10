@@ -1,6 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -143,5 +145,10 @@ public class ProjectObjects extends Module {
     public void addRelationships(RelationshipCollection relationships) {
         relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

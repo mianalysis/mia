@@ -3,15 +3,18 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.macro.MacroExtension;
 import ij.plugin.RGBStackConverter;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import sc.fiji.colourDeconvolution.StainMatrix;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class ColourDeconvolution extends Module {
@@ -327,5 +330,10 @@ public class ColourDeconvolution extends Module {
 
         return matrices;
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

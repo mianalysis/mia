@@ -5,13 +5,16 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.Prefs;
+import ij.macro.MacroExtension;
 import ij.plugin.SubHyperstackMaker;
 import inra.ijpb.morphology.MinimaAndMaxima3D;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
+import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -199,5 +202,10 @@ public class ExtendedMinima extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

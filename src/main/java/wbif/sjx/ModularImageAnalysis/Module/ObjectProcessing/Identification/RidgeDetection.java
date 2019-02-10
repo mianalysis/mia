@@ -6,7 +6,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import de.biomedical_imaging.ij.steger.*;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.measure.Calibration;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
@@ -368,5 +370,10 @@ public class RidgeDetection extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

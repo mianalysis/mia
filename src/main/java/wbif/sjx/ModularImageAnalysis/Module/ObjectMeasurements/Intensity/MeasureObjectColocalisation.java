@@ -1,6 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Intensity;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -8,6 +10,8 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputObjectsP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Analysis.ColocalisationCalculator;
+
+import java.util.ArrayList;
 
 public class MeasureObjectColocalisation extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -120,5 +124,10 @@ public class MeasureObjectColocalisation extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

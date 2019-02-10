@@ -1,7 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
@@ -12,6 +14,7 @@ import wbif.sjx.common.Analysis.LongestChordCalculator;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 20/06/2018.
@@ -299,5 +302,10 @@ public class FitLongestChord extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

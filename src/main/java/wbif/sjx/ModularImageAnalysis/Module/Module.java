@@ -4,8 +4,10 @@ package wbif.sjx.ModularImageAnalysis.Module;
 
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.process.LUT;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
@@ -14,6 +16,7 @@ import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 02/05/2017.
@@ -107,6 +110,8 @@ public abstract class Module implements Serializable {
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
      */
     public abstract void addRelationships(RelationshipCollection relationships);
+
+    public abstract ArrayList<MacroOperation> getMacroOperations(MacroExtension handler);
 
     public <T extends Parameter> T getParameter(String name) {
         return parameters.getParameter(name);

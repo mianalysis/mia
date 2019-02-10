@@ -4,7 +4,6 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
@@ -15,6 +14,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
 

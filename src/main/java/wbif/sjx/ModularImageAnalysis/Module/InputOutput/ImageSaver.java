@@ -2,8 +2,10 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.MIA;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -13,6 +15,7 @@ import wbif.sjx.common.Process.IntensityMinMax;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -205,5 +208,10 @@ public class ImageSaver extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

@@ -2,7 +2,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -10,6 +12,8 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+
+import java.util.ArrayList;
 
 public class ManuallyEditImage extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -110,5 +114,10 @@ public class ManuallyEditImage extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

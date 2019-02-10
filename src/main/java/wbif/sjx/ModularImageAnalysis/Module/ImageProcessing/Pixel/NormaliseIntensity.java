@@ -1,8 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -11,6 +13,8 @@ import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import com.drew.lang.annotations.Nullable;
+
+import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 10/08/2017.
@@ -242,5 +246,10 @@ public class NormaliseIntensity extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

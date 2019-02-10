@@ -2,11 +2,15 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Miscellaneous;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+
+import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 31/01/2018.
@@ -111,5 +115,10 @@ public class RunImageJMacro extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

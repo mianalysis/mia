@@ -2,15 +2,19 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.plugin.Resizer;
 import inra.ijpb.binary.ChamferWeights3D;
 import inra.ijpb.plugins.GeodesicDistanceMap3D;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.InterpolateZAxis;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+
+import java.util.ArrayList;
 
 public class DistanceMap extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -116,5 +120,10 @@ public class DistanceMap extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

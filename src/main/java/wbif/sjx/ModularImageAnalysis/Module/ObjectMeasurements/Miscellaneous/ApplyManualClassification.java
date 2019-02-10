@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Miscellaneous;
 
+import ij.macro.MacroExtension;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -11,6 +13,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Applies manual object classifications from a .csv file at the specified location.  Each row of the file must
@@ -151,5 +154,10 @@ public class ApplyManualClassification extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

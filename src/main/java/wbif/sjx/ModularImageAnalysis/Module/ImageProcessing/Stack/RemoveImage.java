@@ -1,10 +1,14 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import ij.macro.MacroExtension;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemovedImageP;
+
+import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 30/06/2017.
@@ -70,5 +74,10 @@ public class RemoveImage extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

@@ -1,8 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.plugin.ChannelSplitter;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -10,6 +12,8 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+
+import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 08/05/2017.
@@ -92,5 +96,10 @@ public class ChannelExtractor extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

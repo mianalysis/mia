@@ -2,11 +2,13 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 import ij.process.ShortProcessor;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -14,6 +16,8 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.ThirdParty.Stack_Focuser_;
 
 import com.drew.lang.annotations.Nullable;
+
+import java.util.ArrayList;
 
 public class FocusStack extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -247,5 +251,10 @@ public class FocusStack extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

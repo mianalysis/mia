@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.*;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
@@ -14,6 +15,7 @@ import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -594,6 +596,11 @@ public class RegisterImages extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 
     private class Param extends FloatArray2DSIFT.Param {

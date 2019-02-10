@@ -2,8 +2,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.ImagePlus;
 import ij.gui.Roi;
+import ij.macro.MacroExtension;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
@@ -23,6 +25,7 @@ import wbif.sjx.common.Process.ActiveContour.Visualisation.GridOverlay;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -269,5 +272,10 @@ public class ActiveContourObjectDetection extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

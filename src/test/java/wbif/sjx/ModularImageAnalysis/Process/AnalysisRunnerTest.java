@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.MIA;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisRunner;
 
 import java.io.File;
 

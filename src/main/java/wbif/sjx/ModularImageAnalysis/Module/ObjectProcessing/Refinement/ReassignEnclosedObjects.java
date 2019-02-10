@@ -1,6 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -11,6 +13,8 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputObjectsP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
+
+import java.util.ArrayList;
 
 public class ReassignEnclosedObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
@@ -130,5 +134,10 @@ public class ReassignEnclosedObjects extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

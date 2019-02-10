@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
+import ij.macro.MacroExtension;
 import loci.common.DebugTools;
 import loci.common.services.DependencyException;
 import loci.common.services.ServiceException;
@@ -12,10 +13,10 @@ import loci.formats.services.OMEXMLService;
 import loci.plugins.util.ImageProcessorReader;
 import loci.plugins.util.LociPrefs;
 import ome.xml.meta.IMetadata;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
-import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
 import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 import wbif.sjx.common.FileConditions.FileCondition;
@@ -23,7 +24,6 @@ import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.*;
 
@@ -330,5 +330,10 @@ public class InputControl extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

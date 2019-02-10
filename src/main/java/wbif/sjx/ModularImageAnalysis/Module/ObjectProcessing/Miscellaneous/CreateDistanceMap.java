@@ -4,7 +4,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.process.ImageProcessor;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.BinaryOperations2D;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
@@ -18,6 +20,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.Point;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CreateDistanceMap extends Module {
@@ -334,5 +337,10 @@ public class CreateDistanceMap extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }

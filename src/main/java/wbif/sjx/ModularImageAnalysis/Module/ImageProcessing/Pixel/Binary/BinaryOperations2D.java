@@ -4,11 +4,15 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.macro.MacroExtension;
 import ij.plugin.*;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+
+import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 06/06/2017.
@@ -180,5 +184,10 @@ public class BinaryOperations2D extends Module {
     @Override
     public void addRelationships(RelationshipCollection relationships) {
 
+    }
+
+    @Override
+    public ArrayList<MacroOperation> getMacroOperations(MacroExtension handler) {
+        return null;
     }
 }
