@@ -543,6 +543,8 @@ public class MeasureIntensityDistribution extends Module {
                 break;
         }
 
+        if (showOutput) inputImage.showMeasurements(this);
+
         return true;
 
     }

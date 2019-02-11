@@ -97,11 +97,11 @@
             <url>https://jitpack.io</url>
         </repository>
 
-        <!--<repository>-->
-            <!--<id>ome-web-prod.lifesci.dundee.ac.uk</id>-->
-            <!--<name>ome-web-prod.lifesci.dundee.ac.uk-releases</name>-->
-            <!--<url>http://artifacts.openmicroscopy.org/artifactory/ome.releases</url>-->
-        <!--</repository>-->
+        <repository>
+            <id>ome-web-prod.lifesci.dundee.ac.uk</id>
+            <name>ome-web-prod.lifesci.dundee.ac.uk-releases</name>
+            <url>http://artifacts.openmicroscopy.org/artifactory/ome.releases</url>
+        </repository>
     </repositories>
 
     <dependencies>

@@ -80,6 +80,8 @@ public class MeasureImageTexture extends Module {
         inputImage.addMeasurement(entropyMeasurement);
         writeMessage("Entropy = " + entropyMeasurement.getValue());
 
+        if (showOutput) inputImage.showMeasurements(this);
+
         return true;
 
     }

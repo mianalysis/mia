@@ -5,6 +5,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import com.drew.lang.annotations.NotNull;
 import com.drew.lang.annotations.Nullable;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.*;
@@ -228,16 +229,15 @@ public class AddObjectsOverlay extends Module {
                 int x2 = (int) Math.round(p2.getXMean(true));
                 int y2 = (int) Math.round(p2.getYMean(true));
 
-                int maxFrame = Math.min(nFrames, Math.min(nFrames,p2.getT()+history));
-
+                int maxFrame = history == Integer.MAX_VALUE ? nFrames : Math.min(nFrames,p2.getT()+history);
                 for (int t = p2.getT();t<=maxFrame-1;t++) {
-                    PolygonRoi line = new PolygonRoi(new int[]{x1,x2},new int[]{y1,y2},2,PolygonRoi.POLYGON);
+                    Line line = new Line(x1,y1,x2,y2);
 
                     if (ipl.isHyperStack()) {
                         ipl.setPosition(1,1,t+1);
                         line.setPosition(1,1, t+1);
                     } else {
-                        int pos = Math.max(Math.max(1, 1), t+1);
+                        int pos = Math.max(1,t+1);
                         ipl.setPosition(pos);
                         line.setPosition(pos);
                     }
@@ -245,6 +245,7 @@ public class AddObjectsOverlay extends Module {
                     line.setStrokeWidth(lineWidth);
                     line.setStrokeColor(colour);
                     ovl.addElement(line);
+
                 }
             }
 
@@ -470,27 +471,27 @@ public class AddObjectsOverlay extends Module {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
         }
 
-        int nThreads = multithread ? Prefs.getThreads() : 1;
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+//        int nThreads = multithread ? Prefs.getThreads() : 1;
+//        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
         // Running through each object, adding it to the overlay along with an ID label
         AtomicInteger count = new AtomicInteger();
         for (Obj object:inputObjects.values()) {
             ImagePlus finalIpl = ipl;
 
-            Runnable task = () -> {
+//            Runnable task = () -> {
                 float hue = hues.get(object.getID());
                 Color colour = ColourFactory.getColour(hue);
 
                 addTrackOverlay(object, spotObjectsName, finalIpl, colour, lineWidth,  history);
 
                 writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
-            };
-            pool.submit(task);
+//            };
+//            pool.submit(task);
         }
 
-        pool.shutdown();
-        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+//        pool.shutdown();
+//        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
 
     }
 

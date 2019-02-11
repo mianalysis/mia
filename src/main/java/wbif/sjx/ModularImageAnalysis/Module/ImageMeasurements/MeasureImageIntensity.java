@@ -71,6 +71,8 @@ public class MeasureImageIntensity extends Module {
         if (parameters.getValue(MEASURE_SUM))
             inputImage.addMeasurement(new Measurement(Measurements.SUM, cs.getSum()));
 
+        if (showOutput) inputImage.showMeasurements(this);
+
         return true;
 
     }

@@ -244,7 +244,7 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         }
 
         // Displaying the results table
-        rt.show(module.getTitle()+" measurements for "+name);
+        rt.show("\""+module.getTitle()+" \"measurements for \""+name+"\"");
 
     }
 }
