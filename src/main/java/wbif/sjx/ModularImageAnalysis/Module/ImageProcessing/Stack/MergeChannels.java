@@ -265,7 +265,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
         }
 
-        if (showOutput) showImage(mergedImage);
+        if (showOutput) mergedImage.showImage();
 
         return true;
 

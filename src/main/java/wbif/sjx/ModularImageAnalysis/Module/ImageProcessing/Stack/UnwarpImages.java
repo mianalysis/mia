@@ -172,7 +172,7 @@ public class UnwarpImages extends Module {
 
     }
 
-    public Image applyTransformation(Image inputImage, Image referenceImage, Transformation transformation, boolean multithread) throws InterruptedException {
+    public void applyTransformation(Image inputImage, Image outputImage, Transformation transformation, boolean multithread) throws InterruptedException {
         final String tempPath;
         try {
             File tempFile = File.createTempFile("unwarp", ".tmp");
@@ -184,20 +184,17 @@ public class UnwarpImages extends Module {
 
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return;
         }
 
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
+        ImagePlus outputIpl = outputImage.getImagePlus();
+
         int nChannels = inputIpl.getNChannels();
         int nSlices = inputIpl.getNSlices();
         int nFrames = inputIpl.getNFrames();
         int bitDepth = inputIpl.getBitDepth();
-        int width = referenceImage.getImagePlus().getWidth();
-        int height = referenceImage.getImagePlus().getHeight();
-
-        // Creating output image
-        ImagePlus outputIpl = IJ.createHyperStack("Output", width, height, nChannels, nSlices, nFrames, bitDepth);
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
@@ -211,7 +208,7 @@ public class UnwarpImages extends Module {
 
                     Runnable task = () -> {
                         ImagePlus slice = getSetStack(inputIpl, finalT, finalC, finalZ, null);
-                        bUnwarpJ_.applyTransformToSource(tempPath, referenceImage.getImagePlus(), slice);
+                        bUnwarpJ_.applyTransformToSource(tempPath, outputImage.getImagePlus(), slice);
                         ImageTypeConverter.applyConversion(slice, 8, ImageTypeConverter.ScalingModes.CLIP);
 
                         getSetStack(outputIpl, finalT, finalC, finalZ, slice.getProcessor());
@@ -224,8 +221,6 @@ public class UnwarpImages extends Module {
 
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
-
-        return new Image("Aligned", outputIpl);
 
     }
 
@@ -253,7 +248,22 @@ public class UnwarpImages extends Module {
         }
     }
 
-    public void processAuto(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) throws InterruptedException {
+    public Image createEmptyTarget(Image inputImage, Image referenceImage, String outputImageName) {
+        // Iterate over all images in the stack
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        int nChannels = inputIpl.getNChannels();
+        int nSlices = inputIpl.getNSlices();
+        int nFrames = inputIpl.getNFrames();
+        int bitDepth = inputIpl.getBitDepth();
+        int width = referenceImage.getImagePlus().getWidth();
+        int height = referenceImage.getImagePlus().getHeight();
+
+        // Creating output image
+        return new Image(outputImageName,IJ.createHyperStack("Output", width, height, nChannels, nSlices, nFrames, bitDepth));
+
+    }
+
+    public void processAuto(Image inputImage, String outputImageName, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) throws InterruptedException {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -272,6 +282,9 @@ public class UnwarpImages extends Module {
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
         }
+
+        // Creating an empty image to populate with the warping process
+        Image outputImage = createEmptyTarget(inputImage,reference,outputImageName);
 
         // Iterate over each time-step
         int count = 0;
@@ -313,8 +326,9 @@ public class UnwarpImages extends Module {
             for (int tt = t; tt <= t2; tt++) {
                 for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
                     warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                    applyTransformation(warped, reference, transformation, multithread);
-                    replaceStack(inputImage, warped, c, tt);
+                    Image unwarped = ExtractSubstack.extractSubstack(outputImage, "Unwarped", String.valueOf(c), "1-end", String.valueOf(tt));
+                    applyTransformation(warped, unwarped, transformation, multithread);
+                    replaceStack(outputImage, unwarped, c, tt);
                 }
             }
 
@@ -323,7 +337,7 @@ public class UnwarpImages extends Module {
                 for (int tt = t; tt <= t2; tt++) {
                     for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
                         warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
-                        applyTransformation(warped, reference, transformation, multithread);
+                        applyTransformation(warped, warped, transformation, multithread);
                         replaceStack(source, warped, c, tt);
                     }
                 }
@@ -331,7 +345,7 @@ public class UnwarpImages extends Module {
         }
     }
 
-    public Image processManual(Image inputImage, Image reference, Param param, boolean multithread) throws InterruptedException {
+    public Image processManual(Image inputImage, String outputImageName, Image reference, Param param, boolean multithread) throws InterruptedException {
         // Getting point pairs
         ImagePlus ipl1 = new Duplicator().run(inputImage.getImagePlus());
         ImagePlus ipl2 = new Duplicator().run(reference.getImagePlus());
@@ -353,12 +367,16 @@ public class UnwarpImages extends Module {
         ImageProcessor ipr2 = new Duplicator().run(reference.getImagePlus()).getProcessor();
 
         Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipr1, ipr2, points1, points2, param);
-//        Transformation transformation = bUnwarpJ_.computeTransformationBatch(ipl1.getWidth(), ipl1.getHeight(),ipl2.getWidth(),ipl2.getHeight(),points1,points2,param);
+
+        // Creating an output image
+        Image outputImage = createEmptyTarget(inputImage,reference,outputImageName);
 
         // Applying transformation to entire stack
         // Applying the transformation to the whole stack.
         // All channels should move in the same way, so are processed with the same transformation.
-        return applyTransformation(inputImage, reference, transformation, multithread);
+        applyTransformation(inputImage, outputImage, transformation, multithread);
+
+        return outputImage;
 
     }
 
@@ -425,12 +443,12 @@ public class UnwarpImages extends Module {
 
                     // If the rolling correction mode is off, set the interval to -1
                     if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
-                    processAuto(inputImage, calculationChannel, relativeMode, param, correctionInterval, multithread, reference, externalSource);
+                    processAuto(inputImage, outputImageName, calculationChannel, relativeMode, param, correctionInterval, multithread, reference, externalSource);
 
                     break;
                 case AlignmentModes.MANUAL:
                     reference = workspace.getImage(referenceImageName);
-                    Image aligned = processManual(inputImage,reference,param,multithread);
+                    Image aligned = processManual(inputImage, outputImageName, reference, param, multithread);
                     aligned.getImagePlus().show();
 
                     break;
@@ -442,7 +460,7 @@ public class UnwarpImages extends Module {
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
-        if (showOutput) showImage(inputImage);
+        if (showOutput) inputImage.showImage();
 
         return true;
 

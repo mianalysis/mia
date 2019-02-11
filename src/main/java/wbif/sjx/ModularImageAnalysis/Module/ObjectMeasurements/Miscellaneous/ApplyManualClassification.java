@@ -102,6 +102,8 @@ public class ApplyManualClassification extends Module {
             e.printStackTrace();
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }

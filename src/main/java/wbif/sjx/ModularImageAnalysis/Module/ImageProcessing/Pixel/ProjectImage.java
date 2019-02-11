@@ -145,7 +145,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
         // Adding projected image to workspace
         workspace.addImage(outputImage);
 
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 

@@ -396,8 +396,10 @@ public class MeasureObjectCurvature extends Module {
         }
 
         if (showOutput && drawSpline) {
-            showImage(new Image("Spline",referenceImageImagePlus));
+            new Image("Spline",referenceImageImagePlus).showImage();
         }
+
+        if (showOutput) inputObjects.showMeasurements(this);
 
         return true;
 

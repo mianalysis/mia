@@ -106,6 +106,8 @@ public class CalculateStatsForChildren extends Module {
             processObject(parentObject,childObjectsName,measurement,statsToCalculate);
         }
 
+        if (showOutput) parentObjects.showMeasurements(this);
+
         return true;
 
     }

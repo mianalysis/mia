@@ -103,7 +103,7 @@ public class SetLookupTable extends Module {
                 break;
         }
 
-        if (showOutput) showImage(inputImage);
+        if (showOutput) inputImage.showImage();
 
         return true;
 

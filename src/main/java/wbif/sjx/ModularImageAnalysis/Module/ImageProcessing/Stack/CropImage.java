@@ -98,12 +98,12 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         // If the image is being saved as a new image, adding it to the workspace
         if (applyToInput) {
             inputImage.setImagePlus(outputImage.getImagePlus());
-            if (showOutput) showImage(inputImage);
+            if (showOutput) inputImage.showImage();
 
         } else {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             workspace.addImage(outputImage);
-            if (showOutput) showImage(outputImage);
+            if (showOutput) outputImage.showImage();
         }
 
         return true;

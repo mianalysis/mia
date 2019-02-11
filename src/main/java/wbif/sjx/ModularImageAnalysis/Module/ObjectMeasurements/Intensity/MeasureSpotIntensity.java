@@ -149,6 +149,8 @@ public class MeasureSpotIntensity extends Module {
 
         }
 
+        if (showOutput) spotObjects.showMeasurements(this);
+
         return true;
 
     }

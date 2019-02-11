@@ -465,7 +465,7 @@ public class RegisterImages extends Module {
 
         // Dealing with module outputs
         if (!applyToInput) workspace.addImage(inputImage);
-        if (showOutput) showImage(inputImage);
+        if (showOutput) inputImage.showImage();
 
         return true;
 

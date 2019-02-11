@@ -133,21 +133,6 @@ public abstract class Module {
         return parameters;
     }
 
-    protected void showImage(Image image, LUT lut) {
-        ImagePlus dispIpl = new Duplicator().run(image.getImagePlus());
-        dispIpl.setTitle(image.getName());
-        IntensityMinMax.run(dispIpl,true);
-        dispIpl.setPosition(1,1,1);
-        dispIpl.updateChannelAndDraw();
-        dispIpl.setLut(lut);
-        dispIpl.show();
-
-    }
-
-    protected void showImage(Image image) {
-        showImage(image, LUT.createLutFromColor(Color.WHITE));
-    }
-
 
     // PRIVATE METHODS
 

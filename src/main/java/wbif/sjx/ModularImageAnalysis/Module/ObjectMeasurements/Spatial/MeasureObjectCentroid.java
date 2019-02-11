@@ -109,6 +109,8 @@ public class MeasureObjectCentroid extends Module {
             }
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }

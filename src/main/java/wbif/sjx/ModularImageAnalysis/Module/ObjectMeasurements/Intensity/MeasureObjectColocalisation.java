@@ -69,6 +69,8 @@ public class MeasureObjectColocalisation extends Module {
             measurePCC(inputObject,image1,image2);
         }
 
+        if (showOutput) objects.showMeasurements(this);
+
         return true;
 
     }

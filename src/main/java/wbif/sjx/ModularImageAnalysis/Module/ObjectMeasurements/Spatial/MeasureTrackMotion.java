@@ -404,6 +404,8 @@ public class MeasureTrackMotion extends Module {
 
         }
 
+        if (showOutput) trackObjects.showMeasurements(this);
+
         return true;
 
     }

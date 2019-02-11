@@ -318,7 +318,7 @@ public class CreateMeasurementMap extends Module {
         Image outputImage = convertToImage(blurCumStats,indexer,outputImageName,calibration);
 
         workspace.addImage(outputImage);
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 

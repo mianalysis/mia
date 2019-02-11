@@ -139,10 +139,10 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) showImage(outputImage);
+            if (showOutput) outputImage.showImage();
 
         } else {
-            if (showOutput) showImage(inputImage);
+            if (showOutput) inputImage.showImage();
 
         }
 

@@ -153,6 +153,8 @@ public class MeasureObjectShape extends Module {
             }
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }

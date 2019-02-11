@@ -594,7 +594,7 @@ public class AddObjectsOverlay extends Module {
 
         // If necessary, adding output image to workspace.  This also allows us to show it.
         if (addOutputToWorkspace) workspace.addImage(outputImage);
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 

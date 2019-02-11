@@ -291,6 +291,8 @@ public class MeasureRelativeOrientation extends Module {
             }
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }

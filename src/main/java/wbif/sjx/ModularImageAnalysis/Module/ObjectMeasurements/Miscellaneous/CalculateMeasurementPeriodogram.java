@@ -194,6 +194,8 @@ public class CalculateMeasurementPeriodogram extends Module {
             }
         }
 
+        if (showOutput) trackObjects.showMeasurements(this);
+
         return true;
 
     }

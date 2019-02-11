@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import ij.process.LUT;
 import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
 import net.imglib2.img.ImagePlusAdapter;
@@ -16,7 +17,9 @@ import net.imglib2.view.Views;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
+import wbif.sjx.common.Process.IntensityMinMax;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -115,6 +118,21 @@ public class Image < T extends RealType< T > & NativeType< T >> {
     public Measurement getMeasurement(String name) {
         return measurements.get(name);
 
+    }
+
+    public void showImage(LUT lut) {
+        ImagePlus dispIpl = new Duplicator().run(imagePlus);
+        dispIpl.setTitle(name);
+        IntensityMinMax.run(dispIpl,true);
+        dispIpl.setPosition(1,1,1);
+        dispIpl.updateChannelAndDraw();
+        dispIpl.setLut(lut);
+        dispIpl.show();
+
+    }
+
+    public void showImage() {
+        showImage(LUT.createLutFromColor(Color.WHITE));
     }
 
 

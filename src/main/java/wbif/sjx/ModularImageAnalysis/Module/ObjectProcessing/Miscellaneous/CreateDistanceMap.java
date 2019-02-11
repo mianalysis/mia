@@ -261,11 +261,9 @@ public class CreateDistanceMap extends Module {
             if (spatialUnits.equals(SpatialUnits.CALIBRATED)) applyCalibratedUnits(distanceMap, dppXY);
         }
 
-        // Adding distance map to output
+        // Adding distance map to output and showing
         workspace.addImage(distanceMap);
-
-        // If necessary, displaying the distance map
-        if (showOutput) showImage(distanceMap);
+        if (showOutput) distanceMap.showImage();
 
         return true;
 

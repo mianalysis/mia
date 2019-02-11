@@ -173,7 +173,7 @@ public class WekaProbabilityMaps extends Module {
         Image probabilityImage = new Image(outputImageName,probabilityMaps);
         workspace.addImage(probabilityImage);
 
-        if (showOutput) showImage(probabilityImage);
+        if (showOutput) probabilityImage.showImage();
 
         return true;
 
