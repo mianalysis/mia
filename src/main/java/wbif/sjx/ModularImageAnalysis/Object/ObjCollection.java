@@ -221,9 +221,15 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Iterating over each measurement, adding all the values
         int row = 0;
         for (Obj obj:values()) {
+            // Setting some common values
             rt.setValue("ID",row,obj.getID());
+            rt.setValue("X_CENTROID (PX)",row,obj.getXMean(true));
+            rt.setValue("Y_CENTROID (PX)",row,obj.getYMean(true));
+            rt.setValue("Z_CENTROID (SLICE)",row,obj.getZMean(true,false));
+            rt.setValue("TIMEPOINT",row,obj.getT());
+
+            // Setting the measurements from the Module
             for (String measName : measNames) {
-                // Getting the measurement
                 Measurement measurement = obj.getMeasurement(measName);
                 double value = measurement == null ? Double.NaN : measurement.getValue();
 
