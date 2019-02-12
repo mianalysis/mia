@@ -13,18 +13,22 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class MacroHandler implements MacroExtension {
+    private static MacroHandler macroHandler = null;
     private static ArrayList<MacroOperation> macroOperations = null;
     private static Workspace workspace;
 
-
-    public MacroHandler() {
-        try {
-            workspace = new Workspace(0,File.createTempFile("Temp","File"),0);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static MacroHandler getMacroHandler() {
+        if (macroHandler == null) {
+            macroHandler = new MacroHandler();
+            try {
+                workspace = new Workspace(0,File.createTempFile("Temp","File"),0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            macroOperations = initialiseMacroOperations(macroHandler);
         }
 
-        if (macroOperations == null) this.macroOperations = initialiseMacroOperations();
+        return macroHandler;
 
     }
 
@@ -34,12 +38,11 @@ public class MacroHandler implements MacroExtension {
         for (MacroOperation macroOperation:macroOperations) {
             if (macroOperation.name.equals(s)) {
                 // Perform operation
-                macroOperation.action(objects,workspace);
-                return null;
+                return macroOperation.action(objects,workspace);
+
             }
         }
 
-        // Iterating over all
         return null;
 
     }
@@ -49,13 +52,15 @@ public class MacroHandler implements MacroExtension {
         ExtensionDescriptor[] descriptors = new ExtensionDescriptor[macroOperations.size()];
         for (int i=0;i<macroOperations.size();i++) {
             descriptors[i] = (ExtensionDescriptor) macroOperations.get(i);
+            System.err.println("Loading extension: "+descriptors[i].name);
         }
 
         return descriptors;
 
     }
 
-    private ArrayList<MacroOperation> initialiseMacroOperations() {
+    private static ArrayList<MacroOperation> initialiseMacroOperations(MacroHandler macroHandler) {
+        System.err.println("Searching for MIA macros");
         // Using Reflections to get all MacroOperations
         Set<Class<? extends MacroOperation>> clazzes= new ClassHunter<MacroOperation>().getClasses(MacroOperation.class,false);
 
@@ -63,7 +68,7 @@ public class MacroHandler implements MacroExtension {
         ArrayList<MacroOperation> macroOperations = new ArrayList<>();
         for (Class<? extends MacroOperation> clazz:clazzes) {
             try {
-                macroOperations.add(clazz.getDeclaredConstructor(MacroExtension.class).newInstance(this));
+                macroOperations.add(clazz.getDeclaredConstructor(MacroExtension.class).newInstance(macroHandler));
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 e.printStackTrace();
             }

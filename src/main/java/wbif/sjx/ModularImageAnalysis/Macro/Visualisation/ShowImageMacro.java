@@ -21,7 +21,7 @@ public class ShowImageMacro extends MacroOperation {
     }
 
     @Override
-    public void action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace) {
         // Create Module
         ShowImage showImage = new ShowImage();
 
@@ -29,6 +29,8 @@ public class ShowImageMacro extends MacroOperation {
         showImage.updateParameterValue(ShowImage.DISPLAY_IMAGE,(String) objects[0]);
 
         showImage.run(workspace);
+
+        return null;
 
     }
 

@@ -281,6 +281,11 @@ public class UnwarpImages extends Module {
                 if (reference == null) return;
                 projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
                 break;
+
+            case RelativeModes.PREVIOUS_FRAME:
+                // We only require this for creation of the reference image
+                reference = ExtractSubstack.extractSubstack(source, "Reference", String.valueOf(calculationChannel), "1-end", "1");
+                break;
         }
 
         // Creating an empty image to populate with the warping process

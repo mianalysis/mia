@@ -20,7 +20,7 @@ public abstract class MacroOperation extends ExtensionDescriptor {
 
     public abstract String getName();
     public abstract int[] getArgumentTypes();
-    public abstract void action(Object[] objects, Workspace workspace);
+    public abstract String action(Object[] objects, Workspace workspace);
     public abstract String getArgumentsDescription();
     public abstract String getDescription();
 

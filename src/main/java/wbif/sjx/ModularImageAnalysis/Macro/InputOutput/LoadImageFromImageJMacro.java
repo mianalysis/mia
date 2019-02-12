@@ -21,7 +21,7 @@ public class LoadImageFromImageJMacro extends MacroOperation {
     }
 
     @Override
-    public void action(Object[] objects, Workspace workspace) {
+    public String action(Object[] objects, Workspace workspace) {
         // Create Module
         ImageLoader imageLoader = new ImageLoader();
 
@@ -64,6 +64,8 @@ public class LoadImageFromImageJMacro extends MacroOperation {
 
         // Running Module
         imageLoader.run(workspace);
+
+        return null;
 
     }
 
