@@ -211,6 +211,8 @@ public class FitEllipse extends Module {
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -357,4 +359,5 @@ public class FitEllipse extends Module {
                 break;
         }
     }
+
 }

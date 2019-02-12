@@ -300,4 +300,5 @@ public class ObjectClusterer extends Module {
         relationships.addRelationship(clusterObjectsName,inputObjectsName);
 
     }
+
 }

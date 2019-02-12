@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import wbif.sjx.ModularImageAnalysis.Process.Analysis;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import java.util.HashMap;

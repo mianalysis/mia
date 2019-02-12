@@ -38,7 +38,7 @@ public class ShowImage extends Module {
         String imageName = parameters.getValue(DISPLAY_IMAGE);
         Image image = workspace.getImage(imageName);
 
-        if (showOutput) showImage(image);
+        if (showOutput) image.showImage();
 
         return true;
 
@@ -74,4 +74,5 @@ public class ShowImage extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

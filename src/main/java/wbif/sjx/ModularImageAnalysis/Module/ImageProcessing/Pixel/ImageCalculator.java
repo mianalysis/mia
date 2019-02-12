@@ -231,15 +231,15 @@ public class ImageCalculator extends Module {
             case OverwriteModes.CREATE_NEW:
                 Image outputImage = new Image(outputImageName,newIpl);
                 workspace.addImage(outputImage);
-                if (showOutput) showImage(outputImage);
+                if (showOutput) outputImage.showImage();
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE1:
-                if (showOutput) showImage(inputImage1);
+                if (showOutput) inputImage1.showImage();
                 break;
 
             case OverwriteModes.OVERWRITE_IMAGE2:
-                if (showOutput) showImage(inputImage2);
+                if (showOutput) inputImage2.showImage();
                 break;
         }
 
@@ -298,4 +298,5 @@ public class ImageCalculator extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

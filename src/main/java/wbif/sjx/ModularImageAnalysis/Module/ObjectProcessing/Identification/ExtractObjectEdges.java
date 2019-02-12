@@ -302,4 +302,5 @@ public class ExtractObjectEdges extends Module {
             relationships.addRelationship(inputObjects,outputInteriorObjects);
         }
     }
+
 }

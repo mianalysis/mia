@@ -116,7 +116,7 @@ public class PlotKymograph extends Module {
 
         workspace.addImage(outputImage);
 
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 
@@ -176,4 +176,5 @@ public class PlotKymograph extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

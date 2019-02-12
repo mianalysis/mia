@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Process;
+package wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling;
 
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
@@ -19,6 +19,7 @@ public class Analysis implements Serializable {
     public InputControl inputControl = new InputControl();
     public OutputControl outputControl = new OutputControl();
     private boolean shutdown = false;
+    private String analysisFilename = "";
 
     // CONSTRUCTOR
 
@@ -102,5 +103,13 @@ public class Analysis implements Serializable {
     public void shutdown() {
         shutdown = true;
 
+    }
+
+    public String getAnalysisFilename() {
+        return analysisFilename;
+    }
+
+    public void setAnalysisFilename(String analysisFilename) {
+        this.analysisFilename = analysisFilename;
     }
 }

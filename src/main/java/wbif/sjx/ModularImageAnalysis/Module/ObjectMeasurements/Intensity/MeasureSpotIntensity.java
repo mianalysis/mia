@@ -149,6 +149,8 @@ public class MeasureSpotIntensity extends Module {
 
         }
 
+        if (showOutput) spotObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -261,4 +263,5 @@ public class MeasureSpotIntensity extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

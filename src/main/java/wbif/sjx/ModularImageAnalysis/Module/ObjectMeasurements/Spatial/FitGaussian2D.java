@@ -311,6 +311,8 @@ public class FitGaussian2D extends Module {
 
         inputImagePlus.setPosition(1,1,1);
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -463,6 +465,7 @@ public class FitGaussian2D extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }
 
 //when signax_0:sigmay_o is >1.5, delete spot... i - 1 ;

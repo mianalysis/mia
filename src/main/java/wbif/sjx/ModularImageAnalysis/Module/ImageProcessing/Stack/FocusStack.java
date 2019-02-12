@@ -172,12 +172,12 @@ public class FocusStack extends Module {
 
         // Adding output image to Workspace
         workspace.addImage(outputImages[0]);
-        if (showOutput) showImage(outputImages[0]);
+        if (showOutput) outputImages[0].showImage();
 
         // If necessary, processing the height image
         if (addHeightMap) {
             if (parameters.getValue(SHOW_HEIGHT_IMAGE)) {
-                showImage(outputImages[1]);
+                outputImages[1].showImage();
             }
 
             // Adding output image to Workspace
@@ -248,4 +248,5 @@ public class FocusStack extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

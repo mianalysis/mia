@@ -646,4 +646,5 @@ public class RelateObjects extends Module {
         relationships.addRelationship(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS));
 
     }
+
 }

@@ -4,8 +4,10 @@ package wbif.sjx.ModularImageAnalysis.Module;
 
 import ij.ImagePlus;
 import ij.Prefs;
+import ij.macro.MacroExtension;
 import ij.plugin.Duplicator;
 import ij.process.LUT;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
@@ -14,11 +16,12 @@ import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module implements Serializable {
+public abstract class Module {
     protected ParameterCollection parameters = new ParameterCollection();
     protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
     protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
@@ -128,21 +131,6 @@ public abstract class Module implements Serializable {
 
     public ParameterCollection getAllParameters() {
         return parameters;
-    }
-
-    protected void showImage(Image image, LUT lut) {
-        ImagePlus dispIpl = new Duplicator().run(image.getImagePlus());
-        dispIpl.setTitle(image.getName());
-        IntensityMinMax.run(dispIpl,true);
-        dispIpl.setPosition(1,1,1);
-        dispIpl.updateChannelAndDraw();
-        dispIpl.setLut(lut);
-        dispIpl.show();
-
-    }
-
-    protected void showImage(Image image) {
-        showImage(image, LUT.createLutFromColor(Color.WHITE));
     }
 
 

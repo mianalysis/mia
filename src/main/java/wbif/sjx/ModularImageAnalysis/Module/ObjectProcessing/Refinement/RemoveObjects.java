@@ -67,4 +67,5 @@ public class RemoveObjects extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

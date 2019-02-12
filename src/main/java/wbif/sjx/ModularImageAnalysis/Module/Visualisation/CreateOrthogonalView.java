@@ -221,4 +221,5 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

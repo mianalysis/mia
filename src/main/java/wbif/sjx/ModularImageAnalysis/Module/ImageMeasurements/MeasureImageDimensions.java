@@ -69,6 +69,8 @@ public class MeasureImageDimensions extends Module {
         double distZ = inputImagePlus.getCalibration().pixelDepth;
         inputImage.addMeasurement(new Measurement(getFullName(Measurements.DIST_PER_SLICE_Z),distZ));
 
+        if (showOutput) inputImage.showMeasurements(this);
+
         return true;
 
     }

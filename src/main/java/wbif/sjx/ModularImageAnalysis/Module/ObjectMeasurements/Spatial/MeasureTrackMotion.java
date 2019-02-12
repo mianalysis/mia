@@ -404,6 +404,8 @@ public class MeasureTrackMotion extends Module {
 
         }
 
+        if (showOutput) trackObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -606,4 +608,5 @@ public class MeasureTrackMotion extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

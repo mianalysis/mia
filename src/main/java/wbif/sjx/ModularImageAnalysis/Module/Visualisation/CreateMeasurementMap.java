@@ -16,6 +16,7 @@ import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Object.Point;
 
 import com.drew.lang.annotations.Nullable;
+
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -78,7 +79,7 @@ public class CreateMeasurementMap extends Module {
         // Create CumStat[]
         CumStat[] cumStats =  new CumStat[width*height*nSlices*nFrames];
 
-        // Initialise CumStats
+        // EnableExtensions CumStats
         for (int i=0;i<cumStats.length;i++) cumStats[i] = new CumStat();
 
         return cumStats;
@@ -317,7 +318,7 @@ public class CreateMeasurementMap extends Module {
         Image outputImage = convertToImage(blurCumStats,indexer,outputImageName,calibration);
 
         workspace.addImage(outputImage);
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 
@@ -394,4 +395,5 @@ public class CreateMeasurementMap extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

@@ -246,4 +246,5 @@ public class GetLocalObjectRegion extends Module {
         relationships.addRelationship(parameters.getValue(INPUT_OBJECTS),parameters.getValue(OUTPUT_OBJECTS));
 
     }
+
 }

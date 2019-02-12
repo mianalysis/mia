@@ -479,6 +479,10 @@ public class MeasureIntensityDistribution extends Module {
                             new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), Double.NaN));
                     inputImage.addMeasurement(
                             new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), Double.NaN));
+                    inputImage.addMeasurement(
+                            new Measurement(getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE), Double.NaN));
+                    inputImage.addMeasurement(
+                            new Measurement(getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE), Double.NaN));
 
                     return true;
                 }
@@ -493,6 +497,10 @@ public class MeasureIntensityDistribution extends Module {
                         new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE), css[0].getMean()));
                 inputImage.addMeasurement(
                         new Measurement(getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE), css[1].getMean()));
+                inputImage.addMeasurement(
+                        new Measurement(getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE), css[0].getSum()));
+                inputImage.addMeasurement(
+                        new Measurement(getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE), css[1].getSum()));
 
                 writeMessage("Number of pixels inside range = " + css[0].getN());
                 writeMessage("Number of pixels outside range = " + css[1].getN());
@@ -534,6 +542,8 @@ public class MeasureIntensityDistribution extends Module {
 
                 break;
         }
+
+        if (showOutput) inputImage.showMeasurements(this);
 
         return true;
 
@@ -606,31 +616,38 @@ public class MeasureIntensityDistribution extends Module {
         imageMeasurementRefs.setAllCalculated(false);
 
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
 
         switch ((String) parameters.getValue(MEASUREMENT_TYPE)) {
             case MeasurementTypes.FRACTION_PROXIMAL_TO_OBJECTS:
                 String name = getFullName(inputObjectsName, Measurements.N_PX_INRANGE);
                 MeasurementRef reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.N_PX_OUTRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_INRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.MEAN_INT_OUTRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_INRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.SUM_INT_OUTRANGE);
                 reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 break;
@@ -638,18 +655,22 @@ public class MeasureIntensityDistribution extends Module {
             case MeasurementTypes.INTENSITY_WEIGHTED_PROXIMITY:
                 name = getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_PX);
                 reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.MEAN_PROXIMITY_CAL));
                 reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 name = getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_PX);
                 reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 name = Units.replace(getFullName(inputObjectsName, Measurements.STDEV_PROXIMITY_CAL));
                 reference = imageMeasurementRefs.getOrPut(name);
+                reference.setImageObjName(inputImageName);
                 reference.setCalculated(true);
 
                 break;
@@ -673,4 +694,5 @@ public class MeasureIntensityDistribution extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

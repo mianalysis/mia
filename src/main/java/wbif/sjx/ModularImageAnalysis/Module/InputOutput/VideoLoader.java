@@ -255,7 +255,7 @@ public class VideoLoader extends Module {
         writeMessage("Adding image (" + outputImageName + ") to workspace");
         workspace.addImage(outputImage);
 
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 
@@ -355,4 +355,5 @@ public class VideoLoader extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

@@ -266,4 +266,5 @@ public class HoughObjectDetection extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

@@ -102,6 +102,8 @@ public class ApplyManualClassification extends Module {
             e.printStackTrace();
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -152,4 +154,5 @@ public class ApplyManualClassification extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

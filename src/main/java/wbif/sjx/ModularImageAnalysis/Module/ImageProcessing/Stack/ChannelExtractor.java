@@ -55,7 +55,7 @@ public class ChannelExtractor extends Module {
         Image outputImage = new Image(outputImageName,outputChannelImagePlus);
         workspace.addImage(outputImage);
 
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 
@@ -93,4 +93,5 @@ public class ChannelExtractor extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

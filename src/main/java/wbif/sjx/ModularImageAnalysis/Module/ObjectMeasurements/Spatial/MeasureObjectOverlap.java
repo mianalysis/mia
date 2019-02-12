@@ -108,6 +108,9 @@ public class MeasureObjectOverlap extends Module {
 
         }
 
+        if (showOutput) inputObjects1.showMeasurements(this);
+        if (showOutput) inputObjects2.showMeasurements(this);
+
         return true;
 
     }
@@ -171,4 +174,5 @@ public class MeasureObjectOverlap extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

@@ -109,6 +109,8 @@ public class MeasureObjectCentroid extends Module {
             }
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -231,4 +233,5 @@ public class MeasureObjectCentroid extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

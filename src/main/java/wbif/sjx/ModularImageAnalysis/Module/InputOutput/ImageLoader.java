@@ -717,7 +717,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 Image outputImage = new Image(outputImageName, ipl);
                 workspace.addImage(outputImage);
 
-                if (showOutput) showImage(outputImage);
+                if (showOutput) outputImage.showImage();
 
                 // If a crop was drawn, recording these coordinates as an image measurement
                 switch (cropMode) {
@@ -740,7 +740,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                 writeMessage("Adding objects (" + outputObjectsName + ") to workspace");
                 workspace.addObjects(outputObjects);
 
-                if (showOutput) showImage(outputImage);
+                if (showOutput) outputImage.showImage();
                 switch (cropMode) {
                     case CropModes.FROM_REFERENCE:
                         addCropMeasurements(outputObjects, crop);
@@ -947,6 +947,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }
 
 // when dataisgood, Gemma = given food

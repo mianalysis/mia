@@ -225,4 +225,5 @@ public class ExpandShrinkObjects extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

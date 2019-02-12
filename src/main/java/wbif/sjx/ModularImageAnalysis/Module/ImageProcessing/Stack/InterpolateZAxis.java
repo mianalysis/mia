@@ -61,7 +61,7 @@ public class InterpolateZAxis extends Module {
         Image outputImage = new Image(outputImageName,outputImagePlus);
         workspace.addImage(outputImage);
 
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 
@@ -98,4 +98,5 @@ public class InterpolateZAxis extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

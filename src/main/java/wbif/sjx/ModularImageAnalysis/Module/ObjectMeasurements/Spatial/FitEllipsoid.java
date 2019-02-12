@@ -225,6 +225,8 @@ public class FitEllipsoid extends Module {
             writeMessage("Processed object "+(++count)+" of "+nTotal);
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -372,4 +374,5 @@ public class FitEllipsoid extends Module {
                 break;
         }
     }
+
 }

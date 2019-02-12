@@ -369,4 +369,5 @@ public class RidgeDetection extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

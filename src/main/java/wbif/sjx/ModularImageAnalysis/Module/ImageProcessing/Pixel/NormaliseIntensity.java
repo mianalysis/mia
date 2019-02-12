@@ -177,10 +177,10 @@ public class NormaliseIntensity extends Module {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) showImage(outputImage);
+            if (showOutput) outputImage.showImage();
 
         } else {
-            if (showOutput) showImage(inputImage);
+            if (showOutput) inputImage.showImage();
 
         }
 
@@ -243,4 +243,5 @@ public class NormaliseIntensity extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

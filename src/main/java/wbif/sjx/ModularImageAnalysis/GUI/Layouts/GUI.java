@@ -10,16 +10,15 @@ import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.MIA;
+import wbif.sjx.ModularImageAnalysis.Process.ClassHunter;
 import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.ModularImageAnalysis.Process.Analysis;
-import wbif.sjx.ModularImageAnalysis.Process.AnalysisTester;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
-import wbif.sjx.ModularImageAnalysis.Process.ModuleReader;
-import wbif.sjx.common.FileConditions.ExtensionMatchesString;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -712,13 +711,36 @@ public class GUI {
         // Iterating over each collection of Parameters.  After adding each one, a remove button is included
         LinkedHashSet<ParameterCollection> collections = group.getCollections();
 
+        JSeparator separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0,15));
+        separator.setForeground(paramsPanel.getBackground());
+        separator.setBackground(paramsPanel.getBackground());
+        c.gridy++;
+        paramsPanel.add(separator, c);
+
         for (ParameterCollection collection:collections) {
             // Adding the individual parameters
             for (Parameter parameter:collection) addAdvancedParameterControl(parameter,c);
+
+            separator = new JSeparator();
+            separator.setPreferredSize(new Dimension(0,15));
+            separator.setForeground(paramsPanel.getBackground());
+            separator.setBackground(paramsPanel.getBackground());
+            c.gridy++;
+            paramsPanel.add(separator, c);
+
         }
 
         // Adding an add button
         addAdvancedParameterControl(group,c);
+
+        separator = new JSeparator();
+        separator.setPreferredSize(new Dimension(0,15));
+        separator.setForeground(paramsPanel.getBackground());
+        separator.setBackground(paramsPanel.getBackground());
+        c.gridy++;
+        paramsPanel.add(separator, c);
+
     }
 
     public static void populateModuleParameters() {
@@ -893,6 +915,12 @@ public class GUI {
         }
     }
 
+    public static void updateModuleParameters(Module module) {
+        for (Parameter parameter:module.updateAndGetParameters()) {
+            parameter.getControl().updateControl();
+        }
+    }
+
     public static void populateBasicModules() {
         basicModulesPanel.removeAll();
 
@@ -977,7 +1005,7 @@ public class GUI {
             addModuleButton.setEnabled(false);
             addModuleButton.setToolTipText("Loading modules");
 
-            Set<Class<? extends Module>> availableModules = ModuleReader.getModules(MIA.isDebug());
+            Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
             // Creating an alphabetically-ordered list of all modules
             TreeMap<String, Class> modules = new TreeMap<>();

@@ -117,4 +117,5 @@ public class MergeObjects extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

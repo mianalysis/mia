@@ -146,7 +146,7 @@ public class ExtendedMinima extends Module {
             inputImage.setImagePlus(outputImage.getImagePlus());
         }
 
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 
@@ -200,4 +200,5 @@ public class ExtendedMinima extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

@@ -296,6 +296,8 @@ public class MeasureObjectIntensity extends Module {
             for (Obj object:objects.values()) measureEdgeIntensityProfile(object,ipl);
         }
 
+        if (showOutput) objects.showMeasurements(this);
+
         return true;
 
     }
@@ -539,4 +541,5 @@ public class MeasureObjectIntensity extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

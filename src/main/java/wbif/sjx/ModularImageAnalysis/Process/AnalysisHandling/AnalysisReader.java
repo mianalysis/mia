@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Process;
+package wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling;
 
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.*;
@@ -6,6 +6,7 @@ import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.MIA;
+import wbif.sjx.ModularImageAnalysis.Process.ClassHunter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
@@ -32,6 +33,7 @@ public class AnalysisReader {
 
         FileInputStream fileInputStream = new FileInputStream(fileDialog.getFiles()[0]);
         Analysis analysis = loadAnalysis(fileInputStream);
+        analysis.setAnalysisFilename(fileDialog.getFiles()[0].getName());
         fileInputStream.close();
 
         System.out.println("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
@@ -52,7 +54,7 @@ public class AnalysisReader {
 
         // Creating a list of all available modules (rather than reading their full path, in case they move) using
         // Reflections tool
-        Set<Class<? extends Module>> availableModules = ModuleReader.getModules(MIA.isDebug());
+        Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
         NodeList moduleNodes = doc.getElementsByTagName("MODULE");
         for (int i=0;i<moduleNodes.getLength();i++) {

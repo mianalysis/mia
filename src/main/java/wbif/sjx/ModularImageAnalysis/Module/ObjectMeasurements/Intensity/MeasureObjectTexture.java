@@ -167,6 +167,8 @@ public class MeasureObjectTexture extends Module {
             processObject(object,inputImage,textureCalculator,centroidMeasurement,offs,calibratedOffset);
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -256,4 +258,5 @@ public class MeasureObjectTexture extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

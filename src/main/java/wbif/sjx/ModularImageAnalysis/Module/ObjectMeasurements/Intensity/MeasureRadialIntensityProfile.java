@@ -186,6 +186,8 @@ public class MeasureRadialIntensityProfile extends Module {
 
         resultsTable.show("Radial intensity profile");
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -252,4 +254,5 @@ public class MeasureRadialIntensityProfile extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

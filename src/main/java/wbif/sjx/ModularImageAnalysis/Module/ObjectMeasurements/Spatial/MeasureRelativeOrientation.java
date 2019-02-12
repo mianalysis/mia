@@ -291,6 +291,8 @@ public class MeasureRelativeOrientation extends Module {
             }
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -406,4 +408,5 @@ public class MeasureRelativeOrientation extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

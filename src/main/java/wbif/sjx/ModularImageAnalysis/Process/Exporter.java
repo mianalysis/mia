@@ -1,10 +1,9 @@
-// TODO: Get measurements to export from analysis.getModules().getMeasurements().get(String) for each object
+// TODO: Get measurements to export from analysis.getMacros().getMeasurements().get(String) for each object
 // TODO: Export calibration and units to each object
 
 package wbif.sjx.ModularImageAnalysis.Process;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.w3c.dom.Attr;
@@ -15,6 +14,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.Object.HCMetadata;
 
@@ -409,9 +409,10 @@ public class Exporter {
 
         // Initialising the workbook
         SXSSFWorkbook workbook = new SXSSFWorkbook();
+//        HSSFWorkbook workbook = new HSSFWorkbook();
 
         // Adding relevant sheets
-        prepareParametersXLS(workbook,modules);
+        prepareParametersXLS(workbook,analysis);
         prepareErrorLogXLS(workbook);
         if (exportSummary) prepareSummaryXLS(workbook,workspaces,modules, summaryMode);
         if (exportIndividualObjects) prepareObjectsXLS(workbook,workspaces,modules);
@@ -453,7 +454,9 @@ public class Exporter {
         return inputName + "_("+ dateTime + ").xlsx";
     }
 
-    private void prepareParametersXLS(Workbook workbook, ModuleCollection modules) {
+    private void prepareParametersXLS(SXSSFWorkbook workbook, Analysis analysis) {
+        ModuleCollection modules = analysis.getModules();
+
         // Creating a sheet for parameters
         Sheet paramSheet = workbook.createSheet("Parameters");
 
@@ -485,6 +488,20 @@ public class Exporter {
         Cell moduleValueCell = row.createCell(paramCol);
         moduleValueCell.setCellValue("");
 
+        // Adding information about the system used
+        paramCol = 0;
+        row = paramSheet.createRow(paramRow++);
+
+        nameValueCell = row.createCell(paramCol++);
+        nameValueCell.setCellValue("WORKFLOW FILENAME");
+
+        valueValueCell = row.createCell(paramCol++);
+        valueValueCell.setCellValue(analysis.getAnalysisFilename());
+
+        moduleValueCell = row.createCell(paramCol);
+        moduleValueCell.setCellValue("");
+
+
         // Adding a new parameter to each row
         for (Module module:modules) {
             ParameterCollection parameters = module.updateAndGetParameters();
@@ -508,7 +525,7 @@ public class Exporter {
         }
     }
 
-    private void prepareErrorLogXLS(Workbook workbook) {
+    private void prepareErrorLogXLS(SXSSFWorkbook workbook) {
         // Creating a sheet for parameters
         Sheet errorSheet = workbook.createSheet("Log");
 
@@ -525,7 +542,7 @@ public class Exporter {
         }
     }
 
-    private void prepareSummaryXLS(Workbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
+    private void prepareSummaryXLS(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules,
                                    SummaryMode summaryType) {
         int headerCol = 0;
 
@@ -941,7 +958,7 @@ public class Exporter {
         }
     }
 
-    private void prepareObjectsXLS(Workbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
+    private void prepareObjectsXLS(SXSSFWorkbook workbook, WorkspaceCollection workspaces, ModuleCollection modules) {
 
         // Creating a new sheet for each object.  Each analysed file has its own set of rows (one for each object)
         HashMap<String, Sheet> objectSheets = new HashMap<>();

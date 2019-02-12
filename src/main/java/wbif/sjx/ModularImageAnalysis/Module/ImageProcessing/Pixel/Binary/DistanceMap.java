@@ -78,7 +78,7 @@ public class DistanceMap extends Module {
         writeMessage("Adding image ("+outputImageName+") to workspace");
         Image outputImage = new Image(outputImageName,inputImagePlus);
         workspace.addImage(outputImage);
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 
@@ -117,4 +117,5 @@ public class DistanceMap extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

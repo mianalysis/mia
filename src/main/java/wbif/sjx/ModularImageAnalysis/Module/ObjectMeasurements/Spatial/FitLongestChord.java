@@ -138,7 +138,7 @@ public class FitLongestChord extends Module {
         if (addOverlay) {
             if (showOutput) {
                 Image inputImage = workspace.getImage(inputImageName);
-                showImage(inputImage);
+                inputImage.showImage();
             }
 
             // If the user requested, the output image can be added to the workspace
@@ -146,6 +146,8 @@ public class FitLongestChord extends Module {
                 Image outputImage = new Image(outputImageName, inputImagePlus);
             }
         }
+
+        if (showOutput) inputObjects.showMeasurements(this);
 
         return true;
 
@@ -300,4 +302,5 @@ public class FitLongestChord extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

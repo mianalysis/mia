@@ -3,8 +3,10 @@ package wbif.sjx.ModularImageAnalysis.Object;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
+import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
+import ij.process.LUT;
 import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
 import net.imglib2.img.ImagePlusAdapter;
@@ -13,14 +15,14 @@ import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.IntervalView;
 import net.imglib2.view.Views;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
+import wbif.sjx.common.Process.IntensityMinMax;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.TreeSet;
+import java.awt.*;
+import java.util.*;
 
 /**
  * Created by stephen on 30/04/2017.
@@ -114,6 +116,56 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     public Measurement getMeasurement(String name) {
         return measurements.get(name);
+
+    }
+
+    public void showImage(LUT lut) {
+        ImagePlus dispIpl = new Duplicator().run(imagePlus);
+        dispIpl.setTitle(name);
+        IntensityMinMax.run(dispIpl,true);
+        dispIpl.setPosition(1,1,1);
+        dispIpl.updateChannelAndDraw();
+        dispIpl.setLut(lut);
+        dispIpl.show();
+
+    }
+
+    public void showImage() {
+        showImage(LUT.createLutFromColor(Color.WHITE));
+    }
+
+    /**
+     * Displays measurement values from a specific Module
+     * @param module
+     */
+    public void showMeasurements(Module module) {
+        // Getting MeasurementReferences
+        MeasurementRefCollection measRefs = module.updateAndGetImageMeasurementRefs();
+
+        // Creating a new ResultsTable for these values
+        ResultsTable rt = new ResultsTable();
+
+        // Getting a list of all measurements relating to this object collection
+        LinkedHashSet<String> measNames = new LinkedHashSet<>();
+        for (MeasurementRef measRef:measRefs.values()) {
+            if (measRef.getImageObjName().equals(name) && measRef.isCalculated()) measNames.add(measRef.getName());
+        }
+
+        // Iterating over each measurement, adding all the values
+        int row = 0;
+
+        // Setting the measurements from the Module
+        for (String measName : measNames) {
+            Measurement measurement = getMeasurement(measName);
+            double value = measurement == null ? Double.NaN : measurement.getValue();
+
+            // Setting value
+            rt.setValue(measName,row,value);
+
+        }
+
+        // Displaying the results table
+        rt.show("\""+module.getTitle()+" \"measurements for \""+name+"\"");
 
     }
 

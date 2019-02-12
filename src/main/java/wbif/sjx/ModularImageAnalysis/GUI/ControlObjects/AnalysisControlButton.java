@@ -1,9 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import ij.IJ;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Process.*;
+import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.*;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;

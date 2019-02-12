@@ -270,4 +270,5 @@ public class ActiveContourObjectDetection extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

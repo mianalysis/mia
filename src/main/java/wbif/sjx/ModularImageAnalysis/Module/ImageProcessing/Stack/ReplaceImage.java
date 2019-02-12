@@ -74,4 +74,5 @@ public class ReplaceImage extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

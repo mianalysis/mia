@@ -61,6 +61,8 @@ public class BinObjectsByMeasurement extends Module {
 
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -113,4 +115,5 @@ public class BinObjectsByMeasurement extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

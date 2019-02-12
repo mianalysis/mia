@@ -126,6 +126,9 @@ public class MeasureImageColocalisation extends Module {
         // Running measurements
         measurePCC(image1,image2,mask);
 
+        if (showOutput) image1.showMeasurements(this);
+        if (showOutput) image2.showMeasurements(this);
+
         return true;
 
     }
@@ -187,4 +190,5 @@ public class MeasureImageColocalisation extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

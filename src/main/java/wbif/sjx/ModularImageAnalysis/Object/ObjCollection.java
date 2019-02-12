@@ -2,15 +2,14 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.ResultsTable;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by sc13967 on 12/05/2017.
@@ -200,5 +199,53 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
     public void resetCollection() {
         clear();
         maxID = 0;
+    }
+
+    /**
+     * Displays measurement values from a specific Module
+     * @param module
+     */
+    public void showMeasurements(Module module) {
+        // Getting MeasurementReferences
+        MeasurementRefCollection measRefs = module.updateAndGetObjectMeasurementRefs();
+
+        // Creating a new ResultsTable for these values
+        ResultsTable rt = new ResultsTable();
+
+        // Getting a list of all measurements relating to this object collection
+        LinkedHashSet<String> measNames = new LinkedHashSet<>();
+        for (MeasurementRef measRef:measRefs.values()) {
+            if (measRef.getImageObjName().equals(name) && measRef.isCalculated()) measNames.add(measRef.getName());
+        }
+
+        // Iterating over each measurement, adding all the values
+        int row = 0;
+        for (Obj obj:values()) {
+            if (row != 0) rt.incrementCounter();
+
+            // Setting some common values
+            rt.setValue("ID",row,obj.getID());
+            rt.setValue("X_CENTROID (PX)",row,obj.getXMean(true));
+            rt.setValue("Y_CENTROID (PX)",row,obj.getYMean(true));
+            rt.setValue("Z_CENTROID (SLICE)",row,obj.getZMean(true,false));
+            rt.setValue("TIMEPOINT",row,obj.getT());
+
+            // Setting the measurements from the Module
+            for (String measName : measNames) {
+                Measurement measurement = obj.getMeasurement(measName);
+                double value = measurement == null ? Double.NaN : measurement.getValue();
+
+                // Setting value
+                rt.setValue(measName,row,value);
+
+            }
+
+            row++;
+
+        }
+
+        // Displaying the results table
+        rt.show("\""+module.getTitle()+" \"measurements for \""+name+"\"");
+
     }
 }

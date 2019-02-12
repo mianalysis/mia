@@ -15,7 +15,6 @@ import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ImageCalculator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -266,7 +265,7 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
 
         }
 
-        if (showOutput) showImage(mergedImage);
+        if (showOutput) mergedImage.showImage();
 
         return true;
 
@@ -323,4 +322,5 @@ public class MergeChannels< T extends RealType< T > & NativeType< T >> extends M
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

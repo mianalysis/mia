@@ -126,7 +126,7 @@ public class CreateObjectDensityMap extends Module {
         new FilterImage().runGaussian2DFilter(outputImage.getImagePlus(),range);
 
         workspace.addImage(outputImage);
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 
@@ -168,4 +168,5 @@ public class CreateObjectDensityMap extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

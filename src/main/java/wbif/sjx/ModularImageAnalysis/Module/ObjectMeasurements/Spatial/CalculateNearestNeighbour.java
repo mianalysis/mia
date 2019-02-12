@@ -159,6 +159,8 @@ public class CalculateNearestNeighbour extends Module {
             }
         }
 
+        if (showOutput) inputObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -258,5 +260,6 @@ public class CalculateNearestNeighbour extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }
 

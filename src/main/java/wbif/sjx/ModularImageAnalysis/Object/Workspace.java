@@ -57,8 +57,12 @@ public class Workspace {
         images.put(image.getName(), image);
     }
 
-    public void removeImage(String name) {
-        images.remove(name);
+    public void removeImage(String name, boolean retainMeasurements) {
+        if (retainMeasurements) {
+            images.get(name).setImagePlus(null);
+        } else {
+            images.remove(name);
+        }
 
         // Running garbage collector
         Runtime.getRuntime().gc();

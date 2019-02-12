@@ -120,10 +120,10 @@ public class ImageMath extends Module {
             writeMessage("Adding image ("+outputImageName+") to workspace");
             Image outputImage = new Image(outputImageName,inputImagePlus);
             workspace.addImage(outputImage);
-            if (showOutput) showImage(outputImage);
+            if (showOutput) outputImage.showImage();
 
         } else {
-            if (showOutput) showImage(inputImage);
+            if (showOutput) inputImage.showImage();
 
         }
 
@@ -195,4 +195,5 @@ public class ImageMath extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

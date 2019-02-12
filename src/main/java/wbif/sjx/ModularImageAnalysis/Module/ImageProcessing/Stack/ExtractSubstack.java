@@ -310,7 +310,7 @@ public class ExtractSubstack extends Module implements ActionListener {
         workspace.addImage(outputImage);
 
         // If selected, displaying the image
-        if (showOutput) showImage(outputImage);
+        if (showOutput) outputImage.showImage();
 
         return true;
 

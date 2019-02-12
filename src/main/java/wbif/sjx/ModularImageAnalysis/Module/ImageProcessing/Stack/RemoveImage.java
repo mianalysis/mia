@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemovedImageP;
 
@@ -11,6 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemovedImageP;
  */
 public class RemoveImage extends Module {
     public static final String INPUT_IMAGE = "Input image";
+    public static final String RETAIN_MEASUREMENTS = "Retain measurements";
 
     @Override
     public String getTitle() {
@@ -31,10 +33,11 @@ public class RemoveImage extends Module {
     public boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
+        boolean retainMeasurements = parameters.getValue(RETAIN_MEASUREMENTS);
 
         // Removing the relevant image from the workspace
         writeMessage("Removing image ("+inputImageName+") from workspace");
-        workspace.removeImage(inputImageName);
+        workspace.removeImage(inputImageName,retainMeasurements);
 
         return true;
 
@@ -43,6 +46,7 @@ public class RemoveImage extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new RemovedImageP(INPUT_IMAGE,this));
+        parameters.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
 
     }
 
@@ -71,4 +75,5 @@ public class RemoveImage extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }

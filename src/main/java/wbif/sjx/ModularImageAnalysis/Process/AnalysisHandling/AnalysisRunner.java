@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Process;
+package wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling;
 
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
@@ -10,7 +10,8 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.FileFolderPathP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.StringP;
 import wbif.sjx.ModularImageAnalysis.Object.ProgressMonitor;
-import wbif.sjx.common.FileConditions.ExtensionMatchesString;
+import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
+import wbif.sjx.ModularImageAnalysis.Process.Exporter;
 
 import java.io.File;
 import java.io.IOException;

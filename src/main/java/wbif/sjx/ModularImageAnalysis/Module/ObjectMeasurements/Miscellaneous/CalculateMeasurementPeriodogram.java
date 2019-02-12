@@ -194,6 +194,8 @@ public class CalculateMeasurementPeriodogram extends Module {
             }
         }
 
+        if (showOutput) trackObjects.showMeasurements(this);
+
         return true;
 
     }
@@ -295,4 +297,5 @@ public class CalculateMeasurementPeriodogram extends Module {
     public void addRelationships(RelationshipCollection relationships) {
 
     }
+
 }
