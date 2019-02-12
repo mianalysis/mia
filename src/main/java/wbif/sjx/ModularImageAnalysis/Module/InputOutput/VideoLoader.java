@@ -72,9 +72,13 @@ public class VideoLoader extends Module {
 
         ImagePlus ipl = IJ.createImage("Image",width, height,framesList.length,8);
 
+        int progressCount = 0;
+        int totalFrames = loader.getLengthInFrames();
         int count = 0;
         int total = frames.size();
         for (int i=0;i<loader.getLengthInFrames();i++) {
+            writeMessage("Scanning frame "+(progressCount++)+" of "+totalFrames);
+
             // If all the frames have been loaded we can skip anything else
             if (count == total) break;
 
