@@ -24,10 +24,8 @@ public class RemoveImageFromWorkspaceMacro extends MacroOperation {
     public String action(Object[] objects, Workspace workspace) {
         RemoveImage removeImage = new RemoveImage();
 
-        System.err.println("obj 1 "+objects[1]);
-
         removeImage.updateParameterValue(RemoveImage.INPUT_IMAGE,objects[0]);
-        removeImage.updateParameterValue(RemoveImage.RETAIN_MEASUREMENTS,objects[1]);
+        removeImage.updateParameterValue(RemoveImage.RETAIN_MEASUREMENTS,(double) objects[1] == 1);
 
         removeImage.run(workspace);
 

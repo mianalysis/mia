@@ -13,11 +13,9 @@ import java.util.List;
 public class MacroAutocomplete implements MacroExtensionAutoCompletionPlugin {
     @Override
     public List<BasicCompletion> getCompletions(CompletionProvider completionProvider) {
-        System.err.println("Starting autocompletion search");
         ArrayList<BasicCompletion> completions = new ArrayList<>();
-        ArrayList<MacroOperation> macroOperations = new MacroHandler().getMacroOperations();
+        ArrayList<MacroOperation> macroOperations = MacroHandler.getMacroHandler().getMacroOperations();
         for (MacroOperation macroOperation:macroOperations) {
-            System.err.println("    Found macro "+macroOperation.getName());
             String name = macroOperation.getName();
             String argDescription = macroOperation.getArgumentsDescription();
             String description = macroOperation.getDescription();

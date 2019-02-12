@@ -31,18 +31,19 @@ public class ListObjectsInWorkspaceMacro extends MacroOperation {
         int row = 0;
 
         // Getting a list of Images in the Workspace
-        HashMap<String,ObjCollection> objCollection = workspace.getObjects();
-        for (String objName:objCollection.keySet()) {
+        HashMap<String,ObjCollection> allObj = workspace.getObjects();
+        for (String objName:allObj.keySet()) {
+            if (row != 0) rt.incrementCounter();
+
             boolean measTest = false;
-            Obj firstObj = objCollection.get(objName).getFirst();
+            Obj firstObj = allObj.get(objName).getFirst();
             if (firstObj != null) measTest = firstObj.getNVoxels() == 0;
             String measurementsOnly = Boolean.toString(measTest);
 
             rt.setValue("Objects name",row,objName);
-            rt.setValue("Number of objects",row,objCollection.size());
+            rt.setValue("Number of objects",row,allObj.get(objName).size());
             rt.setValue("Measurements only",row,measurementsOnly);
 
-            rt.incrementCounter();
             row++;
 
         }

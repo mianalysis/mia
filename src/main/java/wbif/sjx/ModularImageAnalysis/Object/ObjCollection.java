@@ -221,6 +221,8 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
         // Iterating over each measurement, adding all the values
         int row = 0;
         for (Obj obj:values()) {
+            if (row != 0) rt.incrementCounter();
+
             // Setting some common values
             rt.setValue("ID",row,obj.getID());
             rt.setValue("X_CENTROID (PX)",row,obj.getXMean(true));
@@ -239,7 +241,6 @@ public class ObjCollection extends LinkedHashMap<Integer,Obj> {
             }
 
             row++;
-            rt.incrementCounter();
 
         }
 

@@ -32,12 +32,13 @@ public class ListImagesInWorkspaceMacro extends MacroOperation {
         // Getting a list of Images in the Workspace
         HashMap<String,Image> images = workspace.getImages();
         for (String imageName:images.keySet()) {
+            if (row != 0) rt.incrementCounter();
+
             String measurementsOnly = Boolean.toString(images.get(imageName).getImagePlus() == null);
 
             rt.setValue("Image name",row,imageName);
             rt.setValue("Measurements only",row,measurementsOnly);
 
-            rt.incrementCounter();
             row++;
 
         }

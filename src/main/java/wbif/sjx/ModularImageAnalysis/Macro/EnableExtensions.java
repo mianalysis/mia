@@ -8,25 +8,14 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import wbif.sjx.ModularImageAnalysis.Process.DependencyValidator;
 
-//public class EnableExtensions implements PlugIn {
-//    private static boolean enabled = false;
-//
-//    @Override
-//    public void run(String s) {
-//        // Checking necessary dependencies are available
-//        DependencyValidator.run();
-//
-//        // Setting up macro extension
-//        if (!enabled)
-//        enabled = true;
-//
-//    }
-//}
 
-@Plugin(type = Command.class, menuPath = "Plugins>Bristol WBIF>Enable Ext")
+@Plugin(type = Command.class, menuPath = "Plugins>Bristol WBIF>Enable MIA Extensions")
 public class EnableExtensions implements Command {
     @Override
     public void run() {
+        // Run the dependency validator.  If updates were required, return.
+        if (DependencyValidator.run()) return;
+
         MacroHandler macroHandler = MacroHandler.getMacroHandler();
 
         if (!IJ.macroRunning()) {
@@ -35,7 +24,6 @@ public class EnableExtensions implements Command {
         }
 
         Functions.registerExtensions(macroHandler);
-        System.err.println("Registered MIA functions");
 
     }
 }

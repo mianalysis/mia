@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class DependencyValidator {
-    public static void run() {
+    public static boolean run() {
         // Checking the relevant plugins are available
         boolean[] toInstall = new boolean[2];
         Arrays.fill(toInstall,false);
@@ -44,6 +44,9 @@ public class DependencyValidator {
                 JOptionPane.showMessageDialog(null, "Please restart Fiji, then run the plugin again");
             }
         }
+
+        return (toInstall[0] || toInstall[1]);
+
     }
 
     private static void update(boolean[] toInstall) {

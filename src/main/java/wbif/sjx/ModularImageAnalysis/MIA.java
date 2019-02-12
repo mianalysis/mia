@@ -105,7 +105,8 @@ public class MIA implements PlugIn {
             version = getClass().getPackage().getImplementationVersion();
         }
 
-        DependencyValidator.run();
+        // Run the dependency validator.  If updates were required, return.
+        if (DependencyValidator.run()) return;
 
         // Redirecting the error OutputStream, so as well as printing to the usual stream, it stores it as a string.
         ErrorLog errorLog = new ErrorLog();
