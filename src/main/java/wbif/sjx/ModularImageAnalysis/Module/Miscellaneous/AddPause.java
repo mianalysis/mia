@@ -5,6 +5,8 @@ import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
 import javax.swing.*;
@@ -78,8 +80,8 @@ public class AddPause extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(SHOW_IMAGE,Parameter.BOOLEAN,true));
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
+        parameters.add(new BooleanP(SHOW_IMAGE,this,true));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
     }
 
     @Override
@@ -96,17 +98,17 @@ public class AddPause extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 

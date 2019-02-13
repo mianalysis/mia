@@ -1,36 +1,37 @@
-package wbif.sjx.ModularImageAnalysis.Macro.ObjectMeasurements;
+package wbif.sjx.ModularImageAnalysis.Macro.General;
 
 import ij.macro.MacroExtension;
 import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
-public class MeasureObjectShapeMacro extends MacroOperation {
-    public MeasureObjectShapeMacro(MacroExtension theHandler) {
+public class ShowAllImageMeasurementsMacro extends MacroOperation {
+    public ShowAllImageMeasurementsMacro(MacroExtension theHandler) {
         super(theHandler);
     }
 
     @Override
     public String getName() {
-        return null;
+        return "MIA_ShowAllImageMeasurements";
     }
 
     @Override
     public int[] getArgumentTypes() {
-        return new int[0];
+        return new int[]{ARG_STRING};
     }
 
     @Override
     public String action(Object[] objects, Workspace workspace) {
+        workspace.getImage((String) objects[0]).showAllMeasurements();
         return null;
     }
 
     @Override
     public String getArgumentsDescription() {
-        return null;
+        return "String imageName";
     }
 
     @Override
     public String getDescription() {
-        return null;
+        return "Displays all measurements associated with an image";
     }
 }

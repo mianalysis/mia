@@ -19,6 +19,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by stephen on 30/04/2017.
@@ -162,6 +163,29 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         // Displaying the results table
         rt.show("\""+module.getTitle()+" \"measurements for \""+name+"\"");
+
+    }
+
+    public void showAllMeasurements() {
+        // Creating a new ResultsTable for these values
+        ResultsTable rt = new ResultsTable();
+
+        // Getting a list of all measurements relating to this object collection
+        Set<String> measNames = getMeasurements().keySet();
+
+        // Setting the measurements from the Module
+        int row = 0;
+        for (String measName : measNames) {
+            Measurement measurement = getMeasurement(measName);
+            double value = measurement == null ? Double.NaN : measurement.getValue();
+
+            // Setting value
+            rt.setValue(measName,row,value);
+
+        }
+
+        // Displaying the results table
+        rt.show("All measurements for \""+name+"\"");
 
     }
 

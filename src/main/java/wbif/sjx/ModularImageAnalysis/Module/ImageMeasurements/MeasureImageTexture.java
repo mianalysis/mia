@@ -89,8 +89,8 @@ public class MeasureImageTexture extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new DoubleP(X_OFFSET, this,1));
-        parameters.add(new DoubleP(Y_OFFSET, this,0));
+        parameters.add(new IntegerP(X_OFFSET, this,1));
+        parameters.add(new IntegerP(Y_OFFSET, this,0));
         parameters.add(new IntegerP(Z_OFFSET, this,0));
 
     }

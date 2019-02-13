@@ -3,7 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Miscellaneous;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 /**
  * Created by Stephen Cross on 23/11/2018.
@@ -91,11 +91,11 @@ public class ConditionalAnalysisTermination extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new Parameter(TEST_MODE,Parameter.CHOICE_ARRAY,TestModes.IMAGE_MEASUREMENT,TestModes.ALL));
-        parameters.add(new Parameter(INPUT_IMAGE,Parameter.INPUT_IMAGE,null));
-        parameters.add(new Parameter(REFERENCE_MODE,Parameter.CHOICE_ARRAY,ReferenceModes.MEASUREMENT_LESS_THAN,ReferenceModes.ALL));
-        parameters.add(new Parameter(REFERENCE_IMAGE_MEASUREMENT,Parameter.IMAGE_MEASUREMENT,null));
-        parameters.add(new Parameter(REFERENCE_VALUE,Parameter.DOUBLE,0d));
+        parameters.add(new ChoiceP(TEST_MODE,this,TestModes.IMAGE_MEASUREMENT,TestModes.ALL));
+        parameters.add(new InputImageP(INPUT_IMAGE,this));
+        parameters.add(new ChoiceP(REFERENCE_MODE,this,ReferenceModes.MEASUREMENT_LESS_THAN,ReferenceModes.ALL));
+        parameters.add(new ImageMeasurementP(REFERENCE_IMAGE_MEASUREMENT,this));
+        parameters.add(new DoubleP(REFERENCE_VALUE,this,0d));
 
     }
 
@@ -112,7 +112,8 @@ public class ConditionalAnalysisTermination extends Module {
                 returnedParamters.add(parameters.getParameter(REFERENCE_VALUE));
 
                 String inputImageName = parameters.getValue(INPUT_IMAGE);
-                parameters.updateValueSource(REFERENCE_IMAGE_MEASUREMENT,inputImageName);
+                ImageMeasurementP parameter = parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT);
+                parameter.setImageName(inputImageName);
 
                 break;
         }
@@ -122,17 +123,17 @@ public class ConditionalAnalysisTermination extends Module {
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetImageMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MeasurementReferenceCollection updateAndGetObjectMeasurementReferences() {
+    public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
         return null;
     }
 
     @Override
-    public MetadataReferenceCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetMetadataReferences() {
         return null;
     }
 
