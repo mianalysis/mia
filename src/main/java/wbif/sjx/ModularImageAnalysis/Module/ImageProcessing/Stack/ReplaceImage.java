@@ -28,7 +28,7 @@ public class ReplaceImage extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input images
         String inputImageName1 = parameters.getValue(INPUT_IMAGE1);
         Image inputImage1 = workspace.getImages().get(inputImageName1);

@@ -6,7 +6,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.ChoiceType;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
 
 public class MetadataItemP extends ChoiceType {
     public MetadataItemP(String name, Module module) {

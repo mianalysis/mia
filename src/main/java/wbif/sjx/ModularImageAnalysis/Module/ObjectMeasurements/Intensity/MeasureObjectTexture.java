@@ -6,9 +6,9 @@ import ij.plugin.SubHyperstackMaker;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
+import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Analysis.TextureCalculator;
-import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 /**

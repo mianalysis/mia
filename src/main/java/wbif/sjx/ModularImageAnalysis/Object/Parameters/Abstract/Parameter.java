@@ -3,8 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
-import javax.swing.*;
-
 public abstract class Parameter {
     protected final String name;
     protected final Module module;

@@ -9,7 +9,10 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
-import org.apache.commons.math3.ml.clustering.*;
+import org.apache.commons.math3.ml.clustering.CentroidCluster;
+import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
+import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary.DistanceMap;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -22,7 +25,9 @@ import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**

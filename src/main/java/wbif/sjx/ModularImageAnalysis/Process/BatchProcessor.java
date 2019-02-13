@@ -7,16 +7,23 @@ import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
+import wbif.sjx.ModularImageAnalysis.Object.ProgressMonitor;
+import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.ModularImageAnalysis.Object.WorkspaceCollection;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.common.System.FileCrawler;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.HashSet;
+import java.util.TreeMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 /**

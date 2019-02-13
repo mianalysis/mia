@@ -3,7 +3,6 @@ package wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.BooleanParameter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 
 public abstract class BooleanType extends Parameter {
     private boolean selected = false;

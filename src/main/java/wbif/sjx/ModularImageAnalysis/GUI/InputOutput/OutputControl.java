@@ -1,8 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.GUI.InputOutput;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRefCollection;
+import wbif.sjx.ModularImageAnalysis.Object.MetadataRefCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.ModularImageAnalysis.Object.RelationshipCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 /**
  * Created by Stephen on 29/07/2017.

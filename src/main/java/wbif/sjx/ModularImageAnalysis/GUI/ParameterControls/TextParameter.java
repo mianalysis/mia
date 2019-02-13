@@ -2,14 +2,12 @@ package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
-import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Created by Stephen on 20/05/2017.

@@ -1,11 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
+import com.drew.lang.annotations.Nullable;
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-
-import com.drew.lang.annotations.Nullable;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 

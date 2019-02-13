@@ -5,28 +5,31 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
 import org.apache.commons.io.output.TeeOutputStream;
-import wbif.sjx.ModularImageAnalysis.GUI.*;
+import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.MIA;
-import wbif.sjx.ModularImageAnalysis.Process.ClassHunter;
-import wbif.sjx.ModularImageAnalysis.Module.*;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
+import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisTester;
 import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
+import wbif.sjx.ModularImageAnalysis.Process.ClassHunter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
-
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by Stephen on 20/05/2017.

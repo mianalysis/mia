@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
+import com.drew.lang.annotations.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
@@ -14,8 +15,6 @@ import wbif.sjx.common.MathFunc.CumStat;
 import wbif.sjx.common.MathFunc.Indexer;
 import wbif.sjx.common.MathFunc.MidpointCircle;
 import wbif.sjx.common.Object.Point;
-
-import com.drew.lang.annotations.Nullable;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -276,7 +275,7 @@ public class CreateMeasurementMap extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input objects
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);

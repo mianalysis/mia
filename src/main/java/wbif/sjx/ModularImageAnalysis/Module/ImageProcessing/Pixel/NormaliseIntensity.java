@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
+import com.drew.lang.annotations.Nullable;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
@@ -9,8 +10,6 @@ import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Process.IntensityMinMax;
-
-import com.drew.lang.annotations.Nullable;
 
 /**
  * Created by sc13967 on 10/08/2017.

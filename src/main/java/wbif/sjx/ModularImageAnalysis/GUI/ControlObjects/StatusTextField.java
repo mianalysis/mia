@@ -1,7 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import org.apache.commons.lang.UnhandledException;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;

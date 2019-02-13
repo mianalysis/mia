@@ -1,12 +1,15 @@
 package wbif.sjx.ModularImageAnalysis.ThirdParty;
 
-import ij.*;
-import ij.gui.*;
+import com.drew.lang.annotations.Nullable;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.WindowManager;
+import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.plugin.filter.RankFilters;
 import ij.process.*;
 
-import com.drew.lang.annotations.Nullable;
 import java.awt.*;
 
 

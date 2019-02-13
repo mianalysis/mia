@@ -1,10 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
-
-import java.util.LinkedHashSet;
 
 public class AnalysisTester {
     public static int testModules(ModuleCollection modules) {

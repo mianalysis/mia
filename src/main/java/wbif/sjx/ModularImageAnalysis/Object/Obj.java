@@ -1,18 +1,19 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import com.drew.lang.annotations.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
-import ij.macro.Tokenizer;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.*;
 import wbif.sjx.common.Object.Point;
+import wbif.sjx.common.Object.Volume;
 
-import com.drew.lang.annotations.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.TreeSet;
 
 /**
  * Created by Stephen on 30/04/2017.

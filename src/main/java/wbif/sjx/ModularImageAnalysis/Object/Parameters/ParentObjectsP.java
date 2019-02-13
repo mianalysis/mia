@@ -8,8 +8,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Object.RelationshipCollection;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
-import java.util.LinkedHashSet;
 
 public class ParentObjectsP extends ChoiceType {
     private String childObjectsName = "";

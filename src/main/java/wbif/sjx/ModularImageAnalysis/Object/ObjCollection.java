@@ -1,15 +1,15 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
+import com.drew.lang.annotations.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.common.MathFunc.CumStat;
 
-import com.drew.lang.annotations.Nullable;
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 /**
  * Created by sc13967 on 12/05/2017.

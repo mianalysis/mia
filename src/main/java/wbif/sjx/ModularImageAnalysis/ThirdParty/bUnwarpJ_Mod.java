@@ -2,7 +2,6 @@ package wbif.sjx.ModularImageAnalysis.ThirdParty;
 
 import bunwarpj.*;
 import ij.IJ;
-import ij.ImagePlus;
 import ij.process.ImageProcessor;
 
 import java.awt.*;

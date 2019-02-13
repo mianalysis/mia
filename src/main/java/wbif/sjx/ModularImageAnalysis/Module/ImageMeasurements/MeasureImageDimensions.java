@@ -43,7 +43,7 @@ public class MeasureImageDimensions extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();

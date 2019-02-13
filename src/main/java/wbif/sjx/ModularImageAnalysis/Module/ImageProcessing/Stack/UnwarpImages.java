@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 import bunwarpj.Param;
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
+import com.drew.lang.annotations.Nullable;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.plugin.SubHyperstackMaker;
@@ -11,8 +12,6 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-
-import com.drew.lang.annotations.Nullable;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
 import java.io.BufferedWriter;
@@ -321,7 +320,7 @@ public class UnwarpImages extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);

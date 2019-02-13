@@ -44,7 +44,7 @@ public class InvertIntensity extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);

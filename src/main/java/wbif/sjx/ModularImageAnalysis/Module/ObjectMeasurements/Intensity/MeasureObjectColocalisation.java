@@ -52,7 +52,7 @@ public class MeasureObjectColocalisation extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection objects = workspace.getObjects().get(objectName);

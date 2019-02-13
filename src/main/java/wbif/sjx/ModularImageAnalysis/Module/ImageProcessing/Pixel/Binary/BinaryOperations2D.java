@@ -4,7 +4,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.plugin.*;
+import ij.plugin.Duplicator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;

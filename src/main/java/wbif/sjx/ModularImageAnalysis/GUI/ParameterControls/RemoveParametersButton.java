@@ -2,12 +2,9 @@ package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterGroup;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemoveParameters;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

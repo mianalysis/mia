@@ -7,7 +7,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.FileFolderType;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
 import java.io.File;
 
 public class FileFolderPathP extends FileFolderType {

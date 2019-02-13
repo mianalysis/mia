@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
+import com.drew.lang.annotations.Nullable;
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
@@ -9,7 +10,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import wbif.sjx.common.Object.LUTs;
 
-import com.drew.lang.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

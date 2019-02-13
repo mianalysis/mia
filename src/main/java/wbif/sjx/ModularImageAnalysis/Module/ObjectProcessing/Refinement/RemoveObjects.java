@@ -2,15 +2,20 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Refinement;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
-import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRefCollection;
+import wbif.sjx.ModularImageAnalysis.Object.MetadataRefCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemovedObjectsP;
+import wbif.sjx.ModularImageAnalysis.Object.RelationshipCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 /**
  * Created by sc13967 on 07/02/2018.
  */
 public class RemoveObjects extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
+    public static final String RETAIN_MEASUREMENTS = "Retain measurements";
 
     @Override
     public String getTitle() {
@@ -28,10 +33,11 @@ public class RemoveObjects extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        boolean retainMeasurements = parameters.getValue(RETAIN_MEASUREMENTS);
 
-        workspace.removeObject(inputObjectsName);
+        workspace.removeObject(inputObjectsName,retainMeasurements);
 
         return true;
 
@@ -40,6 +46,7 @@ public class RemoveObjects extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new RemovedObjectsP(INPUT_OBJECTS,this));
+        parameters.add(new BooleanP(RETAIN_MEASUREMENTS,this,false));
 
     }
 

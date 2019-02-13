@@ -4,18 +4,18 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.ImagePlus;
 import ij.measure.Calibration;
-//import ij.plugin.ZProjector;
 import ij.plugin.ZProjector;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
-
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
+
+//import ij.plugin.ZProjector;
 
 /**
  * Created by sc13967 on 04/05/2017.
