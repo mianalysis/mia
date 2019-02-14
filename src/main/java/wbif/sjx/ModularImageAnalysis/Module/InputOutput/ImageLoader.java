@@ -636,7 +636,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     break;
 
                 case ImportModes.IMAGEJ:
-                    ipl = IJ.getImage();
+                    ipl = IJ.getImage().duplicate();
                     break;
 
                 case ImportModes.IMAGE_SEQUENCE:

@@ -17,7 +17,7 @@ public class MeasureImageIntensityMacro extends MacroOperation {
 
     @Override
     public int[] getArgumentTypes() {
-        return new int[]{ARG_STRING,ARG_NUMBER,ARG_NUMBER,ARG_NUMBER,ARG_NUMBER,ARG_NUMBER,ARG_NUMBER};
+        return new int[]{ARG_STRING,ARG_NUMBER};
     }
 
     @Override

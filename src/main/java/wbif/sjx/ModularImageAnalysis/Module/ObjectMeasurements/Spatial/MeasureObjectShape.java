@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class MeasureObjectShape extends Module {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String MEASURE_VOLUME = "Measure volume";
-    public static final String FITTING_MODE = "Fit convex hull to";
     public static final String MEASURE_PROJECTED_AREA = "Measure projected area";
     public static final String MEASURE_PROJECTED_DIA = "Measure projected diameter";
     public static final String MEASURE_PROJECTED_PERIM = "Measure projected perimeter";
