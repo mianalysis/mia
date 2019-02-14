@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -8,10 +9,10 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 
 import static org.junit.Assert.*;
 
-public class CalculateNearestNeighbourTest {
+public class CalculateNearestNeighbourTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new CalculateNearestNeighbour().getTitle());
     }

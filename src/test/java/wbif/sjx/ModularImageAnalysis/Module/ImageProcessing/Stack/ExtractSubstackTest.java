@@ -3,20 +3,21 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-public class ExtractSubstackTest {
+public class ExtractSubstackTest extends ModuleTest {
 
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test
-    public void testGetTitle() throws Exception {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new ExtractSubstack().getTitle());
     }
 

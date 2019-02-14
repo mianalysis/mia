@@ -7,6 +7,7 @@ import wbif.sjx.ModularImageAnalysis.ExpectedObjects.HorizontalCylinderR22;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Rings2D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.VerticalCylinderR5;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Units;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
-public class FitLongestChordTest {
+public class FitLongestChordTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @BeforeClass
@@ -162,8 +163,8 @@ public class FitLongestChordTest {
 
     }
 
-    @Test
-    public void getTitle() {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new FitLongestChord().getTitle());
     }
 }

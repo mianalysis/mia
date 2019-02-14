@@ -44,4 +44,5 @@ public class MeasureObjectIntensityMacro extends MacroOperation {
     public String getDescription() {
         return "Measure intensity for specified objects.";
     }
+
 }

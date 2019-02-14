@@ -11,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects2D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects4D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Stephen Cross on 29/08/2017.
  */
-public class IdentifyObjectsTest {
+public class IdentifyObjectsTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @BeforeClass
@@ -32,8 +33,8 @@ public class IdentifyObjectsTest {
         Module.setVerbose(true);
     }
 
-    @Test
-    public void testGetTitle() throws Exception {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new IdentifyObjects().getTitle());
     }
 

@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -12,7 +13,7 @@ import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
 
-public class ImageCalculatorTest {
+public class ImageCalculatorTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @BeforeClass
@@ -20,7 +21,7 @@ public class ImageCalculatorTest {
         Module.setVerbose(true);
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new ImageCalculator().getTitle());
     }

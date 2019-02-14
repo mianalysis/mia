@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -13,14 +14,14 @@ import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
 
-public class ImageMathTest {
+public class ImageMathTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test
-    public void getTitle() {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new ImageMath().getTitle());
     }
 

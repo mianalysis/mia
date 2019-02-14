@@ -4,21 +4,22 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 
 import static org.junit.Assert.*;
 
 /**
  * Created by Stephen on 17/11/2017.
  */
-public class MeasureIntensityDistributionTest {
+public class MeasureIntensityDistributionTest extends ModuleTest {
 
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test
-    public void testGetTitle() throws Exception {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new MeasureIntensityDistribution().getTitle());
     }
 

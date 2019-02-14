@@ -10,6 +10,7 @@ import wbif.sjx.ModularImageAnalysis.ExpectedObjects.DenseTracks2D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.TrackObjects;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -17,7 +18,9 @@ import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.net.URLDecoder;
 
-public class AddObjectsOverlayTest {
+import static org.junit.Assert.*;
+
+public class AddObjectsOverlayTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
@@ -114,7 +117,8 @@ public class AddObjectsOverlayTest {
     public void addLabelsOverlay() {
     }
 
-    @Test @Ignore
-    public void getTitle() {
+    @Test
+    public void testGetTitle() {
+        assertNotNull(new AddObjectsOverlay().getTitle());
     }
 }

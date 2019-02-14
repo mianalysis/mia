@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.CropImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Units;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -19,7 +20,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Stephen on 29/08/2017.
  */
-public class ImageLoaderTest {
+public class ImageLoaderTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
@@ -30,8 +31,8 @@ public class ImageLoaderTest {
         Units.setUnits(Units.SpatialUnits.MICROMETRE);
     }
 
-    @Test
-    public void testGetTitle() throws Exception {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new ImageLoader().getTitle());
 
     }
