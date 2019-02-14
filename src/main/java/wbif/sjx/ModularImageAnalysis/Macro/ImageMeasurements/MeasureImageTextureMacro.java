@@ -25,9 +25,9 @@ public class MeasureImageTextureMacro extends MacroOperation {
         MeasureImageTexture measureImageTexture = new MeasureImageTexture();
 
         measureImageTexture.updateParameterValue(MeasureImageTexture.INPUT_IMAGE,objects[0]);
-        measureImageTexture.updateParameterValue(MeasureImageTexture.X_OFFSET,(int) objects[1]);
-        measureImageTexture.updateParameterValue(MeasureImageTexture.Y_OFFSET,(int) objects[2]);
-        measureImageTexture.updateParameterValue(MeasureImageTexture.Z_OFFSET,(int) objects[3]);
+        measureImageTexture.updateParameterValue(MeasureImageTexture.X_OFFSET,(int) Math.round((double) objects[1]));
+        measureImageTexture.updateParameterValue(MeasureImageTexture.Y_OFFSET,(int) Math.round((double) objects[2]));
+        measureImageTexture.updateParameterValue(MeasureImageTexture.Z_OFFSET,(int) Math.round((double) objects[3]));
         measureImageTexture.setShowOutput((double) objects[4] == 1);
 
         measureImageTexture.run(workspace);

@@ -17,7 +17,7 @@ public class MeasureObjectTextureMacro extends MacroOperation {
 
     @Override
     public int[] getArgumentTypes() {
-        return new int[]{ARG_STRING,ARG_STRING,ARG_NUMBER,ARG_NUMBER,ARG_NUMBER,ARG_NUMBER};
+        return new int[]{ARG_STRING,ARG_STRING,ARG_NUMBER,ARG_NUMBER,ARG_NUMBER,ARG_NUMBER,ARG_NUMBER};
 
     }
 
@@ -27,10 +27,11 @@ public class MeasureObjectTextureMacro extends MacroOperation {
 
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_OBJECTS,objects[0]);
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.INPUT_IMAGE,objects[1]);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET,(int) objects[2]);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.Y_OFFSET,(int) objects[3]);
-        measureObjectTexture.updateParameterValue(MeasureObjectTexture.Z_OFFSET,(int) objects[4]);
-        measureObjectTexture.setShowOutput((double) objects[5] == 1);
+        measureObjectTexture.updateParameterValue(MeasureObjectTexture.X_OFFSET,objects[2]);
+        measureObjectTexture.updateParameterValue(MeasureObjectTexture.Y_OFFSET,objects[3]);
+        measureObjectTexture.updateParameterValue(MeasureObjectTexture.Z_OFFSET,objects[4]);
+        measureObjectTexture.updateParameterValue(MeasureObjectTexture.CALIBRATED_OFFSET,(double) objects[5] == 1);
+        measureObjectTexture.setShowOutput((double) objects[6] == 1);
 
         measureObjectTexture.run(workspace);
 
@@ -39,12 +40,12 @@ public class MeasureObjectTextureMacro extends MacroOperation {
 
     @Override
     public String getArgumentsDescription() {
-        return "String objectsName, String imageName, int xOffset, int yOffset, int zOffset, boolean showResults";
+        return "String objectsName, String imageName, int xOffset, int yOffset, int zOffset, boolean calibratedOffset, boolean showResults";
     }
 
     @Override
     public String getDescription() {
-        return "Measure object texture across the image.  Calculates the Haralick features.  Offset provided in pixel "+
-                "untis";
+        return "Measure object texture across the image.  Calculates the Haralick features.  If \"calibratedOffset\" " +
+                "is true offsets are in calibrated units, otherwise units are in pixels.";
     }
 }
