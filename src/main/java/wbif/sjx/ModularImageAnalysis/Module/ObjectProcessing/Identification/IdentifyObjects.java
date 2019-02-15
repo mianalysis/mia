@@ -36,24 +36,13 @@ public class IdentifyObjects extends Module {
     }
 
 
-    private ObjCollection importFromImage(Image inputImage) throws IntegerOverflowException {
-        String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
-        boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
-        boolean singleObject = parameters.getValue(SINGLE_OBJECT);
+    private ObjCollection importFromImage(Image inputImage, String outputObjectsName, boolean whiteBackground,
+                                          boolean singleObject, int connectivity, int labelBitDepth)
+            throws IntegerOverflowException, RuntimeException {
 
         ImagePlus inputImagePlus = inputImage.getImagePlus();
         inputImagePlus = inputImagePlus.duplicate();
         ObjCollection outputObjects = new ObjCollection(outputObjectsName);
-
-        int connectivity = 6;
-        switch ((String) parameters.getValue(CONNECTIVITY)) {
-            case Connectivity.SIX:
-                connectivity = 6;
-                break;
-            case Connectivity.TWENTYSIX:
-                connectivity = 26;
-                break;
-        }
 
         for (int t = 1; t <= inputImagePlus.getNFrames(); t++) {
             writeMessage("Processing image "+t+" of "+inputImagePlus.getNFrames());
@@ -72,9 +61,8 @@ public class IdentifyObjects extends Module {
 
             if (whiteBackground) InvertIntensity.process(currStack);
 
-
             // Applying connected components labelling
-            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity);
+            FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(connectivity, labelBitDepth);
             currStack.setStack(ffcl3D.computeLabels(currStack.getStack()));
 
             // Converting image to objects
@@ -98,6 +86,17 @@ public class IdentifyObjects extends Module {
 
     }
 
+    private static int getConnectivity(String connectivityName) {
+        switch (connectivityName) {
+            case Connectivity.SIX:
+            default:
+                return 6;
+            case Connectivity.TWENTYSIX:
+                return 26;
+        }
+    }
+
+
     @Override
     public String getTitle() {
         return "Identify objects";
@@ -110,9 +109,10 @@ public class IdentifyObjects extends Module {
 
     @Override
     public String getHelp() {
-        return "INCOMPLETE" +
-                "\nTakes a binary image and uses connected components labelling to create objects" +
-                "\nUses MorphoLibJ to perform connected components labelling in 3D";
+        return  "Takes a binary image and uses connected components labelling to create objects" +
+                "\nUses MorphoLibJ to perform connected components labelling in 3D. " +
+                "\n\nLarger label bit depths will require more memory, but will enable more objects " +
+                "\nto be detected (8-bit = 255 objects, 16-bit = 65535 objects, 32-bit = (near) unlimited.";
     }
 
     @Override
@@ -123,11 +123,22 @@ public class IdentifyObjects extends Module {
 
         // Getting parameters
         String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
+        boolean whiteBackground = parameters.getValue(WHITE_BACKGROUND);
+        boolean singleObject = parameters.getValue(SINGLE_OBJECT);
+        String connectivityName = parameters.getValue(CONNECTIVITY);
+
+        // Getting options
+        int connectivity = getConnectivity(connectivityName);
 
         ObjCollection outputObjects = null;
         try {
-            outputObjects = importFromImage(inputImage);
-        } catch (IntegerOverflowException e) {
+            try {
+                outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, 16);
+            } catch (RuntimeException e2) {
+                System.err.println("Maximum number of labels reached while identifying objects.  Switching to 32-bit mode.  No action necessary.");
+                outputObjects = importFromImage(inputImage, outputObjectsName, whiteBackground, singleObject, connectivity, 32);
+            }
+        } catch (IntegerOverflowException e3) {
             return false;
         }
 
