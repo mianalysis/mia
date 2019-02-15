@@ -6,18 +6,19 @@ import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Spots3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import static org.junit.Assert.*;
 
-public class RemoveObjectsTest {
+public class RemoveObjectsTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new RemoveObjects().getTitle());
     }

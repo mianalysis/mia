@@ -6,6 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects2D;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -15,7 +16,7 @@ import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
 
-public class MeasureObjectTextureTest {
+public class MeasureObjectTextureTest extends ModuleTest {
     private double tolerance = 1E-4;
 
     @Test
@@ -130,7 +131,7 @@ public class MeasureObjectTextureTest {
         }
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new MeasureObjectTexture().getTitle());
     }

@@ -6,7 +6,9 @@ import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRef;
+import wbif.sjx.ModularImageAnalysis.Object.MeasurementRefCollection;
+import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
@@ -66,7 +68,7 @@ public class ComponentFactory {
         if (parameterComponent != null) {
             String value = parameter.getValueAsString();
             parameterComponent.setToolTipText(value == null ? "" : value);
-            if (!parameter.getClass().isInstance(TextDisplayP.class)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
+            if (!(parameter instanceof TextDisplayP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
             paramPanel.add(parameterComponent, c);
         }
 

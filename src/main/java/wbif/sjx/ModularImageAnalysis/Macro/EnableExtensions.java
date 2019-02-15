@@ -2,9 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Macro;
 
 import ij.IJ;
 import ij.macro.Functions;
-import ij.plugin.PlugIn;
 import org.scijava.command.Command;
-import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import wbif.sjx.ModularImageAnalysis.Process.DependencyValidator;
 

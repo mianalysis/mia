@@ -9,8 +9,8 @@ import ij.process.BinaryInterpolator;
 import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
-import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
+import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputObjectsP;
@@ -257,7 +257,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {// Local access to this is required for the action listeners
+    public boolean run(Workspace workspace) {// Local access to this is required for the action listeners
         this.workspace = workspace;
 
         // Getting parameters

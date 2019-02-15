@@ -5,6 +5,7 @@ import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -14,7 +15,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Stephen Cross on 10/09/2017.
  */
-public class MeasureObjectCentroidTest {
+public class MeasureObjectCentroidTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @BeforeClass
@@ -22,8 +23,8 @@ public class MeasureObjectCentroidTest {
         Module.setVerbose(true);
     }
 
-    @Test
-    public void testGetTitle() throws Exception {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new MeasureObjectCentroid().getTitle());
 
     }

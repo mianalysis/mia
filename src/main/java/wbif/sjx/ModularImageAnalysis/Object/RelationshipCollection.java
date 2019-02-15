@@ -2,7 +2,8 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.TreeSet;
 
 /**
  * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple

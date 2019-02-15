@@ -11,6 +11,7 @@ import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Sphere3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -23,14 +24,14 @@ import static org.junit.Assert.*;
 /**
  * Created by Stephen Cross on 09/09/2017.
  */
-public class MeasureObjectIntensityTest {
+public class MeasureObjectIntensityTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test
-    public void testGetTitle() throws Exception {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new MeasureObjectIntensity().getTitle());
 
     }
@@ -61,11 +62,6 @@ public class MeasureObjectIntensityTest {
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MEAN,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MIN,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MAX,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_STDEV,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_SUM,true);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
@@ -130,11 +126,6 @@ public class MeasureObjectIntensityTest {
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MEAN,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MIN,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MAX,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_STDEV,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_SUM,true);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
@@ -199,11 +190,6 @@ public class MeasureObjectIntensityTest {
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,"Test_image");
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,"Test_objects");
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MEAN,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MIN,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MAX,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_STDEV,true);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_SUM,true);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
@@ -273,11 +259,6 @@ public class MeasureObjectIntensityTest {
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,imageName);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,inputObjectsName);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MEAN,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MIN,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MAX,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_STDEV,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_SUM,false);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,true);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.EDGE_DISTANCE_MODE,MeasureObjectIntensity.EdgeDistanceModes.INSIDE_ONLY);
@@ -321,11 +302,6 @@ public class MeasureObjectIntensityTest {
         measureObjectIntensity.initialiseParameters();
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_IMAGE,imageName);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.INPUT_OBJECTS,inputObjectsName);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MEAN,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MIN,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_MAX,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_STDEV,false);
-        measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_SUM,false);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,false);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,true);
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.EDGE_DISTANCE_MODE,MeasureObjectIntensity.EdgeDistanceModes.OUTSIDE_ONLY);

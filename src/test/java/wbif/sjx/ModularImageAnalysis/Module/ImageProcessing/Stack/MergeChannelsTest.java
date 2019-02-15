@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.InputOutput.ImageLoader;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -14,14 +15,14 @@ import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
 
-public class MergeChannelsTest {
+public class MergeChannelsTest extends ModuleTest {
 
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new MergeChannels<>().getTitle());
     }

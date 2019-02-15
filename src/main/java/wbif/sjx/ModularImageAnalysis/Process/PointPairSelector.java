@@ -5,7 +5,6 @@ import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
 import ij.gui.Roi;
-import ij.plugin.Duplicator;
 import wbif.sjx.common.MathFunc.CumStat;
 
 import javax.swing.*;

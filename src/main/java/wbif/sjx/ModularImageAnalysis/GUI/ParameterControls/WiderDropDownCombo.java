@@ -4,7 +4,6 @@ package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 public class WiderDropDownCombo extends JComboBox {
     private String type;

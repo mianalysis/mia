@@ -5,7 +5,6 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
 import com.drew.lang.annotations.NotNull;
 import com.drew.lang.annotations.Nullable;
-import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.*;

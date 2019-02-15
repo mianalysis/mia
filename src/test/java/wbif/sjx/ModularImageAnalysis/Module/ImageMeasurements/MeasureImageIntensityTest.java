@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -13,7 +14,7 @@ import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
 
-public class MeasureImageIntensityTest {
+public class MeasureImageIntensityTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @BeforeClass
@@ -21,7 +22,7 @@ public class MeasureImageIntensityTest {
         Module.setVerbose(true);
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new MeasureImageIntensity().getTitle());
     }
@@ -41,11 +42,6 @@ public class MeasureImageIntensityTest {
         MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MEAN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MIN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MAX,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_STDEV,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
         measureImageIntensity.run(workspace);
@@ -75,11 +71,6 @@ public class MeasureImageIntensityTest {
         MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MEAN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MIN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MAX,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_STDEV,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
         measureImageIntensity.run(workspace);
@@ -109,11 +100,6 @@ public class MeasureImageIntensityTest {
         MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MEAN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MIN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MAX,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_STDEV,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
         measureImageIntensity.run(workspace);
@@ -143,11 +129,6 @@ public class MeasureImageIntensityTest {
         MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MEAN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MIN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MAX,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_STDEV,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
         measureImageIntensity.run(workspace);
@@ -177,11 +158,6 @@ public class MeasureImageIntensityTest {
         MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
         measureImageIntensity.initialiseParameters();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MEAN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MIN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MAX,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_STDEV,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,true);
 
         // Running MeasureImageIntensity
         measureImageIntensity.run(workspace);

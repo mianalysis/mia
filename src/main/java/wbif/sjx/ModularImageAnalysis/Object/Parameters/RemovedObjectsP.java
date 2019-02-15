@@ -5,7 +5,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.ObjectNamesType;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
 
 public class RemovedObjectsP extends ObjectNamesType {
     public RemovedObjectsP(String name, Module module) {

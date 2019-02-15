@@ -25,6 +25,7 @@ public class ClearWorkspaceMacro extends MacroOperation {
         workspace.clearAllObjects(false);
 
         return null;
+
     }
 
     @Override

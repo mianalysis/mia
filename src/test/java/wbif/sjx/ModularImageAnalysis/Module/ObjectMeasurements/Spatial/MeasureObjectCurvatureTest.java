@@ -8,6 +8,7 @@ import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Rings2D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 
 import java.net.URLDecoder;
@@ -17,7 +18,7 @@ import static org.junit.Assert.*;
 /**
  * Created by sc13967 on 31/01/2018.
  */
-public class MeasureObjectCurvatureTest {
+public class MeasureObjectCurvatureTest extends ModuleTest {
     private double tolerance = 1E-1; // As these are fit values, the tolerance is larger than usual
 
     @BeforeClass
@@ -25,7 +26,7 @@ public class MeasureObjectCurvatureTest {
         Module.setVerbose(true);
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new MeasureObjectCurvature().getTitle());
     }

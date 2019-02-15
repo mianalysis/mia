@@ -3,7 +3,8 @@ package wbif.sjx.ModularImageAnalysis.Object;
 import wbif.sjx.common.Object.HCMetadata;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by sc13967 on 02/05/2017.
@@ -45,8 +46,15 @@ public class Workspace {
 
     }
 
-    public void removeObject(String name) {
-        objects.remove(name);
+    public void removeObject(String name, boolean retainMeasurements) {
+        if (retainMeasurements) {
+            for (Obj obj:objects.get(name).values()) {
+                obj.clearPoints();
+                obj.clearSurface();
+            }
+        } else {
+            objects.remove(name);
+        }
 
         // Running garbage collector
         Runtime.getRuntime().gc();

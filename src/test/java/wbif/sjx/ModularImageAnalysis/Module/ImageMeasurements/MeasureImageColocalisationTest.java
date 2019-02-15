@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects2D;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -13,7 +14,7 @@ import java.net.URLDecoder;
 
 import static org.junit.Assert.*;
 
-public class MeasureImageColocalisationTest {
+public class MeasureImageColocalisationTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @Test
@@ -153,7 +154,7 @@ public class MeasureImageColocalisationTest {
 
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new MeasureImageColocalisation().getTitle());
     }

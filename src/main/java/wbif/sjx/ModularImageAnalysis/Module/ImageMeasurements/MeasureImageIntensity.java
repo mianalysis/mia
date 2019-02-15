@@ -3,11 +3,11 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageMeasurements;
 import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
+import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Analysis.IntensityCalculator;
-import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.common.MathFunc.CumStat;
 
 /**
@@ -15,11 +15,6 @@ import wbif.sjx.common.MathFunc.CumStat;
  */
 public class MeasureImageIntensity extends Module {
     public static final String INPUT_IMAGE = "Input image";
-    public static final String MEASURE_MEAN = "Measure mean";
-    public static final String MEASURE_STDEV = "Measure standard deviation";
-    public static final String MEASURE_MIN = "Measure minimum";
-    public static final String MEASURE_MAX = "Measure maximum";
-    public static final String MEASURE_SUM = "Measure sum";
 
 
     public interface Measurements {
@@ -50,7 +45,7 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     public boolean run(Workspace workspace) {
-       // Getting input image
+        // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         writeMessage("Loading image ("+inputImageName+")");
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -60,16 +55,11 @@ public class MeasureImageIntensity extends Module {
         CumStat cs = IntensityCalculator.calculate(inputImagePlus.getImageStack());
 
         // Adding measurements to image
-        if (parameters.getValue(MEASURE_MEAN))
-            inputImage.addMeasurement(new Measurement(Measurements.MEAN, cs.getMean()));
-        if (parameters.getValue(MEASURE_MIN))
-            inputImage.addMeasurement(new Measurement(Measurements.MIN, cs.getMin()));
-        if (parameters.getValue(MEASURE_MAX))
-            inputImage.addMeasurement(new Measurement(Measurements.MAX, cs.getMax()));
-        if (parameters.getValue(MEASURE_STDEV))
-            inputImage.addMeasurement(new Measurement(Measurements.STDEV, cs.getStd(CumStat.SAMPLE)));
-        if (parameters.getValue(MEASURE_SUM))
-            inputImage.addMeasurement(new Measurement(Measurements.SUM, cs.getSum()));
+        inputImage.addMeasurement(new Measurement(Measurements.MEAN, cs.getMean()));
+        inputImage.addMeasurement(new Measurement(Measurements.MIN, cs.getMin()));
+        inputImage.addMeasurement(new Measurement(Measurements.MAX, cs.getMax()));
+        inputImage.addMeasurement(new Measurement(Measurements.STDEV, cs.getStd(CumStat.SAMPLE)));
+        inputImage.addMeasurement(new Measurement(Measurements.SUM, cs.getSum()));
 
         if (showOutput) inputImage.showMeasurements(this);
 
@@ -80,11 +70,6 @@ public class MeasureImageIntensity extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputImageP(INPUT_IMAGE, this));
-        parameters.add(new BooleanP(MEASURE_MEAN, this, true));
-        parameters.add(new BooleanP(MEASURE_MIN, this, true));
-        parameters.add(new BooleanP(MEASURE_MAX, this, true));
-        parameters.add(new BooleanP(MEASURE_STDEV, this, true));
-        parameters.add(new BooleanP(MEASURE_SUM, this, true));
 
     }
 
@@ -101,23 +86,23 @@ public class MeasureImageIntensity extends Module {
 
         MeasurementRef mean = imageMeasurementRefs.getOrPut(Measurements.MEAN);
         mean.setImageObjName(inputImageName);
-        mean.setCalculated(parameters.getValue(MEASURE_MEAN));
+        mean.setCalculated(true);
 
         MeasurementRef min = imageMeasurementRefs.getOrPut(Measurements.MIN);
         min.setImageObjName(inputImageName);
-        min.setCalculated(parameters.getValue(MEASURE_MIN));
+        min.setCalculated(true);
 
         MeasurementRef max = imageMeasurementRefs.getOrPut(Measurements.MAX);
         max.setImageObjName(inputImageName);
-        max.setCalculated(parameters.getValue(MEASURE_MAX));
+        max.setCalculated(true);
 
         MeasurementRef stdev = imageMeasurementRefs.getOrPut(Measurements.STDEV);
         stdev.setImageObjName(inputImageName);
-        stdev.setCalculated(parameters.getValue(MEASURE_STDEV));
+        stdev.setCalculated(true);
 
         MeasurementRef sum = imageMeasurementRefs.getOrPut(Measurements.SUM);
         sum.setImageObjName(inputImageName);
-        sum.setCalculated(parameters.getValue(MEASURE_SUM));
+        sum.setCalculated(true);
 
         return imageMeasurementRefs;
 

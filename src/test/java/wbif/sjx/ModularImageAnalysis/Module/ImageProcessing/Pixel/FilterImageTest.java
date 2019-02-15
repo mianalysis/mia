@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -16,7 +17,7 @@ import static org.junit.Assert.*;
 /**
  * Created by sc13967 on 13/11/2017.
  */
-public class FilterImageTest {
+public class FilterImageTest extends ModuleTest {
 
     @BeforeClass
     public static void setVerbose() {
@@ -26,8 +27,8 @@ public class FilterImageTest {
 
     // GENERAL TESTS
 
-    @Test
-    public void testGetTitle() throws Exception {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new FilterImage().getTitle());
     }
 

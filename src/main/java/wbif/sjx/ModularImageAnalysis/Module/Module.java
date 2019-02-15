@@ -2,21 +2,10 @@
 
 package wbif.sjx.ModularImageAnalysis.Module;
 
-import ij.ImagePlus;
 import ij.Prefs;
-import ij.macro.MacroExtension;
-import ij.plugin.Duplicator;
-import ij.process.LUT;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
-import wbif.sjx.common.Process.IntensityMinMax;
-
-import java.awt.*;
-import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Created by sc13967 on 02/05/2017.

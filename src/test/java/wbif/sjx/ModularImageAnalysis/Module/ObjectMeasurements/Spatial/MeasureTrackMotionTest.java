@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Tracks3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Measurement;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
@@ -21,14 +22,14 @@ import static org.junit.Assert.*;
 /**
  * Created by Stephen Cross on 09/08/2018.
  */
-public class MeasureTrackMotionTest {
+public class MeasureTrackMotionTest extends ModuleTest {
     private double tolerance = 1E-2;
 
 
     // GENERAL TRACK TESTS
 
-    @Test
-    public void testGetTitle() throws Exception {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new MeasureTrackMotion().getTitle());
     }
 

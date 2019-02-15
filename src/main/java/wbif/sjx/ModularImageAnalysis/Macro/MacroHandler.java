@@ -5,7 +5,6 @@ import ij.macro.MacroExtension;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 import wbif.sjx.ModularImageAnalysis.Process.ClassHunter;
 
-import javax.crypto.Mac;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

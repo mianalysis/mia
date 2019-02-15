@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
@@ -8,21 +7,19 @@ import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import net.imagej.ImgPlus;
-import net.imglib2.Cursor;
 import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
-import net.imglib2.view.IntervalView;
-import net.imglib2.view.Views;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
-import wbif.sjx.common.Object.Point;
-import wbif.sjx.common.Object.Volume;
 import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.awt.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by stephen on 30/04/2017.
@@ -166,6 +163,29 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
         // Displaying the results table
         rt.show("\""+module.getTitle()+" \"measurements for \""+name+"\"");
+
+    }
+
+    public void showAllMeasurements() {
+        // Creating a new ResultsTable for these values
+        ResultsTable rt = new ResultsTable();
+
+        // Getting a list of all measurements relating to this object collection
+        Set<String> measNames = getMeasurements().keySet();
+
+        // Setting the measurements from the Module
+        int row = 0;
+        for (String measName : measNames) {
+            Measurement measurement = getMeasurement(measName);
+            double value = measurement == null ? Double.NaN : measurement.getValue();
+
+            // Setting value
+            rt.setValue(measName,row,value);
+
+        }
+
+        // Displaying the results table
+        rt.show("All measurements for \""+name+"\"");
 
     }
 

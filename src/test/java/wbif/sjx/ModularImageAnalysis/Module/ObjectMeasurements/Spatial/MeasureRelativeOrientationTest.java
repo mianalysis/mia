@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
@@ -10,7 +11,7 @@ import wbif.sjx.common.Object.Volume;
 
 import static org.junit.Assert.*;
 
-public class MeasureRelativeOrientationTest {
+public class MeasureRelativeOrientationTest extends ModuleTest {
     private double tolerance = 1E-2;
 
     @BeforeClass
@@ -18,7 +19,7 @@ public class MeasureRelativeOrientationTest {
         Module.setVerbose(true);
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new MeasureRelativeOrientation().getTitle());
     }

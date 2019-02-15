@@ -1,8 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import ij.IJ;
-
-import javax.sound.midi.SysexMessage;
 import java.io.IOException;
 import java.io.OutputStream;
 

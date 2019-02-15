@@ -62,20 +62,10 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         // Populating some modules (no need to populate all parameters as these should be initialised)
         MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,im1Name);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MEAN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_STDEV,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MIN,false);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MAX,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,false);
         modules.add(measureImageIntensity);
 
         MeasureImageIntensity measureImageIntensity2 = new MeasureImageIntensity();
         measureImageIntensity2.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,im2Name);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_MEAN,false);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_STDEV,true);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_MIN,true);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_MAX,true);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,false);
         modules.add(measureImageIntensity2);
 
         MeasureImageTexture measureImageTexture = new MeasureImageTexture();
@@ -84,11 +74,13 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
 
         // Checking the values for "Im1"
         MeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name);
-        assertEquals(3,references1.size());
+        assertEquals(5,references1.size());
 
         String[] expectedNames1 = new String[]{MeasureImageIntensity.Measurements.MEAN,
                 MeasureImageIntensity.Measurements.STDEV,
-                MeasureImageIntensity.Measurements.MAX};
+                MeasureImageIntensity.Measurements.MIN,
+                MeasureImageIntensity.Measurements.MAX,
+                MeasureImageIntensity.Measurements.SUM};
 
         for (String expectedName1:expectedNames1) {
             assertTrue(references1.containsKey(expectedName1));
@@ -96,11 +88,13 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
 
         // Checking the values for "New_image"
         MeasurementRefCollection references2 = modules.getImageMeasurementRefs(im2Name);
-        assertEquals(7,references2.size());
+        assertEquals(9,references2.size());
 
-        String[] expectedNames2 = new String[]{MeasureImageIntensity.Measurements.MIN,
+        String[] expectedNames2 = new String[]{MeasureImageIntensity.Measurements.MEAN,
                 MeasureImageIntensity.Measurements.STDEV,
+                MeasureImageIntensity.Measurements.MIN,
                 MeasureImageIntensity.Measurements.MAX,
+                MeasureImageIntensity.Measurements.SUM,
                 MeasureImageTexture.Measurements.ASM,
                 MeasureImageTexture.Measurements.CONTRAST,
                 MeasureImageTexture.Measurements.CORRELATION,
@@ -122,20 +116,10 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
         // Populating some modules (no need to populate all parameters as these should be initialised)
         MeasureImageIntensity measureImageIntensity = new MeasureImageIntensity();
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,im1Name);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MEAN,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_STDEV,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MIN,false);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_MAX,true);
-        measureImageIntensity.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,false);
         modules.add(measureImageIntensity);
 
         MeasureImageIntensity measureImageIntensity2 = new MeasureImageIntensity();
         measureImageIntensity2.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,im2Name);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_MEAN,false);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_STDEV,true);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_MIN,true);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_MAX,true);
-        measureImageIntensity2.updateParameterValue(MeasureImageIntensity.MEASURE_SUM,false);
         modules.add(measureImageIntensity2);
 
         MeasureImageTexture measureImageTexture = new MeasureImageTexture();
@@ -144,11 +128,13 @@ public class ModuleCollectionTest < T extends RealType< T > & NativeType< T >> {
 
         // Checking the values for "Im1"
         MeasurementRefCollection references1 = modules.getImageMeasurementRefs(im1Name,measureImageIntensity2);
-        assertEquals(3,references1.size());
+        assertEquals(5,references1.size());
 
         String[] expectedNames1 = new String[]{MeasureImageIntensity.Measurements.MEAN,
                 MeasureImageIntensity.Measurements.STDEV,
-                MeasureImageIntensity.Measurements.MAX};
+                MeasureImageIntensity.Measurements.MIN,
+                MeasureImageIntensity.Measurements.MAX,
+                MeasureImageIntensity.Measurements.SUM};
 
         for (String expectedName1:expectedNames1) {
             assertTrue(references1.containsKey(expectedName1));

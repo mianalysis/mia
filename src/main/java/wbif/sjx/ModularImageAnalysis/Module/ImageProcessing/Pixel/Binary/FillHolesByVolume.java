@@ -7,6 +7,7 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
@@ -25,7 +26,9 @@ public class FillHolesByVolume extends Module {
     public static final String MAXIMUM_VOLUME = "Maximum size";
     public static final String CALIBRATED_UNITS = "Calibrated units";
 
-    public void process(ImagePlus ipl, double minVolume, double maxVolume, boolean calibratedUnits) throws LongOverflowException {
+
+    public void process(ImagePlus ipl, double minVolume, double maxVolume, boolean calibratedUnits, int labelBitDepth)
+            throws LongOverflowException {
         // If the units are calibrated, converting them to pixels
         if (calibratedUnits) {
             double dppXY = ipl.getCalibration().pixelWidth;
@@ -52,7 +55,7 @@ public class FillHolesByVolume extends Module {
                 }
 
                 // Applying connected components labelling
-                FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26);
+                FloodFillComponentsLabeling3D ffcl3D = new FloodFillComponentsLabeling3D(26,labelBitDepth);
                 ImageStack labelIst = ffcl3D.computeLabels(currStack.getStack());
 
                 // Counting the number of instances of each label
@@ -103,11 +106,12 @@ public class FillHolesByVolume extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "Larger label bit depths will require more memory, but will enable more objects " +
+                "\nto be detected (8-bit = 255 objects, 16-bit = 65535 objects, 32-bit = (near) unlimited.";
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    public boolean run(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -128,7 +132,12 @@ public class FillHolesByVolume extends Module {
         if (!useMinVolume) minVolume = -Float.MAX_VALUE;
         if (!useMaxVolume) maxVolume = Float.MAX_VALUE;
         try {
-            process(inputImagePlus,minVolume,maxVolume,calibratedUnits);
+            try {
+                process(inputImagePlus,minVolume,maxVolume,calibratedUnits,16);
+            } catch (RuntimeException e2) {
+                System.err.println("Maximum number of labels reached while filling holes.  Switching to 32-bit mode.  No action necessary.");
+                process(inputImagePlus,minVolume,maxVolume,calibratedUnits,32);
+            }
         } catch (LongOverflowException e) {
             return false;
         }
@@ -180,6 +189,7 @@ public class FillHolesByVolume extends Module {
         if (parameters.getValue(USE_MAXIMUM_VOLUME)) {
             returnedParameters.add(parameters.getParameter(MAXIMUM_VOLUME));
         }
+
         returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
 
         return returnedParameters;

@@ -5,33 +5,25 @@
 package wbif.sjx.ModularImageAnalysis;
 
 import ij.ImageJ;
-import ij.macro.Functions;
 import ij.plugin.PlugIn;
-import net.imagej.ui.swing.updater.ResolveDependencies;
-import net.imagej.updater.*;
-import net.imagej.updater.util.*;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.scijava.util.AppUtils;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
-import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ErrorLog;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisReader;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisRunner;
-import wbif.sjx.ModularImageAnalysis.Macro.MacroHandler;
 import wbif.sjx.ModularImageAnalysis.Process.DependencyValidator;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
 
 
 /**

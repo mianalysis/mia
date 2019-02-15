@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.io.File;
@@ -11,13 +12,13 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class MetadataExtractorTest {
+public class MetadataExtractorTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new MetadataExtractor().getTitle());
     }

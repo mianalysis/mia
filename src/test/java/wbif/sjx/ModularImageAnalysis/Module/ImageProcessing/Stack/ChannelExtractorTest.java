@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -15,14 +16,14 @@ import static org.junit.Assert.*;
 /**
  * Created by Stephen Cross on 09/09/2017.
  */
-public class ChannelExtractorTest {
+public class ChannelExtractorTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test
-    public void testGetTitle() throws Exception {
+    @Override
+    public void testGetTitle() {
         assertNotNull(new ChannelExtractor().getTitle());
 
     }

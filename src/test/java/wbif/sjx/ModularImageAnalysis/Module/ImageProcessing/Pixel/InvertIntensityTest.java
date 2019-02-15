@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -15,13 +16,13 @@ import static org.junit.Assert.*;
 /**
  * Created by sc13967 on 26/03/2018.
  */
-public class InvertIntensityTest {
+public class InvertIntensityTest extends ModuleTest {
     @BeforeClass
     public static void setVerbose() {
         Module.setVerbose(true);
     }
 
-    @Test
+    @Override
     public void testGetTitle() {
         assertNotNull(new InvertIntensity().getTitle());
     }

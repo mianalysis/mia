@@ -5,7 +5,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.ImageNamesType;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
 
 public class InputImageP extends ImageNamesType {
     public InputImageP(String name, Module module) {
