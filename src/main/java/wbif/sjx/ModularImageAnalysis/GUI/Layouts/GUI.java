@@ -972,7 +972,7 @@ public class GUI {
                 expanded = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
                 modulePanel = componentFactory.createBasicSeparator(module, basicFrameWidth-80);
             } else {
-                if (module.isRunnable()) {
+                if (module.isRunnable() || module.invalidParameterIsVisible()) {
                     modulePanel = componentFactory.createBasicModuleControl(module, basicFrameWidth - 80);
                 }
             }

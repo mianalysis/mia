@@ -230,8 +230,7 @@ public class ComponentFactory {
         title.setBorder(null);
         title.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
         title.setOpaque(false);
-        Color color = module.isRunnable() ? Color.BLACK : Color.RED;
-        title.setForeground(color);
+        title.setForeground(Color.BLACK);
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);
@@ -356,10 +355,11 @@ public class ComponentFactory {
 
         // If there are visible parameters, but the module isn't enabled only return the heading
         if (!module.isEnabled()) return modulePanel;
-        if (!module.isRunnable()) return modulePanel;
+        if (!module.isRunnable() &! module.invalidParameterIsVisible()) return modulePanel;
 
         c.insets = new Insets(0,35,0,0);
         for (Parameter parameter : module.updateAndGetParameters()) {
+            System.err.println(parameter.getName());
             if (parameter.getClass() == ParameterGroup.class) {
 
             } else {

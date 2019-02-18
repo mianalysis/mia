@@ -122,6 +122,15 @@ public abstract class Module {
         return parameters;
     }
 
+    public boolean invalidParameterIsVisible() {
+        for (Parameter parameter:updateAndGetParameters()) {
+            if (!parameter.isValid() && parameter.isVisible()) return true;
+        }
+
+        return false;
+
+    }
+
 
     // PRIVATE METHODS
 
