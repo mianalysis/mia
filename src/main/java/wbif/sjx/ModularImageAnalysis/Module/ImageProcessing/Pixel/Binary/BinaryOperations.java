@@ -304,7 +304,8 @@ public class BinaryOperations extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_PIXEL_BINARY;
+        // Returns null, so it can't be added as a new Module
+        return null;
     }
 
     @Override

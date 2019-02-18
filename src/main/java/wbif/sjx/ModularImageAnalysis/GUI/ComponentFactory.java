@@ -359,7 +359,6 @@ public class ComponentFactory {
 
         c.insets = new Insets(0,35,0,0);
         for (Parameter parameter : module.updateAndGetParameters()) {
-            System.err.println(parameter.getName());
             if (parameter.getClass() == ParameterGroup.class) {
 
             } else {
