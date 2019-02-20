@@ -70,8 +70,10 @@ public class DocumentationGenerator {
         // For each package name, adding a list of the matching Modules
         for (String packageName:packageNames) {
             String prettyPackageName = packageName.replace("\\"," / ");
-            sb.append("<h2>Package: ").append(prettyPackageName).append("</h2>\r\n");
-            sb.append("<ul>\r\n");
+            sb.append("<h2>")
+                    .append(prettyPackageName)
+                    .append("</h2>\r\n")
+                    .append("<ul>\r\n");
 
             // For each Module in this package, create a link to the description document
             for (Module module:modules) {
