@@ -383,7 +383,7 @@ public class FilterObjects extends Module {
             case FilterMethods.NO_PARENT:
             case FilterMethods.WITH_PARENT:
                 returnedParameters.add(parameters.getParameter(PARENT_OBJECT));
-                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT)).setObjectName(inputObjectsName);
+                ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT)).setChildObjectsName(inputObjectsName);
                 break;
 
             case FilterMethods.MIN_NUMBER_OF_CHILDREN:

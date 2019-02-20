@@ -133,7 +133,8 @@ public class TrackObjects extends Module {
                 double spatialCost = 0;
                 switch (linkingMethod) {
                     case LinkingMethods.CENTROID:
-                        spatialCost = getCentroidSeparationCost(prevObj, currObj);
+                        double separation = getCentroidSeparationCost(prevObj, currObj);
+                        spatialCost = separation > maxDist ? Double.MAX_VALUE : separation;
                         break;
                     case LinkingMethods.ABSOLUTE_OVERLAP:
                         float overlap = getAbsoluteOverlap(prevObjects.get(prev), currObjects.get(curr), spatialLimits);
@@ -549,43 +550,11 @@ public class TrackObjects extends Module {
                     Obj currObj = nPObjects[1].get(curr);
 
                     // Checking if the previous and current objects can be linked
-                    boolean successfulLink = true;
                     if (assignment[curr] != -1 && cost[curr][assignment[curr]] != Double.MAX_VALUE) {
                         Obj prevObj = nPObjects[0].get(assignment[curr]);
-
-//                        // Checking if the link is within the user-defined limits (max linking distance, overlap, etc.)
-//                        switch (linkingMethod) {
-//                            case LinkingMethods.CENTROID:
-//                                successfulLink = testSeparationValidity(prevObj, currObj, maxDist);
-//                                break;
-//                            case LinkingMethods.ABSOLUTE_OVERLAP:
-//                                successfulLink = testOverlapValidity(prevObj, currObj, minOverlap, spatialLimits);
-//                                break;
-//                        }
-//
-//                        // Testing volume
-//                        if ()
-//
-//                        // Testing direction
-//                        switch (directionWeightingMode) {
-//                            case DirectionWeightingModes.ABSOLUTE_ORIENTATION:
-//                                double directionCost = getAbsoluteOrientationCost(prevObj, currObj, preferredDirection);
-//                                if (successfulLink)
-//                                    successfulLink = testDirectionTolerance(directionCost, directionTolerance);
-//                                break;
-//                            case DirectionWeightingModes.RELATIVE_TO_PREVIOUS_STEP:
-//                                directionCost = getPreviousStepDirectionCost(prevObj, currObj, inputObjects);
-//                                if (successfulLink)
-//                                    successfulLink = testDirectionTolerance(directionCost, directionTolerance);
-//                                break;
-//                        }
-
-                        // Creating new links and tracks where appropriate
-//                        if (successfulLink) {
                         linkObjects(prevObj, currObj, trackObjectsName);
                     } else if (t1 == t2 - 1 - maxMissingFrames) {
                         createNewTrack(currObj, trackObjects);
-//                        }
                     }
                 }
             }
