@@ -12,7 +12,6 @@ layout: default
     <a href="/index" class="nav1">Introduction</a>
     <a href="/html/gettingstarted" class="nav1">Getting started</a>
     <a href="/html/modules" class="nav1">Modules</a>
-    <a href="/html/modulebasics" class="nav2">Basics</a>
     <a href="/html/modulelist" class="nav2">List of modules</a>
     <a href="/html/macros" class="nav1">Macros</a>
     <a href="/html/extendingmia" class="nav1">Extending MIA</a>
@@ -24,9 +23,13 @@ layout: default
     <a href="/html/modulelist.html">Back to module list</a>
 <h1>Identify objects</h1>
 <h2>Description</h2>
+Takes a binary image and uses connected components labelling to create objects
+Uses MorphoLibJ to perform connected components labelling in 3D. 
 
+Larger label bit depths will require more memory, but will enable more objects 
+to be detected (8-bit = 255 objects, 16-bit = 65535 objects, 32-bit = (near) unlimited.
 <h2>Parameters</h2>
-<ul><li>Input image<ul><li>Description: </li><li>Type: InputImageP</li><li>Default value: </li></ul><li>Output objects<ul><li>Description: </li><li>Type: OutputObjectsP</li><li>Default value: </li></ul><li>Black objects/white background<ul><li>Description: </li><li>Type: BooleanP</li><li>Default value: true</li></ul><li>Identify as single object<ul><li>Description: </li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Connectivity<ul><li>Description: </li><li>Type: ChoiceP</li><li>Default value: 26</li><li>Choices: <ul><li>6</li><li>26</li></ul></li></ul></ul>
+<ul><li>Input image<ul></li><li>Type: InputImageP</li></ul><li>Output objects<ul></li><li>Type: OutputObjectsP</li></ul><li>Black objects/white background<ul></li><li>Type: BooleanP</li><li>Default value: true</li></ul><li>Identify as single object<ul></li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Connectivity<ul></li><li>Type: ChoiceP</li><li>Default value: 26</li><li>Choices: <ul><li>6</li><li>26</li></ul></li></ul></ul>
 
 </div>
 </body>

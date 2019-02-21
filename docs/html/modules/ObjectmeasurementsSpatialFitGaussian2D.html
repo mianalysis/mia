@@ -12,7 +12,6 @@ layout: default
     <a href="/index" class="nav1">Introduction</a>
     <a href="/html/gettingstarted" class="nav1">Getting started</a>
     <a href="/html/modules" class="nav1">Modules</a>
-    <a href="/html/modulebasics" class="nav2">Basics</a>
     <a href="/html/modulelist" class="nav2">List of modules</a>
     <a href="/html/macros" class="nav1">Macros</a>
     <a href="/html/extendingmia" class="nav1">Extending MIA</a>
@@ -24,9 +23,11 @@ layout: default
     <a href="/html/modulelist.html">Back to module list</a>
 <h1>Fit Gaussian 2D</h1>
 <h2>Description</h2>
-
+Gaussian spot fitting.  Can take objects as estimated locations.
+***Only works in 2D***
+***Only works for refinement of existing spots***
 <h2>Parameters</h2>
-<ul><li>Input image<ul><li>Description: </li><li>Type: InputImageP</li><li>Default value: </li></ul><li>Input objects<ul><li>Description: </li><li>Type: InputObjectsP</li><li>Default value: </li></ul><li>Method to estimate spot radius<ul><li>Description: </li><li>Type: ChoiceP</li><li>Default value: Fixed value</li><li>Choices: <ul><li>Fixed value</li><li>Measurement</li></ul></li></ul><li>Radius<ul><li>Description: </li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Radius measurement<ul><li>Description: </li><li>Type: ObjectMeasurementP</li><li>Default value: </li></ul><li>Measurement multiplier<ul><li>Description: </li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Limit sigma range<ul><li>Description: </li><li>Type: BooleanP</li><li>Default value: true</li></ul><li>Minimum sigma (x Radius)<ul><li>Description: </li><li>Type: DoubleP</li><li>Default value: 0.25</li></ul><li>Maximum sigma (x Radius)<ul><li>Description: </li><li>Type: DoubleP</li><li>Default value: 4.0</li></ul><li>Fixed fitting window<ul><li>Description: </li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Window size<ul><li>Description: </li><li>Type: IntegerP</li><li>Default value: 15</li></ul><li>Maximum number of evaluations<ul><li>Description: </li><li>Type: IntegerP</li><li>Default value: 1000</li></ul><li>Remove objects with failed fitting<ul><li>Description: </li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Apply volume<ul><li>Description: </li><li>Type: BooleanP</li><li>Default value: true</li></ul></ul>
+<ul><li>Input image<ul></li><li>Type: InputImageP</li></ul><li>Input objects<ul></li><li>Type: InputObjectsP</li></ul><li>Method to estimate spot radius<ul></li><li>Type: ChoiceP</li><li>Default value: Fixed value</li><li>Choices: <ul><li>Fixed value</li><li>Measurement</li></ul></li></ul><li>Radius<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Radius measurement<ul></li><li>Type: ObjectMeasurementP</li></ul><li>Measurement multiplier<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Limit sigma range<ul></li><li>Type: BooleanP</li><li>Default value: true</li></ul><li>Minimum sigma (x Radius)<ul></li><li>Type: DoubleP</li><li>Default value: 0.25</li></ul><li>Maximum sigma (x Radius)<ul></li><li>Type: DoubleP</li><li>Default value: 4.0</li></ul><li>Fixed fitting window<ul></li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Window size<ul></li><li>Type: IntegerP</li><li>Default value: 15</li></ul><li>Maximum number of evaluations<ul></li><li>Type: IntegerP</li><li>Default value: 1000</li></ul><li>Remove objects with failed fitting<ul></li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Apply volume<ul></li><li>Type: BooleanP</li><li>Default value: true</li></ul></ul>
 
 </div>
 </body>

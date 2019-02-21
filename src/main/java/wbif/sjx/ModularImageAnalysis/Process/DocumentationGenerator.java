@@ -67,34 +67,42 @@ public class DocumentationGenerator {
 
         // Adding the Module summary
         sb.append("<h2>Description</h2>\r\n")
-                .append(module.getNotes())
+                .append(module.getHelp())
                 .append("\r\n");
 
         sb.append("<h2>Parameters</h2>\r\n<ul>");
         for (Parameter parameter:module.getAllParameters()) {
             sb.append("<li>")
                     .append(parameter.getName())
-                    .append("<ul><li>Description: ")
-                    .append(parameter.getDescription())
-                    .append("</li><li>Type: ")
-                    .append(parameter.getClass().getSimpleName())
-                    .append("</li><li>Default value: ")
-                    .append(parameter.getValueAsString());
+                    .append("<ul>");
 
-                    if (parameter instanceof ChoiceP) {
-                        String[] choices = ((ChoiceP) parameter).getChoices();
-                        sb.append("</li><li>Choices: ")
-                                .append("<ul>");
+            if (!parameter.getDescription().equals("")) {
+                sb.append("<li>Description: ")
+                        .append(parameter.getDescription());
+            }
 
-                        for (String choice:choices) {
-                            sb.append("<li>")
+            sb.append("</li><li>Type: ")
+                    .append(parameter.getClass().getSimpleName());
+
+            if (!parameter.getValueAsString().equals("")) {
+                sb.append("</li><li>Default value: ")
+                        .append(parameter.getValueAsString());
+            }
+
+            if (parameter instanceof ChoiceP) {
+                String[] choices = ((ChoiceP) parameter).getChoices();
+                sb.append("</li><li>Choices: ")
+                        .append("<ul>");
+
+                for (String choice:choices) {
+                    sb.append("<li>")
                             .append(choice)
                             .append("</li>");
-                        }
-                        sb.append("</ul>");
-                    }
+                }
+                sb.append("</ul>");
+            }
 
-                    sb.append("</li></ul>");
+            sb.append("</li></ul>");
 
         }
         sb.append("</ul>");

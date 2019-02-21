@@ -40,6 +40,11 @@
   padding: 0px 10px;
 }
 
+.site-footer,
+.page-header {
+  margin-left: 180px; /* Same as the width of the sidebar */
+}
+
 /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
