@@ -28,8 +28,23 @@ public class ParameterGroup extends Parameter {
 
     }
 
+    public ParameterGroup(String name, Module module, ParameterCollection templateParameters, String description) {
+        super(name, module,description);
+        this.templateParameters = templateParameters;
+
+    }
+
     public ParameterGroup(String name, Module module, ParameterCollection templateParameters, int count) {
         super(name, module);
+        this.templateParameters = templateParameters;
+
+        // Initialising the specified number of collections
+        for (int i=0;i<count;i++) addParameters();
+
+    }
+
+    public ParameterGroup(String name, Module module, ParameterCollection templateParameters, int count, String description) {
+        super(name, module, description);
         this.templateParameters = templateParameters;
 
         // Initialising the specified number of collections

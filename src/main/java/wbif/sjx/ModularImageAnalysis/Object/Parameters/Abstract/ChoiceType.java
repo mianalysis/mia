@@ -11,6 +11,10 @@ public abstract class ChoiceType extends Parameter {
         super(name, module);
     }
 
+    public ChoiceType(String name, Module module, String description) {
+        super(name, module, description);
+    }
+
     public String getChoice() {
         return choice;
     }
@@ -43,7 +47,7 @@ public abstract class ChoiceType extends Parameter {
 
     @Override
     public boolean verify() {
-        // Verifying the choice is present in the choices.  When we run getChoices, we should be getting the valid
+        // Verifying the choice is present in the choices.  When we generateModuleList getChoices, we should be getting the valid
         // options only.
         String[] choices = getChoices();
 

@@ -63,7 +63,7 @@ public class OutputControl extends Module {
 
     @Override
     public String getPackageName() {
-        return "";
+        return "General";
     }
 
     @Override

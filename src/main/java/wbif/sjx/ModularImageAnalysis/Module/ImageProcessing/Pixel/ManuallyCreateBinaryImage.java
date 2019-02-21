@@ -96,7 +96,7 @@
 //    }
 //
 //    @Override
-//    protected void run(Workspace workspace) throws GenericMIAException {
+//    protected void generateModuleList(Workspace workspace) throws GenericMIAException {
 //        // Local access to this is required for the action listeners
 //        this.workspace = workspace;
 //
@@ -107,7 +107,7 @@
 //        // Getting input image
 //        Image inputImage = workspace.getImage(inputImageName);
 //        ImagePlus inputImagePlus = inputImage.getImagePlus();
-//        displayImagePlus = new Duplicator().run(inputImagePlus);
+//        displayImagePlus = new Duplicator().generateModuleList(inputImagePlus);
 //        displayImagePlus.setCalibration(null);
 //        displayImagePlus.setTitle(getNickname());
 //        overlay = displayImagePlus.getOverlay();
@@ -157,7 +157,7 @@
 //        }
 //
 //        if (showOutput) {
-//            ImagePlus showIpl = new Duplicator().run(outputImagePlus);
+//            ImagePlus showIpl = new Duplicator().generateModuleList(outputImagePlus);
 //            showIpl.setTitle(outputImageName);
 //            showIpl.show();
 //        }

@@ -13,8 +13,8 @@ public class OutputImageP extends TextType {
         super(name,module);
     }
 
-    public OutputImageP(String name, Module module, @Nonnull String imageName) {
-        super(name,module);
+    public OutputImageP(String name, Module module, @Nonnull String imageName, String description) {
+        super(name,module,description);
         this.imageName = imageName;
     }
 
@@ -48,6 +48,6 @@ public class OutputImageP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new OutputImageP(name,module,imageName);
+        return (T) new OutputImageP(name,module,imageName,getDescription());
     }
 }

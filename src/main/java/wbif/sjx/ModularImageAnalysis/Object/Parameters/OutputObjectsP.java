@@ -18,6 +18,11 @@ public class OutputObjectsP extends TextType {
         this.objectsName = objectsName;
     }
 
+    public OutputObjectsP(String name, Module module, @Nonnull String objectsName, String description) {
+        super(name,module,description);
+        this.objectsName = objectsName;
+    }
+
     public String getObjectsName() {
         return objectsName;
     }
@@ -48,6 +53,6 @@ public class OutputObjectsP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new OutputObjectsP(name,module,objectsName);
+        return (T) new OutputObjectsP(name,module,objectsName,getDescription());
     }
 }

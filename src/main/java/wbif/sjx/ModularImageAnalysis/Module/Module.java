@@ -74,7 +74,7 @@ public abstract class Module {
     protected abstract void initialiseParameters();
 
     /*
-     * Return a ParameterCollection of the currently active parameters.  This is run each time a parameter is changed.
+     * Return a ParameterCollection of the currently active parameters.  This is generateModuleList each time a parameter is changed.
      * For example, if "Export XML" is set to "false" a sub-parameter specifying the measurements to export won't be
      * included in the ParameterCollection.  A separate rendering class will take this ParameterCollection and generate
      * an appropriate GUI panel.

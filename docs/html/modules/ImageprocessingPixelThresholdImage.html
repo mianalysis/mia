@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="/index" class="nav1">Introduction</a>
+    <a href="/html/gettingstarted" class="nav1">Getting started</a>
+    <a href="/html/modules" class="nav1">Modules</a>
+    <a href="/html/modulelist" class="nav2">List of modules</a>
+    <a href="/html/macros" class="nav1">Macros</a>
+    <a href="/html/extendingmia" class="nav1">Extending MIA</a>
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="/html/modulelist.html">Back to module list</a>
+<h1>Threshold image</h1>
+<h2>Description</h2>
+
+<h2>Parameters</h2>
+<ul><li>Input image<ul></li><li>Type: InputImageP</li></ul><li>Apply to input image<ul></li><li>Type: BooleanP</li><li>Default value: true</li></ul><li>Output image<ul></li><li>Type: OutputImageP</li></ul><li>Threshold type<ul></li><li>Type: ChoiceP</li><li>Default value: Global</li><li>Choices: <ul><li>Global</li><li>Local</li><li>Manual</li></ul></li></ul><li>Global threshold algorithm<ul></li><li>Type: ChoiceP</li><li>Default value: Huang</li><li>Choices: <ul><li>Huang</li><li>Intermodes</li><li>IsoData</li><li>Li</li><li>MaxEntropy</li><li>Mean</li><li>MinError</li><li>Minimum</li><li>Moments</li><li>Otsu</li><li>Percentile</li><li>RenyiEntropy</li><li>Shanbhag</li><li>Triangle</li><li>Yen</li></ul></li></ul><li>Local threshold algorithm<ul></li><li>Type: ChoiceP</li><li>Default value: Phansalkar (3D)</li><li>Choices: <ul><li>Bernsen (3D)</li><li>Contrast (3D)</li><li>Mean (3D)</li><li>Median (3D)</li><li>Phansalkar (3D)</li><li>Phansalkar (slice-by-slice)</li></ul></li></ul><li>Threshold multiplier<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Use lower threshold limit<ul></li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Lower threshold limit<ul></li><li>Type: DoubleP</li><li>Default value: 0.0</li></ul><li>Local radius<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Spatial units<ul></li><li>Type: ChoiceP</li><li>Default value: Pixel</li><li>Choices: <ul><li>Calibrated</li><li>Pixel</li></ul></li></ul><li>Threshold value<ul></li><li>Type: IntegerP</li><li>Default value: 1</li></ul><li>Use full Z-range ("Global Z")<ul></li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Black objects/white background<ul></li><li>Type: BooleanP</li><li>Default value: true</li></ul><li>Store threshold as measurement<ul></li><li>Type: BooleanP</li><li>Default value: false</li></ul></ul>
+
+</div>
+</body>

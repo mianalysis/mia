@@ -12,6 +12,11 @@ public class IntegerP extends TextType {
         this.value = value;
     }
 
+    public IntegerP(String name, Module module, int value, String description) {
+        super(name,module,description);
+        this.value = value;
+    }
+
     public void setValue(int value) {
         this.value = value;
     }
@@ -42,6 +47,6 @@ public class IntegerP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new IntegerP(name,module,value);
+        return (T) new IntegerP(name,module,value,getDescription());
     }
 }

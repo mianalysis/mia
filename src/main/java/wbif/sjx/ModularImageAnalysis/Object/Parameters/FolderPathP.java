@@ -17,6 +17,10 @@ public class FolderPathP extends FileFolderType {
         super(name, module, filePath);
     }
 
+    public FolderPathP(String name, Module module, @Nonnull String filePath, String description) {
+        super(name, module, filePath);
+    }
+
     @Override
     public boolean isDirectory() {
         return true;
@@ -29,6 +33,6 @@ public class FolderPathP extends FileFolderType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new FilePathP(name,module,getPath());
+        return (T) new FilePathP(name,module,getPath(),getDescription());
     }
 }

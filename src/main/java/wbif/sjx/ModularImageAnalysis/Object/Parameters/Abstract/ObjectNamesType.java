@@ -11,6 +11,10 @@ public abstract class ObjectNamesType extends ChoiceType {
         super(name,module);
     }
 
+    public ObjectNamesType(String name, Module module, String description) {
+        super(name,module,description);
+    }
+
     @Override
     public String[] getChoices() {
         LinkedHashSet<OutputObjectsP> objects = GUI.getModules().getAvailableObjects(module);
