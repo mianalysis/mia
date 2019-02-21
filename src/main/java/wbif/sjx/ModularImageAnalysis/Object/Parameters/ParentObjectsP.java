@@ -16,8 +16,18 @@ public class ParentObjectsP extends ChoiceType {
         super(name,module);
     }
 
+    public ParentObjectsP(String name, Module module, String description) {
+        super(name,module);
+    }
+
     public ParentObjectsP(String name, Module module, @Nonnull String choice, @Nonnull String childObjectsName) {
         super(name,module);
+        this.choice = choice;
+        this.childObjectsName = childObjectsName;
+    }
+
+    public ParentObjectsP(String name, Module module, @Nonnull String choice, @Nonnull String childObjectsName, String description) {
+        super(name,module,description);
         this.choice = choice;
         this.childObjectsName = childObjectsName;
     }
@@ -41,6 +51,6 @@ public class ParentObjectsP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new ParentObjectsP(name,module,choice,childObjectsName);
+        return (T) new ParentObjectsP(name,module,choice,childObjectsName,getDescription());
     }
 }

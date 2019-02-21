@@ -34,7 +34,7 @@
 //    }
 //
 //    @Override
-//    public boolean run(Workspace workspace) {
+//    public boolean generateModuleList(Workspace workspace) {
 //        // Getting input images
 //        String inputStaticImageName = parameters.getValue(INPUT_STATIC_IMAGE);
 //        Image inputStaticImage = workspace.getImage(inputStaticImageName);

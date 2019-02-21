@@ -14,8 +14,18 @@ public class ImageMeasurementP extends ChoiceType {
         super(name, module);
     }
 
+    public ImageMeasurementP(String name, Module module, String description) {
+        super(name, module, description);
+    }
+
     public ImageMeasurementP(String name, Module module, @Nonnull String choice, @Nonnull String imageName) {
         super(name, module);
+        this.imageName = imageName;
+        this.choice = choice;
+    }
+
+    public ImageMeasurementP(String name, Module module, @Nonnull String choice, @Nonnull String imageName, String description) {
+        super(name, module, description);
         this.imageName = imageName;
         this.choice = choice;
     }
@@ -35,6 +45,6 @@ public class ImageMeasurementP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new ImageMeasurementP(name,module,getChoice(),imageName);
+        return (T) new ImageMeasurementP(name,module,getChoice(),imageName,getDescription());
     }
 }

@@ -502,7 +502,7 @@ public class TrackObjects extends Module {
         // If there are no input objects, create a blank track set and skip this module
         if (inputObjects.size() == 0) return true;
 
-        // Clearing previous relationships and measurements (in case module has been run before)
+        // Clearing previous relationships and measurements (in case module has been generateModuleList before)
         for (Obj inputObj:inputObjects.values()) {
             inputObj.removeMeasurement(Measurements.TRACK_NEXT_ID);
             inputObj.removeMeasurement(Measurements.TRACK_PREV_ID);

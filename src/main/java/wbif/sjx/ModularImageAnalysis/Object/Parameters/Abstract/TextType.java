@@ -9,6 +9,10 @@ public abstract class TextType extends Parameter {
         super(name, module);
     }
 
+    public TextType(String name, Module module, String description) {
+        super(name, module, description);
+    }
+
     public abstract void setValueFromString(String value);
 
     @Override

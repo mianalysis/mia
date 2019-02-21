@@ -20,6 +20,11 @@ public class TextDisplayP extends TextType {
         this.value = value;
     }
 
+    public TextDisplayP(String name, Module module, @Nonnull String value, String description) {
+        super(name, module, description);
+        this.value = value;
+    }
+
     public String getStringValue() {
         return value;
     }
@@ -60,6 +65,6 @@ public class TextDisplayP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new TextDisplayP(name,module,value);
+        return (T) new TextDisplayP(name,module,value,getDescription());
     }
 }

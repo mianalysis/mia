@@ -14,8 +14,19 @@ public class ObjectMeasurementP extends ChoiceType {
         super(name, module);
     }
 
+    public ObjectMeasurementP(String name, Module module, String description) {
+        super(name, module, description);
+    }
+
     public ObjectMeasurementP(String name, Module module, @Nonnull String choice, @Nonnull String objectName) {
         super(name, module);
+        this.objectName = objectName;
+        this.choice = choice;
+
+    }
+
+    public ObjectMeasurementP(String name, Module module, @Nonnull String choice, @Nonnull String objectName, String description) {
+        super(name, module, description);
         this.objectName = objectName;
         this.choice = choice;
 
@@ -36,6 +47,6 @@ public class ObjectMeasurementP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new ObjectMeasurementP(name,module,choice,objectName);
+        return (T) new ObjectMeasurementP(name,module,choice,objectName,getDescription());
     }
 }

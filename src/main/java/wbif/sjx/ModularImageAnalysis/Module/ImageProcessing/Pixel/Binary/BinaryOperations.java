@@ -1,4 +1,4 @@
-// TODO: What happens when 3D distance map is run on 4D or 5D image hyperstack?
+// TODO: What happens when 3D distance map is generateModuleList on 4D or 5D image hyperstack?
 
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
 

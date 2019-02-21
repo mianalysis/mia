@@ -55,7 +55,7 @@ public class Analysis implements Serializable {
                     System.err.println("Analysis terminated early for file \""+workspace.getMetadata().getFile()+
                             "\" by module \""+module.getTitle()+"\" (\""+module.getNickname()+"\").");
 
-                    // End the analysis run
+                    // End the analysis generateModuleList
                     break;
 
                 }

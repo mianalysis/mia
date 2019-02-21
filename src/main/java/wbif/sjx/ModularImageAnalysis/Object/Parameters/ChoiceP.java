@@ -18,6 +18,13 @@ public class ChoiceP extends ChoiceType {
 
     }
 
+    public ChoiceP(String name, Module module, @Nonnull String choice, @Nonnull String[] choices, String description) {
+        super(name,module,description);
+        this.choice = choice;
+        this.choices = choices;
+
+    }
+
     @Override
     public String[] getChoices() {
         return choices;
@@ -30,6 +37,6 @@ public class ChoiceP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new ChoiceP(name,module,getChoice(),getChoices());
+        return (T) new ChoiceP(name,module,getChoice(),getChoices(),getDescription());
     }
 }

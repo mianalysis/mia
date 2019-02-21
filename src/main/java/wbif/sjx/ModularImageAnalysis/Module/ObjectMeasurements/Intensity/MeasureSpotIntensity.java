@@ -135,7 +135,7 @@ public class MeasureSpotIntensity extends Module {
             }
 
             // Calculating mean, std, min and max intensity and adding to the parent (we will discard the expanded
-            // objects after this module has run)
+            // objects after this module has generateModuleList)
             if (parameters.getValue(MEASURE_MEAN))
                 spotObject.getParent(inputObjectsName).addMeasurement(new Measurement(getFullName(inputImageName,Measurements.MEAN), cs.getMean()));
             if (parameters.getValue(MEASURE_MIN))

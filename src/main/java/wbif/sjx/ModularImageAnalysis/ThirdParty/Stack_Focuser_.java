@@ -334,7 +334,7 @@ public class Stack_Focuser_ implements PlugInFilter
         focused_stack = new ImageStack(n_width, n_height);
         height_stack = new ImageStack(n_width, n_height);
         // split RGB stack into R, G, and B components
-        // and then run FocusGreyStack() on each independently
+        // and then generateModuleList FocusGreyStack() on each independently
 
 
         // Red
@@ -493,7 +493,7 @@ public class Stack_Focuser_ implements PlugInFilter
             dfloat_array = convertGreyToFloat(i_ip, stackType);
             dfloat_ip = new FloatProcessor(n_width, n_height, dfloat_array, i_ip.getColorModel());
 
-            // run median filter on the new one to get rid of some noise
+            // generateModuleList median filter on the new one to get rid of some noise
 //            IJ.showStatus("Running median filter...");
             dfloat_ip.medianFilter();
 
@@ -501,14 +501,14 @@ public class Stack_Focuser_ implements PlugInFilter
 //            IJ.showStatus("Smoothing image....");
             dfloat_ip.smooth();
 
-            // run Sobel edge detecting filter
+            // generateModuleList Sobel edge detecting filter
 //            IJ.showStatus("Finding edges....");
             dfloat_ip.findEdges();
 
-            // run Max filter
+            // generateModuleList Max filter
             m_slice = new float[n_dim];
             m_ip = new FloatProcessor(n_width, n_height, m_slice, null);
-            //  a dialog with user input at the beginning of run specifies k_size.
+            //  a dialog with user input at the beginning of generateModuleList specifies k_size.
 //            IJ.showStatus("Applying "+k_size+"x"+k_size+" filter...");
             maxFilter(dfloat_ip, m_ip, k_size);
             dfloat_ip = null;
@@ -576,7 +576,7 @@ public class Stack_Focuser_ implements PlugInFilter
         short[] dest_pixels16 = null;
         float[] dest_pixels32 = null;
 
-        // If an existing map hasn't been provided, run the following
+        // If an existing map hasn't been provided, generateModuleList the following
         if (existing_map == null) {
             height_ip = createHeightMap(m_stack);
 

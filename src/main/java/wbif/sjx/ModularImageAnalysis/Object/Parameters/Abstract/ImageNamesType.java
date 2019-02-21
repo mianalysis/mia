@@ -11,6 +11,10 @@ public abstract class ImageNamesType extends ChoiceType {
         super(name, module);
     }
 
+    public ImageNamesType(String name, Module module, String description) {
+        super(name, module, description);
+    }
+
     @Override
     public String[] getChoices() {
         LinkedHashSet<OutputImageP> images = GUI.getModules().getAvailableImages(module);

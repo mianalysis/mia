@@ -483,7 +483,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         // Running BinaryOperations
         boolean status = wekaProbabilityMaps.run(workspace);
 
-        // Checking the module failed to run (returned false)
+        // Checking the module failed to generateModuleList (returned false)
         assertFalse(status);
 
     }
