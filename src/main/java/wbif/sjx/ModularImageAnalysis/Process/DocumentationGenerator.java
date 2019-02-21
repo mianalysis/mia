@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Process;
 
+import wbif.sjx.ModularImageAnalysis.Macro.MacroHandler;
+import wbif.sjx.ModularImageAnalysis.Macro.MacroOperation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
@@ -9,15 +11,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class DocumentationGenerator {
     public static void main(String[]args){
         try {
             generateModuleList();
             generateModulePages();
+            generateMacroList();
+            generateMacroPages();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -25,7 +27,7 @@ public class DocumentationGenerator {
 
     private static void generateModuleList() throws IOException {
         // Generate module list HTML document
-        String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/modules.html")));
+        String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/modulelist.html")));
         String moduleList = getModuleList();
         template = template.replace("${INSERT}",moduleList);
 
@@ -46,7 +48,38 @@ public class DocumentationGenerator {
 
             new File("docs/html/modules/").mkdirs();
 
-            FileWriter writer = new FileWriter("docs/"+getSimpleModulePath(module));
+            FileWriter writer = new FileWriter("docs/html/"+getSimpleModulePath(module));
+            writer.write(template);
+            writer.flush();
+            writer.close();
+
+        }
+    }
+
+    private static void generateMacroList() throws IOException {
+        // Generate module list HTML document
+        String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/macrolist.html")));
+        String macroList = getMacroList();
+        template = template.replace("${INSERT}",macroList);
+
+        new File("docs/html/").mkdirs();
+        FileWriter writer = new FileWriter("docs/html/macrolist.html");
+        writer.write(template);
+        writer.flush();
+        writer.close();
+
+    }
+
+    private static void generateMacroPages() throws IOException {
+        ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
+        for (MacroOperation macro:macros) {
+            String template = new String(Files.readAllBytes(Paths.get("docs/templatehtml/macros.html")));
+            String macroList = getMacroSummary(macro);
+            template = template.replace("${INSERT}",macroList);
+
+            new File("docs/html/macros/").mkdirs();
+
+            FileWriter writer = new FileWriter("docs/html/"+getSimpleMacroPath(macro));
             writer.write(template);
             writer.flush();
             writer.close();
@@ -58,7 +91,7 @@ public class DocumentationGenerator {
         StringBuilder sb = new StringBuilder();
 
         // Adding a return to Module list button
-        sb.append("<a href=\"/html/modulelist.html\">Back to module list</a>\r\n");
+        sb.append("<a href=\"../modulelist.html\">Back to module list</a>\r\n");
 
         // Adding the Module title
         sb.append("<h1>")
@@ -66,8 +99,10 @@ public class DocumentationGenerator {
                 .append("</h1>\r\n");
 
         // Adding the Module summary
+        String helpText = module.getHelp();
+        helpText = helpText == null ? "" : helpText;
         sb.append("<h2>Description</h2>\r\n")
-                .append(module.getHelp())
+                .append(helpText)
                 .append("\r\n");
 
         sb.append("<h2>Parameters</h2>\r\n<ul>");
@@ -115,12 +150,49 @@ public class DocumentationGenerator {
 
     }
 
+    private static String getMacroSummary(MacroOperation macro) throws IOException {
+        StringBuilder sb = new StringBuilder();
+
+        // Adding a return to Module list button
+        sb.append("<a href=\"../macrolist.html\">Back to macro list</a>\r\n");
+
+        // Adding the MacroOperation title
+        sb.append("<h1>")
+                .append(macro.getName())
+                .append("</h1>\r\n");
+
+        // Adding the Module summary
+        String helpText = macro.getDescription();
+        helpText = helpText == null ? "" : helpText;
+        sb.append("<h2>Description</h2>\r\n")
+                .append(helpText)
+                .append("\r\n");
+
+        sb.append("<h2>Parameters</h2>\r\n");
+
+        String parameterList = macro.getArgumentsDescription();
+        String[] parameters = parameterList.split(",");
+        if (parameters.length > 0) sb.append("<ul");
+        
+        for (String parameter:parameters) {
+            sb.append("<li>")
+                    .append(parameter)
+                    .append("</li>");
+
+        }
+        sb.append("</ul>");
+
+        // Generate module list HTML document
+        return sb.toString();
+
+    }
+
     private static String getModuleList() {
         StringBuilder sb = new StringBuilder();
         sb.append("<h1>Modules</h1>");
 
         // Getting a list of unique package names
-        HashSet<Module> modules = getModules();
+        LinkedHashSet<Module> modules = getModules();
         TreeSet<String> packageNames = new TreeSet<>();
 
         for (Module module:modules) {
@@ -139,7 +211,7 @@ public class DocumentationGenerator {
             for (Module module:modules) {
                 if (!module.getPackageName().equals(packageName)) continue;
 
-                sb.append("<li><a href=\"")
+                sb.append("<li><a href=\".")
                         .append(getSimpleModulePath(module))
                         .append("\">")
                         .append(module.getTitle())
@@ -155,12 +227,34 @@ public class DocumentationGenerator {
 
     }
 
-    private static HashSet<Module> getModules() {
+    private static String getMacroList() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<h1>Macros</h1>");
+
+        // Getting a list of unique package names
+        ArrayList<MacroOperation> macros = MacroHandler.getMacroOperations();
+
+        // For each package name, adding a list of the matching Modules
+        for (MacroOperation macro:macros) {
+            sb.append("<li><a href=\".")
+                    .append(getSimpleMacroPath(macro))
+                    .append("\">")
+                    .append(macro.getName())
+                    .append("</a></li>\r\n");
+        }
+
+        sb.append("</ul>\r\n");
+
+        return sb.toString();
+
+    }
+
+    private static LinkedHashSet<Module> getModules() {
         // Get a list of Modules
         Set<Class<? extends Module>> clazzes = new ClassHunter<Module>().getClasses(Module.class, false);
 
         // Converting the list of classes to a list of Modules
-        HashSet<Module> modules = new HashSet<>();
+        LinkedHashSet<Module> modules = new LinkedHashSet<>();
         for (Class<? extends Module> clazz:clazzes) {
             try {
                 modules.add((Module) clazz.newInstance());
@@ -180,9 +274,24 @@ public class DocumentationGenerator {
         simplePackageName = simplePackageName.replaceAll("[^A-Za-z0-9]","");
         simplePackageName = simplePackageName.replace(".","");
 
-        sb.append("/html/modules/")
+        sb.append("/modules/")
                 .append(simplePackageName)
                 .append(module.getClass().getSimpleName())
+                .append(".html");
+
+        return sb.toString();
+
+    }
+
+    private static String getSimpleMacroPath(MacroOperation macro) {
+        StringBuilder sb = new StringBuilder();
+
+        String simpleName = macro.getName();
+        simpleName = simpleName.replaceAll("[^A-Za-z0-9]","");
+        simpleName = simpleName.replace(".","");
+
+        sb.append("/macros/")
+                .append(simpleName)
                 .append(".html");
 
         return sb.toString();
