@@ -78,20 +78,23 @@ public class DocumentationGenerator {
 
             if (!parameter.getDescription().equals("")) {
                 sb.append("<li>Description: ")
-                        .append(parameter.getDescription());
+                        .append(parameter.getDescription())
+                        .append("</li>");
             }
 
-            sb.append("</li><li>Type: ")
-                    .append(parameter.getClass().getSimpleName());
+            sb.append("<li>Type: ")
+                    .append(parameter.getClass().getSimpleName())
+                    .append("</li>");
 
             if (!parameter.getValueAsString().equals("")) {
-                sb.append("</li><li>Default value: ")
-                        .append(parameter.getValueAsString());
+                sb.append("<li>Default value: ")
+                        .append(parameter.getValueAsString())
+                        .append("</li>");
             }
 
             if (parameter instanceof ChoiceP) {
                 String[] choices = ((ChoiceP) parameter).getChoices();
-                sb.append("</li><li>Choices: ")
+                sb.append("<li>Choices: ")
                         .append("<ul>");
 
                 for (String choice:choices) {
@@ -99,10 +102,10 @@ public class DocumentationGenerator {
                             .append(choice)
                             .append("</li>");
                 }
-                sb.append("</ul>");
+                sb.append("</ul></li>");
             }
 
-            sb.append("</li></ul>");
+            sb.append("</ul>");
 
         }
         sb.append("</ul>");
@@ -119,7 +122,10 @@ public class DocumentationGenerator {
         // Getting a list of unique package names
         HashSet<Module> modules = getModules();
         TreeSet<String> packageNames = new TreeSet<>();
-        for (Module module:modules) packageNames.add(module.getPackageName());
+
+        for (Module module:modules) {
+            packageNames.add(module.getPackageName());
+        }
 
         // For each package name, adding a list of the matching Modules
         for (String packageName:packageNames) {
