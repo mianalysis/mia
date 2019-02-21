@@ -19,7 +19,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
-    <link rel="stylesheet" href="/assets/css/style.css?v=03cc9b9ffe9ea5ff0719fe453727a5cb83cf38d3">
+    <link rel="stylesheet" href="/assets/css/style.css?v=4cb3e30708d4d6d8d2fbf0a447678675f9310f14">
   </head>
   <body>
     <section class="page-header">
@@ -42,7 +42,6 @@
     <a href="/index" class="nav1">Introduction</a>
     <a href="/html/gettingstarted" class="nav1">Getting started</a>
     <a href="/html/modules" class="nav1">Modules</a>
-    <a href="/html/modulebasics" class="nav2">Basics</a>
     <a href="/html/modulelist" class="nav2">List of modules</a>
     <a href="/html/macros" class="nav1">Macros</a>
     <a href="/html/extendingmia" class="nav1">Extending MIA</a>
@@ -54,9 +53,10 @@
     <a href="/html/modulelist.html">Back to module list</a>
 <h1>Track objects</h1>
 <h2>Description</h2>
-
+Uses Munkres Assignment Algorithm implementation from Apache HBase library
+Leading point currently only works in 2D
 <h2>Parameters</h2>
-<ul><li>Input objects<ul></li><li>Type: InputObjectsP</li></ul><li>Output track objects<ul></li><li>Type: OutputObjectsP</li></ul><li>Linking method<ul></li><li>Type: ChoiceP</li><li>Default value: Centroid</li><li>Choices: <ul><li>Absolute overlap</li><li>Centroid</li></ul></li></ul><li>Minimum overlap<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Maximum linking distance (px)<ul></li><li>Type: DoubleP</li><li>Default value: 20.0</li></ul><li>Use volume (minimise volume change)<ul></li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Volume weighting<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Maximum volume change (px^3)<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Direction weighting mode<ul></li><li>Type: ChoiceP</li><li>Default value: None</li><li>Choices: <ul><li>None</li><li>Absolute orientation 2D</li><li>Relative to previous step</li></ul></li></ul><li>Preferred direction (-180 to 180 degs)<ul></li><li>Type: DoubleP</li><li>Default value: 0.0</li></ul><li>Direction tolerance<ul></li><li>Type: DoubleP</li><li>Default value: 180.0</li></ul><li>Direction weighting<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Use measurement (minimise change)<ul></li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Measurement<ul></li><li>Type: ObjectMeasurementP</li></ul><li>Measurement weighting<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Maximum measurement change<ul></li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Maximum number of missing frames<ul></li><li>Type: IntegerP</li><li>Default value: 0</li></ul><li>Identify leading point<ul></li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Orientation mode<ul></li><li>Type: ChoiceP</li><li>Default value: Relative to both points</li><li>Choices: <ul><li>Relative to both points</li><li>Relative to previous point</li><li>Relative to next point</li></ul></li></ul></ul>
+<ul><li>Input objects<ul><li>Type: InputObjectsP</li></ul><li>Output track objects<ul><li>Type: OutputObjectsP</li></ul><li>Linking method<ul><li>Type: ChoiceP</li><li>Default value: Centroid</li><li>Choices: <ul><li>Absolute overlap</li><li>Centroid</li></ul></li></ul><li>Minimum overlap<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Maximum linking distance (px)<ul><li>Type: DoubleP</li><li>Default value: 20.0</li></ul><li>Use volume (minimise volume change)<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Volume weighting<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Maximum volume change (px^3)<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Direction weighting mode<ul><li>Type: ChoiceP</li><li>Default value: None</li><li>Choices: <ul><li>None</li><li>Absolute orientation 2D</li><li>Relative to previous step</li></ul></li></ul><li>Preferred direction (-180 to 180 degs)<ul><li>Type: DoubleP</li><li>Default value: 0.0</li></ul><li>Direction tolerance<ul><li>Type: DoubleP</li><li>Default value: 180.0</li></ul><li>Direction weighting<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Use measurement (minimise change)<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Measurement<ul><li>Type: ObjectMeasurementP</li></ul><li>Measurement weighting<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Maximum measurement change<ul><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Maximum number of missing frames<ul><li>Type: IntegerP</li><li>Default value: 0</li></ul><li>Identify leading point<ul><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Orientation mode<ul><li>Type: ChoiceP</li><li>Default value: Relative to both points</li><li>Choices: <ul><li>Relative to both points</li><li>Relative to previous point</li><li>Relative to next point</li></ul></li></ul></ul>
 
 </div>
 </body>

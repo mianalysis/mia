@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module;
 
 public class PackageNames {
+    public final static String DEPRECATED = "Deprecated (not recommended)\\";
     public final static String IMAGE_MEASUREMENTS = "Image measurements\\";
     public final static String IMAGE_PROCESSING_MISCELLANEOUS = "Image processing\\Miscellaneous\\";
     public final static String IMAGE_PROCESSING_PIXEL = "Image processing\\Pixel\\";

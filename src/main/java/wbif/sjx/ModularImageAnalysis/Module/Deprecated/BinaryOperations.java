@@ -1,6 +1,6 @@
 // TODO: What happens when 3D distance map is generateModuleList on 4D or 5D image hyperstack?
 
-package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.Binary;
+package wbif.sjx.ModularImageAnalysis.Module.Deprecated;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -304,8 +304,7 @@ public class BinaryOperations extends Module {
 
     @Override
     public String getPackageName() {
-        // Returns null, so it can't be added as a new Module
-        return null;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
