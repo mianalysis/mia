@@ -21,14 +21,18 @@ public class MeasureObjectOverlap extends Module {
 
     public interface Measurements {
         String OVERLAP_VOX_1 = "OVERLAP_VOXELS_1";
+        String OVERLAP_VOL_PX_1 = "OVERLAP_VOLUME_(PX^3)_1";
+        String OVERLAP_VOL_CAL_1 = "OVERLAP_VOLUME_(${CAL}^3)_1";
         String OVERLAP_PERCENT_1 = "OVERLAP_PERCENT_1";
         String OVERLAP_VOX_2 = "OVERLAP_VOXELS_2";
+        String OVERLAP_VOL_PX_2 = "OVERLAP_VOLUME_(PX^3)_2";
+        String OVERLAP_VOL_CAL_2 = "OVERLAP_VOLUME_(${CAL}^3)_2";
         String OVERLAP_PERCENT_2 = "OVERLAP_PERCENT_2";
 
     }
 
     public static String getFullName(String objectsName, String measurement) {
-        return "OBJ_OVERLAP // "+objectsName+"_"+measurement.substring(0,measurement.length()-2);
+        return "OBJ_OVERLAP // "+objectsName+"_"+Units.replace(measurement.substring(0,measurement.length()-2));
 
     }
 
@@ -82,12 +86,20 @@ public class MeasureObjectOverlap extends Module {
 
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based on their index
         for (Obj obj1:inputObjects1.values()) {
+            double dppXY = obj1.getDistPerPxXY();
+            double dppZ = obj1.getDistPerPxZ();
+
+            // Calculating volume
             double objVolume = (double) obj1.getNVoxels();
             double overlap = (double) getNOverlappingPoints(obj1,inputObjects1,inputObjects2,linkInSameFrame);
+            double overlapVolPx = overlap*dppZ/dppXY;
+            double overlapVolCal = overlap*dppXY*dppXY*dppZ;
+            double overlapPC = 100*overlap/objVolume;
 
             // Adding the measurements
-            double overlapPC = 100*overlap/objVolume;
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_VOX_1),overlap));
+            obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_VOL_PX_1),overlapVolPx));
+            obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_VOL_CAL_1),overlapVolCal));
             obj1.addMeasurement(new Measurement(getFullName(inputObjects2Name,Measurements.OVERLAP_PERCENT_1),overlapPC));
 
             writeMessage("Processed "+(++count)+" objects of "+totalObjects);
@@ -96,12 +108,20 @@ public class MeasureObjectOverlap extends Module {
 
         // Iterating over all object pairs, adding overlapping pixels to a HashSet based on their index
         for (Obj obj2:inputObjects2.values()) {
+            double dppXY = obj2.getDistPerPxXY();
+            double dppZ = obj2.getDistPerPxZ();
+
+            // Calculating volume
             double objVolume = (double) obj2.getNVoxels();
             double overlap = (double) getNOverlappingPoints(obj2,inputObjects2,inputObjects1,linkInSameFrame);
+            double overlapVolPx = overlap*dppZ/dppXY;
+            double overlapVolCal = overlap*dppXY*dppXY*dppZ;
+            double overlapPC = 100*overlap/objVolume;
 
             // Adding the measurements
-            double overlapPC = 100*overlap/objVolume;
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOX_2),overlap));
+            obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOL_PX_2),overlapVolPx));
+            obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_VOL_CAL_2),overlapVolCal));
             obj2.addMeasurement(new Measurement(getFullName(inputObjects1Name,Measurements.OVERLAP_PERCENT_2),overlapPC));
 
             writeMessage("Processed "+(++count)+" objects of "+totalObjects);
@@ -146,12 +166,32 @@ public class MeasureObjectOverlap extends Module {
         reference.setImageObjName(objects1Name);
         reference.setCalculated(true);
 
+        name = getFullName(objects2Name, Measurements.OVERLAP_VOL_PX_1);
+        reference = objectMeasurementRefs.getOrPut(name);
+        reference.setImageObjName(objects1Name);
+        reference.setCalculated(true);
+
+        name = getFullName(objects2Name, Measurements.OVERLAP_VOL_CAL_1);
+        reference = objectMeasurementRefs.getOrPut(name);
+        reference.setImageObjName(objects1Name);
+        reference.setCalculated(true);
+
         name = getFullName(objects2Name, Measurements.OVERLAP_PERCENT_1);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(objects1Name);
         reference.setCalculated(true);
 
         name = getFullName(objects1Name, Measurements.OVERLAP_VOX_2);
+        reference = objectMeasurementRefs.getOrPut(name);
+        reference.setImageObjName(objects2Name);
+        reference.setCalculated(true);
+
+        name = getFullName(objects1Name, Measurements.OVERLAP_VOL_PX_2);
+        reference = objectMeasurementRefs.getOrPut(name);
+        reference.setImageObjName(objects2Name);
+        reference.setCalculated(true);
+
+        name = getFullName(objects1Name, Measurements.OVERLAP_VOL_CAL_2);
         reference = objectMeasurementRefs.getOrPut(name);
         reference.setImageObjName(objects2Name);
         reference.setCalculated(true);
