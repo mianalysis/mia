@@ -6,6 +6,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 public abstract class Parameter {
     protected final String name;
     protected final Module module;
+    private final String description;
     private ParameterControl control;
     private boolean visible = false;
     private boolean valid = true;
@@ -16,6 +17,13 @@ public abstract class Parameter {
     public Parameter(String name, Module module) {
         this.name = name;
         this.module = module;
+        this.description = "";
+    }
+
+    public Parameter(String name, Module module, String description) {
+        this.name = name;
+        this.module = module;
+        this.description = description;
     }
 
 
@@ -42,6 +50,11 @@ public abstract class Parameter {
 
 
     // GETTERS AND SETTERS
+
+
+    public String getDescription() {
+        return description;
+    }
 
     public String getName() {
         return name;

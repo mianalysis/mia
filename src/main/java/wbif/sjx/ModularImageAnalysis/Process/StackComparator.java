@@ -5,7 +5,7 @@ import wbif.sjx.common.Object.HCMetadata;
 import java.util.Comparator;
 
 /**
- * Created by steph on 01/05/2017.
+ * Created by Stephen on 01/05/2017.
  */
 public class StackComparator implements Comparator<HCMetadata> {
     private String field = HCMetadata.ZPOSITION;

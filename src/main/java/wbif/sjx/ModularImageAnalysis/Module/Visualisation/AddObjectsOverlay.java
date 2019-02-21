@@ -223,10 +223,10 @@ public class AddObjectsOverlay extends Module {
         Obj p1 = null;
         for (Obj p2:points.values()) {
             if (p1 != null) {
-                int x1 = (int) Math.round(p1.getXMean(true));
-                int y1 = (int) Math.round(p1.getYMean(true));
-                int x2 = (int) Math.round(p2.getXMean(true));
-                int y2 = (int) Math.round(p2.getYMean(true));
+                double x1 = p1.getXMean(true)+0.5;
+                double y1 = p1.getYMean(true)+0.5;
+                double x2 = p2.getXMean(true)+0.5;
+                double y2 = p2.getYMean(true)+0.5;
 
                 int maxFrame = history == Integer.MAX_VALUE ? nFrames : Math.min(nFrames,p2.getT()+history);
                 for (int t = p2.getT();t<=maxFrame-1;t++) {
@@ -261,7 +261,6 @@ public class AddObjectsOverlay extends Module {
         text.setCurrentFont(new Font(Font.SANS_SERIF,Font.PLAIN,labelSize));
         text.setJustification(TextRoi.CENTER);
         text.setStrokeColor(colour);
-        text.setLocation(labelCoords[0] - text.getFloatWidth()/2, labelCoords[1]-text.getFloatHeight()/2);
 
         if (ipl.isHyperStack()) {
             text.setPosition(1, (int) labelCoords[2], (int) labelCoords[3]);

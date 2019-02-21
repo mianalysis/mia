@@ -58,7 +58,7 @@ public class BatchProcessor extends FileCrawler {
 
         WorkspaceCollection workspaces = new WorkspaceCollection();
 
-        // The protocol to run will depend on if a single file or a folder was selected
+        // The protocol to generateModuleList will depend on if a single file or a folder was selected
         if (rootFolder.getFolderAsFile().isFile()) {
             runSingle(workspaces, analysis);
 
@@ -68,7 +68,7 @@ public class BatchProcessor extends FileCrawler {
             }
 
         } else {
-            // The system can run multiple files in parallel or one at a time
+            // The system can generateModuleList multiple files in parallel or one at a time
             runParallel(workspaces, analysis, exporter);
 
             switch (exportMode) {

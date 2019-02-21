@@ -26,7 +26,7 @@ import java.io.IOException;
 public class AnalysisWriter {
     public static void saveAnalysis(Analysis analysis, String outputFileName) throws IOException, ParserConfigurationException, TransformerException {
         // Updating the analysis filename
-        analysis.setAnalysisFilename(new File(outputFileName).getName());
+        analysis.setAnalysisFilename(new File(outputFileName).getAbsolutePath());
 
         // Creating a module collection holding the input and output
         ModuleCollection inOutModules = new ModuleCollection();
@@ -66,15 +66,13 @@ public class AnalysisWriter {
         // If no file was selected quit the method
         if (fileDialog.getFiles().length==0) return;
 
-        String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
-
         // Updating the analysis filename
-        analysis.setAnalysisFilename(fileDialog.getFiles()[0].getName());
+        String outputFileName = fileDialog.getFiles()[0].getAbsolutePath();
+        analysis.setAnalysisFilename(outputFileName);
 
         if (!FilenameUtils.getExtension(outputFileName).equals("mia")) {
             outputFileName = FilenameUtils.removeExtension(outputFileName)+".mia";
         }
-
         saveAnalysis(analysis,outputFileName);
 
     }

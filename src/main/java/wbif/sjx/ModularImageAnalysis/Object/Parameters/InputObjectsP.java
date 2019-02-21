@@ -17,8 +17,14 @@ public class InputObjectsP extends ObjectNamesType {
 
     }
 
+    public InputObjectsP(String name, Module module, @Nonnull String choice, String description) {
+        super(name, module, description);
+        this.choice = choice;
+
+    }
+
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new InputObjectsP(name,module,getChoice());
+        return (T) new InputObjectsP(name,module,getChoice(),getDescription());
     }
 }

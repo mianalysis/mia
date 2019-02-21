@@ -249,7 +249,7 @@ public class InputControl extends Module {
 
     @Override
     public String getPackageName() {
-        return "";
+        return "General";
     }
 
     @Override

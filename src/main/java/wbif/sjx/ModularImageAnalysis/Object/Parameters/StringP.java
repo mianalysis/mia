@@ -18,6 +18,11 @@ public class StringP extends TextType {
         this.value = value;
     }
 
+    public StringP(String name, Module module, @Nonnull String value, String description) {
+        super(name,module,description);
+        this.value = value;
+    }
+
     public void setValue(String value) {
         this.value = value;
     }
@@ -44,6 +49,6 @@ public class StringP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new StringP(name,module,value);
+        return (T) new StringP(name,module,value,getDescription());
     }
 }

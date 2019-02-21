@@ -212,7 +212,7 @@
 //    }
 //
 //    @Override
-//    protected void run(Workspace workspace) throws GenericMIAException {
+//    protected void generateModuleList(Workspace workspace) throws GenericMIAException {
 //        // Getting input objects
 //        String inputObjects1Name = parameters.getValue(PARENT_OBJECTS);
 //        ObjCollection inputObjects1 = workspace.getObjects().get(inputObjects1Name);

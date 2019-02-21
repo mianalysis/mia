@@ -12,6 +12,11 @@ public class DoubleP extends TextType {
         this.value = value;
     }
 
+    public DoubleP(String name, Module module, double value, String description) {
+        super(name,module,description);
+        this.value = value;
+    }
+
     public void setValue(double value) {
         this.value = value;
     }
@@ -23,7 +28,7 @@ public class DoubleP extends TextType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new DoubleP(name,module,value);
+        return (T) new DoubleP(name,module,value,getDescription());
     }
 
     @Override

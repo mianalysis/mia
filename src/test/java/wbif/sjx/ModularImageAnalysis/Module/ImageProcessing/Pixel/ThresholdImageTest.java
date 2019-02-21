@@ -694,7 +694,7 @@ public class ThresholdImageTest extends ModuleTest {
         workspace.addImage(image);
 
 //        new ImageJ();
-//        new Duplicator().run(ipl).show();
+//        new Duplicator().generateModuleList(ipl).show();
 
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ThresholdImage/NoisyGradient3D_8bit_GlobalIntermodesNoLimsNoMultWhiteBG.tif").getPath(),"UTF-8");
         Image expectedImage = new Image("Expected", IJ.openImage(pathToImage));

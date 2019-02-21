@@ -9,8 +9,12 @@ public class BooleanP extends BooleanType {
         super(name, module, enabled);
     }
 
+    public BooleanP(String name, Module module, boolean enabled, String description) {
+        super(name, module, enabled, description);
+    }
+
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new BooleanP(name,module,getValue());
+        return (T) new BooleanP(name,module,getValue(),getDescription());
     }
 }

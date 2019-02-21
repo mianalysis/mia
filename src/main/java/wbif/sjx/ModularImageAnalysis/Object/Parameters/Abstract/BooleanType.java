@@ -12,6 +12,11 @@ public abstract class BooleanType extends Parameter {
         this.selected = selected;
     }
 
+    public BooleanType(String name, Module module, boolean selected, String description) {
+        super(name,module,description);
+        this.selected = selected;
+    }
+
     public boolean isSelected() {
         return selected;
     }

@@ -17,6 +17,11 @@ public class MetadataItemP extends ChoiceType {
         this.choice = choice;
     }
 
+    public MetadataItemP(String name, Module module, @Nonnull String choice, String description) {
+        super(name,module,description);
+        this.choice = choice;
+    }
+
     @Override
     public String[] getChoices() {
         return GUI.getModules().getMetadataReferences(module).getMetadataNames();
@@ -24,6 +29,6 @@ public class MetadataItemP extends ChoiceType {
 
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new MetadataItemP(name,module,choice);
+        return (T) new MetadataItemP(name,module,choice,getDescription());
     }
 }

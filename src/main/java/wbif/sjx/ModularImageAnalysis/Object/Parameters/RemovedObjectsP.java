@@ -16,8 +16,13 @@ public class RemovedObjectsP extends ObjectNamesType {
         this.choice = choice;
     }
 
+    public RemovedObjectsP(String name, Module module, @Nonnull String choice, String description) {
+        super(name,module,description);
+        this.choice = choice;
+    }
+
     @Override
     public <T extends Parameter> T duplicate() {
-        return (T) new RemovedObjectsP(name,module,choice);
+        return (T) new RemovedObjectsP(name,module,choice,getDescription());
     }
 }

@@ -66,7 +66,7 @@
 //    }
 //
 //    public int getFitMode(String fittingMode) {
-//        // Getting the mode with which to run the ConvexHullCalculator
+//        // Getting the mode with which to generateModuleList the ConvexHullCalculator
 //        switch (fittingMode) {
 //            case FittingModes.CENTROIDS:
 //                return ConvexHullCalculator.CENTROID;
@@ -142,7 +142,7 @@
 //    }
 //
 //    @Override
-//    protected void run(Workspace workspace) throws GenericMIAException {
+//    protected void generateModuleList(Workspace workspace) throws GenericMIAException {
 //        // Getting input objects
 //        String inputObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
 //        ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);

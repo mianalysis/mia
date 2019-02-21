@@ -404,6 +404,7 @@ public class MeasureTrackMotion extends Module {
 
         }
 
+        if (showOutput) workspace.getObjectSet(inputSpotObjectsName).showMeasurements(this);
         if (showOutput) trackObjects.showMeasurements(this);
 
         return true;

@@ -35,6 +35,6 @@ public class ClearWorkspaceMacro extends MacroOperation {
 
     @Override
     public String getDescription() {
-        return "Removes all images and objects from the workspace.  This should be run at the beginning of a macro.";
+        return "Removes all images and objects from the workspace.  This should be generateModuleList at the beginning of a macro.";
     }
 }
