@@ -5,7 +5,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.ParameterControls.BooleanParameter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 public abstract class BooleanType extends Parameter {
-    private boolean selected = false;
+    protected boolean selected = false;
 
     public BooleanType(String name, Module module, boolean selected) {
         super(name,module);
