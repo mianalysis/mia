@@ -2,8 +2,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
-import com.drew.lang.annotations.Nullable;
-import ij.IJ;
+import javax.annotation.Nullable;import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.measure.Calibration;
@@ -435,7 +434,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String extension = FilenameUtils.getExtension(absolutePath);
 
         // The name will end with "_chxx" where "xx" is a two-digit number
-        Pattern pattern = Pattern.compile("([\\s\\w]+)_ch([0-9]{2})");
+        Pattern pattern = Pattern.compile("(.+)_ch([0-9]{2})");
         Matcher matcher = pattern.matcher(name);
         if (matcher.find()) {
             String comment = metadata.getComment();
@@ -904,6 +903,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     public MeasurementRefCollection updateAndGetImageMeasurementRefs() {
+        imageMeasurementRefs.setAllCalculated(false);
+
         if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.IMAGE)) {
             String outputImageName = parameters.getValue(OUTPUT_IMAGE);
 
@@ -923,6 +924,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     public MeasurementRefCollection updateAndGetObjectMeasurementRefs() {
+        objectMeasurementRefs.setAllCalculated(false);
+
         if (parameters.getValue(OUTPUT_MODE).equals(OutputModes.OBJECTS)) {
             String outputObjectsName = parameters.getValue(OUTPUT_OBJECTS);
 

@@ -214,11 +214,6 @@ public class InputControl extends Module {
     private TreeMap<Integer,String> getSeriesListNumbers(File inputFile) throws DependencyException, ServiceException, IOException, FormatException {
         TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
 
-        // Converting series list to a list of numbers
-        String seriesList = getParameterValue(SERIES_LIST);
-        seriesList = seriesList.replace(" ","");
-        List<String> list = new ArrayList<String>(Arrays.asList(seriesList.split(",")));
-
         // Using BioFormats to get the number of series
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
@@ -231,9 +226,10 @@ public class InputControl extends Module {
         reader.setGroupFiles(false);
         reader.setId(inputFile.getAbsolutePath());
 
-        for (int i=0;i<list.size();i++) {
-            int seriesNumber = Integer.parseInt(list.get(i))-1;
-            namesAndNumbers.put(seriesNumber+1,meta.getImageName(seriesNumber));
+        SeriesListSelectorP seriesListSelectorP = parameters.getParameter(InputControl.SERIES_LIST);
+        int[] seriesList = seriesListSelectorP.getSeriesList();
+        for (int aSeriesList : seriesList) {
+            namesAndNumbers.put(aSeriesList, meta.getImageName(aSeriesList - 1));
         }
 
         reader.close();
@@ -268,8 +264,8 @@ public class InputControl extends Module {
         parameters.add(new IntegerP(SIMULTANEOUS_JOBS,this,1));
         parameters.add(new StringP(FILE_EXTENSION,this,"tif"));
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL));
-        parameters.add(new StringP(SERIES_LIST,this,"1"));
-        parameters.add(new IntegerP(SERIES_NUMBER,this,1));
+        parameters.add(new SeriesListSelectorP(SERIES_LIST,this,"1"));
+        parameters.add(new SeriesSingleSelectorP(SERIES_NUMBER,this,1));
 
         ParameterCollection collection = new ParameterCollection();
         collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.FILENAME,FilterSources.ALL));

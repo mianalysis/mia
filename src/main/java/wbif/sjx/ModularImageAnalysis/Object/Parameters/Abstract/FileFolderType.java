@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import java.io.File;
 
 public abstract class FileFolderType extends Parameter {
-    private String path = "";
+    protected String path = "";
 
     public FileFolderType(String name, Module module) {
         super(name, module);

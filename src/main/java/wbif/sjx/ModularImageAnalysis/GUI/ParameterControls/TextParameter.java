@@ -13,8 +13,8 @@ import java.awt.event.FocusListener;
  * Created by Stephen on 20/05/2017.
  */
 public class TextParameter extends ParameterControl implements FocusListener {
-    private TextType parameter;
-    private JTextField control;
+    protected TextType parameter;
+    protected JTextField control;
 
     public TextParameter(TextType parameter) {
         this.parameter = parameter;

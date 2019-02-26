@@ -17,7 +17,7 @@ public class MacroHandler implements MacroExtension {
     private static Workspace workspace;
 
     // Constructor is private to prevent instantiation
-    private MacroHandler(){};
+    public MacroHandler(){};
 
     public static MacroHandler getMacroHandler() {
         if (macroHandler == null) {
@@ -86,7 +86,8 @@ public class MacroHandler implements MacroExtension {
         MacroHandler.workspace = workspace;
     }
 
-    public ArrayList<MacroOperation> getMacroOperations() {
+    public static ArrayList<MacroOperation> getMacroOperations() {
+        if (macroOperations == null) macroOperations = initialiseMacroOperations(getMacroHandler());
         return macroOperations;
     }
 }

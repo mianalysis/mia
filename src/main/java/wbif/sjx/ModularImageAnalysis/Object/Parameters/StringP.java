@@ -7,7 +7,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 import javax.annotation.Nonnull;
 
 public class StringP extends TextType {
-    private String value = "";
+    protected String value = "";
 
     public StringP(String name, Module module) {
         super(name,module);

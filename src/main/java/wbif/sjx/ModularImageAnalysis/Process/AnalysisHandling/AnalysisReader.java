@@ -1,10 +1,12 @@
 package wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
@@ -20,16 +22,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Set;
 
 /**
  * Created by sc13967 on 23/06/2017.
  */
 public class AnalysisReader {
-    public static Analysis loadAnalysis() throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
+    public static Analysis loadAnalysis()
+            throws SAXException, IllegalAccessException, IOException, InstantiationException, ParserConfigurationException, ClassNotFoundException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to load", FileDialog.LOAD);
         fileDialog.setMultipleMode(false);
         fileDialog.setFile("*.mia");
@@ -37,10 +38,8 @@ public class AnalysisReader {
 
         if (fileDialog.getFiles().length==0) return null;
 
-        FileInputStream fileInputStream = new FileInputStream(fileDialog.getFiles()[0]);
-        Analysis analysis = loadAnalysis(fileInputStream);
+        Analysis analysis = loadAnalysis(fileDialog.getFiles()[0]);
         analysis.setAnalysisFilename(fileDialog.getFiles()[0].getAbsolutePath());
-        fileInputStream.close();
 
         System.out.println("File loaded ("+ FilenameUtils.getName(fileDialog.getFiles()[0].getName())+")");
 
@@ -48,11 +47,23 @@ public class AnalysisReader {
 
     }
 
-    public static Analysis loadAnalysis(InputStream analysisFileStream)
+    public static Analysis loadAnalysis(File file)
             throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
+        String xml = FileUtils.readFileToString(file,"UTF-8");
+
+        return loadAnalysis(xml);
+
+    }
+
+    public static Analysis loadAnalysis(String xml)
+            throws IOException, ClassNotFoundException, ParserConfigurationException, SAXException, IllegalAccessException, InstantiationException {
+        if (xml.startsWith("\uFEFF")) {
+            xml = xml.substring(1);
+        }
+
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document doc = documentBuilder.parse(analysisFileStream);
+        Document doc = documentBuilder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
         doc.getDocumentElement().normalize();
 
         Analysis analysis = new Analysis();

@@ -1,11 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import com.drew.lang.annotations.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.ResultsTable;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**

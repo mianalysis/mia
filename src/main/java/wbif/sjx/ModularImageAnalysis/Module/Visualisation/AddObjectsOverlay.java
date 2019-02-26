@@ -3,8 +3,8 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import com.drew.lang.annotations.NotNull;
-import com.drew.lang.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.*;
@@ -306,7 +306,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createAllPointsOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, boolean multithread, double lineWidth) throws InterruptedException {
+    public void createAllPointsOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Float> hues, boolean multithread, double lineWidth) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -337,7 +337,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createCentroidOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, boolean multithread, double lineWidth) throws InterruptedException {
+    public void createCentroidOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Float> hues, boolean multithread, double lineWidth) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -366,7 +366,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createLabelOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, @Nullable HashMap<Integer,String> labels, boolean multithread, int labelSize) throws InterruptedException {
+    public void createLabelOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Float> hues, @Nullable HashMap<Integer,String> labels, boolean multithread, int labelSize) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -403,7 +403,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createOutlineOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, boolean multithread, double lineWidth) throws InterruptedException {
+    public void createOutlineOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Float> hues, boolean multithread, double lineWidth) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -433,7 +433,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createPositionMeasurementsOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, String[] posMeasurements, boolean multithread, double lineWidth) throws InterruptedException {
+    public void createPositionMeasurementsOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Float> hues, String[] posMeasurements, boolean multithread, double lineWidth) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
@@ -463,7 +463,7 @@ public class AddObjectsOverlay extends Module {
 
     }
 
-    public void createTracksOverlay(ImagePlus ipl, ObjCollection inputObjects, @NotNull HashMap<Integer,Float> hues, String spotObjectsName, int history, boolean multithread, double lineWidth) throws InterruptedException {
+    public void createTracksOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Float> hues, String spotObjectsName, int history, boolean multithread, double lineWidth) throws InterruptedException {
         // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
         if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
             ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());

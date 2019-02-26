@@ -5,7 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 
 public class IntegerP extends TextType {
-    private int value;
+    protected int value;
 
     public IntegerP(String name, Module module, int value) {
         super(name,module);

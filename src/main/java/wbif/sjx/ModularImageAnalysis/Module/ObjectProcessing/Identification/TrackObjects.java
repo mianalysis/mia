@@ -4,8 +4,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import blogspot.software_and_algorithms.stern_library.optimization.HungarianAlgorithm;
-import com.drew.lang.annotations.Nullable;
-import ij.ImagePlus;
+import javax.annotation.Nullable;import ij.ImagePlus;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;

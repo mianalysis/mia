@@ -5,7 +5,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 
 public class DoubleP extends TextType {
-    private double value;
+    protected double value;
 
     public DoubleP(String name, Module module, double value) {
         super(name,module);

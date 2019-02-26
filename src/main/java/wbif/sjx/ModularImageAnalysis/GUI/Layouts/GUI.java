@@ -1218,8 +1218,16 @@ public class GUI {
                 getTestWorkspace().getMetadata().setSeriesName("");
                 break;
 
+            case InputControl.SeriesModes.SERIES_LIST:
+                SeriesListSelectorP listParameter = analysis.getInputControl().getParameter(InputControl.SERIES_LIST);
+                int[] seriesList = listParameter.getSeriesList();
+                getTestWorkspace().getMetadata().setSeriesNumber(seriesList[0]);
+                getTestWorkspace().getMetadata().setSeriesName("");
+                break;
+
             case InputControl.SeriesModes.SINGLE_SERIES:
-                int seriesNumber = ((IntegerP) analysis.getInputControl().getParameter(InputControl.SERIES_NUMBER)).getValue();
+                IntegerP singleParameter = analysis.getInputControl().getParameter(InputControl.SERIES_NUMBER);
+                int seriesNumber = singleParameter.getValue();
                 getTestWorkspace().getMetadata().setSeriesNumber(seriesNumber);
                 getTestWorkspace().getMetadata().setSeriesName("");
         }
