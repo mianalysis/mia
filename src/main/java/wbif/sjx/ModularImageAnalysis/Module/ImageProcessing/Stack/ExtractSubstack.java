@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import com.drew.lang.annotations.Nullable;
-import ij.ImagePlus;
+import javax.annotation.Nullable;import ij.ImagePlus;
 import ij.plugin.SubHyperstackMaker;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;

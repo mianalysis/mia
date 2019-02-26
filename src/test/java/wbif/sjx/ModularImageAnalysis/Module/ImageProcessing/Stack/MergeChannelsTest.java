@@ -1,15 +1,13 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.InputOutput.ImageLoader;
+import wbif.sjx.ModularImageAnalysis.Module.Deprecated.MergeChannels;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import java.net.URLDecoder;
 

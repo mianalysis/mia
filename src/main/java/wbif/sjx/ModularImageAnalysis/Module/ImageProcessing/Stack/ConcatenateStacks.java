@@ -1,7 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.Axis;
@@ -21,6 +23,8 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.common.Process.ImgPlusTools;
+import wbif.sjx.common.Process.IntensityMinMax;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -60,23 +64,11 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     public ImgPlus<T> concatenateImages(ImgPlus<T> img1, ImgPlus<T> img2, String axis) {
         // Getting dimensions for the input images
-        long[] dims1 = new long[5];
-        dims1[0] = img1.dimension(img1.dimensionIndex(Axes.X));
-        dims1[1] = img1.dimension(img1.dimensionIndex(Axes.Y));
-        dims1[2] = img1.dimension(img1.dimensionIndex(Axes.CHANNEL));
-        dims1[3] = img1.dimension(img1.dimensionIndex(Axes.Z));
-        dims1[4] = img1.dimension(img1.dimensionIndex(Axes.TIME));
-
         long[] offset1 = new long[]{0,0,0,0,0};
-
-        long[] dims2 = new long[5];
-        dims2[0] = img2.dimension(img2.dimensionIndex(Axes.X));
-        dims2[1] = img2.dimension(img2.dimensionIndex(Axes.Y));
-        dims2[2] = img2.dimension(img2.dimensionIndex(Axes.CHANNEL));
-        dims2[3] = img2.dimension(img2.dimensionIndex(Axes.Z));
-        dims2[4] = img2.dimension(img2.dimensionIndex(Axes.TIME));
+        long[] dims1 = ImgPlusTools.getDimensionsXYCZT(img1);
 
         long[] offset2 = new long[]{0,0,0,0,0};
+        long[] dims2 = ImgPlusTools.getDimensionsXYCZT(img2);
 
         long[] dimsOut = new long[5];
         if (axis.equals(AxisModes.X)) {
@@ -133,22 +125,6 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         ArrayImgFactory<T> factory = new ArrayImgFactory<T>((T) img1.firstElement());
         ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dimsOut));
 
-        // Setting calibration from first image
-        int axisIdx = img1.dimensionIndex(Axes.X);
-        if (axisIdx >= 0) imgOut.setAxis(img1.axis(axisIdx),0);
-
-        axisIdx = img1.dimensionIndex(Axes.Y);
-        if (axisIdx >= 0) imgOut.setAxis(img1.axis(axisIdx),1);
-
-        axisIdx = img1.dimensionIndex(Axes.CHANNEL);
-        if (axisIdx >= 0) imgOut.setAxis(img1.axis(axisIdx),2);
-
-        axisIdx = img1.dimensionIndex(Axes.Z);
-        if (axisIdx >= 0) imgOut.setAxis(img1.axis(axisIdx),3);
-
-        axisIdx = img1.dimensionIndex(Axes.TIME);
-        if (axisIdx >= 0) imgOut.setAxis(img1.axis(axisIdx),4);
-
         // Adding the first image to the output
         Cursor<T> cursor1 = img1.cursor();
         Cursor<T> cursorOut = Views.offsetInterval(imgOut, offset1, dims1).cursor();
@@ -158,6 +134,28 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         Cursor<T> cursor2 = img2.cursor();
         cursorOut = Views.offsetInterval(imgOut,offset2,dims2).cursor();
         while (cursor2.hasNext()) cursorOut.next().set(cursor2.next());
+
+        // Applying calibration from img1 to imgOut
+        ImgPlusTools.applyCalibrationXYCZT(img1,imgOut);
+
+        // Ensuring the extended axis has correct dimensions
+        switch (axis) {
+            case AxisModes.X:
+                if (imgOut.dimensionIndex(Axes.X) == -1) imgOut.setAxis(new DefaultLinearAxis(Axes.X,1),0);
+            break;
+            case AxisModes.Y:
+                if (imgOut.dimensionIndex(Axes.Y) == -1) imgOut.setAxis(new DefaultLinearAxis(Axes.Y,1),1);
+                break;
+            case AxisModes.CHANNEL:
+                if (imgOut.dimensionIndex(Axes.CHANNEL) == -1) imgOut.setAxis(new DefaultLinearAxis(Axes.CHANNEL,1),2);
+                break;
+            case AxisModes.Z:
+                if (imgOut.dimensionIndex(Axes.Z) == -1) imgOut.setAxis(new DefaultLinearAxis(Axes.Z,1),3);
+                break;
+            case AxisModes.TIME:
+                if (imgOut.dimensionIndex(Axes.TIME) == -1) imgOut.setAxis(new DefaultLinearAxis(Axes.TIME,1),4);
+                break;
+        }
 
         return imgOut;
 
@@ -181,6 +179,18 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         outputImagePlus.setCalibration(inputImages[0].getImagePlus().getCalibration());
 
         return new Image<T>(outputImageName,imgOut);
+
+    }
+
+    private void convertToComposite(Image image) {
+        ImagePlus ipl = image.getImagePlus();
+
+        ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite"));
+
+        // Updating the display range to help show all the colours
+        IntensityMinMax.run(ipl,true,0.001,IntensityMinMax.PROCESS_FAST);
+
+        image.setImagePlus(ipl);
 
     }
 
@@ -213,9 +223,13 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
             inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
         }
 
-        // Applying flip
+        // Applying concatenation
         Image outputImage = concatenateImages(inputImages, axisMode, outputImageName);
         if (outputImage == null) return false;
+
+        if (axisMode.equals(AxisModes.CHANNEL)) {
+            convertToComposite(outputImage);
+        }
 
         if (showOutput) outputImage.showImage();
         workspace.addImage(outputImage);

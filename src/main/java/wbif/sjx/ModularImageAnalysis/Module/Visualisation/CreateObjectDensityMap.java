@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 
-import com.drew.lang.annotations.Nullable;
+import javax.annotation.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;

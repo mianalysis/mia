@@ -1,6 +1,5 @@
 package wbif.sjx.ModularImageAnalysis.Object;
 
-import com.drew.lang.annotations.Nullable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
@@ -11,6 +10,7 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.TreeSet;

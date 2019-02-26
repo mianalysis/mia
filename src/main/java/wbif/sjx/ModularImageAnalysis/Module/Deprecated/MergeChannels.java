@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
+package wbif.sjx.ModularImageAnalysis.Module.Deprecated;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
@@ -224,12 +224,14 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
     public String getHelp() {
-        return null;
+        return "NOTE: This Module has been superseeded by the more generalised \"Concatenate stacks\" Module.  It will " +
+                "be removed in a future release.\r\n" +
+                "Combines image stacks as different channels.  Output is automatically converted to a composite image.";
     }
 
     @Override

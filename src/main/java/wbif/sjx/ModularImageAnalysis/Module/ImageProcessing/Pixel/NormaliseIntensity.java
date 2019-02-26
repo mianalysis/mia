@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
-import com.drew.lang.annotations.Nullable;
-import ij.ImagePlus;
+import javax.annotation.Nullable;import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import ij.process.ImageProcessor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
