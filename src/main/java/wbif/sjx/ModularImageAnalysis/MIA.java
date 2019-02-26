@@ -67,12 +67,7 @@ public class MIA implements PlugIn {
                 new GUI();
 
             } else {
-                String filepath = args[0];
-
-                InputStream inputStream = new FileInputStream(filepath);
-                Analysis analysis = AnalysisReader.loadAnalysis(inputStream);
-                inputStream.close();
-
+                Analysis analysis = AnalysisReader.loadAnalysis(args[0]);
                 AnalysisRunner.startAnalysis(analysis);
 
             }
