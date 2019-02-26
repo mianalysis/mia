@@ -3,6 +3,9 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.axis.AxisType;
+import net.imagej.axis.TypedAxis;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
@@ -15,23 +18,41 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 
-public class FlipStack < T extends RealType< T > & NativeType< T >> extends Module {
+public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String AXIS_MODE = "Axis mode";
 
     public interface AxisModes {
+        String X = "X";
+        String Y = "Y";
+        String Z = "Z";
         String CHANNEL = "Channel";
         String TIME = "Time";
-        String Z = "Z";
 
-        String[] ALL = new String[]{CHANNEL,TIME,Z};
+        String[] ALL = new String[]{X,Y,Z,CHANNEL,TIME};
 
     }
 
 
-    public static < T extends RealType< T > & NativeType< T >> Image<T> applyFlip(Image<T> inputImage, String axis, String outputImageName) {
+    private int getAxesIndex(ImgPlus<T> img, String axis) {
+        switch (axis) {
+            case AxisModes.X:
+                default:
+                return img.dimensionIndex(Axes.X);
+            case AxisModes.Y:
+                return img.dimensionIndex(Axes.Y);
+            case AxisModes.Z:
+                return img.dimensionIndex(Axes.Z);
+            case AxisModes.CHANNEL:
+                return img.dimensionIndex(Axes.CHANNEL);
+            case AxisModes.TIME:
+                return img.dimensionIndex(Axes.TIME);
+        }
+    }
+
+    public Image<T> applyFlip(Image<T> inputImage, String axis, String outputImageName) {
         ImgPlus img = inputImage.getImgPlus();
 
         // The output image has the same dimensions as the input image
@@ -41,10 +62,17 @@ public class FlipStack < T extends RealType< T > & NativeType< T >> extends Modu
         }
 
         // Creating the new Img
-        ArrayImgFactory<T> factory = new ArrayImgFactory<T>();
+        ArrayImgFactory<T> factory = new ArrayImgFactory<T>((T) img .firstElement());
         Img<T> outputImg = factory.create(dims);
 
-        Cursor<T> inputCursor = Views.invertAxis(img,0).cursor();
+        // Determining the axis index
+        int axisIndex = getAxesIndex(img, axis);
+        if (axisIndex == -1) {
+            System.err.println("[FlipStack] Specified axis for image flipping doesn't exist.");
+            return null;
+        }
+
+        Cursor<T> inputCursor = Views.invertAxis(img,axisIndex).cursor();
         Cursor<T> outputCursor = outputImg.cursor();
 
         while (inputCursor.hasNext()) outputCursor.next().set(inputCursor.next());
@@ -86,10 +114,11 @@ public class FlipStack < T extends RealType< T > & NativeType< T >> extends Modu
         String axisMode = parameters.getValue(AXIS_MODE);
 
         // If applying to a new image, the input image is duplicated
-        if (!applyToInput) outputImageName = inputImageName;
+        if (applyToInput) outputImageName = inputImageName;
 
         // Applying flip
         Image outputImage = applyFlip(inputImage, axisMode, outputImageName);
+        if (outputImage == null) return false;
 
         if (showOutput) outputImage.showImage();
         if (applyToInput) {
@@ -107,7 +136,7 @@ public class FlipStack < T extends RealType< T > & NativeType< T >> extends Modu
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,true));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        parameters.add(new ChoiceP(AXIS_MODE, this,AxisModes.Z,AxisModes.ALL));
+        parameters.add(new ChoiceP(AXIS_MODE, this,AxisModes.X,AxisModes.ALL));
 
     }
 

@@ -27,7 +27,7 @@ import java.util.LinkedHashSet;
 /**
  * Created by sc13967 on 22/02/2018.
  */
-public class MergeChannels< T extends RealType< T > & NativeType< T >> extends Module {
+public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Module {
     public static final String ADD_INPUT_IMAGE = "Add image";
     public static final String INPUT_IMAGE = "Input image";
     public static final String OVERWRITE_MODE = "Overwrite mode";
