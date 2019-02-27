@@ -77,6 +77,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         rois = new HashMap<>();
         maxID = 0;
         frame = new JFrame();
+        frame.setAlwaysOnTop(true);
 
         frame.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

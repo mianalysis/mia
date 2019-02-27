@@ -55,6 +55,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     private void showOptionsPanel(@Nullable String inputChannelsRange, @Nullable String inputSlicesRange, @Nullable String inputFramesRange) {
         active = true;
         frame = new JFrame();
+        frame.setAlwaysOnTop(true);
 
         frame.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
