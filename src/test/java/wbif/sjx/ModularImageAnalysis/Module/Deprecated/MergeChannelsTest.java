@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
+package wbif.sjx.ModularImageAnalysis.Module.Deprecated;
 
 import ij.IJ;
 import ij.ImagePlus;

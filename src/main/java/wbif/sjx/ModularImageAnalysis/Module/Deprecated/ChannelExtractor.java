@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
+package wbif.sjx.ModularImageAnalysis.Module.Deprecated;
 
 import ij.ImagePlus;
 import ij.plugin.ChannelSplitter;
@@ -12,7 +12,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
 /**
- * Created by sc13967 on 08/05/2017.
+ * Created by Stephen on 08/05/2017.
  */
 public class ChannelExtractor extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -26,12 +26,14 @@ public class ChannelExtractor extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.IMAGE_PROCESSING_STACK;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
     public String getHelp() {
-        return null;
+        return "NOTE: This Module has been superseeded by the ExtractSubstack Module.  It will " +
+                "be removed in a future release.\r\n" +
+                "Extracts a single channel from a stack.";
     }
 
     @Override

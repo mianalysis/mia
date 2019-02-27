@@ -1,9 +1,10 @@
-package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
+package wbif.sjx.ModularImageAnalysis.Module.Deprecated;
 
 import ij.IJ;
 import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import wbif.sjx.ModularImageAnalysis.Module.Deprecated.ChannelExtractor;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
