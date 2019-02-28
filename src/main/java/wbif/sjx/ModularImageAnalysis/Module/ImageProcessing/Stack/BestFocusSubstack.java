@@ -1,29 +1,34 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import ij.IJ;
 import ij.ImagePlus;
+import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
-import wbif.sjx.common.MathFunc.CumStat;
+import wbif.sjx.common.Process.ImgPlusTools;
 
-import java.util.HashMap;
-
-public class BestFocusSubstack extends Module {
+public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_IMAGE = "Input image";
-    public static final String RADIUS = "Variance calculation range";
-    public static final String CALIBRATED_UNITS = "Calibrated units";
+    public static final String OUTPUT_IMAGE = "Output image";
     public static final String BEST_FOCUS_CALCULATION = "Best-focus calculation";
+//    public static final String RADIUS = "Variance calculation range";
+//    public static final String CALIBRATED_UNITS = "Calibrated units";
     public static final String SLICES_BELOW = "Slices below best focus";
     public static final String SLICES_ABOVE = "Slices above best focus";
     public static final String CHANNEL_MODE = "Channel mode";
     public static final String CHANNEL = "Channel";
 
     public interface BestFocusCalculations {
-        String MAX_MEAN_VARIANCE = "Largest mean variance";
-        String MAX_VARIANCE = "Largest maximum variance";
+        String MAX_STDEV = "Largest standar deviation";
+//        String MAX_MEAN_VARIANCE = "Largest mean variance";
+//        String MAX_VARIANCE = "Largest maximum variance";
 
-        String[] ALL = new String[]{MAX_MEAN_VARIANCE,MAX_VARIANCE};
+        String[] ALL = new String[]{MAX_STDEV};
 
     }
 
@@ -43,10 +48,90 @@ public class BestFocusSubstack extends Module {
 //
 //    }
 
+
     public static String getFullName(String measurement, int channel) {
         return measurement + "_(CH" + channel + ")";
 
     }
+
+    public static int getMaxStandardDeviationSlice(Image image, int frame, int channel) {
+        ImagePlus inputIpl = image.getImagePlus();
+
+        // Setting the channels to measure over.  If channel is -1, use all channels
+        int startChannel = 0;
+        int endChannel = inputIpl.getNChannels();
+        if (channel != -1) startChannel = endChannel = channel;
+
+        // Measuring the statistics for each slice
+        int bestSlice = 0;
+        double bestStdev = 0;
+        for (int c=startChannel;c<endChannel;c++) {
+            for (int z = 0; z < inputIpl.getNSlices(); z++) {
+                inputIpl.setPosition(c+1,z+1,frame+1);
+                double stdev = inputIpl.getProcessor().getStatistics().stdDev;
+
+                if (stdev > bestStdev) {
+                    bestSlice = z;
+                    bestStdev = stdev;
+                }
+            }
+        }
+
+        return bestSlice;
+
+    }
+
+    private Image getEmptyImage(String outputImageName, Image inputImage, int slicesBelow, int slicesAbove) {
+        // Getting key dimensions of the input image
+        ImagePlus inputIpl = inputImage.getImagePlus();
+        int width = inputIpl.getWidth();
+        int height = inputIpl.getHeight();
+        int nChannels = inputIpl.getNChannels();
+        int nFrames = inputIpl.getNFrames();
+        int bitDepth = inputIpl.getBitDepth();
+
+        // Determining the number of slices
+        int nSlices = 1 + slicesBelow + slicesAbove;
+
+        // Creating the empty image
+        ImagePlus outputIpl = IJ.createHyperStack(outputImageName,width,height,nChannels,nSlices,nFrames,bitDepth);
+        return new Image(outputImageName,outputIpl);
+
+    }
+
+    private void extractSubstack(Image<T> inputImage, Image<T> outputImage, long startSlice, long endSlice, int frame) {
+        // At this point, the start and end slices may be out of range of the input image
+        ImgPlus<T> inputImg = inputImage.getImgPlus();
+        long nSlices = inputImg.dimension(inputImg.dimensionIndex(Axes.Z));
+        long actualStartSlice = Math.max(startSlice,0);
+        long actualEndSlice = Math.min(endSlice,nSlices-1);
+        long actualOffset = 
+
+        // Dimensions for the substack are the same in the input and output images
+        long[] dims = new long[5];
+        dims[0] = inputImg.dimension(inputImg.dimensionIndex(Axes.X));
+        dims[1] = inputImg.dimension(inputImg.dimensionIndex(Axes.Y));
+        dims[2] = inputImg.dimension(inputImg.dimensionIndex(Axes.CHANNEL));
+        dims[3] = actualEndSlice-actualStartSlice;
+        dims[4] = 1;
+
+        // Getting the offsets for input and output images
+        long[] offsetIn = new long[5];
+        offsetIn[0] = 0;
+        offsetIn[1] = 0;
+        offsetIn[2] = 0;
+        offsetIn[3] = actualStartSlice;
+        offsetIn[4] = frame;
+
+        long[] offsetOut = new long[5];
+        offsetOut[0] = 0;
+        offsetOut[1] = 0;
+        offsetOut[2] = 0;
+        offsetOut[3] = 0; // THIS ISN'T TRUE, IF WE START
+        offsetOut[4] = frame;
+
+    }
+
 
     @Override
     public String getTitle() {
@@ -67,31 +152,59 @@ public class BestFocusSubstack extends Module {
 
     @Override
     protected boolean run(Workspace workspace) {
+        // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputIpl = inputImage.getImagePlus();
 
-        // Measuring the statistics for each slice
-        HashMap<Integer,CumStat> stats = new HashMap<>();
-        for (int z=0;z<inputIpl.getNSlices();z++) {
-            // Initialising this statistics store
-            CumStat cs = new CumStat();
-            stats.put(z,cs);
+        // Getting other parameters
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+        String bestFocusCalculation = parameters.getValue(BEST_FOCUS_CALCULATION);
+//        double radius = parameters.getValue(RADIUS);
+//        boolean calibratedUnits = parameters.getValue(CALIBRATED_UNITS);
+        int slicesBelow = parameters.getValue(SLICES_BELOW);
+        int slicesAbove = parameters.getValue(SLICES_ABOVE);
+        String channelMode = parameters.getValue(CHANNEL_MODE);
+        int channel = parameters.getValue(CHANNEL);
 
-            // Iterating over each
+        if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
+
+        // Creating the empty container image
+        Image outputImage = getEmptyImage(outputImageName,inputImage,slicesBelow,slicesAbove);
+
+        // Iterating over frame, extracting the relevant substack, then appending it to the output
+        int nFrames = inputImage.getImagePlus().getNFrames();
+        for (int f=0;f<nFrames;f++) {
+            // Determining the best slice
+            int bestSlice = 0;
+            switch (bestFocusCalculation) {
+                case BestFocusCalculations.MAX_STDEV:
+                    bestSlice = getMaxStandardDeviationSlice(inputImage,f,channel);
+                    break;
+            }
+
+            // Setting the current lowest and highest slice
+            int startSlice = bestSlice-slicesBelow;
+            int endSlice = bestSlice+slicesAbove;
+
+            // Extracting the best-slice substack and adding it to the outputImage
+
+
         }
 
         if (showOutput) inputImage.showMeasurements(this);
 
         return true;
+
     }
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE,this,"Image to extract substack from."));
-        parameters.add(new DoubleP(RADIUS,this,1d,"Radius of filter for determining best focus stack.  If \"Calibrated units\" is false, this value is in pixel units, but if true this value is in calibrated units."));
-        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false,"Controls if the radius is specified in pixel (false) or calibrated (true) units."));
-        parameters.add(new ChoiceP(BEST_FOCUS_CALCULATION,this,BestFocusCalculations.MAX_MEAN_VARIANCE,BestFocusCalculations.ALL,"Method for determining the best-focus slice.  \""+BestFocusCalculations.MAX_MEAN_VARIANCE+"\" calculates the mean variance of each slice, then takes the slice with the largeest mean.  \""+BestFocusCalculations.MAX_VARIANCE+"\" simply takes the slice with the largest variance."));
+        parameters.add(new InputImageP(INPUT_IMAGE,this,"","Image to extract substack from."));
+        parameters.add(new OutputImageP(OUTPUT_IMAGE,this,"","Substack image to be added to the current workspace."));
+        parameters.add(new ChoiceP(BEST_FOCUS_CALCULATION,this,BestFocusCalculations.MAX_STDEV,BestFocusCalculations.ALL,"Method for determining the best-focus slice.  \""+BestFocusCalculations.MAX_STDEV+"\" calculates the standard deviation of each slice."));//"Method for determining the best-focus slice.  \""+BestFocusCalculations.MAX_MEAN_VARIANCE+"\" calculates the mean variance of each slice, then takes the slice with the largest mean.  \""+BestFocusCalculations.MAX_VARIANCE+"\" simply takes the slice with the largest variance."));
+//        parameters.add(new DoubleP(RADIUS,this,1d,"Radius of filter for determining best focus stack.  If \"Calibrated units\" is false, this value is in pixel units, but if true this value is in calibrated units."));
+//        parameters.add(new BooleanP(CALIBRATED_UNITS,this,false,"Controls if the radius is specified in pixel (false) or calibrated (true) units."));
         parameters.add(new IntegerP(SLICES_BELOW,this,0,"Number of slices below the best-focus slice to include in the final substack."));
         parameters.add(new IntegerP(SLICES_ABOVE,this,0,"Number of slices above the best-focus slice to include in the final substack."));
         parameters.add(new ChoiceP(CHANNEL_MODE,this,ChannelModes.USE_SINGLE,ChannelModes.ALL,"How many channels to use when calculating the best-focus slice.  \""+ChannelModes.USE_ALL+"\" will use all channels, whereas \""+ChannelModes.USE_SINGLE+"\" will base the calculation on a single, user-defined channel."));
@@ -104,8 +217,10 @@ public class BestFocusSubstack extends Module {
         ParameterCollection returnedParameters = new ParameterCollection();
 
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
-        returnedParameters.add(parameters.getParameter(RADIUS));
-        returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
+        returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(BEST_FOCUS_CALCULATION));
+//        returnedParameters.add(parameters.getParameter(RADIUS));
+//        returnedParameters.add(parameters.getParameter(CALIBRATED_UNITS));
         returnedParameters.add(parameters.getParameter(SLICES_BELOW));
         returnedParameters.add(parameters.getParameter(SLICES_ABOVE));
 

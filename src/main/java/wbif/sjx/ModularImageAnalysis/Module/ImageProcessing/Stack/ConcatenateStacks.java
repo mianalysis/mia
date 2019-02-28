@@ -161,7 +161,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    public Image<T> concatenateImages(Image[] inputImages, String axis, String outputImageName) {
+    public Image<T> concatenateImages(Image<T>[] inputImages, String axis, String outputImageName) {
         // Processing first two images
         ImgPlus<T> imgOut = concatenateImages(inputImages[0].getImgPlus(),inputImages[1].getImgPlus(),axis);
 
@@ -182,7 +182,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
     }
 
-    private void convertToComposite(Image image) {
+    private void convertToComposite(Image<T> image) {
         ImagePlus ipl = image.getImagePlus();
 
         ipl = new Duplicator().run(HyperStackConverter.toHyperStack(ipl,ipl.getNChannels(),ipl.getNSlices(),ipl.getNFrames(),"xyczt","Composite"));
@@ -217,7 +217,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         // Creating a collection of images
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
-        Image[] inputImages = new Image[collections.size()];
+        Image<T>[] inputImages = new Image[collections.size()];
         int i=0;
         for (ParameterCollection collection:collections) {
             inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
