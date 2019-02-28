@@ -4,11 +4,19 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
 import ij.process.ImageProcessor;
 import ij.process.LUT;
 import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
+import net.imagej.axis.CalibratedAxis;
+import net.imagej.axis.DefaultAxisType;
+import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.img.ImagePlusAdapter;
+import net.imglib2.img.Img;
+import net.imglib2.img.display.imagej.CalibrationUtils;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.img.imageplus.ImagePlusImg;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -42,6 +50,11 @@ public class Image < T extends RealType< T > & NativeType< T >> {
         this.name = name;
         this.imagePlus = ImageJFunctions.wrap(img,name);
 
+        // Calibrations don't always appear to transfer over, so doing this explicitly
+        Calibration calibration = imagePlus.getCalibration();
+        if (img.dimensionIndex(Axes.Z) != -1) {
+            calibration.pixelDepth = ((CalibratedAxis) img.axis(img.dimensionIndex(Axes.Z))).calibratedValue(1);
+        }
     }
 
     public ObjCollection convertImageToObjects(String outputObjectsName) throws IntegerOverflowException {

@@ -30,7 +30,7 @@ public class ListImagesInWorkspaceMacro extends MacroOperation {
         int row = 0;
 
         // Getting a list of Images in the Workspace
-        HashMap<String,Image> images = workspace.getImages();
+        HashMap<String,Image<?>> images = workspace.getImages();
         for (String imageName:images.keySet()) {
             if (row != 0) rt.incrementCounter();
 

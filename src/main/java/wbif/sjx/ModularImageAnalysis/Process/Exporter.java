@@ -796,7 +796,7 @@ public class Exporter {
         }
 
         // Adding image measurements
-        HashMap<String,Image> images = workspace.getImages();
+        HashMap<String,Image<?>> images = workspace.getImages();
         for (Image image:images.values()) {
             String imageName = image.getName();
 

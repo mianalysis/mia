@@ -217,7 +217,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         // Creating a collection of images
         LinkedHashSet<ParameterCollection> collections = parameters.getValue(ADD_INPUT_IMAGE);
-        Image<T>[] inputImages = new Image[collections.size()];
+        Image[] inputImages = new Image[collections.size()];
         int i=0;
         for (ParameterCollection collection:collections) {
             inputImages[i++] = workspace.getImage(collection.getValue(INPUT_IMAGE));
