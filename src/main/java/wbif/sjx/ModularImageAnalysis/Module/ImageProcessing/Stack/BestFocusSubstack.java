@@ -35,8 +35,8 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
     public interface BestFocusCalculations {
         String MAX_STDEV = "Largest standard deviation";
-//        String MAX_MEAN_VARIANCE = "Largest mean variance";
-//        String MAX_VARIANCE = "Largest maximum variance";
+//        String MAX_MEAN_VARIANCE = "Largest mean local variance";
+//        String MAX_VARIANCE = "Largest local variance";
 
         String[] ALL = new String[]{MAX_STDEV};
 
