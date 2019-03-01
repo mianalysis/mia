@@ -2,6 +2,7 @@
 
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Roi;
@@ -186,7 +187,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 //    }
 
 
-    public ImagePlus getBFImage(String path, int seriesNumber, @Nullable String[] dimRanges, @Nullable int[] crop, @Nullable double[] intRange, boolean manualCal, boolean localVerbose)
+    public ImagePlus getBFImage(String path, int seriesNumber, @Nonnull String[] dimRanges, @Nullable int[] crop, @Nullable double[] intRange, boolean manualCal, boolean localVerbose)
             throws ServiceException, DependencyException, IOException, FormatException {
         DebugTools.enableLogging("off");
         DebugTools.setRootLevel("off");
