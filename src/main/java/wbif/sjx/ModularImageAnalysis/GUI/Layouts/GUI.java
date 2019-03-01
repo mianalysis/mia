@@ -1225,11 +1225,6 @@ public class GUI {
                 getTestWorkspace().getMetadata().setSeriesName("");
                 break;
 
-            case InputControl.SeriesModes.SINGLE_SERIES:
-                IntegerP singleParameter = analysis.getInputControl().getParameter(InputControl.SERIES_NUMBER);
-                int seriesNumber = singleParameter.getValue();
-                getTestWorkspace().getMetadata().setSeriesNumber(seriesNumber);
-                getTestWorkspace().getMetadata().setSeriesName("");
         }
     }
 

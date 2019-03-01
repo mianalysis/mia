@@ -150,9 +150,9 @@ public class AnalysisRunnerTest {
     @Test
     public void testGetExportNameSingleFileSingleSeries() throws Exception {
         InputControl inputControl = new InputControl();
-        
-        inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SINGLE_SERIES);
-        inputControl.updateParameterValue(InputControl.SERIES_NUMBER,3);
+
+        inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SERIES_LIST);
+        inputControl.updateParameterValue(InputControl.SERIES_LIST,"3");
 
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
@@ -170,7 +170,6 @@ public class AnalysisRunnerTest {
         InputControl inputControl = new InputControl();
         
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
-        inputControl.updateParameterValue(InputControl.SERIES_NUMBER,3);
 
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
@@ -186,9 +185,9 @@ public class AnalysisRunnerTest {
     @Test
     public void testGetExportNameBatchSingleSeries() throws Exception {
         InputControl inputControl = new InputControl();
-        
-        inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SINGLE_SERIES);
-        inputControl.updateParameterValue(InputControl.SERIES_NUMBER,3);
+
+        inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.SERIES_LIST);
+        inputControl.updateParameterValue(InputControl.SERIES_LIST,"3");
 
         // Creating a fake folder
         TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -207,7 +206,6 @@ public class AnalysisRunnerTest {
         InputControl inputControl = new InputControl();
         
         inputControl.updateParameterValue(InputControl.SERIES_MODE,InputControl.SeriesModes.ALL_SERIES);
-        inputControl.updateParameterValue(InputControl.SERIES_NUMBER,3);
 
         // Creating a fake folder
         TemporaryFolder temporaryFolder = new TemporaryFolder();

@@ -84,7 +84,6 @@ public class AnalysisRunner {
     public static String getExportName(InputControl inputControl, File inputFile) {
         String seriesMode = ((ChoiceP) inputControl.getParameter(InputControl.SERIES_MODE)).getChoice();
         String seriesList = ((StringP) inputControl.getParameter(InputControl.SERIES_LIST)).getValue();
-        int seriesNumber = ((IntegerP) inputControl.getParameter(InputControl.SERIES_NUMBER)).getValue();
 
         if (inputFile.isFile()) {
             switch (seriesMode) {
@@ -92,8 +91,6 @@ public class AnalysisRunner {
                     return FilenameUtils.removeExtension(inputFile.getAbsolutePath());
                 case InputControl.SeriesModes.SERIES_LIST:
                     return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesList.replace(" ", "");
-                case InputControl.SeriesModes.SINGLE_SERIES:
-                    return FilenameUtils.removeExtension(inputFile.getAbsolutePath()) + "_S" + seriesNumber;
             }
         } else if (inputFile.isDirectory()) {
             switch (seriesMode) {
@@ -101,8 +98,6 @@ public class AnalysisRunner {
                     return inputFile.getAbsolutePath() + MIA.getSlashes() + inputFile.getName();
                 case InputControl.SeriesModes.SERIES_LIST:
                     return inputFile.getAbsolutePath() + MIA.getSlashes() + inputFile.getName() + "_S" + seriesList.replace(" ","");
-                case InputControl.SeriesModes.SINGLE_SERIES:
-                    return inputFile.getAbsolutePath() + MIA.getSlashes() + inputFile.getName() + "_S" + seriesNumber;
             }
         }
 

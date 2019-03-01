@@ -63,6 +63,7 @@ public class PointPairSelector implements ActionListener {
     private void showOptionsPanel() {
         pairs  = new ArrayList<>();
         frame = new JFrame();
+        frame.setAlwaysOnTop(true);
 
         frame.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();

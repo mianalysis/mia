@@ -6,6 +6,7 @@ import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
+import ij.process.FloatPolygon;
 import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -77,6 +78,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         rois = new HashMap<>();
         maxID = 0;
         frame = new JFrame();
+        frame.setAlwaysOnTop(true);
 
         frame.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -446,6 +448,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
             for (ObjRoi objRoi:currentRois) {
                 Roi roi = objRoi.getRoi();
                 Point[] points = roi.getContainedPoints();
+
                 int t = objRoi.getT();
                 int z = objRoi.getZ();
 
@@ -533,8 +536,8 @@ class ObjRoi {
                 newRoi = new OvalRoi(bounds.x,bounds.y,bounds.width,bounds.height);
                 break;
 
-            case Roi.POLYGON:
             case Roi.FREEROI:
+            case Roi.POLYGON:
                 PolygonRoi polyRoi = (PolygonRoi) roi;
                 int[] x = polyRoi.getXCoordinates();
                 int[] xx = new int[x.length];
@@ -547,7 +550,47 @@ class ObjRoi {
                 newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
                 break;
 
+            case Roi.FREELINE:
+            case Roi.POLYLINE:
+                polyRoi = (PolygonRoi) roi;
+
+                if (polyRoi.getStrokeWidth() > 0) System.err.println("Thick lines currently unsupported.  Using backbone only.");
+
+                x = polyRoi.getXCoordinates();
+                xx = new int[x.length];
+                for (int i=0;i<x.length;i++) xx[i] = x[i]+ (int) polyRoi.getXBase();
+
+                y = polyRoi.getYCoordinates();
+                yy = new int[x.length];
+                for (int i=0;i<y.length;i++) yy[i] = y[i]+ (int) polyRoi.getYBase();
+
+                newRoi = new PolygonRoi(xx,yy,polyRoi.getNCoordinates(),roi.getType());
+                break;
+
+            case Roi.LINE:
+                Line line = (Line) roi;
+
+                if (line.getStrokeWidth() > 0) System.err.println("Thick lines currently unsupported.  Using backbone only.");
+                
+                newRoi = new Line(line.x1,line.y1,line.x2,line.y2);
+                break;
+
+            case Roi.POINT:
+                PointRoi pointRoi = (PointRoi) roi;
+
+                Point[] points = pointRoi.getContainedPoints();
+                int[] xxx = new int[points.length];
+                int[] yyy = new int[points.length];
+                for (int i=0;i<points.length;i++) {
+                    xxx[i] = points[i].x;
+                    yyy[i] = points[i].y;
+                }
+
+                newRoi = new PointRoi(xxx,yyy,points.length);
+                break;
+
             default:
+                System.err.println("ROI type unsupported.  Using bounding box for selection.");
                 newRoi = new Roi(roi.getBounds());
                 break;
         }
@@ -567,4 +610,6 @@ class ObjRoi {
     public int getZ() {
         return z;
     }
+
+
 }

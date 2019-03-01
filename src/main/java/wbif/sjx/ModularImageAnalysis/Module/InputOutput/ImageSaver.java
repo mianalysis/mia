@@ -2,6 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.process.ImageConverter;
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -94,11 +95,13 @@ public class ImageSaver extends Module {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
         if (flattenOverlay) {
+            inputImagePlus = inputImagePlus.duplicate();
+            new ImageConverter(inputImagePlus).convertToRGB();
+
             // Flattening overlay onto image for saving
             if (inputImagePlus.getNSlices() > 1) {
                 IntensityMinMax.run(inputImagePlus,true);
                 if (inputImagePlus.getOverlay() != null) inputImagePlus.flattenStack();
-
             } else {
                 IntensityMinMax.run(inputImagePlus,false);
                 if (inputImagePlus.getOverlay() != null) inputImagePlus = inputImagePlus.flatten();

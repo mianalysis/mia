@@ -34,7 +34,6 @@ public class InputControl extends Module {
     public static final String FILE_EXTENSION = "File extension";
     public static final String SERIES_MODE = "Series mode";
     public static final String SERIES_LIST = "Series list";
-    public static final String SERIES_NUMBER = "Series number";
     public static final String ADD_FILTER = "Add filter";
     public static final String FILTER_SOURCE = "Filter source";
     public static final String FILTER_VALUE = "Filter value";
@@ -53,9 +52,8 @@ public class InputControl extends Module {
     public static interface SeriesModes {
         String ALL_SERIES = "All series";
         String SERIES_LIST = "Series list (comma separated)";
-        String SINGLE_SERIES = "Single series";
 
-        String[] ALL = new String[]{ALL_SERIES,SERIES_LIST,SINGLE_SERIES};
+        String[] ALL = new String[]{ALL_SERIES,SERIES_LIST};
 
     }
 
@@ -144,12 +142,7 @@ public class InputControl extends Module {
 
                 case InputControl.SeriesModes.SERIES_LIST:
                     return getSeriesListNumbers(inputFile);
-                    
-                case InputControl.SeriesModes.SINGLE_SERIES:
-                    TreeMap<Integer,String> namesAndNumbers = new TreeMap<>();
-                    int seriesNumber = getParameterValue(SERIES_NUMBER);
-                    namesAndNumbers.put(seriesNumber,"");
-                    return namesAndNumbers;
+
             }
         } catch (DependencyException | FormatException | ServiceException | IOException e) {
             e.printStackTrace();
@@ -265,7 +258,6 @@ public class InputControl extends Module {
         parameters.add(new StringP(FILE_EXTENSION,this,"tif"));
         parameters.add(new ChoiceP(SERIES_MODE,this,SeriesModes.ALL_SERIES,SeriesModes.ALL));
         parameters.add(new SeriesListSelectorP(SERIES_LIST,this,"1"));
-        parameters.add(new SeriesSingleSelectorP(SERIES_NUMBER,this,1));
 
         ParameterCollection collection = new ParameterCollection();
         collection.add(new ChoiceP(FILTER_SOURCE,this,FilterSources.FILENAME,FilterSources.ALL));
@@ -292,9 +284,6 @@ public class InputControl extends Module {
         switch (seriesMode.getChoice()) {
             case SeriesModes.SERIES_LIST:
                 returnedParameters.add(parameters.getParameter(SERIES_LIST));
-                break;
-            case SeriesModes.SINGLE_SERIES:
-                returnedParameters.add(parameters.getParameter(SERIES_NUMBER));
                 break;
         }
 

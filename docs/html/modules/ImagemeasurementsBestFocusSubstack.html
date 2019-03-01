@@ -1,0 +1,31 @@
+---
+layout: default
+---
+
+<head>
+    <link rel="stylesheet" href="../../css/index.css">
+</head>
+
+<body>
+<!-- Side navigation -->
+<div class="sidenav">
+    <a href="../../index.html" class="nav1">Introduction</a>
+    <a href="../gettingstarted.html" class="nav1">Getting started</a>
+    <a href="../modules.html" class="nav1">Modules</a>
+    <a href="../modulelist.html" class="nav2">List of modules</a>
+    <a href="../macros.html" class="nav1">Macros</a>
+    <a href="../extendingmia.html" class="nav1">Extending MIA</a>
+</div>
+
+<!-- Page content -->
+<div class="main">
+    <!--The following is replaced automatically by the generated module list-->
+    <a href="../modulelist.html">Back to module list</a>
+<h1>Best focus stack</h1>
+<h2>Description</h2>
+Extract a Z-substack from an input stack based on an automatically-calculated best-focus slice.  Best focus is determined using the local 2D variance of pixels in each slice.  It is possible to extract a fixed number of slices above and below the determined best-focus slice.
+<h2>Parameters</h2>
+<ul><li>Input image<ul><li>Type: InputImageP</li><li>Default value: Image to extract substack from.</li></ul><li>Best-focus calculation<ul><li>Description: Method for determining the best-focus slice.  "Largest mean variance" calculates the mean variance of each slice, then takes the slice with the largest mean.  "Largest maximum variance" simply takes the slice with the largest variance.</li><li>Type: ChoiceP</li><li>Default value: Largest mean variance</li><li>Choices: <ul><li>Largest mean variance</li><li>Largest maximum variance</li></ul></li></ul><li>Variance calculation range<ul><li>Description: Radius of filter for determining best focus stack.  If "Calibrated units" is false, this value is in pixel units, but if true this value is in calibrated units.</li><li>Type: DoubleP</li><li>Default value: 1.0</li></ul><li>Calibrated units<ul><li>Description: Controls if the radius is specified in pixel (false) or calibrated (true) units.</li><li>Type: BooleanP</li><li>Default value: false</li></ul><li>Slices below best focus<ul><li>Description: Number of slices below the best-focus slice to include in the final substack.</li><li>Type: IntegerP</li><li>Default value: 0</li></ul><li>Slices above best focus<ul><li>Description: Number of slices above the best-focus slice to include in the final substack.</li><li>Type: IntegerP</li><li>Default value: 0</li></ul><li>Channel mode<ul><li>Description: How many channels to use when calculating the best-focus slice.  "Use all channels" will use all channels, whereas "Use single channel" will base the calculation on a single, user-defined channel.</li><li>Type: ChoiceP</li><li>Default value: Use single channel</li><li>Choices: <ul><li>Use all channels</li><li>Use single channel</li></ul></li></ul><li>Channel<ul><li>Description: Channel to base the best-focus calculation on.</li><li>Type: IntegerP</li><li>Default value: 1</li></ul></ul>
+
+</div>
+</body>

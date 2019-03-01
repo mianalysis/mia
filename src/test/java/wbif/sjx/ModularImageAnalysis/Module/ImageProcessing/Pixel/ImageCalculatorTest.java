@@ -16,11 +16,6 @@ import static org.junit.Assert.*;
 public class ImageCalculatorTest extends ModuleTest {
     private double tolerance = 1E-2;
 
-    @BeforeClass
-    public static void setVerbose() {
-        Module.setVerbose(true);
-    }
-
     @Override
     public void testGetTitle() {
         assertNotNull(new ImageCalculator().getTitle());

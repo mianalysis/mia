@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
  */
 public class Workspace {
     private LinkedHashMap<String, ObjCollection> objects = new LinkedHashMap<>();
-    private LinkedHashMap<String, Image> images = new LinkedHashMap<>();
+    private LinkedHashMap<String, Image<?>> images = new LinkedHashMap<>();
     private HCMetadata metadata = new HCMetadata();
     private int ID;
 
@@ -61,7 +61,7 @@ public class Workspace {
 
     }
 
-    public void addImage(Image image) {
+    public void addImage(Image<?> image) {
         images.put(image.getName(), image);
     }
 
@@ -112,7 +112,7 @@ public class Workspace {
         }
     }
 
-    public Image getImage(String name) {
+    public Image<?> getImage(String name) {
         return images.get(name);
 
     }
@@ -161,11 +161,11 @@ public class Workspace {
         this.objects = objects;
     }
 
-    public HashMap<String, Image> getImages() {
+    public HashMap<String, Image<?>> getImages() {
         return images;
     }
 
-    public void setImages(LinkedHashMap<String, Image> images) {
+    public void setImages(LinkedHashMap<String, Image<?>> images) {
         this.images = images;
     }
 
