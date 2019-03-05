@@ -59,7 +59,6 @@ public class AnalysisControlButton extends JButton implements ActionListener {
                     break;
 
                 case START_ANALYSIS:
-                    AnalysisTester.reportStatus(GUI.getModules());
                     Thread t = new Thread(() -> {
                         try {
                             AnalysisRunner.startAnalysis(GUI.getAnalysis());

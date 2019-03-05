@@ -11,10 +11,10 @@
 
     <groupId>wbif.sjx</groupId>
     <artifactId>ModularImageAnalysis</artifactId>
-    <version>0.9.7</version>
+    <version>0.9.8</version>
     <packaging>jar</packaging>
     <name>Modular_Image_Analysis</name>
-    <url>https://github.com/SJCross/ModularImageAnalysis</url>
+    <url>https://github.com/SJCross/MIA</url>
     <inceptionYear>2017</inceptionYear>
     <description>Image/object analysis using modularised components</description>
     <organization>

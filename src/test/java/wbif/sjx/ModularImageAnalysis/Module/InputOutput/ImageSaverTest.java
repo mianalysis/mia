@@ -32,7 +32,7 @@ public class ImageSaverTest extends ModuleTest {
     }
 
     @Test
-    public void testRunSaveWithInputFile() throws Exception {
+    public void testRunSaveWithInputFileWithSeriesNumber() throws Exception {
         // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
@@ -54,6 +54,8 @@ public class ImageSaverTest extends ModuleTest {
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SAVE_WITH_INPUT);
         imageSaver.updateParameterValue(ImageSaver.MIRROR_DIRECTORY_ROOT,"");
         imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_PATH,"");
+        imageSaver.updateParameterValue(ImageSaver.APPEND_SERIES_MODE,ImageSaver.AppendSeriesModes.SERIES_NUMBER);
+        imageSaver.updateParameterValue(ImageSaver.APPEND_DATETIME_MODE,ImageSaver.AppendDateTimeModes.NEVER);
         imageSaver.updateParameterValue(ImageSaver.SAVE_SUFFIX,"_test");
         imageSaver.updateParameterValue(ImageSaver.FLATTEN_OVERLAY,false);
 
@@ -73,7 +75,7 @@ public class ImageSaverTest extends ModuleTest {
     }
 
     @Test
-    public void testRunSaveAtSpecificLocation() throws Exception {
+    public void testRunSaveAtSpecificLocationWithSeriesNumber() throws Exception {
         // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)
         TemporaryFolder temporaryFolder = new TemporaryFolder();
         temporaryFolder.create();
@@ -94,6 +96,8 @@ public class ImageSaverTest extends ModuleTest {
         imageSaver.updateParameterValue(ImageSaver.SAVE_LOCATION,ImageSaver.SaveLocations.SPECIFIC_LOCATION);
         imageSaver.updateParameterValue(ImageSaver.MIRROR_DIRECTORY_ROOT,"");
         imageSaver.updateParameterValue(ImageSaver.SAVE_FILE_PATH,temporaryFolder.getRoot().getAbsolutePath()+MIA.getSlashes()+"TestFile.tif");
+        imageSaver.updateParameterValue(ImageSaver.APPEND_SERIES_MODE,ImageSaver.AppendSeriesModes.SERIES_NUMBER);
+        imageSaver.updateParameterValue(ImageSaver.APPEND_DATETIME_MODE,ImageSaver.AppendDateTimeModes.NEVER);
         imageSaver.updateParameterValue(ImageSaver.SAVE_SUFFIX,"_test2");
         imageSaver.updateParameterValue(ImageSaver.FLATTEN_OVERLAY,false);
 

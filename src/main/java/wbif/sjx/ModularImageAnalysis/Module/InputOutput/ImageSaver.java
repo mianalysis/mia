@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
 import org.apache.commons.io.FilenameUtils;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -24,6 +25,7 @@ public class ImageSaver extends Module {
     public static final String SAVE_LOCATION = "Save location";
     public static final String MIRROR_DIRECTORY_ROOT = "Mirrored directory root";
     public static final String SAVE_FILE_PATH = "File path";
+    public static final String APPEND_SERIES_MODE = "Append series mode";
     public static final String APPEND_DATETIME_MODE = "Append date/time mode";
     public static final String SAVE_SUFFIX = "Add filename suffix";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
@@ -37,6 +39,15 @@ public class ImageSaver extends Module {
 
     }
 
+    public interface AppendSeriesModes {
+        String NONE = "None";
+        String SERIES_NAME = "Series name";
+        String SERIES_NUMBER = "Series number";
+
+        String[] ALL = new String[]{NONE,SERIES_NAME,SERIES_NUMBER};
+
+    }
+
     public interface AppendDateTimeModes {
         String ALWAYS = "Always";
         String IF_FILE_EXISTS = "If file exists";
@@ -46,6 +57,19 @@ public class ImageSaver extends Module {
 
     }
 
+    public static String appendSeries(String inputName, Workspace workspace, String appendSeriesMode) {
+        switch (appendSeriesMode) {
+            case AppendSeriesModes.NONE:
+            default:
+                return inputName;
+            case AppendSeriesModes.SERIES_NAME:
+                String seriesName = workspace.getMetadata().getSeriesName();
+                return inputName + "_S" + seriesName;
+            case AppendSeriesModes.SERIES_NUMBER:
+                int seriesNumber = workspace.getMetadata().getSeriesNumber();
+                return inputName + "_S" + seriesNumber;
+        }
+    }
 
     public static String appendDateTime(String inputName, String appendDateTimeMode) {
         switch (appendDateTimeMode) {
@@ -86,6 +110,7 @@ public class ImageSaver extends Module {
         String saveLocation = parameters.getValue(SAVE_LOCATION);
         String mirroredDirectoryRoot = parameters.getValue(MIRROR_DIRECTORY_ROOT);
         String filePath = parameters.getValue(SAVE_FILE_PATH);
+        String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
         String suffix = parameters.getValue(SAVE_SUFFIX);
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
@@ -143,7 +168,7 @@ public class ImageSaver extends Module {
         }
 
         // Adding last bits to name
-        path = path + "_S" + workspace.getMetadata().getSeriesNumber();
+        path = appendSeries(path,workspace,appendSeriesMode);
         path = path + suffix + ".tif";
         path = appendDateTime(path,appendDateTimeMode);
         IJ.save(inputImagePlus,path);
@@ -158,6 +183,7 @@ public class ImageSaver extends Module {
         parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this));
         parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
+        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.NONE, AppendSeriesModes.ALL));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
         parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false));
@@ -182,6 +208,7 @@ public class ImageSaver extends Module {
 
         }
 
+        returnedParameters.add(parameters.getParameter(APPEND_SERIES_MODE));
         returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
         returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
         returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
