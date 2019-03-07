@@ -54,5 +54,6 @@ public class ModuleButton extends JToggleButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         GUI.setActiveModule(module);
         GUI.updateModules(false);
+
     }
 }

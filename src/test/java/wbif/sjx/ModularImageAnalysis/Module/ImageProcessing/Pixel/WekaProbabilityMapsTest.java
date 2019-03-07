@@ -49,7 +49,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -88,7 +88,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -127,7 +127,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -166,7 +166,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -205,7 +205,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -244,7 +244,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -283,7 +283,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -322,7 +322,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,1);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -361,7 +361,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -401,7 +401,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,1);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -441,7 +441,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,this.getClass().getResource("/images/WekaProbabilityMaps/Example_classifier.model").toURI().getPath());
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         wekaProbabilityMaps.run(workspace);
 
         // Checking the images in the workspace
@@ -480,7 +480,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.CLASSIFIER_FILE,"");
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
-        // Running BinaryOperations
+        // Running Module
         boolean status = wekaProbabilityMaps.run(workspace);
 
         // Checking the module failed to generateModuleList (returned false)

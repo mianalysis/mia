@@ -37,11 +37,12 @@ import java.util.TreeMap;
 public class GUI {
     private static Analysis analysis = new Analysis();
     private static Module activeModule = null;
+    private static Module lastHelpNotesModule = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
 
-    private static int editingFrameWidth = 1200;
+    private static int editingFrameWidth = 1300;
     private static int minimumEditingFrameWidth = 800;
     private static int basicFrameWidth = 400;
     private static int minimumFrameHeight = 600;
@@ -71,6 +72,11 @@ public class GUI {
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
     private static final JPanel basicStatusPanel = new JPanel();
     private static final JPanel editingStatusPanel = new JPanel();
+    private static final JPanel helpNotesPanel = new JPanel();
+    private static final JPanel helpPanel = new JPanel();
+//    private static final JScrollPane helpScrollPane = new JScrollPane(helpPanel);
+    private static final JPanel notesPanel = new JPanel();
+    private static final JScrollPane notesScrollPane = new JScrollPane(notesPanel);
     private static final GUISeparator loadSeparator = new GUISeparator();
     private static final ButtonGroup group = new ButtonGroup();
     private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
@@ -233,7 +239,7 @@ public class GUI {
         c.weighty = 0;
         c.weightx = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridwidth = 3;
+        c.gridwidth = 4;
         c.insets = new Insets(0,5,5,5);
         initialiseEditingStatusPanel();
         editingPanel.add(editingStatusPanel, c);
@@ -244,7 +250,7 @@ public class GUI {
         c.insets = new Insets(0,5,5,5);
         editingPanel.add(editingProgressBar,c);
 
-//        // Initialising the input enable panel
+        // Initialising the input enable panel
         initialiseInputEnablePanel();
         c.gridx++;
         c.gridy = 0;
@@ -277,8 +283,14 @@ public class GUI {
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(5, 5, 5, 5);
+        c.insets = new Insets(5, 5, 5, 0);
         editingPanel.add(paramsScrollPane, c);
+
+        initialiseHelpNotesPanels();
+        c.gridx++;
+        c.weightx = 0;
+        c.insets = new Insets(5,5,5,5);
+        editingPanel.add(helpNotesPanel,c);
 
     }
 
@@ -341,6 +353,7 @@ public class GUI {
 
         populateModuleList();
         populateModuleParameters();
+        populateHelpNotes();
         updateTestFile();
 
     }
@@ -504,7 +517,51 @@ public class GUI {
 
         // Displaying the input controls
         activeModule = analysis.getInputControl();
-        updateModules(true);
+
+    }
+
+    private static void initialiseHelpNotesPanels() {
+        // Initialising the scroll panel
+        helpPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        helpPanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
+
+        helpPanel.setLayout(new GridBagLayout());
+
+        helpPanel.validate();
+        helpPanel.repaint();
+
+
+        // Initialising the scroll panel
+        notesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        notesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        notesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        notesScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+        notesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
+
+        notesPanel.setLayout(new GridBagLayout());
+
+        notesPanel.validate();
+        notesPanel.repaint();
+
+        notesScrollPane.validate();
+        notesScrollPane.repaint();
+
+        // Adding panels to combined JPanel
+        helpNotesPanel.setLayout(new GridBagLayout());
+        GridBagConstraints cc = new GridBagConstraints();
+
+        cc.fill = GridBagConstraints.BOTH;
+        cc.gridx = 0;
+        cc.gridy = 0;
+        cc.weightx = 1;
+        cc.weighty = 2;
+        cc.insets = new Insets(0,0,5,0);
+        helpNotesPanel.add(helpPanel,cc);
+
+        cc.gridy++;
+        cc.weighty = 1;
+        cc.insets = new Insets(0,0,0,0);
+        helpNotesPanel.add(notesScrollPane,cc);
 
     }
 
@@ -858,43 +915,107 @@ public class GUI {
         }
 
         // Creating the notes/help field at the bottom of the panel
-        if (!isInput && !isOutput) {
-            JTabbedPane notesHelpPane = new JTabbedPane();
-            notesHelpPane.setPreferredSize(new Dimension(-1, elementHeight * 3));
-
-            String help = activeModule.getHelp();
-            JTextArea helpArea = new JTextArea(help);
-            helpArea.setEditable(false);
-            notesHelpPane.addTab("Help", null, helpArea);
-
-            String notes = activeModule.getNotes();
-            NotesArea notesArea = new NotesArea(notes);
-            notesHelpPane.addTab("Notes", null, notesArea);
-
-            c.anchor = GridBagConstraints.LAST_LINE_START;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.gridx = 0;
-            c.gridy++;
-            c.weighty = 1;
-            c.gridwidth = 3;
-            c.insets = new Insets(5, 5, 5, 10);
-            paramsPanel.add(notesHelpPane, c);
-
-        } else {
-            JSeparator separator = new JSeparator();
-            separator.setOpaque(false);
-            separator.setSize(new Dimension(0,0));
-            c.weighty = 1;
-            c.gridy++;
-            c.fill = GridBagConstraints.VERTICAL;
-            paramsPanel.add(separator,c);
-        }
+        JSeparator separator = new JSeparator();
+        separator.setOpaque(false);
+        separator.setSize(new Dimension(0,0));
+        c.weighty = 1;
+        c.gridy++;
+        c.fill = GridBagConstraints.VERTICAL;
+        paramsPanel.add(separator,c);
 
         paramsPanel.validate();
         paramsPanel.repaint();
 
         paramsScrollPane.validate();
         paramsScrollPane.repaint();
+
+    }
+
+    public static void populateHelpNotes() {
+        // Only update the help and notes if the module has changed
+        if (activeModule != lastHelpNotesModule) {
+            lastHelpNotesModule = activeModule;
+        } else {
+            return;
+        }
+
+        helpPanel.removeAll();
+        helpPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.insets = new Insets(5,5,0,5);
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+
+        // Adding title to help window
+        JLabel helpLabel = new JLabel();
+        helpLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        helpLabel.setText(activeModule.getTitle());
+        helpPanel.add(helpLabel,c);
+
+        // Adding separator
+        JSeparator separator = new JSeparator();
+        c.gridy++;
+        helpPanel.add(separator,c);
+
+        JTextArea helpArea = new JTextArea();
+        helpArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+        helpArea.setText(activeModule.getHelp());
+        helpArea.setBackground(null);
+        helpArea.setLineWrap(true);
+        helpArea.setWrapStyleWord(true);
+        helpArea.setEditable(false);
+        c.gridy++;
+        c.weighty = 1;
+        c.insets = new Insets(5,5,5,5);
+
+        JScrollPane jsp = new JScrollPane(helpArea);
+        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jsp.getVerticalScrollBar().setUnitIncrement(10);
+        jsp.setBorder(null);
+        helpPanel.add(jsp,c);
+
+        helpPanel.validate();
+        helpPanel.repaint();
+
+        notesPanel.removeAll();
+        notesPanel.setLayout(new GridBagLayout());
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.insets = new Insets(5,5,0,5);
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+
+        // Adding title to help window
+        JLabel notesLabel = new JLabel();
+        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        notesLabel.setText("Notes");
+        notesPanel.add(notesLabel,c);
+
+        // Adding separator
+        separator = new JSeparator();
+        c.gridy++;
+        notesPanel.add(separator,c);
+
+        NotesArea notesArea = new NotesArea(activeModule.getNotes());
+        c.gridy++;
+        c.weighty = 1;
+        c.insets = new Insets(5,5,5,5);
+
+        jsp = new JScrollPane(notesArea);
+        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jsp.getVerticalScrollBar().setUnitIncrement(10);
+        jsp.setBorder(null);
+        notesPanel.add(jsp,c);
+
+        notesPanel.validate();
+        notesPanel.repaint();
 
     }
 
@@ -1085,6 +1206,7 @@ public class GUI {
 
             populateModuleList();
             populateModuleParameters();
+            populateHelpNotes();
             updateModules(true);
 
         }
@@ -1164,7 +1286,11 @@ public class GUI {
         updateButtonStates();
 
         if (basicGUI) populateBasicModules();
-        else populateModuleParameters();
+        else {
+            populateModuleParameters();
+        }
+
+        populateHelpNotes();
 
     }
 

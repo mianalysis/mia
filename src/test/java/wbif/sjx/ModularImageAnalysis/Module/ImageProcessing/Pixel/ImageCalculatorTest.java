@@ -58,7 +58,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -131,7 +131,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -203,7 +203,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -276,7 +276,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -349,7 +349,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -421,7 +421,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -497,7 +497,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.SUBTRACT);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -571,7 +571,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.SUBTRACT);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -648,7 +648,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.MULTIPLY);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -722,7 +722,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.MULTIPLY);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -799,7 +799,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,false);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.DIVIDE);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace
@@ -873,7 +873,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.OUTPUT_32BIT,true);
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.DIVIDE);
 
-        // Running BinaryOperations
+        // Running Module
         calculator.run(workspace);
 
         // Checking the images in the workspace

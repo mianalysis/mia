@@ -439,7 +439,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
-        // Running BinaryOperations
+        // Running Module
         bestFocusSubstack.run(workspace);
 
         // Checking the images in the workspace
@@ -481,7 +481,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,2);
 
-        // Running BinaryOperations
+        // Running Module
         bestFocusSubstack.run(workspace);
 
         // Checking the images in the workspace
@@ -522,7 +522,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.RELATIVE_END_SLICE,2);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_ALL);
 
-        // Running BinaryOperations
+        // Running Module
         bestFocusSubstack.run(workspace);
 
         // Checking the images in the workspace
@@ -564,7 +564,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
-        // Running BinaryOperations
+        // Running Module
         bestFocusSubstack.run(workspace);
 
         // Checking the images in the workspace
@@ -606,7 +606,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
-        // Running BinaryOperations
+        // Running Module
         bestFocusSubstack.run(workspace);
 
         // Checking the images in the workspace
@@ -648,7 +648,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
-        // Running BinaryOperations
+        // Running Module
         bestFocusSubstack.run(workspace);
 
         // Checking the images in the workspace
@@ -690,7 +690,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
-        // Running BinaryOperations
+        // Running Module
         bestFocusSubstack.run(workspace);
 
         // Checking the images in the workspace
@@ -732,7 +732,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
-        // Running BinaryOperations
+        // Running Module
         bestFocusSubstack.run(workspace);
 
         // Checking the images in the workspace
@@ -774,7 +774,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_SINGLE);
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
-        // Running BinaryOperations
+        // Running Module
         bestFocusSubstack.run(workspace);
 
         // Checking the images in the workspace

@@ -303,9 +303,11 @@ public class ComponentFactory {
         panel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
-                expandedBasic.flipBoolean();
-                GUI.updateModules(true);
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
+                    expandedBasic.flipBoolean();
+                    GUI.updateModules(true);
+                }
             }
 
             @Override

@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
@@ -17,6 +19,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.common.Process.ImgPlusTools;
 
 public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -53,26 +56,21 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     public Image<T> applyFlip(Image<T> inputImage, String axis, String outputImageName) {
-        ImgPlus img = inputImage.getImgPlus();
-
-        // The output image has the same dimensions as the input image
-        long[] dims = new long[img.numDimensions()];
-        for (int i=0;i<img.numDimensions();i++) {
-            dims[i] = img.dimension(i);
-        }
+        ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Creating the new Img
-        ArrayImgFactory<T> factory = new ArrayImgFactory<T>((T) img .firstElement());
-        Img<T> outputImg = factory.create(dims);
+        ArrayImgFactory<T> factory = new ArrayImgFactory<T>((T) inputImg .firstElement());
+        long[] dimsOut = ImgPlusTools.getDimensionsXYCZT(inputImg);
+        ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dimsOut));
 
         // Determining the axis index
-        int axisIndex = getAxesIndex(img, axis);
+        int axisIndex = getAxesIndex(inputImg, axis);
         if (axisIndex == -1) {
             System.err.println("[FlipStack] Specified axis for image flipping doesn't exist.");
             return null;
         }
 
-        Cursor<T> inputCursor = Views.invertAxis(img,axisIndex).cursor();
+        Cursor<T> inputCursor = Views.invertAxis(inputImg,axisIndex).cursor();
         Cursor<T> outputCursor = outputImg.cursor();
 
         while (inputCursor.hasNext()) outputCursor.next().set(inputCursor.next());

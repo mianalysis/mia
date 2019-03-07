@@ -56,6 +56,7 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     } else {
                         GUI.populateModuleList();
                         GUI.populateModuleParameters();
+                        GUI.populateHelpNotes();
 
                     }
 
@@ -92,6 +93,7 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     } else {
                         GUI.populateModuleList();
                         GUI.populateModuleParameters();
+                        GUI.populateHelpNotes();
 
                     }
 
