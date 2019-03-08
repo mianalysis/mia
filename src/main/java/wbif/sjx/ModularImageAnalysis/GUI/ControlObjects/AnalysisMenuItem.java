@@ -34,6 +34,7 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
     public static final String EDITING_VIEW = "Switch to editing view";
     public static final String SHOW_HELP_NOTES = "Show help and notes panel";
     public static final String HIDE_HELP_NOTES = "Hide help and notes panel";
+    public static final String TOGGLE_HELP_NOTES = "Toggle help and notes panel";
 
     public AnalysisMenuItem(String command) {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -60,6 +61,7 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                         GUI.populateModuleList();
                         GUI.populateModuleParameters();
                         GUI.populateHelpNotes();
+                        GUI.populateBasicHelpNotes();
 
                     }
 
@@ -97,6 +99,7 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                         GUI.populateModuleList();
                         GUI.populateModuleParameters();
                         GUI.populateHelpNotes();
+                        GUI.populateBasicHelpNotes();
 
                     }
 
@@ -138,21 +141,15 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     setText(AnalysisMenuItem.BASIC_VIEW);
                     break;
 
-                case SHOW_HELP_NOTES:
-                    GUI.setEditingFrameWidth(GUI.getEditingFrameWidth()+315);
-                    GUI.setShowHelpNotes(true);
-                    Prefs.set("MIA.showHelpNotes",true);
-                    setText(AnalysisMenuItem.HIDE_HELP_NOTES);
+                case TOGGLE_HELP_NOTES:
+                    if (GUI.isBasicGUI()) {
+                        GUI.setShowBasicHelpNotes(!GUI.isShowBasicHelpNotes());
+                    } else {
+                        GUI.setShowEditingHelpNotes(!GUI.isShowEditingHelpNotes());
+                    }
                     GUI.render();
                     break;
 
-                case HIDE_HELP_NOTES:
-                    GUI.setEditingFrameWidth(GUI.getEditingFrameWidth()-315);
-                    GUI.setShowHelpNotes(false);
-                    Prefs.set("MIA.showHelpNotes",false);
-                    setText(AnalysisMenuItem.SHOW_HELP_NOTES);
-                    GUI.render();
-                    break;
             }
 
         } catch (IOException | ClassNotFoundException | ParserConfigurationException | SAXException

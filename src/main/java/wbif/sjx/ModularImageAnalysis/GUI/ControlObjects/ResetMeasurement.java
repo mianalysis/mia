@@ -38,6 +38,7 @@ public class ResetMeasurement extends JButton implements ActionListener {
 
         GUI.populateModuleParameters();
         GUI.populateHelpNotes();
+        GUI.populateBasicHelpNotes();
 
     }
 }

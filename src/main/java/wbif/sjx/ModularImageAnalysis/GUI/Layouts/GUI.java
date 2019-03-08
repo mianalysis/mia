@@ -4,8 +4,6 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
-import ij.IJ;
-import ij.Prefs;
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
@@ -44,7 +42,7 @@ public class GUI {
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
 
-    private static int editingFrameWidth = 1400;
+    private static int editingFrameWidth = 1200;
     private static int minimumEditingFrameWidth = 800;
     private static int basicFrameWidth = 400;
     private static int minimumFrameHeight = 600;
@@ -56,7 +54,8 @@ public class GUI {
 
     private static boolean initialised = false;
     private static boolean basicGUI = true;
-    private static boolean showHelpNotes = Prefs.get("MIA.showHelpNotes",true);
+    private static boolean showEditingHelpNotes = false;//Prefs.get("MIA.showEditingHelpNotes",true);
+    private static boolean showBasicHelpNotes = false;//Prefs.get("MIA.showEditingHelpNotes",true);
 
     private static ComponentFactory componentFactory;
     private static final JFrame frame = new JFrame();
@@ -168,11 +167,8 @@ public class GUI {
         } else {
             menu.add(new AnalysisMenuItem(AnalysisMenuItem.EDITING_VIEW));
         }
-        if (showHelpNotes) {
-            menu.add(new AnalysisMenuItem(AnalysisMenuItem.HIDE_HELP_NOTES));
-        } else {
-            menu.add(new AnalysisMenuItem(AnalysisMenuItem.SHOW_HELP_NOTES));
-        }
+        menu.add(new AnalysisMenuItem(AnalysisMenuItem.TOGGLE_HELP_NOTES));
+
     }
 
     public static void render() throws IllegalAccessException, InstantiationException {
@@ -211,6 +207,7 @@ public class GUI {
         // Initialising the help and notes panels
         initialiseBasicHelpNotesPanels();
         c.gridx++;
+        c.insets = new Insets(5, 0, 0, 5);
         basicPanel.add(basicHelpNotesPanel,c);
 
         // Initialising the status panel
@@ -219,6 +216,7 @@ public class GUI {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0;
         c.gridwidth = 2;
+        c.insets = new Insets(5, 5, 0, 5);
         initialiseBasicStatusPanel();
         basicPanel.add(basicStatusPanel,c);
 
@@ -326,17 +324,22 @@ public class GUI {
         frame.add(basicPanel);
         basicStatusPanel.add(textField,c);
 
+        basicHelpNotesPanel.setVisible(showBasicHelpNotes);
+
         basicPanel.setVisible(true);
         basicPanel.validate();
         basicPanel.repaint();
 
-        frame.setPreferredSize(new Dimension(basicFrameWidth,frameHeight));
-        frame.setMinimumSize(new Dimension(basicFrameWidth,minimumFrameHeight));
+        int frameWidth = basicFrameWidth;
+        if (showBasicHelpNotes) frameWidth = frameWidth + 319;
+        frame.setPreferredSize(new Dimension(frameWidth,frameHeight));
+        frame.setMinimumSize(new Dimension(frameWidth,minimumFrameHeight));
 
         frame.pack();
         frame.validate();
         frame.repaint();
 
+        if (showBasicHelpNotes) populateBasicHelpNotes();
         populateBasicModules();
         updateTestFile();
 
@@ -357,14 +360,16 @@ public class GUI {
         frame.add(editingPanel);
         editingStatusPanel.add(textField,c);
 
-        helpNotesPanel.setVisible(showHelpNotes);
+        helpNotesPanel.setVisible(showEditingHelpNotes);
 
         editingPanel.setVisible(true);
         editingPanel.validate();
         editingPanel.repaint();
 
-        frame.setPreferredSize(new Dimension(editingFrameWidth,frameHeight));
-        frame.setMinimumSize(new Dimension(minimumEditingFrameWidth,minimumFrameHeight));
+        int frameWidth = editingFrameWidth;
+        if (showEditingHelpNotes) frameWidth = frameWidth + 315;
+        frame.setPreferredSize(new Dimension(frameWidth,frameHeight));
+        frame.setMinimumSize(new Dimension(frameWidth,minimumFrameHeight));
 
         frame.pack();
         frame.revalidate();
@@ -372,7 +377,7 @@ public class GUI {
 
         populateModuleList();
         populateModuleParameters();
-        if (showHelpNotes) populateHelpNotes();
+        if (showEditingHelpNotes) populateHelpNotes();
         updateTestFile();
 
     }
@@ -1057,6 +1062,98 @@ public class GUI {
 
     }
 
+    public static void populateBasicHelpNotes() {
+        // Only update the help and notes if the module has changed
+        if (activeModule != lastHelpNotesModule) {
+            lastHelpNotesModule = activeModule;
+        } else {
+            return;
+        }
+
+        basicHelpPanel.removeAll();
+        basicHelpPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.insets = new Insets(5,5,0,5);
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+
+        // Adding title to help window
+        JLabel helpLabel = new JLabel();
+        helpLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        helpLabel.setText(activeModule.getTitle());
+        basicHelpPanel.add(helpLabel,c);
+
+        // Adding separator
+        JSeparator separator = new JSeparator();
+        c.gridy++;
+        basicHelpPanel.add(separator,c);
+
+        // If no Module is selected, also skip
+        JTextArea helpArea = new JTextArea();
+        helpArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        if (activeModule != null) {
+            helpArea.setText(activeModule.getHelp());
+        }
+        helpArea.setBackground(null);
+        helpArea.setLineWrap(true);
+        helpArea.setWrapStyleWord(true);
+        helpArea.setEditable(false);
+        helpArea.setCaretPosition(0);
+        c.gridy++;
+        c.weighty = 1;
+        c.insets = new Insets(5,5,5,5);
+
+        JScrollPane jsp = new JScrollPane(helpArea);
+        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jsp.getVerticalScrollBar().setUnitIncrement(10);
+        jsp.setBorder(null);
+        basicHelpPanel.add(jsp,c);
+
+        basicHelpPanel.revalidate();
+        basicHelpPanel.repaint();
+
+        basicNotesPanel.removeAll();
+        basicNotesPanel.setLayout(new GridBagLayout());
+        c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 1;
+        c.insets = new Insets(5,5,0,5);
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.BOTH;
+
+        // Adding title to help window
+        JLabel notesLabel = new JLabel();
+        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        notesLabel.setText("Notes");
+        basicNotesPanel.add(notesLabel,c);
+
+        // Adding separator
+        separator = new JSeparator();
+        c.gridy++;
+        basicNotesPanel.add(separator,c);
+
+        String notes = activeModule == null ? "" : activeModule.getNotes();
+        NotesArea notesArea = new NotesArea(notes);
+        c.gridy++;
+        c.weighty = 1;
+        c.insets = new Insets(5,5,5,5);
+
+        jsp = new JScrollPane(notesArea);
+        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        jsp.getVerticalScrollBar().setUnitIncrement(10);
+        basicNotesPanel.add(jsp,c);
+
+        basicNotesPanel.validate();
+        basicNotesPanel.repaint();
+
+    }
+
     private static void updateButtonStates() {
         if (!basicGUI) {
             for (Component panel : modulesPanel.getComponents()) {
@@ -1447,12 +1544,20 @@ public class GUI {
         return globalMeasurementRef;
     }
 
-    public static boolean isShowHelpNotes() {
-        return showHelpNotes;
+    public static boolean isShowEditingHelpNotes() {
+        return showEditingHelpNotes;
     }
 
-    public static void setShowHelpNotes(boolean showHelpNotes) {
-        GUI.showHelpNotes = showHelpNotes;
+    public static void setShowEditingHelpNotes(boolean showEditingHelpNotes) {
+        GUI.showEditingHelpNotes = showEditingHelpNotes;
+    }
+
+    public static boolean isShowBasicHelpNotes() {
+        return showBasicHelpNotes;
+    }
+
+    public static void setShowBasicHelpNotes(boolean showBasicHelpNotes) {
+        GUI.showBasicHelpNotes = showBasicHelpNotes;
     }
 
     public static int getEditingFrameWidth() {
