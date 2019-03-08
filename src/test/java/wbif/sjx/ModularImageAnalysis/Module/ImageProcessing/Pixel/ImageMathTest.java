@@ -53,7 +53,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -95,7 +95,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -137,7 +137,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -179,7 +179,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -203,7 +203,7 @@ public class ImageMathTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -221,7 +221,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -262,7 +262,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -302,7 +302,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -345,7 +345,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.MEASUREMENT);
         imageMath.updateParameterValue(ImageMath.MEASUREMENT,"Test meas");
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -387,7 +387,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-5d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -429,7 +429,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,12d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -471,7 +471,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-12d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -513,7 +513,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,2.3d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -555,7 +555,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-2.3d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -597,7 +597,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-2.3d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -639,7 +639,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,0.4d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -681,7 +681,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-0.6d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace
@@ -723,7 +723,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.VALUE_SOURCE,ImageMath.ValueSources.FIXED);
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-0.6d);
 
-        // Running BinaryOperations
+        // Running Module
         imageMath.run(workspace);
 
         // Checking the images in the workspace

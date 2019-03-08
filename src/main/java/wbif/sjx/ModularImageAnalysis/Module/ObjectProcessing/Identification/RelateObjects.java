@@ -316,7 +316,7 @@ public class RelateObjects extends Module {
     public void spatialOverlap(ObjCollection parentObjects, ObjCollection childObjects, double minOverlap,
                                boolean centroidOverlap, boolean linkInSameFrame) {
 
-        int nCombi = parentObjects.size()*childObjects.size();
+        int nCombined = parentObjects.size()*childObjects.size();
         int count = 0;
         String overlapMeasurementName = getFullName(Measurements.OVERLAP_PC,parentObjects.getName());
 
@@ -344,7 +344,7 @@ public class RelateObjects extends Module {
                 double overlap  = (nOverlap/nTotal)*100;
 
                 // Testing the minimum overlap requirement
-                if (overlap < minOverlap) continue;
+                if (overlap == 0 || overlap < minOverlap) continue;
 
                 // If the tests are successful, add the link.  If the child has already been linked, but with a smaller
                 // overlap, remove that link.
@@ -369,7 +369,7 @@ public class RelateObjects extends Module {
 
             }
 
-            writeMessage("Compared "+(childObjects.size()*++count)+" of "+nCombi+" pairs");
+            writeMessage("Compared "+(childObjects.size()*++count)+" of "+nCombined+" pairs");
 
         }
     }

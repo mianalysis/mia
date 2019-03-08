@@ -37,6 +37,8 @@ public class ResetMeasurement extends JButton implements ActionListener {
         measurementReference.setExportStd(true);
 
         GUI.populateModuleParameters();
+        GUI.populateHelpNotes();
+        GUI.populateBasicHelpNotes();
 
     }
 }

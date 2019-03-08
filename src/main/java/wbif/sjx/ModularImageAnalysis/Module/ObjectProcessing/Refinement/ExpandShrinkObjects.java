@@ -119,6 +119,8 @@ public class ExpandShrinkObjects extends Module {
 
         // Storing the image calibration
         Obj firstObject = inputObjects.getFirst();
+        if (firstObject == null) return true;
+
         double dppXY = firstObject.getDistPerPxXY();
         double dppZ = firstObject.getDistPerPxZ();
         String calibrationUnits = firstObject.getCalibratedUnits();

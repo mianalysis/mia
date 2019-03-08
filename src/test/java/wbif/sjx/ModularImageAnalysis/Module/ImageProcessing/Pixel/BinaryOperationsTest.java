@@ -55,7 +55,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.DILATE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -97,7 +97,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.DILATE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -138,7 +138,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(BinaryOperations2D.OUTPUT_IMAGE,"Test_output");
         binaryOperations.updateParameterValue(BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.DILATE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -180,7 +180,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.DILATE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -221,7 +221,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.DILATE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -261,7 +261,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.DILATE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -302,7 +302,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.ERODE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -344,7 +344,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.ERODE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -386,7 +386,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.ERODE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -428,7 +428,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.ERODE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -473,7 +473,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.ERODE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -519,7 +519,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.ERODE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -565,7 +565,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.ERODE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -611,7 +611,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(
                 BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.ERODE);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -651,7 +651,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(BinaryOperations2D.OUTPUT_IMAGE,"Test_output");
         binaryOperations.updateParameterValue(BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.FILL_HOLES);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -692,7 +692,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(BinaryOperations2D.OUTPUT_IMAGE,"Test_output");
         binaryOperations.updateParameterValue(BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.FILL_HOLES);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -733,7 +733,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(BinaryOperations2D.OUTPUT_IMAGE,"Test_output");
         binaryOperations.updateParameterValue(BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.FILL_HOLES);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace
@@ -774,7 +774,7 @@ public class BinaryOperationsTest extends ModuleTest {
         binaryOperations.updateParameterValue(BinaryOperations2D.OUTPUT_IMAGE,"Test_output");
         binaryOperations.updateParameterValue(BinaryOperations2D.OPERATION_MODE,BinaryOperations2D.OperationModes.FILL_HOLES);
 
-        // Running BinaryOperations
+        // Running Module
         binaryOperations.run(workspace);
 
         // Checking the images in the workspace

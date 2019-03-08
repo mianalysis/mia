@@ -34,5 +34,7 @@ public class ResetModuleName extends JButton implements ActionListener {
         module.setNickname(module.getTitle());
         GUI.populateModuleList();
         GUI.populateModuleParameters();
+        GUI.populateHelpNotes();
+        GUI.populateBasicHelpNotes();
     }
 }

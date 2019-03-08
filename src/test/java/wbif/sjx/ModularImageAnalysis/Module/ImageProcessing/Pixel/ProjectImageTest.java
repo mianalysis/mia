@@ -49,7 +49,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -91,7 +91,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -115,7 +115,7 @@ public class ProjectImageTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -130,7 +130,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -169,7 +169,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -211,7 +211,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -253,7 +253,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -277,7 +277,7 @@ public class ProjectImageTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -292,7 +292,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MIN);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -316,7 +316,7 @@ public class ProjectImageTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -331,7 +331,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.AVERAGE);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -355,7 +355,7 @@ public class ProjectImageTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -370,7 +370,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MEDIAN);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -394,7 +394,7 @@ public class ProjectImageTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -409,7 +409,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.STDEV);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace
@@ -433,7 +433,7 @@ public class ProjectImageTest extends ModuleTest {
         String calibratedUnits = "µm";
 
         // Loading the test image and adding to workspace
-        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient5D_8bit_C1.tif").getPath(),"UTF-8");
+        String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/NoisyGradient/NoisyGradient4D_ZT_8bit_C1.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
         workspace.addImage(image);
@@ -448,7 +448,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.OUTPUT_IMAGE,"Test_output");
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.SUM);
 
-        // Running BinaryOperations
+        // Running Module
         projectImage.run(workspace);
 
         // Checking the images in the workspace

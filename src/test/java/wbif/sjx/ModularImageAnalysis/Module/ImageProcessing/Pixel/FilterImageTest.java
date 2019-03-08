@@ -78,7 +78,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -120,7 +120,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -161,7 +161,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,true);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -209,7 +209,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -251,7 +251,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -292,7 +292,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,true);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -336,7 +336,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -377,7 +377,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -419,7 +419,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,true);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -460,7 +460,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -501,7 +501,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -542,7 +542,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -583,7 +583,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -624,7 +624,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -665,7 +665,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -706,7 +706,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -748,7 +748,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -792,7 +792,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -835,7 +835,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -876,7 +876,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,true);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -919,7 +919,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -961,7 +961,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1003,7 +1003,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1045,7 +1045,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1091,7 +1091,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1133,7 +1133,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1175,7 +1175,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1217,7 +1217,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1258,7 +1258,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1300,7 +1300,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1342,7 +1342,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1384,7 +1384,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1427,7 +1427,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace
@@ -1469,7 +1469,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
-        // Running BinaryOperations
+        // Running Module
         filterImage.run(workspace);
 
         // Checking the images in the workspace

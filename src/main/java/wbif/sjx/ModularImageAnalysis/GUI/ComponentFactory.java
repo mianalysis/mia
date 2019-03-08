@@ -17,6 +17,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.TextDisplayP;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -225,12 +226,7 @@ public class ComponentFactory {
         moduleEnabledButton.setEnabled(module.canBeDisabled());
         modulePanel.add(moduleEnabledButton,c);
 
-        JTextField title = new JTextField(module.getNickname());
-        title.setEditable(false);
-        title.setBorder(null);
-        title.setFont(new Font(Font.SANS_SERIF,Font.BOLD,12));
-        title.setOpaque(false);
-        title.setForeground(Color.BLACK);
+        ModuleTitle title = new ModuleTitle(module);
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);
@@ -303,9 +299,11 @@ public class ComponentFactory {
         panel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
-                expandedBasic.flipBoolean();
-                GUI.updateModules(true);
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    BooleanP expandedBasic = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
+                    expandedBasic.flipBoolean();
+                    GUI.updateModules(true);
+                }
             }
 
             @Override

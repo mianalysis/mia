@@ -52,7 +52,7 @@ public class InvertIntensityTest extends ModuleTest {
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
 
-        // Running BinaryOperations
+        // Running Module
         invertIntensity.run(workspace);
 
         // Checking the images in the workspace
@@ -91,7 +91,7 @@ public class InvertIntensityTest extends ModuleTest {
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,true);
 
-        // Running BinaryOperations
+        // Running Module
         invertIntensity.run(workspace);
 
         // Checking the images in the workspace
@@ -129,7 +129,7 @@ public class InvertIntensityTest extends ModuleTest {
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
 
-        // Running BinaryOperations
+        // Running Module
         invertIntensity.run(workspace);
 
         // Checking the images in the workspace
@@ -168,7 +168,7 @@ public class InvertIntensityTest extends ModuleTest {
         invertIntensity.updateParameterValue(ImageMath.OUTPUT_IMAGE,"Test_output");
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
 
-        // Running BinaryOperations
+        // Running Module
         invertIntensity.run(workspace);
 
         // Checking the images in the workspace
