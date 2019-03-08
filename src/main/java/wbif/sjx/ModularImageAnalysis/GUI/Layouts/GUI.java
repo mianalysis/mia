@@ -75,8 +75,11 @@ public class GUI {
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
     private static final JPanel basicStatusPanel = new JPanel();
     private static final JPanel editingStatusPanel = new JPanel();
+    private static final JPanel basicHelpNotesPanel = new JPanel();
     private static final JPanel helpNotesPanel = new JPanel();
+    private static final JPanel basicHelpPanel = new JPanel();
     private static final JPanel helpPanel = new JPanel();
+    private static final JPanel basicNotesPanel = new JPanel();
     private static final JPanel notesPanel = new JPanel();
     private static final GUISeparator loadSeparator = new GUISeparator();
     private static final ButtonGroup group = new ButtonGroup();
@@ -191,6 +194,7 @@ public class GUI {
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 0;
+        c.gridwidth = 2;
         c.fill = GridBagConstraints.HORIZONTAL;
 
         // Initialising the control panel
@@ -200,13 +204,21 @@ public class GUI {
         initialiseBasicModulesPanel();
         c.gridy++;
         c.weighty = 1;
+        c.gridwidth = 1;
         c.fill = GridBagConstraints.BOTH;
         basicPanel.add(basicModulesScrollPane, c);
 
+        // Initialising the help and notes panels
+        initialiseBasicHelpNotesPanels();
+        c.gridx++;
+        basicPanel.add(basicHelpNotesPanel,c);
+
         // Initialising the status panel
+        c.gridx = 0;
         c.gridy++;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0;
+        c.gridwidth = 2;
         initialiseBasicStatusPanel();
         basicPanel.add(basicStatusPanel,c);
 
@@ -554,6 +566,36 @@ public class GUI {
         cc.weighty = 1;
         cc.insets = new Insets(0,0,0,0);
         helpNotesPanel.add(notesPanel,cc);
+
+    }
+
+    private static void initialiseBasicHelpNotesPanels() {
+        // Initialising the scroll panel
+        basicHelpPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        basicHelpPanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
+        basicHelpPanel.setLayout(new GridBagLayout());
+
+        // Initialising the scroll panel
+        basicNotesPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        basicNotesPanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
+        basicNotesPanel.setLayout(new GridBagLayout());
+
+        // Adding panels to combined JPanel
+        basicHelpNotesPanel.setLayout(new GridBagLayout());
+        GridBagConstraints cc = new GridBagConstraints();
+
+        cc.fill = GridBagConstraints.BOTH;
+        cc.gridx = 0;
+        cc.gridy = 0;
+        cc.weightx = 1;
+        cc.weighty = 2;
+        cc.insets = new Insets(0,0,5,0);
+        basicHelpNotesPanel.add(basicHelpPanel,cc);
+
+        cc.gridy++;
+        cc.weighty = 1;
+        cc.insets = new Insets(0,0,0,0);
+        basicHelpNotesPanel.add(basicNotesPanel,cc);
 
     }
 
