@@ -29,6 +29,12 @@ public class MeasureObjectCentroidTest extends ModuleTest {
 
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MeasureObjectCentroid().getHelp());
+
+    }
+
     @Test
     public void calculateCentroidMean() throws Exception {
         // Creating a new workspace

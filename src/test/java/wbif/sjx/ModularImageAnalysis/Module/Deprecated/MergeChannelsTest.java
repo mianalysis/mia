@@ -25,6 +25,11 @@ public class MergeChannelsTest extends ModuleTest {
         assertNotNull(new MergeChannels<>().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MergeChannels<>().getHelp());
+    }
+
     @Test
     public void testRun2D8Bit2D8Bit() throws Exception {
         // Loading the test images and adding to workspace

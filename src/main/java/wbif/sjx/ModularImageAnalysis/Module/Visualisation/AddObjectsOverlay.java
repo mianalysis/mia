@@ -506,7 +506,7 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override

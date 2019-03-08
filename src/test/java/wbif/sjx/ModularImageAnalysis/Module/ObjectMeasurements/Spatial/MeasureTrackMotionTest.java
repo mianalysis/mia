@@ -33,6 +33,11 @@ public class MeasureTrackMotionTest extends ModuleTest {
         assertNotNull(new MeasureTrackMotion().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MeasureTrackMotion().getHelp());
+    }
+
     @Test
     public void testCreateTrack() throws IntegerOverflowException {
         // Setting calibration parameters

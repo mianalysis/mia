@@ -24,6 +24,11 @@ public class CropImageTest extends ModuleTest {
         assertNotNull(new CropImage<>().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new CropImage<>().getHelp());
+    }
+
     @Test
     public void testRun8bit2D() throws Exception {
         // Creating a new workspace

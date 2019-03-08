@@ -21,6 +21,10 @@ public class ImageCalculatorTest extends ModuleTest {
         assertNotNull(new ImageCalculator().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ImageCalculator().getHelp());
+    }
 
     // ADD OPERATION
 

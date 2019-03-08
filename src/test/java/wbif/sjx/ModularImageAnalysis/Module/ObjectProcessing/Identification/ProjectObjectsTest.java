@@ -33,6 +33,12 @@ public class ProjectObjectsTest extends ModuleTest {
 
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ProjectObjects().getHelp());
+
+    }
+
     @Test
     public void testRun() throws Exception {
         // Creating a new workspace

@@ -32,6 +32,11 @@ public class FilterObjectsTest extends ModuleTest {
         assertNotNull(new FilterImage().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new FilterImage().getHelp());
+    }
+
     @Test
     public void testRunMeasurementsLargerThan() throws Exception {
         // Creating a new workspace

@@ -24,6 +24,11 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         assertNotNull(new MeasureObjectOverlap().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MeasureObjectOverlap().getHelp());
+    }
+
     @Test
     public void testGetNOverlappingPointsNoOverlap() throws Exception {
         // Setting object parameters

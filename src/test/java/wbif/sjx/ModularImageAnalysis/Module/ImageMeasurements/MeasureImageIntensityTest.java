@@ -27,6 +27,11 @@ public class MeasureImageIntensityTest extends ModuleTest {
         assertNotNull(new MeasureImageIntensity().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MeasureImageIntensity().getHelp());
+    }
+
     @Test
     public void testRun2DImage8bit() throws UnsupportedEncodingException {
         // Creating a new workspace

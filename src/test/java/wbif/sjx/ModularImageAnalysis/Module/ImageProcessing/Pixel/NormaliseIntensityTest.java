@@ -26,6 +26,11 @@ public class NormaliseIntensityTest extends ModuleTest {
         assertNotNull(new NormaliseIntensity().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new NormaliseIntensity().getHelp());
+    }
+
     @Test
     public void testNormaliseIntensity8bit2D() throws Exception {
         // Creating a new workspace

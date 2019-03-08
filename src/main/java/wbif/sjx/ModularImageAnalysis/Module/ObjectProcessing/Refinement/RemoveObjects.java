@@ -29,7 +29,7 @@ public class RemoveObjects extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override

@@ -23,6 +23,11 @@ public class MetadataExtractorTest extends ModuleTest {
         assertNotNull(new MetadataExtractor().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MetadataExtractor().getHelp());
+    }
+
     @Test
     public void testRunKeywordMatching() throws IOException {
         // Creating the fake file to processAutomatic

@@ -20,6 +20,11 @@ public class FlipStackTest extends ModuleTest{
     public void testGetTitle() {
         assertNotNull(new FlipStack<>().getTitle());
     }
+
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new FlipStack<>().getHelp());
+    }
     
 
     // TESTING 2D STACKS

@@ -31,6 +31,11 @@ public class ImageSaverTest extends ModuleTest {
         assertNotNull(new ImageSaver().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ImageSaver().getHelp());
+    }
+
     @Test
     public void testRunSaveWithInputFileWithSeriesNumber() throws Exception {
         // Create a temporary folder and tell the workspace that's where the input was (even though it wasn't)

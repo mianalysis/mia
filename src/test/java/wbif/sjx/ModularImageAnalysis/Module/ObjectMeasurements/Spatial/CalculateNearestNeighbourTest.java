@@ -17,6 +17,11 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
         assertNotNull(new CalculateNearestNeighbour().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new CalculateNearestNeighbour().getHelp());
+    }
+
     @Test
     public void testGetNearestNeighbour() throws IntegerOverflowException {
         // Setting object parameters

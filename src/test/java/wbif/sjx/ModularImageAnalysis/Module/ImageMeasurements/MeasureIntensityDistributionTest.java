@@ -23,6 +23,11 @@ public class MeasureIntensityDistributionTest extends ModuleTest {
         assertNotNull(new MeasureIntensityDistribution().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MeasureIntensityDistribution().getHelp());
+    }
+
     @Test @Ignore
     public void testMeasureIntensityWeightedProximity() throws Exception {
 

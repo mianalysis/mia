@@ -36,6 +36,12 @@ public class MeasureObjectIntensityTest extends ModuleTest {
 
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MeasureObjectIntensity().getHelp());
+
+    }
+
     @Test
     public void testRun8bit3D() throws Exception {
         // Creating a new workspace

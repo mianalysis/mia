@@ -36,6 +36,12 @@ public class ShowObjectsTest extends ModuleTest {
 
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ConvertObjectsToImage().getHelp());
+
+    }
+
     /**
      * Takes provided objects and converts to an image using another image as a reference
      * @throws Exception

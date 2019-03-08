@@ -23,6 +23,11 @@ public class RemoveObjectsTest extends ModuleTest {
         assertNotNull(new RemoveObjects().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new RemoveObjects().getHelp());
+    }
+
     @Test
     public void testRunSingleObjCollection() throws Exception{
         // Creating a new workspace

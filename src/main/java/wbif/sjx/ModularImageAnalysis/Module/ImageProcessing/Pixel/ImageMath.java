@@ -85,7 +85,7 @@ public class ImageMath extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override

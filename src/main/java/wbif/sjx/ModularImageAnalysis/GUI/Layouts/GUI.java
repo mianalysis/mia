@@ -1000,16 +1000,7 @@ public class GUI {
         helpPanel.add(separator,c);
 
         // If no Module is selected, also skip
-        JTextArea helpArea = new JTextArea();
-        helpArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        if (activeModule != null) {
-            helpArea.setText(activeModule.getHelp());
-        }
-        helpArea.setBackground(null);
-        helpArea.setLineWrap(true);
-        helpArea.setWrapStyleWord(true);
-        helpArea.setEditable(false);
-        helpArea.setCaretPosition(0);
+        HelpArea helpArea = new HelpArea();
         c.gridy++;
         c.weighty = 1;
         c.insets = new Insets(5,5,5,5);
@@ -1092,16 +1083,7 @@ public class GUI {
         basicHelpPanel.add(separator,c);
 
         // If no Module is selected, also skip
-        JTextArea helpArea = new JTextArea();
-        helpArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        if (activeModule != null) {
-            helpArea.setText(activeModule.getHelp());
-        }
-        helpArea.setBackground(null);
-        helpArea.setLineWrap(true);
-        helpArea.setWrapStyleWord(true);
-        helpArea.setEditable(false);
-        helpArea.setCaretPosition(0);
+        HelpArea helpArea = new HelpArea();
         c.gridy++;
         c.weighty = 1;
         c.insets = new Insets(5,5,5,5);

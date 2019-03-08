@@ -21,6 +21,11 @@ public class ExtractSubstackTest extends ModuleTest {
         assertNotNull(new ExtractSubstack().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ExtractSubstack().getHelp());
+    }
+
     @Test
     public void testInterpretRangeSingleSingle() {
         String inputRange = "1";

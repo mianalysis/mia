@@ -38,6 +38,11 @@ public class IdentifyObjectsTest extends ModuleTest {
         assertNotNull(new IdentifyObjects().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new IdentifyObjects().getHelp());
+    }
+
     @Test
     public void testRunBlackBackground8bit2D() throws Exception  {
         // Creating a new workspace

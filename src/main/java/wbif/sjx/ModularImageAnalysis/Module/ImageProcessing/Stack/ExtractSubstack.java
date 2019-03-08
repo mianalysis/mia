@@ -253,7 +253,7 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
