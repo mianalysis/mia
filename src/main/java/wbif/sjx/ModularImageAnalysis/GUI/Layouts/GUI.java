@@ -4,6 +4,8 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
+import ij.IJ;
+import ij.Prefs;
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
@@ -42,7 +44,7 @@ public class GUI {
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
 
-    private static int editingFrameWidth = 1300;
+    private static int editingFrameWidth = 1400;
     private static int minimumEditingFrameWidth = 800;
     private static int basicFrameWidth = 400;
     private static int minimumFrameHeight = 600;
@@ -54,6 +56,7 @@ public class GUI {
 
     private static boolean initialised = false;
     private static boolean basicGUI = true;
+    private static boolean showHelpNotes = Prefs.get("MIA.showHelpNotes",true);
 
     private static ComponentFactory componentFactory;
     private static final JFrame frame = new JFrame();
@@ -74,9 +77,7 @@ public class GUI {
     private static final JPanel editingStatusPanel = new JPanel();
     private static final JPanel helpNotesPanel = new JPanel();
     private static final JPanel helpPanel = new JPanel();
-//    private static final JScrollPane helpScrollPane = new JScrollPane(helpPanel);
     private static final JPanel notesPanel = new JPanel();
-    private static final JScrollPane notesScrollPane = new JScrollPane(notesPanel);
     private static final GUISeparator loadSeparator = new GUISeparator();
     private static final ButtonGroup group = new ButtonGroup();
     private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
@@ -164,7 +165,11 @@ public class GUI {
         } else {
             menu.add(new AnalysisMenuItem(AnalysisMenuItem.EDITING_VIEW));
         }
-
+        if (showHelpNotes) {
+            menu.add(new AnalysisMenuItem(AnalysisMenuItem.HIDE_HELP_NOTES));
+        } else {
+            menu.add(new AnalysisMenuItem(AnalysisMenuItem.SHOW_HELP_NOTES));
+        }
     }
 
     public static void render() throws IllegalAccessException, InstantiationException {
@@ -283,13 +288,13 @@ public class GUI {
         c.weightx = 1;
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(5, 5, 5, 0);
+        c.insets = new Insets(5, 5, 5, 5);
         editingPanel.add(paramsScrollPane, c);
 
         initialiseHelpNotesPanels();
         c.gridx++;
         c.weightx = 0;
-        c.insets = new Insets(5,5,5,5);
+        c.insets = new Insets(5,0,5,5);
         editingPanel.add(helpNotesPanel,c);
 
     }
@@ -340,6 +345,8 @@ public class GUI {
         frame.add(editingPanel);
         editingStatusPanel.add(textField,c);
 
+        helpNotesPanel.setVisible(showHelpNotes);
+
         editingPanel.setVisible(true);
         editingPanel.validate();
         editingPanel.repaint();
@@ -353,7 +360,7 @@ public class GUI {
 
         populateModuleList();
         populateModuleParameters();
-        populateHelpNotes();
+        if (showHelpNotes) populateHelpNotes();
         updateTestFile();
 
     }
@@ -524,27 +531,12 @@ public class GUI {
         // Initialising the scroll panel
         helpPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         helpPanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
-
         helpPanel.setLayout(new GridBagLayout());
 
-        helpPanel.validate();
-        helpPanel.repaint();
-
-
         // Initialising the scroll panel
-        notesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        notesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        notesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        notesScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        notesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
-
+        notesPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+        notesPanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
         notesPanel.setLayout(new GridBagLayout());
-
-        notesPanel.validate();
-        notesPanel.repaint();
-
-        notesScrollPane.validate();
-        notesScrollPane.repaint();
 
         // Adding panels to combined JPanel
         helpNotesPanel.setLayout(new GridBagLayout());
@@ -561,7 +553,7 @@ public class GUI {
         cc.gridy++;
         cc.weighty = 1;
         cc.insets = new Insets(0,0,0,0);
-        helpNotesPanel.add(notesScrollPane,cc);
+        helpNotesPanel.add(notesPanel,cc);
 
     }
 
@@ -960,13 +952,17 @@ public class GUI {
         c.gridy++;
         helpPanel.add(separator,c);
 
+        // If no Module is selected, also skip
         JTextArea helpArea = new JTextArea();
-        helpArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
-        helpArea.setText(activeModule.getHelp());
+        helpArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        if (activeModule != null) {
+            helpArea.setText(activeModule.getHelp());
+        }
         helpArea.setBackground(null);
         helpArea.setLineWrap(true);
         helpArea.setWrapStyleWord(true);
         helpArea.setEditable(false);
+        helpArea.setCaretPosition(0);
         c.gridy++;
         c.weighty = 1;
         c.insets = new Insets(5,5,5,5);
@@ -978,7 +974,7 @@ public class GUI {
         jsp.setBorder(null);
         helpPanel.add(jsp,c);
 
-        helpPanel.validate();
+        helpPanel.revalidate();
         helpPanel.repaint();
 
         notesPanel.removeAll();
@@ -1002,7 +998,8 @@ public class GUI {
         c.gridy++;
         notesPanel.add(separator,c);
 
-        NotesArea notesArea = new NotesArea(activeModule.getNotes());
+        String notes = activeModule == null ? "" : activeModule.getNotes();
+        NotesArea notesArea = new NotesArea(notes);
         c.gridy++;
         c.weighty = 1;
         c.insets = new Insets(5,5,5,5);
@@ -1011,7 +1008,6 @@ public class GUI {
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jsp.getVerticalScrollBar().setUnitIncrement(10);
-        jsp.setBorder(null);
         notesPanel.add(jsp,c);
 
         notesPanel.validate();
@@ -1407,5 +1403,21 @@ public class GUI {
 
     public static MeasurementRef getGlobalMeasurementRef() {
         return globalMeasurementRef;
+    }
+
+    public static boolean isShowHelpNotes() {
+        return showHelpNotes;
+    }
+
+    public static void setShowHelpNotes(boolean showHelpNotes) {
+        GUI.showHelpNotes = showHelpNotes;
+    }
+
+    public static int getEditingFrameWidth() {
+        return editingFrameWidth;
+    }
+
+    public static void setEditingFrameWidth(int editingFrameWidth) {
+        GUI.editingFrameWidth = editingFrameWidth;
     }
 }

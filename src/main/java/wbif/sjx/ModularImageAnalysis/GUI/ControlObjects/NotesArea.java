@@ -12,11 +12,12 @@ import java.awt.event.FocusListener;
  */
 public class NotesArea extends JTextArea implements FocusListener {
     public NotesArea(String text) {
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 11));
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setText(text);
         setLineWrap(true);
         setWrapStyleWord(true);
         addFocusListener(this);
+        setCaretPosition(0);
 
     }
 
