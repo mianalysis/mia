@@ -237,7 +237,7 @@
 //    }
 //
 //    @Override
-//    public void addRelationships(RelationshipCollection relationships) {
+//    public void updateAndGetRelationships(RelationshipCollection relationships) {
 //        switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
 //            case OutputModes.CREATE_NEW_OBJECT:
 //                String inputObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);

@@ -44,7 +44,7 @@ public class FitGaussian2D extends Module {
         String[] ALL = new String[]{FIXED_VALUE, MEASUREMENT};
 
     }
-    
+
     public interface Measurements {
         String X0_PX = "GAUSSFIT2D // X0_(PX)";
         String Y0_PX = "GAUSSFIT2D // Y0_(PX)";
@@ -65,7 +65,7 @@ public class FitGaussian2D extends Module {
         String RESIDUAL = "GAUSSFIT2D // RESIDUAL_(NORM)";
 
     }
-    
+
 
     @Override
     public String getTitle() {
@@ -462,8 +462,8 @@ public class FitGaussian2D extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

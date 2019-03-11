@@ -33,6 +33,13 @@ public class MeasurementRef extends Reference {
         return name;
     }
 
+    public String getFinalName() {
+        int idx = name.lastIndexOf("//");
+
+        return name.substring(idx+2);
+
+    }
+
     public boolean isCalculated() {
         return calculated;
     }

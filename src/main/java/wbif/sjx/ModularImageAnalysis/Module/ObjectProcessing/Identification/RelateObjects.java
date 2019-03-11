@@ -706,8 +706,12 @@ public class RelateObjects extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
+    public RelationshipCollection updateAndGetRelationships() {
+        RelationshipCollection relationships = new RelationshipCollection();
+
         relationships.addRelationship(parameters.getValue(PARENT_OBJECTS),parameters.getValue(CHILD_OBJECTS));
+
+        return relationships;
 
     }
 

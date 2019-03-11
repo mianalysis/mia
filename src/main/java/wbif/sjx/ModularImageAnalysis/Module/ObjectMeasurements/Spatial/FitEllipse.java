@@ -349,7 +349,9 @@ public class FitEllipse extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
+    public RelationshipCollection updateAndGetRelationships() {
+        RelationshipCollection relationships = new RelationshipCollection();
+
         switch ((String) parameters.getValue(OBJECT_OUTPUT_MODE)) {
             case OutputModes.CREATE_NEW_OBJECT:
                 String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
@@ -358,6 +360,9 @@ public class FitEllipse extends Module {
 
                 break;
         }
+
+        return relationships;
+
     }
 
 }

@@ -708,11 +708,15 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
+    public RelationshipCollection updateAndGetRelationships() {
+        RelationshipCollection relationships = new RelationshipCollection();
+
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         relationships.addRelationship(trackObjectsName,inputObjectsName);
+
+        return relationships;
 
     }
 

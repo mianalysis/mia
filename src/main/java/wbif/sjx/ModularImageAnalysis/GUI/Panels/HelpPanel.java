@@ -37,7 +37,7 @@ public class HelpPanel extends JPanel {
         // Adding title to help window
         JLabel helpLabel = new JLabel();
         helpLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        if (activeModule != null) helpLabel.setText(activeModule.getTitle());
+        if (activeModule != null) helpLabel.setText("About \""+activeModule.getTitle()+"\"");
         add(helpLabel,c);
 
         // Adding separator
@@ -47,15 +47,15 @@ public class HelpPanel extends JPanel {
 
         // If no Module is selected, also skip
         HelpArea helpArea = new HelpArea(activeModule);
-        c.gridy++;
-        c.weighty = 1;
-        c.insets = new Insets(5,5,5,5);
 
         JScrollPane jsp = new JScrollPane(helpArea);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jsp.getVerticalScrollBar().setUnitIncrement(10);
         jsp.setBorder(null);
+        c.gridy++;
+        c.weighty = 1;
+        c.insets = new Insets(5,5,5,5);
         add(jsp,c);
 
         revalidate();
@@ -82,6 +82,8 @@ public class HelpPanel extends JPanel {
         usageMessage.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         usageMessage.setText("<html><center><font face=\"sans-serif\" size=\"3\">" +
                 "Click a module title to<br>see help and notes about it"+
+                "<br><br>" +
+                "To hide this, go to<br>View > Toggle help and notes panel" +
                 "</font></center></html>");
         usageMessage.setEditable(false);
         usageMessage.setBackground(null);

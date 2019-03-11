@@ -25,4 +25,13 @@ public class MeasurementRefCollection extends TreeMap<String,MeasurementRef> {
         putIfAbsent((String) key,new MeasurementRef((String) key));
         return super.get(key);
     }
+
+    public boolean hasExportedMeasurements() {
+        for (MeasurementRef ref:values()) {
+            if (ref.isCalculated()) return true;
+        }
+
+        return false;
+
+    }
 }

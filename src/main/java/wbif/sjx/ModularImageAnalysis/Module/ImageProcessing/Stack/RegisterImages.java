@@ -585,8 +585,8 @@ public class RegisterImages extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
     private class Param extends FloatArray2DSIFT.Param {

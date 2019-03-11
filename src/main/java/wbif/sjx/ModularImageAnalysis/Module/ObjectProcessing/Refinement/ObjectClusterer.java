@@ -298,11 +298,15 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
+    public RelationshipCollection updateAndGetRelationships() {
+        RelationshipCollection relationships = new RelationshipCollection();
+
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         relationships.addRelationship(clusterObjectsName,inputObjectsName);
+
+        return relationships;
 
     }
 

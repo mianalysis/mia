@@ -3,31 +3,39 @@ package wbif.sjx.ModularImageAnalysis.Object;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.TreeSet;
 
 /**
  * Extension of a LinkedHashMap, which contains parents (keys) and their children (values).  As there can be multiple
  * different types of children these are stored in an ArrayList.
  */
-public class RelationshipCollection {
-    private LinkedHashMap<String,TreeSet<String>> parents = new LinkedHashMap<>();
-    private LinkedHashMap<String,TreeSet<String>> children = new LinkedHashMap<>();
+public class RelationshipCollection extends LinkedHashSet<Relationship> {
+//    private LinkedHashMap<String,TreeSet<String>> parents = new LinkedHashMap<>();
+//    private LinkedHashMap<String,TreeSet<String>> children = new LinkedHashMap<>();
 
     public void addRelationship(String parent, String child) {
-        parents.computeIfAbsent(child,k -> new TreeSet<>());
-        parents.get(child).add(parent);
+        Relationship relationship = new Relationship(parent,child);
+        add(relationship);
 
-        children.computeIfAbsent(parent, k -> new TreeSet<>());
-        children.get(parent).add(child);
+//        parents.computeIfAbsent(child,k -> new TreeSet<>());
+//        parents.get(child).add(parent);
+//
+//        children.computeIfAbsent(parent, k -> new TreeSet<>());
+//        children.get(parent).add(child);
 
     }
 
     private TreeSet<String> getChildNames(String parentName, boolean useHierarchy, @Nullable String rootName) {
         if (rootName == null) rootName = "";
 
-        // Adding each parent and then the parent of that
-        TreeSet<String> childNames = children.get(parentName);
-        if (childNames == null) return new TreeSet<>();
+        // Adding each child and then the child of that
+        TreeSet<String> childNames = getChildNames(this,parentName);
+        if (childNames.size() == 0) return childNames;
+
+//        // Adding each parent and then the parent of that
+//        TreeSet<String> childNames = children.get(parentName);
+//        if (childNames == null) return new TreeSet<>();
 
         // Appending root name
         TreeSet<String> newChildNames = new TreeSet<>();
@@ -56,8 +64,8 @@ public class RelationshipCollection {
         if (rootName == null) rootName = "";
 
         // Adding each parent and then the parent of that
-        TreeSet<String> parentNames = parents.get(childName);
-        if (parentNames == null) return new TreeSet<>();
+        TreeSet<String> parentNames = getParentNames(this,childName);
+        if (parentNames.size() == 0) return parentNames;
 
         // Appending root name
         TreeSet<String> newParentNames = new TreeSet<>();
@@ -79,6 +87,28 @@ public class RelationshipCollection {
         TreeSet<String> parentNames = getParentNames(childName,useHierarchy,"");
 
         return parentNames.toArray(new String[0]);
+
+    }
+
+    private static TreeSet<String> getChildNames(RelationshipCollection relationships, String parentName) {
+        TreeSet<String> childNames = new TreeSet<>();
+
+        for (Relationship relationship:relationships) {
+            if (relationship.getParentName().equals(parentName)) childNames.add(relationship.getChildName());
+        }
+
+        return childNames;
+
+    }
+
+    private static TreeSet<String> getParentNames(RelationshipCollection relationships, String childName) {
+        TreeSet<String> parentNames = new TreeSet<>();
+
+        for (Relationship relationship:relationships) {
+            if (relationship.getChildName().equals(childName)) parentNames.add(relationship.getParentName());
+        }
+
+        return parentNames;
 
     }
 }

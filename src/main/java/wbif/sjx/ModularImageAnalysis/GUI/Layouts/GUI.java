@@ -4,6 +4,7 @@
 
 package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
 
+import ij.Prefs;
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
@@ -46,7 +47,7 @@ public class GUI {
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
 
-    private static int editingFrameWidth = 1200;
+    private static int editingFrameWidth = 1100;
     private static int minimumEditingFrameWidth = 800;
     private static int basicFrameWidth = 400;
     private static int minimumFrameHeight = 600;
@@ -58,8 +59,8 @@ public class GUI {
 
     private static boolean initialised = false;
     private static boolean basicGUI = true;
-    private static boolean showEditingHelpNotes = false;//Prefs.get("MIA.showEditingHelpNotes",true);
-    private static boolean showBasicHelpNotes = false;//Prefs.get("MIA.showEditingHelpNotes",true);
+    private static boolean showEditingHelpNotes = Prefs.get("MIA.showEditingHelpNotes",true);
+    private static boolean showBasicHelpNotes = Prefs.get("MIA.showBasicHelpNotes",true);
 
     private static ComponentFactory componentFactory;
     private static final JFrame frame = new JFrame();
@@ -68,11 +69,6 @@ public class GUI {
     private static final JPanel editingPanel = new JPanel();
     private static final JPanel modulesPanel = new JPanel();
     private static final JScrollPane modulesScrollPane = new JScrollPane(modulesPanel);
-
-    private static final ParametersPanel editingParametersPanel = new ParametersPanel();
-//    private static final JPanel paramsPanel = new JPanel();
-//    private static final JScrollPane paramsScrollPane = new JScrollPane(paramsPanel);
-
     private static final JProgressBar editingProgressBar = new JProgressBar(0,100);
     private static final JProgressBar basicProgressBar = new JProgressBar(0,100);
     private static final JPanel basicModulesPanel = new JPanel();
@@ -82,6 +78,7 @@ public class GUI {
     private static final JPanel basicStatusPanel = new JPanel();
     private static final JPanel editingStatusPanel = new JPanel();
 
+    private static final ParametersPanel editingParametersPanel = new ParametersPanel();
     private static final JPanel basicHelpNotesPanel = new JPanel();
     private static final JPanel helpNotesPanel = new JPanel();
     private static final HelpPanel editingHelpPanel = new HelpPanel();
@@ -240,6 +237,8 @@ public class GUI {
     }
 
     public static void initialiseEditingMode() {
+//        frame.setMaximumSize();
+
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 0);
         c.gridx = 0;
@@ -380,7 +379,7 @@ public class GUI {
         int frameWidth = editingFrameWidth;
         if (showEditingHelpNotes) frameWidth = frameWidth + 315;
         frame.setPreferredSize(new Dimension(frameWidth,frameHeight));
-        frame.setMinimumSize(new Dimension(frameWidth,minimumFrameHeight));
+        frame.setMinimumSize(new Dimension(minimumEditingFrameWidth,minimumFrameHeight));
 
         frame.pack();
         frame.revalidate();
