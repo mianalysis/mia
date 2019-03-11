@@ -129,6 +129,8 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
 
                 case BASIC_VIEW:
                     GUI.renderBasicMode();
+                    GUI.setActiveModule(null);
+                    GUI.populateBasicHelpNotes();
                     setText(AnalysisMenuItem.EDITING_VIEW);
                     break;
 

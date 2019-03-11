@@ -8,18 +8,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class HelpArea extends JTextPane {
-    public HelpArea() {
-        Module activeModule = GUI.getActiveModule();
+    public HelpArea(Module module) {
 
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         setContentType("text/html");
-        if (activeModule != null) {
-            setText("<html><body><font face=\"sans-serif\" size=\"3\">"+getHelpText(activeModule)+"</font></body></html>");
+        if (module != null) {
+            setText("<html><font face=\"sans-serif\" size=\"3\">"+getHelpText(module)+"</font></html>");
         }
 
         setBackground(null);
-//        setLineWrap(true);
-//        setWrapStyleWord(true);
         setEditable(false);
         setCaretPosition(0);
 

@@ -9,6 +9,9 @@ import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.Panels.HelpPanel;
+import wbif.sjx.ModularImageAnalysis.GUI.Panels.NotesPanel;
+import wbif.sjx.ModularImageAnalysis.GUI.Panels.ParametersPanel;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -37,7 +40,8 @@ import java.util.TreeMap;
 public class GUI {
     private static Analysis analysis = new Analysis();
     private static Module activeModule = null;
-    private static Module lastHelpNotesModule = null;
+    private static Module lastEditingHelpNotesModule = null;
+    private static Module lastBasicHelpNotesModule = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
@@ -64,8 +68,11 @@ public class GUI {
     private static final JPanel editingPanel = new JPanel();
     private static final JPanel modulesPanel = new JPanel();
     private static final JScrollPane modulesScrollPane = new JScrollPane(modulesPanel);
-    private static final JPanel paramsPanel = new JPanel();
-    private static final JScrollPane paramsScrollPane = new JScrollPane(paramsPanel);
+
+    private static final ParametersPanel editingParametersPanel = new ParametersPanel();
+//    private static final JPanel paramsPanel = new JPanel();
+//    private static final JScrollPane paramsScrollPane = new JScrollPane(paramsPanel);
+
     private static final JProgressBar editingProgressBar = new JProgressBar(0,100);
     private static final JProgressBar basicProgressBar = new JProgressBar(0,100);
     private static final JPanel basicModulesPanel = new JPanel();
@@ -74,12 +81,14 @@ public class GUI {
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
     private static final JPanel basicStatusPanel = new JPanel();
     private static final JPanel editingStatusPanel = new JPanel();
+
     private static final JPanel basicHelpNotesPanel = new JPanel();
     private static final JPanel helpNotesPanel = new JPanel();
-    private static final JPanel basicHelpPanel = new JPanel();
-    private static final JPanel helpPanel = new JPanel();
-    private static final JPanel basicNotesPanel = new JPanel();
-    private static final JPanel notesPanel = new JPanel();
+    private static final HelpPanel editingHelpPanel = new HelpPanel();
+    private static final HelpPanel basicHelpPanel = new HelpPanel();
+    private static final NotesPanel editingNotesPanel = new NotesPanel();
+    private static final NotesPanel basicNotesPanel = new NotesPanel();
+
     private static final GUISeparator loadSeparator = new GUISeparator();
     private static final ButtonGroup group = new ButtonGroup();
     private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
@@ -291,7 +300,6 @@ public class GUI {
         editingPanel.add(initialiseOutputEnablePanel(), c);
 
         // Initialising the parameters panel
-        initialiseParametersPanel();
         c.gridx++;
         c.gridy = 0;
         c.gridheight = 3;
@@ -299,13 +307,16 @@ public class GUI {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(5, 5, 5, 5);
-        editingPanel.add(paramsScrollPane, c);
+        editingPanel.add(editingParametersPanel, c);
 
         initialiseHelpNotesPanels();
         c.gridx++;
         c.weightx = 0;
         c.insets = new Insets(5,0,5,5);
         editingPanel.add(helpNotesPanel,c);
+
+        // Setting the active module to InputControl
+        activeModule = analysis.getInputControl();
 
     }
 
@@ -523,38 +534,7 @@ public class GUI {
 
     }
 
-    private static void initialiseParametersPanel() {
-        // Initialising the scroll panel
-        paramsScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        paramsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        paramsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        paramsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-        paramsScrollPane.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
-
-        paramsPanel.setLayout(new GridBagLayout());
-
-        paramsPanel.validate();
-        paramsPanel.repaint();
-
-        paramsScrollPane.validate();
-        paramsScrollPane.repaint();
-
-        // Displaying the input controls
-        activeModule = analysis.getInputControl();
-
-    }
-
     private static void initialiseHelpNotesPanels() {
-        // Initialising the scroll panel
-        helpPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        helpPanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
-        helpPanel.setLayout(new GridBagLayout());
-
-        // Initialising the scroll panel
-        notesPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        notesPanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
-        notesPanel.setLayout(new GridBagLayout());
-
         // Adding panels to combined JPanel
         helpNotesPanel.setLayout(new GridBagLayout());
         GridBagConstraints cc = new GridBagConstraints();
@@ -565,26 +545,16 @@ public class GUI {
         cc.weightx = 1;
         cc.weighty = 2;
         cc.insets = new Insets(0,0,5,0);
-        helpNotesPanel.add(helpPanel,cc);
+        helpNotesPanel.add(editingHelpPanel,cc);
 
         cc.gridy++;
         cc.weighty = 1;
         cc.insets = new Insets(0,0,0,0);
-        helpNotesPanel.add(notesPanel,cc);
+        helpNotesPanel.add(editingNotesPanel,cc);
 
     }
 
     private static void initialiseBasicHelpNotesPanels() {
-        // Initialising the scroll panel
-        basicHelpPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        basicHelpPanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
-        basicHelpPanel.setLayout(new GridBagLayout());
-
-        // Initialising the scroll panel
-        basicNotesPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        basicNotesPanel.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
-        basicNotesPanel.setLayout(new GridBagLayout());
-
         // Adding panels to combined JPanel
         basicHelpNotesPanel.setLayout(new GridBagLayout());
         GridBagConstraints cc = new GridBagConstraints();
@@ -787,352 +757,40 @@ public class GUI {
 
     }
 
-    public static void addAdvancedParameterControl(Parameter parameter, GridBagConstraints c) {
-        c.insets = new Insets(2, 5, 0, 0);
-        c.gridx = 0;
-        c.gridy++;
-        c.weightx = 1;
-        c.anchor = GridBagConstraints.WEST;
-        JPanel paramPanel = componentFactory.createParameterControl(parameter, getModules(), activeModule);
-        paramsPanel.add(paramPanel, c);
-
-        c.insets = new Insets(2, 5, 0, 5);
-        c.gridx++;
-        c.weightx = 0;
-        c.anchor = GridBagConstraints.EAST;
-        VisibleCheck visibleCheck = new VisibleCheck(parameter);
-        visibleCheck.setPreferredSize(new Dimension(elementHeight, elementHeight));
-        paramsPanel.add(visibleCheck, c);
-
-    }
-
-    public static void addAdvancedParameterGroup(ParameterGroup group, GridBagConstraints c) {
-        // Iterating over each collection of Parameters.  After adding each one, a remove button is included
-        LinkedHashSet<ParameterCollection> collections = group.getCollections();
-
-        JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0,15));
-        separator.setForeground(paramsPanel.getBackground());
-        separator.setBackground(paramsPanel.getBackground());
-        c.gridy++;
-        paramsPanel.add(separator, c);
-
-        for (ParameterCollection collection:collections) {
-            // Adding the individual parameters
-            for (Parameter parameter:collection) addAdvancedParameterControl(parameter,c);
-
-            separator = new JSeparator();
-            separator.setPreferredSize(new Dimension(0,15));
-            separator.setForeground(paramsPanel.getBackground());
-            separator.setBackground(paramsPanel.getBackground());
-            c.gridy++;
-            paramsPanel.add(separator, c);
-
-        }
-
-        // Adding an add button
-        addAdvancedParameterControl(group,c);
-
-        separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(0,15));
-        separator.setForeground(paramsPanel.getBackground());
-        separator.setBackground(paramsPanel.getBackground());
-        c.gridy++;
-        paramsPanel.add(separator, c);
-
-    }
-
     public static void populateModuleParameters() {
-        paramsPanel.removeAll();
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridy = 0;
-        c.weightx = 1;
-        c.weighty = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(5, 5, 20, 0);
-        c.anchor = GridBagConstraints.WEST;
-
-        // If the active module is set to null (i.e. we're looking at the analysis options panel) exit this method
-        if (activeModule == null) return;
-
-        boolean isInput = activeModule.getClass().isInstance(new InputControl());
-        boolean isOutput = activeModule.getClass().isInstance(new OutputControl());
-
-        JPanel topPanel = componentFactory.createParametersTopRow(activeModule);
-        c.gridwidth = 2;
-        paramsPanel.add(topPanel,c);
-
-        // If it's an input/output control, get the current version
-        if (activeModule.getClass().isInstance(new InputControl())) activeModule = analysis.getInputControl();
-        if (activeModule.getClass().isInstance(new OutputControl())) activeModule = analysis.getOutputControl();
-
-        // If the active module hasn't got parameters enabled, skip it
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridwidth = 1;
-        c.insets = new Insets(2, 5, 0, 0);
-        if (activeModule.updateAndGetParameters() != null) {
-            for (Parameter parameter : activeModule.updateAndGetParameters()) {
-                if (parameter.getClass() == ParameterGroup.class) {
-                    addAdvancedParameterGroup((ParameterGroup) parameter,c);
-                } else {
-                    addAdvancedParameterControl(parameter,c);
-                }
-            }
-        }
-
-        // If selected, adding the measurement selector for output control
-        if (activeModule.getClass().isInstance(new OutputControl())
-                && analysis.getOutputControl().isEnabled()
-                && ((BooleanP) analysis.getOutputControl().getParameter(OutputControl.SELECT_MEASUREMENTS)).isSelected()) {
-
-            // Creating global controls for the different statistics
-            JPanel measurementHeader = componentFactory.createMeasurementHeader("Global control",null);
-            c.gridx = 0;
-            c.gridy++;
-            c.gridwidth = 2;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.anchor = GridBagConstraints.WEST;
-            paramsPanel.add(measurementHeader,c);
-
-            JPanel currentMeasurementPanel = componentFactory.createGlobalMeasurementControl(globalMeasurementRef);
-            c.gridy++;
-            c.anchor = GridBagConstraints.EAST;
-            paramsPanel.add(currentMeasurementPanel,c);
-
-            LinkedHashSet<OutputImageP> imageNameParameters = getModules().getParametersMatchingType(OutputImageP.class);
-            for (OutputImageP imageNameParameter:imageNameParameters) {
-                String imageName = imageNameParameter.getImageName();
-                MeasurementRefCollection measurementReferences = getModules().getImageMeasurementRefs(imageName);
-
-                if (measurementReferences.size() == 0) continue;
-
-                measurementHeader = componentFactory.createMeasurementHeader(imageName+" (Image)", measurementReferences);
-                c.gridx = 0;
-                c.gridy++;
-                c.anchor = GridBagConstraints.WEST;
-                paramsPanel.add(measurementHeader,c);
-
-                // Iterating over the measurements for the current image, adding a control for each
-                for (MeasurementRef measurementReference:measurementReferences.values()) {
-                    if (!measurementReference.isCalculated()) continue;
-
-                    // Adding measurement control
-                    currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
-                    c.gridy++;
-                    c.anchor = GridBagConstraints.EAST;
-                    paramsPanel.add(currentMeasurementPanel,c);
-
-                }
-            }
-
-            LinkedHashSet<OutputObjectsP> objectNameParameters = getModules().getParametersMatchingType(OutputObjectsP.class);
-            for (OutputObjectsP objectNameParameter:objectNameParameters) {
-                String objectName = objectNameParameter.getObjectsName();
-                MeasurementRefCollection measurementReferences = getModules().getObjectMeasurementRefs(objectName);
-
-                if (measurementReferences.size() == 0) continue;
-
-                measurementHeader = componentFactory.createMeasurementHeader(objectName+" (Object)",measurementReferences);
-                c.gridx = 0;
-                c.gridy++;
-                c.anchor = GridBagConstraints.WEST;
-                paramsPanel.add(measurementHeader,c);
-
-                // Iterating over the measurements for the current object, adding a control for each
-                for (MeasurementRef measurementReference:measurementReferences.values()) {
-                    if (!measurementReference.isCalculated()) continue;
-
-                    // Adding measurement control
-                    currentMeasurementPanel = componentFactory.createMeasurementControl(measurementReference);
-                    c.gridy++;
-                    c.anchor = GridBagConstraints.EAST;
-                    paramsPanel.add(currentMeasurementPanel,c);
-
-                }
-            }
-        }
-
-        // Creating the notes/help field at the bottom of the panel
-        JSeparator separator = new JSeparator();
-        separator.setOpaque(false);
-        separator.setSize(new Dimension(0,0));
-        c.weighty = 1;
-        c.gridy++;
-        c.fill = GridBagConstraints.VERTICAL;
-        paramsPanel.add(separator,c);
-
-        paramsPanel.validate();
-        paramsPanel.repaint();
-
-        paramsScrollPane.validate();
-        paramsScrollPane.repaint();
+        editingParametersPanel.updatePanel(activeModule, analysis);
 
     }
 
     public static void populateHelpNotes() {
         // Only update the help and notes if the module has changed
-        if (activeModule != lastHelpNotesModule) {
-            lastHelpNotesModule = activeModule;
+        if (activeModule != lastEditingHelpNotesModule) {
+            lastEditingHelpNotesModule = activeModule;
         } else {
             return;
         }
 
-        helpPanel.removeAll();
-        helpPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1;
-        c.insets = new Insets(5,5,0,5);
-        c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.BOTH;
-
-        // Adding title to help window
-        JLabel helpLabel = new JLabel();
-        helpLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        helpLabel.setText(activeModule.getTitle());
-        helpPanel.add(helpLabel,c);
-
-        // Adding separator
-        JSeparator separator = new JSeparator();
-        c.gridy++;
-        helpPanel.add(separator,c);
-
-        // If no Module is selected, also skip
-        HelpArea helpArea = new HelpArea();
-        c.gridy++;
-        c.weighty = 1;
-        c.insets = new Insets(5,5,5,5);
-
-        JScrollPane jsp = new JScrollPane(helpArea);
-        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jsp.getVerticalScrollBar().setUnitIncrement(10);
-        jsp.setBorder(null);
-        helpPanel.add(jsp,c);
-
-        helpPanel.revalidate();
-        helpPanel.repaint();
-
-        notesPanel.removeAll();
-        notesPanel.setLayout(new GridBagLayout());
-        c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1;
-        c.insets = new Insets(5,5,0,5);
-        c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.BOTH;
-
-        // Adding title to help window
-        JLabel notesLabel = new JLabel();
-        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        notesLabel.setText("Notes");
-        notesPanel.add(notesLabel,c);
-
-        // Adding separator
-        separator = new JSeparator();
-        c.gridy++;
-        notesPanel.add(separator,c);
-
-        String notes = activeModule == null ? "" : activeModule.getNotes();
-        NotesArea notesArea = new NotesArea(notes);
-        c.gridy++;
-        c.weighty = 1;
-        c.insets = new Insets(5,5,5,5);
-
-        jsp = new JScrollPane(notesArea);
-        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jsp.getVerticalScrollBar().setUnitIncrement(10);
-        notesPanel.add(jsp,c);
-
-        notesPanel.validate();
-        notesPanel.repaint();
+        editingHelpPanel.updatePanel();
+        editingNotesPanel.updatePanel();
 
     }
 
     public static void populateBasicHelpNotes() {
+        // If null, show a special message
+        if (activeModule == null) {
+            basicHelpPanel.showUsageMessage();
+            return;
+        }
+
         // Only update the help and notes if the module has changed
-        if (activeModule != lastHelpNotesModule) {
-            lastHelpNotesModule = activeModule;
+        if (activeModule != lastBasicHelpNotesModule) {
+            lastBasicHelpNotesModule = activeModule;
         } else {
             return;
         }
 
-        basicHelpPanel.removeAll();
-        basicHelpPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1;
-        c.insets = new Insets(5,5,0,5);
-        c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.BOTH;
-
-        // Adding title to help window
-        JLabel helpLabel = new JLabel();
-        helpLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        helpLabel.setText(activeModule.getTitle());
-        basicHelpPanel.add(helpLabel,c);
-
-        // Adding separator
-        JSeparator separator = new JSeparator();
-        c.gridy++;
-        basicHelpPanel.add(separator,c);
-
-        // If no Module is selected, also skip
-        HelpArea helpArea = new HelpArea();
-        c.gridy++;
-        c.weighty = 1;
-        c.insets = new Insets(5,5,5,5);
-
-        JScrollPane jsp = new JScrollPane(helpArea);
-        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jsp.getVerticalScrollBar().setUnitIncrement(10);
-        jsp.setBorder(null);
-        basicHelpPanel.add(jsp,c);
-
-        basicHelpPanel.revalidate();
-        basicHelpPanel.repaint();
-
-        basicNotesPanel.removeAll();
-        basicNotesPanel.setLayout(new GridBagLayout());
-        c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1;
-        c.insets = new Insets(5,5,0,5);
-        c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.BOTH;
-
-        // Adding title to help window
-        JLabel notesLabel = new JLabel();
-        notesLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        notesLabel.setText("Notes");
-        basicNotesPanel.add(notesLabel,c);
-
-        // Adding separator
-        separator = new JSeparator();
-        c.gridy++;
-        basicNotesPanel.add(separator,c);
-
-        String notes = activeModule == null ? "" : activeModule.getNotes();
-        NotesArea notesArea = new NotesArea(notes);
-        c.gridy++;
-        c.weighty = 1;
-        c.insets = new Insets(5,5,5,5);
-
-        jsp = new JScrollPane(notesArea);
-        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        jsp.getVerticalScrollBar().setUnitIncrement(10);
-        basicNotesPanel.add(jsp,c);
-
-        basicNotesPanel.validate();
-        basicNotesPanel.repaint();
+        basicHelpPanel.updatePanel();
+        basicNotesPanel.updatePanel();
 
     }
 
@@ -1361,6 +1019,10 @@ public class GUI {
         }
     }
 
+    public static ComponentFactory getComponentFactory() {
+        return componentFactory;
+    }
+
     public static JFrame getFrame() {
         return frame;
     }
@@ -1548,5 +1210,56 @@ public class GUI {
 
     public static void setEditingFrameWidth(int editingFrameWidth) {
         GUI.editingFrameWidth = editingFrameWidth;
+    }
+
+    public static Module getLastEditingHelpNotesModule() {
+        return lastEditingHelpNotesModule;
+    }
+
+    public static void setLastEditingHelpNotesModule(Module lastEditingHelpNotesModule) {
+        GUI.lastEditingHelpNotesModule = lastEditingHelpNotesModule;
+    }
+
+    public static Module getLastBasicHelpNotesModule() {
+        return lastBasicHelpNotesModule;
+    }
+
+    public static void setLastBasicHelpNotesModule(Module lastBasicHelpNotesModule) {
+        GUI.lastBasicHelpNotesModule = lastBasicHelpNotesModule;
+    }
+
+
+    // COMPONENT SIZE GETTERS
+
+    public static int getMinimumEditingFrameWidth() {
+        return minimumEditingFrameWidth;
+    }
+
+    public static int getBasicFrameWidth() {
+        return basicFrameWidth;
+    }
+
+    public static int getMinimumFrameHeight() {
+        return minimumFrameHeight;
+    }
+
+    public static int getFrameHeight() {
+        return frameHeight;
+    }
+
+    public static int getElementHeight() {
+        return elementHeight;
+    }
+
+    public static int getBigButtonSize() {
+        return bigButtonSize;
+    }
+
+    public static int getModuleButtonWidth() {
+        return moduleButtonWidth;
+    }
+
+    public static int getStatusHeight() {
+        return statusHeight;
     }
 }
