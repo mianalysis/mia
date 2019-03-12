@@ -2,6 +2,10 @@
   <profile version="1.0">
     <option name="myName" value="Project Default" />
     <inspection_tool class="Duplicates" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Java>
+        <minSize>64</minSize>
+        <isEnabled>true</isEnabled>
+      </Java>
       <CSS>
         <minSize>27</minSize>
         <isEnabled>true</isEnabled>

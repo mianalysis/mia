@@ -214,7 +214,7 @@ public class CreateDistanceMap extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override

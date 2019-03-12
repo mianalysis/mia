@@ -90,7 +90,7 @@ public class PlotKymograph extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override

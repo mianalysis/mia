@@ -1,5 +1,8 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectMeasurements.Spatial;
 
+import ij.ImagePlus;
+import ij.gui.Overlay;
+import ij.gui.PointRoi;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -9,6 +12,7 @@ import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.Point;
 import wbif.sjx.common.Object.Volume;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class MeasureRelativeOrientation extends Module {
@@ -21,6 +25,7 @@ public class MeasureRelativeOrientation extends Module {
     public static final String REFERENCE_IMAGE = "Reference image";
     public static final String REFERENCE_OBJECTS = "Reference objects";
     public static final String OBJECT_CHOICE_MODE = "Object choice mode";
+    public static final String MUST_BE_SAME_FRAME = "Reference must be in same frame";
 
 
     public interface OrientationModes {
@@ -79,6 +84,12 @@ public class MeasureRelativeOrientation extends Module {
                 String choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
                 reference = referenceObjectsName+"_"+choice+"_OBJ_CENTROID";
                 break;
+            case ReferenceModes.OBJECT_SURFACE:
+                referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
+                objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
+                choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
+                reference = referenceObjectsName+"_"+choice+"_OBJ_SURFACE";
+                break;
         }
 
         return reference;
@@ -123,8 +134,8 @@ public class MeasureRelativeOrientation extends Module {
 
         // Iterating over each object, checking it's size against the current reference values
         for (Obj currReferenceObject:objects.values()) {
-            // Only check objects in the current frame
-            if (currReferenceObject.getT() != t) continue;
+            // Only check objects in the current frame (if required - if frame doesn't matter, t = -1)
+            if (t != -1 && currReferenceObject.getT() != t) continue;
 
             switch (choiceMode) {
                 case ObjectChoiceModes.LARGEST_OBJECT:
@@ -146,12 +157,29 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static HashMap<Integer,Point<Double>> getObjectCentroidRefs(ObjCollection objects, String choiceMode, String orientationMode, int nFrames){
+    static HashMap<Integer,Point<Double>> getObjectCentroidRefs(ObjCollection objects, String choiceMode, String orientationMode, int nFrames, boolean mustBeSameFrame){
         HashMap<Integer,Point<Double>> centres = new HashMap<>();
 
-        for (int t=0;t<nFrames;t++) {
+        if (mustBeSameFrame) {
+            for (int t=0;t<nFrames;t++) {
+                // Initialising the references for this timepoint
+                Obj referenceObject = getReferenceObject(objects,t,choiceMode);
+
+                if (referenceObject != null) {
+                    double x = referenceObject.getXMean(true);
+                    double y = referenceObject.getYMean(true);
+                    double z = referenceObject.getZMean(true, false);
+
+                    // Creating a new reference point and adding it to this timepoint
+                    Point<Double> referencePoint = new Point<>(x, y, z);
+                    centres.put(t, referencePoint);
+
+                }
+            }
+
+        } else {
             // Initialising the references for this timepoint
-            Obj referenceObject = getReferenceObject(objects,t,choiceMode);
+            Obj referenceObject = getReferenceObject(objects,-1,choiceMode);
 
             // Getting reference object centroid
             if (referenceObject != null) {
@@ -161,7 +189,7 @@ public class MeasureRelativeOrientation extends Module {
 
                 // Creating a new reference point and adding it to this timepoint
                 Point<Double> referencePoint = new Point<>(x, y, z);
-                centres.put(t, referencePoint);
+                for (int t=0;t<nFrames;t++) centres.put(t, referencePoint);
 
             }
         }
@@ -191,11 +219,14 @@ public class MeasureRelativeOrientation extends Module {
 
     }
 
-    static HashMap<Integer,Point<Double>> getObjectCentroidSurfaceRefs(ObjCollection inputObjects, ObjCollection referenceObjects, String choiceMode, String orientationMode, int nFrames){
+    static HashMap<Integer,Point<Double>> getObjectCentroidSurfaceRefs(ObjCollection inputObjects, ObjCollection referenceObjects, String choiceMode, String orientationMode, int nFrames, boolean mustBeSameFrame) {
         HashMap<Integer,Point<Double>> centres = new HashMap<>();
 
         for (Obj inputObject:inputObjects.values()) {
             int t = inputObject.getT();
+
+            // If frame doesn't matter, t is set to -1
+            if (!mustBeSameFrame) t = -1;
 
             // Initialising the references for this timepoint
             Obj referenceObject = getReferenceObject(referenceObjects,t,choiceMode);
@@ -221,6 +252,7 @@ public class MeasureRelativeOrientation extends Module {
                 SurfaceSeparationCalculator calculator = new SurfaceSeparationCalculator(centroidVolume,referenceObject,true);
                 Point<Integer> p2 = calculator.getP2();
                 Point<Double> referencePoint = new Point<>((double) p2.getX(), (double) p2.getY(), (double) p2.getZ());
+
                 centres.put(inputObject.getID(), referencePoint);
 
             }
@@ -310,6 +342,7 @@ public class MeasureRelativeOrientation extends Module {
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
         String referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
         String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
+        boolean mustBeSameFrame = parameters.getValue(MUST_BE_SAME_FRAME);
 
         // Getting measurement reference name
         String measurementReference = getMeasurementRef();
@@ -325,17 +358,20 @@ public class MeasureRelativeOrientation extends Module {
             case ReferenceModes.OBJECT_CENTROID:
                 int nFrames = inputObjects.getTemporalLimits()[1]+1;
                 ObjCollection referenceObjects = workspace.getObjectSet(referenceObjectsName);
-                referencePoints = getObjectCentroidRefs(referenceObjects,objectChoiceMode,orientationMode,nFrames);
+                referencePoints = getObjectCentroidRefs(referenceObjects,objectChoiceMode,orientationMode,nFrames,mustBeSameFrame);
                 break;
 
             case ReferenceModes.OBJECT_SURFACE:
                 nFrames = inputObjects.getTemporalLimits()[1]+1;
                 referenceObjects = workspace.getObjectSet(referenceObjectsName);
-                referencePoints = getObjectCentroidSurfaceRefs(inputObjects,referenceObjects,objectChoiceMode,orientationMode,nFrames);
+                referencePoints = getObjectCentroidSurfaceRefs(inputObjects,referenceObjects,objectChoiceMode,orientationMode,nFrames,mustBeSameFrame);
                 break;
         }
 
         if (referencePoints == null) return true;
+
+        ImagePlus ipl = workspace.getImage("TEST").getImagePlus();
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
         // Processing each object
         Point<Double> referencePoint = null;
@@ -344,12 +380,7 @@ public class MeasureRelativeOrientation extends Module {
                 case ReferenceModes.IMAGE_CENTRE:
                 case ReferenceModes.OBJECT_CENTROID:
                     // Timepoint-specific reference point modes
-                    if (!referencePoints.containsKey(inputObject.getT())) {
-                        assignMissingMeasurements(inputObject, xyOriMeasName, xzOriMeasName, orientationMode, measurementReference);
-                        continue;
-                    } else {
-                        referencePoint = referencePoints.get(inputObject.getT());
-                    }
+                    referencePoint = referencePoints.getOrDefault(inputObject.getT(), null);
                     break;
 
                 case ReferenceModes.OBJECT_SURFACE:
@@ -358,9 +389,25 @@ public class MeasureRelativeOrientation extends Module {
                     break;
             }
 
-            processObject(inputObject, xyOriMeasName, xzOriMeasName, measurementRange, referencePoint, orientationMode, measurementReference);
+            if (referencePoint == null) {
+                assignMissingMeasurements(inputObject,xyOriMeasName,xzOriMeasName,orientationMode,measurementReference);
+            } else {
+                processObject(inputObject, xyOriMeasName, xzOriMeasName, measurementRange, referencePoint, orientationMode, measurementReference);
+            }
+
+            PointRoi pointRoi = new PointRoi(referencePoint.getX()+0.5,referencePoint.getY()+0.5);
+            pointRoi.setPointType(PointRoi.NORMAL);
+            if (ipl.isHyperStack()) {
+                pointRoi.setPosition(1, (int) Math.round(referencePoint.getZ()), inputObject.getT());
+            } else {
+                int pos = Math.max(Math.max(1,(int) Math.round(referencePoint.getZ())),inputObject.getT());
+                pointRoi.setPosition(pos);
+            }
+            ipl.getOverlay().addElement(pointRoi);
 
         }
+
+        ipl.duplicate().show();
 
         if (showOutput) inputObjects.showMeasurements(this);
 
@@ -379,6 +426,7 @@ public class MeasureRelativeOrientation extends Module {
         parameters.add(new InputImageP(REFERENCE_IMAGE,this));
         parameters.add(new InputObjectsP(REFERENCE_OBJECTS,this));
         parameters.add(new ChoiceP(OBJECT_CHOICE_MODE,this,ObjectChoiceModes.LARGEST_OBJECT,ObjectChoiceModes.ALL));
+        parameters.add(new BooleanP(MUST_BE_SAME_FRAME,this,true));
 
     }
 
@@ -421,6 +469,7 @@ public class MeasureRelativeOrientation extends Module {
             case ReferenceModes.OBJECT_SURFACE:
                 returnedParameters.add(parameters.getParameter(REFERENCE_OBJECTS));
                 returnedParameters.add(parameters.getParameter(OBJECT_CHOICE_MODE));
+                returnedParameters.add(parameters.getParameter(MUST_BE_SAME_FRAME));
                 break;
         }
 
@@ -451,6 +500,13 @@ public class MeasureRelativeOrientation extends Module {
                 String objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
                 String choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
                 referenceDescription = "the centroid of the "+choice+" object in the set "+referenceObjectsName;
+                break;
+            case ReferenceModes.OBJECT_SURFACE:
+                referenceObjectsName = parameters.getValue(REFERENCE_OBJECTS);
+                objectChoiceMode = parameters.getValue(OBJECT_CHOICE_MODE);
+                choice = objectChoiceMode.equals(ObjectChoiceModes.LARGEST_OBJECT) ? "LARGEST" : "SMALLEST";
+                referenceDescription = "the closest point of the "+choice+" object in the set "+referenceObjectsName +
+                    " to the centroid of the target object";
                 break;
         }
 

@@ -233,7 +233,7 @@ public class RunTrackMate extends Module {
 
         // Adding the overlay
         try {
-            new AddObjectsOverlay().createCentroidOverlay(ipl,spotObjects,hues,false,0.2);
+            new AddObjectsOverlay().createCentroidOverlay(ipl,spotObjects,hues,false,0.2,false);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -256,7 +256,7 @@ public class RunTrackMate extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override

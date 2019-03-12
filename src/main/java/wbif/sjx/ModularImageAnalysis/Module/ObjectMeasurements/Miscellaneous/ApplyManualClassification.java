@@ -39,7 +39,7 @@ public class ApplyManualClassification extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override

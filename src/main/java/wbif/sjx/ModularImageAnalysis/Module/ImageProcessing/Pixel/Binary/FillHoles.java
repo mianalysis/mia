@@ -67,7 +67,7 @@ public class FillHoles extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override

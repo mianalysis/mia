@@ -269,7 +269,7 @@ public class RidgeDetection extends Module {
             HashMap<Integer,Float> hues = ColourFactory.getRandomHues(outputObjects);
 
             try {
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.2);
+                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.2,false);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

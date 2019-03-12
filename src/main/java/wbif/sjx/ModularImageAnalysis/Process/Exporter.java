@@ -506,25 +506,32 @@ public class Exporter {
 
 
         // Adding a new parameter to each row
-        for (Module module:modules) {
+        appendModuleParameters(paramSheet,analysis.getInputControl());
+        appendModuleParameters(paramSheet,analysis.getOutputControl());
+
+        for (Module module:modules) appendModuleParameters(paramSheet,module);
+
+    }
+
+    private void appendModuleParameters(Sheet sheet, Module module) {
             ParameterCollection parameters = module.updateAndGetParameters();
 
+            int paramRow = sheet.getLastRowNum();
             paramRow++;
 
             for (Parameter currParam : parameters) {
-                paramCol = 0;
-                row = paramSheet.createRow(paramRow++);
+                int paramCol = 0;
+                Row row = sheet.createRow(paramRow++);
 
-                nameValueCell = row.createCell(paramCol++);
+                Cell nameValueCell = row.createCell(paramCol++);
                 nameValueCell.setCellValue(currParam.getNameAsString());
 
-                valueValueCell = row.createCell(paramCol++);
+                Cell valueValueCell = row.createCell(paramCol++);
                 valueValueCell.setCellValue(currParam.getValueAsString());
 
-                moduleValueCell = row.createCell(paramCol);
+                Cell moduleValueCell = row.createCell(paramCol);
                 moduleValueCell.setCellValue(module.getClass().getSimpleName());
 
-            }
         }
     }
 

@@ -231,7 +231,7 @@ public class ObjectClusterer extends Module {
 
             // Adding overlay and displaying image
             try {
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,inputObjects,hues,false,0.2);
+                new AddObjectsOverlay().createOutlineOverlay(dispIpl,inputObjects,hues,false,0.2,false);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

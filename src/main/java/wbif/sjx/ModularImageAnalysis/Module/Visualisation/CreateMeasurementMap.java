@@ -270,7 +270,7 @@ public class CreateMeasurementMap extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override

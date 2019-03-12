@@ -112,7 +112,7 @@ public class ExtendedMinima extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
