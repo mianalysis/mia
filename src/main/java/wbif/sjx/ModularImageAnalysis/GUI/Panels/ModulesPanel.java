@@ -49,7 +49,7 @@ public class ModulesPanel extends JScrollPane {
     public void updatePanel() {
         Analysis analysis = GUI.getAnalysis();
         ComponentFactory componentFactory = GUI.getComponentFactory();
-        ButtonGroup group = GUI.getGroup();
+        ButtonGroup group = GUI.getModuleGroup();
         Module activeModule = GUI.getActiveModule();
         int moduleButtonWidth = GUI.getModuleButtonWidth();
 

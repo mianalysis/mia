@@ -22,7 +22,6 @@ public class ParametersPanel extends JScrollPane {
 
     public ParametersPanel() {
         panel = new JPanel();
-
         setViewportView(panel);
 
         int basicFrameWidth = GUI.getBasicFrameWidth();
