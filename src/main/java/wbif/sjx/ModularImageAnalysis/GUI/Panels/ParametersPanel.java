@@ -36,7 +36,6 @@ public class ParametersPanel extends JScrollPane {
         setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
 
         panel.setLayout(new GridBagLayout());
-
         panel.validate();
         panel.repaint();
 
@@ -45,7 +44,8 @@ public class ParametersPanel extends JScrollPane {
 
     }
 
-    public void updatePanel(Module module, Analysis analysis) {
+    public void updatePanel(Module module) {
+        Analysis analysis = GUI.getAnalysis();
         ComponentFactory componentFactory = GUI.getComponentFactory();
         MeasurementRef globalMeasurementRef = GUI.getGlobalMeasurementRef();
 

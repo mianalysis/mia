@@ -10,9 +10,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Panels.HelpPanel;
-import wbif.sjx.ModularImageAnalysis.GUI.Panels.NotesPanel;
-import wbif.sjx.ModularImageAnalysis.GUI.Panels.ParametersPanel;
+import wbif.sjx.ModularImageAnalysis.GUI.Panels.*;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
@@ -65,10 +63,10 @@ public class GUI {
     private static ComponentFactory componentFactory;
     private static final JFrame frame = new JFrame();
     private static final JMenuBar menuBar = new JMenuBar();
+    private static final ButtonGroup group = new ButtonGroup();
+
     private static final JPanel basicPanel = new JPanel();
     private static final JPanel editingPanel = new JPanel();
-    private static final JPanel modulesPanel = new JPanel();
-    private static final JScrollPane modulesScrollPane = new JScrollPane(modulesPanel);
     private static final JProgressBar editingProgressBar = new JProgressBar(0,100);
     private static final JProgressBar basicProgressBar = new JProgressBar(0,100);
     private static final JPanel basicModulesPanel = new JPanel();
@@ -76,8 +74,8 @@ public class GUI {
     private static final JScrollPane basicModulesScrollPane = new JScrollPane(basicModulesPanel);
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
     private static final JPanel basicStatusPanel = new JPanel();
-    private static final JPanel editingStatusPanel = new JPanel();
 
+    private static final ModulesPanel editingModulesPanel = new ModulesPanel();
     private static final ParametersPanel editingParametersPanel = new ParametersPanel();
     private static final JPanel basicHelpNotesPanel = new JPanel();
     private static final JPanel helpNotesPanel = new JPanel();
@@ -85,9 +83,9 @@ public class GUI {
     private static final HelpPanel basicHelpPanel = new HelpPanel();
     private static final NotesPanel editingNotesPanel = new NotesPanel();
     private static final NotesPanel basicNotesPanel = new NotesPanel();
+    private static final StatusPanel statusPanel = new StatusPanel();
 
     private static final GUISeparator loadSeparator = new GUISeparator();
-    private static final ButtonGroup group = new ButtonGroup();
     private static final ModuleControlButton addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,bigButtonSize);
     private static final ModuleButton inputButton = new ModuleButton(analysis.getInputControl());
     private static final ModuleButton outputButton = new ModuleButton(analysis.getOutputControl());
@@ -264,8 +262,7 @@ public class GUI {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridwidth = 4;
         c.insets = new Insets(0,5,5,5);
-        initialiseEditingStatusPanel();
-        editingPanel.add(editingStatusPanel, c);
+        editingPanel.add(statusPanel, c);
 
         // Initialising the progress bar
         initialiseEditingProgressBar();
@@ -284,11 +281,10 @@ public class GUI {
         editingPanel.add(initialiseInputEnablePanel(), c);
 
         // Initialising the module list panel
-        initialisingModulesPanel();
         c.gridy++;
         c.weighty = 1;
         c.fill = GridBagConstraints.VERTICAL;
-        editingPanel.add(modulesScrollPane, c);
+        editingPanel.add(editingModulesPanel, c);
 
         // Initialising the output enable panel
         initialiseOutputEnablePanel();
@@ -368,7 +364,8 @@ public class GUI {
 
         frame.remove(basicPanel);
         frame.add(editingPanel);
-        editingStatusPanel.add(textField,c);
+
+        statusPanel.add(textField,c);
 
         helpNotesPanel.setVisible(showEditingHelpNotes);
 
@@ -513,26 +510,6 @@ public class GUI {
 
     }
 
-    private static void initialisingModulesPanel() {
-        // Initialising the scroll panel
-        modulesScrollPane.setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, -1));
-        modulesScrollPane.setMinimumSize(new Dimension(basicFrameWidth-45-bigButtonSize, -1));
-        modulesScrollPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        modulesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        modulesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        modulesScrollPane.getVerticalScrollBar().setUnitIncrement(10);
-
-        // Initialising the panel for module buttons
-        modulesPanel.setLayout(new GridBagLayout());
-
-        modulesPanel.validate();
-        modulesPanel.repaint();
-
-        modulesScrollPane.validate();
-        modulesScrollPane.repaint();
-
-    }
-
     private static void initialiseHelpNotesPanels() {
         // Adding panels to combined JPanel
         helpNotesPanel.setLayout(new GridBagLayout());
@@ -571,15 +548,6 @@ public class GUI {
         cc.insets = new Insets(0,0,0,0);
         basicHelpNotesPanel.add(basicNotesPanel,cc);
 
-    }
-
-    private static void initialiseEditingStatusPanel() {
-        editingStatusPanel.setLayout(new GridBagLayout());
-        editingStatusPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        editingStatusPanel.setMinimumSize(new Dimension(0,statusHeight+15));
-        editingStatusPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE,statusHeight+15));
-        editingStatusPanel.setPreferredSize(new Dimension(basicFrameWidth-30,statusHeight+15));
-        editingStatusPanel.setOpaque(false);
     }
 
     private static void initialiseStatusTextField() {
@@ -705,60 +673,11 @@ public class GUI {
     }
 
     public static void populateModuleList() {
-        modulesPanel.removeAll();
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weighty = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.anchor = GridBagConstraints.FIRST_LINE_START;
-
-        boolean expanded = true;
-        // Adding module buttons
-        ModuleCollection modules = getModules();
-        c.insets = new Insets(2,0,0,0);
-        for (int i=0;i<modules.size();i++) {
-            Module module = modules.get(i);
-            int idx = modules.indexOf(module);
-            if (idx == modules.size() - 1) c.weighty = 1;
-
-            JPanel modulePanel = null;
-            if (module.getClass().isInstance(new GUISeparator())) {
-                expanded = ((BooleanP) module.getParameter(GUISeparator.EXPANDED_EDITING)).isSelected();
-                modulePanel = componentFactory.createEditingSeparator(module, group, activeModule, moduleButtonWidth - 25);
-            } else {
-                if (!expanded) continue;
-                modulePanel = componentFactory.createAdvancedModuleControl(module, group, activeModule, moduleButtonWidth - 25);
-            }
-
-            // If this is the final module, add a gap at the bottom
-            if (i==modules.size()-1) modulePanel.setBorder(new EmptyBorder(0,0,5,0));
-
-            modulesPanel.add(modulePanel, c);
-            c.insets = new Insets(0,0,0,0);
-            c.gridy++;
-
-        }
-
-        c.gridy++;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.VERTICAL;
-        JSeparator separator = new JSeparator();
-        separator.setPreferredSize(new Dimension(-1,1));
-        modulesPanel.add(separator, c);
-
-        modulesScrollPane.revalidate();
-        modulesScrollPane.repaint();
-
-        modulesPanel.revalidate();
-        modulesPanel.repaint();
-
+        editingModulesPanel.updatePanel();
     }
 
     public static void populateModuleParameters() {
-        editingParametersPanel.updatePanel(activeModule, analysis);
-
+        editingParametersPanel.updatePanel(activeModule);
     }
 
     public static void populateHelpNotes() {
@@ -791,26 +710,6 @@ public class GUI {
         basicHelpPanel.updatePanel();
         basicNotesPanel.updatePanel();
 
-    }
-
-    private static void updateButtonStates() {
-        if (!basicGUI) {
-            for (Component panel : modulesPanel.getComponents()) {
-                if (panel.getClass() == JPanel.class) {
-                    for (Component component: ((JPanel) panel).getComponents()) {
-                        if (component.getClass() == ModuleEnabledButton.class) {
-                            ((ModuleEnabledButton) component).updateState();
-                        } else if (component.getClass() == ShowOutputButton.class) {
-                            ((ShowOutputButton) component).updateState();
-                        } else if (component.getClass() == ModuleButton.class) {
-                            ((ModuleButton) component).updateState();
-                        } else if (component.getClass() == EvalButton.class) {
-                            ((EvalButton) component).updateState();
-                        }
-                    }
-                }
-            }
-        }
     }
 
     public static void updateModuleParameters(Module module) {
@@ -1061,10 +960,11 @@ public class GUI {
         analysis.getInputControl().setRunnable(runnable);
         outputButton.updateState();
 
-        updateButtonStates();
 
-        if (basicGUI) populateBasicModules();
-        else {
+        if (basicGUI) {
+            populateBasicModules();
+        } else {
+            editingModulesPanel.updateButtonStates();
             populateModuleParameters();
         }
 
@@ -1225,6 +1125,10 @@ public class GUI {
 
     public static void setLastBasicHelpNotesModule(Module lastBasicHelpNotesModule) {
         GUI.lastBasicHelpNotesModule = lastBasicHelpNotesModule;
+    }
+
+    public static ButtonGroup getGroup() {
+        return group;
     }
 
 
