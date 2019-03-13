@@ -83,6 +83,7 @@ public class AnalysisReader {
 
             // If the module is an input, treat it differently
             if (module.getClass().isInstance(new InputControl())) {
+                addInputSpecificComponents(module,moduleNode);
                 analysis.setInputControl((InputControl) module);
 
             } else if (module.getClass().isInstance(new OutputControl())) {
@@ -148,6 +149,24 @@ public class AnalysisReader {
 
     }
 
+    public static void addInputSpecificComponents(Module module, Node moduleNode) {
+        NamedNodeMap moduleAttributes = moduleNode.getAttributes();
+
+        if (moduleAttributes.getNamedItem("DISABLEABLE") != null) {
+            String isDisableable = moduleAttributes.getNamedItem("DISABLEABLE").getNodeValue();
+            module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
+        } else {
+            module.setCanBeDisabled(false);
+        }
+
+        if (moduleAttributes.getNamedItem("NOTES") != null) {
+            String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
+            module.setNotes(notes);
+        } else {
+            module.setNotes("");
+        }
+    }
+
     public static void addOutputSpecificComponents(Module module, Node moduleNode) {
         NamedNodeMap moduleAttributes = moduleNode.getAttributes();
 
@@ -156,6 +175,13 @@ public class AnalysisReader {
             module.setCanBeDisabled(Boolean.parseBoolean(isDisableable));
         } else {
             module.setCanBeDisabled(false);
+        }
+
+        if (moduleAttributes.getNamedItem("NOTES") != null) {
+            String notes = moduleAttributes.getNamedItem("NOTES").getNodeValue();
+            module.setNotes(notes);
+        } else {
+            module.setNotes("");
         }
     }
 

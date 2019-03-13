@@ -35,6 +35,9 @@ public class NotesArea extends JTextArea implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
+        if (GUI.getActiveModule() == null) return;
+
         GUI.getActiveModule().setNotes(getText());
+
     }
 }
