@@ -24,6 +24,11 @@ public class GetLocalObjectRegionTest extends ModuleTest {
         assertNotNull(new GetLocalObjectRegion().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new GetLocalObjectRegion().getHelp());
+    }
+
     @Test @Ignore
     public void testRun() throws IntegerOverflowException {
         // Creating a new workspace

@@ -233,7 +233,7 @@ public class RunTrackMate extends Module {
 
         // Adding the overlay
         try {
-            new AddObjectsOverlay().createCentroidOverlay(ipl,spotObjects,hues,false,0.2);
+            new AddObjectsOverlay().createCentroidOverlay(ipl,spotObjects,hues,false,0.2,false);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -256,7 +256,7 @@ public class RunTrackMate extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -417,11 +417,15 @@ public class RunTrackMate extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
+    public RelationshipCollection updateAndGetRelationships() {
+        RelationshipCollection relationships = new RelationshipCollection();
         if (parameters.getValue(DO_TRACKING)) {
             relationships.addRelationship(parameters.getValue(OUTPUT_TRACK_OBJECTS), parameters.getValue(OUTPUT_SPOT_OBJECTS));
 
         }
+
+        return relationships;
+
     }
 
 }

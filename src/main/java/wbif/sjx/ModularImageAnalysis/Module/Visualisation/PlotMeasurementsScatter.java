@@ -61,7 +61,7 @@ public class PlotMeasurementsScatter extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -217,8 +217,8 @@ public class PlotMeasurementsScatter extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

@@ -129,6 +129,8 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
 
                 case BASIC_VIEW:
                     GUI.renderBasicMode();
+                    GUI.setActiveModule(null);
+                    GUI.populateBasicHelpNotes();
                     setText(AnalysisMenuItem.EDITING_VIEW);
                     break;
 
@@ -144,8 +146,10 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                 case TOGGLE_HELP_NOTES:
                     if (GUI.isBasicGUI()) {
                         GUI.setShowBasicHelpNotes(!GUI.isShowBasicHelpNotes());
+                        Prefs.set("MIA.showBasicHelpNotes",GUI.isShowBasicHelpNotes());
                     } else {
                         GUI.setShowEditingHelpNotes(!GUI.isShowEditingHelpNotes());
+                        Prefs.set("MIA.showEditingHelpNotes",GUI.isShowEditingHelpNotes());
                     }
                     GUI.render();
                     break;

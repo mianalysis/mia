@@ -28,6 +28,11 @@ public class BinaryOperationsTest extends ModuleTest {
         assertNotNull(new BinaryOperations2D().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new BinaryOperations2D().getHelp());
+    }
+
     @Test
     public void testRunWithDilate2DOperation2DStack() throws Exception {
         // Creating a new workspace

@@ -7,7 +7,6 @@ import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
 import inra.ijpb.binary.conncomp.FloodFillComponentsLabeling3D;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.IdentifyObjects;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
@@ -212,8 +211,8 @@ public class FillHolesByVolume extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

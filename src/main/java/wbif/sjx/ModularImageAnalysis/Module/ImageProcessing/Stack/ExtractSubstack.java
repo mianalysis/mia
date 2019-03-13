@@ -237,6 +237,7 @@ public class ExtractSubstack extends Module implements ActionListener {
 
         // Generating the substack and adding to the workspace
         ImagePlus outputImagePlus =  SubHyperstackMaker.makeSubhyperstack(inputImagePlus,cList,zList,tList).duplicate();
+        outputImagePlus.setCalibration(inputImagePlus.getCalibration());
         return new Image(outputImageName,outputImagePlus);
 
     }
@@ -253,7 +254,7 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -368,8 +369,8 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
     @Override

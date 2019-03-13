@@ -4,7 +4,6 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.common.Analysis.IntensityCalculator;
@@ -40,7 +39,7 @@ public class MeasureImageIntensity extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -119,8 +118,8 @@ public class MeasureImageIntensity extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

@@ -32,6 +32,11 @@ public class FilterImageTest extends ModuleTest {
         assertNotNull(new FilterImage().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new FilterImage().getHelp());
+    }
+
 
     // TESTING DIFFERENCE OF GAUSSIAN FILTER
 

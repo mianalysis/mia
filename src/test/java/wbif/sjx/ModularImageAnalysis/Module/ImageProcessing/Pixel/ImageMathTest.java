@@ -25,6 +25,11 @@ public class ImageMathTest extends ModuleTest {
         assertNotNull(new ImageMath().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ImageMath().getHelp());
+    }
+
     @Test
     public void testRunAddPositive2D() throws Exception {
         // Creating a new workspace

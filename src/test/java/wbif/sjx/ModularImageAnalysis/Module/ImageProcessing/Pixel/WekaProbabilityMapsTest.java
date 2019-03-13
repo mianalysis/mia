@@ -24,6 +24,11 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         assertNotNull(new WekaProbabilityMaps().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new WekaProbabilityMaps().getHelp());
+    }
+
     @Test
     public void testRun2D8Bit() throws Exception {
         // Creating a new workspace

@@ -76,7 +76,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -157,8 +157,8 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

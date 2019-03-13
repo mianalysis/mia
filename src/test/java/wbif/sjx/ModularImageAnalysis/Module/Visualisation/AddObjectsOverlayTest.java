@@ -121,4 +121,9 @@ public class AddObjectsOverlayTest extends ModuleTest {
     public void testGetTitle() {
         assertNotNull(new AddObjectsOverlay().getTitle());
     }
+
+    @Test
+    public void testGetHelp() {
+        assertNotNull(new AddObjectsOverlay().getHelp());
+    }
 }

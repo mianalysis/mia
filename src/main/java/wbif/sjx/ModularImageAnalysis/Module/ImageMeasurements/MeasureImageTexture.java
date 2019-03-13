@@ -4,7 +4,6 @@ import ij.ImagePlus;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.DoubleP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
@@ -40,7 +39,7 @@ public class MeasureImageTexture extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -137,8 +136,8 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

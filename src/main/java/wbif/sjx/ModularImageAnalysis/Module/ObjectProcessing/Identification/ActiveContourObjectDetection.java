@@ -55,7 +55,7 @@ public class ActiveContourObjectDetection extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -190,10 +190,10 @@ public class ActiveContourObjectDetection extends Module {
             try {
                 if (updateInputObjects) {
                     HashMap<Integer, Float> hues = ColourFactory.getRandomHues(inputObjects);
-                    addObjectsOverlay.createOutlineOverlay(dispIpl, inputObjects, hues, false, 0.5);
+                    addObjectsOverlay.createOutlineOverlay(dispIpl, inputObjects, hues, false, 0.5, false);
                 } else {
                     HashMap<Integer, Float> hues = ColourFactory.getRandomHues(outputObjects);
-                    addObjectsOverlay.createOutlineOverlay(dispIpl, outputObjects, hues, false, 0.5);
+                    addObjectsOverlay.createOutlineOverlay(dispIpl, outputObjects, hues, false, 0.5, false);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -267,8 +267,8 @@ public class ActiveContourObjectDetection extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

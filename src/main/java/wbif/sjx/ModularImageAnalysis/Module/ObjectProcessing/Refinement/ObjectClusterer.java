@@ -231,7 +231,7 @@ public class ObjectClusterer extends Module {
 
             // Adding overlay and displaying image
             try {
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,inputObjects,hues,false,0.2);
+                new AddObjectsOverlay().createOutlineOverlay(dispIpl,inputObjects,hues,false,0.2,false);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -298,11 +298,15 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
+    public RelationshipCollection updateAndGetRelationships() {
+        RelationshipCollection relationships = new RelationshipCollection();
+
         String clusterObjectsName = parameters.getValue(CLUSTER_OBJECTS);
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
 
         relationships.addRelationship(clusterObjectsName,inputObjectsName);
+
+        return relationships;
 
     }
 

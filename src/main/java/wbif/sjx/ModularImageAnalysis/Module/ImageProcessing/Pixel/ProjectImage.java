@@ -126,7 +126,7 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -180,8 +180,8 @@ public class ProjectImage < T extends RealType< T > & NativeType< T >> extends M
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

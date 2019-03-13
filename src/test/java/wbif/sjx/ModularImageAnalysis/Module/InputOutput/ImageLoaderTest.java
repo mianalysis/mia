@@ -37,6 +37,12 @@ public class ImageLoaderTest extends ModuleTest {
 
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ImageLoader().getHelp());
+
+    }
+
     @Test
     public void testRunWithSpecificTiffFile() throws Exception {
         // Initialising a blank workspace

@@ -26,6 +26,11 @@ public class MergeObjectsTest extends ModuleTest {
         assertNotNull(new MergeObjects().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MergeObjects().getHelp());
+    }
+
     @Test
     public void testRunWithoutObjectDeletion() throws IntegerOverflowException {
         // Creating a new workspace

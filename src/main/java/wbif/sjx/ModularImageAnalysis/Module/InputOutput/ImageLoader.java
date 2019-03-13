@@ -549,7 +549,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -950,8 +950,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

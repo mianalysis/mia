@@ -29,6 +29,11 @@ public class BestFocusSubstackTest extends ModuleTest {
         assertNotNull(new BestFocusSubstack<>().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new BestFocusSubstack<>().getHelp());
+    }
+
 
     @Test
     public void testGetMaxStandardDeviationSliceFirstChannel5D() throws Exception {

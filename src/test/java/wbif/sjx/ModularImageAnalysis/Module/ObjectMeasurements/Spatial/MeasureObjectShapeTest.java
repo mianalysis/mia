@@ -31,6 +31,12 @@ public class MeasureObjectShapeTest extends ModuleTest {
 
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MeasureObjectShape().getHelp());
+
+    }
+
     @Test @Ignore
     public void testRun() throws Exception {
         // Creating a new workspace

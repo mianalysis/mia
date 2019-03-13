@@ -24,6 +24,11 @@ public class ProjectImageTest extends ModuleTest {
         assertNotNull(new ProjectImage().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ProjectImage().getHelp());
+    }
+
     @Test
     public void testRunMaxZ2D() throws Exception {
         // Creating a new workspace

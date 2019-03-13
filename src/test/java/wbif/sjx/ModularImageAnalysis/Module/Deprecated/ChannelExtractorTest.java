@@ -28,6 +28,12 @@ public class ChannelExtractorTest extends ModuleTest {
 
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ChannelExtractor().getHelp());
+
+    }
+
     @Test
     public void testRun8bit5DChannel1() throws Exception {
         // Creating a new workspace

@@ -168,7 +168,7 @@ public class ExtractObjectEdges extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -289,7 +289,9 @@ public class ExtractObjectEdges extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
+    public RelationshipCollection updateAndGetRelationships() {
+        RelationshipCollection relationships = new RelationshipCollection();
+
         String inputObjects = parameters.getValue(INPUT_OBJECTS);
 
         if (parameters.getValue(CREATE_EDGE_OBJECTS)) {
@@ -301,6 +303,9 @@ public class ExtractObjectEdges extends Module {
             String outputInteriorObjects = parameters.getValue(OUTPUT_INTERIOR_OBJECTS);
             relationships.addRelationship(inputObjects,outputInteriorObjects);
         }
+
+        return relationships;
+
     }
 
 }

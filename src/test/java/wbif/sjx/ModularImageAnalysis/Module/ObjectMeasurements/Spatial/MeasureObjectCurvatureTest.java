@@ -31,6 +31,11 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         assertNotNull(new MeasureObjectCurvature().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new MeasureObjectCurvature().getHelp());
+    }
+
     @Test
     public void testRunCircleNoRelate10PxRadius2DLOESS() throws Exception {
         // Creating a new workspace

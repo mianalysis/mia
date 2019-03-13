@@ -6,7 +6,6 @@ import ij.gui.*;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.BinaryInterpolator;
-import ij.process.FloatPolygon;
 import ij.process.LUT;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -271,6 +270,9 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         Image inputImage = workspace.getImage(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
+        dppXY = inputImagePlus.getCalibration().pixelWidth;
+        dppZ = inputImagePlus.getCalibration().pixelDepth;
+
         displayImagePlus = new Duplicator().run(inputImagePlus);
         displayImagePlus.setCalibration(null);
         displayImagePlus.setTitle("Draw objects on this image");
@@ -362,8 +364,8 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
     @Override

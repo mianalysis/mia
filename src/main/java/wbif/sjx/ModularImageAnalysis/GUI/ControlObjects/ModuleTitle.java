@@ -30,6 +30,7 @@ public class ModuleTitle extends JTextField implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         GUI.setActiveModule(module);
         GUI.populateBasicHelpNotes();
+
     }
 
     @Override

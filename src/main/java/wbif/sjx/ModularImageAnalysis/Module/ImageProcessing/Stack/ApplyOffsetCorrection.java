@@ -111,7 +111,7 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -197,8 +197,8 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

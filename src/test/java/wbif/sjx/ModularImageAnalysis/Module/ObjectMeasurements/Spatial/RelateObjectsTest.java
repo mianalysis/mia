@@ -36,6 +36,12 @@ public class RelateObjectsTest extends ModuleTest {
 
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new RelateObjects().getHelp());
+
+    }
+
     @Test
     public void testLinkMatchingIDsOneChild() throws Exception {
         // Creating a new workspace

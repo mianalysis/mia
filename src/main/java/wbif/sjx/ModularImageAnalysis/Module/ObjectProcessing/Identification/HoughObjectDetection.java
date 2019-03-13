@@ -54,7 +54,7 @@ public class HoughObjectDetection extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -180,7 +180,7 @@ public class HoughObjectDetection extends Module {
             }
 
             try {
-                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.3);
+                new AddObjectsOverlay().createOutlineOverlay(dispIpl,outputObjects,hues,false,0.3,false);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -262,8 +262,8 @@ public class HoughObjectDetection extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

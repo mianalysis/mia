@@ -30,6 +30,11 @@ public class ThresholdImageTest extends ModuleTest {
         assertNotNull(new ThresholdImage().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new ThresholdImage().getHelp());
+    }
+
     @Test
     public void testRunGlobalHuangNoLimsNoMultWhiteBG2D8bit() throws Exception {
         // Creating a new workspace

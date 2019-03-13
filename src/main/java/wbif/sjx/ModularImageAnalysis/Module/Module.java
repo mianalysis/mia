@@ -98,7 +98,7 @@ public abstract class Module {
     /*
      * Returns a LinkedHashMap containing the parents (key) and their children (value)
      */
-    public abstract void addRelationships(RelationshipCollection relationships);
+    public abstract RelationshipCollection updateAndGetRelationships();
 
     public <T extends Parameter> T getParameter(String name) {
         return parameters.getParameter(name);

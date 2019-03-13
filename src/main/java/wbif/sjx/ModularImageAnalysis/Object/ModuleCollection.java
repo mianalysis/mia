@@ -171,8 +171,11 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
                 break;
             }
 
-            if (module.isEnabled()) module.addRelationships(relationships);
-
+            if (module.isEnabled()) {
+                RelationshipCollection currRelationships = module.updateAndGetRelationships();
+                if (currRelationships == null) continue;
+                relationships.addAll(currRelationships);
+            }
         }
 
         return relationships;

@@ -1,15 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
-import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
-import net.imagej.axis.AxisType;
-import net.imagej.axis.TypedAxis;
 import net.imglib2.Cursor;
-import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
@@ -170,7 +165,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 }

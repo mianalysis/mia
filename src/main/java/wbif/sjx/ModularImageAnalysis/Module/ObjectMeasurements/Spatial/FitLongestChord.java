@@ -82,8 +82,8 @@ public class FitLongestChord extends Module {
         String[] pos1 = new String[]{Measurements.X1_PX,Measurements.Y1_PX,Measurements.Z1_SLICE,""};
         String[] pos2 = new String[]{Measurements.X2_PX,Measurements.Y2_PX,Measurements.Z2_SLICE,""};
 
-        AddObjectsOverlay.addPositionMeasurementsOverlay(object,imagePlus, Color.ORANGE,1,pos1);
-        AddObjectsOverlay.addPositionMeasurementsOverlay(object,imagePlus, Color.CYAN,1,pos2);
+        AddObjectsOverlay.addPositionMeasurementsOverlay(object,imagePlus, Color.ORANGE,1,pos1,false);
+        AddObjectsOverlay.addPositionMeasurementsOverlay(object,imagePlus, Color.CYAN,1,pos2,false);
 
     }
 
@@ -100,7 +100,7 @@ public class FitLongestChord extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -299,8 +299,8 @@ public class FitLongestChord extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

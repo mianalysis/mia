@@ -27,6 +27,11 @@ public class InvertIntensityTest extends ModuleTest {
         assertNotNull(new InvertIntensity().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new InvertIntensity().getHelp());
+    }
+
     @Test
     public void testRun3D8bit() throws Exception {
         // Creating a new workspace

@@ -125,7 +125,7 @@ public class ColourDeconvolution extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -222,8 +222,8 @@ public class ColourDeconvolution extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
     public static LinkedHashMap<String,StainMatrix> getStainMatrices() {

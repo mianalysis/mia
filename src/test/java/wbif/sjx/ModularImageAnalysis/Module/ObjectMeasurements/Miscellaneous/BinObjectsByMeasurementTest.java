@@ -25,6 +25,11 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         assertNotNull(new BinObjectsByMeasurement().getTitle());
     }
 
+    @Override
+    public void testGetHelp() {
+        assertNotNull(new BinObjectsByMeasurement().getHelp());
+    }
+
     @Test
     public void testRunAllInRange() throws Exception {
         // Creating a new workspace

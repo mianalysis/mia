@@ -4,7 +4,6 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.process.ImageConverter;
 import org.apache.commons.io.FilenameUtils;
-import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
@@ -233,8 +232,8 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }

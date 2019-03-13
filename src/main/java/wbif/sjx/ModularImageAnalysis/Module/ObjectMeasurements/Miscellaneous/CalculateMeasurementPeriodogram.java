@@ -156,7 +156,7 @@ public class CalculateMeasurementPeriodogram extends Module {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -294,8 +294,8 @@ public class CalculateMeasurementPeriodogram extends Module {
     }
 
     @Override
-    public void addRelationships(RelationshipCollection relationships) {
-
+    public RelationshipCollection updateAndGetRelationships() {
+        return null;
     }
 
 }
