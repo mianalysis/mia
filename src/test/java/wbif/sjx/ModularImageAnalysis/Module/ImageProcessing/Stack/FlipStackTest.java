@@ -242,13 +242,6 @@ public class FlipStackTest extends ModuleTest{
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
-
-        new ImageJ();
-        inputImage.showImage();
-        expectedImage.showImage();
-        outputImage.showImage();
-        IJ.runMacro("waitForUser");
-
         assertEquals(expectedImage,outputImage);
 
     }

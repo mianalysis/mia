@@ -1,5 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
@@ -8,10 +10,14 @@ import net.imglib2.Cursor;
 import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.array.ArrayImgFactory;
 import net.imglib2.img.cell.Cell;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.img.display.imagej.ImgPlusViews;
+import net.imglib2.img.imageplus.ImagePlusImg;
+import net.imglib2.img.imageplus.ImagePlusImgs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
@@ -62,9 +68,10 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
         // Creating the new Img
         CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg .firstElement());
-        long[] dimsOut = ImgPlusTools.getDimensionsXYCZT(inputImg);
-        ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dimsOut));
-//        ImgPlusTools.applyCalibrationXYCZT(inputImg,outputImg);
+        long[] dims = new long[inputImg.numDimensions()];
+        for (int i=0;i<inputImg.numDimensions();i++) dims[i] = inputImg.dimension(i);
+        ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
+        ImgPlusTools.copyAxes(inputImg,outputImg);
 
         // Determining the axis index
         int axisIndex = getAxesIndex(inputImg, axis);
@@ -74,29 +81,11 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         }
 
         long[] offsetIn = new long[inputImg.numDimensions()];
-        long[] dimsIn = new long[inputImg.numDimensions()];
-        for (int i=0;i<inputImg.numDimensions();i++) {
-            dimsIn[i] = inputImg.dimension(i);
-        }
+        long[] offsetOut = new long[outputImg.numDimensions()];
+        offsetOut[axisIndex] = -dims[axisIndex] + 1;
 
-        long[] offsetOut = new long[5];
-        offsetOut[axisIndex] = -dimsOut[axisIndex] + 1;
-
-        System.out.println("Dims In");
-        Arrays.stream(dimsIn).forEach(System.out::println);
-        System.out.println("Offset In");
-        Arrays.stream(offsetIn).forEach(System.out::println);
-        System.out.println("Dims Out");
-        Arrays.stream(dimsOut).forEach(System.out::println);
-        System.out.println("Offset Out");
-        Arrays.stream(offsetOut).forEach(System.out::println);
-
-        RandomAccessibleInterval<T> viewSource = Views.offsetInterval(inputImg,offsetIn,dimsIn);
-//        RandomAccessibleInterval<T> viewTarget = Views.offsetInterval(outputImg,offsetOut,dimsOut);
-        RandomAccessibleInterval<T> viewTarget = Views.offsetInterval(Views.invertAxis(outputImg,axisIndex),offsetOut,dimsOut);
-        IterableInterval<T> iterableTarget = Views.iterable(viewTarget);
-        Cursor<T> targetCursor = iterableTarget.localizingCursor();
-        RandomAccess<T> sourceRandomAccess = viewSource.randomAccess();
+        Cursor<T> targetCursor = Views.offsetInterval(Views.invertAxis(outputImg,axisIndex),offsetOut,dims).localizingCursor();
+        RandomAccess<T> sourceRandomAccess = Views.offsetInterval(inputImg,offsetIn,dims).randomAccess();
 
         while (targetCursor.hasNext()) {
             targetCursor.fwd();
@@ -104,14 +93,11 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
             targetCursor.get().set(sourceRandomAccess.get());
         }
 
-//        Cursor<T> inputCursor = Views.invertAxis(inputImg,axisIndex).cursor();
-//        Cursor<T> outputCursor = outputImg.cursor();
-//        while (inputCursor.hasNext()) outputCursor.next().set(inputCursor.next());
-
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it
         ImagePlus outputImagePlus = new Duplicator().run(ImageJFunctions.wrap(outputImg,outputImageName));
         outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
+        ImgPlusTools.applyAxes(outputImg,outputImagePlus);
 
         return new Image(outputImageName,outputImagePlus);
 

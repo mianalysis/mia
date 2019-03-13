@@ -5,7 +5,7 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.Cursor;
-import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
@@ -93,7 +93,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         dims[3] = nSlices;
 
         // Creating the output image and copying over the pixel coordinates
-        ArrayImgFactory<T> factory = new ArrayImgFactory<T>((T) inputImg.firstElement());
+        CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg.firstElement());
         ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dims));
         ImgPlusTools.applyCalibrationXYCZT(inputImg,imgOut);
 
