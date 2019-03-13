@@ -7,7 +7,7 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.Cursor;
-import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -114,7 +114,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
         }
 
         // Creating the new Img
-        ArrayImgFactory<T> factory = new ArrayImgFactory<T>((T) img1.firstElement());
+        CellImgFactory<T> factory = new CellImgFactory<>((T) img1.firstElement());
         ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dimsOut));
 
         // Adding the first image to the output

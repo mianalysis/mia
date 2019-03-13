@@ -6,7 +6,7 @@ import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
-import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -48,8 +48,8 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
         dimsOut[4] = inputImagePlus.getNFrames();
 
         // Creating the output image and copying over the pixel coordinates
-        ArrayImgFactory<T> factory = new ArrayImgFactory<T>();
-        Img<T> outputImg = factory.create(dimsOut,img.firstElement());
+        CellImgFactory<T> factory = new CellImgFactory<>(img.firstElement());
+        Img<T> outputImg = factory.create(dimsOut);
         Cursor<T> cropCursor = Views.offsetInterval(img,min,dimsIn).cursor();
         Cursor<T> outputCursor = outputImg.cursor();
 

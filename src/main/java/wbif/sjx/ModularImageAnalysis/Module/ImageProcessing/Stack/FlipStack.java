@@ -5,7 +5,12 @@ import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
+import net.imglib2.IterableInterval;
+import net.imglib2.RandomAccess;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.Cell;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -15,6 +20,8 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Process.ImgPlusTools;
+
+import java.util.Arrays;
 
 public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -54,9 +61,10 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Creating the new Img
-        ArrayImgFactory<T> factory = new ArrayImgFactory<T>((T) inputImg .firstElement());
+        CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg .firstElement());
         long[] dimsOut = ImgPlusTools.getDimensionsXYCZT(inputImg);
         ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dimsOut));
+//        ImgPlusTools.applyCalibrationXYCZT(inputImg,outputImg);
 
         // Determining the axis index
         int axisIndex = getAxesIndex(inputImg, axis);
@@ -65,10 +73,40 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
             return null;
         }
 
-        Cursor<T> inputCursor = Views.invertAxis(inputImg,axisIndex).cursor();
-        Cursor<T> outputCursor = outputImg.cursor();
+        long[] offsetIn = new long[inputImg.numDimensions()];
+        long[] dimsIn = new long[inputImg.numDimensions()];
+        for (int i=0;i<inputImg.numDimensions();i++) {
+            dimsIn[i] = inputImg.dimension(i);
+        }
 
-        while (inputCursor.hasNext()) outputCursor.next().set(inputCursor.next());
+        long[] offsetOut = new long[5];
+        offsetOut[axisIndex] = -dimsOut[axisIndex] + 1;
+
+        System.out.println("Dims In");
+        Arrays.stream(dimsIn).forEach(System.out::println);
+        System.out.println("Offset In");
+        Arrays.stream(offsetIn).forEach(System.out::println);
+        System.out.println("Dims Out");
+        Arrays.stream(dimsOut).forEach(System.out::println);
+        System.out.println("Offset Out");
+        Arrays.stream(offsetOut).forEach(System.out::println);
+
+        RandomAccessibleInterval<T> viewSource = Views.offsetInterval(inputImg,offsetIn,dimsIn);
+//        RandomAccessibleInterval<T> viewTarget = Views.offsetInterval(outputImg,offsetOut,dimsOut);
+        RandomAccessibleInterval<T> viewTarget = Views.offsetInterval(Views.invertAxis(outputImg,axisIndex),offsetOut,dimsOut);
+        IterableInterval<T> iterableTarget = Views.iterable(viewTarget);
+        Cursor<T> targetCursor = iterableTarget.localizingCursor();
+        RandomAccess<T> sourceRandomAccess = viewSource.randomAccess();
+
+        while (targetCursor.hasNext()) {
+            targetCursor.fwd();
+            sourceRandomAccess.setPosition(targetCursor);
+            targetCursor.get().set(sourceRandomAccess.get());
+        }
+
+//        Cursor<T> inputCursor = Views.invertAxis(inputImg,axisIndex).cursor();
+//        Cursor<T> outputCursor = outputImg.cursor();
+//        while (inputCursor.hasNext()) outputCursor.next().set(inputCursor.next());
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it

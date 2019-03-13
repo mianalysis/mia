@@ -1,6 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class FlipStackTest extends ModuleTest{
     public void testGetHelp() {
         assertNotNull(new FlipStack<>().getHelp());
     }
-    
+
 
     // TESTING 2D STACKS
 
@@ -65,6 +66,7 @@ public class FlipStackTest extends ModuleTest{
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
         assertEquals(expectedImage,outputImage);
+
     }
 
     @Test
@@ -240,6 +242,13 @@ public class FlipStackTest extends ModuleTest{
 
         // Checking the output image has the expected calibration
         Image outputImage = workspace.getImage("Test_output");
+
+        new ImageJ();
+        inputImage.showImage();
+        expectedImage.showImage();
+        outputImage.showImage();
+        IJ.runMacro("waitForUser");
+
         assertEquals(expectedImage,outputImage);
 
     }

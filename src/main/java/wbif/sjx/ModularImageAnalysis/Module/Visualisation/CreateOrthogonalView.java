@@ -8,7 +8,7 @@ import net.imglib2.Interval;
 import net.imglib2.RealRandomAccessible;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
-import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.interpolation.randomaccess.NearestNeighborInterpolatorFactory;
 import net.imglib2.realtransform.AffineTransform2D;
@@ -63,7 +63,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
         viewYZ = Views.interval(RealViews.affine(interpYZ, affine2D),intervalYZ);
 
         // Creating a single image, large enough to hold all images
-        final ImgFactory< T > factory = new ArrayImgFactory<>();
+        CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg.firstElement());
         final long[] orthoDims = new long[] { dims[0]+dims[2]+border, dims[1]+dims[2]+border};
         Img< T > orthoImg = factory.create( orthoDims, viewXY.firstElement() );
         Cursor<T> cursorOrtho = orthoImg.cursor();
