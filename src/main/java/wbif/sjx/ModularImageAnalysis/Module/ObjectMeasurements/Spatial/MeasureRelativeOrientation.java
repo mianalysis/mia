@@ -370,9 +370,6 @@ public class MeasureRelativeOrientation extends Module {
 
         if (referencePoints == null) return true;
 
-        ImagePlus ipl = workspace.getImage("TEST").getImagePlus();
-        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
-
         // Processing each object
         Point<Double> referencePoint = null;
         for (Obj inputObject:inputObjects.values()) {
@@ -394,20 +391,7 @@ public class MeasureRelativeOrientation extends Module {
             } else {
                 processObject(inputObject, xyOriMeasName, xzOriMeasName, measurementRange, referencePoint, orientationMode, measurementReference);
             }
-
-            PointRoi pointRoi = new PointRoi(referencePoint.getX()+0.5,referencePoint.getY()+0.5);
-            pointRoi.setPointType(PointRoi.NORMAL);
-            if (ipl.isHyperStack()) {
-                pointRoi.setPosition(1, (int) Math.round(referencePoint.getZ()), inputObject.getT());
-            } else {
-                int pos = Math.max(Math.max(1,(int) Math.round(referencePoint.getZ())),inputObject.getT());
-                pointRoi.setPosition(pos);
-            }
-            ipl.getOverlay().addElement(pointRoi);
-
         }
-
-        ipl.duplicate().show();
 
         if (showOutput) inputObjects.showMeasurements(this);
 
