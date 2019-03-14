@@ -265,6 +265,16 @@ public class BestFocusSubstackTest extends ModuleTest {
 
         ImgPlus actualImg = BestFocusSubstack.getEmptyImage(inputImg,-3,4);
 
+        System.out.println(actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
+        System.out.println(actualImg.dimension(actualImg.dimensionIndex(Axes.Y)));
+        System.out.println(actualImg.dimension(actualImg.dimensionIndex(Axes.CHANNEL)));
+        System.out.println(actualImg.dimension(actualImg.dimensionIndex(Axes.Z)));
+        System.out.println(actualImg.dimension(actualImg.dimensionIndex(Axes.TIME)));
+
+        new ImageJ();
+        ImageJFunctions.show(actualImg);
+        IJ.runMacro("waitForUser");
+
         assertNotNull(actualImg);
         assertEquals(64,actualImg.dimension(actualImg.dimensionIndex(Axes.X)));
         assertEquals(76,actualImg.dimension(actualImg.dimensionIndex(Axes.Y)));

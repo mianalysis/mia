@@ -1,11 +1,14 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
+import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
@@ -14,6 +17,8 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Process.ImgPlusTools;
+
+import java.util.Arrays;
 
 public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -89,15 +94,16 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         // Determining the number of slices
         int nSlices = Math.max(relativeStart,relativeEnd) - Math.min(relativeStart,relativeEnd) + 1;
 
-        long[] dims = ImgPlusTools.getDimensionsXYCZT(inputImg);
-        dims[3] = nSlices;
+        long[] dims = new long[inputImg.numDimensions()];
+        for (int i=0;i<inputImg.numDimensions();i++) dims[i] = inputImg.dimension(i);
+        dims[inputImg.dimensionIndex(Axes.Z)] = nSlices;
 
         // Creating the output image and copying over the pixel coordinates
         CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg.firstElement());
-        ImgPlus<T> imgOut = new ImgPlus<T>(factory.create(dims));
-        ImgPlusTools.applyCalibrationXYCZT(inputImg,imgOut);
+        ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
+        ImgPlusTools.copyAxes(inputImg,outputImg);
 
-        return imgOut;
+        return outputImg;
 
     }
 
@@ -149,11 +155,14 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         if (zIdxOut != -1) offsetOut[zIdxOut] = actualOffset;
         if (tIdxOut != -1) offsetOut[tIdxOut] = frame;
 
-        Cursor<T> cursorIn = Views.offsetInterval(inputImg, offsetIn, dimsIn).cursor();
-        Cursor<T> cursorOut = Views.offsetInterval(outputImg, offsetOut, dimsOut).cursor();
+        Cursor<T> cursorIn = Views.offsetInterval(inputImg, offsetIn, dimsIn).localizingCursor();
+        RandomAccess<T> randomAccessOut = Views.offsetInterval(outputImg, offsetOut, dimsOut).randomAccess();
 
-        while (cursorIn.hasNext()) cursorOut.next().set(cursorIn.next());
-
+        while (cursorIn.hasNext()) {
+            cursorIn.fwd();
+            randomAccessOut.setPosition(cursorIn);
+            randomAccessOut.get().set(cursorIn.get());
+        }
     }
 
 
@@ -203,7 +212,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
         if (channelMode.equals(ChannelModes.USE_ALL)) channel = -1;
 
         // Creating the empty container image
-        ImgPlus<T> imgOut = getEmptyImage(inputImg,relativeStart,relativeEnd);
+        ImgPlus<T> outputImg = getEmptyImage(inputImg,relativeStart,relativeEnd);
 
         // Iterating over frame, extracting the relevant substack, then appending it to the output
         long nFrames = inputImg.dimension(inputImg.dimensionIndex(Axes.TIME));
@@ -220,18 +229,16 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
             writeMessage("Best focus (frame "+(f+1)+") at "+(bestSlice+1));
 
             // Extracting the best-slice substack and adding it to the outputImage
-            extractSubstack(inputImg,imgOut,bestSlice+relativeStart,bestSlice+relativeEnd,f);
+            extractSubstack(inputImg,outputImg,bestSlice+relativeStart,bestSlice+relativeEnd,f);
 
         }
 
-        // Applying input calibration and if a single slice, setting Z-calibration to 1
-        ImgPlusTools.applyCalibrationXYCZT(inputImg,imgOut);
-        if (imgOut.dimension(imgOut.dimensionIndex(Axes.Z)) == 1) {
-            imgOut.setAxis(new DefaultLinearAxis(Axes.Z, 1.0D),imgOut.dimensionIndex(Axes.Z));
-        }
+        ImagePlus outputImagePlus = new Duplicator().run(ImageJFunctions.wrap(outputImg,outputImageName));
+        if (outputImagePlus.getNSlices() == 1) outputImagePlus.getCalibration().pixelDepth = 1;
+        ImgPlusTools.applyAxes(outputImg,outputImagePlus);
 
         // Adding the new image to the Workspace
-        Image outputImage = new Image<T>(outputImageName,imgOut);
+        Image outputImage = new Image<T>(outputImageName,outputImagePlus);
         workspace.addImage(outputImage);
 
         if (showOutput) outputImage.showImage();
