@@ -29,8 +29,9 @@ public class SetLookupTable extends Module {
         String MAGNETA = "Magenta";
         String YELLOW = "Yellow";
         String FIRE = "Fire";
+        String RANDOM = "Random";
 
-        String[] ALL = new String[]{GREY,RED,GREEN,BLUE,CYAN,MAGNETA,YELLOW,FIRE};
+        String[] ALL = new String[]{GREY,RED,GREEN,BLUE,CYAN,MAGNETA,YELLOW,FIRE,RANDOM};
 
     }
 
@@ -62,6 +63,8 @@ public class SetLookupTable extends Module {
                 return LUT.createLutFromColor(Color.YELLOW);
             case LookupTables.FIRE:
                 return LUTs.BlackFire();
+            case LookupTables.RANDOM:
+                return LUTs.Random(true);
         }
     }
 
@@ -120,19 +123,19 @@ public class SetLookupTable extends Module {
 
     @Override
     public ParameterCollection updateAndGetParameters() {
-        ParameterCollection returnedParamters = new ParameterCollection();
+        ParameterCollection returnedParameters = new ParameterCollection();
 
-        returnedParamters.add(parameters.getParameter(INPUT_IMAGE));
-        returnedParamters.add(parameters.getParameter(LOOKUP_TABLE));
-        returnedParamters.add(parameters.getParameter(CHANNEL_MODE));
+        returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
+        returnedParameters.add(parameters.getParameter(LOOKUP_TABLE));
+        returnedParameters.add(parameters.getParameter(CHANNEL_MODE));
 
         switch ((String) parameters.getValue(CHANNEL_MODE)) {
             case ChannelModes.SPECIFIC_CHANNELS:
-                returnedParamters.add(parameters.getParameter(CHANNEL));
+                returnedParameters.add(parameters.getParameter(CHANNEL));
                 break;
         }
 
-        return returnedParamters;
+        return returnedParameters;
 
     }
 

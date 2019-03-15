@@ -7,6 +7,7 @@ import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imagej.axis.DefaultLinearAxis;
 import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
@@ -119,13 +120,21 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         // Adding the first image to the output
         Cursor<T> cursor1 = img1.cursor();
-        Cursor<T> cursorOut = Views.offsetInterval(imgOut, offset1, dims1).cursor();
-        while (cursor1.hasNext()) cursorOut.next().set(cursor1.next());
+        RandomAccess<T> randomAccess1 = Views.offsetInterval(imgOut, offset1, dims1).randomAccess();
+        while (cursor1.hasNext()) {
+            cursor1.fwd();
+            randomAccess1.setPosition(cursor1);
+            randomAccess1.get().set(cursor1.get());
+        }
 
-        // Adding the first image to the output
+        // Adding the second image to the output
         Cursor<T> cursor2 = img2.cursor();
-        cursorOut = Views.offsetInterval(imgOut,offset2,dims2).cursor();
-        while (cursor2.hasNext()) cursorOut.next().set(cursor2.next());
+        RandomAccess<T> randomAccess2 = Views.offsetInterval(imgOut,offset2,dims2).randomAccess();
+        while (cursor2.hasNext()) {
+            cursor2.fwd();
+            randomAccess2.setPosition(cursor2);
+            randomAccess2.get().set(cursor2.get());
+        }
 
         // Applying calibration from img1 to imgOut
         ImgPlusTools.applyCalibrationXYCZT(img1,imgOut);
@@ -167,7 +176,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it
-        ImagePlus outputImagePlus = new Duplicator().run(ImageJFunctions.wrap(imgOut,outputImageName));
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(imgOut,outputImageName);
         outputImagePlus.setCalibration(inputImages[0].getImagePlus().getCalibration());
 
         return new Image<T>(outputImageName,imgOut);

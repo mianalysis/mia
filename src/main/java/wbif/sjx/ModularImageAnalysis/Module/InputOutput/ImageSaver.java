@@ -182,7 +182,7 @@ public class ImageSaver extends Module {
         parameters.add(new ChoiceP(SAVE_LOCATION, this,SaveLocations.SAVE_WITH_INPUT,SaveLocations.ALL));
         parameters.add(new FolderPathP(MIRROR_DIRECTORY_ROOT,this));
         parameters.add(new FolderPathP(SAVE_FILE_PATH,this));
-        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.NONE, AppendSeriesModes.ALL));
+        parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
         parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false));

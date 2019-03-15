@@ -46,7 +46,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
         long[] offsetOut = new long[inputImg.numDimensions()];
         long[] dimsOut = new long[inputImg.numDimensions()];
-        for (int i=0;i<inputImg.numDimensions();i++) dimsIn[i] = inputImg.dimension(i);
+        for (int i=0;i<inputImg.numDimensions();i++) dimsOut[i] = inputImg.dimension(i);
         dimsOut[xIdx] = width;
         dimsOut[yIdx] = height;
 
@@ -66,12 +66,11 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it
-        ImagePlus outputImagePlus = new Duplicator().run(ImageJFunctions.wrap(outputImg,outputImageName));
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg,outputImageName);
         outputImagePlus.setCalibration(inputImagePlus.getCalibration());
         ImgPlusTools.applyAxes(outputImg,outputImagePlus);
 
         return new Image(outputImageName,outputImagePlus);
-
 
     }
 

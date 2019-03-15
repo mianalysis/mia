@@ -95,7 +95,7 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it
-        ImagePlus outputImagePlus = new Duplicator().run(ImageJFunctions.wrap(outputImg,outputImageName));
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg,outputImageName);
         outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
         ImgPlusTools.applyAxes(outputImg,outputImagePlus);
 
