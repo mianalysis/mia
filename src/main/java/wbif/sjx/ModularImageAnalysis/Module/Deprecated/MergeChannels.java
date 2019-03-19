@@ -10,7 +10,7 @@ import net.imagej.axis.IdentityAxis;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
-import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -108,8 +108,8 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
 
         // Creating the composite image
         T type = img1.firstElement();
-        final ImgFactory< T > factory = new ArrayImgFactory<>();
-        ImgPlus<T> mergedImg = new ImgPlus<>(factory.create(dimsOut, type));
+        CellImgFactory<T> factory = new CellImgFactory<T>(type);
+        ImgPlus<T> mergedImg = new ImgPlus<>(factory.create(dimsOut));
 
         // Assigning the relevant dimensions
         CalibratedAxis xAxis = xDim1 == -1 ? new IdentityAxis(Axes.X) : img1.axis(xDim1);
@@ -191,8 +191,8 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
 
         // Creating the composite image
         long[] dimensions = new long[]{dimX,dimY,3, dimZ,1};
-        final ImgFactory< T > factory = new ArrayImgFactory<>();
-        Img<T> rgbImg = factory.create(dimensions, type);
+        CellImgFactory<T> factory = new CellImgFactory<T>(type);
+        Img<T> rgbImg = factory.create(dimensions);
 
         // Adding values view
         if (inputImageRed != null) {

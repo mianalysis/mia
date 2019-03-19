@@ -1,12 +1,23 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
+import ij.IJ;
+import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
+import net.imglib2.IterableInterval;
+import net.imglib2.RandomAccess;
+import net.imglib2.RandomAccessibleInterval;
+import net.imglib2.img.ImagePlusAdapter;
 import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.Cell;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.img.display.imagej.ImgPlusViews;
+import net.imglib2.img.imageplus.ImagePlusImg;
+import net.imglib2.img.imageplus.ImagePlusImgs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.view.Views;
@@ -15,6 +26,8 @@ import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.common.Process.ImgPlusTools;
+
+import java.util.Arrays;
 
 public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -54,9 +67,11 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
         ImgPlus<T> inputImg = inputImage.getImgPlus();
 
         // Creating the new Img
-        ArrayImgFactory<T> factory = new ArrayImgFactory<T>((T) inputImg .firstElement());
-        long[] dimsOut = ImgPlusTools.getDimensionsXYCZT(inputImg);
-        ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dimsOut));
+        CellImgFactory<T> factory = new CellImgFactory<T>((T) inputImg .firstElement());
+        long[] dims = new long[inputImg.numDimensions()];
+        for (int i=0;i<inputImg.numDimensions();i++) dims[i] = inputImg.dimension(i);
+        ImgPlus<T> outputImg = new ImgPlus<T>(factory.create(dims));
+        ImgPlusTools.copyAxes(inputImg,outputImg);
 
         // Determining the axis index
         int axisIndex = getAxesIndex(inputImg, axis);
@@ -65,15 +80,24 @@ public class FlipStack<T extends RealType<T> & NativeType<T>> extends Module {
             return null;
         }
 
-        Cursor<T> inputCursor = Views.invertAxis(inputImg,axisIndex).cursor();
-        Cursor<T> outputCursor = outputImg.cursor();
+        long[] offsetIn = new long[inputImg.numDimensions()];
+        long[] offsetOut = new long[outputImg.numDimensions()];
+        offsetOut[axisIndex] = -dims[axisIndex] + 1;
 
-        while (inputCursor.hasNext()) outputCursor.next().set(inputCursor.next());
+        Cursor<T> targetCursor = Views.offsetInterval(Views.invertAxis(outputImg,axisIndex),offsetOut,dims).localizingCursor();
+        RandomAccess<T> sourceRandomAccess = Views.offsetInterval(inputImg,offsetIn,dims).randomAccess();
+
+        while (targetCursor.hasNext()) {
+            targetCursor.fwd();
+            sourceRandomAccess.setPosition(targetCursor);
+            targetCursor.get().set(sourceRandomAccess.get());
+        }
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it
-        ImagePlus outputImagePlus = new Duplicator().run(ImageJFunctions.wrap(outputImg,outputImageName));
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg,outputImageName);
         outputImagePlus.setCalibration(inputImage.getImagePlus().getCalibration());
+        ImgPlusTools.applyAxes(outputImg,outputImagePlus);
 
         return new Image(outputImageName,outputImagePlus);
 

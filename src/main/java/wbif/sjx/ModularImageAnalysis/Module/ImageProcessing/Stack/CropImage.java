@@ -4,9 +4,12 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.ImagePlus;
 import ij.plugin.Duplicator;
+import net.imagej.ImgPlus;
+import net.imagej.axis.Axes;
 import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
-import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -15,6 +18,7 @@ import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
+import wbif.sjx.common.Process.ImgPlusTools;
 
 public class CropImage < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -27,40 +31,46 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
 
     public static <T extends RealType< T > & NativeType< T >> Image cropImage(Image<T> inputImage, String outputImageName, int top, int left, int width, int height) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
-        Img<T> img = inputImage.getImgPlus();
+        ImgPlus<T> inputImg = inputImage.getImgPlus();
 
-        long[] min = new long[img.numDimensions()];
-        long[] dimsIn = new long[img.numDimensions()];
-        min[0] = left;
-        min[1] = top;
-        dimsIn[0] = width;
-        dimsIn[1] = height;
-        for (int i=2;i<img.numDimensions();i++) {
-            min[i] = 0;
-            dimsIn[i] = img.dimension(i);
-        }
+        int xIdx = inputImg.dimensionIndex(Axes.X);
+        int yIdx = inputImg.dimensionIndex(Axes.Y);
 
-        long[] dimsOut = new long[5];
-        dimsOut[0] = width;
-        dimsOut[1] = height;
-        dimsOut[2] = inputImagePlus.getNChannels();
-        dimsOut[3] = inputImagePlus.getNSlices();
-        dimsOut[4] = inputImagePlus.getNFrames();
+        long[] offsetIn = new long[inputImg.numDimensions()];
+        long[] dimsIn = new long[inputImg.numDimensions()];
+        for (int i=0;i<inputImg.numDimensions();i++) dimsIn[i] = inputImg.dimension(i);
+        offsetIn[xIdx] = left;
+        offsetIn[yIdx] = top;
+        dimsIn[xIdx] = width;
+        dimsIn[yIdx] = height;
+
+        long[] offsetOut = new long[inputImg.numDimensions()];
+        long[] dimsOut = new long[inputImg.numDimensions()];
+        for (int i=0;i<inputImg.numDimensions();i++) dimsOut[i] = inputImg.dimension(i);
+        dimsOut[xIdx] = width;
+        dimsOut[yIdx] = height;
 
         // Creating the output image and copying over the pixel coordinates
-        ArrayImgFactory<T> factory = new ArrayImgFactory<T>();
-        Img<T> outputImg = factory.create(dimsOut,img.firstElement());
-        Cursor<T> cropCursor = Views.offsetInterval(img,min,dimsIn).cursor();
-        Cursor<T> outputCursor = outputImg.cursor();
+        CellImgFactory<T> factory = new CellImgFactory<>(inputImg.firstElement());
+        ImgPlus<T> outputImg = new ImgPlus<>(factory.create(dimsOut));
+        ImgPlusTools.copyAxes(inputImg,outputImg);
 
-        while (cropCursor.hasNext()) outputCursor.next().set(cropCursor.next());
+        RandomAccess<T> randomAccessIn = Views.offsetInterval(inputImg,offsetIn,dimsIn).randomAccess();
+        Cursor<T> cursorOut = outputImg.localizingCursor();
+
+        while (cursorOut.hasNext()) {
+            cursorOut.fwd();
+            randomAccessIn.setPosition(cursorOut);
+            cursorOut.get().set(randomAccessIn.get());
+        }
 
         // For some reason the ImagePlus produced by ImageJFunctions.wrap() behaves strangely, but this can be remedied
         // by duplicating it
-        ImagePlus outputImagePlus = new Duplicator().run(ImageJFunctions.wrap(outputImg,outputImageName));
+        ImagePlus outputImagePlus = ImageJFunctions.wrap(outputImg,outputImageName);
         outputImagePlus.setCalibration(inputImagePlus.getCalibration());
-        return new Image(outputImageName,outputImagePlus);
+        ImgPlusTools.applyAxes(outputImg,outputImagePlus);
 
+        return new Image(outputImageName,outputImagePlus);
 
     }
 

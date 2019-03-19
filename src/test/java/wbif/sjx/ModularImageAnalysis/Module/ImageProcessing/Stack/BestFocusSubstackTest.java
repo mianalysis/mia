@@ -36,85 +36,85 @@ public class BestFocusSubstackTest extends ModuleTest {
 
 
     @Test
-    public void testGetMaxStandardDeviationSliceFirstChannel5D() throws Exception {
+    public void testGetMaxStatSliceStdevFirstChannel5D() throws Exception {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,0,0);
+        int actual = BestFocusSubstack.getMaxStatSlice(image,0,0, BestFocusSubstack.Stat.STDEV);
         assertEquals(5,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,1,0);
+        actual = BestFocusSubstack.getMaxStatSlice(image,1,0, BestFocusSubstack.Stat.STDEV);
         assertEquals(6,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,2,0);
+        actual = BestFocusSubstack.getMaxStatSlice(image,2,0, BestFocusSubstack.Stat.STDEV);
         assertEquals(3,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,3,0);
+        actual = BestFocusSubstack.getMaxStatSlice(image,3,0, BestFocusSubstack.Stat.STDEV);
         assertEquals(10,actual);
 
     }
 
     @Test
-    public void testGetMaxStandardDeviationSliceSecondChannel5D() throws Exception {
+    public void testGetMaxStatSliceStdevSecondChannel5D() throws Exception {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,0,1);
+        int actual = BestFocusSubstack.getMaxStatSlice(image,0,1, BestFocusSubstack.Stat.STDEV);
         assertEquals(0,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,1,1);
+        actual = BestFocusSubstack.getMaxStatSlice(image,1,1, BestFocusSubstack.Stat.STDEV);
         assertEquals(8,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,2,1);
+        actual = BestFocusSubstack.getMaxStatSlice(image,2,1, BestFocusSubstack.Stat.STDEV);
         assertEquals(7,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,3,1);
+        actual = BestFocusSubstack.getMaxStatSlice(image,3,1, BestFocusSubstack.Stat.STDEV);
         assertEquals(11,actual);
 
     }
 
     @Test
-    public void testGetMaxStandardDeviationSliceBothChannels5D() throws Exception {
+    public void testGetMaxStatSliceStdevBothChannels5D() throws Exception {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,0,-1);
+        int actual = BestFocusSubstack.getMaxStatSlice(image,0,-1, BestFocusSubstack.Stat.STDEV);
         assertEquals(0,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,1,-1);
+        actual = BestFocusSubstack.getMaxStatSlice(image,1,-1, BestFocusSubstack.Stat.STDEV);
         assertEquals(6,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,2,-1);
+        actual = BestFocusSubstack.getMaxStatSlice(image,2,-1, BestFocusSubstack.Stat.STDEV);
         assertEquals(7,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,3,-1);
+        actual = BestFocusSubstack.getMaxStatSlice(image,3,-1, BestFocusSubstack.Stat.STDEV);
         assertEquals(10,actual);
 
     }
 
     @Test
-    public void testGetMaxStandardDeviationSliceOnlyChannel() throws Exception {
+    public void testGetMaxStatSliceStdevOnlyChannel() throws Exception {
         // Loading the test image
         String pathToImage = URLDecoder.decode(this.getClass().getResource("/images/BestFocusSubstack/BestFocus5D_C1_8bit.tif").getPath(),"UTF-8");
         ImagePlus ipl = IJ.openImage(pathToImage);
         Image image = new Image("Test_image",ipl);
 
-        int actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,0,0);
+        int actual = BestFocusSubstack.getMaxStatSlice(image,0,0, BestFocusSubstack.Stat.STDEV);
         assertEquals(5,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,1,0);
+        actual = BestFocusSubstack.getMaxStatSlice(image,1,0, BestFocusSubstack.Stat.STDEV);
         assertEquals(6,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,2,0);
+        actual = BestFocusSubstack.getMaxStatSlice(image,2,0, BestFocusSubstack.Stat.STDEV);
         assertEquals(3,actual);
 
-        actual = BestFocusSubstack.getMaxStandardDeviationSlice(image,3,0);
+        actual = BestFocusSubstack.getMaxStatSlice(image,3,0, BestFocusSubstack.Stat.STDEV);
         assertEquals(10,actual);
 
     }

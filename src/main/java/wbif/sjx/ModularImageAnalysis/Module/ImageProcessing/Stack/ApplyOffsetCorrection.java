@@ -8,7 +8,7 @@ import net.imagej.ImgPlus;
 import net.imglib2.Cursor;
 import net.imglib2.img.Img;
 import net.imglib2.img.ImgFactory;
-import net.imglib2.img.array.ArrayImgFactory;
+import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
@@ -60,8 +60,8 @@ public class ApplyOffsetCorrection< T extends RealType< T > & NativeType< T >> e
 
         // Creating the composite image
         T type = inputImg.firstElement();
-        final ImgFactory< T > factory = new ArrayImgFactory<>();
-        ImgPlus<T> shiftedImg = new ImgPlus<>(factory.create(dims, type));
+        final ImgFactory< T > factory = new CellImgFactory<>(type);
+        ImgPlus<T> shiftedImg = new ImgPlus<>(factory.create(dims));
 
         // Getting dimensions for cropped region
         for (int i=0;i<3;i++) dims[i] = dims[i] - Math.abs(shifts[i]);
