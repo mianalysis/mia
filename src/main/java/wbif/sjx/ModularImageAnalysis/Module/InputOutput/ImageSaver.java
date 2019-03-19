@@ -27,6 +27,7 @@ public class ImageSaver extends Module {
     public static final String APPEND_SERIES_MODE = "Append series mode";
     public static final String APPEND_DATETIME_MODE = "Append date/time mode";
     public static final String SAVE_SUFFIX = "Add filename suffix";
+    public static final String SAVE_AS_RGB = "Save as RGB";
     public static final String FLATTEN_OVERLAY = "Flatten overlay";
 
     public interface SaveLocations {
@@ -112,22 +113,25 @@ public class ImageSaver extends Module {
         String appendSeriesMode = parameters.getValue(APPEND_SERIES_MODE);
         String appendDateTimeMode = parameters.getValue(APPEND_DATETIME_MODE);
         String suffix = parameters.getValue(SAVE_SUFFIX);
+        boolean saveAsRGB = parameters.getValue(SAVE_AS_RGB);
         boolean flattenOverlay = parameters.getValue(FLATTEN_OVERLAY);
 
         // Loading the image to save
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
-        if (flattenOverlay) {
-            inputImagePlus = inputImagePlus.duplicate();
-            new ImageConverter(inputImagePlus).convertToRGB();
+        // If the image is being altered make a copy
+        if (saveAsRGB || flattenOverlay) inputImagePlus = inputImagePlus.duplicate();
 
+        if (saveAsRGB) new ImageConverter(inputImagePlus).convertToRGB();
+
+        if (flattenOverlay) {
             // Flattening overlay onto image for saving
             if (inputImagePlus.getNSlices() > 1) {
                 IntensityMinMax.run(inputImagePlus,true);
                 if (inputImagePlus.getOverlay() != null) inputImagePlus.flattenStack();
             } else {
-                IntensityMinMax.run(inputImagePlus,false);
+//                IntensityMinMax.run(inputImagePlus,false);
                 if (inputImagePlus.getOverlay() != null) inputImagePlus = inputImagePlus.flatten();
             }
         }
@@ -185,6 +189,7 @@ public class ImageSaver extends Module {
         parameters.add(new ChoiceP(APPEND_SERIES_MODE, this, AppendSeriesModes.SERIES_NUMBER, AppendSeriesModes.ALL));
         parameters.add(new ChoiceP(APPEND_DATETIME_MODE, this, AppendDateTimeModes.NEVER, AppendDateTimeModes.ALL));
         parameters.add(new StringP(SAVE_SUFFIX, this));
+        parameters.add(new BooleanP(SAVE_AS_RGB, this,false));
         parameters.add(new BooleanP(FLATTEN_OVERLAY, this,false));
 
     }
@@ -210,7 +215,11 @@ public class ImageSaver extends Module {
         returnedParameters.add(parameters.getParameter(APPEND_SERIES_MODE));
         returnedParameters.add(parameters.getParameter(APPEND_DATETIME_MODE));
         returnedParameters.add(parameters.getParameter(SAVE_SUFFIX));
-        returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
+        returnedParameters.add(parameters.getParameter(SAVE_AS_RGB));
+
+        if (parameters.getValue(SAVE_AS_RGB)) {
+            returnedParameters.add(parameters.getParameter(FLATTEN_OVERLAY));
+        }
 
         return returnedParameters;
 

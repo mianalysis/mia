@@ -514,23 +514,24 @@ public class Exporter {
     }
 
     private void appendModuleParameters(Sheet sheet, Module module) {
-            ParameterCollection parameters = module.updateAndGetParameters();
+        ParameterCollection parameters = module.updateAndGetParameters();
 
-            int paramRow = sheet.getLastRowNum();
-            paramRow++;
+        int paramRow = sheet.getLastRowNum();
+        paramRow++;
+        paramRow++;
 
-            for (Parameter currParam : parameters) {
-                int paramCol = 0;
-                Row row = sheet.createRow(paramRow++);
+        for (Parameter currParam : parameters) {
+            int paramCol = 0;
+            Row row = sheet.createRow(paramRow++);
 
-                Cell nameValueCell = row.createCell(paramCol++);
-                nameValueCell.setCellValue(currParam.getNameAsString());
+            Cell nameValueCell = row.createCell(paramCol++);
+            nameValueCell.setCellValue(currParam.getNameAsString());
 
-                Cell valueValueCell = row.createCell(paramCol++);
-                valueValueCell.setCellValue(currParam.getValueAsString());
+            Cell valueValueCell = row.createCell(paramCol++);
+            valueValueCell.setCellValue(currParam.getValueAsString());
 
-                Cell moduleValueCell = row.createCell(paramCol);
-                moduleValueCell.setCellValue(module.getClass().getSimpleName());
+            Cell moduleValueCell = row.createCell(paramCol);
+            moduleValueCell.setCellValue(module.getClass().getSimpleName());
 
         }
     }

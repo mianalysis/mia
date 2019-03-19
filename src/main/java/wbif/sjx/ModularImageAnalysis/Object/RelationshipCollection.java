@@ -75,6 +75,9 @@ public class RelationshipCollection extends LinkedHashSet<Relationship> {
 
         // Adding parent names from parents
         for (String parentName:parentNames) {
+            // Avoid stack overflow if the parent and child have accidentally been called the same thing
+            if (parentName.equals(childName)) continue;
+
             TreeSet<String> currentParentNames = getParentNames(parentName,true,rootName+parentName+" // ");
             newParentNames.addAll(currentParentNames);
         }

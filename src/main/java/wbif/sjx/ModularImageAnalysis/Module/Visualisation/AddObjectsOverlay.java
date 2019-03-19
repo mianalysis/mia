@@ -37,6 +37,15 @@ public class AddObjectsOverlay extends Module {
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String POSITION_MODE = "Position mode";
+    public static final String ORIENTATION_MODE = "Arrow orientation mode";
+    public static final String PARENT_OBJECT_FOR_ORIENTATION = "Parent object for orientation";
+    public static final String MEASUREMENT_FOR_ORIENTATION = "Measurement for orientation";
+    public static final String LENGTH_MODE = "Arrow length mode";
+    public static final String LENGTH_VALUE = "Length value (px)";
+    public static final String PARENT_OBJECT_FOR_LENGTH = "Parent object for length";
+    public static final String MEASUREMENT_FOR_LENGTH = "Measurement for length";
+    public static final String LENGTH_SCALE = "Arrow length scale";
+    public static final String HEAD_SIZE = "Head size";
     public static final String LABEL_MODE = "Label mode";
     public static final String DECIMAL_PLACES = "Decimal places";
     public static final String USE_SCIENTIFIC = "Use scientific notation";
@@ -47,7 +56,7 @@ public class AddObjectsOverlay extends Module {
     public static final String Y_POSITION_MEASUREMENT = "Y-position measurement";
     public static final String Z_POSITION_MEASUREMENT = "Z-position measurement";
     public static final String USE_RADIUS = "Use radius measurement";
-    public static final String MEASUREMENT_FOR_RADIUS = "Measuremen for radius";
+    public static final String MEASUREMENT_FOR_RADIUS = "Measurement for radius";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String SINGLE_COLOUR = "Single colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
@@ -60,6 +69,23 @@ public class AddObjectsOverlay extends Module {
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
 
+    public interface OrientationModes {
+        String MEASUREMENT = "Measurement";
+        String PARENT_MEASUREMENT = "Parent measurement";
+
+        String[] ALL = new String[]{PARENT_MEASUREMENT, MEASUREMENT};
+
+    }
+
+    public interface LengthModes {
+        String FIXED_VALUE = "Fixed value";
+        String MEASUREMENT = "Measurement";
+        String PARENT_MEASUREMENT = "Parent measurement";
+
+        String[] ALL = new String[]{FIXED_VALUE, PARENT_MEASUREMENT, MEASUREMENT};
+
+    }
+
     public interface ColourModes extends ObjCollection.ColourModes {}
 
     public interface SingleColours extends ColourFactory.SingleColours {}
@@ -68,13 +94,14 @@ public class AddObjectsOverlay extends Module {
 
     public interface PositionModes {
         String ALL_POINTS = "All points";
+        String ARROWS = "Arrows";
         String CENTROID = "Centroid";
         String LABEL_ONLY = "Label only";
         String OUTLINE = "Outline";
         String POSITION_MEASUREMENTS = "Position measurements";
         String TRACKS = "Tracks";
 
-        String[] ALL = new String[]{ALL_POINTS, CENTROID, LABEL_ONLY, OUTLINE, POSITION_MEASUREMENTS, TRACKS};
+        String[] ALL = new String[]{ALL_POINTS, ARROWS, CENTROID, LABEL_ONLY, OUTLINE, POSITION_MEASUREMENTS, TRACKS};
 
     }
 
@@ -82,15 +109,11 @@ public class AddObjectsOverlay extends Module {
     public static void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
         if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
 
-        // Still need to get mean coords for label
-        double xMean = object.getXMean(true);
-        double yMean = object.getYMean(true);
-        double zMean = object.getZMean(true,false);
-
         // Adding each point
         double[] xx = object.getX(true);
         double[] yy = object.getY(true);
         double[] zz = object.getZ(true,false);
+        double zMean = object.getZMean(true,false);
 
         int z = (int) Math.round(zMean+1);
         int t = object.getT()+1;
@@ -113,6 +136,38 @@ public class AddObjectsOverlay extends Module {
             ipl.getOverlay().addElement(roi);
 
         }
+    }
+
+    public static void addArrowsOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, double orientation, double arrowLength, double headSize) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+
+        double oriRads = Math.toRadians(orientation);
+
+        // Adding each point
+        double xMean = object.getXMean(true);
+        double yMean = object.getYMean(true);
+        double zMean = object.getZMean(true,false);
+
+        int z = (int) Math.round(zMean+1);
+        int t = object.getT()+1;
+
+        // Getting end point
+        double x2 = arrowLength*Math.cos(oriRads);
+        double y2 = arrowLength*Math.sin(oriRads);
+
+        Arrow arrow = new Arrow(xMean,yMean,xMean+x2,yMean+y2);
+        arrow.setHeadSize(headSize);
+        arrow.setStrokeColor(colour);
+        arrow.setStrokeWidth(lineWidth);
+
+        if (ipl.isHyperStack()) {
+            arrow.setPosition(1, (int) z, t);
+        } else {
+            int pos = Math.max(Math.max(1,(int) z),t);
+            arrow.setPosition(pos);
+        }
+        ipl.getOverlay().addElement(arrow);
+
     }
 
     public static void addCentroidOverlay(Obj object, ImagePlus ipl, Color colour, double lineWidth, boolean renderInAllFrames) {
@@ -295,6 +350,7 @@ public class AddObjectsOverlay extends Module {
             case ColourModes.PARENT_ID:
                 return ColourFactory.getParentIDHues(inputObjects,parentObjectsForColourName,true);
             case ColourModes.PARENT_MEASUREMENT_VALUE:
+                System.out.println(parentObjectsForColourName+"_"+measurementForColour);
                 return ColourFactory.getParentMeasurementValueHues(inputObjects,parentObjectsForColourName,measurementForColour,true);
         }
     }
@@ -334,6 +390,64 @@ public class AddObjectsOverlay extends Module {
                 Color colour = ColourFactory.getColour(hue);
 
                 addAllPointsOverlay(object, finalIpl, colour, lineWidth, renderInAllFrames);
+
+                writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+
+            };
+            pool.submit(task);
+        }
+
+        pool.shutdown();
+        pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+    }
+
+    public void createArrowsOverlay(ImagePlus ipl, ObjCollection inputObjects, @Nonnull HashMap<Integer,Float> hues, boolean multithread, double lineWidth,
+                                    String oriMode, String oriMeasurementName, @Nullable String oriParentName, String lengthMode, String lengthMeasurementName,
+                                    @Nullable String lengthParentName, double lengthValue, double lengthScale, int headSize) throws InterruptedException {
+
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
+
+        int nThreads = multithread ? Prefs.getThreads() : 1;
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+        // Running through each object, adding it to the overlay along with an ID label
+        AtomicInteger count = new AtomicInteger();
+        for (Obj object:inputObjects.values()) {
+            ImagePlus finalIpl = ipl;
+
+            Runnable task = () -> {
+                float hue = hues.get(object.getID());
+                Color colour = ColourFactory.getColour(hue);
+                double orientation = 0;
+                switch (oriMode) {
+                    case OrientationModes.MEASUREMENT:
+                        orientation = object.getMeasurement(oriMeasurementName).getValue();
+                        break;
+                    case OrientationModes.PARENT_MEASUREMENT:
+                        orientation = object.getParent(oriParentName).getMeasurement(oriMeasurementName).getValue();
+                        break;
+                }
+
+                double length = 0;
+                switch (lengthMode) {
+                    case LengthModes.FIXED_VALUE:
+                        length = lengthValue;
+                        break;
+                    case LengthModes.MEASUREMENT:
+                        length= object.getMeasurement(lengthMeasurementName).getValue();
+                        break;
+                    case LengthModes.PARENT_MEASUREMENT:
+                        length = object.getParent(lengthParentName).getMeasurement(lengthMeasurementName).getValue();
+                        break;
+                }
+
+                length = length*lengthScale;
+
+                addArrowsOverlay(object, finalIpl, colour, lineWidth, orientation, length, headSize);
 
                 writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
 
@@ -489,12 +603,12 @@ public class AddObjectsOverlay extends Module {
             ImagePlus finalIpl = ipl;
 
 //            Runnable task = () -> {
-                float hue = hues.get(object.getID());
-                Color colour = ColourFactory.getColour(hue);
+            float hue = hues.get(object.getID());
+            Color colour = ColourFactory.getColour(hue);
 
-                addTrackOverlay(object, spotObjectsName, finalIpl, colour, lineWidth,  history);
+            addTrackOverlay(object, spotObjectsName, finalIpl, colour, lineWidth,  history);
 
-                writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+            writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
 //            };
 //            pool.submit(task);
         }
@@ -538,6 +652,15 @@ public class AddObjectsOverlay extends Module {
         Image inputImage = workspace.getImages().get(inputImageName);
         ImagePlus ipl = inputImage.getImagePlus();
 
+        String orientationMode = parameters.getValue(ORIENTATION_MODE);
+        String parentForOrientation = parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION);
+        String measurementForOrientation = parameters.getValue(MEASUREMENT_FOR_ORIENTATION);
+        String lengthMode = parameters.getValue(LENGTH_MODE);
+        double lengthValue = parameters.getValue(LENGTH_VALUE);
+        String parentForLength = parameters.getValue(PARENT_OBJECT_FOR_LENGTH);
+        String measurementForLength = parameters.getValue(MEASUREMENT_FOR_LENGTH);
+        double lengthScale = parameters.getValue(LENGTH_SCALE);
+        int headSize = parameters.getValue(HEAD_SIZE);
         String xPosMeas = parameters.getValue(X_POSITION_MEASUREMENT);
         String yPosMeas = parameters.getValue(Y_POSITION_MEASUREMENT);
         String zPosMeas = parameters.getValue(Z_POSITION_MEASUREMENT);
@@ -575,6 +698,9 @@ public class AddObjectsOverlay extends Module {
             switch (positionMode) {
                 case PositionModes.ALL_POINTS:
                     createAllPointsOverlay(ipl,inputObjects,hues,multithread,lineWidth,renderInAllFrames);
+                    break;
+                case PositionModes.ARROWS:
+                    createArrowsOverlay(ipl,inputObjects,hues,multithread,lineWidth,orientationMode,measurementForOrientation,parentForOrientation,lengthMode,measurementForLength,parentForLength,lengthValue,lengthScale,headSize);
                     break;
                 case PositionModes.CENTROID:
                     createCentroidOverlay(ipl,inputObjects,hues,multithread,lineWidth,renderInAllFrames);
@@ -625,6 +751,15 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LABEL, this));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LABEL, this));
         parameters.add(new ChoiceP(POSITION_MODE, this, PositionModes.CENTROID, PositionModes.ALL));
+        parameters.add(new ChoiceP(ORIENTATION_MODE, this, OrientationModes.MEASUREMENT, OrientationModes.ALL));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_ORIENTATION, this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_ORIENTATION, this));
+        parameters.add(new ChoiceP(LENGTH_MODE, this, LengthModes.MEASUREMENT, LengthModes.ALL));
+        parameters.add(new DoubleP(LENGTH_VALUE,this,5d));
+        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_LENGTH, this));
+        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_LENGTH, this));
+        parameters.add(new DoubleP(LENGTH_SCALE,this,1d));
+        parameters.add(new IntegerP(HEAD_SIZE,this,3));
         parameters.add(new ObjectMeasurementP(X_POSITION_MEASUREMENT, this));
         parameters.add(new ObjectMeasurementP(Y_POSITION_MEASUREMENT, this));
         parameters.add(new ObjectMeasurementP(Z_POSITION_MEASUREMENT, this));
@@ -663,29 +798,78 @@ public class AddObjectsOverlay extends Module {
         }
 
         returnedParameters.add(parameters.getParameter(POSITION_MODE));
-        if (parameters.getValue(POSITION_MODE).equals(PositionModes.POSITION_MEASUREMENTS)) {
-            returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT));
-            returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT));
-            returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT));
+        switch ((String) parameters.getValue(POSITION_MODE)) {
+            case PositionModes.ARROWS:
+                returnedParameters.add(parameters.getParameter(ORIENTATION_MODE));
+                switch ((String) parameters.getValue(ORIENTATION_MODE)) {
+                    case OrientationModes.MEASUREMENT:
+                        ObjectMeasurementP oriMeasurement = parameters.getParameter(MEASUREMENT_FOR_ORIENTATION);
+                        oriMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS));
+                        returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ORIENTATION));
+                        break;
 
-            ((ObjectMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
-            ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
-            ((ObjectMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
+                    case OrientationModes.PARENT_MEASUREMENT:
+                        returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_ORIENTATION));
+                        ParentObjectsP parentObjects = parameters.getParameter(PARENT_OBJECT_FOR_ORIENTATION);
+                        parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS));
 
-            returnedParameters.add(parameters.getParameter(USE_RADIUS));
-            if (parameters.getValue(USE_RADIUS)) {
-                returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_RADIUS));
-                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_RADIUS)).setObjectName(inputObjectsName);
-            }
-        }
+                        oriMeasurement = parameters.getParameter(MEASUREMENT_FOR_ORIENTATION);
+                        oriMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_ORIENTATION));
+                        returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_ORIENTATION));
+                        break;
+                }
 
-        if (parameters.getValue(POSITION_MODE).equals(PositionModes.TRACKS)) {
-            returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
-            returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
+                returnedParameters.add(parameters.getParameter(LENGTH_MODE));
+                switch ((String) parameters.getValue(LENGTH_MODE)) {
+                    case LengthModes.FIXED_VALUE:
+                        returnedParameters.add(parameters.getParameter(LENGTH_VALUE));
+                        break;
 
-            if (parameters.getValue(LIMIT_TRACK_HISTORY)) returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
-            ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
+                    case LengthModes.MEASUREMENT:
+                        ObjectMeasurementP lengthMeasurement = parameters.getParameter(MEASUREMENT_FOR_LENGTH);
+                        lengthMeasurement.setObjectName(parameters.getValue(INPUT_OBJECTS));
+                        returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LENGTH));
+                        break;
 
+                    case LengthModes.PARENT_MEASUREMENT:
+                        returnedParameters.add(parameters.getParameter(PARENT_OBJECT_FOR_LENGTH));
+                        ParentObjectsP parentObjects = parameters.getParameter(PARENT_OBJECT_FOR_LENGTH);
+                        parentObjects.setChildObjectsName(parameters.getValue(INPUT_OBJECTS));
+
+                        lengthMeasurement = parameters.getParameter(MEASUREMENT_FOR_LENGTH);
+                        lengthMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_LENGTH));
+                        returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_LENGTH));
+                        break;
+                }
+
+                returnedParameters.add(parameters.getParameter(LENGTH_SCALE));
+                returnedParameters.add(parameters.getParameter(HEAD_SIZE));
+
+                break;
+
+            case PositionModes.POSITION_MEASUREMENTS:
+                returnedParameters.add(parameters.getParameter(X_POSITION_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(Y_POSITION_MEASUREMENT));
+                returnedParameters.add(parameters.getParameter(Z_POSITION_MEASUREMENT));
+
+                ((ObjectMeasurementP) parameters.getParameter(X_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
+                ((ObjectMeasurementP) parameters.getParameter(Y_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
+                ((ObjectMeasurementP) parameters.getParameter(Z_POSITION_MEASUREMENT)).setObjectName(inputObjectsName);
+
+                returnedParameters.add(parameters.getParameter(USE_RADIUS));
+                if (parameters.getValue(USE_RADIUS)) {
+                    returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_RADIUS));
+                    ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_RADIUS)).setObjectName(inputObjectsName);
+                }
+                break;
+
+            case PositionModes.TRACKS:
+                returnedParameters.add(parameters.getParameter(SPOT_OBJECTS));
+                returnedParameters.add(parameters.getParameter(LIMIT_TRACK_HISTORY));
+
+                if (parameters.getValue(LIMIT_TRACK_HISTORY)) returnedParameters.add(parameters.getParameter(TRACK_HISTORY));
+                ((ChildObjectsP) parameters.getParameter(SPOT_OBJECTS)).setParentObjectsName(inputObjectsName);
+                break;
         }
 
         returnedParameters.add(parameters.getParameter(COLOUR_MODE));
@@ -697,7 +881,8 @@ public class AddObjectsOverlay extends Module {
             case ColourModes.MEASUREMENT_VALUE:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
                 if (parameters.getValue(INPUT_OBJECTS) != null) {
-                    ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR)).setObjectName(inputObjectsName);
+                    ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
+                    colourMeasurement.setObjectName(inputObjectsName);
                 }
                 break;
 
@@ -711,12 +896,15 @@ public class AddObjectsOverlay extends Module {
                 ((ParentObjectsP) parameters.getParameter(PARENT_OBJECT_FOR_COLOUR)).setChildObjectsName(inputObjectsName);
 
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
-                ((ObjectMeasurementP) parameters.getParameter(MEASUREMENT_FOR_COLOUR)).setObjectName(inputObjectsName);
+                ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
+                colourMeasurement.setObjectName(parameters.getValue(PARENT_OBJECT_FOR_COLOUR));
 
                 break;
         }
 
-        returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+        if (!parameters.getValue(POSITION_MODE).equals(PositionModes.LABEL_ONLY)) {
+            returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+        }
 
         if (parameters.getValue(POSITION_MODE).equals(PositionModes.LABEL_ONLY)) {
             returnedParameters.add(parameters.getParameter(LABEL_MODE));
