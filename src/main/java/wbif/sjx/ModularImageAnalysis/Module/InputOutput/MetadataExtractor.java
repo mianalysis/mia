@@ -187,7 +187,7 @@ public class MetadataExtractor extends Module {
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.toString().replace("\uFEFF","");
                 String[] split = line.split(",");
-                referenceValues.put(split[0], split[1]);
+                if (split.length == 2) referenceValues.put(split[0], split[1]);
             }
             bufferedReader.close();
 
