@@ -122,6 +122,7 @@ public class FitEllipsoid extends Module {
 
         Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getNextID(),dppXY,dppZ,units,is2D);
         ellipsoidObject.setPoints(ellipsoid.getPoints());
+        ellipsoidObject.setT(inputObject.getT());
 
         ellipsoidObject.addParent(inputObject);
         inputObject.addChild(ellipsoidObject);

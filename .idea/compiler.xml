@@ -9,8 +9,5 @@
         <module name="ModularImageAnalysis" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="ModularImageAnalysis" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
