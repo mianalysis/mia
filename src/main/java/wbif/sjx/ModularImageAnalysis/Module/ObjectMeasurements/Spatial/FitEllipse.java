@@ -90,22 +90,23 @@ public class FitEllipse extends Module {
         }
     }
 
-    public Obj createNewObject (Obj inputObject, Volume ellipsoid, ObjCollection outputObjects) {
-        if (ellipsoid == null) return null;
+    public Obj createNewObject (Obj inputObject, Volume ellipse, ObjCollection outputObjects) {
+        if (ellipse == null) return null;
 
         double dppXY = inputObject.getDistPerPxXY();
         double dppZ = inputObject.getDistPerPxZ();
         String units = inputObject.getCalibratedUnits();
         boolean is2D = inputObject.is2D();
 
-        Obj ellipsoidObject = new Obj(outputObjects.getName(),outputObjects.getNextID(),dppXY,dppZ,units,is2D);
-        ellipsoidObject.setPoints(ellipsoid.getPoints());
+        Obj ellipseObject = new Obj(outputObjects.getName(),outputObjects.getNextID(),dppXY,dppZ,units,is2D);
+        ellipseObject.setPoints(ellipse.getPoints());
+        ellipseObject.setT(inputObject.getT());
 
-        ellipsoidObject.addParent(inputObject);
-        inputObject.addChild(ellipsoidObject);
-        outputObjects.add(ellipsoidObject);
+        ellipseObject.addParent(inputObject);
+        inputObject.addChild(ellipseObject);
+        outputObjects.add(ellipseObject);
 
-        return ellipsoidObject;
+        return ellipseObject;
 
     }
 
