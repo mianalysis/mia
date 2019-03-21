@@ -19,7 +19,7 @@ public class ModuleListMenu extends JMenu implements MouseListener {
     public ModuleListMenu(String name, ArrayList<Module> modules) {
         setText(name);
         for (Module module : modules) {
-            add(new PopupMenuItem(module));
+            add(new PopupMenuItem(module,this));
         }
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         addMouseListener(this);
@@ -27,7 +27,7 @@ public class ModuleListMenu extends JMenu implements MouseListener {
     }
 
     public void addMenuItem(Module module) {
-        add(new PopupMenuItem(module));
+        add(new PopupMenuItem(module,this));
     }
 
     public LinkedHashSet<ModuleListMenu> getChildren() {
@@ -36,7 +36,7 @@ public class ModuleListMenu extends JMenu implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        GUI.getModuleListMenu().setVisible(false);
+        setVisible(false);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ModuleListMenu extends JMenu implements MouseListener {
     @Override
     public void mouseReleased(MouseEvent e) {
         // Adding the mouse listener to show the relevant sub-menu
-        GUI.getModuleListMenu().show(GUI.getFrame(), e.getX(), e.getY());
+//        GUI.getModuleListMenu().show(GUI.getFrame(), e.getX(), e.getY());
     }
 
     @Override

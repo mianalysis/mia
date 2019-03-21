@@ -14,10 +14,12 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 20/05/2017.
  */
 public class PopupMenuItem extends JMenuItem implements ActionListener {
+    private ModuleListMenu moduleListMenu;
     private Module module;
 
-    public PopupMenuItem(Module module) {
+    public PopupMenuItem(Module module, ModuleListMenu moduleListMenu) {
         this.module = module;
+        this.moduleListMenu = moduleListMenu;
 
         setText(module.getTitle());
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -31,7 +33,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        GUI.getModuleListMenu().setVisible(false);
+        moduleListMenu.setVisible(false);
 
         if (module == null) return;
 
@@ -66,7 +68,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
             GUI.populateBasicHelpNotes();
         }
 
-        GUI.getModuleListMenu().setVisible(false);
+        moduleListMenu.setVisible(false);
 
     }
 }

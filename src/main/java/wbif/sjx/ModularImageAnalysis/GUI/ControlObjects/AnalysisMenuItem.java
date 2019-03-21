@@ -135,22 +135,13 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     break;
 
                 case EDITING_VIEW:
-                    try {
-                        GUI.renderEditingMode();
-                    } catch (InstantiationException | IllegalAccessException e1) {
-                        e1.printStackTrace();
-                    }
+                        GUI.enableEditingMode();
+
                     setText(AnalysisMenuItem.BASIC_VIEW);
                     break;
 
                 case TOGGLE_HELP_NOTES:
-                    if (GUI.isBasicGUI()) {
-                        GUI.setShowBasicHelpNotes(!GUI.isShowBasicHelpNotes());
-                        Prefs.set("MIA.showBasicHelpNotes",GUI.isShowBasicHelpNotes());
-                    } else {
-                        GUI.setShowEditingHelpNotes(!GUI.isShowEditingHelpNotes());
-                        Prefs.set("MIA.showEditingHelpNotes",GUI.isShowEditingHelpNotes());
-                    }
+                    GUI.setShowHelpNotes(!GUI.showHelpNotes());
                     GUI.render();
                     break;
 
