@@ -473,6 +473,9 @@ public class MeasureRelativeOrientation extends Module {
         String inputObjectsName= parameters.getValue(INPUT_OBJECTS);
 
         String reference = getMeasurementRef();
+
+        if (reference == null) return objectMeasurementRefs;
+
         String referenceDescription = null;
         switch ((String) parameters.getValue(REFERENCE_MODE)) {
             case ReferenceModes.IMAGE_CENTRE:

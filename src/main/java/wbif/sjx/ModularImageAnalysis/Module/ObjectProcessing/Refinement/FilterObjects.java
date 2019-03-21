@@ -408,7 +408,7 @@ public class FilterObjects extends Module {
                         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT));
                         returnedParameters.add(parameters.getParameter(REFERENCE_MULTIPLIER));
                         String referenceValueImageName = parameters.getValue(REFERENCE_VAL_IMAGE);
-                        ((ImageMeasurementP) parameters.getParameter(MEASUREMENT)).setImageName(referenceValueImageName);
+                        ((ImageMeasurementP) parameters.getParameter(REFERENCE_IMAGE_MEASUREMENT)).setImageName(referenceValueImageName);
                         break;
 
                     case ReferenceModes.PARENT_OBJECT_MEASUREMENT:
