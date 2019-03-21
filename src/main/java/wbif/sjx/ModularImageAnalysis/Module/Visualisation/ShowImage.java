@@ -3,6 +3,7 @@ package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 
@@ -11,6 +12,16 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
  */
 public class ShowImage extends Module {
     public final static String DISPLAY_IMAGE = "Display image";
+    public static final String TITLE_MODE = "Title mode";
+
+    public interface TitleModes {
+        String FILE_NAME = "Filename";
+        String IMAGE_NAME = "Image name";
+        String IMAGE_AND_FILE_NAME = "Image and filename";
+
+        String[] ALL = new String[]{FILE_NAME,IMAGE_NAME,IMAGE_AND_FILE_NAME};
+
+    }
 
     public ShowImage() {
         // This module likely wants to have this enabled (otherwise it does nothing)
@@ -37,8 +48,22 @@ public class ShowImage extends Module {
     public boolean run(Workspace workspace) {
         String imageName = parameters.getValue(DISPLAY_IMAGE);
         Image image = workspace.getImage(imageName);
+        String titleMode = parameters.getValue(TITLE_MODE);
 
-        if (showOutput) image.showImage();
+        String title = "";
+        switch (titleMode) {
+            case TitleModes.FILE_NAME:
+                title = workspace.getMetadata().getFilename();
+                break;
+            case TitleModes.IMAGE_NAME:
+                title = imageName;
+                break;
+            case TitleModes.IMAGE_AND_FILE_NAME:
+                title = workspace.getMetadata().getFilename()+"_"+imageName;
+                break;
+        }
+
+        if (showOutput) image.showImage(title);
 
         return true;
 
@@ -47,6 +72,7 @@ public class ShowImage extends Module {
     @Override
     protected void initialiseParameters() {
         parameters.add(new InputImageP(DISPLAY_IMAGE, this));
+        parameters.add(new ChoiceP(TITLE_MODE,this,TitleModes.IMAGE_NAME,TitleModes.ALL));
 
     }
 

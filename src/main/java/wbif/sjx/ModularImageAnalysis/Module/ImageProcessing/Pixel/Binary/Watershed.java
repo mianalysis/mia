@@ -52,7 +52,10 @@ public class Watershed extends Module {
         // Expected inputs for binary images (marker and mask) are black objects on a white background.  These need to
         // be inverted before using as MorphoLibJ uses the opposite convention.
         IJ.run(maskIpl,"Invert","stack");
-        if (markerIpl != null) IJ.run(markerIpl, "Invert", "stack");
+        if (markerIpl != null) {
+            markerIpl = markerIpl.duplicate();
+            IJ.run(markerIpl, "Invert", "stack");
+        }
 
         int nThreads = multithread ? Prefs.getThreads() : 1;
         ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
@@ -67,15 +70,16 @@ public class Watershed extends Module {
                 int finalT = t;
                 int finalC = c;
 
+                ImagePlus finalMarkerIpl = markerIpl;
                 Runnable task = () -> {
                     // Getting maskIpl for this timepoint
                     ImageStack timepointMask = getSetStack(maskIpl, finalT, finalC, null);
                     ImageStack timepointIntensity = getSetStack(intensityIpl, finalT, finalC, null);
 
-                    if (markerIpl == null) {
+                    if (finalMarkerIpl == null) {
                         timepointMask = ExtendedMinimaWatershed.extendedMinimaWatershed(timepointIntensity, timepointMask, dynamic, connectivity, false);
                     } else {
-                        ImageStack timepointMarker = getSetStack(markerIpl, finalT, finalC, null);
+                        ImageStack timepointMarker = getSetStack(finalMarkerIpl, finalT, finalC, null);
                         timepointMarker = BinaryImages.componentsLabeling(timepointMarker, connectivity, 32);
                         timepointMask = inra.ijpb.watershed.Watershed.computeWatershed(timepointIntensity, timepointMarker, timepointMask, connectivity, true, false);
                     }

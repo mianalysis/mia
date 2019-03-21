@@ -52,6 +52,9 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
     public MeasurementRefCollection getObjectMeasurementRefs(String objectName, Module cutoffModule) {
         MeasurementRefCollection measurementReferences = new MeasurementRefCollection();
 
+        // If this is a distant relative there will be "//" in the name that need to be removed
+        if (objectName.contains("//")) objectName = objectName.substring(objectName.indexOf("//")+3);
+
         // Iterating over all modules, collecting any measurements for the current objects
         for (Module module:this) {
             if (module == cutoffModule) break;

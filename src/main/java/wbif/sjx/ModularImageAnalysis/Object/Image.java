@@ -129,9 +129,9 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
-    public void showImage(LUT lut) {
+    public void showImage(String title, LUT lut) {
         ImagePlus dispIpl = new Duplicator().run(imagePlus);
-        dispIpl.setTitle(name);
+        dispIpl.setTitle(title);
         IntensityMinMax.run(dispIpl,true);
         dispIpl.setPosition(1,1,1);
         dispIpl.updateChannelAndDraw();
@@ -140,8 +140,16 @@ public class Image < T extends RealType< T > & NativeType< T >> {
 
     }
 
+    public void showImage(String title) {
+        showImage(title,LUT.createLutFromColor(Color.WHITE));
+    }
+
+    public void showImage(LUT lut) {
+        showImage(name,lut);
+    }
+
     public void showImage() {
-        showImage(LUT.createLutFromColor(Color.WHITE));
+        showImage(name,LUT.createLutFromColor(Color.WHITE));
     }
 
     /**

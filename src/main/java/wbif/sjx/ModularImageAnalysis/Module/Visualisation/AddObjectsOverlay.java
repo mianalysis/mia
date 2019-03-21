@@ -933,6 +933,7 @@ public class AddObjectsOverlay extends Module {
             returnedParameters.add(parameters.getParameter(DECIMAL_PLACES));
             returnedParameters.add(parameters.getParameter(USE_SCIENTIFIC));
             returnedParameters.add(parameters.getParameter(LABEL_SIZE));
+
         }
 
         if (!parameters.getValue(POSITION_MODE).equals(PositionModes.TRACKS)) {
