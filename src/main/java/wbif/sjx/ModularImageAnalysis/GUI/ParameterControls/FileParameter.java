@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.FileFolderType;

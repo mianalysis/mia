@@ -77,7 +77,7 @@ j  org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader.grabFrame()Lorg/janelia/it/jac
 j  wbif.sjx.ModularImageAnalysis.Module.InputOutput.VideoLoader.getFFMPEGVideo(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[I)Lwbif/sjx/ModularImageAnalysis/Object/Image;+76
 j  wbif.sjx.ModularImageAnalysis.Module.InputOutput.VideoLoader.run(Lwbif/sjx/ModularImageAnalysis/Object/Workspace;)Z+626
 j  wbif.sjx.ModularImageAnalysis.Module.Module.execute(Lwbif/sjx/ModularImageAnalysis/Object/Workspace;)Z+12
-j  wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI.evaluateModule(Lwbif/sjx/ModularImageAnalysis/Module/Module;)V+34
+j  wbif.sjx.ModularImageAnalysis.GUI.GUI.evaluateModule(Lwbif/sjx/ModularImageAnalysis/Module/Module;)V+34
 j  wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.EvalButton.lambda$actionPerformed$1(I)V+37
 j  wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.EvalButton$$Lambda$16.run()V+4
 j  java.lang.Thread.run()V+11

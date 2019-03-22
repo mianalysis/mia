@@ -5,7 +5,7 @@ package wbif.sjx.ModularImageAnalysis.Process;
 import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;

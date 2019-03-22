@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
@@ -57,16 +57,9 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         // Adding to the list of modules
         GUI.updateModules(true);
         GUI.populateModuleList();
-
         GUI.setActiveModule(newModule);
-
-        if (GUI.isBasicGUI()) {
-            GUI.populateBasicModules();
-        } else {
-            GUI.populateModuleParameters();
-            GUI.populateHelpNotes();
-            GUI.populateBasicHelpNotes();
-        }
+        GUI.populateModuleParameters();
+        GUI.populateHelpNotes();
 
         moduleListMenu.setVisible(false);
 

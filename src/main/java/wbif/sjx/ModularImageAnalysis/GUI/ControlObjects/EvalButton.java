@@ -1,7 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
+import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
+import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
 import javax.swing.*;
 import java.awt.*;
@@ -98,7 +100,7 @@ public class EvalButton extends JButton implements ActionListener {
                 try {
                     // For some reason it's necessary to have a brief pause here to prevent the module executing twice
                     Thread.sleep(1);
-                    GUI.evaluateModule(module);
+                    evaluateModule(module);
                 } catch (Exception e1) {
                     GUI.setModuleBeingEval(-1);
                     GUI.updateModules(false);
@@ -113,7 +115,7 @@ public class EvalButton extends JButton implements ActionListener {
                 for (int i = GUI.getLastModuleEval() + 1; i <= idx; i++) {
                     Module module = GUI.getModules().get(i);
                     if (module.isEnabled() && module.isRunnable()) try {
-                        GUI.evaluateModule(module);
+                        evaluateModule(module);
                     } catch (Exception e1) {
                         GUI.setModuleBeingEval(-1);
                         e1.printStackTrace();
@@ -123,5 +125,25 @@ public class EvalButton extends JButton implements ActionListener {
             });
             t.start();
         }
+    }
+
+    public void evaluateModule(Module module) {
+        int lastModuleEval = GUI.getLastModuleEval();
+        int moduleBeingEval = GUI.getModuleBeingEval();
+        ModuleCollection modules = GUI.getAnalysis().getModules();
+        Workspace testWorkspace = GUI.getTestWorkspace();
+
+        // Setting the index to the previous module.  This will make the currently-evaluated module go red
+        lastModuleEval = modules.indexOf(module) - 1;
+        moduleBeingEval = modules.indexOf(module);
+        GUI.updateModules(true);
+
+        Module.setVerbose(true);
+        module.execute(testWorkspace);
+        lastModuleEval = modules.indexOf(module);
+        moduleBeingEval = -1;
+
+        GUI.updateModules(true);
+
     }
 }

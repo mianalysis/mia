@@ -16,6 +16,7 @@ public abstract class MainPanel extends JPanel {
     public abstract int getPreferredHeight();
     public abstract int getMinimumHeight();
 
+    public abstract int getProgress();
     public abstract void setProgress(int progress);
 
     public abstract Module getActiveModule();

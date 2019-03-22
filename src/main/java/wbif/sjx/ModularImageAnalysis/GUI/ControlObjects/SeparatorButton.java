@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.BooleanP;
@@ -56,7 +56,6 @@ public class SeparatorButton extends JButton implements ActionListener {
         GUI.populateModuleList();
         GUI.populateModuleParameters();
         GUI.populateHelpNotes();
-        GUI.populateBasicHelpNotes();
 
     }
 }

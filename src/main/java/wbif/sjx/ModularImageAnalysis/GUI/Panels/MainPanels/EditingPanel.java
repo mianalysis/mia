@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.GUI.Layouts;
+package wbif.sjx.ModularImageAnalysis.GUI.Panels.MainPanels;
 
 import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.AnalysisControlButton;
@@ -6,10 +6,10 @@ import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleControlButton;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleListMenu;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.Panels.*;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.FileFolderPathP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
@@ -36,19 +36,15 @@ public class EditingPanel extends MainPanel {
     private static int frameHeight = GUI.getFrameHeight();
     private static int minimumFrameHeight = GUI.getMinimumFrameHeight();
 
-    private int lastModuleEval = -1;
-    private int moduleBeingEval = -1;
-    private static Workspace testWorkspace = new Workspace(1, null,1);
-
-    private final ProgressBarPanel editingProgressBarPanel = new ProgressBarPanel();
-    private final InputOutputPanel editingInputPanel = new InputOutputPanel();
-    private final InputOutputPanel editingOutputPanel = new InputOutputPanel();
-    private final ModulesPanel editingModulesPanel = new ModulesPanel();
-    private final ParametersPanel editingParametersPanel = new ParametersPanel();
-    private final JPanel editingHelpNotesPanel = new JPanel();
-    private final NotesPanel editingNotesPanel = new NotesPanel();
-    private final HelpPanel editingHelpPanel = new HelpPanel();
-    private final StatusPanel editingStatusPanel = new StatusPanel();
+    private final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
+    private final InputOutputPanel inputPanel = new InputOutputPanel();
+    private final InputOutputPanel outputPanel = new InputOutputPanel();
+    private final ModulesPanel modulesPanel = new ModulesPanel();
+    private final ParametersPanel parametersPanel = new ParametersPanel();
+    private final JPanel helpNotesPanel = new JPanel();
+    private final NotesPanel notesPanel = new NotesPanel();
+    private final HelpPanel helpPanel = new HelpPanel();
+    private final StatusPanel statusPanel = new StatusPanel();
 
     private ModuleControlButton addModuleButton = null;
     private static final JPopupMenu moduleListMenu = new JPopupMenu();
@@ -67,7 +63,7 @@ public class EditingPanel extends MainPanel {
             }
         }).start();
 
-        addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,GUI.getBigButtonSize());
+        addModuleButton = new ModuleControlButton(ModuleControlButton.ADD_MODULE,GUI.getBigButtonSize(),moduleListMenu);
 
         setLayout(new GridBagLayout());
 
@@ -94,12 +90,12 @@ public class EditingPanel extends MainPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridwidth = 4;
         c.insets = new Insets(0,5,5,5);
-        add(editingStatusPanel, c);
+        add(statusPanel, c);
 
         // Initialising the progress bar
         c.gridy++;
         c.insets = new Insets(0,5,5,5);
-        add(editingProgressBarPanel,c);
+        add(progressBarPanel,c);
 
         // Initialising the input enable panel
         c.gridx++;
@@ -108,20 +104,20 @@ public class EditingPanel extends MainPanel {
         c.gridheight = 1;
         c.gridwidth = 1;
         c.insets = new Insets(5, 5, 0, 0);
-        add(editingInputPanel, c);
+        add(inputPanel, c);
 
         // Initialising the module list panel
         c.gridy++;
         c.weighty = 1;
         c.fill = GridBagConstraints.VERTICAL;
-        add(editingModulesPanel, c);
+        add(modulesPanel, c);
 
         // Initialising the output enable panel
         c.gridy++;
         c.gridheight = 1;
         c.weighty = 0;
         c.insets = new Insets(5, 5, 5, 0);
-        add(editingOutputPanel, c);
+        add(outputPanel, c);
 
         // Initialising the parameters panel
         c.gridx++;
@@ -131,20 +127,16 @@ public class EditingPanel extends MainPanel {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(5, 5, 5, 5);
-        add(editingParametersPanel, c);
+        add(parametersPanel, c);
 
         initialiseHelpNotesPanels();
         c.gridx++;
         c.weightx = 0;
         c.insets = new Insets(5,0,5,5);
-        add(editingHelpNotesPanel,c);
+        add(helpNotesPanel,c);
 
         // Setting the active module to InputControl
         activeModule = GUI.getAnalysis().getInputControl();
-
-//        // Populating the list containing all available modules
-//        moduleListMenu.show(frame, 0, 0);
-//        moduleListMenu.setVisible(false);
 
     }
 
@@ -172,19 +164,19 @@ public class EditingPanel extends MainPanel {
         controlPanel.add(addModuleButton, c);
 
         // Remove module button
-        ModuleControlButton removeModuleButton = new ModuleControlButton(ModuleControlButton.REMOVE_MODULE,bigButtonSize);
+        ModuleControlButton removeModuleButton = new ModuleControlButton(ModuleControlButton.REMOVE_MODULE,bigButtonSize,moduleListMenu);
         removeModuleButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
         c.gridy++;
         controlPanel.add(removeModuleButton, c);
 
         // Move module up button
-        ModuleControlButton moveModuleUpButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_UP,bigButtonSize);
+        ModuleControlButton moveModuleUpButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_UP,bigButtonSize,moduleListMenu);
         moveModuleUpButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         c.gridy++;
         controlPanel.add(moveModuleUpButton, c);
 
         // Move module down button
-        ModuleControlButton moveModuleDownButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_DOWN,bigButtonSize);
+        ModuleControlButton moveModuleDownButton = new ModuleControlButton(ModuleControlButton.MOVE_MODULE_DOWN,bigButtonSize,moduleListMenu);
         moveModuleDownButton.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         c.gridy++;
         controlPanel.add(moveModuleDownButton, c);
@@ -222,7 +214,7 @@ public class EditingPanel extends MainPanel {
 
     private void initialiseHelpNotesPanels() {
         // Adding panels to combined JPanel
-        editingHelpNotesPanel.setLayout(new GridBagLayout());
+        helpNotesPanel.setLayout(new GridBagLayout());
         GridBagConstraints cc = new GridBagConstraints();
 
         cc.fill = GridBagConstraints.BOTH;
@@ -231,19 +223,22 @@ public class EditingPanel extends MainPanel {
         cc.weightx = 1;
         cc.weighty = 2;
         cc.insets = new Insets(0,0,5,0);
-        editingHelpNotesPanel.add(editingHelpPanel,cc);
+        helpNotesPanel.add(helpPanel,cc);
 
         cc.gridy++;
         cc.weighty = 1;
         cc.insets = new Insets(0,0,0,0);
-        editingHelpNotesPanel.add(editingNotesPanel,cc);
+        helpNotesPanel.add(notesPanel,cc);
 
     }
 
     private void listAvailableModules() {
         try {
-            addModuleButton.setEnabled(false);
-            addModuleButton.setToolTipText("Loading modules");
+            // Waiting until the add module button has been created
+            while (addModuleButton == null) Thread.sleep(100);
+
+                addModuleButton.setEnabled(false);
+                addModuleButton.setToolTipText("Loading modules");
 
             Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
@@ -293,7 +288,7 @@ public class EditingPanel extends MainPanel {
 
             for (ModuleListMenu listMenu : topList) moduleListMenu.add(listMenu);
 
-        } catch (IllegalAccessException | InstantiationException e){
+        } catch (IllegalAccessException | InstantiationException | InterruptedException e){
             e.printStackTrace(System.err);
         }
 
@@ -302,82 +297,10 @@ public class EditingPanel extends MainPanel {
 
     }
 
-    public void addModule() {
-        moduleListMenu.setLocation(MouseInfo.getPointerInfo().getLocation());
-        moduleListMenu.setVisible(true);
-        updateModules();
-
-    }
-
-    public void removeModule() {
-        if (activeModule != null) {
-            ModuleCollection modules = GUI.getAnalysis().getModules();
-            // Removing a module resets all the current evaluation
-            int idx = modules.indexOf(activeModule);
-
-            if (idx <= lastModuleEval) lastModuleEval = idx - 1;
-
-            modules.remove(activeModule);
-            activeModule = null;
-
-            updateModules();
-            updateParameters();
-            if (showHelpNotes) updateHelpNotes();
-
-        }
-    }
-    
-    public void moveModuleUp() {
-        if (activeModule != null) {
-            ModuleCollection modules = GUI.getAnalysis().getModules();
-            int idx = modules.indexOf(activeModule);
-
-            if (idx != 0) {
-                if (idx - 2 <= lastModuleEval) lastModuleEval = idx - 2;
-
-                modules.remove(activeModule);
-                modules.add(idx - 1, activeModule);
-                updateModules();
-
-            }
-        }
-    }
-
-    public void moveModuleDown() {
-        if (activeModule != null) {
-            ModuleCollection modules = GUI.getAnalysis().getModules();
-            int idx = modules.indexOf(activeModule);
-
-            if (idx < modules.size()-1) {
-                if (idx <= lastModuleEval) lastModuleEval = idx - 1;
-
-                modules.remove(activeModule);
-                modules.add(idx + 1, activeModule);
-                updateModules();
-
-            }
-        }
-    }
-
-    public void evaluateModule(Module module) {
-        ModuleCollection modules = GUI.getAnalysis().getModules();
-
-        // Setting the index to the previous module.  This will make the currently-evaluated module go red
-        lastModuleEval = modules.indexOf(module) - 1;
-        moduleBeingEval = modules.indexOf(module);
-        updateModules();
-
-        Module.setVerbose(true);
-        module.execute(testWorkspace);
-        lastModuleEval = modules.indexOf(module);
-        moduleBeingEval = -1;
-
-        updateModules();
-
-    }
-
     public void updateTestFile() {
         Analysis analysis = GUI.getAnalysis();
+        Workspace testWorkspace = GUI.getTestWorkspace();
+        int lastModuleEval = GUI.getLastModuleEval();
 
         // Ensuring the input file specified in the InputControl is active in the test workspace
         InputControl inputControl = analysis.getInputControl();
@@ -448,20 +371,17 @@ public class EditingPanel extends MainPanel {
         c.insets = new Insets(0,5,0,0);
         c.anchor = GridBagConstraints.WEST;
 
-        editingStatusPanel.add(GUI.getTextField(),c);
+        statusPanel.add(GUI.getTextField(),c);
+        helpNotesPanel.setVisible(showHelpNotes);
 
-        editingHelpNotesPanel.setVisible(showHelpNotes);
-
+        updateTestFile();
         updateModules();
         updateParameters();
 
-//        setVisible(true);
-        validate();
-        repaint();
-
         if (showHelpNotes) updateHelpNotes();
 
-        updateTestFile();
+        revalidate();
+        repaint();
 
     }
 
@@ -494,8 +414,13 @@ public class EditingPanel extends MainPanel {
     }
 
     @Override
+    public int getProgress() {
+        return progressBarPanel.getValue();
+    }
+
+    @Override
     public void setProgress(int progress) {
-        editingProgressBarPanel.setValue(progress);
+        progressBarPanel.setValue(progress);
     }
 
     @Override
@@ -504,22 +429,22 @@ public class EditingPanel extends MainPanel {
 
         boolean runnable = AnalysisTester.testModule(analysis.getInputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
-        editingInputPanel.updateButtonState();
-        editingInputPanel.updatePanel(analysis.getInputControl());
+        inputPanel.updateButtonState();
+        inputPanel.updatePanel(analysis.getInputControl());
 
         runnable = AnalysisTester.testModule(analysis.getOutputControl(),analysis.getModules());
         analysis.getInputControl().setRunnable(runnable);
-        editingOutputPanel.updateButtonState();
-        editingOutputPanel.updatePanel(analysis.getOutputControl());
+        outputPanel.updateButtonState();
+        outputPanel.updatePanel(analysis.getOutputControl());
 
-        editingModulesPanel.updateButtonStates();
-        editingModulesPanel.updatePanel();
+        modulesPanel.updateButtonStates();
+        modulesPanel.updatePanel();
 
     }
 
     @Override
     public void updateParameters() {
-        editingParametersPanel.updatePanel(activeModule);
+        parametersPanel.updatePanel(activeModule);
     }
 
     @Override
@@ -531,8 +456,8 @@ public class EditingPanel extends MainPanel {
             return;
         }
 
-        editingHelpPanel.updatePanel();
-        editingNotesPanel.updatePanel();
+        helpPanel.updatePanel();
+        notesPanel.updatePanel();
 
     }
 
@@ -555,5 +480,9 @@ public class EditingPanel extends MainPanel {
     public void setShowHelpNotes(boolean showHelpNotes) {
         this.showHelpNotes = showHelpNotes;
         Prefs.set("MIA.showEditingHelpNotes",showHelpNotes);
+
+        helpNotesPanel.setVisible(showHelpNotes);
+        GUI.updatePanel();
+
     }
 }
