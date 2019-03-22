@@ -17,6 +17,7 @@ public class HelpPanel extends JPanel {
         // Initialising the panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
+        setMinimumSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
         setLayout(new GridBagLayout());
 
     }

@@ -6,9 +6,9 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
-import wbif.sjx.ModularImageAnalysis.GUI.Panels.*;
 import wbif.sjx.ModularImageAnalysis.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.ModularImageAnalysis.GUI.Panels.MainPanels.EditingPanel;
+import wbif.sjx.ModularImageAnalysis.GUI.Panels.MainPanels.MainPanel;
 import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -24,10 +24,10 @@ import java.io.PrintStream;
  * Created by Stephen on 20/05/2017.
  */
 public class GUI {
+    private static boolean initialised = false;
+
     private static Analysis analysis = new Analysis();
     private static Module activeModule = null;
-    private static Module lastEditingHelpNotesModule = null;
-    private static Module lastBasicHelpNotesModule = null;
     private static int lastModuleEval = -1;
     private static int moduleBeingEval = -1;
     private static Workspace testWorkspace = new Workspace(1, null,1);
@@ -40,8 +40,6 @@ public class GUI {
     private static int bigButtonSize = 45;
     private static int moduleButtonWidth = 295;
     private static int statusHeight = 20;
-
-    private static boolean initialised = false;
 
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
     private static final JFrame frame = new JFrame();
@@ -263,20 +261,12 @@ public class GUI {
         mainPanel.setShowHelpNotes(showEditingHelpNotes);
     }
 
-    public static Module getLastEditingHelpNotesModule() {
-        return lastEditingHelpNotesModule;
+    public static Module getLastHelpNotesModule() {
+        return mainPanel.getLastHelpNotesModule();
     }
 
-    public static void setLastEditingHelpNotesModule(Module lastEditingHelpNotesModule) {
-        GUI.lastEditingHelpNotesModule = lastEditingHelpNotesModule;
-    }
-
-    public static Module getLastBasicHelpNotesModule() {
-        return lastBasicHelpNotesModule;
-    }
-
-    public static void setLastBasicHelpNotesModule(Module lastBasicHelpNotesModule) {
-        GUI.lastBasicHelpNotesModule = lastBasicHelpNotesModule;
+    public static void setLastHelpNotesModule(Module lastHelpNotesModule) {
+        mainPanel.setLastHelpNotesModule(lastHelpNotesModule);
     }
 
     public static ButtonGroup getModuleGroup() {

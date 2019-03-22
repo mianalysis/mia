@@ -1,4 +1,4 @@
-package wbif.sjx.ModularImageAnalysis.GUI.Panels;
+package wbif.sjx.ModularImageAnalysis.GUI.Panels.MainPanels;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
@@ -19,10 +19,10 @@ public abstract class MainPanel extends JPanel {
     public abstract int getProgress();
     public abstract void setProgress(int progress);
 
-    public abstract Module getActiveModule();
-    public abstract void setActiveModule(Module module);
-
     public abstract boolean showHelpNotes();
     public abstract void setShowHelpNotes(boolean showHelpNotes);
+
+    public abstract Module getLastHelpNotesModule();
+    public abstract void setLastHelpNotesModule(Module module);
 
 }

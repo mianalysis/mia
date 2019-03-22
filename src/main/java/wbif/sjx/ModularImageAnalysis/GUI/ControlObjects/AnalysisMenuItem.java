@@ -51,11 +51,11 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     int savePipeline = JOptionPane.showConfirmDialog(new Frame(),"Save existing pipeline?", "Create new pipeline", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
                     switch (savePipeline) {
+                        case -1: // Cancel (don't create new pipeline
+                            return;
                         case 0: // Save
                             AnalysisWriter.saveAnalysis(GUI.getAnalysis());
                             break;
-                        case 2: // Cancel (don't create new pipeline
-                            return;
                     }
 
                     GUI.setAnalysis(new Analysis());

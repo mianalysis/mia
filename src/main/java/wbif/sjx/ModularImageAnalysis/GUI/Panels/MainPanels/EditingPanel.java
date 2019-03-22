@@ -51,7 +51,6 @@ public class EditingPanel extends MainPanel {
 
     private boolean showHelpNotes = Prefs.get("MIA.showEditingHelpNotes",true);
     private Module lastHelpNotesModule = null;
-    private Module activeModule = null;
 
 
     public EditingPanel() {
@@ -134,9 +133,6 @@ public class EditingPanel extends MainPanel {
         c.weightx = 0;
         c.insets = new Insets(5,0,5,5);
         add(helpNotesPanel,c);
-
-        // Setting the active module to InputControl
-        activeModule = GUI.getAnalysis().getInputControl();
 
     }
 
@@ -444,12 +440,14 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public void updateParameters() {
-        parametersPanel.updatePanel(activeModule);
+        parametersPanel.updatePanel(GUI.getActiveModule());
     }
 
     @Override
     public void updateHelpNotes() {
         // Only update the help and notes if the module has changed
+        Module activeModule = GUI.getActiveModule();
+
         if (activeModule != lastHelpNotesModule) {
             lastHelpNotesModule = activeModule;
         } else {
@@ -459,16 +457,6 @@ public class EditingPanel extends MainPanel {
         helpPanel.updatePanel();
         notesPanel.updatePanel();
 
-    }
-
-    @Override
-    public Module getActiveModule() {
-        return activeModule;
-    }
-
-    @Override
-    public void setActiveModule(Module module) {
-        this.activeModule = module;
     }
 
     @Override
@@ -484,5 +472,15 @@ public class EditingPanel extends MainPanel {
         helpNotesPanel.setVisible(showHelpNotes);
         GUI.updatePanel();
 
+    }
+
+    @Override
+    public Module getLastHelpNotesModule() {
+        return lastHelpNotesModule;
+    }
+
+    @Override
+    public void setLastHelpNotesModule(Module module) {
+        lastHelpNotesModule = module;
     }
 }

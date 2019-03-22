@@ -1,5 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Panels.MainPanels;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import ij.Prefs;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.AnalysisControlButton;
 import wbif.sjx.ModularImageAnalysis.GUI.GUI;
@@ -25,7 +26,6 @@ public class BasicPanel extends MainPanel {
 
     private boolean showHelpNotes = Prefs.get("MIA.showBasicHelpNotes",true);
     private Module lastHelpNotesModule = null;
-    private Module activeModule = null;
 
 
     public BasicPanel() {
@@ -52,6 +52,7 @@ public class BasicPanel extends MainPanel {
 
         // Initialising the help and notes panels
         initialiseBasicHelpNotesPanels();
+        c.weightx = 0;
         c.gridx++;
         c.insets = new Insets(5, 0, 0, 5);
         add(helpNotesPanel,c);
@@ -60,6 +61,7 @@ public class BasicPanel extends MainPanel {
         c.gridx = 0;
         c.gridy++;
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
         c.weighty = 0;
         c.gridwidth = 2;
         c.insets = new Insets(5, 5, 0, 5);
@@ -71,6 +73,10 @@ public class BasicPanel extends MainPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5,5,5,5);
         add(progressBarPanel,c);
+
+        revalidate();
+        repaint();
+
     }
 
 
@@ -148,7 +154,6 @@ public class BasicPanel extends MainPanel {
 
     }
 
-
     @Override
     public void updatePanel() {
         GridBagConstraints c = new GridBagConstraints();
@@ -185,6 +190,8 @@ public class BasicPanel extends MainPanel {
 
     @Override
     public void updateHelpNotes() {
+        Module activeModule  = GUI.getActiveModule();
+
         // If null, show a special message
         if (activeModule == null) {
             helpPanel.showUsageMessage();
@@ -247,16 +254,6 @@ public class BasicPanel extends MainPanel {
     }
 
     @Override
-    public Module getActiveModule() {
-        return activeModule;
-    }
-
-    @Override
-    public void setActiveModule(Module module) {
-        this.activeModule = module;
-    }
-
-    @Override
     public boolean showHelpNotes() {
         return showHelpNotes;
     }
@@ -269,5 +266,15 @@ public class BasicPanel extends MainPanel {
         helpNotesPanel.setVisible(showHelpNotes);
         GUI.updatePanel();
 
+    }
+
+    @Override
+    public Module getLastHelpNotesModule() {
+        return lastHelpNotesModule;
+    }
+
+    @Override
+    public void setLastHelpNotesModule(Module module) {
+        lastHelpNotesModule = module;
     }
 }
