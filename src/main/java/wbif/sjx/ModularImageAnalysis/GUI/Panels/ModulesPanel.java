@@ -5,7 +5,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.EvalButton;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleButton;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ModuleEnabledButton;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.ShowOutputButton;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
@@ -25,12 +25,12 @@ public class ModulesPanel extends JScrollPane {
 
         setViewportView(panel);
 
-        int basicFrameWidth = GUI.getBasicFrameWidth();
+        int frameWidth = GUI.getMinimumFrameWidth();
         int bigButtonSize = GUI.getBigButtonSize();
 
         // Initialising the scroll panel
-        setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, -1));
-        setMinimumSize(new Dimension(basicFrameWidth-45-bigButtonSize, -1));
+        setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, -1));
+        setMinimumSize(new Dimension(frameWidth-45-bigButtonSize, -1));
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

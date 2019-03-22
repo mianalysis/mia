@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Panels;
 
 import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
@@ -20,11 +20,11 @@ public class BasicControlPanel extends JScrollPane {
         panel = new JPanel();
         setViewportView(panel);
 
-        int basicFrameWidth = GUI.getBasicFrameWidth();
+        int frameWidth = GUI.getMinimumFrameWidth();
         int bigButtonSize = GUI.getBigButtonSize();
 
         // Initialising the scroll panel
-        setPreferredSize(new Dimension(basicFrameWidth-30, -1));
+        setPreferredSize(new Dimension(frameWidth-30, -1));
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -43,7 +43,7 @@ public class BasicControlPanel extends JScrollPane {
     }
 
     public void updatePanel() {
-        int basicFrameWidth = GUI.getBasicFrameWidth();
+        int frameWidth = GUI.getMinimumFrameWidth();
         Analysis analysis = GUI.getAnalysis();
         ComponentFactory componentFactory = GUI.getComponentFactory();
 
@@ -64,12 +64,12 @@ public class BasicControlPanel extends JScrollPane {
         if (analysis.modules.size()==0) return;
 
         // Adding a separator between the input and main modules
-        panel.add(componentFactory.createBasicSeparator(loadSeparator,basicFrameWidth-80),c);
+        panel.add(componentFactory.createBasicSeparator(loadSeparator,frameWidth-80),c);
 
         // Adding input control options
         if (expanded.isSelected()) {
             c.gridy++;
-            JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(), basicFrameWidth - 80);
+            JPanel inputPanel = componentFactory.createBasicModuleControl(analysis.getInputControl(), frameWidth - 80);
             if (inputPanel != null) panel.add(inputPanel, c);
         }
 
@@ -92,10 +92,10 @@ public class BasicControlPanel extends JScrollPane {
                 }
 
                 expanded = (BooleanP) module.getParameter(GUISeparator.EXPANDED_BASIC);
-                modulePanel = componentFactory.createBasicSeparator(module, basicFrameWidth-80);
+                modulePanel = componentFactory.createBasicSeparator(module, frameWidth-80);
             } else {
                 if (module.isRunnable() || module.invalidParameterIsVisible()) {
-                    modulePanel = componentFactory.createBasicModuleControl(module, basicFrameWidth - 80);
+                    modulePanel = componentFactory.createBasicModuleControl(module, frameWidth - 80);
                 }
             }
 
@@ -105,7 +105,7 @@ public class BasicControlPanel extends JScrollPane {
             }
         }
 
-        JPanel outputPanel =componentFactory.createBasicModuleControl(analysis.getOutputControl(),basicFrameWidth-80);
+        JPanel outputPanel =componentFactory.createBasicModuleControl(analysis.getOutputControl(),frameWidth-80);
         if (outputPanel != null && expanded.isSelected()) {
             c.gridy++;
             panel.add(outputPanel,c);

@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
 import org.apache.commons.io.FilenameUtils;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.FileFolderType;
@@ -93,6 +93,7 @@ public class FileParameter extends ParameterControl implements ActionListener {
         if (module.getClass().isInstance(new InputControl())) GUI.updateTestFile();
 
         GUI.updateModules(true);
+        GUI.populateModuleParameters();
         updateControl();
 
     }

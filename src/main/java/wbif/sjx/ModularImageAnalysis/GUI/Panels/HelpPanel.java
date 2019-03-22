@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.Panels;
 
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.HelpArea;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 
@@ -11,12 +11,13 @@ import java.awt.*;
 
 public class HelpPanel extends JPanel {
     public HelpPanel() {
-        int basicFrameWidth = GUI.getBasicFrameWidth();
+        int frameWidth = GUI.getMinimumFrameWidth();
         int bigButtonSize = GUI.getBigButtonSize();
 
         // Initialising the panel
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-        setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
+        setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
+        setMinimumSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
         setLayout(new GridBagLayout());
 
     }

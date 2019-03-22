@@ -13,7 +13,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.xml.sax.SAXException;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Object.ErrorLog;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisReader;

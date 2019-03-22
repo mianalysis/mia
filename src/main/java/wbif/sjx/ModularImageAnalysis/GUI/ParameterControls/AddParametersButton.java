@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterGroup;
 
@@ -18,9 +18,6 @@ public class AddParametersButton extends ParameterControl implements ActionListe
 
     public AddParametersButton(ParameterGroup parameter) {
         this.parameter = parameter;
-
-        // Iterate over parameters in collection
-
 
         control = new JButton("Add");
         control.addActionListener(this);
@@ -45,6 +42,7 @@ public class AddParametersButton extends ParameterControl implements ActionListe
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules(true);
+        GUI.populateModuleParameters();
 
         updateControl();
 

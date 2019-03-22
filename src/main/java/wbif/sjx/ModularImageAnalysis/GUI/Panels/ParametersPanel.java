@@ -4,7 +4,7 @@ import wbif.sjx.ModularImageAnalysis.GUI.ComponentFactory;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.VisibleCheck;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementRef;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementRefCollection;
@@ -24,7 +24,7 @@ public class ParametersPanel extends JScrollPane {
         panel = new JPanel();
         setViewportView(panel);
 
-        int basicFrameWidth = GUI.getBasicFrameWidth();
+        int frameWidth = GUI.getMinimumFrameWidth();
         int bigButtonSize = GUI.getBigButtonSize();
 
         // Initialising the scroll panel
@@ -32,7 +32,7 @@ public class ParametersPanel extends JScrollPane {
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         getVerticalScrollBar().setUnitIncrement(10);
-        setPreferredSize(new Dimension(basicFrameWidth-45-bigButtonSize, bigButtonSize+15));
+        setPreferredSize(new Dimension(frameWidth-45-bigButtonSize, bigButtonSize+15));
 
         panel.setLayout(new GridBagLayout());
         panel.validate();

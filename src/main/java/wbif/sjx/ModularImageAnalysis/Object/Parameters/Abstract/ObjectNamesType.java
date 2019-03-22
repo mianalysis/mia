@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputObjectsP;
 

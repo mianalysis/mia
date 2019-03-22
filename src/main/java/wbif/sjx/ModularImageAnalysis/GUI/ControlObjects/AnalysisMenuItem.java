@@ -1,8 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import ij.Prefs;
 import org.xml.sax.SAXException;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisReader;
@@ -21,11 +20,12 @@ import java.io.IOException;
  * Created by stephen on 28/07/2017.
  */
 public class AnalysisMenuItem extends JMenuItem implements ActionListener {
-    public static final String LOAD_ANALYSIS = "Load pipeline";
-    public static final String SAVE_ANALYSIS = "Save pipeline";
-    public static final String START_ANALYSIS = "Run analysis";
+    public static final String NEW_PIPELINE = "New pipeline";
+    public static final String LOAD_PIPELINE = "Load pipeline";
+    public static final String SAVE_PIPELINE = "Save pipeline";
+    public static final String RUN_ANALYSIS = "Run analysis";
     public static final String STOP_ANALYSIS = "Stop analysis";
-    public static final String CLEAR_PIPELINE = "Remove all modules";
+    public static final String RESET_ANALYSIS = "Reset analysis";
     public static final String ENABLE_ALL = "Enable all modules";
     public static final String DISABLE_ALL = "Disable all modules";
     public static final String OUTPUT_ALL = "Show output for all modules";
@@ -47,33 +47,42 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             switch (getText()) {
-                case LOAD_ANALYSIS:
-                    Analysis analysis = AnalysisReader.loadAnalysis();
+                case NEW_PIPELINE:
+                    int savePipeline = JOptionPane.showConfirmDialog(new Frame(),"Save existing pipeline?", "Create new pipeline", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                    if (analysis == null) return;
-
-                    GUI.setAnalysis(analysis);
-
-                    if (GUI.isBasicGUI()) {
-                        GUI.populateBasicModules();
-
-                    } else {
-                        GUI.populateModuleList();
-                        GUI.populateModuleParameters();
-                        GUI.populateHelpNotes();
-                        GUI.populateBasicHelpNotes();
-
+                    switch (savePipeline) {
+                        case -1: // Cancel (don't create new pipeline
+                            return;
+                        case 0: // Save
+                            AnalysisWriter.saveAnalysis(GUI.getAnalysis());
+                            break;
                     }
 
+                    GUI.setAnalysis(new Analysis());
+                    GUI.populateModuleList();
+                    GUI.populateModuleParameters();
+                    GUI.populateHelpNotes();
                     GUI.setLastModuleEval(-1);
 
                     break;
 
-                case SAVE_ANALYSIS:
+                case LOAD_PIPELINE:
+                    Analysis analysis = AnalysisReader.loadAnalysis();
+                    if (analysis == null) return;
+
+                    GUI.setAnalysis(analysis);
+                    GUI.populateModuleList();
+                    GUI.populateModuleParameters();
+                    GUI.populateHelpNotes();
+                    GUI.setLastModuleEval(-1);
+
+                    break;
+
+                case SAVE_PIPELINE:
                     AnalysisWriter.saveAnalysis(GUI.getAnalysis());
                     break;
 
-                case START_ANALYSIS:
+                case RUN_ANALYSIS:
                     Thread t = new Thread(() -> {
                         try {
                             AnalysisRunner.startAnalysis(GUI.getAnalysis());
@@ -87,24 +96,6 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                 case STOP_ANALYSIS:
                     System.out.println("Shutting system down");
                     AnalysisRunner.stopAnalysis();
-                    break;
-
-                case CLEAR_PIPELINE:
-                    GUI.getAnalysis().removeAllModules();
-
-                    if (GUI.isBasicGUI()) {
-                        GUI.populateBasicModules();
-
-                    } else {
-                        GUI.populateModuleList();
-                        GUI.populateModuleParameters();
-                        GUI.populateHelpNotes();
-                        GUI.populateBasicHelpNotes();
-
-                    }
-
-                    GUI.setLastModuleEval(-1);
-
                     break;
 
                 case ENABLE_ALL:
@@ -128,30 +119,20 @@ public class AnalysisMenuItem extends JMenuItem implements ActionListener {
                     break;
 
                 case BASIC_VIEW:
-                    GUI.renderBasicMode();
+                    GUI.enableBasicMode();
                     GUI.setActiveModule(null);
-                    GUI.populateBasicHelpNotes();
                     setText(AnalysisMenuItem.EDITING_VIEW);
                     break;
 
                 case EDITING_VIEW:
-                    try {
-                        GUI.renderEditingMode();
-                    } catch (InstantiationException | IllegalAccessException e1) {
-                        e1.printStackTrace();
-                    }
+                    GUI.enableEditingMode();
+                    GUI.setActiveModule(null);
                     setText(AnalysisMenuItem.BASIC_VIEW);
                     break;
 
                 case TOGGLE_HELP_NOTES:
-                    if (GUI.isBasicGUI()) {
-                        GUI.setShowBasicHelpNotes(!GUI.isShowBasicHelpNotes());
-                        Prefs.set("MIA.showBasicHelpNotes",GUI.isShowBasicHelpNotes());
-                    } else {
-                        GUI.setShowEditingHelpNotes(!GUI.isShowEditingHelpNotes());
-                        Prefs.set("MIA.showEditingHelpNotes",GUI.isShowEditingHelpNotes());
-                    }
-                    GUI.render();
+                    GUI.setShowHelpNotes(!GUI.showHelpNotes());
+                    GUI.updatePanel();
                     break;
 
             }

@@ -1,12 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -29,7 +27,7 @@ public class ModuleTitle extends JTextField implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         GUI.setActiveModule(module);
-        GUI.populateBasicHelpNotes();
+        GUI.populateHelpNotes();
 
     }
 

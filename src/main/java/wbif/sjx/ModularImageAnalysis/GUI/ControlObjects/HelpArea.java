@@ -1,15 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementRef;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementRefCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 
 import javax.swing.*;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import java.awt.*;
 
 public class HelpArea extends JTextPane {
     public HelpArea(Module module) {

@@ -29,12 +29,12 @@ public class FilterObjectsTest extends ModuleTest {
 
     @Override
     public void testGetTitle() {
-        assertNotNull(new FilterImage().getTitle());
+        assertNotNull(new FilterObjects().getTitle());
     }
 
     @Override
     public void testGetHelp() {
-        assertNotNull(new FilterImage().getHelp());
+        assertNotNull(new FilterObjects().getHelp());
     }
 
     @Test

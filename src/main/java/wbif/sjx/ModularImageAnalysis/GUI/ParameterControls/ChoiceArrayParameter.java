@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.ChoiceType;
 
@@ -44,6 +44,7 @@ public class ChoiceArrayParameter extends ParameterControl implements ActionList
 
         GUI.updateTestFile();
         GUI.updateModules(true);
+        GUI.populateModuleParameters();
 
         updateControl();
 

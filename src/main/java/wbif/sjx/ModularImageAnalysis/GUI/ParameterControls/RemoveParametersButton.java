@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.RemoveParameters;
 
@@ -43,6 +43,7 @@ public class RemoveParametersButton extends ParameterControl implements ActionLi
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules(true);
+        GUI.populateModuleParameters();
 
         updateControl();
 

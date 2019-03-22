@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
@@ -14,10 +14,12 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 20/05/2017.
  */
 public class PopupMenuItem extends JMenuItem implements ActionListener {
+    private ModuleListMenu moduleListMenu;
     private Module module;
 
-    public PopupMenuItem(Module module) {
+    public PopupMenuItem(Module module, ModuleListMenu moduleListMenu) {
         this.module = module;
+        this.moduleListMenu = moduleListMenu;
 
         setText(module.getTitle());
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -31,7 +33,7 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        GUI.getModuleListMenu().setVisible(false);
+        moduleListMenu.setVisible(false);
 
         if (module == null) return;
 
@@ -55,18 +57,11 @@ public class PopupMenuItem extends JMenuItem implements ActionListener {
         // Adding to the list of modules
         GUI.updateModules(true);
         GUI.populateModuleList();
-
         GUI.setActiveModule(newModule);
+        GUI.populateModuleParameters();
+        GUI.populateHelpNotes();
 
-        if (GUI.isBasicGUI()) {
-            GUI.populateBasicModules();
-        } else {
-            GUI.populateModuleParameters();
-            GUI.populateHelpNotes();
-            GUI.populateBasicHelpNotes();
-        }
-
-        GUI.getModuleListMenu().setVisible(false);
+        moduleListMenu.setVisible(false);
 
     }
 }

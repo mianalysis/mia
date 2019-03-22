@@ -1,7 +1,7 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
 import org.xml.sax.SAXException;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.*;
 
 import javax.swing.*;
@@ -40,15 +40,9 @@ public class AnalysisControlButton extends JButton implements ActionListener {
                     Analysis newAnalysis = AnalysisReader.loadAnalysis();
                     if (newAnalysis == null) return;
                     GUI.setAnalysis(newAnalysis);
-
-                    if (GUI.isBasicGUI()) {
-                        GUI.populateBasicModules();
-                    } else {
-                        GUI.populateModuleList();
-                        GUI.populateModuleParameters();
-                        GUI.populateBasicHelpNotes();
-                        GUI.populateHelpNotes();
-                    }
+                    GUI.populateModuleList();
+                    GUI.populateModuleParameters();
+                    GUI.populateHelpNotes();
 
                     GUI.setLastModuleEval(-1);
                     GUI.updateTestFile();

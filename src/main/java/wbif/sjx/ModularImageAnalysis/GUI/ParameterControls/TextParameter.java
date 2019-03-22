@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.TextType;
 
@@ -41,8 +41,8 @@ public class TextParameter extends ParameterControl implements FocusListener {
 
         updateControl();
 
-        GUI.updateModuleParameters(parameter.getModule());
-//        GUI.updateModules(true);
+        GUI.populateModuleParameters();
+        GUI.updateModules(true);
 
     }
 

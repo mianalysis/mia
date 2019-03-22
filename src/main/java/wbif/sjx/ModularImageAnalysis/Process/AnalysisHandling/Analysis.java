@@ -2,7 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling;
 
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.ModuleCollection;
 import wbif.sjx.ModularImageAnalysis.Object.ProgressMonitor;

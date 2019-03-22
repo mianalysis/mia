@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementRef;
 
 import javax.swing.*;
@@ -38,7 +38,6 @@ public class ResetMeasurement extends JButton implements ActionListener {
 
         GUI.populateModuleParameters();
         GUI.populateHelpNotes();
-        GUI.populateBasicHelpNotes();
 
     }
 }

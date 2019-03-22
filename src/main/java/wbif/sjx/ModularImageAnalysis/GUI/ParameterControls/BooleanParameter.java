@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ParameterControls;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ParameterControl;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.BooleanType;
 
@@ -40,6 +40,7 @@ public class BooleanParameter extends ParameterControl implements ActionListener
         if (idx <= GUI.getLastModuleEval()) GUI.setLastModuleEval(idx-1);
 
         GUI.updateModules(true);
+        GUI.populateModuleParameters();
 
         updateControl();
 

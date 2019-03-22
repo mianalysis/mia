@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
 import javax.swing.*;
@@ -35,6 +35,5 @@ public class ResetModuleName extends JButton implements ActionListener {
         GUI.populateModuleList();
         GUI.populateModuleParameters();
         GUI.populateHelpNotes();
-        GUI.populateBasicHelpNotes();
     }
 }

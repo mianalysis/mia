@@ -1,6 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.GUI.ControlObjects;
 
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
+import wbif.sjx.ModularImageAnalysis.GUI.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 
@@ -53,7 +53,7 @@ public class ModuleButton extends JToggleButton implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         GUI.setActiveModule(module);
+        GUI.populateModuleParameters();
         GUI.updateModules(false);
-
     }
 }

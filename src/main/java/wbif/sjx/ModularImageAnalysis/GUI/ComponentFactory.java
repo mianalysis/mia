@@ -3,7 +3,6 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.OutputControl;
-import wbif.sjx.ModularImageAnalysis.GUI.Layouts.GUI;
 import wbif.sjx.ModularImageAnalysis.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.MeasurementRef;
@@ -17,7 +16,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.TextDisplayP;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
