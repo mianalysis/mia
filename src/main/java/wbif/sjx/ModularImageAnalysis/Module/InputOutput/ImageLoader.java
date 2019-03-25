@@ -56,7 +56,7 @@ import static wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.Extract
 import static wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ExtractSubstack.interpretRange;
 
 /**
- * Created by sc13967 on 15/05/2017.
+ * Created by Stephen on 15/05/2017.
  */
 public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Module {
     public static final String OUTPUT_MODE = "Output mode";

@@ -6,6 +6,7 @@ package wbif.sjx.ModularImageAnalysis.GUI;
 
 import org.apache.commons.io.output.TeeOutputStream;
 import wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.*;
+import wbif.sjx.ModularImageAnalysis.GUI.InputOutput.InputControl;
 import wbif.sjx.ModularImageAnalysis.GUI.Panels.MainPanels.BasicPanel;
 import wbif.sjx.ModularImageAnalysis.GUI.Panels.MainPanels.EditingPanel;
 import wbif.sjx.ModularImageAnalysis.GUI.Panels.MainPanels.MainPanel;
@@ -13,11 +14,17 @@ import wbif.sjx.ModularImageAnalysis.MIA;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.ChoiceP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.FileFolderPathP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.IntegerP;
+import wbif.sjx.ModularImageAnalysis.Object.Parameters.SeriesListSelectorP;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.Analysis;
 import wbif.sjx.ModularImageAnalysis.Process.AnalysisHandling.AnalysisTester;
+import wbif.sjx.ModularImageAnalysis.Process.BatchProcessor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.PrintStream;
 
 /**
@@ -214,7 +221,63 @@ public class GUI {
     }
 
     public static void updateTestFile() {
-        mainPanel.updateTestFile();
+        // Ensuring the input file specified in the InputControl is active in the test workspace
+        InputControl inputControl = analysis.getInputControl();
+        String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
+        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
+        Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
+
+        if (inputPath == null) return;
+
+        String inputFile = "";
+        if (new File(inputPath).isFile()) {
+            inputFile = inputPath;
+        } else {
+            BatchProcessor batchProcessor = new BatchProcessor(new File(inputPath));
+            batchProcessor.setnThreads(nThreads);
+
+            // Adding filename filters
+            inputControl.addFilenameExtensionFilter(batchProcessor);
+            inputControl.addFilenameFilters(batchProcessor);
+
+            // Running the analysis
+            File nextFile = batchProcessor.getNextValidFileInStructure();
+            if (nextFile == null) {
+                inputFile = null;
+            } else {
+                inputFile = nextFile.getAbsolutePath();
+            }
+        }
+
+        if (inputFile == null) return;
+
+        if (testWorkspace.getMetadata().getFile() == null) {
+            lastModuleEval = -1;
+            testWorkspace = new Workspace(1, new File(inputFile),1);
+        }
+
+        // If the input path isn't the same assign this new file
+        if (!testWorkspace.getMetadata().getFile().getAbsolutePath().equals(inputFile)) {
+            lastModuleEval = -1;
+            testWorkspace = new Workspace(1, new File(inputFile),1);
+
+        }
+
+        ChoiceP seriesMode = (ChoiceP) analysis.getInputControl().getParameter(InputControl.SERIES_MODE);
+        switch (seriesMode.getChoice()) {
+            case InputControl.SeriesModes.ALL_SERIES:
+                testWorkspace.getMetadata().setSeriesNumber(1);
+                testWorkspace.getMetadata().setSeriesName("");
+                break;
+
+            case InputControl.SeriesModes.SERIES_LIST:
+                SeriesListSelectorP listParameter = analysis.getInputControl().getParameter(InputControl.SERIES_LIST);
+                int[] seriesList = listParameter.getSeriesList();
+                testWorkspace.getMetadata().setSeriesNumber(seriesList[0]);
+                testWorkspace.getMetadata().setSeriesName("");
+                break;
+
+        }
     }
 
     public static int getLastModuleEval(){

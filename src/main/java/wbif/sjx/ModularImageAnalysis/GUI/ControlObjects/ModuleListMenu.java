@@ -10,15 +10,18 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 /**
- * Created by steph on 28/07/2017.
+ * Created by Stephen on 28/07/2017.
  */
 public class ModuleListMenu extends JMenu implements MouseListener {
+    private final JPopupMenu topLevelMenu;
     private LinkedHashSet<ModuleListMenu> children = new LinkedHashSet<>();
 
-    public ModuleListMenu(String name, ArrayList<Module> modules) {
+    public ModuleListMenu(String name, ArrayList<Module> modules, JPopupMenu topLevelMenu) {
+        this.topLevelMenu = topLevelMenu;
+
         setText(name);
         for (Module module : modules) {
-            add(new PopupMenuItem(module,this));
+            add(new PopupMenuItem(module,topLevelMenu));
         }
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         addMouseListener(this);
@@ -26,7 +29,7 @@ public class ModuleListMenu extends JMenu implements MouseListener {
     }
 
     public void addMenuItem(Module module) {
-        add(new PopupMenuItem(module,this));
+        add(new PopupMenuItem(module,topLevelMenu));
     }
 
     public LinkedHashSet<ModuleListMenu> getChildren() {

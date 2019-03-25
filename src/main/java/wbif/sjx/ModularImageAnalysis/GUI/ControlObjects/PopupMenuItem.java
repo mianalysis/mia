@@ -14,10 +14,10 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 20/05/2017.
  */
 public class PopupMenuItem extends JMenuItem implements ActionListener {
-    private ModuleListMenu moduleListMenu;
+    private JPopupMenu moduleListMenu;
     private Module module;
 
-    public PopupMenuItem(Module module, ModuleListMenu moduleListMenu) {
+    public PopupMenuItem(Module module, JPopupMenu moduleListMenu) {
         this.module = module;
         this.moduleListMenu = moduleListMenu;
 
