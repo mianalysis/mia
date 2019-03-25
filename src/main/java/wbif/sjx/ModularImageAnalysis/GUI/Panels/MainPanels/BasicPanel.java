@@ -184,6 +184,11 @@ public class BasicPanel extends MainPanel {
     }
 
     @Override
+    public void updateModuleStates() {
+
+    }
+
+    @Override
     public void updateParameters() {
         controlPanel.updatePanel();
     }

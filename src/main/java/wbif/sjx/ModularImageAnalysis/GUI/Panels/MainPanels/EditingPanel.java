@@ -375,6 +375,11 @@ public class EditingPanel extends MainPanel {
     }
 
     @Override
+    public void updateModuleStates() {
+        modulesPanel.updateButtonStates();
+    }
+
+    @Override
     public void updateParameters() {
         parametersPanel.updatePanel(GUI.getActiveModule());
     }

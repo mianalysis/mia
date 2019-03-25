@@ -184,6 +184,10 @@ public class GUI {
         }
     }
 
+    public static void updateModuleStates() {
+        mainPanel.updateModuleStates();
+    }
+
     public static ComponentFactory getComponentFactory() {
         return componentFactory;
     }
@@ -324,13 +328,13 @@ public class GUI {
         mainPanel.setShowHelpNotes(showEditingHelpNotes);
     }
 
-    public static Module getLastHelpNotesModule() {
-        return mainPanel.getLastHelpNotesModule();
-    }
-
-    public static void setLastHelpNotesModule(Module lastHelpNotesModule) {
-        mainPanel.setLastHelpNotesModule(lastHelpNotesModule);
-    }
+//    public static Module getLastHelpNotesModule() {
+//        return mainPanel.getLastHelpNotesModule();
+//    }
+//
+//    public static void setLastHelpNotesModule(Module lastHelpNotesModule) {
+//        mainPanel.setLastHelpNotesModule(lastHelpNotesModule);
+//    }
 
     public static ButtonGroup getModuleGroup() {
         return moduleGroup;
