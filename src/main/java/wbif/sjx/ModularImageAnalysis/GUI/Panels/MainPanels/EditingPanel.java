@@ -266,7 +266,7 @@ public class EditingPanel extends MainPanel {
                     }
 
                     if (!found) {
-                        ModuleListMenu newItem = new ModuleListMenu(names[i], new ArrayList<>());
+                        ModuleListMenu newItem = new ModuleListMenu(names[i], new ArrayList<>(),moduleListMenu);
                         newItem.setName(names[i]);
                         activeList.add(newItem);
                         if (activeItem != null) activeItem.add(newItem);
@@ -293,70 +293,6 @@ public class EditingPanel extends MainPanel {
 
     }
 
-    public void updateTestFile() {
-        Analysis analysis = GUI.getAnalysis();
-        Workspace testWorkspace = GUI.getTestWorkspace();
-        int lastModuleEval = GUI.getLastModuleEval();
-
-        // Ensuring the input file specified in the InputControl is active in the test workspace
-        InputControl inputControl = analysis.getInputControl();
-        String inputPath = ((FileFolderPathP) inputControl.getParameter(InputControl.INPUT_PATH)).getPath();
-        int nThreads = ((IntegerP) inputControl.getParameter(InputControl.SIMULTANEOUS_JOBS)).getValue();
-        Units.setUnits(((ChoiceP) inputControl.getParameter(InputControl.SPATIAL_UNITS)).getChoice());
-
-        if (inputPath == null) return;
-
-        String inputFile = "";
-        if (new File(inputPath).isFile()) {
-            inputFile = inputPath;
-        } else {
-            BatchProcessor batchProcessor = new BatchProcessor(new File(inputPath));
-            batchProcessor.setnThreads(nThreads);
-
-            // Adding filename filters
-            inputControl.addFilenameExtensionFilter(batchProcessor);
-            inputControl.addFilenameFilters(batchProcessor);
-
-            // Running the analysis
-            File nextFile = batchProcessor.getNextValidFileInStructure();
-            if (nextFile == null) {
-                inputFile = null;
-            } else {
-                inputFile = nextFile.getAbsolutePath();
-            }
-        }
-
-        if (inputFile == null) return;
-
-        if (testWorkspace.getMetadata().getFile() == null) {
-            lastModuleEval = -1;
-            testWorkspace = new Workspace(1, new File(inputFile),1);
-        }
-
-        // If the input path isn't the same assign this new file
-        if (!testWorkspace.getMetadata().getFile().getAbsolutePath().equals(inputFile)) {
-            lastModuleEval = -1;
-            testWorkspace = new Workspace(1, new File(inputFile),1);
-
-        }
-
-        ChoiceP seriesMode = (ChoiceP) analysis.getInputControl().getParameter(InputControl.SERIES_MODE);
-        switch (seriesMode.getChoice()) {
-            case InputControl.SeriesModes.ALL_SERIES:
-                testWorkspace.getMetadata().setSeriesNumber(1);
-                testWorkspace.getMetadata().setSeriesName("");
-                break;
-
-            case InputControl.SeriesModes.SERIES_LIST:
-                SeriesListSelectorP listParameter = analysis.getInputControl().getParameter(InputControl.SERIES_LIST);
-                int[] seriesList = listParameter.getSeriesList();
-                testWorkspace.getMetadata().setSeriesNumber(seriesList[0]);
-                testWorkspace.getMetadata().setSeriesName("");
-                break;
-
-        }
-    }
-
     @Override
     public void updatePanel() {
         GridBagConstraints c = new GridBagConstraints();
@@ -370,7 +306,7 @@ public class EditingPanel extends MainPanel {
         statusPanel.add(GUI.getTextField(),c);
         helpNotesPanel.setVisible(showHelpNotes);
 
-        updateTestFile();
+        GUI.updateTestFile();
         updateModules();
         updateParameters();
 
@@ -436,6 +372,11 @@ public class EditingPanel extends MainPanel {
         modulesPanel.updateButtonStates();
         modulesPanel.updatePanel();
 
+    }
+
+    @Override
+    public void updateModuleStates() {
+        modulesPanel.updateButtonStates();
     }
 
     @Override

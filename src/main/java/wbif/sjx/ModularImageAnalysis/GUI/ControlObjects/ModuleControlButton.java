@@ -72,7 +72,7 @@ public class ModuleControlButton extends JButton implements ActionListener {
             // Removing a module resets all the current evaluation
             int idx = modules.indexOf(activeModule);
 
-            if (idx <= lastModuleEval) lastModuleEval = idx - 1;
+            if (idx <= lastModuleEval) GUI.setLastModuleEval(idx - 1);
 
             modules.remove(activeModule);
             activeModule = null;
@@ -93,7 +93,7 @@ public class ModuleControlButton extends JButton implements ActionListener {
             int idx = modules.indexOf(activeModule);
 
             if (idx != 0) {
-                if (idx - 2 <= lastModuleEval) lastModuleEval = idx - 2;
+                if (idx - 2 <= lastModuleEval) GUI.setLastModuleEval(idx - 2);
 
                 modules.remove(activeModule);
                 modules.add(idx - 1, activeModule);
@@ -112,7 +112,7 @@ public class ModuleControlButton extends JButton implements ActionListener {
             int idx = modules.indexOf(activeModule);
 
             if (idx < modules.size()-1) {
-                if (idx <= lastModuleEval) lastModuleEval = idx - 1;
+                if (idx <= lastModuleEval) GUI.setLastModuleEval(idx - 1);
 
                 modules.remove(activeModule);
                 modules.add(idx + 1, activeModule);
