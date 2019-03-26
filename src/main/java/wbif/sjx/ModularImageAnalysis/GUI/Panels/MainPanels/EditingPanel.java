@@ -36,18 +36,19 @@ public class EditingPanel extends MainPanel {
     private static int frameHeight = GUI.getFrameHeight();
     private static int minimumFrameHeight = GUI.getMinimumFrameHeight();
 
+    private ModuleControlButton addModuleButton = null;
+    private static final JPopupMenu moduleListMenu = new JPopupMenu();
+    private static final ButtonGroup moduleGroup = new ButtonGroup();
+
     private final ProgressBarPanel progressBarPanel = new ProgressBarPanel();
-    private final InputOutputPanel inputPanel = new InputOutputPanel();
-    private final InputOutputPanel outputPanel = new InputOutputPanel();
-    private final ModulesPanel modulesPanel = new ModulesPanel();
+    private final InputOutputPanel inputPanel = new InputOutputPanel(moduleGroup);
+    private final InputOutputPanel outputPanel = new InputOutputPanel(moduleGroup);
+    private final ModulesPanel modulesPanel = new ModulesPanel(moduleGroup);
     private final ParametersPanel parametersPanel = new ParametersPanel();
     private final JPanel helpNotesPanel = new JPanel();
     private final NotesPanel notesPanel = new NotesPanel();
     private final HelpPanel helpPanel = new HelpPanel();
     private final StatusPanel statusPanel = new StatusPanel();
-
-    private ModuleControlButton addModuleButton = null;
-    private static final JPopupMenu moduleListMenu = new JPopupMenu();
 
     private boolean showHelpNotes = Prefs.get("MIA.showEditingHelpNotes",true);
     private Module lastHelpNotesModule = null;

@@ -51,7 +51,6 @@ public class GUI {
     private static ComponentFactory componentFactory = new ComponentFactory(elementHeight);
     private static final JFrame frame = new JFrame();
     private static final JMenuBar menuBar = new JMenuBar();
-    private static final ButtonGroup moduleGroup = new ButtonGroup();
     private static final StatusTextField textField = new StatusTextField();
     private static final BasicPanel basicPan = new BasicPanel();
     private static final EditingPanel editingPan = new EditingPanel();
@@ -335,10 +334,6 @@ public class GUI {
 //    public static void setLastHelpNotesModule(Module lastHelpNotesModule) {
 //        mainPanel.setLastHelpNotesModule(lastHelpNotesModule);
 //    }
-
-    public static ButtonGroup getModuleGroup() {
-        return moduleGroup;
-    }
 
     public static StatusTextField getTextField() {
         return textField;
