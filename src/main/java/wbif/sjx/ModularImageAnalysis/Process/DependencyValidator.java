@@ -41,7 +41,7 @@ public class DependencyValidator {
             if (dialogResult == JOptionPane.YES_OPTION) {
                 update(toInstall);
                 System.err.println("Installation complete.  Please restart Fiji.");
-                JOptionPane.showMessageDialog(null, "Please restart Fiji, then generateModuleList the plugin again");
+                JOptionPane.showMessageDialog(null, "Please restart Fiji, then run the plugin again");
             }
         }
 

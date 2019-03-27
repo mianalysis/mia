@@ -336,7 +336,6 @@ public class RegisterImages extends Module {
 
                     Runnable task = () -> {
                         ImageProcessor slice = getSetStack(inputIpl, finalT, finalC, finalZ, null).getProcessor();
-
                         slice.setInterpolationMethod(ImageProcessor.BILINEAR);
                         ImageProcessor alignedSlice = slice.createProcessor(referenceIpr.getWidth(), referenceIpr.getHeight());
                         alignedSlice.setMinAndMax(slice.getMin(), slice.getMax());
@@ -406,6 +405,8 @@ public class RegisterImages extends Module {
 
     @Override
     public boolean run(Workspace workspace) {
+        IJ.setBackgroundColor(255,255,255);
+
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);

@@ -377,6 +377,7 @@ public class EditingPanel extends MainPanel {
 
     @Override
     public void updateModuleStates() {
+        AnalysisTester.testModules(GUI.getModules());
         modulesPanel.updateButtonStates();
     }
 

@@ -86,7 +86,7 @@ public class MeasurementExportCheck extends JCheckBox implements ActionListener 
                 break;
         }
 
-        GUI.updateModules(false);
+        GUI.populateModuleParameters();
 
     }
 }

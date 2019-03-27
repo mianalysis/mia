@@ -37,7 +37,7 @@ public class EnableMeasurementsButton extends JButton implements ActionListener 
             measurementReference.setExportGlobal(true);
         }
 
-        GUI.updateModules(false);
+        GUI.populateModuleParameters();
 
     }
 }

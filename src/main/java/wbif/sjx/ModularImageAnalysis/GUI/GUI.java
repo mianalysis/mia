@@ -177,12 +177,6 @@ public class GUI {
         mainPanel.updateHelpNotes();
     }
 
-    public static void updateModuleParameters(Module module) {
-        for (Parameter parameter:module.updateAndGetParameters()) {
-            parameter.getControl().updateControl();
-        }
-    }
-
     public static void updateModuleStates() {
         mainPanel.updateModuleStates();
     }

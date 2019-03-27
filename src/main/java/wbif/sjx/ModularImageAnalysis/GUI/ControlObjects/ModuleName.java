@@ -31,8 +31,7 @@ public class ModuleName extends JTextField implements FocusListener {
     @Override
     public void focusLost(FocusEvent e) {
         module.setNickname(getText());
-        GUI.updateModules(true);
-        GUI.populateModuleList();
+        GUI.updateModuleStates();
 
     }
 }
