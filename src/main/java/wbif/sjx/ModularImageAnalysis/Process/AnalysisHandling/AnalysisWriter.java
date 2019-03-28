@@ -60,7 +60,7 @@ public class AnalysisWriter {
     public static void saveAnalysis(Analysis analysis) throws IOException, ParserConfigurationException, TransformerException {
         FileDialog fileDialog = new FileDialog(new Frame(), "Select file to save", FileDialog.SAVE);
         fileDialog.setMultipleMode(false);
-        fileDialog.setFile("*.mia");
+        fileDialog.setFile(analysis.getAnalysisFilename());
         fileDialog.setVisible(true);
 
         // If no file was selected quit the method
