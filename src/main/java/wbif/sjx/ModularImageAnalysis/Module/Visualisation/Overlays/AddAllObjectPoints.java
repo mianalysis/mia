@@ -1,13 +1,25 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation.Overlays;
 
+import ij.ImagePlus;
+import ij.Prefs;
+import ij.gui.Overlay;
+import ij.gui.PointRoi;
+import ij.plugin.Duplicator;
+import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
-import wbif.sjx.ModularImageAnalysis.Object.MeasurementRefCollection;
-import wbif.sjx.ModularImageAnalysis.Object.MetadataRefCollection;
+import wbif.sjx.ModularImageAnalysis.Object.*;
+import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
-import wbif.sjx.ModularImageAnalysis.Object.RelationshipCollection;
-import wbif.sjx.ModularImageAnalysis.Object.Workspace;
+import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddAllObjectPoints extends Module {
     public static final String INPUT_IMAGE = "Input image";
@@ -15,14 +27,42 @@ public class AddAllObjectPoints extends Module {
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String ADD_OUTPUT_TO_WORKSPACE = "Add output image to workspace";
     public static final String OUTPUT_IMAGE = "Output image";
-    public static final String COLOUR_MODE = "Colour mode";
-    public static final String SINGLE_COLOUR = "Single colour";
-    public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
-    public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
-    public static final String LINE_WIDTH = "Line width";
     public static final String RENDER_IN_ALL_FRAMES = "Render in all frames";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
 
+    private ColourServer colourServer;
+
+
+    public void addAllPointsOverlay(Obj object, ImagePlus ipl, Color colour, boolean renderInAllFrames) {
+        if (ipl.getOverlay() == null) ipl.setOverlay(new Overlay());
+
+        // Adding each point
+        double[] xx = object.getX(true);
+        double[] yy = object.getY(true);
+        double[] zz = object.getZ(true,false);
+        double zMean = object.getZMean(true,false);
+
+        int z = (int) Math.round(zMean+1);
+        int t = object.getT()+1;
+
+        if (renderInAllFrames) t = 0;
+
+        for (int i=0;i<xx.length;i++) {
+            PointRoi roi = new PointRoi(xx[i]+0.5,yy[i]+0.5);
+            roi.setPointType(3);
+            roi.setSize(0);
+            roi.setStrokeColor(colour);
+
+            if (ipl.isHyperStack()) {
+                roi.setPosition(1, (int) zz[i]+1, t);
+            } else {
+                int pos = Math.max(Math.max(1,(int) zz[i]+1),t);
+                roi.setPosition(pos);
+            }
+            ipl.getOverlay().addElement(roi);
+
+        }
+    }
 
     @Override
     public String getTitle() {
@@ -41,23 +81,85 @@ public class AddAllObjectPoints extends Module {
 
     @Override
     protected boolean run(Workspace workspace) {
-        return false;
+        // Getting parameters
+        boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
+        boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
+        String outputImageName = parameters.getValue(OUTPUT_IMAGE);
+
+        // Getting input objects
+        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
+
+        // Getting input image
+        String inputImageName = parameters.getValue(INPUT_IMAGE);
+        Image inputImage = workspace.getImages().get(inputImageName);
+        ImagePlus ipl = inputImage.getImagePlus();
+
+        boolean renderInAllFrames = parameters.getValue(RENDER_IN_ALL_FRAMES);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+
+        // Duplicating the image, so the original isn't altered
+        if (!applyToInput) ipl = new Duplicator().run(ipl);
+
+        // Generating colours for each object
+        HashMap<Integer,Float> hues= colourServer.getHues(inputObjects);
+
+        // Adding the overlay element
+        try {
+            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+            }
+
+            int nThreads = multithread ? Prefs.getThreads() : 1;
+            ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
+
+            // Running through each object, adding it to the overlay along with an ID label
+            AtomicInteger count = new AtomicInteger();
+            for (Obj object:inputObjects.values()) {
+                ImagePlus finalIpl = ipl;
+
+                Runnable task = () -> {
+                    float hue = hues.get(object.getID());
+                    Color colour = ColourFactory.getColour(hue);
+
+                    addAllPointsOverlay(object, finalIpl, colour, renderInAllFrames);
+
+                    writeMessage("Rendered " + (count.incrementAndGet()) + " objects of " + inputObjects.size());
+                };
+                pool.submit(task);
+            }
+
+            pool.shutdown();
+            pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+        } catch (InterruptedException e) {
+            return false;
+        }
+
+        Image outputImage = new Image(outputImageName,ipl);
+
+        // If necessary, adding output image to workspace.  This also allows us to show it.
+        if (addOutputToWorkspace) workspace.addImage(outputImage);
+        if (showOutput) outputImage.showImage();
+
+        return true;
+
     }
 
     @Override
     protected void initialiseParameters() {
+        colourServer = new ColourServer(this);
+
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
         parameters.add(new OutputImageP(OUTPUT_IMAGE, this));
-        parameters.add(new ChoiceP(COLOUR_MODE, this, AddObjectsOverlay.ColourModes.SINGLE_COLOUR, AddObjectsOverlay.ColourModes.ALL));
-        parameters.add(new ChoiceP(SINGLE_COLOUR,this,AddObjectsOverlay.SingleColours.WHITE,AddObjectsOverlay.SingleColours.ALL));
-        parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR, this));
-        parameters.add(new ParentObjectsP(PARENT_OBJECT_FOR_COLOUR, this));
-        parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+
+        if (colourServer != null) parameters.addAll(colourServer.getParameters());
 
     }
 
@@ -77,7 +179,7 @@ public class AddAllObjectPoints extends Module {
             }
         }
 
-        returnedParameters.add(parameters.getParameter(LINE_WIDTH));
+        returnedParameters.addAll(colourServer.updateAndGetParameters());
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;

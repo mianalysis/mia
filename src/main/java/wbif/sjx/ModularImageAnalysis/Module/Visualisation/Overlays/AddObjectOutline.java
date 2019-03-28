@@ -150,6 +150,7 @@ public class AddObjectOutline extends Module {
         if (showOutput) outputImage.showImage();
 
         return true;
+
     }
 
     @Override

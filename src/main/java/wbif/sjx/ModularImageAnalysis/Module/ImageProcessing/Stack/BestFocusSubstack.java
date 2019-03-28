@@ -75,12 +75,12 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
 
         // Measuring the statistics for each slice
         int bestSlice = 0;
-        double bestStdev = 0;
+        double bestVal = 0;
 
-        for (int c=startChannel;c<=endChannel;c++) {
-            for (int z = 0; z < inputIpl.getNSlices(); z++) {
-                inputIpl.setPosition(c+1,z+1,frame+1);
-                double val = 0;
+                for (int c=startChannel;c<=endChannel;c++) {
+                    for (int z = 0; z < inputIpl.getNSlices(); z++) {
+                        inputIpl.setPosition(c+1,z+1,frame+1);
+                        double val = 0;
                 switch (stat) {
                     case MEAN:
                         val = inputIpl.getProcessor().getStatistics().mean;
@@ -90,9 +90,9 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
                         break;
                 }
 
-                if (val > bestStdev) {
+                if (val > bestVal) {
                     bestSlice = z;
-                    bestStdev = val;
+                    bestVal = val;
                 }
             }
         }
