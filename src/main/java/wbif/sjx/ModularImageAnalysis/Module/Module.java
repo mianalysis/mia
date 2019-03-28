@@ -10,7 +10,7 @@ import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 /**
  * Created by sc13967 on 02/05/2017.
  */
-public abstract class Module {
+public abstract class Module implements Comparable {
     protected ParameterCollection parameters = new ParameterCollection();
     protected MeasurementRefCollection imageMeasurementRefs = new MeasurementRefCollection();
     protected MeasurementRefCollection objectMeasurementRefs = new MeasurementRefCollection();
@@ -198,5 +198,11 @@ public abstract class Module {
 
     public void setRunnable(boolean runnable) {
         this.runnable = runnable;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return getTitle().compareTo(((Module) o).getTitle());
+
     }
 }

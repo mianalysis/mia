@@ -25,10 +25,7 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class EditingPanel extends MainPanel {
     private static int frameWidth = 1100;
@@ -239,6 +236,24 @@ public class EditingPanel extends MainPanel {
 
             Set<Class<? extends Module>> availableModules = new ClassHunter<Module>().getClasses(Module.class,MIA.isDebug());
 
+            Comparator<String> comparator = new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    // Getting the normal order
+                    int order = o1.compareTo(o2);
+
+                    // Rank names with more slashes higher
+                    int l1 = o1.split("\\\\").length;
+                    int l2 = o2.split("\\\\").length;
+                    if (l2 < l1) {
+                        order = -order;
+                    }
+
+                    return order;
+
+                }
+            };
+
             // Creating an alphabetically-ordered list of all modules
             TreeMap<String, Class> modules = new TreeMap<>();
             for (Class clazz : availableModules) {
@@ -250,10 +265,13 @@ public class EditingPanel extends MainPanel {
                 }
             }
 
-            LinkedHashSet<ModuleListMenu> topList = new LinkedHashSet<>();
-            for (String name : modules.keySet()) {
+            TreeSet<ModuleListMenu> topList = new TreeSet<>();
+            TreeSet<String> moduleNames = new TreeSet<>(comparator);
+            moduleNames.addAll(modules.keySet());
+
+            for (String name : moduleNames) {
                 // ActiveList starts at the top list
-                LinkedHashSet<ModuleListMenu> activeList = topList;
+                TreeSet<ModuleListMenu> activeList = topList;
                 ModuleListMenu activeItem = null;
 
                 String[] names = name.split("\\\\");

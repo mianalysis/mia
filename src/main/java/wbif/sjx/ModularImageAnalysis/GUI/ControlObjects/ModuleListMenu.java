@@ -8,13 +8,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.TreeSet;
 
 /**
  * Created by Stephen on 28/07/2017.
  */
-public class ModuleListMenu extends JMenu implements MouseListener {
+public class ModuleListMenu extends JMenu implements Comparable, MouseListener {
     private final JPopupMenu topLevelMenu;
-    private LinkedHashSet<ModuleListMenu> children = new LinkedHashSet<>();
+    private TreeSet<ModuleListMenu> children = new TreeSet<>();
 
     public ModuleListMenu(String name, ArrayList<Module> modules, JPopupMenu topLevelMenu) {
         this.topLevelMenu = topLevelMenu;
@@ -32,7 +33,7 @@ public class ModuleListMenu extends JMenu implements MouseListener {
         add(new PopupMenuItem(module,topLevelMenu));
     }
 
-    public LinkedHashSet<ModuleListMenu> getChildren() {
+    public TreeSet<ModuleListMenu> getChildren() {
         return children;
     }
 
@@ -59,6 +60,15 @@ public class ModuleListMenu extends JMenu implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        String n1 = getText();
+        String n2 = ((ModuleListMenu) o).getText();
+
+        return n1.compareTo(n2);
 
     }
 }
