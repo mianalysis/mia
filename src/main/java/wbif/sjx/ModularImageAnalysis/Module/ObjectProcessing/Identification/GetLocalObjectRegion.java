@@ -160,7 +160,7 @@ public class GetLocalObjectRegion extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String inputImageName = parameters.getValue(REFERENCE_IMAGE);

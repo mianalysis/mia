@@ -57,7 +57,7 @@ public class MeasureObjectCentroidTest extends ModuleTest {
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.CENTROID_METHOD,MeasureObjectCentroid.Methods.MEAN);
 
         // Running MeasureObjectCentroid
-        measureObjectCentroid.run(workspace);
+        measureObjectCentroid.execute(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -99,7 +99,7 @@ public class MeasureObjectCentroidTest extends ModuleTest {
         measureObjectCentroid.updateParameterValue(MeasureObjectCentroid.CENTROID_METHOD,MeasureObjectCentroid.Methods.MEDIAN);
 
         // Running MeasureObjectCentroid
-        measureObjectCentroid.run(workspace);
+        measureObjectCentroid.execute(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:testObjects.values()) {

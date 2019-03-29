@@ -84,7 +84,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -126,7 +126,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -167,7 +167,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -215,7 +215,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -257,7 +257,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -298,7 +298,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -342,7 +342,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -383,7 +383,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -425,7 +425,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -466,7 +466,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -507,7 +507,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -548,7 +548,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -589,7 +589,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -630,7 +630,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -671,7 +671,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -712,7 +712,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -754,7 +754,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -798,7 +798,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -841,7 +841,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -882,7 +882,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,0.04d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -925,7 +925,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -967,7 +967,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1009,7 +1009,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1051,7 +1051,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1097,7 +1097,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1139,7 +1139,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1181,7 +1181,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1223,7 +1223,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1264,7 +1264,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1306,7 +1306,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1348,7 +1348,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1390,7 +1390,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1433,7 +1433,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -1475,7 +1475,7 @@ public class FilterImageTest extends ModuleTest {
         filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         // Running Module
-        filterImage.run(workspace);
+        filterImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

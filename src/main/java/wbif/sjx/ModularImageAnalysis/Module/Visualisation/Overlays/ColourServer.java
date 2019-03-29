@@ -1,10 +1,9 @@
 package wbif.sjx.ModularImageAnalysis.Module.Visualisation.Overlays;
 
 import wbif.sjx.ModularImageAnalysis.Module.Module;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
+import wbif.sjx.ModularImageAnalysis.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 
 import java.util.HashMap;

@@ -43,7 +43,7 @@ public class MeasureImageTexture extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting parameters
         int xOffs = parameters.getValue(X_OFFSET);
         int yOffs = parameters.getValue(Y_OFFSET);

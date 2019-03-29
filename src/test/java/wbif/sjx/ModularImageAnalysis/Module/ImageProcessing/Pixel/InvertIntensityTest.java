@@ -58,7 +58,7 @@ public class InvertIntensityTest extends ModuleTest {
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
 
         // Running Module
-        invertIntensity.run(workspace);
+        invertIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -97,7 +97,7 @@ public class InvertIntensityTest extends ModuleTest {
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,true);
 
         // Running Module
-        invertIntensity.run(workspace);
+        invertIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -135,7 +135,7 @@ public class InvertIntensityTest extends ModuleTest {
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
 
         // Running Module
-        invertIntensity.run(workspace);
+        invertIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -174,7 +174,7 @@ public class InvertIntensityTest extends ModuleTest {
         invertIntensity.updateParameterValue(ImageMath.APPLY_TO_INPUT,false);
 
         // Running Module
-        invertIntensity.run(workspace);
+        invertIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

@@ -107,7 +107,7 @@ public class CreateOrthogonalView < T extends RealType< T > & NativeType< T >> e
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Loading image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);

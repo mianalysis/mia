@@ -59,7 +59,7 @@ public class MeasureObjectShapeTest extends ModuleTest {
 
 
         // Running IdentifyObjects
-        measureObjectShape.run(workspace);
+        measureObjectShape.execute(workspace);
 
         // Checking the workspace contains a single object set
         assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());

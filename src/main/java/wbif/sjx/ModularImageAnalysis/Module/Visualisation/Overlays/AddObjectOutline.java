@@ -86,7 +86,7 @@ public class AddObjectOutline extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);

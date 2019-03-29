@@ -1,14 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import net.imagej.ImgPlus;
 import net.imagej.axis.Axes;
-import net.imagej.axis.Axis;
-import net.imagej.axis.DefaultAxisType;
 import net.imagej.axis.DefaultLinearAxis;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -445,7 +441,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
         // Running Module
-        bestFocusSubstack.run(workspace);
+        bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -487,7 +483,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,2);
 
         // Running Module
-        bestFocusSubstack.run(workspace);
+        bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -528,7 +524,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL_MODE, BestFocusSubstack.ChannelModes.USE_ALL);
 
         // Running Module
-        bestFocusSubstack.run(workspace);
+        bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -570,7 +566,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
         // Running Module
-        bestFocusSubstack.run(workspace);
+        bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -612,7 +608,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
         // Running Module
-        bestFocusSubstack.run(workspace);
+        bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -654,7 +650,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
         // Running Module
-        bestFocusSubstack.run(workspace);
+        bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -696,7 +692,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
         // Running Module
-        bestFocusSubstack.run(workspace);
+        bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -738,7 +734,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
         // Running Module
-        bestFocusSubstack.run(workspace);
+        bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -780,7 +776,7 @@ public class BestFocusSubstackTest extends ModuleTest {
         bestFocusSubstack.updateParameterValue(BestFocusSubstack.CHANNEL,1);
 
         // Running Module
-        bestFocusSubstack.run(workspace);
+        bestFocusSubstack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

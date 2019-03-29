@@ -73,7 +73,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.APPLY_TO_IMAGE,false);
 
         // Running the module
-        measureObjectCurvature.run(workspace);
+        measureObjectCurvature.execute(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:inputObj.values()) {
@@ -127,7 +127,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.APPLY_TO_IMAGE,false);
 
         // Running the module
-        measureObjectCurvature.run(workspace);
+        measureObjectCurvature.execute(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:inputObj.values()) {
@@ -189,7 +189,7 @@ public class MeasureObjectCurvatureTest extends ModuleTest {
         measureObjectCurvature.updateParameterValue(MeasureObjectCurvature.APPLY_TO_IMAGE,false);
 
         // Running the module
-        measureObjectCurvature.run(workspace);
+        measureObjectCurvature.execute(workspace);
 
         // Running through each object, checking it has the expected number of children and the expected value
         for (Obj testObject:inputObj.values()) {

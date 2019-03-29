@@ -258,7 +258,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public boolean run(Workspace workspace) {// Local access to this is required for the action listeners
+    public boolean process(Workspace workspace) {// Local access to this is required for the action listeners
         this.workspace = workspace;
 
         // Getting parameters

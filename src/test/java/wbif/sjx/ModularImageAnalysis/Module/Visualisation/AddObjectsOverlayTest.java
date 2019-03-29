@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.DenseTracks2D;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
+import wbif.sjx.ModularImageAnalysis.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
@@ -82,7 +83,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
                 .updateParameterValue(TrackObjects.LINKING_METHOD,TrackObjects.LinkingMethods.CENTROID)
                 .updateParameterValue(TrackObjects.MAXIMUM_LINKING_DISTANCE,2d)
                 .updateParameterValue(TrackObjects.MAXIMUM_MISSING_FRAMES,0);
-        trackObjectsModule.run(workspace);
+        trackObjectsModule.execute(workspace);
 
         // Loading the test image and adding to workspace
         String imageName = "Test_image";
@@ -107,7 +108,7 @@ public class AddObjectsOverlayTest extends ModuleTest {
 //        addObjectsOverlay.createTrackOverlay(ipl,trackObjects,colours);
 
         new ImageJ();
-        addObjectsOverlay.run(workspace);
+        addObjectsOverlay.execute(workspace);
 
         IJ.runMacro("waitForUser");
 

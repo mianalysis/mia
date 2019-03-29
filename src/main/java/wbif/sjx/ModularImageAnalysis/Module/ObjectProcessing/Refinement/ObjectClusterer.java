@@ -18,7 +18,7 @@ import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.InvertIntensit
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification.GetLocalObjectRegion;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
+import wbif.sjx.ModularImageAnalysis.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
@@ -156,7 +156,7 @@ public class ObjectClusterer extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting objects to measure
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);

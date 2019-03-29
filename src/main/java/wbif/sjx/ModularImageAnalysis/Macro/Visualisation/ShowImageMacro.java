@@ -28,7 +28,7 @@ public class ShowImageMacro extends MacroOperation {
         // Updating parameters
         showImage.updateParameterValue(ShowImage.DISPLAY_IMAGE,(String) objects[0]);
 
-        showImage.run(workspace);
+        showImage.process(workspace);
 
         return null;
 

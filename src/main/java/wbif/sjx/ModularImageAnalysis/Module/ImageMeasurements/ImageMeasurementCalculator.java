@@ -84,7 +84,7 @@ public class ImageMeasurementCalculator extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);
         String measurementName1 = parameters.getValue(MEASUREMENT_1);

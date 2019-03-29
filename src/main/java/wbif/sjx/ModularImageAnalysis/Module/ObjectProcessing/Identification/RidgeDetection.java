@@ -9,7 +9,7 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
+import wbif.sjx.ModularImageAnalysis.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
@@ -216,7 +216,7 @@ public class RidgeDetection extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         Calendar calendar = Calendar.getInstance();
 
         // Getting input image

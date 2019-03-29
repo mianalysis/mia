@@ -45,7 +45,7 @@ public abstract class Module implements Comparable {
 
     public abstract String getHelp();
 
-    protected abstract boolean run(Workspace workspace);
+    protected abstract boolean process(Workspace workspace);
 
     public boolean execute(Workspace workspace) {
         writeMessage("Processing");
@@ -54,7 +54,7 @@ public abstract class Module implements Comparable {
         Prefs.blackBackground = false;
 
         // Running the main module code
-        boolean status = run(workspace);
+        boolean status = process(workspace);
 
         if (status) {
             writeMessage("Completed");

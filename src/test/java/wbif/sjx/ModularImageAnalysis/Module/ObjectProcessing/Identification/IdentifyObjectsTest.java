@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ObjectProcessing.Identification;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -16,7 +15,6 @@ import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Obj;
 import wbif.sjx.ModularImageAnalysis.Object.ObjCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
-import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 
 import java.net.URLDecoder;
 
@@ -62,7 +60,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -109,7 +107,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -156,7 +154,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -213,7 +211,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -260,7 +258,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,true);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -308,7 +306,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT,true);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -356,7 +354,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.SINGLE_OBJECT,true);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -403,7 +401,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -450,7 +448,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -499,7 +497,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -546,7 +544,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());
@@ -593,7 +591,7 @@ public class IdentifyObjectsTest extends ModuleTest {
         identifyObjects.updateParameterValue(IdentifyObjects.WHITE_BACKGROUND,false);
 
         // Running IdentifyObjects
-        identifyObjects.run(workspace);
+        identifyObjects.execute(workspace);
 
         // Checking there is only one set of objects in the workspace
         assertEquals(1,workspace.getObjects().size());

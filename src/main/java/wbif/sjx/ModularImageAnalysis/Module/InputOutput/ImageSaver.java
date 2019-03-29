@@ -104,7 +104,7 @@ public class ImageSaver extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         String saveLocation = parameters.getValue(SAVE_LOCATION);
@@ -131,7 +131,7 @@ public class ImageSaver extends Module {
                 IntensityMinMax.run(inputImagePlus,true);
                 if (inputImagePlus.getOverlay() != null) inputImagePlus.flattenStack();
             } else {
-//                IntensityMinMax.run(inputImagePlus,false);
+//                IntensityMinMax.process(inputImagePlus,false);
                 if (inputImagePlus.getOverlay() != null) inputImagePlus = inputImagePlus.flatten();
             }
         }

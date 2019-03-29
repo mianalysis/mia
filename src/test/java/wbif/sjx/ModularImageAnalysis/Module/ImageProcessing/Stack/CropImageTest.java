@@ -58,7 +58,7 @@ public class CropImageTest extends ModuleTest {
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
 
         // Running CropImage
-        cropImage.run(workspace);
+        cropImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -100,7 +100,7 @@ public class CropImageTest extends ModuleTest {
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
 
         // Running CropImage
-        cropImage.run(workspace);
+        cropImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -142,7 +142,7 @@ public class CropImageTest extends ModuleTest {
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
 
         // Running CropImage
-        cropImage.run(workspace);
+        cropImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -184,7 +184,7 @@ public class CropImageTest extends ModuleTest {
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
 
         // Running CropImage
-        cropImage.run(workspace);
+        cropImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -225,7 +225,7 @@ public class CropImageTest extends ModuleTest {
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
 
         // Running CropImage
-        cropImage.run(workspace);
+        cropImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -266,7 +266,7 @@ public class CropImageTest extends ModuleTest {
         cropImage.updateParameterValue(CropImage.HEIGHT,37);
 
         // Running CropImage
-        cropImage.run(workspace);
+        cropImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

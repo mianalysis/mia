@@ -1,6 +1,10 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
+import ij.IJ;
 import ij.ImagePlus;
+import org.scijava.command.Command;
+import org.scijava.plugin.Parameter;
+import org.scijava.plugin.Plugin;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
 import wbif.sjx.ModularImageAnalysis.Object.*;
@@ -30,7 +34,7 @@ public class CombingCorrection extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImages().get(inputImageName);
@@ -105,4 +109,5 @@ public class CombingCorrection extends Module {
     public RelationshipCollection updateAndGetRelationships() {
         return null;
     }
+
 }

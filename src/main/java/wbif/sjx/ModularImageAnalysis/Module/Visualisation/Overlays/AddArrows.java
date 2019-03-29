@@ -8,15 +8,13 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
+import wbif.sjx.ModularImageAnalysis.Module.Deprecated.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
 import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
-import wbif.sjx.ModularImageAnalysis.Process.LabelFactory;
 
 import java.awt.*;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -112,7 +110,7 @@ public class AddArrows extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);

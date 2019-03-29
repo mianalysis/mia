@@ -54,7 +54,7 @@ public class MergeObjectsTest extends ModuleTest {
         mergeObjects.updateParameterValue(MergeObjects.OUTPUT_OBJECTS,"Output_obj");
 
         // Running the module
-        mergeObjects.run(workspace);
+        mergeObjects.execute(workspace);
 
         // Getting expected output objects
         ObjCollection expectedOutputObj= new MergedObjects3D().getObjects("Output_obj",ExpectedObjects.Mode.EIGHT_BIT,dppXY,dppZ,calibratedUnits,true);

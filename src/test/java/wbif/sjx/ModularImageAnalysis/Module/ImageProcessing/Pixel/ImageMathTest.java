@@ -59,7 +59,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -101,7 +101,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -143,7 +143,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -185,7 +185,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -227,7 +227,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -268,7 +268,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -308,7 +308,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,50d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -351,7 +351,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MEASUREMENT,"Test meas");
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -393,7 +393,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-5d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -435,7 +435,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,12d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -477,7 +477,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-12d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -519,7 +519,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,2.3d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -561,7 +561,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-2.3d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -603,7 +603,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-2.3d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -645,7 +645,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,0.4d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -687,7 +687,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-0.6d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -729,7 +729,7 @@ public class ImageMathTest extends ModuleTest {
         imageMath.updateParameterValue(ImageMath.MATH_VALUE,-0.6d);
 
         // Running Module
-        imageMath.run(workspace);
+        imageMath.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

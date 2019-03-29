@@ -252,7 +252,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting parameters
         String extractorMode = parameters.getValue(EXTRACTOR_MODE);
         String filenameExtractorName = parameters.getValue(FILENAME_EXTRACTOR);

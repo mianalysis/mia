@@ -2,9 +2,7 @@ package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
 import ij.ImagePlus;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
@@ -63,7 +61,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -136,7 +134,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -208,7 +206,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -281,7 +279,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -354,7 +352,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -426,7 +424,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.ADD);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -502,7 +500,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.SUBTRACT);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -576,7 +574,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.SUBTRACT);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -653,7 +651,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.MULTIPLY);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -727,7 +725,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.MULTIPLY);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -804,7 +802,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.DIVIDE);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -878,7 +876,7 @@ public class ImageCalculatorTest extends ModuleTest {
         calculator.updateParameterValue(ImageCalculator.CALCULATION_METHOD, ImageCalculator.CalculationMethods.DIVIDE);
 
         // Running Module
-        calculator.run(workspace);
+        calculator.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());

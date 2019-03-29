@@ -479,7 +479,7 @@ public class TrackObjects extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting parameters
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         String trackObjectsName = parameters.getValue(TRACK_OBJECTS);

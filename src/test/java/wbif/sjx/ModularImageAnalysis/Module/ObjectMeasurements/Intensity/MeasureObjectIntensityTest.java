@@ -72,7 +72,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
         // Running MeasureObjectIntensity
-        measureObjectIntensity.run(workspace);
+        measureObjectIntensity.execute(workspace);
 
         // Checking the workspace contains a single object set
         assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());
@@ -136,7 +136,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
         // Running MeasureObjectIntensity
-        measureObjectIntensity.run(workspace);
+        measureObjectIntensity.execute(workspace);
 
         // Checking the workspace contains a single object set
         assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());
@@ -200,7 +200,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_EDGE_DISTANCE,false);
 
         // Running MeasureObjectIntensity
-        measureObjectIntensity.run(workspace);
+        measureObjectIntensity.execute(workspace);
 
         // Checking the workspace contains a single object set
         assertEquals("Number of ObjSets in Workspace",1,workspace.getObjects().size());
@@ -270,7 +270,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.EDGE_DISTANCE_MODE,MeasureObjectIntensity.EdgeDistanceModes.INSIDE_ONLY);
 
         // Running MeasureObjectIntensity
-        measureObjectIntensity.run(workspace);
+        measureObjectIntensity.execute(workspace);
 
         // Getting object (there is only one)
         Obj object = testObjects.values().iterator().next();
@@ -313,7 +313,7 @@ public class MeasureObjectIntensityTest extends ModuleTest {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.EDGE_DISTANCE_MODE,MeasureObjectIntensity.EdgeDistanceModes.OUTSIDE_ONLY);
 
         // Running MeasureObjectIntensity
-        measureObjectIntensity.run(workspace);
+        measureObjectIntensity.execute(workspace);
 
         // Getting object (there is only one)
         Obj object = testObjects.values().iterator().next();

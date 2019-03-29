@@ -70,7 +70,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
         // Testing each object
         double[] offs = new double[]{1,0,0};
         for (Obj obj:expectedObjects.values()) {
-            MeasureObjectTexture  .processObject(obj,image,calculator,false,offs,false);
+            MeasureObjectTexture.processObject(obj,image,calculator,false,offs,false);
 
             double expected = obj.getMeasurement(Objects2D.Measures.ASM_1PX.name()).getValue();
             double actual = obj.getMeasurement(MeasureObjectTexture.getFullName("Im1",MeasureObjectTexture.Measurements.ASM,offs,false)).getValue();
@@ -110,7 +110,7 @@ public class MeasureObjectTextureTest extends ModuleTest {
         // Testing each object
         double[] offs = new double[]{3,0,0};
         for (Obj obj:expectedObjects.values()) {
-            MeasureObjectTexture .processObject(obj,image,calculator,false,offs,false);
+            MeasureObjectTexture.processObject(obj,image,calculator,false,offs,false);
 
             double expected = obj.getMeasurement(Objects2D.Measures.ASM_3PX.name()).getValue();
             double actual = obj.getMeasurement(MeasureObjectTexture.getFullName("Im1",MeasureObjectTexture.Measurements.ASM,offs,false)).getValue();

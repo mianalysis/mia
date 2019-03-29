@@ -30,7 +30,7 @@ public class MeasureObjectIntensityMacro extends MacroOperation {
         measureObjectIntensity.updateParameterValue(MeasureObjectIntensity.MEASURE_WEIGHTED_CENTRE,(double) objects[2] == 1);
         measureObjectIntensity.setShowOutput((double) objects[3] ==1);
 
-        measureObjectIntensity.run(workspace);
+        measureObjectIntensity.process(workspace);
 
         return null;
     }

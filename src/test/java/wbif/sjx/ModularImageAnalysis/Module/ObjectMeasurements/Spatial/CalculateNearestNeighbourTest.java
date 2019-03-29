@@ -201,7 +201,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,false);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,inputObjectsName);
@@ -269,7 +269,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,false);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
 
 //        // Creating second object set
@@ -354,7 +354,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,false);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
 
 //        // Creating second object set
@@ -439,7 +439,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,true);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
 
 //        // Creating second object set
@@ -540,7 +540,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,false);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,inputObjectsName);
@@ -624,7 +624,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,false);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,inputObjectsName);
@@ -699,7 +699,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,false);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,secondObjectsName);
@@ -774,7 +774,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,false);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,secondObjectsName);
@@ -874,7 +874,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,false);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,secondObjectsName);
@@ -974,7 +974,7 @@ public class CalculateNearestNeighbourTest extends ModuleTest {
                 .updateParameterValue(CalculateNearestNeighbour.CALIBRATED_DISTANCE,false);
 
         // Run module
-        calculateNearestNeighbour.run(workspace);
+        calculateNearestNeighbour.execute(workspace);
 
         // Testing against first object in set
         String name = CalculateNearestNeighbour.getFullName(CalculateNearestNeighbour.Measurements.NN_ID,secondObjectsName);

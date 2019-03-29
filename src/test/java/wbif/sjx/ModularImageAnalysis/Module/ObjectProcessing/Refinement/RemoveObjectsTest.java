@@ -48,7 +48,7 @@ public class RemoveObjectsTest extends ModuleTest {
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,"TestObj");
 
         // Running the module
-        removeObjects.run(workspace);
+        removeObjects.execute(workspace);
 
         // Checking the objects have been removed
         assertEquals(0,workspace.getObjects().size());
@@ -78,7 +78,7 @@ public class RemoveObjectsTest extends ModuleTest {
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,"TestObj");
 
         // Running the module
-        removeObjects.run(workspace);
+        removeObjects.execute(workspace);
 
         // Checking the objects have been removed
         assertEquals(1,workspace.getObjects().size());

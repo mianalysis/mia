@@ -98,7 +98,7 @@ public class ConditionalAnalysisTermination extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         // Getting parameters
         String testMode = parameters.getValue(TEST_MODE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);

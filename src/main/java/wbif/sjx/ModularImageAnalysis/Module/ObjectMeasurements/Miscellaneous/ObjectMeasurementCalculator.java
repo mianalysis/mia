@@ -84,7 +84,7 @@ public class ObjectMeasurementCalculator extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection inputObjects = workspace.getObjectSet(inputObjectsName);
         String measurementName1 = parameters.getValue(MEASUREMENT_1);

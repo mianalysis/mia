@@ -27,7 +27,7 @@ public class MeasureImageIntensityMacro extends MacroOperation {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,objects[0]);
         measureImageIntensity.setShowOutput((double) objects[1] == 1);
 
-        measureImageIntensity.run(workspace);
+        measureImageIntensity.process(workspace);
 
         return null;
 

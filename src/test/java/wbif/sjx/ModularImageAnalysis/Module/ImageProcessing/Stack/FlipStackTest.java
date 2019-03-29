@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -56,7 +55,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.X);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -95,7 +94,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.Y);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -131,7 +130,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.CHANNEL);
 
         // Running Module
-        boolean passed = flipStack.run(workspace);
+        boolean passed = flipStack.execute(workspace);
         assertFalse(passed);
 
         // Checking the images in the workspace
@@ -163,7 +162,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.Z);
 
         // Running Module
-        boolean passed = flipStack.run(workspace);
+        boolean passed = flipStack.execute(workspace);
         assertFalse(passed);
 
         // Checking the images in the workspace
@@ -195,7 +194,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.TIME);
 
         // Running Module
-        boolean passed = flipStack.run(workspace);
+        boolean passed = flipStack.execute(workspace);
         assertFalse(passed);
 
         // Checking the images in the workspace
@@ -233,7 +232,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.X);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -272,7 +271,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.Y);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -308,7 +307,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.CHANNEL);
 
         // Running Module
-        boolean passed = flipStack.run(workspace);
+        boolean passed = flipStack.execute(workspace);
         assertFalse(passed);
 
         // Checking the images in the workspace
@@ -343,7 +342,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.Z);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -379,7 +378,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.TIME);
 
         // Running Module
-        boolean passed = flipStack.run(workspace);
+        boolean passed = flipStack.execute(workspace);
         assertFalse(passed);
 
         // Checking the images in the workspace
@@ -417,7 +416,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.X);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -456,7 +455,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.Y);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -495,7 +494,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.CHANNEL);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -534,7 +533,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.CHANNEL);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -570,7 +569,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.CHANNEL);
 
         // Running Module
-        boolean passed = flipStack.run(workspace);
+        boolean passed = flipStack.execute(workspace);
         assertFalse(passed);
 
         // Checking the images in the workspace
@@ -632,7 +631,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.X);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -671,7 +670,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.Y);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -710,7 +709,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.CHANNEL);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -760,7 +759,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.X);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -799,7 +798,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.X);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -839,7 +838,7 @@ public class FlipStackTest extends ModuleTest{
         flipStack.updateParameterValue(FlipStack.AXIS_MODE,FlipStack.AxisModes.X);
 
         // Running Module
-        flipStack.run(workspace);
+        flipStack.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());

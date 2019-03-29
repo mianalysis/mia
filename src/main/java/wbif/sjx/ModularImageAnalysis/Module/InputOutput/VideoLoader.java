@@ -170,7 +170,7 @@ public class VideoLoader extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String importMode = parameters.getValue(IMPORT_MODE);

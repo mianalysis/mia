@@ -67,7 +67,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.RELATE_MODE,RelateObjects.RelateModes.MATCHING_IDS);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Checking the workspace contains two object sets
         assertEquals("Number of ObjSets in Workspace",2,workspace.getObjects().size());
@@ -134,7 +134,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Getting expected values
         HashMap<Integer, HashMap<String, Object>> expectedValues = new Objects3D().getOtherValues();
@@ -221,7 +221,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.LINKING_DISTANCE,20.0);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Getting expected values
         HashMap<Integer, HashMap<String, Object>> expectedValues = new Objects3D().getOtherValues();
@@ -307,7 +307,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj2Obj:proxObj2.values()) {
@@ -353,7 +353,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.LIMIT_LINKING_BY_DISTANCE,false);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {
@@ -411,7 +411,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {
@@ -472,7 +472,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj2Obj:proxObj2.values()) {
@@ -518,7 +518,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_ONLY);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj2Obj:proxObj2.values()) {
@@ -564,7 +564,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.OUTSIDE_ONLY);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj2Obj:proxObj2.values()) {
@@ -610,7 +610,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {
@@ -668,7 +668,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj1Obj:proxObj1.values()) {
@@ -729,7 +729,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_AND_OUTSIDE);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj2Obj:proxObj2.values()) {
@@ -775,7 +775,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.INSIDE_ONLY);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj2Obj:proxObj2.values()) {
@@ -821,7 +821,7 @@ public class RelateObjectsTest extends ModuleTest {
         relateObjects.updateParameterValue(RelateObjects.INSIDE_OUTSIDE_MODE,RelateObjects.InsideOutsideModes.OUTSIDE_ONLY);
 
         // Running RelateObjects
-        relateObjects.run(workspace);
+        relateObjects.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj proxObj2Obj:proxObj2.values()) {

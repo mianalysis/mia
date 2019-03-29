@@ -71,7 +71,7 @@ public class MeasureObjectOverlap extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting objects
         String inputObjects1Name = parameters.getValue(OBJECT_SET_1);
         ObjCollection inputObjects1 = workspace.getObjectSet(inputObjects1Name);

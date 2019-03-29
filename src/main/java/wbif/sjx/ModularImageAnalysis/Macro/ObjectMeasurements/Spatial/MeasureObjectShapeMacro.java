@@ -31,7 +31,7 @@ public class MeasureObjectShapeMacro extends MacroOperation {
         measureObjectShape.updateParameterValue(MeasureObjectShape.MEASURE_PROJECTED_PERIM,(double) objects[4] == 1);
         measureObjectShape.setShowOutput((double) objects[5] == 1);
 
-        measureObjectShape.run(workspace);
+        measureObjectShape.process(workspace);
 
         return null;
 

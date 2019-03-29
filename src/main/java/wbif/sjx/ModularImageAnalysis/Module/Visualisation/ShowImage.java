@@ -45,7 +45,7 @@ public class ShowImage extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         String imageName = parameters.getValue(DISPLAY_IMAGE);
         Image image = workspace.getImage(imageName);
         String titleMode = parameters.getValue(TITLE_MODE);

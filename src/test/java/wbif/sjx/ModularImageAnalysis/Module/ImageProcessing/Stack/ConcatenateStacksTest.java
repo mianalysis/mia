@@ -1,15 +1,11 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Stack;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.Ignore;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.InputImageP;
-import wbif.sjx.ModularImageAnalysis.Object.Parameters.OutputObjectsP;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.ParameterCollection;
 import wbif.sjx.ModularImageAnalysis.Object.Workspace;
 
@@ -68,7 +64,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -116,7 +112,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -164,7 +160,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -212,7 +208,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -260,7 +256,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -311,7 +307,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -359,7 +355,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -407,7 +403,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -455,7 +451,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -503,7 +499,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -554,7 +550,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -602,7 +598,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -650,7 +646,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -698,7 +694,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -746,7 +742,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -794,7 +790,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -842,7 +838,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -890,7 +886,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -938,7 +934,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -986,7 +982,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1034,7 +1030,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1085,7 +1081,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1133,7 +1129,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1181,7 +1177,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1229,7 +1225,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1277,7 +1273,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1328,7 +1324,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1376,7 +1372,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1424,7 +1420,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1472,7 +1468,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1520,7 +1516,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1571,7 +1567,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1619,7 +1615,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());
@@ -1667,7 +1663,7 @@ public class ConcatenateStacksTest extends ModuleTest {
         iterator.next().updateValue(ConcatenateStacks.INPUT_IMAGE,"Test_image2");
 
         // Running Module
-        concatenateStacks.run(workspace);
+        concatenateStacks.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(3,workspace.getImages().size());

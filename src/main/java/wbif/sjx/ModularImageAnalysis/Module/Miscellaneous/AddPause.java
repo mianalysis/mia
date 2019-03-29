@@ -37,7 +37,7 @@ public class AddPause extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         // Getting parameters
         boolean showImage = parameters.getValue(SHOW_IMAGE);
         String inputImageName = parameters.getValue(INPUT_IMAGE);

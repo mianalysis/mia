@@ -63,7 +63,7 @@ public class LoadImageFromImageJMacro extends MacroOperation {
         imageLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
 
         // Running Module
-        imageLoader.run(workspace);
+        imageLoader.process(workspace);
 
         return null;
 

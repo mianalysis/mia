@@ -27,7 +27,7 @@ public class RemoveObjectsFromWorkspaceMacro extends MacroOperation {
         removeObjects.updateParameterValue(RemoveObjects.INPUT_OBJECTS,objects[0]);
         removeObjects.updateParameterValue(RemoveObjects.RETAIN_MEASUREMENTS,(double) objects[1] == 1);
 
-        removeObjects.run(workspace);
+        removeObjects.process(workspace);
 
         return null;
 

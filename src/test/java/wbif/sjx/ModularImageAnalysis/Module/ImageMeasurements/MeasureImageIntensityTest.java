@@ -49,7 +49,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace);
+        measureImageIntensity.execute(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());
@@ -78,7 +78,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace);
+        measureImageIntensity.execute(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());
@@ -107,7 +107,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace);
+        measureImageIntensity.execute(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());
@@ -136,7 +136,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace);
+        measureImageIntensity.execute(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());
@@ -165,7 +165,7 @@ public class MeasureImageIntensityTest extends ModuleTest {
         measureImageIntensity.updateParameterValue(MeasureImageIntensity.INPUT_IMAGE,"Test_image");
 
         // Running MeasureImageIntensity
-        measureImageIntensity.run(workspace);
+        measureImageIntensity.execute(workspace);
 
         // Verifying results
         assertEquals(5,image.getMeasurements().size());

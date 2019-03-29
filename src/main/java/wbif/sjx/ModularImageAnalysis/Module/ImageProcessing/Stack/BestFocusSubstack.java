@@ -194,7 +194,7 @@ public class BestFocusSubstack <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         Image inputImage = workspace.getImage(inputImageName);

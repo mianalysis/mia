@@ -244,7 +244,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String axisMode = parameters.getValue(AXIS_MODE);

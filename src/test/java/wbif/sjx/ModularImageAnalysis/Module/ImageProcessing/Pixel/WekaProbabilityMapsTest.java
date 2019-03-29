@@ -55,7 +55,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -94,7 +94,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -133,7 +133,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -172,7 +172,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -211,7 +211,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -250,7 +250,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -289,7 +289,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -328,7 +328,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,1);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -367,7 +367,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -407,7 +407,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,1);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -447,7 +447,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        wekaProbabilityMaps.run(workspace);
+        wekaProbabilityMaps.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -486,7 +486,7 @@ public class WekaProbabilityMapsTest extends ModuleTest {
         wekaProbabilityMaps.updateParameterValue(WekaProbabilityMaps.BLOCK_SIZE,Integer.MAX_VALUE);
 
         // Running Module
-        boolean status = wekaProbabilityMaps.run(workspace);
+        boolean status = wekaProbabilityMaps.execute(workspace);
 
         // Checking the module failed to generateModuleList (returned false)
         assertFalse(status);

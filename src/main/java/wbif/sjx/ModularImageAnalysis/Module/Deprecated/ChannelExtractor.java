@@ -37,7 +37,7 @@ public class ChannelExtractor extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Loading input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
         writeMessage("Loading image ("+inputImageName+") into workspace");

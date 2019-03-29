@@ -57,7 +57,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.NUMBER_OF_BINS,4);
 
         // Running IdentifyObjects
-        binObjectsByMeasurement.run(workspace);
+        binObjectsByMeasurement.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -95,7 +95,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.NUMBER_OF_BINS,4);
 
         // Running IdentifyObjects
-        binObjectsByMeasurement.run(workspace);
+        binObjectsByMeasurement.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {
@@ -133,7 +133,7 @@ public class BinObjectsByMeasurementTest extends ModuleTest {
         binObjectsByMeasurement.updateParameterValue(BinObjectsByMeasurement.NUMBER_OF_BINS,4);
 
         // Running IdentifyObjects
-        binObjectsByMeasurement.run(workspace);
+        binObjectsByMeasurement.execute(workspace);
 
         // Running through each object, checking it has the expected number of measurements and the expected value
         for (Obj testObject:testObjects.values()) {

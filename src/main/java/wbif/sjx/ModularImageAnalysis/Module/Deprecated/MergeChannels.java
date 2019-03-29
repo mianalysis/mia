@@ -235,7 +235,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting parameters
         String overwriteMode = parameters.getValue(OVERWRITE_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);

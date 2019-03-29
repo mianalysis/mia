@@ -65,7 +65,7 @@ public class ImageSaverTest extends ModuleTest {
         imageSaver.updateParameterValue(ImageSaver.FLATTEN_OVERLAY,false);
 
         // Running the module
-        imageSaver.run(workspace);
+        imageSaver.execute(workspace);
 
         // Checking the new file exists in the temporary folder
         String[] tempFileContents = temporaryFolder.getRoot().list();
@@ -107,7 +107,7 @@ public class ImageSaverTest extends ModuleTest {
         imageSaver.updateParameterValue(ImageSaver.FLATTEN_OVERLAY,false);
 
         // Running the module
-        imageSaver.run(workspace);
+        imageSaver.execute(workspace);
 
         // Checking the new file exists in the temporary folder
         String[] tempFileContents = temporaryFolder.getRoot().list();

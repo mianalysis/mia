@@ -55,7 +55,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -97,7 +97,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -136,7 +136,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -175,7 +175,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -217,7 +217,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -259,7 +259,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MAX);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -298,7 +298,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MIN);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -337,7 +337,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.AVERAGE);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -376,7 +376,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.MEDIAN);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -415,7 +415,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.STDEV);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -454,7 +454,7 @@ public class ProjectImageTest extends ModuleTest {
         projectImage.updateParameterValue(ProjectImage.PROJECTION_MODE,ProjectImage.ProjectionModes.SUM);
 
         // Running Module
-        projectImage.run(workspace);
+        projectImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

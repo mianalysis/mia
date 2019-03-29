@@ -258,7 +258,7 @@ public class MeasureObjectIntensity extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting input objects
         String objectName = parameters.getValue(INPUT_OBJECTS);
         ObjCollection objects = workspace.getObjects().get(objectName);

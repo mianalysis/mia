@@ -1,7 +1,7 @@
 // TODO: Add option to leave overlay as objects (i.e. don't flatten)
 // TODO: Add option to plot tracks (will need to import track and spot objects as parent/child relationship)
 
-package wbif.sjx.ModularImageAnalysis.Module.Visualisation;
+package wbif.sjx.ModularImageAnalysis.Module.Deprecated;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -626,7 +626,7 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     public String getPackageName() {
-        return PackageNames.VISUALISATION;
+        return PackageNames.DEPRECATED;
     }
 
     @Override
@@ -635,7 +635,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -739,7 +739,6 @@ public class AddObjectsOverlay extends Module {
 
     @Override
     protected void initialiseParameters() {
-        parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
         parameters.add(new BooleanP(ADD_OUTPUT_TO_WORKSPACE, this,false));
@@ -774,7 +773,8 @@ public class AddObjectsOverlay extends Module {
         parameters.add(new IntegerP(TRACK_HISTORY, this,10));
         parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
-        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
+        parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));        parameters.add(new InputImageP(INPUT_IMAGE, this));
+
 
     }
 

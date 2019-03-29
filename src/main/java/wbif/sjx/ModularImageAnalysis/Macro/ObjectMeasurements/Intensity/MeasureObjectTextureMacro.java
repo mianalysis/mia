@@ -33,7 +33,7 @@ public class MeasureObjectTextureMacro extends MacroOperation {
         measureObjectTexture.updateParameterValue(MeasureObjectTexture.CALIBRATED_OFFSET,(double) objects[5] == 1);
         measureObjectTexture.setShowOutput((double) objects[6] == 1);
 
-        measureObjectTexture.run(workspace);
+        measureObjectTexture.process(workspace);
 
         return null;
     }

@@ -48,7 +48,7 @@ public class MetadataExtractorTest extends ModuleTest {
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
 
         // Running the module
-        extractor.run(workspace);
+        extractor.execute(workspace);
 
         // Testing the returned value
         assertEquals("k2",workspace.getMetadata().getKeyword());
@@ -75,7 +75,7 @@ public class MetadataExtractorTest extends ModuleTest {
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
 
         // Running the module
-        extractor.run(workspace);
+        extractor.execute(workspace);
 
         // Testing the returned value
         assertEquals("with gaps",workspace.getMetadata().getKeyword());
@@ -102,7 +102,7 @@ public class MetadataExtractorTest extends ModuleTest {
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
 
         // Running the module
-        extractor.run(workspace);
+        extractor.execute(workspace);
 
         // Testing the returned value
         assertEquals("%$",workspace.getMetadata().getKeyword());
@@ -129,7 +129,7 @@ public class MetadataExtractorTest extends ModuleTest {
         extractor.updateParameterValue(MetadataExtractor.KEYWORD_LIST,keywords);
 
         // Running the module
-        extractor.run(workspace);
+        extractor.execute(workspace);
 
         // Testing the returned value
         assertEquals("",workspace.getMetadata().getKeyword());

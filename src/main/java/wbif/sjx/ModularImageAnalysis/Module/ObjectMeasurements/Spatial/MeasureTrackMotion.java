@@ -374,7 +374,7 @@ public class MeasureTrackMotion extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting input track objects
         String inputTrackObjectsName = parameters.getValue(INPUT_TRACK_OBJECTS);
         ObjCollection trackObjects = workspace.getObjects().get(inputTrackObjectsName);

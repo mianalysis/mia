@@ -105,7 +105,7 @@ public class MeasureImageColocalisation extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting input images
         String imageName1 = parameters.getValue(INPUT_IMAGE_1);
         Image image1 = workspace.getImages().get(imageName1);

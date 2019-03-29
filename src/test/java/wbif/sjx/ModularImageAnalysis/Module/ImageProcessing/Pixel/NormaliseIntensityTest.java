@@ -56,7 +56,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
 
         // Running NormaliseIntensity
-        normaliseIntensity.run(workspace);
+        normaliseIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -94,7 +94,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
 
         // Running NormaliseIntensity
-        normaliseIntensity.run(workspace);
+        normaliseIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -132,7 +132,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
 
         // Running NormaliseIntensity
-        normaliseIntensity.run(workspace);
+        normaliseIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -170,7 +170,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
 
         // Running NormaliseIntensity
-        normaliseIntensity.run(workspace);
+        normaliseIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -208,7 +208,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
 
         // Running NormaliseIntensity
-        normaliseIntensity.run(workspace);
+        normaliseIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -246,7 +246,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
 
         // Running NormaliseIntensity
-        normaliseIntensity.run(workspace);
+        normaliseIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -284,7 +284,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.OUTPUT_IMAGE,"Test_output");
 
         // Running NormaliseIntensity
-        normaliseIntensity.run(workspace);
+        normaliseIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -321,7 +321,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.APPLY_TO_INPUT,true);
 
         // Running NormaliseIntensity
-        normaliseIntensity.run(workspace);
+        normaliseIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -360,7 +360,7 @@ public class NormaliseIntensityTest extends ModuleTest {
         normaliseIntensity.updateParameterValue(NormaliseIntensity.CLIP_FRACTION,0.01);
 
         // Running NormaliseIntensity
-        normaliseIntensity.run(workspace);
+        normaliseIntensity.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());

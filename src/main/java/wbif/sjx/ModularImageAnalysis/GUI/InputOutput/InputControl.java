@@ -247,7 +247,7 @@ public class InputControl extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         return true;
     }
 

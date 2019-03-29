@@ -6,7 +6,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.ExpectedObjects;
 import wbif.sjx.ModularImageAnalysis.ExpectedObjects.Objects3D;
-import wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.ModuleTest;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
@@ -59,7 +58,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -89,7 +88,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -119,7 +118,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,200d);
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -154,7 +153,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_IMAGE,"Test_image");
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -190,7 +189,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,false);
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -226,7 +225,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.INCLUDE_Z_POSITION,true);
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -275,7 +274,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,2d);
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -325,7 +324,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.REFERENCE_VALUE,2d);
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -370,7 +369,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));
@@ -415,7 +414,7 @@ public class FilterObjectsTest extends ModuleTest {
         filterObjects.updateParameterValue(FilterObjects.PARENT_OBJECT,"Parents");
 
         // Running the module
-        filterObjects.run(workspace);
+        filterObjects.execute(workspace);
 
         // Checking basic facts
         assertNotNull(workspace.getObjectSet("TestObj"));

@@ -40,7 +40,7 @@ public class IdentifyObjectsMacro extends MacroOperation {
 
         identifyObjects.setShowOutput((double) objects[5] == 1);
 
-        identifyObjects.run(workspace);
+        identifyObjects.process(workspace);
 
         return null;
 

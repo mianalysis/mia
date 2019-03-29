@@ -1,7 +1,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.InputOutput;
 
 import ij.IJ;
-import ij.ImageJ;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,7 +58,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
 
         // Running module
-        imageLoader.run(workspace);
+        imageLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -104,7 +103,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -149,7 +148,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -200,7 +199,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.Z_CAL,0.2);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -249,7 +248,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -298,7 +297,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -347,7 +346,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -396,7 +395,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -441,7 +440,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -491,7 +490,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(CropImage.HEIGHT,37);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/CropImage/NoisyGradient5D_8bit_3-12-52-49.tif").getPath(),"UTF-8");
@@ -531,7 +530,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.Z_CAL,1.2);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -575,7 +574,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -628,7 +627,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.SET_CAL,false);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -677,7 +676,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.TIMESERIES);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -722,7 +721,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -767,7 +766,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.TIMESERIES);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -812,7 +811,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.THREE_D_MODE,ImageLoader.ThreeDModes.ZSTACK);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Checking there is one image in the workspace
         assertEquals(1,workspace.getImages().size());
@@ -860,7 +859,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageSequence/Seq0-11.tif").getPath(),"UTF-8");
@@ -900,7 +899,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageSequence/Seq3-11-2.tif").getPath(),"UTF-8");
@@ -941,7 +940,7 @@ public class ImageLoaderTest extends ModuleTest {
         imageFileLoader.updateParameterValue(ImageLoader.CROP_MODE,ImageLoader.CropModes.NONE);
 
         // Running module
-        imageFileLoader.run(workspace);
+        imageFileLoader.execute(workspace);
 
         // Getting expected image
         pathToImage = URLDecoder.decode(this.getClass().getResource("/images/ImageSequence/Seq4-8-2.tif").getPath(),"UTF-8");

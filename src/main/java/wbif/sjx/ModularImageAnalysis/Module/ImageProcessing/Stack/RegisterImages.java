@@ -404,7 +404,7 @@ public class RegisterImages extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         IJ.setBackgroundColor(255,255,255);
 
         // Getting input image

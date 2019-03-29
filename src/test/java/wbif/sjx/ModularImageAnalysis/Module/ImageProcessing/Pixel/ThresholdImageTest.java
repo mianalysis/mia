@@ -3,7 +3,6 @@
 package wbif.sjx.ModularImageAnalysis.Module.ImageProcessing.Pixel;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -66,7 +65,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -110,7 +109,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -154,7 +153,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -198,7 +197,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -242,7 +241,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -288,7 +287,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -332,7 +331,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -376,7 +375,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -420,7 +419,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -465,7 +464,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -510,7 +509,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -580,7 +579,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -625,7 +624,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -667,7 +666,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,false);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -717,7 +716,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -761,7 +760,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -805,7 +804,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -849,7 +848,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -893,7 +892,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.WHITE_BACKGROUND,true);
 
         // Running ThresholdImage
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Checking the images in the workspace
         assertEquals(2,workspace.getImages().size());
@@ -934,7 +933,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Getting output image
         Image outputImage = workspace.getImage("Test_output");
@@ -971,7 +970,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Verifying results
         assertEquals(1,image.getMeasurements().size());
@@ -1006,7 +1005,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Verifying results
         assertEquals(1,image.getMeasurements().size());
@@ -1039,7 +1038,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Verifying results
         assertEquals(0,image.getMeasurements().size());
@@ -1070,7 +1069,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,true);
 
         // Running MeasureImageIntensity
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Verifying results
         assertEquals(0,image.getMeasurements().size());
@@ -1102,7 +1101,7 @@ public class ThresholdImageTest extends ModuleTest {
         thresholdImage.updateParameterValue(ThresholdImage.STORE_THRESHOLD_AS_MEASUREMENT,false);
 
         // Running MeasureImageIntensity
-        thresholdImage.run(workspace);
+        thresholdImage.execute(workspace);
 
         // Getting output image
         Image outputImage = workspace.getImage("Test_output");

@@ -8,7 +8,6 @@ import ij.plugin.Duplicator;
 import ij.plugin.HyperStackConverter;
 import wbif.sjx.ModularImageAnalysis.Module.Module;
 import wbif.sjx.ModularImageAnalysis.Module.PackageNames;
-import wbif.sjx.ModularImageAnalysis.Module.Visualisation.AddObjectsOverlay;
 import wbif.sjx.ModularImageAnalysis.Object.*;
 import wbif.sjx.ModularImageAnalysis.Object.Image;
 import wbif.sjx.ModularImageAnalysis.Object.Parameters.*;
@@ -80,7 +79,7 @@ public class AddAllObjectPoints extends Module {
     }
 
     @Override
-    protected boolean run(Workspace workspace) {
+    protected boolean process(Workspace workspace) {
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
         boolean addOutputToWorkspace = parameters.getValue(ADD_OUTPUT_TO_WORKSPACE);
@@ -104,13 +103,13 @@ public class AddAllObjectPoints extends Module {
         // Generating colours for each object
         HashMap<Integer,Float> hues= colourServer.getHues(inputObjects);
 
+        // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
+        if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
+            ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
+        }
+
         // Adding the overlay element
         try {
-            // If necessary, turning the image into a HyperStack (if 2 dimensions=1 it will be a standard ImagePlus)
-            if (!ipl.isComposite() & (ipl.getNSlices() > 1 | ipl.getNFrames() > 1 | ipl.getNChannels() > 1)) {
-                ipl = HyperStackConverter.toHyperStack(ipl, ipl.getNChannels(), ipl.getNSlices(), ipl.getNFrames());
-            }
-
             int nThreads = multithread ? Prefs.getThreads() : 1;
             ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads,nThreads,0L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>());
 
@@ -159,7 +158,7 @@ public class AddAllObjectPoints extends Module {
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
-        if (colourServer != null) parameters.addAll(colourServer.getParameters());
+        parameters.addAll(colourServer.getParameters());
 
     }
 

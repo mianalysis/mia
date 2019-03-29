@@ -30,7 +30,7 @@ public class MeasureImageTextureMacro extends MacroOperation {
         measureImageTexture.updateParameterValue(MeasureImageTexture.Z_OFFSET,(int) Math.round((double) objects[3]));
         measureImageTexture.setShowOutput((double) objects[4] == 1);
 
-        measureImageTexture.run(workspace);
+        measureImageTexture.process(workspace);
 
         return null;
 

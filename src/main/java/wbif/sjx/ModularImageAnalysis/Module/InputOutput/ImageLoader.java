@@ -553,7 +553,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting parameters
         String outputMode = parameters.getValue(OUTPUT_MODE);
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);

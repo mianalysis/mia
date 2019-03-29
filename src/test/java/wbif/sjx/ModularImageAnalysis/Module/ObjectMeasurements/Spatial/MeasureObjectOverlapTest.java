@@ -388,7 +388,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
         // Running MeasureObjectOverlap
-        measureObjectOverlap.run(workspace);
+        measureObjectOverlap.execute(workspace);
 
         // Getting the measurement for each object and checking it is as expected
         String measurementName = MeasureObjectOverlap.getFullName(objectsName2,MeasureObjectOverlap.Measurements.OVERLAP_PERCENT_1);
@@ -496,7 +496,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
         // Running MeasureObjectOverlap
-        measureObjectOverlap.run(workspace);
+        measureObjectOverlap.execute(workspace);
 
         // Getting the measurement for each object and checking it is as expected
         String measurementName = MeasureObjectOverlap.getFullName(objectsName2,MeasureObjectOverlap.Measurements.OVERLAP_PERCENT_1);
@@ -605,7 +605,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
         // Running MeasureObjectOverlap
-        measureObjectOverlap.run(workspace);
+        measureObjectOverlap.execute(workspace);
 
         // Getting the measurement for each object and checking it is as expected
         String measurementName = MeasureObjectOverlap.getFullName(objectsName2,MeasureObjectOverlap.Measurements.OVERLAP_PERCENT_1);
@@ -715,7 +715,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
         // Running MeasureObjectOverlap
-        measureObjectOverlap.run(workspace);
+        measureObjectOverlap.execute(workspace);
 
         // Getting the measurement for each object and checking it is as expected
         String measurementName = MeasureObjectOverlap.getFullName(objectsName2,MeasureObjectOverlap.Measurements.OVERLAP_PERCENT_1);
@@ -828,7 +828,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
         // Running MeasureObjectOverlap
-        measureObjectOverlap.run(workspace);
+        measureObjectOverlap.execute(workspace);
 
         // Getting the measurement for each object and checking it is as expected
         String measurementName = MeasureObjectOverlap.getFullName(objectsName2,MeasureObjectOverlap.Measurements.OVERLAP_PERCENT_1);
@@ -941,7 +941,7 @@ public class MeasureObjectOverlapTest extends ModuleTest {
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.OBJECT_SET_2,objectsName2);
 
         // Running MeasureObjectOverlap
-        measureObjectOverlap.run(workspace);
+        measureObjectOverlap.execute(workspace);
 
         // Getting the measurement for each object and checking it is as expected
         String measurementName = MeasureObjectOverlap.getFullName(objectsName2,MeasureObjectOverlap.Measurements.OVERLAP_PERCENT_1);

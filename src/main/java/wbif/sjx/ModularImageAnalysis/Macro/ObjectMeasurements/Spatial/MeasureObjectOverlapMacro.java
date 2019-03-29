@@ -29,7 +29,7 @@ public class MeasureObjectOverlapMacro extends MacroOperation {
         measureObjectOverlap.updateParameterValue(MeasureObjectOverlap.LINK_IN_SAME_FRAME,(double) objects[2] == 1);
         measureObjectOverlap.setShowOutput((double) objects[3] == 1);
 
-        measureObjectOverlap.run(workspace);
+        measureObjectOverlap.process(workspace);
 
         return null;
 

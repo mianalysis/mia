@@ -99,7 +99,7 @@ public class ExpandShrinkObjects extends Module {
     }
 
     @Override
-    public boolean run(Workspace workspace) {
+    public boolean process(Workspace workspace) {
         // Getting input image
         String templateImageName = parameters.getValue(INPUT_IMAGE);
         Image templateImage = workspace.getImage(templateImageName);
