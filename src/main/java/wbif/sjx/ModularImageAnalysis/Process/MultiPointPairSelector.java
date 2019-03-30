@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.PointRoi;
 import ij.gui.Roi;
+import wbif.sjx.common.MathFunc.CumStat;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,8 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class PointPairSelector implements ActionListener {
-    private static final String ADD_PAIRS = "Add pair(s)";
+public class MultiPointPairSelector implements ActionListener {
+    private static final String ADD_POINTS = "Add points";
     private static final String FINISH = "Finish";
 
     private JFrame frame;
@@ -22,10 +23,11 @@ public class PointPairSelector implements ActionListener {
     private ImagePlus ipl2;
     private Overlay overlay1;
     private Overlay overlay2;
-    private ArrayList<PointPair> pairs;
+    private ArrayList<PointRoi> points1;
+    private ArrayList<PointRoi> points2;
 
 
-    public ArrayList<PointPair> getPointPairs(ImagePlus ipl1, ImagePlus ipl2) {
+    public void selectPoints(ImagePlus ipl1, ImagePlus ipl2) {
         this.ipl1 = ipl1;
         this.ipl2 = ipl2;
 
@@ -51,16 +53,17 @@ public class PointPairSelector implements ActionListener {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                return null;
+                return;
             }
         }
 
-        return pairs;
+        return;
 
     }
 
     private void showOptionsPanel() {
-        pairs  = new ArrayList<>();
+        points1  = new ArrayList<>();
+        points2  = new ArrayList<>();
         frame = new JFrame();
         frame.setAlwaysOnTop(true);
 
@@ -75,20 +78,20 @@ public class PointPairSelector implements ActionListener {
         c.anchor = GridBagConstraints.WEST;
         c.insets = new Insets(5,5,5,5);
 
-        JLabel headerLabel = new JLabel("<html>Add point(s) to each image, then select \"Add pair(s)\"" +
-                "<br>(or click \"Finish adding pairs\" at any time).</html>");
+        JLabel headerLabel = new JLabel("<html>Add points to each image, then select \"Add points\"" +
+                "<br>(or click \"Finish adding points\" at any time).</html>");
         headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
 
         frame.add(headerLabel,c);
 
-        JButton addPairButton = new JButton("Add pair(s)");
-        addPairButton.addActionListener(this);
-        addPairButton.setActionCommand(ADD_PAIRS);
+        JButton addPointsButton = new JButton("Add points");
+        addPointsButton.addActionListener(this);
+        addPointsButton.setActionCommand(ADD_POINTS);
         c.gridy++;
         c.gridwidth = 1;
-        frame.add(addPairButton,c);
+        frame.add(addPointsButton,c);
 
-        JButton finishButton = new JButton("Finish adding pairs");
+        JButton finishButton = new JButton("Finish adding points");
         finishButton.addActionListener(this);
         finishButton.setActionCommand(FINISH);
         c.gridx++;
@@ -104,8 +107,8 @@ public class PointPairSelector implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case (ADD_PAIRS):
-                addNewPairs();
+            case (ADD_POINTS):
+                addNewPoints();
                 break;
 
             case (FINISH):
@@ -114,34 +117,29 @@ public class PointPairSelector implements ActionListener {
         }
     }
 
-    public void addNewPairs() {
+    public void addNewPoints() {
         Roi roi1 = ipl1.getRoi();
         Roi roi2 = ipl2.getRoi();
 
         if (roi1 == null || roi2 == null) {
-            IJ.error("Select at least one point in each image");
+            IJ.error("Select a single point in each image");
             return;
         }
 
         float[] centroidX1 = roi1.getFloatPolygon().xpoints;
         float[] centroidY1 = roi1.getFloatPolygon().ypoints;
-        float[] centroidX2 = roi2.getFloatPolygon().xpoints;
-        float[] centroidY2 = roi2.getFloatPolygon().ypoints;
-
-        if (centroidX1.length != centroidX2.length) {
-            IJ.error("Select the same number of points in each image");
-            return;
-        }
-
         for (int i=0;i<centroidX1.length;i++) {
             PointRoi point1 = new PointRoi(centroidX1[i], centroidY1[i]);
             ipl1.deleteRoi();
+            points1.add(point1);
+        }
 
+        float[] centroidX2 = roi2.getFloatPolygon().xpoints;
+        float[] centroidY2 = roi2.getFloatPolygon().ypoints;
+        for (int i=0;i<centroidX2.length;i++) {
             PointRoi point2 = new PointRoi(centroidX2[i], centroidY2[i]);
             ipl2.deleteRoi();
-
-            PointPair pair = new PointPair(point1, point2);
-            pairs.add(pair);
+            points2.add(point2);
         }
 
         updateOverlay();
@@ -149,8 +147,8 @@ public class PointPairSelector implements ActionListener {
     }
 
     public void finishAdding() {
-        if (pairs.size() < 2) {
-            IJ.error("Select at least two pairs");
+        if (points1.size() < 2 && points2.size() < 2) {
+            IJ.error("Select at least two points per image");
             return;
         }
 
@@ -164,16 +162,15 @@ public class PointPairSelector implements ActionListener {
 
     public void updateOverlay() {
         overlay1.clear();
-        overlay2.clear();
-
-        for (PointPair pair:pairs) {
-            PointRoi point1 = pair.getPoint1();
+        for (PointRoi point1:points1) {
             point1.setPointType(PointRoi.NORMAL);
             point1.setSize(2);
             point1.setStrokeColor(Color.RED);
             overlay1.add(point1);
+        }
 
-            PointRoi point2 = pair.getPoint2();
+        overlay2.clear();
+        for (PointRoi point2:points2) {
             point2.setPointType(PointRoi.NORMAL);
             point2.setSize(2);
             point2.setStrokeColor(Color.RED);
@@ -185,21 +182,11 @@ public class PointPairSelector implements ActionListener {
 
     }
 
-    public class PointPair {
-        private PointRoi p1;
-        private PointRoi p2;
+    public ArrayList<PointRoi> getPoints1() {
+        return points1;
+    }
 
-        public PointPair(PointRoi p1, PointRoi p2) {
-            this.p1 = p1;
-            this.p2 = p2;
-        }
-
-        public PointRoi getPoint1() {
-            return p1;
-        }
-
-        public PointRoi getPoint2() {
-            return p2;
-        }
+    public ArrayList<PointRoi> getPoints2() {
+        return points2;
     }
 }

@@ -172,8 +172,6 @@ public class AddTracks extends Module {
 
     @Override
     protected void initialiseParameters() {
-        colourServer = new ColourServer(this);
-
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
@@ -185,6 +183,7 @@ public class AddTracks extends Module {
         parameters.add(new DoubleP(LINE_WIDTH,this,0.2));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
+        colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
         parameters.addAll(colourServer.getParameters());
 
     }

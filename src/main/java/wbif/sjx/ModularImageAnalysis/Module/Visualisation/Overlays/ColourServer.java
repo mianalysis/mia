@@ -9,21 +9,21 @@ import wbif.sjx.ModularImageAnalysis.Process.ColourFactory;
 import java.util.HashMap;
 
 public class ColourServer {
-    public static final String INPUT_OBJECTS = "Input objects";
     public static final String COLOUR_MODE = "Colour mode";
     public static final String SINGLE_COLOUR = "Single colour";
     public static final String MEASUREMENT_FOR_COLOUR = "Measurement for colour";
     public static final String PARENT_OBJECT_FOR_COLOUR = "Parent object for colour";
 
     private ParameterCollection parameters = new ParameterCollection();
-
+    private InputObjectsP inputObjects;
 
     public interface ColourModes extends ObjCollection.ColourModes {}
 
     public interface SingleColours extends ColourFactory.SingleColours {}
 
 
-    public ColourServer(Module module) {
+    public ColourServer(InputObjectsP inputObjects, Module module) {
+        this.inputObjects = inputObjects;
         initialiseParameters(module);
     }
 
@@ -54,7 +54,6 @@ public class ColourServer {
     }
 
     private void initialiseParameters(Module module) {
-        parameters.add(new InputObjectsP(INPUT_OBJECTS, module));
         parameters.add(new ChoiceP(COLOUR_MODE, module, ColourModes.SINGLE_COLOUR, ColourModes.ALL));
         parameters.add(new ChoiceP(SINGLE_COLOUR,module,SingleColours.WHITE,SingleColours.ALL));
         parameters.add(new ObjectMeasurementP(MEASUREMENT_FOR_COLOUR, module));
@@ -63,7 +62,7 @@ public class ColourServer {
     }
 
     public ParameterCollection updateAndGetParameters() {
-        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+        String inputObjectsName = inputObjects.getValue();
         String parentObjectsName = parameters.getValue(PARENT_OBJECT_FOR_COLOUR);
 
         ParameterCollection returnedParameters = new ParameterCollection();
@@ -76,7 +75,7 @@ public class ColourServer {
 
             case AddObjectsOverlay.ColourModes.MEASUREMENT_VALUE:
                 returnedParameters.add(parameters.getParameter(MEASUREMENT_FOR_COLOUR));
-                if (parameters.getValue(INPUT_OBJECTS) != null) {
+                if (inputObjectsName != null) {
                     ObjectMeasurementP colourMeasurement = parameters.getParameter(MEASUREMENT_FOR_COLOUR);
                     colourMeasurement.setObjectName(inputObjectsName);
                 }

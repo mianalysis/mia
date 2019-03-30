@@ -144,8 +144,6 @@ public class AddObjectCentroid extends Module {
 
     @Override
     protected void initialiseParameters() {
-        colourServer = new ColourServer(this);
-
         parameters.add(new InputImageP(INPUT_IMAGE, this));
         parameters.add(new InputObjectsP(INPUT_OBJECTS, this));
         parameters.add(new BooleanP(APPLY_TO_INPUT, this,false));
@@ -154,7 +152,8 @@ public class AddObjectCentroid extends Module {
         parameters.add(new BooleanP(RENDER_IN_ALL_FRAMES,this,false));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING, this, true));
 
-        if (colourServer != null) parameters.addAll(colourServer.getParameters());
+        colourServer = new ColourServer(parameters.getParameter(INPUT_OBJECTS),this);
+        parameters.addAll(colourServer.getParameters());
 
     }
 
