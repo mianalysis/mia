@@ -226,6 +226,7 @@ public class ComponentFactory {
         modulePanel.add(moduleEnabledButton,c);
 
         ModuleTitle title = new ModuleTitle(module);
+        title.setToolTipText("<html><p width=\"500\">" +module.getHelp()+"</p></html>");
         c.weightx = 1;
         c.gridx++;
         modulePanel.add(title,c);
