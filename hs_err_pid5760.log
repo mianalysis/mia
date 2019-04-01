@@ -74,12 +74,12 @@ j  org.bytedeco.javacpp.BytePointer.get([B)Lorg/bytedeco/javacpp/BytePointer;+5
 j  org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader.extractBytes(Lorg/janelia/it/jacs/shared/ffmpeg/Frame;Lorg/bytedeco/javacpp/BytePointer;)V+61
 j  org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader.processImage(Lorg/janelia/it/jacs/shared/ffmpeg/Frame;)V+176
 j  org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader.grabFrame()Lorg/janelia/it/jacs/shared/ffmpeg/Frame;+280
-j  wbif.sjx.ModularImageAnalysis.Module.InputOutput.VideoLoader.getFFMPEGVideo(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[I)Lwbif/sjx/ModularImageAnalysis/Object/Image;+76
+j  wbif.sjx.MIA.Module.InputOutput.VideoLoader.getFFMPEGVideo(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[I)Lwbif/sjx/ModularImageAnalysis/Object/Image;+76
 j  process(Lwbif/sjx/ModularImageAnalysis/Object/Workspace;)Z+626
-j  wbif.sjx.ModularImageAnalysis.Module.Module.execute(Lwbif/sjx/ModularImageAnalysis/Object/Workspace;)Z+12
-j  wbif.sjx.ModularImageAnalysis.GUI.GUI.evaluateModule(Lwbif/sjx/ModularImageAnalysis/Module/Module;)V+34
-j  wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.EvalButton.lambda$actionPerformed$1(I)V+37
-j  wbif.sjx.ModularImageAnalysis.GUI.ControlObjects.EvalButton$$Lambda$16.run()V+4
+j  wbif.sjx.MIA.Module.Module.execute(Lwbif/sjx/ModularImageAnalysis/Object/Workspace;)Z+12
+j  wbif.sjx.MIA.GUI.GUI.evaluateModule(Lwbif/sjx/ModularImageAnalysis/Module/Module;)V+34
+j  wbif.sjx.MIA.GUI.ControlObjects.EvalButton.lambda$actionPerformed$1(I)V+37
+j  wbif.sjx.MIA.GUI.ControlObjects.EvalButton$$Lambda$16.run()V+4
 j  java.lang.Thread.run()V+11
 v  ~StubRoutines::call_stub
 
@@ -427,7 +427,7 @@ Dynamic libraries:
 
 VM Arguments:
 jvm_args: -javaagent:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2018.1.5\lib\idea_rt.jar=49822:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2018.1.5\bin -Dfile.encoding=UTF-8 
-java_command: wbif.sjx.ModularImageAnalysis.MIA
+java_command: wbif.sjx.MIA.MIA
 java_class_path (initial): C:\Program Files\Java\jdk1.8.0_161\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\deploy.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\access-bridge-64.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\cldrdata.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\dnsns.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\jaccess.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\jfxrt.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\localedata.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\nashorn.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\sunec.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\sunjce_provider.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\sunmscapi.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\sunpkcs11.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext\zipfs.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\javaws.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\jfxswt.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\management-agent.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\plugin.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\rt.jar;C:\Users\steph\Documents\Java Projects\ModularImageAnalysis\target\classes;C:\Users\steph\.m2\repository\org\apache\maven\plugins\maven-project-info-reports-plugin\2.9\maven-project-info-reports-plugin-2.9.jar;C:\Users\steph\.m2\repository\org\apache\maven\reporting\maven-reporting-api\3.0\maven-reporting-api-3.0.jar;C:\Users\steph\.m2\repository\org\apache\maven\reporting\maven-reporting-impl\2.3\maven-reporting-impl-2.3.jar;C:\Users\steph\.m2\repository\org\apache\maven\shared\maven-shared-utils\0.6\maven-shared-utils-0.6.jar;C:\Users\steph\.m2\repository\com\google\code\findbugs\jsr305\2.0.1\jsr305-2.0.1.jar;C:\Users\steph\.m2\repository\
 Launcher Type: SUN_STANDARD
 

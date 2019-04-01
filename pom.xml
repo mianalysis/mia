@@ -250,12 +250,12 @@
         </dependency>
 
         <dependency>
-            <!--<groupId>wbif.sjx</groupId>-->
-            <!--<artifactId>Common</artifactId>-->
-            <!--<version>1.4.30</version>-->
-            <groupId>com.github.SJCross</groupId>
+            <groupId>wbif.sjx</groupId>
             <artifactId>Common</artifactId>
-            <version>1.4.30</version>
+            <version>1.4.31</version>
+<!--            <groupId>com.github.SJCross</groupId>-->
+<!--            <artifactId>Common</artifactId>-->
+<!--            <version>1.4.31</version>-->
         </dependency>
     </dependencies>
 
@@ -274,7 +274,7 @@
                 </executions>
                 <configuration>
                     <classpathScope>compile</classpathScope>
-                    <mainClass>wbif.sjx.ModularImageAnalysis.Process.DocumentationGenerator</mainClass>
+                    <mainClass>wbif.sjx.MIA.Process.DocumentationGenerator</mainClass>
                 </configuration>
             </plugin>
 
@@ -288,7 +288,7 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>wbif.sjx.ModularImageAnalysis.MIA</mainClass>
+                            <mainClass>wbif.sjx.MIA.MIA</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -332,7 +332,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>wbif.sjx.ModularImageAnalysis.MIA</Main-Class>
+                                        <Main-Class>wbif.sjx.MIA.MIA</Main-Class>
                                         <Specification-Title>${project.artifactId}</Specification-Title>
                                         <Specification-Version>${project.version}</Specification-Version>
                                     </manifestEntries>
