@@ -17,9 +17,10 @@ import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Interactable.Interactable;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Process.PointPairSelector;
-import wbif.sjx.MIA.Process.PointPairSelector.PointPair;
+import wbif.sjx.MIA.Object.Interactable.PointPairSelector;
+import wbif.sjx.MIA.Object.Interactable.PointPairSelector.PointPair;
 
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RegisterImages extends Module {
+public class RegisterImages extends Module implements Interactable {
     public static final String INPUT_IMAGE = "Input image";
     public static final String APPLY_TO_INPUT = "Apply to input image";
     public static final String OUTPUT_IMAGE = "Output image";
@@ -206,7 +207,7 @@ public class RegisterImages extends Module {
 
         ImagePlus ipl1 = new Duplicator().run(projectedWarped.getImagePlus());
         ImagePlus ipl2 = new Duplicator().run(projectedReference.getImagePlus());
-        ArrayList<PointPair> pairs = new PointPairSelector().getPointPairs(ipl1,ipl2);
+        ArrayList<PointPair> pairs = new PointPairSelector(this,false).getPointPairs(ipl1,ipl2);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs,transformationMode);
@@ -382,6 +383,11 @@ public class RegisterImages extends Module {
         image.addMeasurement(new Measurement(Measurements.SHEAR_X,transform.getShearX()));
         image.addMeasurement(new Measurement(Measurements.SHEAR_Y,transform.getShearY()));
 
+    }
+
+    @Override
+    public void doAction(Object[] objects) {
+        System.err.println("No test action currently set.  This will be implemented in future versions.");
     }
 
     @Override

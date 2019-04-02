@@ -1,4 +1,4 @@
-package wbif.sjx.MIA.Process;
+package wbif.sjx.MIA.Object.Interactable;
 
 import ij.IJ;
 import ij.ImagePlus;
@@ -16,7 +16,11 @@ import java.util.List;
 public class PointPairSelector implements ActionListener {
     private static final String ADD_PAIRS = "Add pair(s)";
     private static final String REMOVE_PAIR = "Remove pair(s)";
+    private static final String TEST = "Test";
     private static final String FINISH = "Finish";
+
+    private final Interactable interactable;
+    private boolean showTest;
 
     private JFrame frame;
     private final JPanel objectsPanel = new JPanel();
@@ -31,6 +35,10 @@ public class PointPairSelector implements ActionListener {
     private ArrayList<PointPair> pairs;
     private int maxID = 0;
 
+    public PointPairSelector(Interactable interactable, boolean showTest) {
+        this.interactable = interactable;
+        this.showTest = showTest;
+    }
 
     public ArrayList<PointPair> getPointPairs(ImagePlus ipl1, ImagePlus ipl2) {
         // Displaying the images and options panel.  While the control is open, do nothing
@@ -85,7 +93,7 @@ public class PointPairSelector implements ActionListener {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.gridwidth = 3;
+        c.gridwidth = showTest ? 4 : 3;
         c.gridheight = 1;
         c.weightx = 0.3333;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -111,6 +119,14 @@ public class PointPairSelector implements ActionListener {
         c.gridx++;
         frame.add(removePairButton,c);
 
+        if (showTest) {
+            JButton testPairButton = new JButton("Test process");
+            testPairButton.addActionListener(this);
+            testPairButton.setActionCommand(TEST);
+            c.gridx++;
+            frame.add(testPairButton, c);
+        }
+
         JButton finishButton = new JButton("Finish adding pairs");
         finishButton.addActionListener(this);
         finishButton.setActionCommand(FINISH);
@@ -124,7 +140,7 @@ public class PointPairSelector implements ActionListener {
 
         c.gridx = 0;
         c.gridy++;
-        c.gridwidth = 3;
+        c.gridwidth = showTest ? 4 : 3;
         c.gridheight = 3;
         c.fill = GridBagConstraints.BOTH;
         frame.add(objectsScrollPane,c);
@@ -145,6 +161,10 @@ public class PointPairSelector implements ActionListener {
 
             case (REMOVE_PAIR):
                 removePair();
+                break;
+
+            case (TEST):
+                interactable.doAction(new Object[]{pairs});
                 break;
 
             case (FINISH):

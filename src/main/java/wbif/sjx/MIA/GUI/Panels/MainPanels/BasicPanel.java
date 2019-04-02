@@ -23,7 +23,7 @@ public class BasicPanel extends MainPanel {
     private static final HelpPanel helpPanel = new HelpPanel();
     private static final NotesPanel notesPanel = new NotesPanel();
 
-    private boolean showHelpNotes = Prefs.get("MIA.showBasicHelpNotes",true);
+    private boolean showHelpNotes = Prefs.get("MIA.showBasicHelpNotes",false);
     private Module lastHelpNotesModule = null;
 
 

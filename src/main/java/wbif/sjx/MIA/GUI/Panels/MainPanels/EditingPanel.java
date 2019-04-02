@@ -39,7 +39,7 @@ public class EditingPanel extends MainPanel {
     private final HelpPanel helpPanel = new HelpPanel();
     private final StatusPanel statusPanel = new StatusPanel();
 
-    private boolean showHelpNotes = Prefs.get("MIA.showEditingHelpNotes",true);
+    private boolean showHelpNotes = Prefs.get("MIA.showEditingHelpNotes",false);
     private Module lastHelpNotesModule = null;
 
 

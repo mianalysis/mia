@@ -17,9 +17,10 @@ import wbif.sjx.MIA.Object.*;
 
 import com.drew.lang.annotations.Nullable;
 import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.Interactable.Interactable;
 import wbif.sjx.MIA.Object.Parameters.*;
-import wbif.sjx.MIA.Process.PointPairSelector;
-import wbif.sjx.MIA.Process.PointPairSelector.PointPair;
+import wbif.sjx.MIA.Object.Interactable.PointPairSelector;
+import wbif.sjx.MIA.Object.Interactable.PointPairSelector.PointPair;
 import wbif.sjx.MIA.ThirdParty.bUnwarpJ_Mod;
 
 import java.awt.*;
@@ -33,7 +34,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class ManualUnwarp extends Module {
+public class ManualUnwarp extends Module implements Interactable {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String REFERENCE_IMAGE = "Reference image";
@@ -49,6 +50,10 @@ public class ManualUnwarp extends Module {
     public static final String STOP_THRESHOLD = "Stop threshold";
     public static final String FILL_MODE = "Fill mode";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    private Param param;
+    private Image inputImage;
+    private Image reference;
 
 
     public interface RegistrationModes {
@@ -245,7 +250,7 @@ public class ManualUnwarp extends Module {
         // Adding any ROIs that may have been pre-selected on the images
         ipl1.setRoi(inputImage.getImagePlus().getRoi());
         ipl2.setRoi(reference.getImagePlus().getRoi());
-        ArrayList<PointPair> pairs = new PointPairSelector().getPointPairs(ipl1, ipl2);
+        ArrayList<PointPair> pairs = new PointPairSelector(this,true).getPointPairs(ipl1, ipl2);
 
         // Converting point pairs into format for bUnwarpJ
         Stack<Point> points1 = new Stack<>();
@@ -278,6 +283,52 @@ public class ManualUnwarp extends Module {
 
 
     @Override
+    public void doAction(Object[] objects) {
+        writeMessage("Running test unwarp");
+
+        // Getting objects
+        ImagePlus ipl1 = new Duplicator().run(inputImage.getImagePlus());
+        ImagePlus ipl2 = new Duplicator().run(reference.getImagePlus());
+        ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
+
+        // Converting point pairs into format for bUnwarpJ
+        Stack<Point> points1 = new Stack<>();
+        Stack<Point> points2 = new Stack<>();
+        for (PointPair pair : pairs) {
+            PointRoi pointRoi1 = pair.getPoint1();
+            PointRoi pointRoi2 = pair.getPoint2();
+
+            points1.push(new Point((int) pointRoi1.getXBase(), (int) pointRoi1.getYBase()));
+            points2.push(new Point((int) pointRoi2.getXBase(), (int) pointRoi2.getYBase()));
+
+        }
+
+        ImageProcessor ipr1 = new Duplicator().run(ipl1).getProcessor();
+        ImageProcessor ipr2 = new Duplicator().run(ipl2).getProcessor();
+
+        Transformation transformation = bUnwarpJ_Mod.computeTransformationBatch(ipr1, ipr2, points1, points2, param);
+
+        // Creating an output image
+        Image outputImage = createEmptyTarget(inputImage,reference,"Test");
+
+        String fillMode = parameters.getValue(FILL_MODE);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+
+        // Applying transformation to entire stack
+        // Applying the transformation to the whole stack.
+        // All channels should move in the same way, so are processed with the same transformation.
+        try {
+            applyTransformation(inputImage, outputImage, transformation, fillMode, multithread);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        concatenateStacks.concatenateImages(new Image[]{reference,outputImage},ConcatenateStacks.AxisModes.CHANNEL,"Unwarp comparison").showImage();
+
+    }
+
+    @Override
     public String getTitle() {
         return "Unwarp images (manual)";
     }
@@ -298,7 +349,7 @@ public class ManualUnwarp extends Module {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
@@ -307,10 +358,10 @@ public class ManualUnwarp extends Module {
         String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
-        Image reference = workspace.getImage(referenceImageName);
+        reference = workspace.getImage(referenceImageName);
 
         // Setting up the parameters
-        Param param = new Param();
+        param = new Param();
         param.mode = getRegistrationMode(registrationMode);
         param.img_subsamp_fact = parameters.getValue(SUBSAMPLE_FACTOR);
         param.min_scale_deformation = getInitialDeformationMode(parameters.getValue(INITIAL_DEFORMATION_MODE));
