@@ -16,15 +16,20 @@ import wbif.sjx.MIA.Object.Parameters.InputImageP;
 import wbif.sjx.MIA.Object.Parameters.OutputObjectsP;
 import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
 import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.MIA.Process.PointPairSelector;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.Object.LUTs;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by sc13967 on 27/02/2018.
@@ -32,8 +37,9 @@ import java.util.HashMap;
 public class ManuallyIdentifyObjects extends Module implements ActionListener {
     private JFrame frame;
     private JTextField objectNumberField;
-    private final JPanel objectsPanel = new JPanel();
-    JScrollPane objectsScrollPane = new JScrollPane(objectsPanel);
+    DefaultListModel<ObjRoi> listModel = new DefaultListModel<>();
+    JList<ObjRoi> list = new JList<>(listModel);
+    JScrollPane objectsScrollPane = new JScrollPane(list);
     private final GridBagConstraints objectsC = new GridBagConstraints();
 
     private Workspace workspace;
@@ -55,6 +61,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     private static final String ADD_NEW = "Add new";
     private static final String ADD_EXISTING = "Add existing";
+    private static final String REMOVE = "Remove";
     private static final String FINISH = "Finish";
 
     public static final String INPUT_IMAGE = "Input image";
@@ -78,12 +85,19 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         maxID = 0;
         frame = new JFrame();
         frame.setAlwaysOnTop(true);
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                List<ObjRoi> selected = list.getSelectedValuesList();
+                for (ObjRoi objRoi:selected) displayObject(objRoi);
+            }
+        });
 
         frame.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.gridwidth = 3;
+        c.gridwidth = 4;
         c.gridheight = 1;
         c.weightx = 1;
         c.anchor = GridBagConstraints.WEST;
@@ -109,6 +123,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.gridx++;
         frame.add(existingObjectButton,c);
 
+        JButton removeObjectButton = new JButton("Remove object (s)");
+        removeObjectButton.addActionListener(this);
+        removeObjectButton.setActionCommand(REMOVE);
+        c.gridx++;
+        frame.add(removeObjectButton,c);
+
         JButton finishButton = new JButton("Finish adding objects");
         finishButton.addActionListener(this);
         finishButton.setActionCommand(FINISH);
@@ -128,14 +148,6 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
         c.fill = GridBagConstraints.HORIZONTAL;
         frame.add(objectNumberField,c);
 
-        objectsC.gridx = 0;
-        objectsC.gridy = 0;
-        objectsC.weightx = 1;
-        objectsC.weighty = 1;
-        objectsC.anchor = GridBagConstraints.NORTHWEST;
-        objectsC.fill = GridBagConstraints.HORIZONTAL;
-        objectsPanel.setLayout(new GridBagLayout());
-
         objectsScrollPane.setPreferredSize(new Dimension(0,200));
         objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -143,7 +155,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         c.gridx = 0;
         c.gridy++;
-        c.gridwidth = 3;
+        c.gridwidth = 4;
         c.gridheight = 3;
         c.fill = GridBagConstraints.BOTH;
         frame.add(objectsScrollPane,c);
@@ -284,7 +296,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Clearing any ROIs stored from previous runs
         rois = new HashMap<>();
-        objectsPanel.removeAll();
+        list.removeAll();
 
         // Initialising output objects
         outputObjects = new ObjCollection(outputObjectsName);
@@ -379,6 +391,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
                 addToExistingObject();
                 break;
 
+            case (REMOVE):
+                removeObjects();
+                break;
+
             case (FINISH):
                 try {
                     processObjects();
@@ -400,12 +416,12 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Adding the ROI to our current collection
         ArrayList<ObjRoi> currentRois = new ArrayList<>();
-        ObjRoi objRoi = new ObjRoi(roi,displayImagePlus.getT()-1,displayImagePlus.getZ());
+        ObjRoi objRoi = new ObjRoi(ID, roi,displayImagePlus.getT()-1,displayImagePlus.getZ());
         currentRois.add(objRoi);
         rois.put(ID,currentRois);
 
         // Displaying the ROI on the overlay
-        addToOverlay(roi,ID);
+        updateOverlay();
 
         // Setting the number field to this number
         objectNumberField.setText(String.valueOf(ID));
@@ -423,18 +439,35 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
         // Adding the ROI to our current collection
         ArrayList<ObjRoi> currentRois = rois.get(ID);
-        ObjRoi objRoi = new ObjRoi(roi,displayImagePlus.getT()-1,displayImagePlus.getZ());
+        ObjRoi objRoi = new ObjRoi(ID, roi,displayImagePlus.getT()-1,displayImagePlus.getZ());
         currentRois.add(objRoi);
         rois.put(ID,currentRois);
 
         // Displaying the ROI on the overlay
-        addToOverlay(roi,ID);
+        updateOverlay();
 
         // Setting the number field to this number
         objectNumberField.setText(String.valueOf(ID));
 
         // Adding to the list of objects
         addObjectToList(objRoi,ID);
+
+    }
+
+    public void removeObjects() {
+        // Get selected ROIs
+        List<ObjRoi> selected = list.getSelectedValuesList();
+
+        for (ObjRoi objRoi:selected) {
+            // Get objects matching this ID
+            int ID = objRoi.getID();
+            rois.get(ID).remove(objRoi);
+
+            listModel.removeElement(objRoi);
+
+        }
+
+        updateOverlay();
 
     }
 
@@ -467,23 +500,10 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     public void addObjectToList(ObjRoi objRoi, int ID) {
-        JButton button = new JButton();
-        button.setText("Object "+String.valueOf(ID)+", T = "+(objRoi.getT()+1)+", Z = "+objRoi.getZ());
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Show the object on the image
-                displayObject(objRoi);
-            }
-        });
-
-        objectsPanel.add(button,objectsC);
+        listModel.addElement(objRoi);
 
         objectsC.gridy++;
         objectsC.weighty = objectsC.weighty*1000;
-
-        objectsPanel.validate();
-        objectsPanel.repaint();
 
         // Ensuring the scrollbar is visible if necessary and moving to the bottom
         JScrollBar scrollBar = objectsScrollPane.getVerticalScrollBar();
@@ -492,11 +512,26 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 
     }
 
-    public void addToOverlay(Roi roi, int ID) {
+    public void updateOverlay() {
+        overlay.clear();
+
+        for (ArrayList<ObjRoi> groups:rois.values()) {
+            for (ObjRoi objRoi:groups) {
+                addToOverlay(objRoi);
+            }
+        }
+    }
+
+    public void addToOverlay(ObjRoi objRoi) {
+        Roi roi = objRoi.getRoi();
+        int ID = objRoi.getID();
+
         // Adding overlay showing ROI and its ID number
         overlay.add(ObjRoi.duplicateRoi(roi));
+
         double[] centroid = roi.getContourCentroid();
         TextRoi textRoi = new TextRoi(centroid[0],centroid[1],String.valueOf(ID));
+
         if (displayImagePlus.isHyperStack()) {
             textRoi.setPosition(1, displayImagePlus.getZ(), displayImagePlus.getT());
         } else {
@@ -514,11 +549,13 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
 }
 
 class ObjRoi {
+    private final int ID;
     private final Roi roi;
     private final int t;
     private final int z;
 
-    ObjRoi(Roi roi, int t, int z) {
+    ObjRoi(int ID, Roi roi, int t, int z) {
+        this.ID = ID;
         this.roi = duplicateRoi(roi);
         this.t = t;
         this.z = z;
@@ -573,7 +610,7 @@ class ObjRoi {
                 Line line = (Line) roi;
 
                 if (line.getStrokeWidth() > 0) System.err.println("Thick lines currently unsupported.  Using backbone only.");
-                
+
                 newRoi = new Line(line.x1,line.y1,line.x2,line.y2);
                 break;
 
@@ -601,6 +638,10 @@ class ObjRoi {
 
     }
 
+    public int getID() {
+        return ID;
+    }
+
     public Roi getRoi() {
         return roi;
     }
@@ -613,5 +654,8 @@ class ObjRoi {
         return z;
     }
 
-
+    @Override
+    public String toString() {
+        return "Object "+String.valueOf(ID)+", T = "+(t+1)+", Z = "+z;
+    }
 }

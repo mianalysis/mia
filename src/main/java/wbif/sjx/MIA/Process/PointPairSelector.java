@@ -2,28 +2,34 @@ package wbif.sjx.MIA.Process;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.Overlay;
-import ij.gui.PointRoi;
-import ij.gui.Roi;
-import ij.gui.Toolbar;
+import ij.gui.*;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PointPairSelector implements ActionListener {
     private static final String ADD_PAIRS = "Add pair(s)";
+    private static final String REMOVE_PAIR = "Remove pair(s)";
     private static final String FINISH = "Finish";
 
     private JFrame frame;
+    private final JPanel objectsPanel = new JPanel();
+    DefaultListModel<PointPair> listModel = new DefaultListModel<>();
+    JList<PointPair> list = new JList<>(listModel);
+    JScrollPane objectsScrollPane = new JScrollPane(list);
 
     private ImagePlus ipl1;
     private ImagePlus ipl2;
     private Overlay overlay1;
     private Overlay overlay2;
     private ArrayList<PointPair> pairs;
+    private int maxID = 0;
 
 
     public ArrayList<PointPair> getPointPairs(ImagePlus ipl1, ImagePlus ipl2) {
@@ -67,14 +73,21 @@ public class PointPairSelector implements ActionListener {
         pairs  = new ArrayList<>();
         frame = new JFrame();
         frame.setAlwaysOnTop(true);
+        list.removeAll();
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                updateOverlay();
+            }
+        });
 
         frame.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
-        c.gridwidth = 2;
+        c.gridwidth = 3;
         c.gridheight = 1;
-        c.weightx = 0.5;
+        c.weightx = 0.3333;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.WEST;
         c.insets = new Insets(5,5,5,5);
@@ -92,11 +105,29 @@ public class PointPairSelector implements ActionListener {
         c.gridwidth = 1;
         frame.add(addPairButton,c);
 
+        JButton removePairButton = new JButton("Remove pair");
+        removePairButton.addActionListener(this);
+        removePairButton.setActionCommand(REMOVE_PAIR);
+        c.gridx++;
+        frame.add(removePairButton,c);
+
         JButton finishButton = new JButton("Finish adding pairs");
         finishButton.addActionListener(this);
         finishButton.setActionCommand(FINISH);
         c.gridx++;
         frame.add(finishButton,c);
+
+        objectsScrollPane.setPreferredSize(new Dimension(0,200));
+        objectsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        objectsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        objectsScrollPane.getVerticalScrollBar().setUnitIncrement(10);
+
+        c.gridx = 0;
+        c.gridy++;
+        c.gridwidth = 3;
+        c.gridheight = 3;
+        c.fill = GridBagConstraints.BOTH;
+        frame.add(objectsScrollPane,c);
 
         frame.pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -110,6 +141,10 @@ public class PointPairSelector implements ActionListener {
         switch (e.getActionCommand()) {
             case (ADD_PAIRS):
                 addNewPairs();
+                break;
+
+            case (REMOVE_PAIR):
+                removePair();
                 break;
 
             case (FINISH):
@@ -144,9 +179,25 @@ public class PointPairSelector implements ActionListener {
             PointRoi point2 = new PointRoi(centroidX2[i], centroidY2[i]);
             ipl2.deleteRoi();
 
-            PointPair pair = new PointPair(point1, point2);
+            PointPair pair = new PointPair(point1, point2, ++maxID);
             pairs.add(pair);
+
+            // Adding to the list of objects
+            addPairToList(pair);
+
         }
+
+        updateOverlay();
+
+    }
+
+    public void removePair() {
+        // Get selected points
+        List<PointPair> selected = list.getSelectedValuesList();
+
+        pairs.removeAll(selected);
+//        listModel.removeElement(selected);
+        for (PointPair pair:selected) listModel.removeElement(pair);
 
         updateOverlay();
 
@@ -166,22 +217,51 @@ public class PointPairSelector implements ActionListener {
 
     }
 
+    public void addPairToList(PointPair pair) {
+        listModel.addElement(pair);
+
+        objectsPanel.validate();
+        objectsPanel.repaint();
+
+        // Ensuring the scrollbar is visible if necessary and moving to the bottom
+        JScrollBar scrollBar = objectsScrollPane.getVerticalScrollBar();
+        scrollBar.setValue(scrollBar.getMaximum()-1);
+        objectsScrollPane.revalidate();
+
+        updateOverlay();
+
+    }
+
     public void updateOverlay() {
         overlay1.clear();
         overlay2.clear();
 
+        // Get selected points
+        List<PointPair> selected = list.getSelectedValuesList();
+
         for (PointPair pair:pairs) {
+            Color color = selected.contains(pair) ? Color.CYAN : Color.RED;
+
             PointRoi point1 = pair.getPoint1();
             point1.setPointType(PointRoi.NORMAL);
             point1.setSize(2);
-            point1.setStrokeColor(Color.RED);
+            point1.setStrokeColor(color);
             overlay1.add(point1);
+
+            TextRoi textRoi1 = new TextRoi((int) point1.getXBase(), (int) point1.getYBase(), String.valueOf(pair.getID()));
+            textRoi1.setStrokeColor(color);
+            overlay1.add(textRoi1);
 
             PointRoi point2 = pair.getPoint2();
             point2.setPointType(PointRoi.NORMAL);
             point2.setSize(2);
-            point2.setStrokeColor(Color.RED);
+            point2.setStrokeColor(color);
             overlay2.add(point2);
+
+            TextRoi textRoi2 = new TextRoi((int) point2.getXBase(), (int) point2.getYBase(), String.valueOf(pair.getID()));
+            textRoi2.setStrokeColor(color);
+            overlay2.add(textRoi2);
+
         }
 
         ipl1.updateAndDraw();
@@ -192,10 +272,12 @@ public class PointPairSelector implements ActionListener {
     public class PointPair {
         private PointRoi p1;
         private PointRoi p2;
+        private int ID;
 
-        public PointPair(PointRoi p1, PointRoi p2) {
+        public PointPair(PointRoi p1, PointRoi p2, int ID) {
             this.p1 = p1;
             this.p2 = p2;
+            this.ID = ID;
         }
 
         public PointRoi getPoint1() {
@@ -204,6 +286,15 @@ public class PointPairSelector implements ActionListener {
 
         public PointRoi getPoint2() {
             return p2;
+        }
+
+        public int getID() {
+            return ID;
+        }
+
+        @Override
+        public String toString() {
+            return "Pair "+ID;
         }
     }
 }
