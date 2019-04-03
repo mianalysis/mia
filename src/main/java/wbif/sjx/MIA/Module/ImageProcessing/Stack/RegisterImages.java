@@ -13,6 +13,8 @@ import mpicbg.ij.util.Util;
 import mpicbg.imagefeatures.Feature;
 import mpicbg.imagefeatures.FloatArray2DSIFT;
 import mpicbg.models.*;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ImageMath;
+import wbif.sjx.MIA.Module.ImageProcessing.Pixel.InvertIntensity;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.ProjectImage;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
@@ -53,7 +55,11 @@ public class RegisterImages extends Module implements Interactable {
     public static final String ROD = "Closest/next closest ratio";
     public static final String MAX_EPSILON = "Maximal alignment error (px)";
     public static final String MIN_INLIER_RATIO = "Inlier ratio";
+    public static final String FILL_MODE = "Fill mode";
     public static final String ENABLE_MULTITHREADING = "Enable multithreading";
+
+    private Image inputImage;
+    private Image reference;
 
 
     public interface AlignmentModes {
@@ -99,6 +105,14 @@ public class RegisterImages extends Module implements Interactable {
 
     }
 
+    public interface FillModes {
+        String BLACK = "Black";
+        String WHITE = "White";
+
+        String[] ALL = new String[]{BLACK,WHITE};
+
+    }
+
 
     public interface Measurements {
         String TRANSLATE_X = "REGISTER // TRANSLATE_X";
@@ -111,7 +125,7 @@ public class RegisterImages extends Module implements Interactable {
     }
 
 
-    public void processAutomatic(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) {
+    public void processAutomatic(Image inputImage, int calculationChannel, String relativeMode, Param param, int correctionInterval, String fillMode, boolean multithread, @Nullable Image reference, @Nullable Image externalSource) {
         // Creating a reference image
         Image projectedReference = null;
 
@@ -170,7 +184,7 @@ public class RegisterImages extends Module implements Interactable {
                 for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
                     warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
                     try {
-                        applyTransformation(warped,projectedReference,mapping,multithread);
+                        applyTransformation(warped,projectedReference,mapping,fillMode,multithread);
                     } catch (InterruptedException e) {
                         return;
                     }
@@ -184,7 +198,7 @@ public class RegisterImages extends Module implements Interactable {
                     for (int c = 1; c <= source.getImagePlus().getNChannels(); c++) {
                         warped = ExtractSubstack.extractSubstack(source, "Warped", String.valueOf(c), "1-end", String.valueOf(tt));
                         try {
-                            applyTransformation(warped,projectedReference,mapping,multithread);
+                            applyTransformation(warped,projectedReference,mapping,fillMode,multithread);
                         } catch (InterruptedException e) {
                             return;
                         }
@@ -198,7 +212,7 @@ public class RegisterImages extends Module implements Interactable {
         }
     }
 
-    public void processManual(Image inputImage, String transformationMode, boolean multithread, Image reference) {
+    public void processManual(Image inputImage, String transformationMode, boolean multithread, String fillMode, Image reference) {
         // Creating a reference image
         Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
 
@@ -207,7 +221,7 @@ public class RegisterImages extends Module implements Interactable {
 
         ImagePlus ipl1 = new Duplicator().run(projectedWarped.getImagePlus());
         ImagePlus ipl2 = new Duplicator().run(projectedReference.getImagePlus());
-        ArrayList<PointPair> pairs = new PointPairSelector(this,false).getPointPairs(ipl1,ipl2);
+        ArrayList<PointPair> pairs = new PointPairSelector(this,true).getPointPairs(ipl1,ipl2);
 
         // Getting transform
         Object[] output = getLandmarkTransformation(pairs,transformationMode);
@@ -225,7 +239,7 @@ public class RegisterImages extends Module implements Interactable {
             for (int c = 1; c <= inputImage.getImagePlus().getNChannels(); c++) {
                 Image warped = ExtractSubstack.extractSubstack(inputImage, "Warped", String.valueOf(c), "1-end", String.valueOf(t));
                 try {
-                    applyTransformation(warped,projectedReference,mapping,multithread);
+                    applyTransformation(warped,projectedReference,mapping,fillMode,multithread);
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -308,7 +322,7 @@ public class RegisterImages extends Module implements Interactable {
 
     }
 
-    public static void applyTransformation(Image inputImage, Image referenceImage, Mapping mapping, boolean multithread) throws InterruptedException {
+    public static void applyTransformation(Image inputImage, Image referenceImage, Mapping mapping, String fillMode, boolean multithread) throws InterruptedException {
         // Iterate over all images in the stack
         ImagePlus inputIpl = inputImage.getImagePlus();
         int nChannels = inputIpl.getNChannels();
@@ -323,6 +337,8 @@ public class RegisterImages extends Module implements Interactable {
 
         int nTotal = nChannels*nFrames;
         AtomicInteger count = new AtomicInteger();
+
+        if (fillMode.equals(ManualUnwarp.FillModes.WHITE)) InvertIntensity.process(inputImage);
 
         for (int c=1;c<=nChannels;c++) {
             for (int z=1;z<=nSlices;z++) {
@@ -345,8 +361,12 @@ public class RegisterImages extends Module implements Interactable {
                 }
             }
         }
+
         pool.shutdown();
         pool.awaitTermination(Integer.MAX_VALUE, TimeUnit.DAYS); // i.e. never terminate early
+
+        if (fillMode.equals(ManualUnwarp.FillModes.WHITE)) InvertIntensity.process(inputImage);
+
     }
 
     synchronized private static ImagePlus getSetStack(ImagePlus inputImagePlus, int timepoint, int channel, int slice, @Nullable ImageProcessor toPut) {
@@ -387,7 +407,51 @@ public class RegisterImages extends Module implements Interactable {
 
     @Override
     public void doAction(Object[] objects) {
-        System.err.println("No test action currently set.  This will be implemented in future versions.");
+        writeMessage("Running test registration");
+
+        String transformationMode = parameters.getValue(TRANSFORMATION_MODE);
+        String fillMode = parameters.getValue(FILL_MODE);
+        boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
+
+        ArrayList<PointPair> pairs = (ArrayList<PointPair>) objects[0];
+
+        // Creating a reference image
+        Image projectedReference = ProjectImage.projectImageInZ(reference, "ProjectedReference", ProjectImage.ProjectionModes.MAX);
+
+        // Duplicating image
+        ImagePlus dupIpl = inputImage.getImagePlus().duplicate();
+        Image dupImage = new Image("Registered",dupIpl);
+
+        // Getting transform
+        Object[] output = getLandmarkTransformation(pairs,transformationMode);
+        InverseTransformMapping mapping = (InverseTransformMapping) output[0];
+        AbstractAffineModel2D model = (AbstractAffineModel2D) output[1];
+
+        // Iterate over each time-step
+        int count = 0;
+        int total = dupImage.getImagePlus().getNFrames();
+        for (int t = 1; t <= dupImage.getImagePlus().getNFrames(); t++) {
+            writeMessage("Processing timepoint "+(++count)+" of "+total);
+
+            // Applying the transformation to the whole stack.
+            // All channels should move in the same way, so are processed with the same transformation.
+            for (int c = 1; c <= dupImage.getImagePlus().getNChannels(); c++) {
+                Image warped = ExtractSubstack.extractSubstack(dupImage, "Warped", String.valueOf(c), "1-end", String.valueOf(t));
+                try {
+                    applyTransformation(warped,projectedReference,mapping,fillMode,multithread);
+                } catch (InterruptedException e) {
+                    return;
+                }
+                replaceStack(dupImage, warped, c, t);
+            }
+
+            mapping = null;
+
+        }
+
+        ConcatenateStacks concatenateStacks = new ConcatenateStacks();
+        concatenateStacks.concatenateImages(new Image[]{reference,dupImage},ConcatenateStacks.AxisModes.CHANNEL,"Registration comparison").showImage();
+
     }
 
     @Override
@@ -411,7 +475,7 @@ public class RegisterImages extends Module implements Interactable {
 
         // Getting input image
         String inputImageName = parameters.getValue(INPUT_IMAGE);
-        Image inputImage = workspace.getImages().get(inputImageName);
+        inputImage = workspace.getImages().get(inputImageName);
 
         // Getting parameters
         boolean applyToInput = parameters.getValue(APPLY_TO_INPUT);
@@ -429,13 +493,14 @@ public class RegisterImages extends Module implements Interactable {
         double rod = parameters.getValue(ROD);
         double maxEpsilon = parameters.getValue(MAX_EPSILON);
         double minInlierRatio = parameters.getValue(MIN_INLIER_RATIO);
+        String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
 
         if (!applyToInput) inputImage = new Image(outputImageName,inputImage.getImagePlus().duplicate());
 
         switch (alignmentMode) {
             case AlignmentModes.AUTOMATIC:
-                Image reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
+                reference = relativeMode.equals(RelativeModes.SPECIFIC_IMAGE) ? workspace.getImage(referenceImageName) : null;
 
                 // If the rolling correction mode is off, set the interval to -1
                 if (rollingCorrectionMode.equals(RollingCorrectionModes.NONE)) correctionInterval = -1;
@@ -455,12 +520,12 @@ public class RegisterImages extends Module implements Interactable {
 
                 Image externalSource = calculationSource.equals(CalculationSources.EXTERNAL) ? workspace.getImage(externalSourceName) : null;
 
-                processAutomatic(inputImage, calculationChannel, relativeMode, param, correctionInterval, multithread, reference, externalSource);
+                processAutomatic(inputImage, calculationChannel, relativeMode, param, correctionInterval, fillMode, multithread, reference, externalSource);
                 break;
 
             case AlignmentModes.MANUAL:
                 reference = workspace.getImage(referenceImageName);
-                processManual(inputImage,transformationMode,multithread,reference);
+                processManual(inputImage,transformationMode,multithread,fillMode,reference);
                 break;
         }
 
@@ -495,6 +560,7 @@ public class RegisterImages extends Module implements Interactable {
         parameters.add(new DoubleP(ROD,this,0.92));
         parameters.add(new DoubleP(MAX_EPSILON,this,25.0));
         parameters.add(new DoubleP(MIN_INLIER_RATIO,this,0.05));
+        parameters.add(new ChoiceP(FILL_MODE,this,FillModes.BLACK,FillModes.ALL));
         parameters.add(new BooleanP(ENABLE_MULTITHREADING,this,true));
 
     }
@@ -553,6 +619,7 @@ public class RegisterImages extends Module implements Interactable {
                 break;
         }
 
+        returnedParameters.add(parameters.getParameter(FILL_MODE));
         returnedParameters.add(parameters.getParameter(ENABLE_MULTITHREADING));
 
         return returnedParameters;
