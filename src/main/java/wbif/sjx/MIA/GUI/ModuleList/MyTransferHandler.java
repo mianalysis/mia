@@ -49,12 +49,12 @@ public class MyTransferHandler extends TransferHandler {
             index = max;
         target.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         try {
-            Integer rowFrom = (Integer) info.getTransferable().getTransferData(localObjectFlavor);
-            if (rowFrom != -1 && rowFrom != index) {
-                ((Reorderable) table.getModel()).reorder(rowFrom, index);
-                if (index > rowFrom)
-                    index--;
-                target.getSelectionModel().addSelectionInterval(index, index);
+            int[] rowsFrom = table.getSelectedRows();
+            if (rowsFrom.length != 0) {
+                ((Reorderable) table.getModel()).reorder(rowsFrom, index);
+//                if (index > rowFrom) index--;
+                target.getSelectionModel().setSelectionInterval(-1,-1);
+//                target.getSelectionModel().addSelectionInterval(index, index);
                 return true;
             }
         } catch (Exception e) {

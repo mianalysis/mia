@@ -16,7 +16,7 @@ public class ModuleList {
 
         String[] columnNames = {"First Name", "Last Name", ""};
         Object[][] data = {{"Homer", "Simpson", "delete Homer"},
-                {"Madge", "Simpson", "delete Madge"},
+                {"Marge", "Simpson", "delete Marge"},
                 {"Bart",  "Simpson", "delete Bart"},
                 {"Lisa",  "Simpson", "delete Lisa"}};
 
@@ -27,7 +27,6 @@ public class ModuleList {
         table.setDragEnabled(true);
         table.setDropMode(DropMode.INSERT_ROWS);
         table.setTransferHandler(new MyTransferHandler(table));
-
 
         tableModel.insertRow(2,new String[]{"Maggie", "Simpson", "delete Maggie"});
 

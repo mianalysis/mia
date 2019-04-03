@@ -8,7 +8,7 @@ public class MyTableModel extends DefaultTableModel implements Reorderable {
     }
 
     @Override
-    public void reorder(int fromIndex, int toIndex) {
-        moveRow(fromIndex,fromIndex,toIndex);
+    public void reorder(int[] fromIndex, int toIndex) {
+        moveRow(fromIndex[0],fromIndex[fromIndex.length-1],toIndex);
     }
 }
