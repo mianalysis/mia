@@ -3,6 +3,7 @@ package wbif.sjx.MIA.Object.Interactable;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.*;
+import wbif.sjx.MIA.Object.Image;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -289,7 +290,41 @@ public class PointPairSelector implements ActionListener {
 
     }
 
-    public class PointPair {
+    public static ArrayList<PointPair> getPreselectedPoints(wbif.sjx.MIA.Object.Image inputImage, Image reference) {
+        ArrayList<PointPair> pairs = new ArrayList<>();
+        Roi roi1 = inputImage.getImagePlus().getRoi();
+        Roi roi2 = reference.getImagePlus().getRoi();
+
+        if (roi1 == null || roi2 == null) {
+            System.err.println("No points selected in at least one image");
+            return null;
+        }
+
+        float[] centroidX1 = roi1.getFloatPolygon().xpoints;
+        float[] centroidY1 = roi1.getFloatPolygon().ypoints;
+        float[] centroidX2 = roi2.getFloatPolygon().xpoints;
+        float[] centroidY2 = roi2.getFloatPolygon().ypoints;
+
+        if (centroidX1.length != centroidX2.length) {
+            System.err.println("Unequal number of points selected in each image");
+            return null;
+        }
+
+        int maxID = 0;
+        for (int i=0;i<centroidX1.length;i++) {
+            PointRoi point1 = new PointRoi(centroidX1[i], centroidY1[i]);
+            PointRoi point2 = new PointRoi(centroidX2[i], centroidY2[i]);
+
+            PointPair pair = new PointPair(point1, point2, ++maxID);
+            pairs.add(pair);
+
+        }
+
+        return pairs;
+
+    }
+
+    public static class PointPair {
         private PointRoi p1;
         private PointRoi p2;
         private int ID;
