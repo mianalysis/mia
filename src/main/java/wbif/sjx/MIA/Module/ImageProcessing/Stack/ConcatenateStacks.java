@@ -295,7 +295,7 @@ public class ConcatenateStacks <T extends RealType<T> & NativeType<T>> extends M
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

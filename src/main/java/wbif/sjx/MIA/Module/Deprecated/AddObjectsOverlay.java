@@ -957,7 +957,7 @@ public class AddObjectsOverlay extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

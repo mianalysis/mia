@@ -432,7 +432,7 @@ public class MetadataExtractor extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         MetadataRefCollection metadataReferences = new MetadataRefCollection();
 
         switch((String) parameters.getValue(EXTRACTOR_MODE)) {

@@ -85,7 +85,7 @@ public abstract class Module implements Comparable {
 
     public abstract MeasurementRefCollection updateAndGetObjectMeasurementRefs();
 
-    public abstract MetadataRefCollection updateAndGetMetadataReferences();
+    public abstract MetadataRefCollection updateAndGetImageMetadataReferences();
 
     public MeasurementRef getImageMeasurementRef(String name) {
         return imageMeasurementRefs.getOrPut(name);

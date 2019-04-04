@@ -15,7 +15,7 @@
 // * correspond to a different object and have the format [ID],[Classification]
 // */
 //public class ApplyManualClassification extends Module {
-//    public static final String INPUT_OBJECTS = "Input objects";
+//    public static final String TRACK_OBJECTS = "Input objects";
 //    public static final String CLASSIFICATION_FILE = "Classification file";
 //    public static final String ADD_MEASUREMENT = "Add measurement";
 //    public static final String MEASUREMENT = "Measurement";
@@ -46,7 +46,7 @@
 //    @Override
 //    public boolean process(Workspace workspace) {
 //        // Getting input objects
-//        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+//        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
 //        ObjCollection inputObjects = workspace.getObjects().get(inputObjectsName);
 //
 //        // Getting classification file and storing classifications as HashMap that can be easily read later on
@@ -112,7 +112,7 @@
 //
 //    @Override
 //    protected void initialiseParameters() {
-//        parameters.add(new InputObjectsP(INPUT_OBJECTS,this));
+//        parameters.add(new InputObjectsP(TRACK_OBJECTS,this));
 //        parameters.add(new FilePathP(CLASSIFICATION_FILE, this));
 //
 //        ParameterCollection collection = new ParameterCollection();
@@ -124,7 +124,7 @@
 //
 //    @Override
 //    public ParameterCollection updateAndGetParameters() {
-//        String inputObjectsName = parameters.getValue(INPUT_OBJECTS);
+//        String inputObjectsName = parameters.getValue(TRACK_OBJECTS);
 //
 //        ParameterGroup parameterGroup = parameters.getParameter(ADD_MEASUREMENT);
 //        LinkedHashSet<ParameterCollection> collections = parameterGroup.getCollections();
@@ -146,7 +146,7 @@
 //        objectMeasurementRefs.setAllCalculated(false);
 //
 //        MeasurementRef classMeas = objectMeasurementRefs.getOrPut(Measurements.CLASS);
-//        classMeas.setImageObjName(parameters.getValue(INPUT_OBJECTS));
+//        classMeas.setImageObjName(parameters.getValue(TRACK_OBJECTS));
 //        classMeas.setCalculated(true);
 //
 //        return objectMeasurementRefs;
@@ -154,7 +154,7 @@
 //    }
 //
 //    @Override
-//    public MetadataRefCollection updateAndGetMetadataReferences() {
+//    public MetadataRefCollection updateAndGetImageMetadataReferences() {
 //        return null;
 //    }
 //

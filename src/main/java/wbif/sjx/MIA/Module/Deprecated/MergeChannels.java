@@ -315,7 +315,7 @@ public class MergeChannels <T extends RealType<T> & NativeType<T>> extends Modul
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

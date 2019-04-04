@@ -173,7 +173,7 @@ public class BinaryOperations2D extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

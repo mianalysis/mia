@@ -369,7 +369,7 @@ public class ManuallyIdentifyObjects extends Module implements ActionListener {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

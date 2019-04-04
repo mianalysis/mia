@@ -160,7 +160,7 @@ public class CropImage < T extends RealType< T > & NativeType< T >> extends Modu
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

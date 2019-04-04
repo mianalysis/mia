@@ -7,16 +7,14 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -134,75 +132,6 @@ public class ExtractSubstack extends Module implements ActionListener {
 
     }
 
-    public static int[] interpretRange(String range) {
-        // Creating a TreeSet to store the indices we've collected.  This will order numerically and remove duplicates.
-        TreeSet<Integer> values = new TreeSet<>();
-
-        // Removing white space
-        range = range.replaceAll("\\s","");
-
-        // Setting patterns for ranges and values
-        Pattern singleRangePattern = Pattern.compile("^(\\d+)-(\\d+)$");
-        Pattern singleRangeEndPattern = Pattern.compile("^(\\d+)-end$");
-        Pattern intervalRangePattern = Pattern.compile("^(\\d+)-(\\d+)-(\\d+)$");
-        Pattern intervalRangeEndPattern = Pattern.compile("^(\\d+)-end-(\\d+)$");
-        Pattern singleValuePattern = Pattern.compile("^\\d+$");
-
-        // First, splitting comma-delimited sections
-        StringTokenizer stringTokenizer = new StringTokenizer(range,",");
-        while (stringTokenizer.hasMoreTokens()) {
-            String token = stringTokenizer.nextToken();
-
-            // If it matches the single range pattern processAutomatic as a range, otherwise, check if it's a single value.
-            Matcher singleRangeMatcher = singleRangePattern.matcher(token);
-            Matcher singleRangeEndMatcher = singleRangeEndPattern.matcher(token);
-            Matcher intervalRangeMatcher = intervalRangePattern.matcher(token);
-            Matcher intervalRangeEndMatcher = intervalRangeEndPattern.matcher(token);
-            Matcher singleValueMatcher = singleValuePattern.matcher(token);
-
-            if (singleRangeMatcher.matches()) {
-                int start = Integer.parseInt(singleRangeMatcher.group(1));
-                int end = Integer.parseInt(singleRangeMatcher.group(2));
-
-                for (int value=start;value<=end;value++) values.add(value);
-
-            } else if (singleRangeEndMatcher.matches()) {
-                // If the numbers should proceed to the end, the last three added are the starting number, the starting
-                // number plus one and the maximum value
-                int start = Integer.parseInt(singleRangeEndMatcher.group(1));
-
-                values.add(start);
-                values.add(start+1);
-                values.add(Integer.MAX_VALUE);
-
-            } else if (intervalRangeMatcher.matches()) {
-                int start = Integer.parseInt(intervalRangeMatcher.group(1));
-                int end = Integer.parseInt(intervalRangeMatcher.group(2));
-                int interval = Integer.parseInt(intervalRangeMatcher.group(3));
-
-                for (int value=start;value<=end;value = value + interval) values.add(value);
-
-            } else if (intervalRangeEndMatcher.matches()) {
-                // If the numbers should proceed to the end, the last three added are the starting number, the starting
-                // number plus the interval and the maximum value
-                int start = Integer.parseInt(intervalRangeEndMatcher.group(1));
-                int interval = Integer.parseInt(intervalRangeEndMatcher.group(2));
-
-                values.add(start);
-                values.add(start+interval);
-                values.add(Integer.MAX_VALUE);
-
-            } else if (singleValueMatcher.matches()) {
-                values.add(Integer.parseInt(token));
-
-            }
-        }
-
-        // Returning an array of the indices
-        return values.stream().mapToInt(Integer::intValue).toArray();
-
-    }
-
     public static int[] extendRangeToEnd(int[] inputRange, int end) {
         // Adding the numbers to a TreeSet, then returning as an array
         TreeSet<Integer> values = new TreeSet<>();
@@ -222,13 +151,13 @@ public class ExtractSubstack extends Module implements ActionListener {
     public static Image extractSubstack(Image inputImage, String outputImageName, String channels, String slices, String frames) {
         ImagePlus inputImagePlus = inputImage.getImagePlus();
 
-        int[] channelsList = interpretRange(channels);
+        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(channels,true);
         if (channelsList[channelsList.length-1] == Integer.MAX_VALUE) channelsList = extendRangeToEnd(channelsList,inputImagePlus.getNChannels());
 
-        int[] slicesList = interpretRange(slices);
+        int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(slices,true);
         if (slicesList[slicesList.length-1] == Integer.MAX_VALUE) slicesList = extendRangeToEnd(slicesList,inputImagePlus.getNSlices());
 
-        int[] framesList = interpretRange(frames);
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frames,true);
         if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,inputImagePlus.getNFrames());
 
         List<Integer> cList = java.util.Arrays.stream(channelsList).boxed().collect(Collectors.toList());
@@ -364,7 +293,7 @@ public class ExtractSubstack extends Module implements ActionListener {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 
