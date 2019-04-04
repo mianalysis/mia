@@ -299,6 +299,7 @@ public class FilterObjects extends Module implements ActionListener {
         iterator.remove();
     }
 
+
     @Override
     public String getTitle() {
         return "Filter objects";

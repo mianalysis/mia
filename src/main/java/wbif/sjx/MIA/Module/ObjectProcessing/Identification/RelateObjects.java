@@ -399,14 +399,14 @@ public class RelateObjects extends Module {
 
     public ObjCollection mergeRelatedObjects(ObjCollection parentObjects, ObjCollection childObjects, String relatedObjectsName) {
         Obj exampleParent = parentObjects.getFirst();
-        if (exampleParent == null) return null;
+        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName);
+
+        if (exampleParent == null) return relatedObjects;
 
         double dppXY = exampleParent.getDistPerPxXY();
         double dppZ = exampleParent.getDistPerPxZ();
         String calibratedUnits = exampleParent.getCalibratedUnits();
         boolean twoD = exampleParent.is2D();
-
-        ObjCollection relatedObjects = new ObjCollection(relatedObjectsName);
 
         Iterator<Obj> parentIterator = parentObjects.values().iterator();
         while (parentIterator.hasNext()) {
