@@ -83,7 +83,7 @@ public class ModuleCollection extends ArrayList<Module> implements Serializable 
         for (Module module:this) {
             if (module == cutoffModule) break;
             if (!module.isEnabled()) continue;
-            MetadataRefCollection currentMetadataReferences = module.updateAndGetMetadataReferences();
+            MetadataRefCollection currentMetadataReferences = module.updateAndGetImageMetadataReferences();
             if (currentMetadataReferences == null) continue;
 
             metadataRefs.putAll(currentMetadataReferences);

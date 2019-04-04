@@ -35,6 +35,7 @@ import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Exceptions.IntegerOverflowException;
 import wbif.sjx.common.MetadataExtractors.CV7000FilenameExtractor;
 import wbif.sjx.common.MetadataExtractors.IncuCyteShortFilenameExtractor;
@@ -53,7 +54,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.extendRangeToEnd;
-import static wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack.interpretRange;
+
 
 /**
  * Created by Stephen on 15/05/2017.
@@ -200,11 +201,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             height = crop[3];
         }
 
-        int[] channelsList = interpretRange(dimRanges[0]);
+        int[] channelsList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[0],true);
         if (channelsList[channelsList.length-1] == Integer.MAX_VALUE) channelsList = extendRangeToEnd(channelsList,sizeC);
-        int[] slicesList = interpretRange(dimRanges[1]);
+        int[] slicesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[1],true);
         if (slicesList[slicesList.length-1] == Integer.MAX_VALUE) slicesList = extendRangeToEnd(slicesList,sizeZ);
-        int[] framesList = interpretRange(dimRanges[2]);
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[2],true);
         if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,sizeT);
 
         int nC = channelsList.length;
@@ -311,7 +312,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         Frame frame = loader.grabFrame();
         int width = loader.getImageWidth();
         int height = loader.getImageHeight();
-        int[] framesList = interpretRange(dimRanges[2]);
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(dimRanges[2],true);
         List<Integer> frames = Arrays.stream(framesList).boxed().collect(Collectors.toList());
 
         ImagePlus ipl = IJ.createImage("Image",width, height,framesList.length,8);
@@ -398,6 +399,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             String comment = metadata.getComment();
             String filename = path+matcher.group(1)+"_ch"+comment+"."+extension;
 
+            if (!new File(filename).exists()) {
+                System.err.println("File \""+filename+"\" not found.  Skipping file.");
+                return null;
+            }
+
             return getBFImage(filename,1,dimRanges,crop,intRange,manualCal,true);
 
         }
@@ -416,6 +422,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String comment = metadata.getComment();
         String filename = metadata.getFile().getParent()+MIA.getSlashes()+IncuCyteShortFilenameExtractor
                 .generate(comment,metadata.getWell(),metadata.getAsString(HCMetadata.FIELD),metadata.getExt());
+
+        if (!new File(filename).exists()) {
+            System.err.println("File \""+filename+"\" not found.  Skipping file.");
+            return null;
+        }
 
         return getBFImage(filename,seriesNumber,dimRanges,crop,intRange,manualCal,true);
 
@@ -446,6 +457,12 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
         File[] listOfFiles = parentFile.listFiles(filter);
         String[] dimRanges = new String[]{"1","1","1"};
+
+        if (!new File(listOfFiles[0].getAbsolutePath()).exists()) {
+            System.err.println("File \""+listOfFiles[0].getAbsolutePath()+"\" not found.  Skipping file.");
+            return null;
+        }
+
         return getBFImage(listOfFiles[0].getAbsolutePath(),seriesNumber,dimRanges,crop,intRange,manualCal,true);
 
     }
@@ -459,6 +476,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String series = includeSeries ? "_S"+metadata.getSeriesNumber() : "";
         String filename = path+comment+name+series+"."+ext;
 
+        if (!new File(filename).exists()) {
+            System.err.println("File \""+filename+"\" not found.  Skipping file.");
+            return null;
+        }
+
         return getBFImage(filename,seriesNumber,dimRanges,crop,intRange,manualCal,true);
 
     }
@@ -471,6 +493,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         String comment = metadata.getComment();
         String series = includeSeries ? "_S"+metadata.getSeriesNumber() : "";
         String filename = path+name+series+comment+"."+ext;
+
+        if (!new File(filename).exists()) {
+            System.err.println("File \""+filename+"\" not found.  Skipping file.");
+            return null;
+        }
 
         return getBFImage(filename,seriesNumber,dimRanges,crop,intRange,manualCal,true);
 
@@ -585,6 +612,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
             switch (importMode) {
                 case ImportModes.CURRENT_FILE:
                     File file = workspace.getMetadata().getFile();
+                    if (!file.exists()) {
+                        System.err.println("File \""+file.getAbsolutePath()+"\" not found.  Skipping file.");
+                        return false;
+                    }
+
                     if (useImageJReader) {
                         ipl = IJ.openImage(file.getAbsolutePath());
                     } else {
@@ -594,11 +626,22 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
 
                 case ImportModes.IMAGEJ:
                     ipl = IJ.getImage().duplicate();
+                    if (ipl == null) {
+                        System.err.println("No image open in ImageJ.  Skipping.");
+                        return false;
+                    }
                     break;
 
                 case ImportModes.IMAGE_SEQUENCE:
                     if (!limitFrames) finalIndex = Integer.MAX_VALUE;
-                    ipl = getImageSequence(workspace.getMetadata().getFile(),numberOfZeroes,startingIndex,frameInterval,finalIndex,crop,intRange,setCalibration);
+                    file = workspace.getMetadata().getFile();
+                    if (!file.exists()) {
+                        System.err.println("File \""+file.getAbsolutePath()+"\" not found.  Skipping file.");
+                        return false;
+                    }
+
+                    ipl = getImageSequence(file,numberOfZeroes,startingIndex,frameInterval,finalIndex,crop,intRange,setCalibration);
+
                     break;
 
                 case ImportModes.MATCHING_FORMAT:
@@ -634,6 +677,11 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
                     break;
 
                 case ImportModes.SPECIFIC_FILE:
+                    if (!(new File(filePath)).exists()) {
+                        System.err.println("File \""+filePath+"\" not found.  Skipping file.");
+                        return false;
+                    }
+
                     if (useImageJReader) {
                         ipl = IJ.openImage(filePath);
                     } else {
@@ -644,6 +692,8 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
         } catch (ServiceException | DependencyException | IOException | FormatException e) {
             e.printStackTrace();
         }
+
+        if (ipl == null) return false;
 
         // If necessary, setting the spatial calibration
         if (setCalibration) {
@@ -903,7 +953,7 @@ public class ImageLoader < T extends RealType< T > & NativeType< T >> extends Mo
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

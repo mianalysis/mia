@@ -1,14 +1,22 @@
 package wbif.sjx.MIA.Module.ObjectProcessing.Refinement;
 
-import javax.annotation.Nullable;import ij.ImagePlus;
+import javax.annotation.Nullable;
+import javax.swing.*;
+
+import ij.ImagePlus;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.ObjectProcessing.Miscellaneous.ConvertObjectsToImage;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
+import wbif.sjx.MIA.Object.Image;
 import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Process.ColourFactory;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.LUTs;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,7 +25,7 @@ import java.util.LinkedHashMap;
 /**
  * Created by sc13967 on 23/05/2017.
  */
-public class FilterObjects extends Module {
+public class FilterObjects extends Module implements ActionListener {
     public static final String INPUT_OBJECTS = "Input objects";
     public static final String MOVE_FILTERED = "Move filtered objects to new class";
     public static final String OUTPUT_FILTERED_OBJECTS = "Output (filtered) objects";
@@ -34,9 +42,18 @@ public class FilterObjects extends Module {
     public static final String REFERENCE_VAL_PARENT_OBJECT = "Reference value parent object";
     public static final String REFERENCE_OBJECT_MEASUREMENT = "Reference object measurement";
     public static final String REFERENCE_MULTIPLIER = "Reference value multiplier";
+    public static final String SHOW_IMAGE = "Show image";
+    public static final String DISPLAY_IMAGE_NAME = "Image to display";
+
+    private static final String OK = "OK";
+
+    private JFrame frame;
+    private JTextField numbersField;
+    private int elementHeight = 30;
+    private boolean active = false;
+
 
     public interface FilterMethods {
-        String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)";
         String MISSING_MEASUREMENTS = "Remove objects with missing measurements";
         String NO_PARENT = "Remove objects without parent";
         String WITH_PARENT = "Remove objects with a parent";
@@ -44,9 +61,12 @@ public class FilterObjects extends Module {
         String MAX_NUMBER_OF_CHILDREN = "Remove objects with more children than:";
         String MEASUREMENTS_SMALLER_THAN = "Remove objects with measurements < than:";
         String MEASUREMENTS_LARGER_THAN = "Remove objects with measurements > than:";
+        String REMOVE_ON_IMAGE_EDGE_2D = "Exclude objects on image edge (2D)";
+        String RUNTIME_OBJECT_ID = "Specific object IDs (runtime)";
 
         String[] ALL = new String[]{REMOVE_ON_IMAGE_EDGE_2D, MISSING_MEASUREMENTS, NO_PARENT, WITH_PARENT,
-                MIN_NUMBER_OF_CHILDREN, MAX_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN};
+                MIN_NUMBER_OF_CHILDREN, MAX_NUMBER_OF_CHILDREN, MEASUREMENTS_SMALLER_THAN, MEASUREMENTS_LARGER_THAN,
+                RUNTIME_OBJECT_ID};
 
     }
 
@@ -59,6 +79,43 @@ public class FilterObjects extends Module {
 
     }
 
+    private void showOptionsPanel() {
+        active = true;
+        frame = new JFrame();
+        frame.setAlwaysOnTop(true);
+
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(5,5,5,5);
+
+        // Header panel
+        JLabel headerLabel = new JLabel("<html>Specify object IDs to remove (comma separated)</html>");
+        headerLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        headerLabel.setPreferredSize(new Dimension(300,elementHeight));
+        frame.add(headerLabel,c);
+
+        numbersField = new JTextField();
+        numbersField.setPreferredSize(new Dimension(200, elementHeight));
+        c.gridy++;
+        c.insets = new Insets(0, 5, 5, 5);
+        frame.add(numbersField,c);
+
+        JButton okButton = new JButton(OK);
+        okButton.addActionListener(this);
+        okButton.setActionCommand(OK);
+        okButton.setPreferredSize(new Dimension(300,elementHeight));
+        c.gridy++;
+        frame.add(okButton,c);
+
+        frame.pack();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation((screenSize.width - frame.getWidth()) / 2, (screenSize.height - frame.getHeight()) / 2);
+        frame.setVisible(true);
+
+    }
 
     public void filterObjectsOnImageEdge(ObjCollection inputObjects, Image inputImage, @Nullable ObjCollection outputObjects, boolean includeZ) {
         int minX = 0;
@@ -202,6 +259,37 @@ public class FilterObjects extends Module {
         }
     }
 
+    public void filterObjectsByID(ObjCollection inputObjects, @Nullable Image image) {
+        ImagePlus ipl = null;
+        if (image != null) {
+            ipl = image.getImagePlus().duplicate();
+            ipl.show();
+        }
+
+        showOptionsPanel();
+
+        // All the while the control is open, do nothing
+        while (active) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        int[] ids = CommaSeparatedStringInterpreter.interpretIntegers(numbersField.getText(),true);
+
+        frame.dispose();
+        frame = null;
+        if (ipl != null) ipl.close();
+
+        for (int id:ids) {
+            Obj obj = inputObjects.get(id);
+            obj.removeRelationships();
+            inputObjects.remove(id);
+        }
+    }
+
     void processRemoval(Obj inputObject, ObjCollection outputObjects, Iterator<Obj> iterator) {
         inputObject.removeRelationships();
         if (outputObjects != null) {
@@ -249,6 +337,8 @@ public class FilterObjects extends Module {
         String referenceImageMeasurement = parameters.getValue(REFERENCE_IMAGE_MEASUREMENT);
         String referenceObjectMeasurement = parameters.getValue(REFERENCE_OBJECT_MEASUREMENT);
         double referenceMultiplier = parameters.getValue(REFERENCE_MULTIPLIER);
+        boolean showImage = parameters.getValue(SHOW_IMAGE);
+        String displayImageName = parameters.getValue(DISPLAY_IMAGE_NAME);
 
         ObjCollection outputObjects = moveFiltered ? new ObjCollection(outputObjectsName) : null;
 
@@ -313,6 +403,11 @@ public class FilterObjects extends Module {
 
                 filterObjectsWithMeasLargerThan(inputObjects,outputObjects,measurement,measurementReference);
                 break;
+
+            case FilterMethods.RUNTIME_OBJECT_ID:
+                Image displayImage = showImage ? workspace.getImage(displayImageName) : null;
+                filterObjectsByID(inputObjects,displayImage);
+                break;
         }
 
         if (moveFiltered) workspace.addObjects(outputObjects);
@@ -350,6 +445,8 @@ public class FilterObjects extends Module {
         parameters.add(new ParentObjectsP(REFERENCE_VAL_PARENT_OBJECT, this));
         parameters.add(new ObjectMeasurementP(REFERENCE_OBJECT_MEASUREMENT, this));
         parameters.add(new DoubleP(REFERENCE_MULTIPLIER, this, 1d));
+        parameters.add(new BooleanP(SHOW_IMAGE, this, true));
+        parameters.add(new InputImageP(DISPLAY_IMAGE_NAME, this));
 
     }
 
@@ -420,7 +517,11 @@ public class FilterObjects extends Module {
                         ((ObjectMeasurementP) parameters.getParameter(REFERENCE_OBJECT_MEASUREMENT)).setObjectName(referenceValueParentObjectsName);
                         break;
                 }
+                break;
 
+            case FilterMethods.RUNTIME_OBJECT_ID:
+                returnedParameters.add(parameters.getParameter(SHOW_IMAGE));
+                returnedParameters.add(parameters.getParameter(DISPLAY_IMAGE_NAME));
                 break;
 
         }
@@ -440,7 +541,7 @@ public class FilterObjects extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 
@@ -449,6 +550,14 @@ public class FilterObjects extends Module {
         return null;
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case (OK):
+                active = false;
+                break;
+        }
+    }
 
     public class MeasRef {
         final String referenceType;
