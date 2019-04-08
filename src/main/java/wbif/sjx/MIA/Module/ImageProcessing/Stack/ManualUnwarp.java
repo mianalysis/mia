@@ -342,7 +342,7 @@ public class ManualUnwarp extends Module implements Interactable {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
