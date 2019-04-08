@@ -15,6 +15,7 @@ public class OutputControl extends Module {
     public static final String METADATA_ITEM_FOR_GROUPING = "Metadata item for grouping";
     public static final String EXPORT_SUMMARY = "Export summary";
     public static final String SUMMARY_MODE = "Summary mode";
+    public static final String METADATA_ITEM_FOR_SUMMARY = "Metadata item for summary";
     public static final String SHOW_OBJECT_COUNTS = "Show object counts";
     public static final String SHOW_NUMBER_OF_CHILDREN = "Show number of children";
     public static final String CALCULATE_COUNT_MEAN = "Calculate count means";
@@ -41,8 +42,9 @@ public class OutputControl extends Module {
     public interface SummaryModes {
         String ONE_AVERAGE_PER_FILE = "Per input file";
         String AVERAGE_PER_TIMEPOINT = "Per timepoint per input file";
+        String GROUP_BY_METADATA = "Group by metadata";
 
-        String[] ALL = new String[]{ONE_AVERAGE_PER_FILE,AVERAGE_PER_TIMEPOINT};
+        String[] ALL = new String[]{ONE_AVERAGE_PER_FILE,AVERAGE_PER_TIMEPOINT,GROUP_BY_METADATA};
 
     }
 
@@ -82,6 +84,7 @@ public class OutputControl extends Module {
         parameters.add(new MetadataItemP(METADATA_ITEM_FOR_GROUPING,this));
         parameters.add(new BooleanP(EXPORT_SUMMARY,this,true));
         parameters.add(new ChoiceP(SUMMARY_MODE,this,SummaryModes.ONE_AVERAGE_PER_FILE,SummaryModes.ALL));
+        parameters.add(new MetadataItemP(METADATA_ITEM_FOR_SUMMARY,this));
         parameters.add(new BooleanP(SHOW_OBJECT_COUNTS,this,true));
         parameters.add(new BooleanP(SHOW_NUMBER_OF_CHILDREN,this,true));
         parameters.add(new BooleanP(CALCULATE_COUNT_MEAN,this,true));
@@ -113,6 +116,12 @@ public class OutputControl extends Module {
         returnedParameters.add(exportSummary);
         if (exportSummary.isSelected()) {
             returnedParameters.add(parameters.getParameter(SUMMARY_MODE));
+            switch ((String) parameters.getValue(SUMMARY_MODE)) {
+                case SummaryModes.GROUP_BY_METADATA:
+                    returnedParameters.add(parameters.getParameter(METADATA_ITEM_FOR_SUMMARY));
+                    break;
+            }
+
             returnedParameters.add(parameters.getParameter(SHOW_OBJECT_COUNTS));
             returnedParameters.add(parameters.getParameter(SHOW_NUMBER_OF_CHILDREN));
 

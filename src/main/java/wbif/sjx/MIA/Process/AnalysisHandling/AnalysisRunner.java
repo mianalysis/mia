@@ -155,6 +155,11 @@ public class AnalysisRunner {
                 case OutputControl.SummaryModes.AVERAGE_PER_TIMEPOINT:
                     exporter.setSummaryMode(Exporter.SummaryMode.PER_TIMEPOINT_PER_FILE);
                     break;
+
+                case OutputControl.SummaryModes.GROUP_BY_METADATA:
+                    exporter.setSummaryMode(Exporter.SummaryMode.GROUP_BY_METADATA);
+                    exporter.setMetadataItemForSummary(outputControl.getParameterValue(OutputControl.METADATA_ITEM_FOR_SUMMARY));
+                    break;
             }
 
             switch (appendDateTimeMode) {

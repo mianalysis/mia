@@ -46,7 +46,7 @@ public class Exporter {
     }
 
     public enum SummaryMode {
-        PER_FILE, PER_TIMEPOINT_PER_FILE;
+        PER_FILE, PER_TIMEPOINT_PER_FILE, GROUP_BY_METADATA;
     }
 
     public enum AppendDateTimeMode {
@@ -68,6 +68,7 @@ public class Exporter {
     private boolean calculateCountStd = true;
     private boolean calculateCountSum = true;
     private SummaryMode summaryMode = SummaryMode.PER_FILE;
+    private String metadataItemForSummary = null;
     private boolean exportIndividualObjects = true;
     private boolean addMetadataToObjects = true;
     private AppendDateTimeMode appendDateTimeMode = AppendDateTimeMode.NEVER;
@@ -576,11 +577,19 @@ public class Exporter {
         }
 
         // Add a column to record the timepoint
-        if (summaryType == SummaryMode.PER_TIMEPOINT_PER_FILE) {
-            Cell timepointHeaderCell = summaryHeaderRow.createCell(headerCol);
-            String timepointDataName = getMetadataString("TIMEPOINT");
-            timepointHeaderCell.setCellValue(timepointDataName);
-            colNumbers.put(timepointDataName,headerCol++);
+        switch (summaryType) {
+            case PER_TIMEPOINT_PER_FILE:
+                Cell timepointHeaderCell = summaryHeaderRow.createCell(headerCol);
+                String timepointDataName = getMetadataString("TIMEPOINT");
+                timepointHeaderCell.setCellValue(timepointDataName);
+                colNumbers.put(timepointDataName,headerCol++);
+                break;
+            case GROUP_BY_METADATA:
+                Cell metadataHeaderCell = summaryHeaderRow.createCell(headerCol);
+                String metadataDataName = getMetadataString(metadataItemForSummary);
+                metadataHeaderCell.setCellValue(metadataDataName);
+                colNumbers.put(metadataDataName,headerCol++);
+                break;
         }
 
         // Adding image headers
@@ -744,6 +753,10 @@ public class Exporter {
                     }
                     break;
 
+                case GROUP_BY_METADATA:
+                    // For the current workspace, iterating over all available time points and creating a new workspace
+                    HashMap<String,Workspace> metadataWorkspaces = workspace.getMetadataWorkspaces();
+                    break;
             }
         }
     }
@@ -1323,4 +1336,11 @@ public class Exporter {
         this.calculateCountSum = calculateCountSum;
     }
 
+    public String getMetadataItemForSummary() {
+        return metadataItemForSummary;
+    }
+
+    public void setMetadataItemForSummary(String metadataItemForSummary) {
+        this.metadataItemForSummary = metadataItemForSummary;
+    }
 }
