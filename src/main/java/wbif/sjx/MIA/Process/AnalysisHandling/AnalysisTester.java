@@ -8,7 +8,6 @@ public class AnalysisTester {
     public static int testModules(ModuleCollection modules) {
         int nRunnable = 0;
         for (Module module:modules) {
-//            if (!module.isSelected()) continue;
             boolean runnable = testModule(module,modules);
 
             module.setRunnable(runnable);
