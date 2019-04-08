@@ -380,6 +380,7 @@ public class EditingPanel extends MainPanel {
         outputPanel.updateButtonState();
         outputPanel.updatePanel(analysis.getOutputControl());
 
+        parametersPanel.updatePanel(GUI.getActiveModule());
         modulesPanel.updateButtonStates();
         modulesPanel.updatePanel();
 
