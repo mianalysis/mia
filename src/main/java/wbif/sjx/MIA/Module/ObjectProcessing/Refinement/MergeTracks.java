@@ -179,7 +179,7 @@ public class MergeTracks extends Module implements ActionListener {
         frame = null;
         if (ipl != null) ipl.close();
 
-        return false;
+        return true;
 
     }
 
