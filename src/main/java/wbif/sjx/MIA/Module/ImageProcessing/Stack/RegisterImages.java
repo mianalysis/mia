@@ -650,7 +650,7 @@ public class RegisterImages extends Module implements Interactable {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

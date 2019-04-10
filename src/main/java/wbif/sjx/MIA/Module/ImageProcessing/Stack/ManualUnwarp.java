@@ -7,6 +7,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.Prefs;
 import ij.gui.PointRoi;
+import ij.gui.Roi;
 import ij.plugin.Duplicator;
 import ij.plugin.SubHyperstackMaker;
 import ij.process.ImageProcessor;
@@ -38,6 +39,7 @@ public class ManualUnwarp extends Module implements Interactable {
     public static final String INPUT_IMAGE = "Input image";
     public static final String OUTPUT_IMAGE = "Output image";
     public static final String REFERENCE_IMAGE = "Reference image";
+    public static final String POINT_SELECTION_MODE = "Point selection mode";
     public static final String REGISTRATION_MODE = "Registration mode";
     public static final String SUBSAMPLE_FACTOR = "Subsample factor";
     public static final String INITIAL_DEFORMATION_MODE = "Initial deformation mode";
@@ -55,6 +57,14 @@ public class ManualUnwarp extends Module implements Interactable {
     private Image inputImage;
     private Image reference;
 
+
+    public interface PointSelectionModes {
+        String PRESELECTED = "Pre-selected points";
+        String RUNTIME = "Select at runtime";
+
+        String[] ALL = new String[]{PRESELECTED,RUNTIME};
+
+    }
 
     public interface RegistrationModes {
         final String FAST = "Fast";
@@ -93,6 +103,7 @@ public class ManualUnwarp extends Module implements Interactable {
         String[] ALL = new String[]{BLACK,WHITE};
 
     }
+
 
     private int getRegistrationMode(String registrationMode) {
         switch (registrationMode) {
@@ -242,16 +253,7 @@ public class ManualUnwarp extends Module implements Interactable {
 
     }
 
-    public Image processManual(Image inputImage, String outputImageName, Image reference, Param param, String fillMode, boolean multithread) throws InterruptedException {
-        // Getting point pairs
-        ImagePlus ipl1 = new Duplicator().run(inputImage.getImagePlus());
-        ImagePlus ipl2 = new Duplicator().run(reference.getImagePlus());
-
-        // Adding any ROIs that may have been pre-selected on the images
-        ipl1.setRoi(inputImage.getImagePlus().getRoi());
-        ipl2.setRoi(reference.getImagePlus().getRoi());
-        ArrayList<PointPair> pairs = new PointPairSelector(this,true).getPointPairs(ipl1, ipl2);
-
+    public Image processManual(Image inputImage, String outputImageName, Image reference, ArrayList<PointPair> pairs, Param param, String fillMode, boolean multithread) throws InterruptedException {
         // Converting point pairs into format for bUnwarpJ
         Stack<Point> points1 = new Stack<>();
         Stack<Point> points2 = new Stack<>();
@@ -340,7 +342,7 @@ public class ManualUnwarp extends Module implements Interactable {
 
     @Override
     public String getHelp() {
-        return null;
+        return "";
     }
 
     @Override
@@ -354,6 +356,7 @@ public class ManualUnwarp extends Module implements Interactable {
         // Getting parameters
         String outputImageName = parameters.getValue(OUTPUT_IMAGE);
         String referenceImageName = parameters.getValue(REFERENCE_IMAGE);
+        String pointSelectionMode = parameters.getValue(POINT_SELECTION_MODE);
         String registrationMode = parameters.getValue(REGISTRATION_MODE);
         String fillMode = parameters.getValue(FILL_MODE);
         boolean multithread = parameters.getValue(ENABLE_MULTITHREADING);
@@ -377,9 +380,28 @@ public class ManualUnwarp extends Module implements Interactable {
         }
         param.stopThreshold = parameters.getValue(STOP_THRESHOLD);
 
+        // Getting point pairs
+        ImagePlus ipl1 = new Duplicator().run(inputImage.getImagePlus());
+        ImagePlus ipl2 = new Duplicator().run(reference.getImagePlus());
+
+        // Adding any ROIs that may have been pre-selected on the images
+        ipl1.setRoi(inputImage.getImagePlus().getRoi());
+        ipl2.setRoi(reference.getImagePlus().getRoi());
+
+        ArrayList<PointPair> pairs = null;
+        switch (pointSelectionMode) {
+            case PointSelectionModes.PRESELECTED:
+                pairs = PointPairSelector.getPreselectedPoints(inputImage,reference);
+                break;
+            case PointSelectionModes.RUNTIME:
+            default:
+                pairs = new PointPairSelector(this,true).getPointPairs(ipl1, ipl2);
+                break;
+        }
+
         Image outputImage = null;
         try {
-            outputImage = processManual(inputImage, outputImageName, reference, param, fillMode, multithread);
+            outputImage = processManual(inputImage, outputImageName, reference, pairs, param, fillMode, multithread);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -402,6 +424,7 @@ public class ManualUnwarp extends Module implements Interactable {
         parameters.add(new InputImageP(INPUT_IMAGE,this));
         parameters.add(new OutputImageP(OUTPUT_IMAGE,this));
         parameters.add(new InputImageP(REFERENCE_IMAGE,this));
+        parameters.add(new ChoiceP(POINT_SELECTION_MODE,this,PointSelectionModes.RUNTIME,PointSelectionModes.ALL));
         parameters.add(new ChoiceP(REGISTRATION_MODE,this,RegistrationModes.FAST,RegistrationModes.ALL));
         parameters.add(new IntegerP(SUBSAMPLE_FACTOR,this,0));
         parameters.add(new ChoiceP(INITIAL_DEFORMATION_MODE,this,InitialDeformationModes.VERY_COARSE,InitialDeformationModes.ALL));
@@ -423,6 +446,7 @@ public class ManualUnwarp extends Module implements Interactable {
         returnedParameters.add(parameters.getParameter(INPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(OUTPUT_IMAGE));
         returnedParameters.add(parameters.getParameter(REFERENCE_IMAGE));
+        returnedParameters.add(parameters.getParameter(POINT_SELECTION_MODE));
         returnedParameters.add(parameters.getParameter(REGISTRATION_MODE));
         returnedParameters.add(parameters.getParameter(SUBSAMPLE_FACTOR));
         returnedParameters.add(parameters.getParameter(INITIAL_DEFORMATION_MODE));
@@ -458,7 +482,7 @@ public class ManualUnwarp extends Module implements Interactable {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

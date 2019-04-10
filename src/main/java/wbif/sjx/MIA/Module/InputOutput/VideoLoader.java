@@ -10,11 +10,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.janelia.it.jacs.shared.ffmpeg.FFMpegLoader;
 import org.janelia.it.jacs.shared.ffmpeg.Frame;
 import wbif.sjx.MIA.Module.ImageProcessing.Stack.ConvertStackToTimeseries;
-import wbif.sjx.MIA.Module.ImageProcessing.Stack.ExtractSubstack;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Module.PackageNames;
 import wbif.sjx.MIA.Object.*;
 import wbif.sjx.MIA.Object.Parameters.*;
+import wbif.sjx.MIA.Process.CommaSeparatedStringInterpreter;
 import wbif.sjx.common.Object.HCMetadata;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public class VideoLoader extends Module {
         loader.start();
 
         // Getting an ordered list of frames to be imported
-        int[] framesList = ExtractSubstack.interpretRange(frameRange);
+        int[] framesList = CommaSeparatedStringInterpreter.interpretIntegers(frameRange,true);
         if (framesList[framesList.length-1] == Integer.MAX_VALUE) framesList = extendRangeToEnd(framesList,loader.getLengthInFrames());
         TreeSet<Integer> frames = Arrays.stream(framesList).boxed().collect(Collectors.toCollection(TreeSet::new));
 
@@ -350,7 +350,7 @@ public class VideoLoader extends Module {
     }
 
     @Override
-    public MetadataRefCollection updateAndGetMetadataReferences() {
+    public MetadataRefCollection updateAndGetImageMetadataReferences() {
         return null;
     }
 

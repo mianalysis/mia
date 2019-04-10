@@ -7,6 +7,7 @@ import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.ModuleCollection;
 import wbif.sjx.MIA.Object.Parameters.BooleanP;
 import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
+import wbif.sjx.MIA.Process.AnalysisHandling.AnalysisTester;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -43,6 +44,9 @@ public class BasicControlPanel extends JScrollPane {
     }
 
     public void updatePanel() {
+        AnalysisTester.testModule(GUI.getAnalysis().getInputControl(),GUI.getModules());
+        AnalysisTester.testModule(GUI.getAnalysis().getOutputControl(),GUI.getModules());
+
         int frameWidth = GUI.getMinimumFrameWidth();
         Analysis analysis = GUI.getAnalysis();
         ComponentFactory componentFactory = GUI.getComponentFactory();
