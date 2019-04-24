@@ -205,4 +205,9 @@ public abstract class Module implements Comparable {
         return getTitle().compareTo(((Module) o).getTitle());
 
     }
+
+    @Override
+    public String toString() {
+        return getNickname();
+    }
 }

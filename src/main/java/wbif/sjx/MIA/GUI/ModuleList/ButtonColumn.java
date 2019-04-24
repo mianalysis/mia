@@ -2,6 +2,9 @@
 
 package wbif.sjx.MIA.GUI.ModuleList;
 
+import wbif.sjx.MIA.GUI.ControlObjects.ModuleEnabledCheck;
+import wbif.sjx.MIA.Module.Module;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -21,19 +24,19 @@ import javax.swing.table.*;
  *  the model row number of the button that was clicked.
  *
  */
-public class ButtonColumn extends AbstractCellEditor
-        implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener
-{
-    private JTable table;
-    private Action action;
-    private int mnemonic;
-    private Border originalBorder;
-    private Border focusBorder;
+public abstract class ButtonColumn extends AbstractCellEditor
+        implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
 
-    private JButton renderButton;
-    private JButton editButton;
-    private Object editorValue;
-    private boolean isButtonColumnEditor;
+    JTable table;
+    Action action;
+    int mnemonic;
+    Border originalBorder;
+    Border focusBorder;
+
+    JButton renderButton;
+    JButton editButton;
+    Object editorValue;
+    boolean isButtonColumnEditor;
 
     /**
      *  Create the ButtonColumn to be used as a renderer and editor. The
@@ -44,22 +47,32 @@ public class ButtonColumn extends AbstractCellEditor
      *  @param action the Action to be invoked when the button is invoked
      *  @param column the column to which the button renderer/editor is added
      */
-    public ButtonColumn(JTable table, Action action, int column)
-    {
+    public ButtonColumn(JTable table, Action action, int column)     {
         this.table = table;
         this.action = action;
 
         renderButton = new JButton();
+        renderButton.setFocusPainted(false);
+        renderButton.setSelected(false);
+        renderButton.setMargin(new Insets(0,0,0,0));
+        renderButton.setName("ModuleEnabled");
+        renderButton.setToolTipText("Enable/disable module");
+
         editButton = new JButton();
+        editButton.setSelected(false);
+        editButton.setMargin(new Insets(0,0,0,0));
+        editButton.setName("ModuleEnabled");
+        editButton.setToolTipText("Enable/disable module");
         editButton.setFocusPainted( false );
         editButton.addActionListener( this );
-        originalBorder = editButton.getBorder();
-        setFocusBorder( new LineBorder(Color.BLUE) );
+//        originalBorder = editButton.getBorder();
+//        setFocusBorder( new LineBorder(Color.BLUE) );
 
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(column).setCellRenderer( this );
         columnModel.getColumn(column).setCellEditor( this );
         table.addMouseListener( this );
+
     }
 
 
@@ -80,8 +93,8 @@ public class ButtonColumn extends AbstractCellEditor
      */
     public void setFocusBorder(Border focusBorder)
     {
-        this.focusBorder = focusBorder;
-        editButton.setBorder( focusBorder );
+//        this.focusBorder = focusBorder;
+//        editButton.setBorder( focusBorder );
     }
 
     public int getMnemonic()
@@ -102,79 +115,9 @@ public class ButtonColumn extends AbstractCellEditor
     }
 
     @Override
-    public Component getTableCellEditorComponent(
-            JTable table, Object value, boolean isSelected, int row, int column)
-    {
-        if (value == null)
-        {
-            editButton.setText( "" );
-            editButton.setIcon( null );
-        }
-        else if (value instanceof Icon)
-        {
-            editButton.setText( "" );
-            editButton.setIcon( (Icon)value );
-        }
-        else
-        {
-            editButton.setText( value.toString() );
-            editButton.setIcon( null );
-        }
-
-        this.editorValue = value;
-        return editButton;
-    }
-
-    @Override
     public Object getCellEditorValue()
     {
         return editorValue;
-    }
-
-    //
-//  Implement TableCellRenderer interface
-//
-    public Component getTableCellRendererComponent(
-            JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-    {
-        if (isSelected)
-        {
-            renderButton.setForeground(table.getSelectionForeground());
-            renderButton.setBackground(table.getSelectionBackground());
-        }
-        else
-        {
-            renderButton.setForeground(table.getForeground());
-            renderButton.setBackground(UIManager.getColor("Button.background"));
-        }
-
-        if (hasFocus)
-        {
-            renderButton.setBorder( focusBorder );
-        }
-        else
-        {
-            renderButton.setBorder( originalBorder );
-        }
-
-//		renderButton.setText( (value == null) ? "" : value.toString() );
-        if (value == null)
-        {
-            renderButton.setText( "" );
-            renderButton.setIcon( null );
-        }
-        else if (value instanceof Icon)
-        {
-            renderButton.setText( "" );
-            renderButton.setIcon( (Icon)value );
-        }
-        else
-        {
-            renderButton.setText( value.toString() );
-            renderButton.setIcon( null );
-        }
-
-        return renderButton;
     }
 
     //

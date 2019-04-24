@@ -14,8 +14,6 @@ import java.awt.event.ActionListener;
  * Created by Stephen on 08/06/2017.
  */
 public class EvalButton extends JButton implements ActionListener {
-    private static Thread t;
-
     private Module module;
     private static final ImageIcon blackIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/arrowopen_black_12px.png"), "");
     private static final ImageIcon amberIcon = new ImageIcon(ModuleEnabledCheck.class.getResource("/Icons/Dual Ring-1s-12px.gif"), "");
@@ -81,50 +79,7 @@ public class EvalButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!module.isEnabled()) return;
 
-        int idx = GUI.getModules().indexOf(module);
-
-        // If it's currently evaluating, this will kill the thread
-        if (idx == GUI.getModuleBeingEval()) {
-            System.out.println("Stopping");
-            GUI.setModuleBeingEval(-1);
-            GUI.updateModuleStates();
-            t.stop();
-            return;
-        }
-
-        // If the module is ready to be evaluated
-        if (idx <= GUI.getLastModuleEval()) {
-            t = new Thread(() -> {
-                try {
-                    // For some reason it's necessary to have a brief pause here to prevent the module executing twice
-                    Thread.sleep(1);
-                    evaluateModule(module);
-                } catch (Exception e1) {
-                    GUI.setModuleBeingEval(-1);
-                    GUI.updateModuleStates();
-                    e1.printStackTrace();
-                }
-            });
-            t.start();
-
-        } else {
-            // If multiple modules will need to be evaluated first
-            t = new Thread(() -> {
-                for (int i = GUI.getLastModuleEval() + 1; i <= idx; i++) {
-                    Module module = GUI.getModules().get(i);
-                    if (module.isEnabled() && module.isRunnable()) try {
-                        evaluateModule(module);
-                    } catch (Exception e1) {
-                        GUI.setModuleBeingEval(-1);
-                        e1.printStackTrace();
-                        Thread.currentThread().getThreadGroup().interrupt();
-                    }
-                }
-            });
-            t.start();
-        }
     }
 
     public void evaluateModule(Module module) {
