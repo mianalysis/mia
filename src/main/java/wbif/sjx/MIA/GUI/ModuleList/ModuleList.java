@@ -1,36 +1,71 @@
 package wbif.sjx.MIA.GUI.ModuleList;
 
+import wbif.sjx.MIA.GUI.GUI;
 import wbif.sjx.MIA.Module.ImageProcessing.Pixel.FilterImage;
 import wbif.sjx.MIA.Module.InputOutput.ImageLoader;
 import wbif.sjx.MIA.Module.InputOutput.ImageSaver;
 import wbif.sjx.MIA.Module.Module;
+import wbif.sjx.MIA.Object.Image;
+import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Object.Workspace;
+import wbif.sjx.MIA.Process.AnalysisHandling.Analysis;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 public class ModuleList {
+    private static Thread t;
+
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        new ModuleList().test();
+        try {
+            new ModuleList().test();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    public void test() {
+    public void test() throws UnsupportedEncodingException {
         JFrame frame = new JFrame();
 
         Module mod1 = new ImageLoader<>();
-        Module mod2 = new ImageSaver();
-        Module mod3 = new FilterImage();
+        Module mod2 = new FilterImage();
+        Module mod3 = new ImageSaver();
+        ModuleCollection modules = GUI.getModules();
+        modules.add(mod1);
+        modules.add(mod2);
+//        modules.add(mod3);
+
+        // Setting parameters for ImageLoader
+        ImageLoader imageLoader = (ImageLoader) mod1;
+        imageLoader.updateParameterValue(ImageLoader.IMPORT_MODE, ImageLoader.ImportModes.SPECIFIC_FILE);
+        String pathToImage = "C:\\Users\\steph\\Documents\\Java Projects\\ModularImageAnalysis\\src\\test\\resources\\images\\ImageFilter\\LabelledObjects5D_8bit_2pxVariance2D.tif";
+        imageLoader.updateParameterValue(ImageLoader.FILE_PATH,pathToImage);
+        imageLoader.updateParameterValue(ImageLoader.OUTPUT_IMAGE,"Test_Output_Image");
+
+        // Setting parameters for FilterImage
+        FilterImage filterImage = (FilterImage) mod2;
+        filterImage.updateParameterValue(FilterImage.INPUT_IMAGE,"Test_Output_Image");
+        filterImage.updateParameterValue(FilterImage.APPLY_TO_INPUT,false);
+        filterImage.updateParameterValue(FilterImage.OUTPUT_IMAGE,"Test_output");
+        filterImage.updateParameterValue(FilterImage.FILTER_MODE,FilterImage.FilterModes.GAUSSIAN2D);
+        filterImage.updateParameterValue(FilterImage.CALIBRATED_UNITS,false);
+        filterImage.updateParameterValue(FilterImage.FILTER_RADIUS,2d);
 
         String[] columnNames = {"Enable", "ShowOutput", "Title", "Evaluate"};
-        Object[][] data = {{mod1,mod1,mod1,mod1},
+        Object[][] data = {{mod1, mod1, mod1, mod1},
                 {mod2,mod2,mod2,mod2},
-                {mod3,mod3,mod3,mod3}};
+//                {mod3,mod3,mod3,mod3},
+        };
 
         MyTableModel tableModel = new MyTableModel(data,columnNames);
         JTable table = new JTable(tableModel);
@@ -46,10 +81,8 @@ public class ModuleList {
         table.setRowHeight(30);
         table.setShowGrid(false);
 
-        Action enable = new AbstractAction()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        Action enable = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
                 JTable table = (JTable) e.getSource();
                 int modelRow = Integer.valueOf( e.getActionCommand() );
                 Module module = (Module) table.getModel().getValueAt(modelRow,0);
@@ -59,10 +92,8 @@ public class ModuleList {
         };
         EnableButtonColumn enableButtonColumn = new EnableButtonColumn(table, enable, 0);
 
-        Action showOutput = new AbstractAction()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        Action showOutput = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
                 JTable table = (JTable) e.getSource();
                 int modelRow = Integer.valueOf( e.getActionCommand() );
                 Module module = (Module) table.getModel().getValueAt(modelRow,0);
@@ -72,14 +103,14 @@ public class ModuleList {
         };
         ShowOutputButtonColumn showOutputButtonColumn = new ShowOutputButtonColumn(table, showOutput, 1);
 
-        Action evaluate = new AbstractAction()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        Action evaluate = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
                 JTable table = (JTable) e.getSource();
                 int modelRow = Integer.valueOf( e.getActionCommand() );
                 Module module = (Module) table.getModel().getValueAt(modelRow,0);
-                module.setShowOutput(!module.canShowOutput());
+
+                Module.setVerbose(true);
+                evaluateModules(module,table);
 
             }
         };
@@ -92,6 +123,77 @@ public class ModuleList {
         frame.setVisible(true);
 
         table.repaint();
+
+    }
+
+    private void evaluateModules(Module module,JTable table) {
+        if (!module.isEnabled()) return;
+
+        int idx = GUI.getModules().indexOf(module);
+
+        // If it's currently evaluating, this will kill the thread
+        if (idx == GUI.getModuleBeingEval()) {
+            System.out.println("Stopping");
+            GUI.setModuleBeingEval(-1);
+            GUI.updateModuleStates();
+            t.stop();
+            return;
+        }
+
+        // If the module is ready to be evaluated
+        if (idx <= GUI.getLastModuleEval()) {
+            t = new Thread(() -> {
+                try {
+                    // For some reason it's necessary to have a brief pause here to prevent the module executing twice
+                    Thread.sleep(1);
+                    table.repaint();
+                    evaluateModule(module);
+                    table.repaint();
+                } catch (Exception e1) {
+                    GUI.setModuleBeingEval(-1);
+                    GUI.updateModuleStates();
+                    e1.printStackTrace();
+                    table.repaint();
+                }
+            });
+            t.start();
+
+        } else {
+            // If multiple modules will need to be evaluated first
+            t = new Thread(() -> {
+                for (int i = GUI.getLastModuleEval() + 1; i <= idx; i++) {
+                    Module currModule = GUI.getModules().get(i);
+                    if (currModule.isEnabled() && currModule.isRunnable()) try {
+                        table.repaint();
+                        evaluateModule(currModule);
+                        table.repaint();
+                    } catch (Exception e1) {
+                        GUI.setModuleBeingEval(-1);
+                        e1.printStackTrace();
+                        Thread.currentThread().getThreadGroup().interrupt();
+                        table.repaint();
+                    }
+                }
+            });
+            t.start();
+        }
+    }
+
+    private void evaluateModule(Module module) {
+        ModuleCollection modules = GUI.getAnalysis().getModules();
+        Workspace testWorkspace = GUI.getTestWorkspace();
+
+        // Setting the index to the previous module.  This will make the currently-evaluated module go red
+        GUI.setLastModuleEval(modules.indexOf(module) - 1);
+        GUI.setModuleBeingEval(modules.indexOf(module));
+//        GUI.updateModuleStates();
+
+        Module.setVerbose(true);
+        module.execute(testWorkspace);
+        GUI.setLastModuleEval(modules.indexOf(module));
+        GUI.setModuleBeingEval(-1);
+
+//        GUI.updateModuleStates();
 
     }
 }

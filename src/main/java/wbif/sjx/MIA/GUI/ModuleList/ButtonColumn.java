@@ -126,18 +126,15 @@ public abstract class ButtonColumn extends AbstractCellEditor
     /*
      *	The button has been pressed. Stop editing and invoke the custom Action
      */
-    public void actionPerformed(ActionEvent e)
-    {
-        int row = table.convertRowIndexToModel( table.getEditingRow() );
+    public void actionPerformed(ActionEvent e) {
+        int row = table.convertRowIndexToModel(table.getEditingRow());
         fireEditingStopped();
 
         //  Invoke the Action
 
-        ActionEvent event = new ActionEvent(
-                table,
-                ActionEvent.ACTION_PERFORMED,
-                "" + row);
+        ActionEvent event = new ActionEvent(table,ActionEvent.ACTION_PERFORMED,"" + row);
         action.actionPerformed(event);
+
     }
 
     //
@@ -148,20 +145,15 @@ public abstract class ButtonColumn extends AbstractCellEditor
      *  the mouse to another cell before releasing it, the editor is still
      *  active. Make sure editing is stopped when the mouse is released.
      */
-    public void mousePressed(MouseEvent e)
-    {
-        if (table.isEditing()
-                &&  table.getCellEditor() == this)
-            isButtonColumnEditor = true;
+    public void mousePressed(MouseEvent e) {
+        if (table.isEditing() &&  table.getCellEditor() == this) isButtonColumnEditor = true;
     }
 
-    public void mouseReleased(MouseEvent e)
-    {
-        if (isButtonColumnEditor
-                &&  table.isEditing())
-            table.getCellEditor().stopCellEditing();
+    public void mouseReleased(MouseEvent e) {
+        if (isButtonColumnEditor &&  table.isEditing()) table.getCellEditor().stopCellEditing();
 
         isButtonColumnEditor = false;
+
     }
 
     public void mouseClicked(MouseEvent e) {}
