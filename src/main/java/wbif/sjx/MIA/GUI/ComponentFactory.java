@@ -3,16 +3,14 @@ package wbif.sjx.MIA.GUI;
 import wbif.sjx.MIA.GUI.ControlObjects.*;
 import wbif.sjx.MIA.GUI.InputOutput.InputControl;
 import wbif.sjx.MIA.GUI.InputOutput.OutputControl;
+import wbif.sjx.MIA.GUI.ParameterControls.ParameterControl;
 import wbif.sjx.MIA.Module.Miscellaneous.GUISeparator;
 import wbif.sjx.MIA.Module.Module;
 import wbif.sjx.MIA.Object.MeasurementRef;
 import wbif.sjx.MIA.Object.MeasurementRefCollection;
 import wbif.sjx.MIA.Object.ModuleCollection;
+import wbif.sjx.MIA.Object.Parameters.*;
 import wbif.sjx.MIA.Object.Parameters.Abstract.Parameter;
-import wbif.sjx.MIA.Object.Parameters.BooleanP;
-import wbif.sjx.MIA.Object.Parameters.ParameterCollection;
-import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
-import wbif.sjx.MIA.Object.Parameters.TextDisplayP;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,29 +45,37 @@ public class ComponentFactory {
         parameterControl.updateControl();
         JComponent parameterComponent = parameterControl.getComponent();
 
-        JLabel parameterName = new JLabel(parameter.getName());
-        parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        parameterName.setPreferredSize(new Dimension(0,elementHeight));
-        parameterName.setBorder(null);
-        parameterName.setOpaque(false);
-        parameterName.setToolTipText("<html><p width=\"500\">" +parameter.getDescription()+"</p></html>");
-        paramPanel.add(parameterName, c);
-
-        if (parameter.isValid()) {
-            parameterName.setForeground(Color.BLACK);
-        } else {
-            parameterName.setForeground(Color.RED);
-        }
-
-        // Adding the input component
-        c.gridx++;
-        c.weightx=1;
-        c.anchor = GridBagConstraints.EAST;
-        if (parameterComponent != null) {
+        if (parameter instanceof MessageP) {
             String value = parameter.getValueAsString();
             parameterComponent.setToolTipText(value == null ? "" : value);
-            if (!(parameter instanceof TextDisplayP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
-            paramPanel.add(parameterComponent, c);
+            c.insets = new Insets(10,3,0,0);
+            paramPanel.add(parameterComponent,c);
+
+        } else {
+            JLabel parameterName = new JLabel(parameter.getName());
+            parameterName.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+            parameterName.setPreferredSize(new Dimension(0, elementHeight));
+            parameterName.setBorder(null);
+            parameterName.setOpaque(false);
+            parameterName.setToolTipText("<html><p width=\"500\">" + parameter.getDescription() + "</p></html>");
+            paramPanel.add(parameterName, c);
+
+            if (parameter.isValid()) {
+                parameterName.setForeground(Color.BLACK);
+            } else {
+                parameterName.setForeground(Color.RED);
+            }
+
+            c.gridx++;
+            c.weightx=1;
+            c.anchor = GridBagConstraints.EAST;
+            if (parameterComponent != null) {
+                String value = parameter.getValueAsString();
+                parameterComponent.setToolTipText(value == null ? "" : value);
+                if (!(parameter instanceof TextDisplayP)) parameterComponent.setPreferredSize(new Dimension(0,elementHeight));
+                paramPanel.add(parameterComponent, c);
+            }
+
         }
 
         return paramPanel;

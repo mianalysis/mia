@@ -21,7 +21,7 @@ import wbif.sjx.common.FileConditions.FileCondition;
 import wbif.sjx.common.FileConditions.NameContainsString;
 import wbif.sjx.common.FileConditions.ParentContainsString;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -39,6 +39,7 @@ public class InputControl extends Module {
     public static final String FILTER_VALUE = "Filter value";
     public static final String FILTER_TYPE = "Filter type";
     public static final String SPATIAL_UNITS = "Spatial units";
+    public static final String NO_LOAD_MESSAGE = "No load message";
 
 
     public static interface InputModes {
@@ -270,6 +271,8 @@ public class InputControl extends Module {
 
         parameters.add(new ChoiceP(SPATIAL_UNITS,this,SpatialUnits.MICROMETRE,SpatialUnits.ALL,"Spatial units for calibrated measurements.  Assuming spatial calibration can be read from the input file when loaded, this will convert the input calibrated units to the units specified here."));
 
+        parameters.add(new MessageP(NO_LOAD_MESSAGE,this,"\"Input control\" only specifies the path to the root image; no image is loaded into the active workspace at this point.  To load images, add a \"Load Image\" module (multiple copies of this can be added to a single workflow).",Color.RED));
+
     }
 
     @Override
@@ -289,6 +292,7 @@ public class InputControl extends Module {
         returnedParameters.add(parameters.getParameter(ADD_FILTER));
         returnedParameters.add(parameters.getParameter(SPATIAL_UNITS));
         returnedParameters.add(parameters.getParameter(SIMULTANEOUS_JOBS));
+        returnedParameters.add(parameters.getParameter(NO_LOAD_MESSAGE));
 
         return returnedParameters;
 

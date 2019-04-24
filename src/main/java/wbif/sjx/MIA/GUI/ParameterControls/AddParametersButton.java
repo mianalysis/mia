@@ -1,7 +1,6 @@
 package wbif.sjx.MIA.GUI.ParameterControls;
 
 import wbif.sjx.MIA.GUI.GUI;
-import wbif.sjx.MIA.GUI.ParameterControl;
 import wbif.sjx.MIA.Object.Parameters.ParameterGroup;
 
 import javax.swing.*;
